@@ -16,6 +16,4 @@ mkdocs:
 # Optionally declare the Python requirements required to build your docs
 python:
   install:
-  # - requirements: docs/requirements.txt
-    - method: pip
-      path: mkdocs-material
+  - requirements: vizro-core/docs/requirements.txt
