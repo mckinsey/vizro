@@ -11,7 +11,7 @@ build:
     python: "3.11"
 
 mkdocs:
-  configuration: mkdocs.yml
+  configuration: vizro-core/mkdocs.yml
 
 # Optionally declare the Python requirements required to build your docs
 # python:
