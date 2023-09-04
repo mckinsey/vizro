@@ -1,0 +1,67 @@
+name: test-integration-vizro-core
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # TODO: remove "dev/mono_repo_structure" after test
+    branches:
+      - "main"
+      - "dev/mono_repo_structure"
+
+concurrency:
+  group: test-integration-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  run:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-${{ hashFiles('hatch.toml') }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-
+
+      - name: Run ubuntu integration tests
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          pip install --upgrade hatch
+          hatch run all.py${{ matrix.python-version }}:test-integration
+
+      - name: Run windows integration tests
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          $env:PYTHONPATH=".;D:\a\vizro\vizro\vizro-core\src"
+          pip install -r ../.github/requirements.txt
+          pip install .
+          pytest tests/integration --headless -k default
+          pytest tests/integration --headless -k dict
+          pytest tests/integration --headless -k json
+          pytest tests/integration --headless -k yaml

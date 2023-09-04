@@ -1,0 +1,44 @@
+.nav_card_container,
+.card_container {
+  background-color: var(--surfaces-bg-card);
+  box-shadow: var(--box-shadow-elevation-card);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  padding: var(--spacing-04);
+  position: relative;
+}
+
+.nav_card_container {
+  height: 98%;
+  margin-top: 8px;
+  position: relative;
+}
+
+.nav_card_container:hover {
+  background-color: var(--field-enabled);
+  box-shadow: var(--box-shadow-elevation-card-hover);
+  top: -8px;
+}
+
+blockquote {
+  border-left: var(--spacing-01) var(--text-secondary) solid;
+  padding-left: var(--spacing-01);
+}
+
+.card_button {
+  height: 84%;
+  position: absolute;
+  width: 92%;
+}
+
+.card_text h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-bottom: var(--spacing-02);
+}

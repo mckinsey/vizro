@@ -1,0 +1,48 @@
+/* Toggle Container */
+#theme_selector .jAjsxw {
+  width: 32px;
+}
+
+/* Toggle */
+#theme_selector .gJuplL,
+#theme_selector .cmSQpo {
+  background: var(--fill-subtle);
+  border: 1px solid var(--border-enabled);
+  border-radius: 16px;
+  display: flex;
+  flex-shrink: 0;
+  height: 16px;
+  width: 32px;
+}
+
+#theme_selector .gJuplL:active,
+#theme_selector .cmSQpo:active {
+  background: var(--fill-high-emphasis);
+}
+
+#theme_selector .gJuplL:focus,
+#theme_selector .cmSQpo:focus {
+  border: 2px solid var(--focus-focus);
+}
+
+/* Switch */
+#theme_selector .dlqMgb,
+#theme_selector .igrnnx {
+  background: var(--fill-medium-emphasis);
+  border: none;
+  border-radius: 10px;
+  flex-shrink: 0;
+  height: 10px;
+  transform: translateX(1px);
+  width: 10px;
+}
+
+#theme_selector .igrnnx {
+  transform: translateX(16px);
+}
+
+#theme_selector .dlqMgb:active,
+#theme_selector .igrnnx:active {
+  background: var(--fill-contrast-hover-selected);
+  border: 1px solid var(--border-contrast-selected);
+}

@@ -1,0 +1,88 @@
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+description = "Vizro is a package to facilitate visual analytics."
+name = "vizro"
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+
+[tool.black]
+line-length = 120
+target-version = ["py38"]
+
+[tool.coverage.paths]
+tests = ["tests"]
+vizro = ["src/vizro"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source_pkgs = ["vizro", "tests"]
+
+[tool.mypy]
+# strict checks : strict = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+disallow_untyped_defs = false
+no_implicit_optional = true
+no_implicit_reexport = false
+plugins = ["pydantic.mypy"]
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = false
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+disable_error_code = "name-defined"
+module = "vizro.models.types"
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.ruff]
+# see: https://beta.ruff.rs/docs/rules/
+ignore = [
+  "D104"  # undocumented-public-package
+]
+line-length = 120
+select = [
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "F",  # pyflakes
+  "I",  # isort
+  "D",  # pydocstyle
+  "T201",  # print
+  "C4",  # flake8-comprehensions
+  "RUF",  # Ruff-specific rules
+  "PL"  # pylint
+]
+target-version = "py38"
+
+[tool.ruff.isort]
+known-first-party = ["vizro"]
+
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports, ignore missing docstrings
+"**/tests/**/*" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103"]
+# Ignore import violations in all __init__.py files
+"__init__.py" = ["E402"]
+
+[tool.ruff.pydocstyle]
+convention = "google"

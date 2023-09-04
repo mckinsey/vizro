@@ -1,0 +1,143 @@
+div.page_container {
+  --tag-height: 24px;
+}
+
+/* Outer layout for dash dropdown */
+div.page_container .dash-dropdown {
+  background-color: var(--field-enabled);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-0);
+  font-size: var(--text-size-02);
+}
+
+/* Dropdown menu when clicking on expand arrow */
+div.page_container .Select-menu-outer {
+  background-color: var(--field-enabled);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-0);
+  font-size: var(--text-size-02);
+  line-height: var(--text-size-05);
+}
+
+/* Dropdown menu options */
+div.page_container .VirtualizedSelectOption {
+  color: var(--text-primary);
+  font-weight: var(--text-weight-regular);
+}
+
+/* Dropdown menu hover effect */
+div.page_container .VirtualizedSelectFocusedOption {
+  background-color: var(--state-overlays-hover);
+}
+
+/* Input box for existing values and user input */
+div.page_container .Select-control {
+  background-color: inherit;
+  border: inherit;
+  border-radius: inherit;
+  height: 32px;
+}
+
+/* User input */
+div.page_container .Select-input {
+  height: var(--tag-height);
+}
+
+div.page_container.Select-input > input {
+  height: 100%;
+  padding: 0;
+}
+
+/* Border on focus */
+div.page_container .is-focused:not(.is-open) > .Select-control {
+  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+}
+
+/* Single-select dropdown only ------------------- */
+div.page_container .Select--single .Select-value {
+  padding-left: 8px;
+}
+
+.has-value.Select--single > .Select-control .Select-value .Select-value-label,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control
+  .Select-value
+  .Select-value-label {
+  color: var(--text-primary);
+}
+
+/* Tags ---------------------------*/
+div.page_container .Select--multi .Select-value {
+  background-color: var(--tags-bg-color);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-0);
+  color: var(--tags-text-color);
+  font-size: var(--text-size-02);
+  height: var(--tag-height);
+  letter-spacing: var(--letter-spacing-body-ui-02);
+  margin: 0;
+  padding: 0 var(--spacing-01);
+  vertical-align: baseline;
+}
+
+/* Tag: Label */
+div.page_container .Select--multi .Select-value-label {
+  line-height: var(--text-size-05);
+  padding: 0 4px;
+}
+
+/* Tag: Cross */
+div.page_container .Select--multi .Select-value-icon {
+  background: inherit;
+  border: none;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/* Tag: Cross on hover */
+div.page_container .Select--multi .Select-value-icon:hover {
+  background: inherit;
+  color: var(--text-secondary);
+}
+
+/* Tag: Arrow */
+.Select-arrow-zone {
+  padding-right: 8px;
+  width: 16px;
+}
+
+/* Page Selector Dropdown */
+div.page_container
+  .dash-dropdown
+  .Select-menu-outer
+  .VirtualizedSelectSelectedOption
+  > a {
+  pointer-events: none;
+}
+
+div.page_container
+  .dash-dropdown
+  .Select-menu-outer
+  .VirtualizedSelectOption
+  > a {
+  height: 100%;
+  width: 100%;
+}
+
+div.nav_panel a {
+  font-weight: var(--text-weight-regular);
+  line-height: var(--text-size-07);
+}
+
+/** spacing for tag elements only when elements are present inside
+wrapper **/
+.Select--multi.has-value .Select-multi-value-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 8px;
+}

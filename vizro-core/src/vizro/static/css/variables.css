@@ -1,0 +1,133 @@
+/* Add variables here that are the same in dark and light */
+:root {
+  --spacing-01: 4px;
+  --spacing-02: 8px;
+  --spacing-03: 12px;
+  --spacing-04: 16px;
+  --spacing-05: 20px;
+  --spacing-06: 24px;
+  --spacing-07: 28px;
+  --spacing-08: 32px;
+  --text-size-01: 12px;
+  --text-size-02: 14px;
+  --text-size-03: 16px;
+  --text-size-04: 20px;
+  --text-size-05: 24px;
+  --text-size-06: 28px;
+  --text-size-07: 32px;
+  --letter-spacing-body-edit-01: -0.032px;
+  --letter-spacing-body-edit-02: -0.028px;
+  --letter-spacing-body-link-02: -0.056px;
+  --letter-spacing-body-ui-01: -0.128px;
+  --letter-spacing-body-ui-02: -0.112px;
+  --letter-spacing-heading-h1: -0.096px;
+  --letter-spacing-heading-h4: -0.016px;
+  --letter-spacing-help-text: 0.024px;
+  --text-weight-light: 300;
+  --text-weight-regular: 400;
+  --text-weight-semibold: 600;
+}
+
+/* Ensure dark and light have same list of variables (only color variables) */
+.vizro_dark {
+  --main-container-bg-color: rgba(20, 23, 33, 1);
+  --field-active: rgba(36, 48, 61, 1);
+  --text-active: rgba(255, 255, 255, 1);
+  --slider-background-color: #373a44;
+  --surfaces-bg-01: var(--surfaces-dark-mode-bg-01);
+  --surfaces-bg-02: var(--surfaces-dark-mode-bg-02);
+  --surfaces-bg-03: var(--surfaces-dark-mode-bg-03);
+  --surfaces-bg-card: var(--surfaces-dark-mode-bg-card);
+  --tags-bg-color: #181b26;
+  --fill-contrast-hover-selected: rgba(20, 23, 33, 1);
+  --text-contrast-primary: rgba(20, 23, 33, 0.88);
+  --border-contrast-selected: rgba(20, 23, 33, 1);
+  --border-disabled: var(--border-dark-mode-disabled);
+  --field-disabled: var(--field-dark-mode-disabled);
+  --fill-disabled: var(--fill-dark-mode-disabled);
+  --text-disabled: var(--text-dark-mode-disabled);
+  --border-enabled: var(--border-dark-mode-enabled);
+  --field-enabled: var(--field-dark-mode-enabled);
+  --status-error: var(--status-dark-mode-error);
+  --focus-focus: rgba(0, 133, 255, 0.6);
+  --status-focus: rgba(0, 133, 255, 0.6);
+  --fill-high-emphasis: var(--fill-dark-mode-high-emphasis);
+  --border-hover: var(--border-dark-mode-hover);
+  --field-hover: var(--field-dark-mode-hover);
+  --fill-hover-selected: var(--fill-dark-mode-hover-selected);
+  --status-information: var(--status-dark-mode-information);
+  --fill-medium-emphasis: var(--fill-dark-mode-medium-emphasis);
+  --fill-on-active: rgba(255, 255, 255, 1);
+  --state-overlays-enable: var(--state-overlays-dark-mode-enable);
+  --state-overlays-hover: var(--state-overlays-dark-mode-hover);
+  --state-overlays-active: var(--state-overlays-dark-mode-active);
+  --text-placeholder: var(--text-dark-mode-placeholder);
+  --text-primary: var(--text-dark-mode-primary);
+  --text-secondary: var(--text-dark-mode-secondary);
+  --border-selected: var(--border-dark-mode-selected);
+  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.3),
+    0 0 1px 0 rgba(20, 23, 33, 0.88);
+  --box-shadow-elevation-1: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
+    0px 2px 6px -1px rgba(20, 23, 33, 0.16);
+  --box-shadow-elevation-card: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
+    0px 2px 6px -1px rgba(20, 23, 33, 0.16);
+  --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
+    0px 4px 8px 1px rgba(20, 23, 33, 0.12);
+  --fill-subtle: var(--fill-dark-mode-subtle);
+  --border-subtle-alpha-01: var(--border-dark-mode-subtle-alpha-01);
+  --status-success: var(--status-dark-mode-success);
+  --tags-text-color: var(--tags-dark-mode-text-color);
+  --status-warning: var(--status-dark-mode-warning);
+}
+
+.vizro_light {
+  --main-container-bg-color: rgba(255, 255, 255, 1);
+  --field-active: rgba(251, 251, 251, 1);
+  --text-active: rgba(20, 23, 33, 1);
+  --slider-background-color: #d3d6d9;
+  --surfaces-bg-01: var(--surfaces-light-mode-bg-01);
+  --surfaces-bg-02: var(--surfaces-light-mode-bg-02);
+  --surfaces-bg-03: var(--surfaces-light-mode-bg-03);
+  --surfaces-bg-card: var(--surfaces-light-mode-bg-card);
+  --tags-bg-color: var(--primary-light-300);
+  --fill-contrast-hover-selected: rgba(255, 255, 255, 1);
+  --text-contrast-primary: rgba(255, 255, 255, 0.88);
+  --border-contrast-selected: rgba(255, 255, 255, 1);
+  --border-disabled: var(--border-light-mode-disabled);
+  --field-disabled: var(--field-light-mode-disabled);
+  --fill-disabled: var(--fill-light-mode-disabled);
+  --text-disabled: var(--text-light-mode-disabled);
+  --border-enabled: var(--border-light-mode-enabled);
+  --field-enabled: var(--field-light-mode-enabled);
+  --status-error: var(--status-light-mode-error);
+  --focus-focus: rgba(0, 133, 255, 0.6);
+  --status-focus: rgba(0, 133, 255, 0.6);
+  --fill-high-emphasis: var(--fill-light-mode-high-emphasis);
+  --border-hover: var(--border-light-mode-hover);
+  --field-hover: var(--field-light-mode-hover);
+  --fill-hover-selected: var(--fill-light-mode-hover-selected);
+  --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%)
+    hue-rotate(247deg) brightness(95%) contrast(90%);
+  --status-information: var(--status-light-mode-information);
+  --fill-medium-emphasis: var(--fill-light-mode-medium-emphasis);
+  --fill-on-active: rgba(0, 0, 0, 1);
+  --state-overlays-enable: var(--state-overlays-light-mode-enable);
+  --state-overlays-hover: var(--state-overlays-light-mode-hover);
+  --state-overlays-active: var(--state-overlays-light-mode-active);
+  --text-placeholder: var(--text-light-mode-placeholder);
+  --text-primary: var(--text-light-mode-primary);
+  --text-secondary: var(--text-light-mode-secondary);
+  --border-selected: var(--border-light-mode-selected);
+  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.08),
+    0 0 1px 0 rgba(20, 23, 33, 0.38);
+  --box-shadow-elevation-card: 0px 1px 1px 0px rgba(20, 23, 33, 0.08),
+    0px 0px 1px 0px rgba(20, 23, 33, 0.38);
+  --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
+    0px 4px 8px 1px rgba(20, 23, 33, 0.12);
+  --fill-subtle: var(--fill-light-mode-subtle);
+  --border-subtle-alpha-01: var(--border-light-mode-subtle-alpha-01);
+  --status-success: var(--status-light-mode-success);
+  --tags-text-color: var(--tags-light-mode-text-color);
+  --status-warning: var(--status-light-mode-warning);
+  --fill-accordion-button: invert(64%) sepia(0%) saturate(1375%);
+}

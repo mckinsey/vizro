@@ -1,0 +1,27 @@
+.user_input {
+  background-color: var(--field-enabled);
+  box-shadow: var(--box-shadow-elevation-0);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--text-size-02);
+  gap: var(--spacing-02);
+  height: 32px;
+  letter-spacing: var(--letter-spacing-body-ui-02);
+  line-height: var(--text-size-03);
+  padding: 8px 8px 8px 12px;
+  text-overflow: ellipsis;
+}
+
+.user_input:enabled {
+  color: var(--text-primary);
+}
+
+.user_input:hover {
+  background: var(--field-hover);
+}
+
+.user_input:focus {
+  background: var(--field-enabled);
+  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  color: var(--text-primary);
+}

@@ -1,0 +1,21 @@
+img[src*="floating-right"] {
+  float: right;
+}
+
+img[src*="floating-left"] {
+  float: left;
+}
+
+img[src*="floating-center"] {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  float: none;
+}
+
+img[src*="icon-top"] {
+  width: 36px;
+  height: 36px;
+  filter: var(--fill-icon-image-card);
+}

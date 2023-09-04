@@ -1,0 +1,53 @@
+.button_primary {
+  background: var(--fill-high-emphasis);
+  box-shadow: var(--box-shadow-elevation-0);
+  color: var(--text-contrast-primary);
+  font-size: var(--text-size-02);
+  font-weight: var(--text-weight-semibold);
+  height: 32px;
+  letter-spacing: var(--letter-spacing-body-link-02);
+  line-height: var(--text-size-05);
+  padding: var(--spacing-01) var(--spacing-03);
+}
+
+.button_primary:hover {
+  background: var(--fill-medium-emphasis);
+  text-decoration-line: underline;
+}
+
+.button_primary:focus {
+  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  text-decoration-line: underline;
+}
+
+.button_secondary {
+  background: var(--surfaces-bg-03);
+  border: 1px solid var(--border-enabled);
+  box-shadow: var(--box-shadow-elevation-0);
+  color: var(--text-primary);
+  font-size: var(--text-size-02);
+  font-weight: var(--text-weight-semibold);
+  height: 32px;
+  letter-spacing: var(--letter-spacing-body-link-02);
+  line-height: var(--text-size-05);
+  padding: var(--spacing-01) var(--spacing-03);
+}
+
+.button_tertiary {
+  background: var(--surfaces-bg-03);
+  color: var(--text-primary);
+  font-size: var(--text-size-02);
+  font-weight: var(--text-weight-semibold);
+  height: 32px;
+  letter-spacing: var(--letter-spacing-body-link-02);
+  line-height: var(--text-size-05);
+  padding: var(--spacing-01) var(--spacing-03);
+  text-decoration-line: underline;
+}
+
+.button_container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

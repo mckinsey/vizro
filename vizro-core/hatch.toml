@@ -1,0 +1,71 @@
+[envs.all]
+
+[[envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11"]
+
+[envs.all.overrides]
+matrix.python.features = [
+  {value = "kedro", if = ["3.8", "3.9", "3.10"]}
+]
+
+[envs.default]
+dependencies = [
+  "devtools[pygments]",
+  "pre-commit",
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "dash[testing]",
+  "chromedriver-autoinstaller",
+  "toml",
+  "pyyaml",
+  "openpyxl"
+]
+
+[envs.default.env-vars]
+DASH_DEBUG = "true"
+VIZRO_LOG_LEVEL = "DEBUG"
+
+[envs.default.scripts]
+cov = [
+  "test-cov",
+  "cov-report"
+]
+cov-report = [
+  "- coverage combine",
+  "coverage report"
+]
+example = "cd examples/{args:default}; python app.py"
+lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+schema = "python schemas/generate.py {args}"
+secrets = "pre-commit run gitleaks --all-files"
+test = [
+  "test-unit",
+  "test-integration"
+]
+test-cov = "coverage run -m pytest tests/unit {args}"
+test-integration = [
+  "pytest tests/integration --headless -k default {args}",
+  "pytest tests/integration --headless -k dict {args}",
+  "pytest tests/integration --headless -k json {args}",
+  "pytest tests/integration --headless -k yaml {args}"
+]
+test-unit = "pytest tests/unit {args}"
+update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
+
+[envs.docs]
+dependencies = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "scriv"
+]
+detached = true
+
+[envs.docs.scripts]
+changelog = "scriv create"
+serve = "mkdocs serve"
+
+[version]
+path = "src/vizro/__init__.py"

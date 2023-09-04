@@ -1,0 +1,7 @@
+/* :root {
+  --md-primary-fg-color: #f3119b;
+} */
+
+:root > * {
+  --md-code-hl-color: #119bec3e;
+}

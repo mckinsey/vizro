@@ -1,0 +1,21 @@
+.selector_body_checklist,
+.selector_body_radio_items {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--text-size-02);
+  gap: var(--spacing-01);
+  letter-spacing: var(--letter-spacing-body-ui-02);
+  line-height: var(--text-size-03);
+}
+
+.selector_container,
+.selector_dropdown_container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  width: 100%;
+}
+
+.selector_dropdown_container {
+  gap: var(--spacing-02);
+}

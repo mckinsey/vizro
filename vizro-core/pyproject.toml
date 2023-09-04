@@ -1,0 +1,48 @@
+# THIS IS NOT DESCRIBING A PACKAGE, but the DEV environment of this mono-repo
+# In order to install the packages of this mono-repo from source, refer to the pyproject.toml in the relevant folder
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+  "dash>=2.11",  # Needed to support https://dash.plotly.com/duplicate-callback-outputs#setting-allow_duplicate-on-duplicate-outputs.
+  # 2.11 needed for https://dash.plotly.com/dash-in-jupyter
+  "dash_bootstrap_components",
+  "pandas",
+  "pydantic<2.0.0",  # must be synced with pre-commit mypy hook
+  "dash_daq",
+  "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
+  "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
+  "tornado>=6.3.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
+  "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
+  "MarkupSafe"  # required to sanitise user input
+]
+description = "Vizro is a package to facilitate visual analytics."
+dynamic = ["version"]
+license-files = {paths = ["LICENSE.txt"]}
+name = "vizro"
+readme = "README.md"
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+kedro = [
+  "kedro>=0.17.3",
+  "wheel>=0.38.0"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413
+]
+
+[project.urls]
+Documentation = "https://github.com/mckinsey/vizro#readme"
+Issues = "https://github.com/mckinsey/vizro/issues"
+Source = "https://github.com/mckinsey/vizro"

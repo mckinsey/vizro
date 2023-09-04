@@ -1,0 +1,103 @@
+site_name: Vizro
+site_url: https://mckinsey.github.io/vizro/
+nav:
+  - Vizro: index.md
+  - User Guide:
+      - Install: pages/user_guides/install.md
+      - Themes: pages/user_guides/themes.md
+      - Dashboards: pages/user_guides/dashboard.md
+      - Pages: pages/user_guides/pages.md
+      - Charts/Components: pages/user_guides/components.md
+      - Layouts: pages/user_guides/layouts.md
+      - Controls: pages/user_guides/control.md
+      - Custom Charts: pages/user_guides/custom_charts.md
+      - Custom Components: pages/user_guides/custom_components.md
+      - Data: pages/user_guides/data.md
+      - Actions: pages/user_guides/actions.md
+      - Assets: pages/user_guides/assets.md
+      - Integrations: pages/user_guides/integration.md
+      - Run Methods: pages/user_guides/run.md
+  - Tutorials:
+      - Get started: pages/tutorials/first_dashboard.md
+      - Explore Vizro: pages/tutorials/explore_components.md
+  - API reference:
+      - Vizro: pages/API_reference/vizro.md
+      - Models: pages/API_reference/models.md
+      - Data Manager: pages/API_reference/manager.md
+      - Actions: pages/API_reference/actions.md
+  - Contribute:
+      - Contributing: pages/development/contributing.md
+      - Authors: pages/development/authors.md
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    - scheme: slate
+      primary: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+    - content.code.annotate
+
+watch:
+  - src
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.mark
+  - attr_list
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false #currently doesn't show source at correct level, and not for pydantic models
+            docstring_style: google
+            merge_init_into_class: true
+            docstring_section_style: list
+            separate_signature: true
+            #   filters: ["!^_"]
+            show_root_heading: true
+            docstring_options:
+              ignore_init_summary: true
+          paths: [src]
+
+extra_css:
+  - stylesheets/extra.css

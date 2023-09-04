@@ -1,0 +1,184 @@
+import pandas as pd
+import pytest
+
+import vizro.models as vm
+from vizro.managers import model_manager
+from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
+
+
+class TestFilterFunctions:
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            ([1, 2, 3, 4, 5], [2.5, 3.5], [False, False, True, False, False]),  # Standard test
+            ([1, 2, 3, 4, 5], [2, 4], [False, True, True, True, False]),  # Test for inclusive both ends
+            ([1, 2, 3, 4, 5], [1, 5], [True, True, True, True, True]),  # Test for inclusive all
+            ([1, 2, 3, 4, 5], [4, 2], [False, False, False, False, False]),  # Test for inverted values
+            ([], [2, 4], pd.Series([], dtype=bool)),  # Test for empty series
+            (
+                [1.1, 2.2, 3.3, 4.4, 5.5],
+                [2.1, 4.5],
+                [False, True, True, True, False],
+            ),  # Test with float data
+        ],
+    )
+    def test_filter_between(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_between(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            ([1, 2, 3, 4, 5], [2, 4], [False, True, False, True, False]),  # Test for integers
+            (["apple", "banana", "orange"], ["banana", "grape"], [False, True, False]),  # Test for strings
+            (
+                [1.1, 2.2, 3.3, 4.4, 5.5],
+                [2.2, 4.4],  # Test for float values
+                [False, True, False, True, False],
+            ),
+            ([1, 2, 3, 4, 5], [], [False, False, False, False, False]),  # Test for empty value list
+        ],
+    )
+    def test_filter_isin(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_isin(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+
+@pytest.mark.usefixtures("managers_one_page_two_graphs")
+class TestFilterInstantiation:
+    """Tests model instantiation and the validators run at that time."""
+
+    def test_create_filter_mandatory_only(self):
+        filter = Filter(column="foo")
+        assert filter.type == "filter"
+        assert filter.column == "foo"
+        assert filter.targets == []
+
+    def test_create_filter_mandatory_and_optional(self):
+        filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
+        assert filter.type == "filter"
+        assert filter.column == "foo"
+        assert filter.targets == ["scatter_chart", "bar_chart"]
+        assert isinstance(filter.selector, vm.RadioItems)
+
+    def test_check_target_present_valid(self):
+        Filter(column="foo", targets=["scatter_chart", "bar_chart"])
+
+    def test_check_target_present_invalid(self):
+        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
+            Filter(column="foo", targets=["invalid_target"])
+
+
+@pytest.mark.usefixtures("managers_one_page_two_graphs")
+class TestPreBuildMethod:
+    def test_target_auto_generation_valid(self):
+        # Core of tests is still interface level
+        filter = vm.Filter(column="country")
+        # Special case - need filter in the context of page in order to run filter.pre_build
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert set(filter.targets) == {"scatter_chart", "bar_chart"}
+
+    def test_target_auto_generation_invalid(self):
+        filter = vm.Filter(column="invalid_choice")
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.raises(ValueError, match="Selected column invalid_choice not found in any dataframe on this page."):
+            filter.pre_build()
+
+    @pytest.mark.parametrize(
+        "test_input,expected", [("country", "categorical"), ("year", "numerical"), ("lifeExp", "numerical")]
+    )
+    def test_column_type_inference(self, test_input, expected):
+        filter = vm.Filter(column=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._column_type == expected
+
+    @pytest.mark.parametrize(
+        "test_input,expected", [("country", vm.Dropdown), ("year", vm.RangeSlider), ("lifeExp", vm.RangeSlider)]
+    )
+    def test_determine_selectors(self, test_input, expected):
+        filter = vm.Filter(column=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, expected)
+        assert filter.selector.title == test_input.title()
+
+    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
+    def test_determine_slider_defaults_invalid_selector(self, test_input):
+        filter = vm.Filter(column="country", selector=test_input)
+        model_manager["test_page"].controls = [filter]
+        with pytest.raises(
+            ValueError, match=f"Chosen selector {test_input.type} is not compatible with column_type categorical."
+        ):
+            filter.pre_build()
+
+    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
+    def test_determine_slider_defaults_min_max_none(self, test_input, gapminder):
+        filter = vm.Filter(column="lifeExp", selector=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == gapminder.lifeExp.min()
+        assert filter.selector.max == gapminder.lifeExp.max()
+
+    @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
+    def test_determine_slider_defaults_min_max_fix(self, test_input):
+        filter = vm.Filter(column="lifeExp", selector=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == 3
+        assert filter.selector.max == 5
+
+    @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
+    def test_determine_selector_defaults_options_none(self, test_input, gapminder):
+        filter = vm.Filter(column="continent", selector=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.options == sorted(set(gapminder["continent"]))
+
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            vm.Checklist(options=["Africa", "Europe"]),
+            vm.Dropdown(options=["Africa", "Europe"]),
+            vm.RadioItems(options=["Africa", "Europe"]),
+        ],
+    )
+    def test_determine_selector_defaults_options_fix(self, test_input):
+        filter = vm.Filter(column="continent", selector=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.options == ["Africa", "Europe"]
+
+
+# TODO: split out pre_build method, and test only the units
+# TODO: write test for: "No numeric value detected in chosen column lifeExp for numerical selector.")
+# TODO: write tests for where there are columns shared, but the content is different
+
+
+@pytest.mark.usefixtures("managers_one_page_two_graphs")
+class TestFilterBuild:
+    """Tests filter build method."""
+
+    @pytest.mark.parametrize(
+        "test_column,test_selector",
+        [
+            ("continent", vm.Checklist()),
+            ("continent", vm.Dropdown()),
+            ("continent", vm.RadioItems()),
+            ("pop", vm.RangeSlider()),
+            ("pop", vm.Slider()),
+        ],
+    )
+    def test_filter_build(self, test_column, test_selector):
+        filter = vm.Filter(column=test_column, selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        result = str(filter.build())
+        expected = str(test_selector.build())
+        assert result == expected

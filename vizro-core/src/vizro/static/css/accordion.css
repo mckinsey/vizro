@@ -1,0 +1,131 @@
+/* media queries necessary for opening and closing accordion*/
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    transition: none;
+  }
+}
+
+.fade:not(.show) {
+  opacity: 0;
+}
+
+.collapse:not(.show) {
+  display: none;
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapsing {
+    transition: none;
+  }
+}
+
+.collapsing.collapse-horizontal {
+  width: 0;
+  height: auto;
+  transition: width 0.35s ease;
+}
+
+.accordion-button {
+  font-size: var(--text-size-02);
+  line-height: 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  overflow-anchor: none;
+  background-color: inherit;
+  letter-spacing: -0.014px;
+  padding: var(--spacing-04) var(--spacing-02);
+  padding-right: 2px;
+  color: var(--text-primary);
+}
+
+.accordion-button:not(.collapsed) {
+  color: var(--text-primary);
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-position: left;
+  transform: rotate(180deg);
+  float: left !important;
+  filter: var(--fill-accordion-button);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'><path fill-rule='evenodd' clip-rule='evenodd' d='M8.49845 9L7 10.5016L11.9984 15.5016L17 10.5016L15.4984 9L11.9984 12.5016L8.49845 9Z' fill='white' fill-opacity='0.6'/></svg>");
+}
+
+.accordion-button::after {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  content: "";
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'><path fill-rule='evenodd' clip-rule='evenodd' d='M8.49845 9L7 10.5016L11.9984 15.5016L17 10.5016L15.4984 9L11.9984 12.5016L8.49845 9Z' fill='white' fill-opacity='0.6'/></svg>");
+  background-repeat: no-repeat;
+  filter: var(--fill-accordion-button);
+  transition: transform 0.2s ease-in-out;
+  float: left !important;
+}
+
+.accordion-header {
+  font-size: var(--text-size-02);
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+
+.accordion_item {
+  display: flex;
+  flex-direction: column;
+  background-color: inherit;
+  width: 100%;
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+}
+
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: start;
+  gap: var(--spacing-01);
+}
+
+.accordion_button {
+  background-color: inherit;
+  width: 100%;
+  display: flex;
+  padding: var(--spacing-01) var(--spacing-03);
+  min-height: 32px;
+  align-items: center;
+  font-size: var(--text-size-02);
+  line-height: var(--text-size-03);
+}
+
+/*
+* Since the text inside a accordion btn is very specific
+* Adding important to increase the specificity
+*/
+.accordion_button a {
+  font-size: var(--text-size-02) !important;
+  line-height: var(--text-size-03) !important;
+  width: 100%;
+  align-items: flex-start;
+  display: flex;
+}
+
+.accordion_button:focus {
+  background-color: var(--state-overlays-active);
+}
+
+.accordion_button:hover {
+  background-color: var(--state-overlays-hover);
+}

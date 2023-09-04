@@ -1,0 +1,47 @@
+name: docs-vizro-core
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+on:
+  push:
+    # TODO: remove "dev/mono_repo_structure" and "fix/hatch_ci_and_docs" after test
+    branches:
+      - "main"
+      - "dev/mono_repo_structure"
+    #      - "fix/hatch_ci_and_docs"
+
+concurrency:
+  group: lint-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  run:
+    name: Python ${{ matrix.python-version }} on Linux
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: List dependencies
+        run: hatch run docs:pip freeze
+
+      - name: Deploy docs
+        run: hatch run docs:mkdocs gh-deploy --force
