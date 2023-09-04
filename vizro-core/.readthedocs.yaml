@@ -16,4 +16,4 @@ mkdocs:
 # Optionally declare the Python requirements required to build your docs
 python:
   install:
-  - requirements: vizro-core/docs/requirements.txt
+    - requirements: vizro-core/docs/requirements.txt
