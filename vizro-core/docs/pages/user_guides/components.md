@@ -259,6 +259,77 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
 
     [CardText]: ../../assets/user_guides/components/card_text.png
 
+### Placing images
+
+Images can be added to the `text` parameter by using the standard markdown syntax:
+
+`![Image ALT text](Image URL)`
+
+An image ALT text provides a description to your image and serves e.g. as a text placeholder or to improve the
+accessibility of your app. Providing an image ALT text is optional.
+
+1. To use a relative Image URL, place an image of your choice into your `assets` folder first
+2. Use markdown to render your image by using one of the following syntax:
+    - Relative Image URL: `![Image ALT text](/path/to/image.png)`
+    - Absolute Image URL: `![Image ALT text](https://XXXXXX)`
+
+!!! example "Card with image"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+                title="Placing Images",
+                components=[
+                    vm.Card(
+                        text="""
+                        ### My card with image!
+
+                        ![continent](assets/images/continents/africa.svg)
+
+                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                    """,
+                    ),
+                ],
+            )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+        - components:
+            - text: |
+                ![continent](assets/images/continents/africa.svg)
+
+                Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+              title: My card with image!
+              type: card
+          title: Placing Images
+        ```
+    === "Result"
+         [![CardImageDefault]][CardImageDefault]
+
+    [CardImageDefault]: ../../assets/user_guides/components/card_image_default.png
+
+!!! note
+
+    Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed
+    to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
+
+You might notice that the image is quite large, find out how to style images (e.g. position and size) in the next section!
 
 ### Styling images
 
@@ -273,8 +344,8 @@ and provide an attribute selector to select images with that matching URL hash.
     === "images.css"
     ```css
     img[src*="#my-image"] {
-      width:  80px;
-      height: 80px;
+      width: 120px;
+      height: 120px;
     }
     ```
     === "app.py"
@@ -289,7 +360,7 @@ and provide an attribute selector to select images with that matching URL hash.
                         text="""
                         ### My card with image!
 
-                        ![](assets/images/avatars/avatar1.png#my-image)
+                        ![](assets/images/continents/africa.svg#my-image)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -312,7 +383,7 @@ and provide an attribute selector to select images with that matching URL hash.
         pages:
         - components:
             - text: |
-                ![](assets/images/avatars/avatar1.png#my-image)
+                ![](assets/images/continents/africa.svg#my-image)
 
                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -349,7 +420,7 @@ and provide an attribute selector to select images with that matching URL hash.
                         text="""
                         ### My card with image!
 
-                        ![](assets/images/avatars/avatar1.png#floating-right)
+                        ![](assets/images/continents/africa.svg#my-image#floating-right)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -378,7 +449,7 @@ and provide an attribute selector to select images with that matching URL hash.
         pages:
         - components:
             - text: |
-                ![](assets/images/avatars/avatar1.png#floating-right)
+                ![](assets/images/continents/africa.svg#my-image#floating-right)
 
                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
