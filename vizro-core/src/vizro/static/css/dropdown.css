@@ -1,7 +1,3 @@
-div.page_container {
-  --tag-height: 24px;
-}
-
 /* Outer layout for dash dropdown */
 div.page_container .dash-dropdown {
   background-color: var(--field-enabled);
@@ -140,4 +136,8 @@ wrapper **/
   flex-wrap: wrap;
   gap: 4px;
   padding: 4px 8px;
+}
+
+.Select-input > input {
+  padding: 0;
 }
