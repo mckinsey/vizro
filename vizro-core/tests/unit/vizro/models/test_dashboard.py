@@ -10,8 +10,8 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro import Vizro
+from vizro.actions._action_loop._get_dashboard_actions_components import _get_dashboard_action_components
 from vizro.managers import model_manager
-from vizro.models._action._callback_utils import _get_actions_components
 from vizro.models._dashboard import create_layout_page_404, update_theme
 
 
@@ -19,7 +19,7 @@ from vizro.models._dashboard import create_layout_page_404, update_theme
 def dashboard_container():
     return dbc.Container(
         id="dashboard_container",
-        children=[*_get_actions_components(), dash.page_container],
+        children=[*_get_dashboard_action_components(), dash.page_container],
         className="vizro_dark",
         fluid=True,
     )

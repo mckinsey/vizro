@@ -1,0 +1,63 @@
+"""Contains utilities to create required components for the action loop."""
+from typing import List, Union
+
+from dash import dcc, html
+
+from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
+from vizro.managers import model_manager
+from vizro.models import Action, Page
+from vizro.models._action._actions_chain import ActionsChain
+
+
+def _get_action_callback_components(action: Action):
+    return [
+        dcc.Store(id={"type": "action_trigger", "action_name": action.id}),
+        *_get_action_callback_mapping(action_id=action.id, argument="components"),  # type: ignore[arg-type]
+    ]
+
+
+# TODO - Return only components for selected dashboard pages (not for all)
+def _get_dashboard_action_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
+    """Gets all required components for the action loop.
+
+    Returns:
+        List of dcc or html components.
+    """
+    actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
+    actions = [action for _, action in model_manager._items_with_type(Action)]
+
+    # Fundamental components required for the smooth operation of the loop mechanism.
+    components = [
+        dcc.Store(id="empty_input_store"),
+        dcc.Store(id="empty_output_store"),
+        dcc.Store(id="action_finished"),
+        dcc.Store(id="set_remaining"),
+        dcc.Store(id="remaining_actions"),
+        html.Div(id="cycle_breaker_div", style={"display": "hidden"}),
+        dcc.Store(id="cycle_breaker_empty_output_store"),
+    ]
+
+    # Additional component for every ActionChain in the system
+    components.extend(
+        [
+            dcc.Store(
+                id={"type": "gateway_input", "trigger_id": actions_chain.id},
+                data=f"{actions_chain.id}",
+            )
+            for actions_chain in actions_chains
+        ]
+    )
+
+    # Action specific components required for the action operation
+    components.extend(component for action in actions for component in _get_action_callback_components(action=action))
+
+    # Additional component for every page in the system
+    for page_id, page in model_manager._items_with_type(Page):
+        components.append(
+            dcc.Store(
+                id={"type": "gateway_input", "trigger_id": f"page-{page_id}"},
+                data=f"page-{page_id}",
+            )
+        )
+
+    return components

@@ -1,6 +1,6 @@
 import pytest
 
-from vizro.models._action._actions_utils import _create_target_arg_mapping, _update_nested_graph_properties
+from vizro.actions._actions_utils import _create_target_arg_mapping, _update_nested_graph_properties
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from dash import ctx
 
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
 from vizro.models.types import capture

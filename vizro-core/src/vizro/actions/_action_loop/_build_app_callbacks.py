@@ -1,0 +1,240 @@
+"""Contains utilities to create required dash callbacks for the action loop."""
+import json
+import logging
+from typing import Any, Dict, List, Optional
+
+from dash import Input, Output, State, callback, clientside_callback, ctx, dcc, no_update
+from dash.exceptions import PreventUpdate
+
+from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
+from vizro.actions import action_functions
+from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
+from vizro.managers import model_manager
+from vizro.models import Action
+from vizro.models._action._actions_chain import ActionsChain
+
+logger = logging.getLogger(__name__)
+
+
+def _make_action_callback(action: Action):
+    callback_inputs: Dict[str, Any] = {
+        **_get_action_callback_mapping(action_id=action.id, argument="inputs"),  # type: ignore[arg-type]
+        **{
+            f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
+            for input in action.inputs
+        },
+        "trigger": Input({"type": "action_trigger", "action_name": action.id}, "data"),
+    }
+
+    callback_outputs: Dict[str, Any] = {
+        **_get_action_callback_mapping(action_id=action.id, argument="outputs"),  # type: ignore[arg-type]
+        **{
+            f'{output.split(".")[0]}_{output.split(".")[1]}': Output(
+                output.split(".")[0], output.split(".")[1], allow_duplicate=True
+            )
+            for output in action.outputs
+        },
+        "action_finished": Output("action_finished", "data", allow_duplicate=True),
+    }
+    logger.debug(
+        f"Creating Callback mapping for Action ID {action.id} with "
+        f"function name: {action_functions[action.function._function]}"
+    )
+    logger.debug("---------- INPUTS ----------")
+    for name, object in callback_inputs.items():
+        logger.debug(f"--> {name}: {object}")
+    logger.debug("---------- OUTPUTS ---------")
+    for name, object in callback_outputs.items():
+        logger.debug(f"--> {name}: {object}")
+    logger.debug("============================")
+
+    @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
+    def callback_wrapper(trigger: None, **inputs: Dict[str, Any]):
+        logger.debug(f"Inputs to Action: {inputs}")
+        return_value = action.function(**inputs) or {}
+        if isinstance(return_value, dict):
+            return {"action_finished": None, **return_value}
+
+        if not isinstance(return_value, list) and not isinstance(return_value, tuple):
+            return_value = [return_value]
+        # Map returned values to dictionary format where None belongs to the "action_finished" output
+        return dict(zip(ctx.outputs_grouping.keys(), [None, *return_value]))
+
+
+# make callbacks that enable action loop mechanism to work
+# + one callback per action
+def _build_app_callbacks() -> None:
+    """Creates all required dash.callback for action loop."""
+    # TODO - Reduce the number of the callbacks in the action loop mechanism
+    actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
+    actions = [action for _, action in model_manager._items_with_type(Action)]
+
+    gateway_triggers: List[Input] = []
+    for actions_chain in actions_chains:
+
+        @callback(
+            Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
+            Input(
+                component_id=actions_chain.trigger.component_id,
+                component_property=actions_chain.trigger.component_property,
+            ),
+            State({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
+            prevent_initial_call=True,
+        )
+        def trigger_to_global_store(_, data):
+            return data
+
+        gateway_triggers.append(
+            Input(
+                component_id={"type": "gateway_input", "trigger_id": actions_chain.id},
+                component_property="data",
+            )
+        )
+
+    # TODO: don't create any components or callback if there's no actions configured
+    if not gateway_triggers:
+        gateway_triggers.append(Input("empty_input_store", "data"))
+
+    action_triggers = [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions]
+    if not action_triggers:
+        action_triggers.append(Output("empty_output_store", "data", allow_duplicate=True))
+
+    # gateway
+    @callback(
+        Output("set_remaining", "data"),
+        gateway_triggers,
+        prevent_initial_call=True,
+    )
+    def gateway(*gateway_triggers: List[dcc.Store]) -> List[Optional[str]]:
+        """Determines the final sequence of actions to be triggered.
+
+        Args:
+            gateway_triggers: Each 'gateway_trigger' (ctx.triggered_id) provides the 'id' (or trigger_id) from the
+                'actions_chain' that should be executed.
+
+
+        Returns:
+            List of final action sequence names which need to be triggered in order.
+
+
+        Raises:
+            PreventUpdate:
+                If screen with triggers is rendered but component isn't triggered.
+        """
+        # Fetch all triggered action chain ids
+        triggered_actions_chains_ids = [
+            json.loads(triggered["prop_id"].split(".")[0])["trigger_id"] for triggered in ctx.triggered
+        ]
+
+        # Trigger only the on_page_load action if exists.
+        # Otherwise, a single regular (non on_page_load) action is triggered
+        actions_chain_to_trigger = next(
+            (
+                actions_chain_id
+                for actions_chain_id in triggered_actions_chains_ids
+                if ON_PAGE_LOAD_ACTION_PREFIX in actions_chain_id
+            ),
+            triggered_actions_chains_ids[0],
+        )
+        logger.debug("=========== ACTION ===============")
+        logger.debug(f"Triggered component: {triggered_actions_chains_ids[0]}.")
+        final_action_sequence = [
+            {"Action ID": action.id, "Action name": action_functions[action.function._function]}
+            for action in model_manager[actions_chain_to_trigger].actions  # type: ignore[attr-defined]
+        ]
+        logger.debug(f"Actions to be executed as part of the triggered ActionsChain: {final_action_sequence}")
+        return [action_dict["Action ID"] for action_dict in final_action_sequence]
+
+    # update remaining actions
+    @callback(
+        Output("remaining_actions", "data"),
+        Input("cycle_breaker_div", "n_clicks"),
+        Input("set_remaining", "data"),
+        State("remaining_actions", "data"),
+        prevent_initial_call=True,
+    )
+    def update_remaining_actions(
+        action_finished: Optional[Dict[str, Any]],
+        set_remaining: List[str],
+        remaining_actions: List[str],
+    ) -> List[str]:
+        """Updates remaining action sequence that should be performed.
+
+        Args:
+            action_finished:
+                Input that signalise action callback has finished
+            set_remaining:
+                Input that pass action sequence set in 'gateway' callback
+            remaining_actions:
+                State represents remaining actions sequence
+        Returns:
+            Initial or diminished list of remaining actions needed to be triggered.
+        """
+        # propagate sequence of actions from gateway callback
+        triggered_id = ctx.triggered_id
+        if triggered_id == "set_remaining":
+            return set_remaining
+        # pop first action
+        if triggered_id == "cycle_breaker_div":
+            return remaining_actions[1:]
+        return []
+
+    # executor
+    @callback(
+        *action_triggers,
+        Input("remaining_actions", "data"),
+        prevent_initial_call=True,
+    )
+    def executor(remaining_actions: List[str]) -> List[Any]:
+        """Triggers callback of first action of remaining_actions list.
+
+        Args:
+            remaining_actions:
+                Action sequence needed to be triggered.
+
+
+        Returns:
+            List of dash.no_update objects for all outputs except for next action.
+
+
+        Raises:
+            PreventUpdate:
+                If there is no more remaining_actions needs to be triggered.
+        """
+        if not remaining_actions:
+            raise PreventUpdate
+
+        next_action = remaining_actions[0]
+        output_list = ctx.outputs_list if isinstance(ctx.outputs_list, list) else [ctx.outputs_list]
+
+        # return dash.no_update for all outputs except for next action
+        trigger_next = [no_update if output["id"]["action_name"] != next_action else None for output in output_list]
+        logger.debug(f"Starting execution of Action: {next_action}")
+        return trigger_next
+
+    # create action callbacks
+    for action in actions:
+        _make_action_callback(action=action)
+
+    # callback called after an action is finished
+    @callback(
+        Output("cycle_breaker_div", "children"),
+        Input("action_finished", "data"),
+        prevent_initial_call=True,
+    )
+    def after_action(*_) -> None:
+        """Triggers clientside callback responsible for starting a new iteration."""
+        logger.debug("Finished Action execution.")
+
+    # callback that triggers the next iteration
+    clientside_callback(
+        """
+        function(children) {
+            document.getElementById("cycle_breaker_div").click()
+            return children;
+        }
+        """,
+        Output("cycle_breaker_empty_output_store", "data"),
+        Input("cycle_breaker_div", "children"),
+        prevent_initial_call=True,
+    )

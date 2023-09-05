@@ -4,11 +4,11 @@ from typing import Any, Dict
 
 from dash import ctx
 
-from vizro.managers import data_manager, model_manager
-from vizro.managers._model_manager import ModelID
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 
 
