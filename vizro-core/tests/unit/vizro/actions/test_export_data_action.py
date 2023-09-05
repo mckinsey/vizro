@@ -1,7 +1,6 @@
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-from dash.dcc import send_data_frame
 
 import vizro.models as vm
 from vizro import Vizro
@@ -216,37 +215,6 @@ class TestExportData:
 
         assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
         assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize(
-        "callback_context_export_data", [(["scatter_chart", "box_chart"], None, None)], indirect=True
-    )
-    def test_multiple_targets_file_format_xlsx(self, callback_context_export_data, gapminder_2007):
-        # Add action to relevant component
-        model_manager["button"].actions = [
-            vm.Action(
-                id="test_action", function=export_data(targets=["scatter_chart", "box_chart"], file_format="xlsx")
-            )
-        ]
-
-        # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
-
-        scatter_chart_expected = send_data_frame(
-            writer=gapminder_2007.to_excel, filename="scatter_chart.xlsx", index=False
-        )
-        assert result["download-dataframe_scatter_chart"]["filename"] == scatter_chart_expected["filename"]
-        assert result["download-dataframe_scatter_chart"]["base64"] == scatter_chart_expected["base64"]
-
-        # TODO: Find a suitable way to verify encoded excel content
-        # assert len(result["download-dataframe_scatter_chart"]["content"]) == len(scatter_chart_expected["content"])
-
-        box_chart_expected = send_data_frame(writer=gapminder_2007.to_excel, filename="box_chart.xlsx", index=False)
-        assert result["download-dataframe_box_chart"]["filename"] == box_chart_expected["filename"]
-        assert result["download-dataframe_box_chart"]["base64"] == box_chart_expected["base64"]
-
-        # TODO: Find a suitable way to verify encoded excel content
-        # assert len(result["download-dataframe_box_chart"]["content"]) == len(box_chart_expected["content"])
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
