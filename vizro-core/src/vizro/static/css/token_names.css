@@ -76,4 +76,6 @@
   --primary-light-900: #d3d6d9;
   --tags-dark-mode-text-color: rgba(255, 255, 255, 0.6);
   --tags-light-mode-text-color: rgba(255, 255, 255, 0.6);
+  --overlays-on-light-ui-medium-contrast: rgba(239, 240, 248, 0.6);
+  --overlays-on-light-ui-high-contrast: rgba(239, 240, 248, 0.88);
 }
