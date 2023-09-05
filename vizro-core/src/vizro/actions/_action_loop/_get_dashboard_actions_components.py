@@ -17,7 +17,7 @@ def _get_action_callback_components(action: Action):
 
 
 # TODO - Return only components for selected dashboard pages (not for all)
-def _get_dashboard_action_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
+def _get_dashboard_actions_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
     """Gets all required components for the action loop.
 
     Returns:
@@ -50,14 +50,5 @@ def _get_dashboard_action_components() -> List[Union[dcc.Store, html.Div, dcc.Do
 
     # Action specific components required for the action operation
     components.extend(component for action in actions for component in _get_action_callback_components(action=action))
-
-    # Additional component for every page in the system
-    for page_id, page in model_manager._items_with_type(Page):
-        components.append(
-            dcc.Store(
-                id={"type": "gateway_input", "trigger_id": f"page-{page_id}"},
-                data=f"page-{page_id}",
-            )
-        )
 
     return components

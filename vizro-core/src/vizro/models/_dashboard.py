@@ -79,7 +79,7 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def build(self):
-        from vizro.actions._action_loop._get_dashboard_actions_components import _get_dashboard_action_components
+        from vizro.actions._action_loop._get_dashboard_actions_components import _get_dashboard_actions_components
 
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
@@ -93,7 +93,7 @@ class Dashboard(VizroBaseModel):
 
         return dbc.Container(
             id="dashboard_container",
-            children=[*_get_dashboard_action_components(), dash.page_container],
+            children=[*_get_dashboard_actions_components(), dash.page_container],
             className=self.theme,
             fluid=True,
         )
