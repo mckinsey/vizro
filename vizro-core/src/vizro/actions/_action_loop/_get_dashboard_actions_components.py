@@ -5,7 +5,7 @@ from dash import dcc, html
 
 from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 from vizro.managers import model_manager
-from vizro.models import Action, Page
+from vizro.models import Action
 from vizro.models._action._actions_chain import ActionsChain
 
 
