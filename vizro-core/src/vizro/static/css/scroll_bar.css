@@ -4,13 +4,26 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--fill-subtle);
-  border: 4px solid var(--field-enabled);
+  border: 4px solid;
+  border-color: var(--field-enabled);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--fill-medium-emphasis);
 }
 
-.inner_container::-webkit-scrollbar-thumb {
-  border: 4px solid var(--surfaces-bg-03);
+.left_side::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-02);
+}
+
+.card_container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
+}
+
+.nav_card_container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
+}
+
+.component_container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-03);
 }
