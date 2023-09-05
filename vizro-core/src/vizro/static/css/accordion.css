@@ -99,11 +99,11 @@
   gap: var(--spacing-01);
 }
 
-.accordion_button {
+div.page_container .accordion_button {
   background-color: inherit;
   width: 100%;
   display: flex;
-  padding: var(--spacing-01) var(--spacing-03);
+  padding: var(--spacing-02);
   min-height: 32px;
   align-items: center;
   font-size: var(--text-size-02);
@@ -122,10 +122,12 @@
   display: flex;
 }
 
-.accordion_button:focus {
-  background-color: var(--state-overlays-active);
+div.page_container .accordion_button:focus {
+  background-color: var(--background-selected);
+  color: var(--text-primary);
 }
 
-.accordion_button:hover {
-  background-color: var(--state-overlays-hover);
+div.page_container .accordion_button:hover {
+  background-color: var(--background-hover);
+  color: var(--text-primary);
 }
