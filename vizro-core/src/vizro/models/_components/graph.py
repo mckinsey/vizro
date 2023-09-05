@@ -9,7 +9,7 @@ import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _build_component_actions, _log_call
 from vizro.models.types import CapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -92,20 +92,23 @@ class Graph(VizroBaseModel):
     @_log_call
     def build(self):
         return dcc.Loading(
-            dcc.Graph(
-                id=self.id,
-                # We don't do self.__call__() until the Graph is actually built. This ensures that lazy data is not
-                # loaded until the graph is first shown on the screen. At the moment, we eagerly run page.build() for
-                # all pages in Dashboard.build in order to register all the callbacks in advance. In future this should
-                # no longer be the case so that we achieve true lazy loading.
-                figure=create_empty_fig("NO DATA"),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
-                className="chart_container",
-            ),
+            children=[
+                *_build_component_actions(self),
+                dcc.Graph(
+                    id=self.id,
+                    # We don't do self.__call__() until the Graph is actually built. This ensures that lazy data is not
+                    # loaded until the graph is first shown on the screen. At the moment, we eagerly run page.build()
+                    # for all pages in Dashboard.build in order to register all the callbacks in advance. In future this
+                    # should no longer be the case so that we achieve true lazy loading.
+                    figure=create_empty_fig("NO DATA"),
+                    config={
+                        "autosizable": True,
+                        "frameMargins": 0,
+                        "responsive": True,
+                    },
+                    className="chart_container",
+                ),
+            ],
             color="grey",
             parent_className="chart_container",
         )

@@ -14,7 +14,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Action, Dashboard, Graph, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._models_utils import _build_component_actions, _log_call, get_unique_grid_component_ids
 
 from .types import ComponentType, ControlType
 
@@ -236,6 +236,11 @@ class Page(VizroBaseModel):
 
         return dbc.Container(
             id=f"page_container_{self.id}",
-            children=[dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"), left_side, right_side],
+            children=[
+                *_build_component_actions(self),
+                dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
+                left_side,
+                right_side,
+            ],
             className="page_container",
         )

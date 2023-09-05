@@ -5,7 +5,7 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _build_component_actions, _log_call
 
 
 class Slider(VizroBaseModel):
@@ -70,6 +70,7 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             [
+                *_build_component_actions(self),
                 html.P(self.title, id="slider_title") if self.title else None,
                 html.Div(
                     [
