@@ -45,6 +45,10 @@ By default, the navigation comes as an accordion that has default title of 'SELE
             title: My first page
         - components:
         ```
+    === "Result"
+        [![Dashboard]][Dashboard]
+
+    [Dashboard]: ../../assets/user_guides/navigation/default_navigation.png
 
 ## Using custom navigation 
 
@@ -116,4 +120,9 @@ You can customize navigation of your dashboard by adding the [`Navigation`][hyph
              Second title:
                 - My second page
         ```
+    === "Result"
+        [![Dashboard]][Dashboard]
+
+    [Dashboard]: ../../assets/user_guides/navigation/custom_navigation.png
+
 After running the dashboard, you can access the dashboard via `localhost:8050`.
