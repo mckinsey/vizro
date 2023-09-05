@@ -16,4 +16,7 @@ mkdocs:
 # Optionally declare the Python requirements required to build your docs
 python:
   install:
+    # TODO: Once build process is out of beta for RTD, aim to implement custom build using hatch, removing requirement.txt
+    # See: https://docs.readthedocs.io/en/latest/build-customization.html#override-the-build-process
+    # See: https://github.com/readthedocs/readthedocs.org/issues/10706
     - requirements: vizro-core/docs/requirements.txt
