@@ -52,3 +52,28 @@ def two_pages():
 def dashboard(two_pages):
     dashboard = vm.Dashboard(pages=two_pages)
     return dashboard
+
+
+@pytest.fixture
+def standard_px_chart_with_str_dataframe():
+    return px.scatter(
+        data_frame="gapminder",
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        color="continent",
+        hover_name="country",
+        size_max=60,
+    )
+
+
+@pytest.fixture
+def expected_empty_chart():
+    figure = go.Figure()
+    figure.add_trace(go.Scatter(x=[None], y=[None], showlegend=False, hoverinfo="none"))
+    figure.update_layout(
+        xaxis={"visible": False},
+        yaxis={"visible": False},
+        annotations=[{"text": "NO DATA", "showarrow": False, "font": {"size": 16}}],
+    )
+    return figure

@@ -2,6 +2,8 @@ import plotly.graph_objects as go
 import pytest
 from pydantic import Field, ValidationError
 
+import vizro.plotly.express as px
+from vizro.charts._charts_utils import _DashboardReadyFigure
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
 
@@ -130,6 +132,19 @@ def decorated_graph_function(data_frame):
 
 
 @capture("graph")
+def decorated_graph_function_px(data_frame):
+    return px.scatter(
+        data_frame=data_frame,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        color="continent",
+        hover_name="country",
+        size_max=60,
+    )
+
+
+@capture("graph")
 def invalid_decorated_graph_function():
     return go.Figure()
 
@@ -148,12 +163,28 @@ class TestModelFieldPython:
         model = Model(function=decorated_graph_function(data_frame=None))
         assert model.function() == go.Figure()
 
+    def test_decorated_df_standard_case(self, gapminder):
+        fig = decorated_graph_function_px(gapminder)
+        assert len(fig.data) > 0
+        assert fig.__class__ == _DashboardReadyFigure
+
+    def test_decorated_df_str(self):
+        fig = decorated_graph_function_px("gapminder")
+        assert fig == _DashboardReadyFigure()
+        assert len(fig.data) == 0
+
     def test_decorated_graph_function_missing_data_frame(self):
-        with pytest.raises(ValueError, match="decorated_graph_function must supply a value to data_frame argument"):
+        with pytest.raises(
+            ValueError,
+            match="decorated_graph_function must supply a value to data_frame argument",
+        ):
             Model(function=decorated_graph_function())
 
     def test_invalid_decorated_graph_function(self):
-        with pytest.raises(ValueError, match="invalid_decorated_graph_function must have data_frame argument"):
+        with pytest.raises(
+            ValueError,
+            match="invalid_decorated_graph_function must have data_frame argument",
+        ):
             Model(function=invalid_decorated_graph_function())
 
     def test_undecorated_function(self):

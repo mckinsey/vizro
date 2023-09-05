@@ -2,7 +2,9 @@ import pytest
 
 import vizro.models as vm
 from vizro.managers import model_manager
+from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
+from vizro.models.types import CapturedCallable
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -77,6 +79,26 @@ class TestPreBuildMethod:
         parameter.pre_build()
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.title == title
+
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            (vm.Slider(min=0, max=1, value=0.8)),
+            (vm.RangeSlider(min=0, max=1, value=[0.2, 0.8])),
+            (vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"])),
+            (vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp")),
+            (vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], value="lifeExp")),
+        ],
+    )
+    def test_actions_generation_valid(self, test_input):
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+        default_action = parameter.selector.actions[0]
+        assert isinstance(default_action, ActionsChain)
+        assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
     def test_parameter_failed_with_missing_min_max(self, test_input):
