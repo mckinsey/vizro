@@ -6,7 +6,7 @@ from pydantic import Field, root_validator, validator
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default
-from vizro.models._models_utils import _build_component_actions, _log_call
+from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
@@ -85,7 +85,6 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             [
-                *_build_component_actions(self),
                 html.P(self.title, id="dropdown_title") if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
