@@ -9,7 +9,7 @@ from vizro.models._action._actions_chain import ActionsChain
 
 
 # TODO - Return only components for selected dashboard pages (not for all)
-def _get_dashboard_actions_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
+def _get_action_loop_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
     """Gets all required components for the action loop.
 
     Returns:
