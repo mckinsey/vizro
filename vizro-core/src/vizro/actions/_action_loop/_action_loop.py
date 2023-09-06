@@ -1,12 +1,12 @@
 """The action manager handles creation of all required actions callbacks."""
 
-from vizro.actions._action_manager._build_action_loop_callbacks import _build_action_loop_callbacks
-from vizro.actions._action_manager._get_action_loop_components import _get_action_loop_components
+from vizro.actions._action_loop._build_action_loop_callbacks import _build_action_loop_callbacks
+from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
 from vizro.managers import model_manager
 from vizro.models import Action
 
 
-class ActionManager:
+class ActionLoop:
     @classmethod
     def _create_app_callbacks(cls):
         """Builds callbacks for the action loop and for each Action in the Dashboard and returns their components.

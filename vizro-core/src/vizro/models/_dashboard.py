@@ -10,7 +10,7 @@ from dash import Input, Output, callback, html
 from pydantic import Field, validator
 
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
-from vizro.actions._action_manager._action_manager import ActionManager
+from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
@@ -92,7 +92,7 @@ class Dashboard(VizroBaseModel):
 
         return dbc.Container(
             id="dashboard_container",
-            children=[*ActionManager._create_app_callbacks(), dash.page_container],
+            children=[*ActionLoop._create_app_callbacks(), dash.page_container],
             className=self.theme,
             fluid=True,
         )
