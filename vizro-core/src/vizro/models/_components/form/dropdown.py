@@ -5,17 +5,9 @@ from pydantic import Field, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict
+from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
-
-
-def is_value_contained(value: Union[SingleValueType, MultiValueType], options: OptionsType):
-    """Checks if value is contained in a list."""
-    if isinstance(value, list):
-        return all(item in options for item in value)
-    else:
-        return value in options
 
 
 class Dropdown(VizroBaseModel):
@@ -39,25 +31,10 @@ class Dropdown(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title to be displayed")
     actions: List[Action] = []
 
-    # Validators
-    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
-    _validate_options_dict = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
-
-    @validator("value", always=True)
-    def validate_value(cls, value, values):
-        if "options" not in values or not values["options"]:
-            return value
-
-        possible_values = (
-            [entry["value"] for entry in values["options"]]
-            if isinstance(values["options"][0], dict)
-            else values["options"]
-        )
-
-        if value and not is_value_contained(value, possible_values):
-            raise ValueError("Please provide a valid value from `options`.")
-
-        return value
+    # Re-used validators
+    _set_actions = _action_validator_factory("value")
+    _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
+    _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
     @validator("multi", always=True)
     def validate_multi(cls, multi, values):

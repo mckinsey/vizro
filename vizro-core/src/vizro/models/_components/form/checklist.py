@@ -1,11 +1,11 @@
 from typing import List, Literal, Optional
 
 from dash import dcc, html
-from pydantic import Field, root_validator
+from pydantic import Field, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict
+from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType
 
@@ -27,9 +27,10 @@ class Checklist(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title to be displayed")
     actions: List[Action] = []
 
-    # Validators
-    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
-    _validate_options_dict = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
+    # Re-used validators
+    _set_actions = _action_validator_factory("value")
+    _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
+    _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
     @_log_call
     def build(self):
