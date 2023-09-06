@@ -17,3 +17,17 @@ def get_options_and_default(options: OptionsType, multi: bool = False):
         default_value = options[0]
 
     return options, default_value
+
+
+# Validators for re-use
+def validate_options_dict(cls, values):
+    """Reusable validator for "options" argument of categorical selectors."""
+    if "options" not in values or not isinstance(values["options"], list):
+        return values
+
+    for entry in values["options"]:
+        if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
+            raise ValueError(
+                "Invalid argument `options` passed into Selector. Expected a dict with keys `label` and `value`."
+            )
+    return values

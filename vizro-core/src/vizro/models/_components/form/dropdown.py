@@ -5,7 +5,7 @@ from pydantic import Field, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default
+from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
@@ -39,20 +39,9 @@ class Dropdown(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title to be displayed")
     actions: List[Action] = []
 
-    # validator
-    set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
-
-    @root_validator(pre=True)
-    def validate_options_dict(cls, values):
-        if "options" not in values or not isinstance(values["options"], list):
-            return values
-
-        for entry in values["options"]:
-            if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
-                raise ValueError(
-                    "Invalid argument `options` passed into Dropdown. Expected a dict with keys `label` and `value`."
-                )
-        return values
+    # Validators
+    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    _validate_options_dict = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
 
     @validator("value", always=True)
     def validate_value(cls, value, values):

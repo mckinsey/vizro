@@ -60,9 +60,9 @@ class TestDropdownInstantiation:
         assert dropdown.actions == []
 
     def test_create_dropdown_mandatory_and_optional(self):
-        dropdown = Dropdown(options=["A", "B", "C"], value="A", multi=False, title="Title")
+        dropdown = Dropdown(options=["A", "B", "C"], value="A", multi=False, title="Title", id="dropdown-id")
 
-        assert hasattr(dropdown, "id")
+        assert dropdown.id == "dropdown-id"
         assert dropdown.type == "dropdown"
         assert dropdown.options == ["A", "B", "C"]
         assert dropdown.value == "A"
@@ -111,7 +111,7 @@ class TestDropdownInstantiation:
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(
             ValidationError,
-            match="Invalid argument `options` passed into Dropdown. Expected a dict with keys `label` and `value`.",
+            match="Invalid argument `options` passed into Selector. Expected a dict with keys `label` and `value`.",
         ):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
