@@ -1,13 +1,13 @@
-# How to use navigation
-This guide shows you how to add custom navigation to your dashboard.
+# How to use the navigation panel
+This guide shows you how to use and customize the left navigation panel in your dashboard.
 
-A [`Navigation`][hyphen.models.Navigation] lets you arrange and group your pages. In many cases grouping the pages within the dashboard might be necessary. This can easily be achieved by providing `navigation` argument to your dashboard.
+A [`Navigation`][hyphen.models.Navigation] in your dashboard facilitates grouping and navigating through your pages.
 
 ## Using the default navigation
 
-By default, the navigation comes as an accordion that has default title of 'SELECT PAGE'. You don't have to configure anything for this type of navigation.
+By default, a navigation bar with an accordion item per page and a default title of 'SELECT PAGE' is added to your dashboard. To leverage the navigation bar, you do not need to configure anything on top.
 
-!!! example "Adding custom navigation"
+!!! example "Default navigation"
     === "app.py"
         ```py
         from vizro import Vizro
@@ -23,9 +23,7 @@ By default, the navigation comes as an accordion that has default title of 'SELE
             ],
         )
 
-        dashboard = vm.Dashboard(
-                        pages=[page_1],
-                    )
+        dashboard = vm.Dashboard(pages=[page_1])
 
         Vizro().build(dashboard).run()
         ```
@@ -50,17 +48,23 @@ By default, the navigation comes as an accordion that has default title of 'SELE
 
     [Dashboard]: ../../assets/user_guides/navigation/default_navigation.png
 
-## Using custom navigation
+## Customizing your navigation bar
 
-You can customize navigation of your dashboard by adding the [`Navigation`][hyphen.models.Navigation] model into the `navigation` argument of the [`Dashboard`][hyphen.models.Dashboard] model.
+If you want to deviate from the default title "SELECT PAGE" and instead provide a title for a group of selected pages, do the following steps:
 
-#### 1. Customising accordion title:
-[`Navigation`][hyphen.models.Navigation] requires only the `pages` argument, which denotes the grouping of pages in the Accordion. For more information about Accordion component, please refer to the official documentation [here](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/accordion/).
+1. Provide a dict mapping of the page group title and a list of page IDs to the `pages` argument of the [`Navigation`][hyphen.models.Navigation]
 
-- To group the pages under different sections, provide `pages` in a dictionary format, where each key will act as the section title of the accordion.
+`Navigation(pages={"First title": ["My first page"], "Second title": ["My second page"]})`
 
+2. Insert the `Navigation` into the `navigation` argument of the [`Dashboard`][hyphen.models.Dashboard]
 
-!!! example "Adding custom navigation"
+`Dashboard(
+       pages=[page_1, page_2],
+       navigation=Navigation(pages={"First title": ["My first page"], "Second title": ["My second page"]})
+)
+`
+
+!!! example "Customising the navigation panel"
     === "app.py"
         ```py
         from vizro import Vizro
