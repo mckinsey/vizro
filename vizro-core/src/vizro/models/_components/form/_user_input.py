@@ -29,8 +29,8 @@ class UserInput(VizroBaseModel):
     )
     actions: List[Action] = []
 
-    # validator
-    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    # Re-used validators
+    _set_actions = _action_validator_factory("value")
 
     @_log_call
     def build(self):
