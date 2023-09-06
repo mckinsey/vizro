@@ -25,5 +25,5 @@
 }
 
 .component_container::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-03);
+  border-color: var(--main-container-bg-color);
 }
