@@ -236,10 +236,6 @@ class Page(VizroBaseModel):
 
         return dbc.Container(
             id=f"page_container_{self.id}",
-            children=[
-                dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
-                left_side,
-                right_side,
-            ],
+            children=[dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"), left_side, right_side],
             className="page_container",
         )

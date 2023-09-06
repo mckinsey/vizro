@@ -95,9 +95,9 @@ class Graph(VizroBaseModel):
             dcc.Graph(
                 id=self.id,
                 # We don't do self.__call__() until the Graph is actually built. This ensures that lazy data is not
-                # loaded until the graph is first shown on the screen. At the moment, we eagerly run page.build()
-                # for all pages in Dashboard.build in order to register all the callbacks in advance. In future this
-                # should no longer be the case so that we achieve true lazy loading.
+                # loaded until the graph is first shown on the screen. At the moment, we eagerly run page.build() for
+                # all pages in Dashboard.build in order to register all the callbacks in advance. In future this should
+                # no longer be the case so that we achieve true lazy loading.
                 figure=create_empty_fig("NO DATA"),
                 config={
                     "autosizable": True,
