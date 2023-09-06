@@ -49,7 +49,7 @@ def _validate_pages(pages):
 
 
 class Navigation(VizroBaseModel):
-    """Navigation in [Dashboard][src.vizro.models.Dashboard] to structure [Pages][src.vizro.models.Page].
+    """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
     Args:
         pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
