@@ -21,7 +21,7 @@ parameters:
     default: "vizro-core"
   qa_repo_name:
     type: string
-    default: "vizx-qa"
+    default: "vizro-qa"
 
 commands:
   approve-job-in-triggering-pipeline:
