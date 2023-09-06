@@ -1,4 +1,5 @@
 # How to use the navigation panel
+
 This guide shows you how to use and customize the left navigation panel in your dashboard.
 
 A [`Navigation`][hyphen.models.Navigation] in your dashboard facilitates grouping and navigating through your pages.
