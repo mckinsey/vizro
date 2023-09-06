@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 # make callbacks that enable action loop mechanism to work
-def _build_app_callbacks() -> None:
+def _build_action_loop_callbacks() -> None:
     """Creates all required dash.callback for action loop."""
     # TODO - Reduce the number of the callbacks in the action loop mechanism
     actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]

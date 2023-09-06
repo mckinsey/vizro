@@ -24,16 +24,3 @@ def get_unique_grid_component_ids(grid: List[List[int]]):
     unique_grid_idx = np.unique(grid)
     unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
     return unique_grid_comp_idx
-
-
-def _build_component_actions(component):
-    return (
-        [
-            action_component
-            for actions_chain in component.actions
-            for action in actions_chain.actions
-            for action_component in action.build()
-        ]
-        if hasattr(component, "actions")
-        else []
-    )
