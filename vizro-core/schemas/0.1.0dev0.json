@@ -466,7 +466,6 @@
         },
         "value": {
           "title": "Value",
-          "description": "Option that is selected by default.",
           "anyOf": [
             {
               "type": "boolean"
