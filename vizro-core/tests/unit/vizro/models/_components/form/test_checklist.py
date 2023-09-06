@@ -133,7 +133,6 @@ class TestChecklistInstantiation:
             Checklist(value="A", options=["A", "B", "C"])
 
 
-
 class TestChecklistBuild:
     """Tests model build method."""
 
