@@ -8,13 +8,13 @@ from vizro.models import Action
 
 class ActionManager:
     @classmethod
-    def build(cls):
+    def _create_app_callbacks(cls):
         """Builds callbacks for the action loop and for each Action in the Dashboard and returns their components.
 
         Returns:
             All required components for the action loop and for each Action in the Dashboard.
         """
-        return cls._build_action_loop() + cls._build_action_models()
+        return cls._build_action_loop() + cls._build_actions_models()
 
     @staticmethod
     def _build_action_loop():
@@ -27,7 +27,7 @@ class ActionManager:
         return _get_action_loop_components()
 
     @staticmethod
-    def _build_action_models():
+    def _build_actions_models():
         """Builds a callback for each Action model in the Dashboard and gets all required components.
 
         Returns:

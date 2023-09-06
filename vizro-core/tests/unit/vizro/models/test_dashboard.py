@@ -19,7 +19,7 @@ from vizro.models._dashboard import create_layout_page_404, update_theme
 def dashboard_container():
     return dbc.Container(
         id="dashboard_container",
-        children=[*ActionManager.build(), dash.page_container],
+        children=[*ActionManager._create_app_callbacks(), dash.page_container],
         className="vizro_dark",
         fluid=True,
     )

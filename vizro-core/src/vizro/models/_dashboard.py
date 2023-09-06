@@ -92,7 +92,7 @@ class Dashboard(VizroBaseModel):
 
         return dbc.Container(
             id="dashboard_container",
-            children=[*ActionManager.build(), dash.page_container],
+            children=[*ActionManager._create_app_callbacks(), dash.page_container],
             className=self.theme,
             fluid=True,
         )
