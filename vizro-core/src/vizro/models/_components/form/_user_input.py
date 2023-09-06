@@ -30,7 +30,7 @@ class UserInput(VizroBaseModel):
     actions: List[Action] = []
 
     # validator
-    set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
 
     @_log_call
     def build(self):

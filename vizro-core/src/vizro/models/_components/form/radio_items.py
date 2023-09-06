@@ -29,7 +29,7 @@ class RadioItems(VizroBaseModel):
     actions: List[Action] = []
 
     # validator
-    set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    _set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
 
     # This should be put back if we expose multi at top level of Filter.
     # It will ensure there's an explicit error message  if someone calls with multi=True.

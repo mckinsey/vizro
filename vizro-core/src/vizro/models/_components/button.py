@@ -23,7 +23,7 @@ class Button(VizroBaseModel):
     actions: List[Action] = []
 
     # validator
-    set_actions = _action_validator_factory("n_clicks")  # type: ignore[pydantic-field]
+    _set_actions = _action_validator_factory("n_clicks")  # type: ignore[pydantic-field]
 
     @_log_call
     def build(self):

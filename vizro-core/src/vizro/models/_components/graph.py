@@ -41,7 +41,7 @@ class Graph(VizroBaseModel):
     actions: List[Action] = []
 
     # validator
-    set_actions = _action_validator_factory("clickData")  # type: ignore[pydantic-field]
+    _set_actions = _action_validator_factory("clickData")  # type: ignore[pydantic-field]
 
     @validator("figure")
     def process_figure_data_frame(cls, figure, values):
