@@ -56,17 +56,9 @@ class Slider(VizroBaseModel):
         ]
 
         @callback(output=output, inputs=input)
-        def update_slider_value(start, slider, input_store):
+        def update_slider_value_callback(start, slider, input_store):
             trigger_id = callback_context.triggered_id
-            if trigger_id == f"{self.id}_text_value":
-                text_value = start
-            elif trigger_id == f"{self.id}":
-                text_value = slider
-            else:
-                text_value = input_store or self.value or self.min
-            text_value = min(max(self.min, text_value), self.max)
-
-            return text_value, text_value, text_value
+            return self.update_slider_value(trigger_id, start, slider, input_store)
 
         return html.Div(
             [
@@ -101,3 +93,14 @@ class Slider(VizroBaseModel):
             ],
             className="selector_container",
         )
+
+    def update_slider_value(self, trigger_id, start, slider, input_store):
+        if trigger_id == f"{self.id}_text_value":
+            text_value = start
+        elif trigger_id == f"{self.id}":
+            text_value = slider
+        else:
+            text_value = input_store or self.value or self.min
+        text_value = min(max(self.min, text_value), self.max)
+
+        return text_value, text_value, text_value
