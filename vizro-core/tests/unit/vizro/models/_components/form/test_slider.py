@@ -36,7 +36,7 @@ class TestSliderInstantiation:
             (0, 10, None, {str(i): i for i in range(0, 10, 1)}, 5, ""),  # add marks
         ],
     )
-    def test_create_slider_with_optional(self, min, max, step, marks, value, title):
+    def test_create_slider_with_optional(self, min, max, step, marks, value, title):  # noqa
         slider = vm.Slider(min=min, max=max, step=step, marks=marks, value=value, title=title)
 
         assert slider.min == min
@@ -65,8 +65,9 @@ class TestBuildMethod:
         slider = vm.Slider(id="slider_id", title="Test title")
         component = slider.build()
 
-        expected_slider = dcc.Slider(included=False, className="slider_control_no_space",
-                                     id="slider_id", persistence=True)
+        expected_slider = dcc.Slider(
+            included=False, className="slider_control_no_space", id="slider_id", persistence=True
+        )
 
         result = json.loads(json.dumps(component["slider_id"], cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder))
@@ -85,10 +86,12 @@ class TestCallbackMethod:
             ("_text_value", 0, 1, 1, 0),  # set to minimum value
             ("_text_value", 12, 1, 1, 10),  # set outside of possible range
             ("_text_value", -1, 1, 1, 0),  # set outside of possible range
-            ("_text_value", 1, 8, 1, 1)  # triggerdID value is only used
+            ("_text_value", 1, 8, 1, 1),  # triggerdID value is only used
         ],
     )
-    def test_update_slider_value_triggered(self, trigger, start_value, slider_value, input_store_value, expected_value):
+    def test_update_slider_value_triggered(  # noqa
+        self, trigger, start_value, slider_value, input_store_value, expected_value
+    ):
         slider = vm.Slider(min=0, max=10, value=1)
         result = slider.update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)
 
@@ -100,7 +103,9 @@ class TestCallbackMethod:
             ("_text_value", 3, 1, 1, 0),  # set new value by start
         ],
     )
-    def test_update_slider_reversed(self, trigger, start_value, slider_value, input_store_value, expected_value):
+    def test_update_slider_reversed(  # noqa
+        self, trigger, start_value, slider_value, input_store_value, expected_value
+    ):
         slider = vm.Slider(min=10, max=0, value=1)
         result = slider.update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)
 
