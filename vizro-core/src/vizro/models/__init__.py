@@ -1,6 +1,6 @@
 # Keep this import at the top to avoid circular imports since it's used in every model.
 from ._base import VizroBaseModel  # noqa: I001
-from ._action._action import Action
+from ._action import Action
 from ._components import Card, Graph
 from ._components.form import Button, Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
