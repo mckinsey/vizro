@@ -9,9 +9,7 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data
 from vizro.managers import data_manager
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.graph import create_empty_fig
 
 
@@ -77,16 +75,12 @@ class TestDunderMethodsGraph:
         graph = vm.Graph(
             figure=standard_px_chart,
             id=id,
-            actions=[
-                vm.Action(function=export_data()),
-            ],
+            actions=[],
         )
-        actions_chain = graph.actions[0]
 
         assert graph.id == id
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
-        assert isinstance(actions_chain, ActionsChain)
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="field required"):

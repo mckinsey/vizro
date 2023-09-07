@@ -1,7 +1,7 @@
+import plotly.express as plotly_express
 import plotly.graph_objects as go
 import pytest
 from pydantic import Field, ValidationError
-import plotly.express as plotly_express
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 from vizro.models import VizroBaseModel
