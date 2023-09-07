@@ -21,6 +21,7 @@ def get_options_and_default(options: OptionsType, multi: bool = False):
     return options, default_value
 
 
+# Utils for validators
 def is_value_contained(value: Union[SingleValueType, MultiValueType], options: OptionsType):
     """Checks if value is contained in a list."""
     if isinstance(value, list):
@@ -37,9 +38,7 @@ def validate_options_dict(cls, values):
 
     for entry in values["options"]:
         if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
-            raise ValueError(
-                "Invalid argument `options` passed into Selector. Expected a dict with keys `label` and `value`."
-            )
+            raise ValueError("Invalid argument `options` passed. Expected a dict with keys `label` and `value`.")
     return values
 
 

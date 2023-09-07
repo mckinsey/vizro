@@ -81,30 +81,30 @@ class TestChecklistInstantiation:
         assert checklist.title is None
         assert checklist.actions == []
 
-    @pytest.mark.parametrize("options", [1, "A", True, 1.0])
-    def test_create_checklist_invalid_options_type(self, options):
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
+    def test_create_checklist_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="value is not a valid list"):
-            Checklist(options=options)
+            Checklist(options=test_options)
 
     def test_create_checklist_invalid_options_dict(self):
         with pytest.raises(
             ValidationError,
-            match="Invalid argument `options` passed into Selector. Expected a dict with keys `label` and `value`.",
+            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
         ):
             Checklist(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
-        "options, test_value",
+        "test_value, options",
         [
-            (["A", "B", "C"], ["A"]),
-            ([1, 2, 3], [1, 2]),
-            ([1.0, 2.0, 3.0], [1.0, 2.0]),
-            ([True, False], [False, True]),
-            ([{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], ["A", "B"]),
-            ([True, 2.0, 1.0, "A", "B"], ["True", "A"]),
+            (["A"], ["A", "B", "C"]),
+            ([1, 2], [1, 2, 3]),
+            ([1.0, 2.0], [1.0, 2.0, 3.0]),
+            ([False, True], [True, False]),
+            (["A", "B"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
+            (["True", "A"], [True, 2.0, 1.0, "A", "B"]),
         ],
     )
-    def test_create_checklist_valid_value(self, options, test_value):
+    def test_create_checklist_valid_value(self, test_value, options):
         checklist = Checklist(options=options, value=test_value)
 
         assert hasattr(checklist, "id")
