@@ -57,8 +57,8 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
 
 ```
 Navigation(pages={
-    "First title": ["My first page"], 
-    "Second title": ["My second page"]}) 
+    "First title": ["My first page"],
+    "Second title": ["My second page"]})
 ```
 
 2. Insert the [Navigation][vizro.models.Navigation] model into the `navigation` argument of the [Dashboard][vizro.models.Dashboard] model
@@ -69,7 +69,7 @@ Dashboard(
     navigation=Navigation(pages={
         "First title": ["My first page"],
         "Second title": ["My second page"]})
-) 
+)
 ```
 
 !!! example "Customising the navigation panel"
