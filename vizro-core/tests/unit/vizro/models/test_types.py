@@ -159,6 +159,12 @@ class TestModelFieldPython:
         model = Model(function=decorated_graph_function(data_frame=None))
         assert model.function() == go.Figure()
 
+    def test_undecorated_function(self):
+        with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
+            Model(function=undecorated_function(1, 2, 3))
+
+
+class TestCapture:
     def test_decorated_df_standard_case(self, gapminder):
         fig = decorated_graph_function_px(gapminder)
         assert len(fig.data) > 0
@@ -174,18 +180,14 @@ class TestModelFieldPython:
             ValueError,
             match="decorated_graph_function must supply a value to data_frame argument",
         ):
-            Model(function=decorated_graph_function())
+            decorated_graph_function()
 
     def test_invalid_decorated_graph_function(self):
         with pytest.raises(
             ValueError,
             match="invalid_decorated_graph_function must have data_frame argument",
         ):
-            Model(function=invalid_decorated_graph_function())
-
-    def test_undecorated_function(self):
-        with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
-            Model(function=undecorated_function(1, 2, 3))
+            invalid_decorated_graph_function()
 
 
 class TestModelFieldJSONConfig:
