@@ -28,12 +28,9 @@ class RadioItems(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title to be displayed")
     actions: List[Action] = []
 
-    # validator
-    set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    # Re-used validators
+    _set_actions = _action_validator_factory("value")
 
-    # This should be put back if we expose multi at top level of Filter.
-    # It will ensure there's an explicit error message  if someone calls with multi=True.
-    # multi: Literal[False] = False
     @_log_call
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=False)

@@ -40,8 +40,8 @@ class Graph(VizroBaseModel):
     figure: CapturedCallable = Field(..., import_path=px)
     actions: List[Action] = []
 
-    # validator
-    set_actions = _action_validator_factory("clickData")  # type: ignore[pydantic-field]
+    # Re-used validators
+    _set_actions = _action_validator_factory("clickData")
 
     @validator("figure")
     def process_figure_data_frame(cls, figure, values):

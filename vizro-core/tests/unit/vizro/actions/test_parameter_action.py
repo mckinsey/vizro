@@ -5,10 +5,10 @@ from dash._utils import AttributeDict
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.managers import model_manager
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     CallbackTriggerDict,
 )
+from vizro.managers import model_manager
 
 
 @pytest.fixture
