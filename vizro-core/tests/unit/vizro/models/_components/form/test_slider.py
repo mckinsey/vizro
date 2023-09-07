@@ -77,6 +77,11 @@ class TestBuildMethod:
         component = slider.build()
 
         expected_slider = dcc.Slider(
+            min=None,
+            max=None,
+            step=None,
+            marks=None,
+            value=None,
             included=False,
             className="slider_control_no_space",
             id="slider_id",
