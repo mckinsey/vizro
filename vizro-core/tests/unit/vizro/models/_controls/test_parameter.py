@@ -86,7 +86,7 @@ class TestPreBuildMethod:
             (vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], value="lifeExp")),
         ],
     )
-    def test_set_actions_valid(self, test_input):
+    def test_set_actions(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -97,7 +97,7 @@ class TestPreBuildMethod:
         assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_parameter_failed_with_missing_min_max(self, test_input):
+    def test_set_slider_values_invalid(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -107,7 +107,7 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_parameter_failed_with_missing_options(self, test_input):
+    def test_set_categorical_selectors_with_missing_options(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
