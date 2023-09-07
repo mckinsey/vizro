@@ -8,7 +8,6 @@ from dash.exceptions import PreventUpdate
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import action_functions
-from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 from vizro.managers import model_manager
 from vizro.models import Action
 from vizro.models._action._actions_chain import ActionsChain
@@ -16,54 +15,8 @@ from vizro.models._action._actions_chain import ActionsChain
 logger = logging.getLogger(__name__)
 
 
-def _make_action_callback(action: Action):
-    callback_inputs: Dict[str, Any] = {
-        **_get_action_callback_mapping(action_id=action.id, argument="inputs"),  # type: ignore[arg-type]
-        **{
-            f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
-            for input in action.inputs
-        },
-        "trigger": Input({"type": "action_trigger", "action_name": action.id}, "data"),
-    }
-
-    callback_outputs: Dict[str, Any] = {
-        **_get_action_callback_mapping(action_id=action.id, argument="outputs"),  # type: ignore[arg-type]
-        **{
-            f'{output.split(".")[0]}_{output.split(".")[1]}': Output(
-                output.split(".")[0], output.split(".")[1], allow_duplicate=True
-            )
-            for output in action.outputs
-        },
-        "action_finished": Output("action_finished", "data", allow_duplicate=True),
-    }
-    logger.debug(
-        f"Creating Callback mapping for Action ID {action.id} with "
-        f"function name: {action_functions[action.function._function]}"
-    )
-    logger.debug("---------- INPUTS ----------")
-    for name, object in callback_inputs.items():
-        logger.debug(f"--> {name}: {object}")
-    logger.debug("---------- OUTPUTS ---------")
-    for name, object in callback_outputs.items():
-        logger.debug(f"--> {name}: {object}")
-    logger.debug("============================")
-
-    @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-    def callback_wrapper(trigger: None, **inputs: Dict[str, Any]):
-        logger.debug(f"Inputs to Action: {inputs}")
-        return_value = action.function(**inputs) or {}
-        if isinstance(return_value, dict):
-            return {"action_finished": None, **return_value}
-
-        if not isinstance(return_value, list) and not isinstance(return_value, tuple):
-            return_value = [return_value]
-        # Map returned values to dictionary format where None belongs to the "action_finished" output
-        return dict(zip(ctx.outputs_grouping.keys(), [None, *return_value]))
-
-
 # make callbacks that enable action loop mechanism to work
-# + one callback per action
-def _build_app_callbacks() -> None:
+def _build_action_loop_callbacks() -> None:
     """Creates all required dash.callback for action loop."""
     # TODO - Reduce the number of the callbacks in the action loop mechanism
     actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
@@ -71,7 +24,7 @@ def _build_app_callbacks() -> None:
 
     gateway_triggers: List[Input] = []
     for actions_chain in actions_chains:
-
+        # TODO: Seems like a good candidate for clientside callback
         @callback(
             Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
             Input(
@@ -211,10 +164,6 @@ def _build_app_callbacks() -> None:
         trigger_next = [no_update if output["id"]["action_name"] != next_action else None for output in output_list]
         logger.debug(f"Starting execution of Action: {next_action}")
         return trigger_next
-
-    # create action callbacks
-    for action in actions:
-        _make_action_callback(action=action)
 
     # callback called after an action is finished
     @callback(

@@ -3,21 +3,13 @@ from typing import List, Union
 
 from dash import dcc, html
 
-from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 from vizro.managers import model_manager
 from vizro.models import Action
 from vizro.models._action._actions_chain import ActionsChain
 
 
-def _get_action_callback_components(action: Action):
-    return [
-        dcc.Store(id={"type": "action_trigger", "action_name": action.id}),
-        *_get_action_callback_mapping(action_id=action.id, argument="components"),  # type: ignore[arg-type]
-    ]
-
-
 # TODO - Return only components for selected dashboard pages (not for all)
-def _get_dashboard_actions_components() -> List[Union[dcc.Store, html.Div, dcc.Download]]:
+def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     """Gets all required components for the action loop.
 
     Returns:
@@ -48,7 +40,7 @@ def _get_dashboard_actions_components() -> List[Union[dcc.Store, html.Div, dcc.D
         ]
     )
 
-    # Action specific components required for the action operation
-    components.extend(component for action in actions for component in _get_action_callback_components(action=action))
+    # Additional component for every Action in the system
+    components.extend([dcc.Store(id={"type": "action_trigger", "action_name": action.id}) for action in actions])
 
     return components
