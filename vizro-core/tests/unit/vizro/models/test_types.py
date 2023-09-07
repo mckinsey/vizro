@@ -1,8 +1,8 @@
 import plotly.graph_objects as go
 import pytest
 from pydantic import Field, ValidationError
+import plotly.express as plotly_express
 
-import vizro.plotly.express as px
 from vizro.charts._charts_utils import _DashboardReadyFigure
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
@@ -131,15 +131,12 @@ def decorated_graph_function(data_frame):
     return go.Figure()
 
 
+@capture("graph")
 def decorated_graph_function_px(data_frame):
-    return px.scatter(
+    return plotly_express.scatter(
         data_frame=data_frame,
         x="gdpPercap",
         y="lifeExp",
-        size="pop",
-        color="continent",
-        hover_name="country",
-        size_max=60,
     )
 
 

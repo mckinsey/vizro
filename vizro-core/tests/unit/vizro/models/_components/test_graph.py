@@ -63,7 +63,7 @@ def expected_graph():
     )
 
 
-class TestGraphInstantiation:
+class TestDunderMethodsGraph:
     def test_create_graph_mandatory_only(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart)
 
@@ -98,6 +98,17 @@ class TestGraphInstantiation:
                 figure=standard_go_chart,
             )
 
+    def test_getitem_known_args(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart)
+
+        assert graph["x"] == "gdpPercap"
+        assert graph["type"] == "graph"
+
+    def test_getitem_unknown_args(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart)
+        with pytest.raises(KeyError):
+            graph["unknown_args"]
+
     @pytest.mark.parametrize("title, expected", [(None, 24), ("Test", None)])
     def test_title_margin_adjustment(self, gapminder, title, expected):
         figure = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
@@ -127,19 +138,6 @@ class TestProcessFigureDataFrame:
         assert data_manager._get_component_data("text_graph").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
             graph_with_df.figure["data_frame"]
-
-
-class TestGetitem:
-    def test_getitem_known_args(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart)
-
-        assert graph["x"] == "gdpPercap"
-        assert graph["type"] == "graph"
-
-    def test_getitem_unknown_args(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart)
-        with pytest.raises(KeyError):
-            graph["unknown_args"]
 
 
 class TestBuild:
