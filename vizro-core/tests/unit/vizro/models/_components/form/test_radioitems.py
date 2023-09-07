@@ -81,30 +81,30 @@ class TestRadioItemsInstantiation:
         assert radio_items.title is None
         assert radio_items.actions == []
 
-    @pytest.mark.parametrize("options", [1, "A", True, 1.0])
-    def test_create_radio_items_invalid_options_type(self, options):
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
+    def test_create_radio_items_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="value is not a valid list"):
-            RadioItems(options=options)
+            RadioItems(options=test_options)
 
     def test_create_radio_items_invalid_options_dict(self):
         with pytest.raises(
             ValidationError,
-            match="Invalid argument `options` passed into Selector. Expected a dict with keys `label` and `value`.",
+            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
         ):
             RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
-        "options, test_value",
+        "test_value, options",
         [
-            (["A", "B", "C"], "A"),
-            ([1, 2, 3], 1),
-            ([1.0, 2.0, 3.0], 2.0),
-            ([True, False], True),
-            ([{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], "B"),
-            ([True, 2.0, 1.0, "A", "B"], "True"),
+            ("A", ["A", "B", "C"]),
+            (1, [1, 2, 3]),
+            (2.0, [1.0, 2.0, 3.0]),
+            (True, [True, False]),
+            ("B", [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
+            ("True", [True, 2.0, 1.0, "A", "B"]),
         ],
     )
-    def test_create_radio_items_valid_value(self, options, test_value):
+    def test_create_radio_items_valid_value(self, test_value, options):
         radio_items = RadioItems(options=options, value=test_value)
 
         assert hasattr(radio_items, "id")
