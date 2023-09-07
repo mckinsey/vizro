@@ -30,7 +30,8 @@ By default, a navigation panel with an accordion item per page and a default tit
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see from_yaml example
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
         pages:
           - components:
               - figure:
@@ -55,22 +56,22 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
 
 1. Provide a `dict` mapping of the page group title and a list of page IDs to the `pages` argument of the [`Navigation`][vizro.models.Navigation] model
 
-```
-Navigation(pages={
-    "First title": ["My first page"],
-    "Second title": ["My second page"]})
-```
+    ```
+    Navigation(pages={
+        "First title": ["My first page"],
+        "Second title": ["My second page"]})
+    ```
 
 2. Insert the [Navigation][vizro.models.Navigation] model into the `navigation` argument of the [Dashboard][vizro.models.Dashboard] model
 
-```
-Dashboard(
-    pages=[page_1, page_2],
-    navigation=Navigation(pages={
-        "First title": ["My first page"],
-        "Second title": ["My second page"]})
-)
-```
+    ```
+    Dashboard(
+        pages=[page_1, page_2],
+        navigation=Navigation(pages={
+            "First title": ["My first page"],
+            "Second title": ["My second page"]})
+    )
+    ```
 
 !!! example "Customising the navigation panel"
     === "app.py"
@@ -101,9 +102,11 @@ Dashboard(
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see from_yaml example
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
         pages:
           - components:
               - figure:
