@@ -2,11 +2,11 @@
 
 This guide shows you how to use and customize the left navigation panel in your dashboard.
 
-A [`Navigation`][hyphen.models.Navigation] in your dashboard facilitates grouping and navigating through your pages.
+The [`Dashboard`][vizro.models.Dashboard] model also accepts a `navigation` argument, where you can enter the [`Navigation`][vizro.models.Navigation] model. A [`Navigation`][vizro.models.Navigation] in your dashboard facilitates grouping and navigating through your pages.
 
 ## Using the default navigation
 
-By default, a navigation bar with an accordion item per page and a default title of 'SELECT PAGE' is added to your dashboard. To leverage the navigation bar, you do not need to configure anything on top.
+By default, a navigation panel with an accordion item per page and a default title of `SELECT PAGE` is added to your dashboard. To leverage the navigation bar, you do not need to configure anything on top.
 
 !!! example "Default navigation"
     === "app.py"
@@ -49,21 +49,28 @@ By default, a navigation bar with an accordion item per page and a default title
 
     [Dashboard]: ../../assets/user_guides/navigation/default_navigation.png
 
-## Customizing your navigation bar
+## Customizing your navigation panel
 
-If you want to deviate from the default title "SELECT PAGE" and instead provide a title for a group of selected pages, do the following steps:
+If you want to deviate from the default title `SELECT PAGE` and instead provide a title for a group of selected pages, do the following steps:
 
-1. Provide a dict mapping of the page group title and a list of page IDs to the `pages` argument of the [`Navigation`][hyphen.models.Navigation]
+1. Provide a `dict` mapping of the page group title and a list of page IDs to the `pages` argument of the [`Navigation`][vizro.models.Navigation] model
 
-`Navigation(pages={"First title": ["My first page"], "Second title": ["My second page"]})`
+```
+Navigation(pages={
+    "First title": ["My first page"], 
+    "Second title": ["My second page"]}) 
+```
 
-2. Insert the `Navigation` into the `navigation` argument of the [`Dashboard`][hyphen.models.Dashboard]
+2. Insert the [Navigation][vizro.models.Navigation] model into the `navigation` argument of the [Dashboard][vizro.models.Dashboard] model
 
-`Dashboard(
-       pages=[page_1, page_2],
-       navigation=Navigation(pages={"First title": ["My first page"], "Second title": ["My second page"]})
-)
-`
+```
+Dashboard(
+    pages=[page_1, page_2],
+    navigation=Navigation(pages={
+        "First title": ["My first page"],
+        "Second title": ["My second page"]})
+) 
+```
 
 !!! example "Customising the navigation panel"
     === "app.py"
@@ -129,5 +136,3 @@ If you want to deviate from the default title "SELECT PAGE" and instead provide 
         [![Dashboard]][Dashboard]
 
     [Dashboard]: ../../assets/user_guides/navigation/custom_navigation.png
-
-After running the dashboard, you can access the dashboard via `localhost:8050`.
