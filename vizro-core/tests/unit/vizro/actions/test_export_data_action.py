@@ -5,10 +5,10 @@ from dash._utils import AttributeDict
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.managers import model_manager
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     CallbackTriggerDict,
 )
+from vizro.managers import model_manager
 
 
 @pytest.fixture
