@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List
 import pandas as pd
 from dash import ctx
 
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
 from vizro.models.types import capture
