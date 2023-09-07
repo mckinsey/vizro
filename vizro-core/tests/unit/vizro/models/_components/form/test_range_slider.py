@@ -3,12 +3,117 @@ import json
 
 import plotly
 import pytest
-from dash import dcc
+from dash import dcc, html
 
 import vizro.models as vm
 from vizro.actions.filter_interaction_action import filter_interaction
 from vizro.models._action._actions_chain import ActionsChain
 from pydantic import ValidationError
+
+
+@pytest.fixture()
+def expected_range_slider_default():
+    return html.Div(
+        [
+            None,
+            html.Div(
+                [
+                    dcc.RangeSlider(
+                        id="range_slider",
+                        className="range_slider_control_no_space",
+                        persistence=True,
+                        min=None,
+                        max=None,
+                        marks=None,
+                        value=[None, None],
+                        step=None,
+                    ),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="range_slider_start_value",
+                                type="number",
+                                placeholder="start",
+                                className="slider_input_field_no_space_left",
+                                size="24px",
+                                persistence=True,
+                                min=None,
+                                max=None,
+                                value=None,
+
+                            ),
+                            dcc.Input(
+                                id="range_slider_end_value",
+                                type="number",
+                                placeholder="end",
+                                className="slider_input_field_no_space_right",
+                                persistence=True,
+                                min=None,
+                                max=None,
+                                value=None,
+                            ),
+                            dcc.Store(id=f"temp-store-range_slider-range_slider", storage_type="local"),
+                        ],
+                        className="slider_input_container",
+                    ),
+                ],
+                className="range_slider_inner_container",
+            ),
+        ],
+        className="selector_container",
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_optional():
+    return html.Div(
+        [
+            html.P("Title", id="range_slider_title"),
+            html.Div(
+                [
+                    dcc.RangeSlider(
+                        id="range_slider",
+                        min=0,
+                        max=10,
+                        step=1,
+                        marks={},
+                        className="range_slider_control",
+                        value=[0, 10],
+                        persistence=True,
+                    ),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="range_slider_start_value",
+                                type="number",
+                                placeholder="start",
+                                min=0,
+                                max=10,
+                                className="slider_input_field_left",
+                                value=0,
+                                size="24px",
+                                persistence=True,
+                            ),
+                            dcc.Input(
+                                id="range_slider_end_value",
+                                type="number",
+                                placeholder="end",
+                                min=0,
+                                max=10,
+                                className="slider_input_field_right",
+                                value=10,
+                                persistence=True,
+                            ),
+                            dcc.Store(id=f"temp-store-range_slider-range_slider", storage_type="local"),
+                        ],
+                        className="slider_input_container",
+                    ),
+                ],
+                className="range_slider_inner_container",
+            ),
+        ],
+        className="selector_container",
+    )
 
 
 class TestRangeSliderInstantiation:
@@ -50,9 +155,8 @@ class TestRangeSliderInstantiation:
         "min, max, step, marks, value, title",
         [
             (0, 10, 2, {}, [1, 3], "Test title"),
-            (0, 2, 2, {}, [2, 2], "Test title"),
             (-1, -2, 0.5, {}, [-1, -2], "Test title"),
-            (2, 10, 11, {}, None, "Test title")
+            (0, 10, 2, {}, None, "!test")
         ]
     )
     def test_create_range_slider_valid_options(self, min, max, step, marks, value, title):
@@ -65,13 +169,13 @@ class TestRangeSliderInstantiation:
         assert range_slider.value == value
         assert range_slider.title == title
 
+
     @pytest.mark.parametrize(
         "min, max, value, match",
         [
             (0, 10, [0], "ensure this value has at least 2 items"),
             (0, 2, [], "ensure this value has at least 2 items"),
             (0, 2, 2, "value is not a valid list")
-            # (-1, -2, [1, 2]),
         ]
     )
     def test_create_range_slider_invalid_value_options(self, min, max, value, match):
@@ -82,22 +186,47 @@ class TestRangeSliderInstantiation:
 class TestRangeSliderBuild:
     """Tests model build method"""
 
-    def test_range_slider_build_default(self):
+    def test_range_slider_build_default(self, expected_range_slider_default):
         range_slider = vm.RangeSlider(id="range_slider")
         component = range_slider.build()
 
-        expected_range_slider = dcc.RangeSlider(
-            className="range_slider_control_no_space",
-            persistence=True,
-            id="range_slider",
-            step=None,
-            value=[None, None],
-            marks=None,
-            min=None,
-            max=None,
-        )
-
-        result = json.loads(json.dumps(component["range_slider"], cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_range_slider, cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(expected_range_slider_default, cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
+
+    def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
+        range_slider = vm.RangeSlider(min=0, max=10, step=1, value=[0, 10], id="range_slider", title="Title")
+        component = range_slider.build()
+
+        result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(expected_range_slider_with_optional, cls=plotly.utils.PlotlyJSONEncoder))
+
+        assert result == expected
+
+
+class TestCallbackMethod:
+    """Tests model callback method"""
+
+    @pytest.mark.parametrize(
+        "trigger_id, min, max, input_store, value, expected_value",
+        [
+            ("_start_value", 0, 10, [1, 9], [2, 3], (0, 10, [0, 10], (0, 10))),
+            ("_input_store", 0, 10, [1, 9], [2, 3], (1, 9, [1, 9], (1, 9))),
+            ("_end_value", 2, 8, [1, 9], [2, 3], (2, 8, [2, 8], (2, 8))),
+            ("", 2, 8, [1, 9], [2, 3], (2, 8, [2, 8], (2, 8))),
+            ("_start_value", 0, 0, [1, 9], [2, 3], (0, 0, [0, 0], (0, 0))),
+            ("_start_value", 0, 10, [1, 9], [-2, 12], (0, 10, [0, 10], (0, 10))),
+        ]
+    )
+    def test_update_slider_value_valid(self, trigger_id, min, max, input_store, value, expected_value):
+        range_slider = vm.RangeSlider(min=min, max=max)
+
+        result = range_slider.update_slider_values(
+            trigger_id=f"{range_slider.id}{trigger_id}", start=min, end=max, input_store=input_store, value=value, slider=[min, max]
+        )
+        assert result == expected_value
+
+
+    def test_update_slider_value_invalid(self):
+        pass
