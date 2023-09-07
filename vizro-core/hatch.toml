@@ -37,7 +37,20 @@ cov-report = [
 ]
 example = "cd examples/{args:default}; python app.py"
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+prep-release = [
+  "hatch version release",
+  "hatch run docs:scriv collect",
+  "echo 'Raise a PR to prepare main for release'"
+]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+release = [
+  "git tag -a v`hatch version` -m 'Release version'",
+  "git push origin v`hatch version`",
+  "hatch build",
+  "hatch publish {args}",
+  "hatch version patch,dev",
+  "echo 'Raise a PR to bump to the new development version'"
+]
 schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
@@ -66,6 +79,9 @@ detached = true
 [envs.docs.scripts]
 changelog = "scriv create"
 serve = "mkdocs serve"
+
+[publish.index]
+disable = true
 
 [version]
 path = "src/vizro/__init__.py"
