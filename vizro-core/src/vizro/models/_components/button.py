@@ -22,8 +22,8 @@ class Button(VizroBaseModel):
     text: str = Field("Click me!", description="Text to be displayed on button.")
     actions: List[Action] = []
 
-    # validator
-    set_actions = _action_validator_factory("n_clicks")  # type: ignore[pydantic-field]
+    # Re-used validators
+    _set_actions = _action_validator_factory("n_clicks")
 
     @_log_call
     def build(self):

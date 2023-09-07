@@ -1,9 +1,15 @@
 """Unit tests for vizro.models.Graph."""
+import plotly.graph_objects as go
 import pytest
 from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+
+
+@pytest.fixture
+def standard_go_chart(gapminder):
+    return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
 
 
 def test_create_graph(standard_px_chart):
