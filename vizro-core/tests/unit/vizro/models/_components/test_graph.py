@@ -67,7 +67,7 @@ class TestProcessFigureDataFrame:
             figure=standard_px_chart_with_str_dataframe,
         )
         assert data_manager._get_component_data("text_graph").equals(gapminder)
-        assert graph_with_str_df.figure["data_frame"] == "gapminder"
+        assert graph_with_str_df["data_frame"] == "gapminder"
 
     def test_process_figure_data_frame_df(self, standard_px_chart, gapminder):
         graph_with_df = vm.Graph(
@@ -77,6 +77,19 @@ class TestProcessFigureDataFrame:
         assert data_manager._get_component_data("text_graph").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
             graph_with_df.figure["data_frame"]
+
+
+class TestGetitem:
+    def test_getitem_known_args(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart)
+
+        assert graph["x"] == "gdpPercap"
+        assert graph["type"] == "graph"
+
+    def test_getitem_unknown_args(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart)
+        with pytest.raises(KeyError):
+            graph["unknown_args"]
 
 
 class TestBuild:

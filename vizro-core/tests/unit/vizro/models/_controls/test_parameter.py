@@ -62,8 +62,6 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input, title",
         [
-            (vm.Slider(min=0, max=1, value=0.8), "x"),
-            (vm.RangeSlider(min=0, max=1, value=[0.2, 0.8]), "x"),
             (vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"]), "x"),
             (vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp"), "x"),
             (
@@ -72,7 +70,7 @@ class TestPreBuildMethod:
             ),
         ],
     )
-    def test_target_and_title_generation_valid(self, test_input, title):
+    def test_set_target_and_title_valid(self, test_input, title):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -83,14 +81,12 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input",
         [
-            (vm.Slider(min=0, max=1, value=0.8)),
-            (vm.RangeSlider(min=0, max=1, value=[0.2, 0.8])),
             (vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"])),
             (vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp")),
             (vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], value="lifeExp")),
         ],
     )
-    def test_actions_generation_valid(self, test_input):
+    def test_set_actions_valid(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]

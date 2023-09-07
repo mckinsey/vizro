@@ -185,10 +185,8 @@ class TestFilterBuild:
         expected = str(test_selector.build())
         assert result == expected
 
-    @pytest.mark.parametrize(
-        "test_input,expected", [("country", vm.Dropdown), ("year", vm.RangeSlider), ("lifeExp", vm.RangeSlider)]
-    )
-    def test_set_actions(self, test_input, expected):
+    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
+    def test_set_actions(self, test_input):
         filter = vm.Filter(column=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()

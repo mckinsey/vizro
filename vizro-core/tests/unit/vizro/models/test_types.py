@@ -131,7 +131,6 @@ def decorated_graph_function(data_frame):
     return go.Figure()
 
 
-@capture("graph")
 def decorated_graph_function_px(data_frame):
     return px.scatter(
         data_frame=data_frame,
