@@ -6,7 +6,7 @@ The [`Dashboard`][vizro.models.Dashboard] model also accepts a `navigation` argu
 
 ## Using the default navigation
 
-By default, a navigation panel with an accordion item per page and a default title of `SELECT PAGE` is added to your dashboard. To leverage the navigation bar, you do not need to configure anything on top.
+By default, a navigation panel with an accordion item per page and a default title of `SELECT PAGE` is added to your dashboard. To leverage the navigation panel, you do not need to configure anything on top.
 
 !!! example "Default navigation"
     === "app.py"
