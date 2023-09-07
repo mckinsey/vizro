@@ -18,7 +18,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
 
-def _get_action_callback_mapping(action_id: ModelID, argument: str) -> Dict[str, Union[Input, State, Output]]:
+def _get_action_callback_mapping(action_id: ModelID, argument: str) -> Union[Dict[str, Union[Input, State, Output]]]:
     """Creates mapping of action name and required callback input/output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
 
