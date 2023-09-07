@@ -7,6 +7,7 @@ nav:
       - Themes: pages/user_guides/themes.md
       - Dashboards: pages/user_guides/dashboard.md
       - Pages: pages/user_guides/pages.md
+      - Navigation: pages/user_guides/navigation.md
       - Charts/Components: pages/user_guides/components.md
       - Layouts: pages/user_guides/layouts.md
       - Controls: pages/user_guides/control.md
