@@ -15,16 +15,15 @@ from vizro.models._action._actions_chain import ActionsChain
 logger = logging.getLogger(__name__)
 
 
-# make callbacks that enable action loop mechanism to work
 def _build_action_loop_callbacks() -> None:
-    """Creates all required dash.callback for action loop."""
+    """Creates all required dash callbacks for the action loop."""
     # TODO - Reduce the number of the callbacks in the action loop mechanism
     actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
     actions = [action for _, action in model_manager._items_with_type(Action)]
 
     gateway_triggers: List[Input] = []
     for actions_chain in actions_chains:
-        # TODO: Seems like a good candidate for clientside callback
+        # TODO: Potentially convert to clientside callback
         @callback(
             Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
             Input(
@@ -52,7 +51,6 @@ def _build_action_loop_callbacks() -> None:
     if not action_triggers:
         action_triggers.append(Output("empty_output_store", "data", allow_duplicate=True))
 
-    # gateway
     @callback(
         Output("set_remaining", "data"),
         gateway_triggers,
@@ -65,16 +63,13 @@ def _build_action_loop_callbacks() -> None:
             gateway_triggers: Each 'gateway_trigger' (ctx.triggered_id) provides the 'id' (or trigger_id) from the
                 'actions_chain' that should be executed.
 
-
         Returns:
             List of final action sequence names which need to be triggered in order.
-
 
         Raises:
             PreventUpdate:
                 If screen with triggers is rendered but component isn't triggered.
         """
-        # Fetch all triggered action chain ids
         triggered_actions_chains_ids = [
             json.loads(triggered["prop_id"].split(".")[0])["trigger_id"] for triggered in ctx.triggered
         ]
@@ -98,7 +93,6 @@ def _build_action_loop_callbacks() -> None:
         logger.debug(f"Actions to be executed as part of the triggered ActionsChain: {final_action_sequence}")
         return [action_dict["Action ID"] for action_dict in final_action_sequence]
 
-    # update remaining actions
     @callback(
         Output("remaining_actions", "data"),
         Input("cycle_breaker_div", "n_clicks"),
@@ -123,16 +117,15 @@ def _build_action_loop_callbacks() -> None:
         Returns:
             Initial or diminished list of remaining actions needed to be triggered.
         """
-        # propagate sequence of actions from gateway callback
+        # Propagate sequence of actions from gateway callback
         triggered_id = ctx.triggered_id
         if triggered_id == "set_remaining":
             return set_remaining
-        # pop first action
+        # Pop first action
         if triggered_id == "cycle_breaker_div":
             return remaining_actions[1:]
         return []
 
-    # executor
     @callback(
         *action_triggers,
         Input("remaining_actions", "data"),
@@ -160,12 +153,12 @@ def _build_action_loop_callbacks() -> None:
         next_action = remaining_actions[0]
         output_list = ctx.outputs_list if isinstance(ctx.outputs_list, list) else [ctx.outputs_list]
 
-        # return dash.no_update for all outputs except for next action
+        # Return dash.no_update for all outputs except for the next action
         trigger_next = [no_update if output["id"]["action_name"] != next_action else None for output in output_list]
         logger.debug(f"Starting execution of Action: {next_action}")
         return trigger_next
 
-    # callback called after an action is finished
+    # Callback called after an action is finished
     @callback(
         Output("cycle_breaker_div", "children"),
         Input("action_finished", "data"),
@@ -175,7 +168,7 @@ def _build_action_loop_callbacks() -> None:
         """Triggers clientside callback responsible for starting a new iteration."""
         logger.debug("Finished Action execution.")
 
-    # callback that triggers the next iteration
+    # Callback that triggers the next iteration
     clientside_callback(
         """
         function(children) {

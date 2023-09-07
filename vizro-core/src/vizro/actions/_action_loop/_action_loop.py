@@ -1,4 +1,4 @@
-"""The action manager handles creation of all required actions callbacks."""
+"""The action loop creates all the required action callbacks and its components."""
 
 from typing import List, Union
 
@@ -16,7 +16,7 @@ class ActionLoop:
         """Builds callbacks for the action loop and for each Action in the Dashboard and returns their components.
 
         Returns:
-            All required components for the action loop and for each Action in the Dashboard.
+            List of required components for the action loop and for each `Action` in the `Dashboard`.
         """
         return cls._build_action_loop() + cls._build_actions_models()
 
@@ -25,17 +25,17 @@ class ActionLoop:
         """Builds callbacks for the action loop and returns required components for the action loop mechanism to work.
 
         Returns:
-            List of all required components for the action loop. e.g. List of dcc.Store, html.Div components.
+            List of required components for the action loop e.g. List[dcc.Store, html.Div].
         """
         _build_action_loop_callbacks()
         return _get_action_loop_components()
 
     @staticmethod
     def _build_actions_models():
-        """Builds a callback for Action model and returns required components for the Action model callback to work.
+        """Builds a callback for each `Action` model and returns required components for these callbacks.
 
         Returns:
-            List of all required components for each action model in the Dashboard. e.g. List of dcc.Download.
+            List of required components for each `Action` in the `Dashboard` e.g. List[dcc.Download]
         """
         return [
             action_component
