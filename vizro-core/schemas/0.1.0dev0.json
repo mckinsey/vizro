@@ -760,13 +760,14 @@
         },
         "actions": {
           "title": "Actions",
+          "default": [],
           "type": "array",
           "items": {
             "$ref": "#/definitions/Action"
           }
         }
       },
-      "required": ["trigger", "actions"],
+      "required": ["trigger"],
       "additionalProperties": false
     },
     "Page": {

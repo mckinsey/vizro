@@ -3,9 +3,10 @@ from typing import List, Union
 
 from dash import dcc, html
 
-from vizro.managers import model_manager
-from vizro.models import Action
-from vizro.models._action._actions_chain import ActionsChain
+from vizro.actions._action_loop._action_loop_utils import (
+    _get_actions_chains_on_registered_pages,
+    _get_actions_on_registered_pages,
+)
 
 
 # TODO - Return only components for selected dashboard pages (not for all)
@@ -15,8 +16,8 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     Returns:
         List of dcc or html components.
     """
-    actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
-    actions = [action for _, action in model_manager._items_with_type(Action)]
+    actions_chains = _get_actions_chains_on_registered_pages()
+    actions = _get_actions_on_registered_pages()
 
     # Fundamental components required for the smooth operation of the loop mechanism.
     components = [

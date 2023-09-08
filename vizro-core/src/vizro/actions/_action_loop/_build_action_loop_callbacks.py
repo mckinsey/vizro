@@ -8,9 +8,11 @@ from dash.exceptions import PreventUpdate
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import action_functions
+from vizro.actions._action_loop._action_loop_utils import (
+    _get_actions_chains_on_registered_pages,
+    _get_actions_on_registered_pages,
+)
 from vizro.managers import model_manager
-from vizro.models import Action
-from vizro.models._action._actions_chain import ActionsChain
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +20,8 @@ logger = logging.getLogger(__name__)
 def _build_action_loop_callbacks() -> None:
     """Creates all required dash callbacks for the action loop."""
     # TODO - Reduce the number of the callbacks in the action loop mechanism
-    actions_chains = [actions_chain for _, actions_chain in model_manager._items_with_type(ActionsChain)]
-    actions = [action for _, action in model_manager._items_with_type(Action)]
+    actions_chains = _get_actions_chains_on_registered_pages()
+    actions = _get_actions_on_registered_pages()
 
     gateway_triggers: List[Input] = []
     for actions_chain in actions_chains:
@@ -138,10 +140,8 @@ def _build_action_loop_callbacks() -> None:
             remaining_actions:
                 Action sequence needed to be triggered.
 
-
         Returns:
             List of dash.no_update objects for all outputs except for next action.
-
 
         Raises:
             PreventUpdate:
