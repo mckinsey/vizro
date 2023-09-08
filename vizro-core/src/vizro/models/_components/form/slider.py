@@ -35,8 +35,8 @@ class Slider(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
 
-    # validator
-    set_actions = _action_validator_factory("value")  # type: ignore[pydantic-field]
+    # Re-used validators
+    _set_actions = _action_validator_factory("value")
 
     @validator("marks", always=True)
     def set_default_marks(cls, v, values):
