@@ -516,8 +516,6 @@ def create_home_page():
     return page_home
 
 
-create_country_analysis()
-
 dashboard = vm.Dashboard(
     pages=[
         create_home_page(),
