@@ -1,7 +1,9 @@
+import plotly.express as plotly_express
 import plotly.graph_objects as go
 import pytest
 from pydantic import Field, ValidationError
 
+from vizro.charts._charts_utils import _DashboardReadyFigure
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
 
@@ -130,6 +132,15 @@ def decorated_graph_function(data_frame):
 
 
 @capture("graph")
+def decorated_graph_function_px(data_frame):
+    return plotly_express.scatter(
+        data_frame=data_frame,
+        x="gdpPercap",
+        y="lifeExp",
+    )
+
+
+@capture("graph")
 def invalid_decorated_graph_function():
     return go.Figure()
 
@@ -148,17 +159,35 @@ class TestModelFieldPython:
         model = Model(function=decorated_graph_function(data_frame=None))
         assert model.function() == go.Figure()
 
-    def test_decorated_graph_function_missing_data_frame(self):
-        with pytest.raises(ValueError, match="decorated_graph_function must supply a value to data_frame argument"):
-            Model(function=decorated_graph_function())
-
-    def test_invalid_decorated_graph_function(self):
-        with pytest.raises(ValueError, match="invalid_decorated_graph_function must have data_frame argument"):
-            Model(function=invalid_decorated_graph_function())
-
     def test_undecorated_function(self):
         with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
             Model(function=undecorated_function(1, 2, 3))
+
+
+class TestCapture:
+    def test_decorated_df_standard_case(self, gapminder):
+        fig = decorated_graph_function_px(gapminder)
+        assert len(fig.data) > 0
+        assert fig.__class__ == _DashboardReadyFigure
+
+    def test_decorated_df_str(self):
+        fig = decorated_graph_function_px("gapminder")
+        assert fig == _DashboardReadyFigure()
+        assert len(fig.data) == 0
+
+    def test_decorated_graph_function_missing_data_frame(self):
+        with pytest.raises(
+            ValueError,
+            match="decorated_graph_function must supply a value to data_frame argument",
+        ):
+            decorated_graph_function()
+
+    def test_invalid_decorated_graph_function(self):
+        with pytest.raises(
+            ValueError,
+            match="invalid_decorated_graph_function must have data_frame argument",
+        ):
+            invalid_decorated_graph_function()
 
 
 class TestModelFieldJSONConfig:
