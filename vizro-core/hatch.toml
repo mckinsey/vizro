@@ -1,3 +1,7 @@
+[build.hooks.vcs]
+raw-options = {root = ".."}
+version-file = "src/vizro/_version.py"
+
 [envs.all]
 
 [[envs.all.matrix]]
@@ -84,4 +88,4 @@ serve = "mkdocs serve"
 disable = true
 
 [version]
-path = "src/vizro/__init__.py"
+source = "vcs"
