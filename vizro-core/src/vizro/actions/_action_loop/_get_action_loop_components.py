@@ -19,7 +19,6 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     actions_chains = _get_actions_chains_on_registered_pages()
     actions = _get_actions_on_registered_pages()
 
-
     # Fundamental components required for the smooth operation of the loop mechanism.
     components = [
         dcc.Store(id="empty_input_store"),

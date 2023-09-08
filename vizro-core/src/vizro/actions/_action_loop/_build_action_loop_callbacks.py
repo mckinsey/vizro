@@ -140,10 +140,8 @@ def _build_action_loop_callbacks() -> None:
             remaining_actions:
                 Action sequence needed to be triggered.
 
-
         Returns:
             List of dash.no_update objects for all outputs except for next action.
-
 
         Raises:
             PreventUpdate:

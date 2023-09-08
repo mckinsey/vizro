@@ -1,3 +1,5 @@
+"""Contains utilities to create the extract Action and ActionsChain models only from registered pages."""
+
 from __future__ import annotations
 
 from itertools import chain
