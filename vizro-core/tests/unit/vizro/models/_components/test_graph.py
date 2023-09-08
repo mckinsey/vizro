@@ -49,7 +49,7 @@ def expected_graph():
     return dcc.Loading(
         dcc.Graph(
             id="text_graph",
-            figure=create_empty_fig("NO DATA"),
+            figure=create_empty_fig(""),
             config={
                 "autosizable": True,
                 "frameMargins": 0,
