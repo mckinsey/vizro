@@ -66,18 +66,35 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        self._set_slider_values()
+        self._set_categorical_selectors_options()
+        self._set_selector()
+        self._set_actions()
+
+    @_log_call
+    def build(self):
+        return self.selector.build()
+
+    def _set_slider_values(self):
+        self.selector: SelectorType
         if isinstance(self.selector, (Slider, RangeSlider)):
             if self.selector.min is None or self.selector.max is None:
                 raise TypeError(
                     f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter."
                 )
 
+    def _set_categorical_selectors_options(self):
+        self.selector: SelectorType
         if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
 
+    def _set_selector(self):
+        self.selector: SelectorType
         if not self.selector.title:
             self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
 
+    def _set_actions(self):
+        self.selector: SelectorType
         if not self.selector.actions:
             self.selector.actions = [
                 Action(
@@ -87,18 +104,3 @@ class Parameter(VizroBaseModel):
                     ),
                 )
             ]
-
-    @_log_call
-    def build(self):
-        return self.selector.build()
-
-
-if __name__ == "__main__":
-    print(  # noqa: T201
-        repr(
-            Parameter(
-                targets=["scatter.x"],
-                selector=Slider(min=0, max=1, value=0.8, title="Bubble opacity"),
-            )
-        )
-    )
