@@ -1,4 +1,4 @@
-"""Contains utilities to create the extract Action and ActionsChain models only from registered pages."""
+"""Contains utilities to extract the Action and ActionsChain models from registered pages only."""
 
 from __future__ import annotations
 
@@ -36,12 +36,12 @@ def _get_all_actions_chains_on_page(page: Page) -> List[ActionsChain]:
 def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
     """Gets list of ActionsChain models for registered pages."""
     actions_chains: List[ActionsChain] = []
-    for page_registry_obj in page_registry.values():
+    for registered_page in page_registry.values():
         try:
-            page_model: Page = model_manager[page_registry_obj["module"]]  # type: ignore[assignment]
+            page: Page = model_manager[registered_page["module"]]  # type: ignore[assignment]
         except KeyError:
             continue
-        actions_chains.extend(_get_all_actions_chains_on_page(page=page_model))
+        actions_chains.extend(_get_all_actions_chains_on_page(page=page))
     return actions_chains
 
 
