@@ -4,10 +4,9 @@ from typing import List, Union
 
 from dash import dcc, html
 
+from vizro.actions._action_loop._action_loop_utils import _get_actions_on_registered_pages
 from vizro.actions._action_loop._build_action_loop_callbacks import _build_action_loop_callbacks
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
-from vizro.managers import model_manager
-from vizro.models import Action
 
 
 class ActionLoop:
@@ -37,8 +36,5 @@ class ActionLoop:
         Returns:
             List of required components for each `Action` in the `Dashboard` e.g. List[dcc.Download]
         """
-        return [
-            action_component
-            for _, action in model_manager._items_with_type(Action)
-            for action_component in action.build()
-        ]
+        actions = _get_actions_on_registered_pages()
+        return [action_component for action in actions for action_component in action.build()]
