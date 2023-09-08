@@ -524,7 +524,7 @@ dashboard = vm.Dashboard(
         create_variable_analysis(),
         create_relation_analysis(),
         create_continent_summary(),
-        # create_country_analysis(),
+        create_country_analysis(),
     ],
     navigation=vm.Navigation(
         pages={
