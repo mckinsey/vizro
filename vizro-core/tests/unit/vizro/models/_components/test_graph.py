@@ -10,7 +10,10 @@ from pydantic import ValidationError
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
+from vizro.models._action._action import Action
+from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.graph import create_empty_fig
+from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture
@@ -112,6 +115,19 @@ class TestDunderMethodsGraph:
         assert figure.layout.template.layout.margin.l == 80
         assert figure.layout.template.layout.margin.b == 64
         assert figure.layout.template.layout.margin.r == 12
+
+    def test_set_action_via_validator(self, standard_px_chart, test_action_function):
+        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=test_action_function)])
+        actions_chain = graph.actions[0]
+        action = actions_chain.actions[0]
+
+        assert len(graph.actions) == 1
+        assert isinstance(actions_chain, ActionsChain)
+        assert actions_chain.trigger.component_property == "clickData"
+        assert isinstance(action, Action)
+        assert isinstance(action.function, CapturedCallable)
+        assert action.inputs == []
+        assert action.outputs == []
 
 
 class TestProcessFigureDataFrame:
