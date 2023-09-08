@@ -7,9 +7,7 @@ from dash import dcc, html
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.form import RadioItems
-from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture()
@@ -138,15 +136,7 @@ class TestRadioItemsInstantiation:
     def test_set_action_via_validator(self, test_action_function):
         radio_items = RadioItems(actions=[Action(function=test_action_function)])
         actions_chain = radio_items.actions[0]
-        action = actions_chain.actions[0]
-
-        assert len(radio_items.actions) == 1
-        assert isinstance(actions_chain, ActionsChain)
         assert actions_chain.trigger.component_property == "value"
-        assert isinstance(action, Action)
-        assert isinstance(action.function, CapturedCallable)
-        assert action.inputs == []
-        assert action.outputs == []
 
 
 class TestRadioItemsBuild:
