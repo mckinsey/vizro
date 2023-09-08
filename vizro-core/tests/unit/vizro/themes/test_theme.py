@@ -1,8 +1,31 @@
 """Tests for templates."""
+import numpy as np
+import pandas as pd
 import plotly.express as px
+import pytest
 from plotly.graph_objs.layout._template import Template
 
+import vizro._themes as themes
 from vizro._themes._color_values import COLORS
+
+
+@pytest.fixture
+def template():
+    """Fixture for template."""
+    yield np.random.choice([themes.dark, themes.light], 1)[0]
+
+
+@pytest.fixture
+def chart_data():
+    """Fixture for chart data."""
+    data_points = np.random.randint(0, 100, 1, dtype=int)
+    data = pd.DataFrame(
+        {
+            "x": np.random.choice(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], data_points),
+            "y": np.random.normal(0, 200, data_points),
+        }
+    )
+    yield data
 
 
 def test_template(template):

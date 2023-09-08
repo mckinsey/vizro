@@ -10,6 +10,7 @@ from dash import Input, Output, callback, html
 from pydantic import Field, validator
 
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
+from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
@@ -79,8 +80,6 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def build(self):
-        from vizro.models._action._callback_utils import _get_actions_components
-
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
@@ -93,7 +92,7 @@ class Dashboard(VizroBaseModel):
 
         return dbc.Container(
             id="dashboard_container",
-            children=[*_get_actions_components(), dash.page_container],
+            children=[*ActionLoop._create_app_callbacks(), dash.page_container],
             className=self.theme,
             fluid=True,
         )

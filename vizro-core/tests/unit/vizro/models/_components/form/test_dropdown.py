@@ -6,7 +6,10 @@ import pytest
 from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models._action._action import Action
+from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.form import Dropdown
+from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture()
@@ -60,9 +63,9 @@ class TestDropdownInstantiation:
         assert dropdown.actions == []
 
     def test_create_dropdown_mandatory_and_optional(self):
-        dropdown = Dropdown(options=["A", "B", "C"], value="A", multi=False, title="Title")
+        dropdown = Dropdown(options=["A", "B", "C"], value="A", multi=False, title="Title", id="dropdown-id")
 
-        assert hasattr(dropdown, "id")
+        assert dropdown.id == "dropdown-id"
         assert dropdown.type == "dropdown"
         assert dropdown.options == ["A", "B", "C"]
         assert dropdown.value == "A"
@@ -103,45 +106,45 @@ class TestDropdownInstantiation:
         assert dropdown.title is None
         assert dropdown.actions == []
 
-    @pytest.mark.parametrize("options", [1, "A", True, 1.0])
-    def test_create_dropdown_invalid_options_type(self, options):
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
+    def test_create_dropdown_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="value is not a valid list"):
-            Dropdown(options=options)
+            Dropdown(options=test_options)
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(
             ValidationError,
-            match="Invalid argument `options` passed into Dropdown. Expected a dict with keys `label` and `value`.",
+            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
         ):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
-        "options, test_value, multi",
+        "test_value, options, multi",
         [
             # Single default value with multi=False
-            (["A", "B", "C"], "A", False),
-            ([1, 2, 3], 1, False),
-            ([1.0, 2.0, 3.0], 1.0, False),
-            ([True, False], False, False),
-            ([{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], "A", False),
-            ([True, 2.0, 1.0, "A", "B"], "True", False),
+            ("A", ["A", "B", "C"], False),
+            (1, [1, 2, 3], False),
+            (1.0, [1.0, 2.0, 3.0], False),
+            (False, [True, False], False),
+            ("A", [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], False),
+            ("True", [True, 2.0, 1.0, "A", "B"], False),
             # Single default value with multi=True
-            (["A", "B", "C"], "A", True),
-            ([1, 2, 3], 1, True),
-            ([1.0, 2.0, 3.0], 1.0, True),
-            ([True, False], False, True),
-            ([{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], "A", True),
-            ([True, 2.0, 1.0, "A", "B"], "True", True),
+            ("A", ["A", "B", "C"], True),
+            (1, [1, 2, 3], True),
+            (1.0, [1.0, 2.0, 3.0], True),
+            (False, [True, False], True),
+            ("A", [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], True),
+            ("True", [True, 2.0, 1.0, "A", "B"], True),
             # List of default values with multi=True
-            (["A", "B", "C"], ["A", "B"], True),
-            ([1, 2, 3], [1, 2], True),
-            ([1.0, 2.0, 3.0], [1.0, 2.0], True),
-            ([True, False], [False, True], True),
-            ([{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], ["A", "B"], True),
-            ([True, 2.0, 1.0, "A", "B"], ["True", "A"], True),
+            (["A", "B"], ["A", "B", "C"], True),
+            ([1, 2], [1, 2, 3], True),
+            ([1.0, 2.0], [1.0, 2.0, 3.0], True),
+            ([False, True], [True, False], True),
+            (["A", "B"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}], True),
+            (["True", "A"], [True, 2.0, 1.0, "A", "B"], True),
         ],
     )
-    def test_create_dropdown_valid_value(self, options, test_value, multi):
+    def test_create_dropdown_valid_value(self, test_value, options, multi):
         dropdown = Dropdown(options=options, value=test_value, multi=multi)
 
         assert hasattr(dropdown, "id")
@@ -169,6 +172,19 @@ class TestDropdownInstantiation:
     def test_create_dropdown_invalid_multi(self):
         with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
+
+    def test_set_action_via_validator(self, test_action_function):
+        dropdown = Dropdown(actions=[Action(function=test_action_function)])
+        actions_chain = dropdown.actions[0]
+        action = actions_chain.actions[0]
+
+        assert len(dropdown.actions) == 1
+        assert isinstance(actions_chain, ActionsChain)
+        assert actions_chain.trigger.component_property == "value"
+        assert isinstance(action, Action)
+        assert isinstance(action.function, CapturedCallable)
+        assert action.inputs == []
+        assert action.outputs == []
 
 
 class TestDropdownBuild:

@@ -5,10 +5,10 @@ from typing import Any, Dict, List, Optional
 from dash import ctx, dcc
 from typing_extensions import Literal
 
-from vizro.managers import model_manager
-from vizro.models._action._actions_utils import (
+from vizro.actions._actions_utils import (
     _get_filtered_data,
 )
+from vizro.managers import model_manager
 from vizro.models.types import capture
 
 

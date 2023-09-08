@@ -7,7 +7,7 @@ Vizro is a toolkit for creating modular data visualisation applications
 
 ## Contributors
 
-See the `authors` file for more details
+See the [authors](https://github.com/mckinsey/vizro/blob/main/vizro-core/docs/pages/development/authors.md) file for more details
 
 ## License
 

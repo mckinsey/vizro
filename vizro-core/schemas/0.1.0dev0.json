@@ -466,7 +466,6 @@
         },
         "value": {
           "title": "Value",
-          "description": "Option that is selected by default.",
           "anyOf": [
             {
               "type": "boolean"
@@ -854,7 +853,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [Dashboard][src.vizro.models.Dashboard] to structure [Pages][src.vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {

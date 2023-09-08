@@ -73,6 +73,25 @@ def create_template_dark() -> Template:
         )
     ]
 
+    template_dark.data.table = [
+        go.Table(
+            header={
+                "fill_color": COLORS["DARK_BG03"],
+                "line_color": COLORS["WHITE_12"],
+                "height": 32,
+                "font": {"color": COLORS["WHITE_85"], "size": 14},
+                "align": "left",
+            },
+            cells={
+                "line_color": COLORS["WHITE_12"],
+                "fill_color": COLORS["DARK_BG03"],
+                "height": 32,
+                "font": {"color": COLORS["WHITE_55"], "size": 14},
+                "align": "left",
+            },
+        )
+    ]
+
     return template_dark
 
 

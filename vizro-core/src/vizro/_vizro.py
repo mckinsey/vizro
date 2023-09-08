@@ -9,7 +9,6 @@ from dash import Dash
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
-from vizro.models._action._callback_utils import _make_app_callbacks
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,6 @@ class Vizro:
         self._pre_build()
 
         self.dash.layout = dashboard.build()
-        _make_app_callbacks()
 
         return self
 
