@@ -516,15 +516,13 @@ def create_home_page():
     return page_home
 
 
-create_country_analysis()
-
 dashboard = vm.Dashboard(
     pages=[
         create_home_page(),
         create_variable_analysis(),
         create_relation_analysis(),
         create_continent_summary(),
-        # create_country_analysis(),
+        create_country_analysis(),
     ],
     navigation=vm.Navigation(
         pages={
