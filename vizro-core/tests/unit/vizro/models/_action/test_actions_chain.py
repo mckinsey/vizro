@@ -35,7 +35,7 @@ class TestActionsChainInstantiation:
         assert actions_chain.actions[0] == test_action
 
 
-def test_set_actions(test_action, expected_action_chain):
+def test_set_actions(test_action):
     result = _set_actions(actions=[test_action], values={"id": "component_id"}, trigger_property="value")
     actions_chain = result[0]
     action = actions_chain.actions[0]
