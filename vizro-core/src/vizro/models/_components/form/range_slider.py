@@ -62,21 +62,17 @@ class RangeSlider(VizroBaseModel):
         ]
 
         @callback(output=output, inputs=input)
-        def update_slider_values(start, end, slider, input_store):
+        def update_slider_values_callback(start, end, slider, input_store):
             trigger_id = callback_context.triggered_id
-            if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
-                start_text_value, end_text_value = start, end
-            elif trigger_id == self.id:
-                start_text_value, end_text_value = slider
-            else:
-                start_text_value, end_text_value = input_store if input_store is not None else value
 
-            start_value = min(start_text_value, end_text_value)
-            end_value = max(start_text_value, end_text_value)
-            start_value = max(self.min, start_value)
-            end_value = min(self.max, end_value)
-            slider_value = [start_value, end_value]
-            return start_value, end_value, slider_value, (start_value, end_value)
+            return self._update_slider_values(
+                start=start,
+                end=end,
+                slider=slider,
+                input_store=input_store,
+                value=value,
+                trigger_id=trigger_id
+            )
 
         return html.Div(
             [
@@ -130,3 +126,19 @@ class RangeSlider(VizroBaseModel):
             ],
             className="selector_container",
         )
+
+    def _update_slider_values(self, trigger_id, start, end, slider, input_store, value):
+        if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
+            start_text_value, end_text_value = start, end
+        elif trigger_id == self.id:
+            start_text_value, end_text_value = slider
+        else:
+            start_text_value, end_text_value = input_store if input_store is not None else value
+
+        start_value = min(start_text_value, end_text_value)
+        end_value = max(start_text_value, end_text_value)
+
+        start_value = max(self.min, start_value)
+        end_value = min(self.max, end_value)
+        slider_value = [start_value, end_value]
+        return start_value, end_value, slider_value, (start_value, end_value)
