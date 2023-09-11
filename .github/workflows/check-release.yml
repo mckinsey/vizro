@@ -30,7 +30,11 @@ jobs:
             cd vizro-core
             version=$(hatch version)
             cd ..
-            echo "Checking package $string for version $version"
-            # You can add your actions or commands here for each string
             python tools/github_actions_release.py $string $version
         done
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
