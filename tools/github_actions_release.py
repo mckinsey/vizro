@@ -1,8 +1,6 @@
 import os
-import sys
-import re
+
 import requests
-from pathlib import Path
 
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 
@@ -29,15 +27,15 @@ def check_no_version_pypi(pypi_endpoint, package_name, package_version):
 if __name__ == "__main__":
     """Check if a package needs to be released"""
     new_release = "false"
-    package_name = "vizro" #sys.argv[0]
-    package_version = "0.1.1.dev0"#sys.argv[1]
+    package_name = "vizro"  # sys.argv[0]
+    package_version = "0.1.1.dev0"  # sys.argv[1]
 
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
 
     if check_no_version_pypi(pypi_endpoint, package_name, package_version):
         new_release = "true"
 
-    env_file = os.getenv('GITHUB_ENV')
+    env_file = os.getenv("GITHUB_ENV")
     with open(env_file, "a") as env_file:
         env_file.write(f"NEW_RELEASE={new_release}\n")
         if new_release == "true":
