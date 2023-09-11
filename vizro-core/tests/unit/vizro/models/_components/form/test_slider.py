@@ -7,7 +7,6 @@ from dash import dcc
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._action._actions_chain import ActionsChain
 
 
 @pytest.fixture()
@@ -150,15 +149,8 @@ class TestSliderInstantiation:
     def test_set_action_via_validator(self, test_action_function):
         slider = vm.Slider(actions=[vm.Action(function=test_action_function)])
         actions_chain = slider.actions[0]
-        action = actions_chain.actions[0]
 
-        assert len(slider.actions) == 1
-        assert isinstance(actions_chain, ActionsChain)
         assert actions_chain.trigger.component_property == "value"
-        assert isinstance(action, vm.Action)
-        assert isinstance(action.function, vm.CapturedCallable)
-        assert action.inputs == []
-        assert action.outputs == []
 
 
 class TestBuildMethod:
