@@ -14,9 +14,8 @@ from vizro.models._components.form import Checklist
 def expected_checklist():
     return html.Div(
         [
-            html.P("Title", id="checklist_title"),
+            html.P("Title"),
             dcc.Checklist(
-                id="checklist_id",
                 options=["ALL", "A", "B", "C"],
                 value=["ALL"],
                 className="selector_body_checklist",
@@ -24,6 +23,7 @@ def expected_checklist():
             ),
         ],
         className="selector_container",
+        id="checklist_id",
     )
 
 

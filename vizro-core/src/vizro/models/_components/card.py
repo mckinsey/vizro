@@ -29,7 +29,7 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False)
+        text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=f"{self.id}_text")
         button = (
             html.Div(
                 dbc.Button(

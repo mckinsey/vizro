@@ -46,13 +46,13 @@ def accordion_from_page_as_list():
     ]
     accordion = html.Div(
         children=dbc.Accordion(
-            id="accordion_list",
             children=accordion_items,
             class_name="accordion",
             persistence=True,
             persistence_type="session",
         ),
         className="nav_panel",
+        id="accordion_list",
     )
     return accordion
 
@@ -73,12 +73,12 @@ def accordion_from_pages_as_dict():
     ]
     accordion = html.Div(
         children=dbc.Accordion(
-            id="accordion_dict",
             children=accordion_items,
             class_name="accordion",
             persistence=True,
             persistence_type="session",
         ),
         className="nav_panel",
+        id="accordion_dict",
     )
     return accordion

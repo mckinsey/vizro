@@ -14,17 +14,18 @@ from vizro.models._components.form import Dropdown
 def expected_dropdown_with_all():
     return html.Div(
         [
-            html.P("Title", id="dropdown_title"),
+            html.P("Title"),
             dcc.Dropdown(
-                id="dropdown_id",
                 options=["ALL", "A", "B", "C"],
                 value="ALL",
                 multi=True,
                 persistence=True,
                 clearable=False,
+                className="selector_body_dropdown",
             ),
         ],
         className="selector_dropdown_container",
+        id="dropdown_id",
     )
 
 
@@ -32,17 +33,18 @@ def expected_dropdown_with_all():
 def expected_dropdown_without_all():
     return html.Div(
         [
-            html.P("Title", id="dropdown_title"),
+            html.P("Title"),
             dcc.Dropdown(
-                id="dropdown_id",
                 options=["A", "B", "C"],
                 value="A",
                 multi=False,
                 persistence=True,
                 clearable=False,
+                className="selector_body_dropdown",
             ),
         ],
         className="selector_dropdown_container",
+        id="dropdown_id",
     )
 
 

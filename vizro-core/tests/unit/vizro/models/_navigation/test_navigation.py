@@ -76,7 +76,7 @@ class TestNavigationBuild:
 
         # setting accordion id to fix the random id generation
         result_navigation._selector.id = id_accordion
-        accordion_from_page_as_list.children.id = id_accordion
+        accordion_from_page_as_list.id = id_accordion
 
         result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
