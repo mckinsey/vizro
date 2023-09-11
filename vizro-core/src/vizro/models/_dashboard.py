@@ -101,7 +101,7 @@ class Dashboard(VizroBaseModel):
     def _update_theme():
         clientside_callback(
             """
-            function(on) {
+            function update_dashboard_theme(on) {
                 return on ? 'vizro_dark' : 'vizro_light';
             }
             """,

@@ -41,7 +41,7 @@ def _build_action_loop_callbacks() -> None:
         # Callback that enables gateway callback to work in the multiple page app
         clientside_callback(
             """
-            function(input, data) {
+            function trigger_to_global_store(input, data) {
                 return data;
             }
             """,
@@ -113,7 +113,7 @@ def _build_action_loop_callbacks() -> None:
     # Callback that triggers the next iteration
     clientside_callback(
         """
-        function(data) {
+        function after_action_cycle_breaker(data) {
             document.getElementById("cycle_breaker_div").click()
             return [];
         }

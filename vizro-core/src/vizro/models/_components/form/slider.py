@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, callback, callback_context, dcc, html
+from dash import Input, Output, State, clientside_callback, callback_context, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -44,32 +44,54 @@ class Slider(VizroBaseModel):
 
     @_log_call
     def build(self):
+
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
             Output(f"temp-store-slider-{self.id}", "data"),
         ]
-        input = [
+        inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
             State(f"temp-store-slider-{self.id}", "data"),
+            State(f"{self.id}_data", "data"),
         ]
 
-        @callback(output=output, inputs=input)
-        def update_slider_value(start, slider, input_store):
-            trigger_id = callback_context.triggered_id
-            if trigger_id == f"{self.id}_text_value":
-                text_value = start
-            elif trigger_id == f"{self.id}":
-                text_value = slider
-            else:
-                text_value = input_store or self.value or self.min
-            text_value = min(max(self.min, text_value), self.max)
+        clientside_callback(
+            """
+            function update_slider_values(start, slider, input_store, self_data) {
+                var text_value, trigger_id;
 
-            return text_value, text_value, text_value
+                trigger_id = dash_clientside.callback_context.triggered
+                if (trigger_id.length != 0) {
+                    trigger_id = dash_clientside.callback_context.triggered[0]['prop_id'].split('.')[0];
+                }
+                if (trigger_id === `${self_data["id"]}_text_value`) {
+                    text_value = start;
+                } else if (trigger_id === self_data["id"]) {
+                    text_value = slider;
+                } else {
+                  text_value = input_store !== null ? input_store : self_data["min"];
+                }
+
+                text_value = Math.min(Math.max(self_data["min"], text_value), self_data["max"]);
+
+                console.log(text_value);
+
+                return [text_value, text_value, text_value]
+            }
+            """,
+            output=output,
+            inputs=inputs,
+        )
 
         return html.Div(
             [
+                dcc.Store(f"{self.id}_data", storage_type="local", data={
+                    "id": self.id,
+                    "min": self.min,
+                    "max": self.max,
+                }),
                 html.P(self.title, id="slider_title") if self.title else None,
                 html.Div(
                     [
