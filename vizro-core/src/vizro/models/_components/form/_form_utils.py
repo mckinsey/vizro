@@ -55,3 +55,26 @@ def validate_value(cls, value, values):
         raise ValueError("Please provide a valid value from `options`.")
 
     return value
+
+
+def validate_max(cls, max, values):
+    """Reusable validator for the "max" argument for sliders."""
+    if max is None:
+        return max
+
+    if values["min"] is not None and max < values["min"]:
+        raise ValueError("Maximum value of slider is required to be larger than minimum value.")
+    return max
+
+
+def validate_slider_value(cls, value, values):
+    """Reusable validator for the "value" argument for sliders."""
+    if value is None:
+        return value
+
+    if (values["min"] is not None and not value >= values["min"]) or (
+        values["max"] is not None and not value <= values["max"]
+    ):
+        raise ValueError("Please provide a valid value between the min and max value.")
+
+    return value

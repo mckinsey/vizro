@@ -5,6 +5,10 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components.form._form_utils import (
+    validate_max,
+    validate_slider_value,
+)
 from vizro.models._models_utils import _log_call
 
 
@@ -36,6 +40,8 @@ class Slider(VizroBaseModel):
     actions: List[Action] = []
 
     # Re-used validators
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
+    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
     _set_actions = _action_validator_factory("value")
 
     @validator("marks", always=True)
@@ -56,17 +62,9 @@ class Slider(VizroBaseModel):
         ]
 
         @callback(output=output, inputs=input)
-        def update_slider_value(start, slider, input_store):
+        def update_slider_value_callback(start, slider, input_store):
             trigger_id = callback_context.triggered_id
-            if trigger_id == f"{self.id}_text_value":
-                text_value = start
-            elif trigger_id == f"{self.id}":
-                text_value = slider
-            else:
-                text_value = input_store or self.value or self.min
-            text_value = min(max(self.min, text_value), self.max)
-
-            return text_value, text_value, text_value
+            return self._update_slider_value(trigger_id, start, slider, input_store)
 
         return html.Div(
             [
@@ -101,3 +99,14 @@ class Slider(VizroBaseModel):
             ],
             className="selector_container",
         )
+
+    def _update_slider_value(self, trigger_id, start, slider, input_store):
+        if trigger_id == f"{self.id}_text_value":
+            text_value = start
+        elif trigger_id == f"{self.id}":
+            text_value = slider
+        else:
+            text_value = input_store or self.value or self.min
+        text_value = min(max(self.min, text_value), self.max)
+
+        return text_value, text_value, text_value
