@@ -16,13 +16,21 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.10'
-    - name: Find out path
-      run: |
-        pwd
-        ls
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install requests
+
+    - name: Loop Over List
+      run: |
+        # Define a list of strings
+        my_strings=("vizro" "vizro-ai" "foo")
+  
+        # Loop over the list
+        for string in "${my_strings[@]}"; do
+        echo "Processing $string"
+            # You can add your actions or commands here for each string
+        done
+
     - name: Check version
       run: python tools/github_actions_release.py
