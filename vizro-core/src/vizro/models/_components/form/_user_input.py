@@ -36,16 +36,15 @@ class UserInput(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                html.P(self.title, id="user_input_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 dbc.Input(
-                    id=self.id,
                     placeholder=self.placeholder,
                     type=self.input_type,
-                    className="user_input",
                     persistence=True,
                     debounce=True,
+                    className="user_input",
                 ),
-                html.Div(id="placeholder-for-testing"),
             ],
+            id=self.id,
             className="selector_container",
         )

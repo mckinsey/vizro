@@ -39,14 +39,14 @@ class RadioItems(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title, id="radio_items_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 dcc.RadioItems(
-                    id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
-                    className="selector_body_radio_items",
                     persistence=True,
+                    className="selector_body_radio_items",
                 ),
             ],
             className="selector_container",
+            id=self.id,
         )

@@ -70,11 +70,10 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title, id="slider_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(
-                            id=self.id,
                             min=self.min,
                             max=self.max,
                             step=self.step,
@@ -85,14 +84,13 @@ class Slider(VizroBaseModel):
                             className="slider_control" if self.step else "slider_control_no_space",
                         ),
                         dcc.Input(
-                            id=f"{self.id}_text_value",
                             type="number",
                             placeholder="end",
                             min=self.min,
                             max=self.max,
-                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                             value=self.value or self.min,
                             persistence=True,
+                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
                         dcc.Store(id=f"temp-store-slider-{self.id}", storage_type="local"),
                     ],
@@ -100,4 +98,5 @@ class Slider(VizroBaseModel):
                 ),
             ],
             className="selector_container",
+            id=self.id,
         )

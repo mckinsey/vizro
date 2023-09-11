@@ -31,9 +31,9 @@ class Button(VizroBaseModel):
             [
                 dbc.Button(
                     children=self.text,
-                    id=self.id,
                     className="button_primary",
                 ),
             ],
             className="button_container",
+            id=self.id,
         )
