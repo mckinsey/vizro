@@ -22,12 +22,12 @@ jobs:
         pip install requests
         pip install --upgrade hatch
 
-    - name: Check which package needs to be released
+    - name: Check which 📦 needs to be released
       run: |
         packages=("vizro" "vizro-ai" "foo")
 
         for string in "${packages[@]}"; do
-            cd vizro-core
+            cd string
             version=$(hatch version)
             cd ..
             python tools/github_actions_release.py $string $version
@@ -36,8 +36,8 @@ jobs:
     # - name: Create GitHub Release
     #   uses: softprops/action-gh-release@v1
 
-    - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        packages-dir: vizro-core/dist
-        password: abc1234
+    # - name: Publish distribution 📦 to PyPI
+    #   uses: pypa/gh-action-pypi-publish@release/v1
+    #   with:
+    #     packages-dir: vizro-core/dist
+    #     password: abc1234
