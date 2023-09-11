@@ -104,7 +104,7 @@ class TestSliderInstantiation:
 
         assert slider.step == step
 
-    def test_valid_marks_default(self):
+    def test_valid_marks_with_step(self):
         slider = vm.Slider(min=0, max=10, step=1)
 
         assert slider.marks == {}
@@ -117,6 +117,7 @@ class TestSliderInstantiation:
                 {str(i): i for i in range(0, 10, 5)},
             ),
             ({15: 15, 25: 25}, {"15": 15.0, "25": 25.0}),
+            (None, None),
         ],
     )
     def test_valid_marks(self, marks, expected):
