@@ -36,8 +36,8 @@ jobs:
     # - name: Create GitHub Release
     #   uses: softprops/action-gh-release@v1
 
-    # - name: Publish distribution 📦 to PyPI
-    #   uses: pypa/gh-action-pypi-publish@release/v1
-    #   with:
-    #     packages-dir: vizro-core/dist
-    #     password: abc1234
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: vizro-core/dist
+        password: abc1234
