@@ -7,7 +7,7 @@ Vizro is a toolkit for creating modular data visualisation applications
 
 ## Documentation
 
-See the `docs` folder for more details
+See the [`docs`](https://vizro.readthedocs.io/en/latest/) for more details
 
 ## Contributors
 

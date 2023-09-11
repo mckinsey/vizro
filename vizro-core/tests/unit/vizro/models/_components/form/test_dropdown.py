@@ -6,6 +6,7 @@ import pytest
 from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
 
 
@@ -169,6 +170,11 @@ class TestDropdownInstantiation:
     def test_create_dropdown_invalid_multi(self):
         with pytest.raises(ValidationError, match="Please set multi=True if providing a list of default values."):
             Dropdown(value=[1, 2], multi=False, options=[1, 2, 3, 4, 5])
+
+    def test_set_action_via_validator(self, test_action_function):
+        dropdown = Dropdown(actions=[Action(function=test_action_function)])
+        actions_chain = dropdown.actions[0]
+        assert actions_chain.trigger.component_property == "value"
 
 
 class TestDropdownBuild:

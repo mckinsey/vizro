@@ -6,6 +6,7 @@ import pytest
 from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models._action._action import Action
 from vizro.models._components.form import RadioItems
 
 
@@ -131,6 +132,11 @@ class TestRadioItemsInstantiation:
     def test_create_radio_items_invalid_value_format(self):
         with pytest.raises(ValidationError, match="3 validation errors for RadioItems"):
             RadioItems(value=[1], options=[1, 2, 3, 4, 5])
+
+    def test_set_action_via_validator(self, test_action_function):
+        radio_items = RadioItems(actions=[Action(function=test_action_function)])
+        actions_chain = radio_items.actions[0]
+        assert actions_chain.trigger.component_property == "value"
 
 
 class TestRadioItemsBuild:
