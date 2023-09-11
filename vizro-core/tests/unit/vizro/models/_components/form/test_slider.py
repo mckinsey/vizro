@@ -163,17 +163,11 @@ class TestSliderInstantiation:
 
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
-        slider = vm.Slider(
-            min=0, max=10, step=1, value=5, id="slider_id", title="Test title"
-        )
+        slider = vm.Slider(min=0, max=10, step=1, value=5, id="slider_id", title="Test title")
         component = slider.build()
 
-        result = json.loads(
-            json.dumps(component["slider_id"], cls=plotly.utils.PlotlyJSONEncoder)
-        )
-        expected = json.loads(
-            json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder)
-        )
+        result = json.loads(json.dumps(component["slider_id"], cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
 
@@ -195,9 +189,7 @@ class TestCallbackMethod:
         self, trigger, start_value, slider_value, input_store_value, expected
     ):
         slider = vm.Slider(min=0, max=10, value=1)
-        result = slider._update_slider_value(
-            f"{slider.id}{trigger}", start_value, slider_value, input_store_value
-        )
+        result = slider._update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)
 
         assert result == expected
 
@@ -207,15 +199,11 @@ class TestCallbackMethod:
             ("_text_value", None, 1, 1),  # set new value by start
         ],
     )
-    def test_update_slider_invalid(
-        self, trigger, start_value, slider_value, input_store_value
-    ):
+    def test_update_slider_invalid(self, trigger, start_value, slider_value, input_store_value):
         slider = vm.Slider(min=0, max=10, value=1)
 
         with pytest.raises(
             TypeError,
             match="'>' not supported between instances of 'NoneType' and 'float'",
         ):
-            slider._update_slider_value(
-                f"{slider.id}{trigger}", start_value, slider_value, input_store_value
-            )
+            slider._update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)

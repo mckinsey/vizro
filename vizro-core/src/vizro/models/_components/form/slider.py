@@ -34,9 +34,7 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[str, float]] = Field(
-        None, description="Marks to be displayed on slider."
-    )
+    marks: Optional[Dict[str, float]] = Field(None, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
@@ -82,9 +80,7 @@ class Slider(VizroBaseModel):
                             value=self.value or self.min,
                             included=False,
                             persistence=True,
-                            className="slider_control"
-                            if self.step
-                            else "slider_control_no_space",
+                            className="slider_control" if self.step else "slider_control_no_space",
                         ),
                         dcc.Input(
                             id=f"{self.id}_text_value",
@@ -92,15 +88,11 @@ class Slider(VizroBaseModel):
                             placeholder="end",
                             min=self.min,
                             max=self.max,
-                            className="slider_input_field_right"
-                            if self.step
-                            else "slider_input_field_no_space_right",
+                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                             value=self.value or self.min,
                             persistence=True,
                         ),
-                        dcc.Store(
-                            id=f"temp-store-slider-{self.id}", storage_type="local"
-                        ),
+                        dcc.Store(id=f"temp-store-slider-{self.id}", storage_type="local"),
                     ],
                     className="slider_inner_container",
                 ),
