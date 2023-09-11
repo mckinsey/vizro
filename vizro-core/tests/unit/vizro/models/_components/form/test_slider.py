@@ -65,29 +65,31 @@ class TestSliderInstantiation:
         "value",
         [
             5,
-            6.5,
+            -5,
             0,
+            6.5,
+            -10,
             10,
         ],
     )
     def test_valid_value(self, value):
-        slider = vm.Slider(min=0, max=10, value=value)
+        slider = vm.Slider(min=-10, max=10, value=value)
 
         assert slider.value == value
 
-    def test_invalid_value_low(self):
+    @pytest.mark.parametrize(
+        "value",
+        [
+            11,
+            -1,
+        ],
+    )
+    def test_invalid_value(self, value):
         with pytest.raises(
             ValidationError,
-            match="Please provide a valid value larger than the minimum value.",
+            match="Please provide a valid value between the min and max value.",
         ):
-            vm.Slider(min=1, max=10, value=0)
-
-    def test_invalid_value_high(self):
-        with pytest.raises(
-            ValidationError,
-            match="Please provide a valid value smaller than the maximum value.",
-        ):
-            vm.Slider(min=1, max=10, value=11)
+            vm.Slider(min=0, max=10, value=value)
 
     @pytest.mark.parametrize(
         "step",
