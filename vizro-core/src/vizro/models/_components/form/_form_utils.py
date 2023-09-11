@@ -22,7 +22,9 @@ def get_options_and_default(options: OptionsType, multi: bool = False):
 
 
 # Utils for validators
-def is_value_contained(value: Union[SingleValueType, MultiValueType], options: OptionsType):
+def is_value_contained(
+    value: Union[SingleValueType, MultiValueType], options: OptionsType
+):
     """Checks if value is contained in a list."""
     if isinstance(value, list):
         return all(item in options for item in value)
@@ -38,7 +40,9 @@ def validate_options_dict(cls, values):
 
     for entry in values["options"]:
         if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
-            raise ValueError("Invalid argument `options` passed. Expected a dict with keys `label` and `value`.")
+            raise ValueError(
+                "Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
+            )
     return values
 
 
@@ -48,10 +52,38 @@ def validate_value(cls, value, values):
         return value
 
     possible_values = (
-        [entry["value"] for entry in values["options"]] if isinstance(values["options"][0], dict) else values["options"]
+        [entry["value"] for entry in values["options"]]
+        if isinstance(values["options"][0], dict)
+        else values["options"]
     )
 
     if value and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")
+
+    return value
+
+
+def validate_max(cls, value, values):
+    """Reusable validator for the "max" argument for sliders."""
+    if value is None:
+        return value
+
+    if values["min"] is not None and value < values["min"]:
+        raise ValueError(
+            "Maximum value of slider is required to be larger than minimum value."
+        )
+    return value
+
+
+def validate_slider_value(cls, value, values):
+    """Reusable validator for the "value" argument for sliders."""
+    if value is None:
+        return value
+
+    if values["min"] is not None and not value >= values["min"]:
+        raise ValueError("Please provide a valid value larger than the minimum value.")
+
+    if values["max"] is not None and not value <= values["max"]:
+        raise ValueError("Please provide a valid value smaller than the maximum value.")
 
     return value

@@ -5,6 +5,10 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components.form._form_utils import (
+    validate_max,
+    validate_slider_value,
+)
 from vizro.models._models_utils import _log_call
 
 
@@ -38,19 +42,13 @@ class Slider(VizroBaseModel):
     actions: List[Action] = []
 
     # Re-used validators
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
+    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
     _set_actions = _action_validator_factory("value")
 
     @validator("marks", always=True)
     def set_default_marks(cls, v, values):
         return v if values["step"] is None else {}
-
-    @validator("max", always=True)
-    def check_slider_max_value(cls, v, values):
-        if values["min"] and v < values["min"]:
-            raise ValueError(
-                "Minimum value of slider is required to be smaller than maximum value."
-            )
-        return v
 
     @_log_call
     def build(self):
@@ -68,7 +66,7 @@ class Slider(VizroBaseModel):
         @callback(output=output, inputs=input)
         def update_slider_value_callback(start, slider, input_store):
             trigger_id = callback_context.triggered_id
-            return self.update_slider_value(trigger_id, start, slider, input_store)
+            return self._update_slider_value(trigger_id, start, slider, input_store)
 
         return html.Div(
             [
@@ -110,7 +108,7 @@ class Slider(VizroBaseModel):
             className="selector_container",
         )
 
-    def update_slider_value(self, trigger_id, start, slider, input_store):
+    def _update_slider_value(self, trigger_id, start, slider, input_store):
         if trigger_id == f"{self.id}_text_value":
             text_value = start
         elif trigger_id == f"{self.id}":
