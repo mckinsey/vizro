@@ -27,7 +27,7 @@ jobs:
         packages=("vizro" "vizro-ai" "foo")
 
         for string in "${packages[@]}"; do
-            cd string
+            cd $string
             version=$(hatch version)
             cd ..
             python tools/github_actions_release.py $string $version
