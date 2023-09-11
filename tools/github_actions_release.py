@@ -28,7 +28,7 @@ if __name__ == "__main__":
     """Check if a package needs to be released"""
     new_release = "false"
     package_name = sys.argv[1]
-    package_version = "0.1.1.dev0"  # sys.argv[1]
+    package_version = sys.argv[2]
 
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
 

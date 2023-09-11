@@ -21,14 +21,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
-    - name: Loop Over List
+    - name: Check which package needs to be released
       run: |
-        # Define a list of strings
         packages=("vizro" "vizro-ai" "foo")
 
-        # Loop over the list
         for string in "${packages[@]}"; do
-        echo "Checking package $string"
+            cd vizro-core
+            version=$(hatch version)
+            cd ..
+            echo "Checking package $string for version $version"
             # You can add your actions or commands here for each string
-            python tools/github_actions_release.py $string
+            python tools/github_actions_release.py $string $version
         done
