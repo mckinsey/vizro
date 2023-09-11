@@ -33,8 +33,11 @@ jobs:
             python tools/github_actions_release.py $string $version
         done
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+    # - name: Create GitHub Release
+    #   uses: softprops/action-gh-release@v1
 
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: vizro-core/dist
+        password: ${{ env.PYPI_TOKEN }}
