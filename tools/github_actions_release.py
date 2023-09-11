@@ -1,5 +1,5 @@
 import os
-
+import sys
 import requests
 
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
@@ -27,7 +27,7 @@ def check_no_version_pypi(pypi_endpoint, package_name, package_version):
 if __name__ == "__main__":
     """Check if a package needs to be released"""
     new_release = "false"
-    package_name = "vizro"  # sys.argv[0]
+    package_name = sys.argv[1]
     package_version = "0.1.1.dev0"  # sys.argv[1]
 
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"

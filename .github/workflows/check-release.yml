@@ -24,13 +24,11 @@ jobs:
     - name: Loop Over List
       run: |
         # Define a list of strings
-        my_strings=("vizro" "vizro-ai" "foo")
-  
-        # Loop over the list
-        for string in "${my_strings[@]}"; do
-        echo "Processing $string"
-            # You can add your actions or commands here for each string
-        done
+        packages=("vizro" "vizro-ai" "foo")
 
-    - name: Check version
-      run: python tools/github_actions_release.py
+        # Loop over the list
+        for string in "${packages[@]}"; do
+        echo "Checking package $string"
+            # You can add your actions or commands here for each string
+            python tools/github_actions_release.py $string
+        done
