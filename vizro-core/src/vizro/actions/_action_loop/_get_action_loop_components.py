@@ -19,13 +19,17 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     actions_chains = _get_actions_chains_on_registered_pages()
     actions = _get_actions_on_registered_pages()
 
+    if not actions_chains:
+        return []
+
+    # TODO: update after optimisation
     # Fundamental components required for the smooth operation of the loop mechanism.
     components = [
         dcc.Store(id="empty_input_store"),
         dcc.Store(id="empty_output_store"),
         dcc.Store(id="action_finished"),
         dcc.Store(id="set_remaining"),
-        dcc.Store(id="remaining_actions"),
+        dcc.Store(id="remaining_actions", data=[]),
         html.Div(id="cycle_breaker_div", style={"display": "hidden"}),
         dcc.Store(id="cycle_breaker_empty_output_store"),
     ]

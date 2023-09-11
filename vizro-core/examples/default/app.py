@@ -454,6 +454,16 @@ def create_country_analysis():
                             targets=["bar_country"],
                         )
                     ),
+                    vm.Action(
+                        function=export_data(
+                            targets=["bar_country"],
+                        )
+                    ),
+                    vm.Action(
+                        function=export_data(
+                            targets=["bar_country"],
+                        )
+                    ),
                 ],
             ),
         ],
@@ -516,22 +526,20 @@ def create_home_page():
     return page_home
 
 
-create_country_analysis()
-
 dashboard = vm.Dashboard(
     pages=[
         create_home_page(),
         create_variable_analysis(),
         create_relation_analysis(),
         create_continent_summary(),
-        # create_country_analysis(),
+        create_country_analysis(),
     ],
-    navigation=vm.Navigation(
-        pages={
-            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-            "Summary": ["Continent Summary"],
-        }
-    ),
+    # navigation=vm.Navigation(
+    #     pages={
+    #         "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+    #         "Summary": ["Continent Summary"],
+    #     }
+    # ),
 )
 
 if __name__ == "__main__":
