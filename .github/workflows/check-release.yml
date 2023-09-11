@@ -24,7 +24,7 @@ jobs:
 
     - name: Check which 📦 needs to be released
       run: |
-        packages=("vizro" "vizro-ai" "foo")
+        packages=("vizro")
 
         for string in "${packages[@]}"; do
             if [[ "$string" == "vizro" ]]; then
@@ -37,6 +37,17 @@ jobs:
             python tools/github_actions_release.py $string $version
         done
 
+
+    - name: Set outputs
+      id: version_check
+      run: |
+        echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
+        echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
+        echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
+    outputs:
+      new_release: ${{ steps.version_check.outputs.new_release }}
+      package_name: ${{ steps.version_check.outputs.package_name }}
+      package_version: ${{ steps.version_check.outputs.package_version }}
     # - name: Create GitHub Release
     #   uses: softprops/action-gh-release@v1
 
