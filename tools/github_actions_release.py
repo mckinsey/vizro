@@ -27,7 +27,7 @@ def check_dev_version(package_version):
     if "dev" in package_version:
         print(f"Skipped: {package_name} {package_version} is still under development")
         return True
-    else
+    else:
         return False
 
 if __name__ == "__main__":
