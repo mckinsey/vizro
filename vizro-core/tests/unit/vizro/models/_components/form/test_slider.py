@@ -7,14 +7,28 @@ from dash import dcc
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.actions import export_data
 from vizro.models._action._actions_chain import ActionsChain
+
+
+@pytest.fixture()
+def expected_slider():
+    return dcc.Slider(
+        min=0,
+        max=10,
+        step=1,
+        marks={},
+        value=5,
+        included=False,
+        className="slider_control",
+        id="slider_id",
+        persistence=True,
+    )
 
 
 class TestSliderInstantiation:
     """Tests model instantiation."""
 
-    def test_create_default_slider(self):
+    def test_create_slider_mandatory(self):
         slider = vm.Slider()
 
         assert hasattr(slider, "id")
@@ -28,65 +42,130 @@ class TestSliderInstantiation:
         assert slider.actions == []
 
     @pytest.mark.parametrize(
-        "min, max, step, marks, value, title",
+        "min, max",
         [
-            (0, 10, 1, {}, 3, "Test text"),
-            (100, 200, 50, {}, 100, """## Test header"""),
-            (1.23, 6.78, 0.01, {}, None, 1.23),
-            (0, 10, None, {str(i): i for i in range(0, 10, 1)}, 5, ""),  # add marks
+            (0, None),
+            (None, 10),
+            (0, 10),
         ],
     )
-    def test_create_slider_with_optional(  # noqa
-        self, min, max, step, marks, value, title
-    ):
-        slider = vm.Slider(
-            min=min, max=max, step=step, marks=marks, value=value, title=title
-        )
+    def test_valid_min_max(self, min, max):
+        slider = vm.Slider(min=min, max=max)
 
         assert slider.min == min
         assert slider.max == max
-        assert slider.step == step
-        assert slider.marks == marks
-        assert slider.value == value
-        assert slider.title == str(title)
 
-    def test_invalid_reverse_slider(self):
+    def test_invalid_min_max(self):
         with pytest.raises(
             ValidationError,
-            match="Minimum value of slider is required to be smaller than maximum value.",
+            match="Maximum value of slider is required to be larger than minimum value.",
         ):
             vm.Slider(min=10, max=0)
 
-    def test_set_default_marks(self):
+    @pytest.mark.parametrize(
+        "value",
+        [
+            5,
+            6.5,
+            0,
+            10,
+        ],
+    )
+    def test_valid_value(self, value):
+        slider = vm.Slider(min=0, max=10, value=value)
+
+        assert slider.value == value
+
+    def test_invalid_value_low(self):
+        with pytest.raises(
+            ValidationError,
+            match="Please provide a valid value larger than the minimum value.",
+        ):
+            vm.Slider(min=1, max=10, value=0)
+
+    def test_invalid_value_high(self):
+        with pytest.raises(
+            ValidationError,
+            match="Please provide a valid value smaller than the maximum value.",
+        ):
+            vm.Slider(min=1, max=10, value=11)
+
+    @pytest.mark.parametrize(
+        "step",
+        [
+            1,
+            2.5,
+            10,
+            15,
+        ],
+    )
+    def test_valid_step(self, step):
+        slider = vm.Slider(min=0, max=10, step=step)
+
+        assert slider.step == step
+
+    def test_valid_marks_default(self):
         slider = vm.Slider(min=0, max=10, step=1)
+
         assert slider.marks == {}
 
-    def test_create_slider_with_action(self):
-        slider = vm.Slider(actions=[vm.Action(function=export_data())])
-        slider_tac = slider.actions[0]
-        assert hasattr(slider, "id")
-        assert slider.type == "slider"
+    @pytest.mark.parametrize(
+        "marks, expected",
+        [
+            (
+                {str(i): i for i in range(0, 10, 5)},
+                {str(i): i for i in range(0, 10, 5)},
+            ),
+            ({15: 15, 25: 25}, {"15": 15.0, "25": 25.0}),
+        ],
+    )
+    def test_valid_marks(self, marks, expected):
+        slider = vm.Slider(min=0, max=10, marks=marks)
+
+        assert slider.marks == expected
+
+    def test_invalid_marks(self):
+        with pytest.raises(
+            ValidationError,
+            match="2 validation errors for Slider",
+        ):
+            vm.Slider(min=1, max=10, marks={0: "start", 10: "end"})
+
+    @pytest.mark.parametrize(
+        "title",
+        [
+            "test",
+            1,
+            1.0,
+            """## Test header""",
+            "",
+        ],
+    )
+    def test_valid_title(self, title):
+        slider = vm.Slider(title=title)
+
+        assert slider.title == str(title)
+
+    def test_set_action_via_validator(self, test_action_function):
+        slider = vm.Slider(actions=[vm.Action(function=test_action_function)])
+        actions_chain = slider.actions[0]
+        action = actions_chain.actions[0]
+
         assert len(slider.actions) == 1
-        assert isinstance(slider_tac, ActionsChain)
-        assert slider_tac.trigger.component_property == "value"
+        assert isinstance(actions_chain, ActionsChain)
+        assert actions_chain.trigger.component_property == "value"
+        assert isinstance(action, vm.Action)
+        assert isinstance(action.function, vm.CapturedCallable)
+        assert action.inputs == []
+        assert action.outputs == []
 
 
 class TestBuildMethod:
-    def test_slider_build(self):
-        slider = vm.Slider(id="slider_id", title="Test title")
-        component = slider.build()
-
-        expected_slider = dcc.Slider(
-            min=None,
-            max=None,
-            step=None,
-            marks=None,
-            value=None,
-            included=False,
-            className="slider_control_no_space",
-            id="slider_id",
-            persistence=True,
+    def test_slider_build(self, expected_slider):
+        slider = vm.Slider(
+            min=0, max=10, step=1, value=5, id="slider_id", title="Test title"
         )
+        component = slider.build()
 
         result = json.loads(
             json.dumps(component["slider_id"], cls=plotly.utils.PlotlyJSONEncoder)
@@ -96,31 +175,30 @@ class TestBuildMethod:
         )
 
         assert result == expected
-        assert component["slider_title"].children == "Test title"
 
 
 class TestCallbackMethod:
     @pytest.mark.parametrize(
-        "trigger, start_value, slider_value, input_store_value, expected_value",
+        "trigger, start_value, slider_value, input_store_value, expected",
         [
-            ("_text_value", 3, 1, 1, 3),  # set new value by start
-            ("", 1, 4, 1, 4),  # set new value by slider
-            ("_input_store", 1, 1, 5, 5),  # set new value by input store
-            ("_text_value", 0, 1, 1, 0),  # set to minimum value
-            ("_text_value", 12, 1, 1, 10),  # set outside of possible range
-            ("_text_value", -1, 1, 1, 0),  # set outside of possible range
-            ("_text_value", 1, 8, 1, 1),  # triggerdID value is only used
+            ("_text_value", 3, 1, 1, (3, 3, 3)),  # set new value by start
+            ("", 1, 4, 1, (4, 4, 4)),  # set new value by slider
+            ("_input_store", 1, 1, 5, (5, 5, 5)),  # set new value by input store
+            ("_text_value", 0, 1, 1, (0, 0, 0)),  # set to minimum value
+            ("_text_value", 12, 1, 1, (10, 10, 10)),  # set outside of possible range
+            ("_text_value", -1, 1, 1, (0, 0, 0)),  # set outside of possible range
+            ("_text_value", 1, 8, 1, (1, 1, 1)),  # triggerdID value is only used
         ],
     )
     def test_update_slider_value_triggered(  # noqa
-        self, trigger, start_value, slider_value, input_store_value, expected_value
+        self, trigger, start_value, slider_value, input_store_value, expected
     ):
         slider = vm.Slider(min=0, max=10, value=1)
-        result = slider.update_slider_value(
+        result = slider._update_slider_value(
             f"{slider.id}{trigger}", start_value, slider_value, input_store_value
         )
 
-        assert result == (expected_value,) * 3
+        assert result == expected
 
     @pytest.mark.parametrize(
         "trigger, start_value, slider_value, input_store_value",
@@ -137,6 +215,6 @@ class TestCallbackMethod:
             TypeError,
             match="'>' not supported between instances of 'NoneType' and 'float'",
         ):
-            slider.update_slider_value(
+            slider._update_slider_value(
                 f"{slider.id}{trigger}", start_value, slider_value, input_store_value
             )
