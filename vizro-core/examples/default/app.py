@@ -3,7 +3,6 @@ import os
 
 import pandas as pd
 
-import vizro
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -531,7 +530,6 @@ dashboard = vm.Dashboard(
             "Summary": ["Continent Summary"],
         }
     ),
-    title=f"Vizro - {vizro.__version__}",
 )
 
 if __name__ == "__main__":

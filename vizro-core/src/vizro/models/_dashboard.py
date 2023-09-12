@@ -9,6 +9,7 @@ import plotly.io as pio
 from dash import Input, Output, callback, html
 from pydantic import Field, validator
 
+import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import VizroBaseModel
@@ -54,6 +55,7 @@ class Dashboard(VizroBaseModel):
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
+        title (Optional[str]): Dashboard title to appear on every page on left-side. Defaults to `None`.
     """
 
     pages: List[Page]
@@ -90,7 +92,11 @@ class Dashboard(VizroBaseModel):
 
         return dbc.Container(
             id="dashboard_container",
-            children=[*ActionLoop._create_app_callbacks(), dash.page_container],
+            children=[
+                html.Div(id=f"vizro_version_{vizro.__version__}"),
+                *ActionLoop._create_app_callbacks(),
+                dash.page_container,
+            ],
             className=self.theme,
             fluid=True,
         )
