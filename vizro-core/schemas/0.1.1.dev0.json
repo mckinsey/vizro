@@ -24,6 +24,11 @@
     },
     "navigation": {
       "$ref": "#/definitions/Navigation"
+    },
+    "title": {
+      "title": "Title",
+      "description": "Dashboard title to appear on every page on left-side.",
+      "type": "string"
     }
   },
   "required": ["pages"],

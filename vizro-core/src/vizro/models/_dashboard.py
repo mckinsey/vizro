@@ -57,13 +57,11 @@ class Dashboard(VizroBaseModel):
     """
 
     pages: List[Page]
-
-    # We can add this if required so that the same action can be triggered by many components.
-    # actions: List[Action]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
     navigation: Optional[Navigation] = None
+    title: Optional[str] = Field(None, description="Dashboard title to appear on every page on left-side.")
 
     @validator("pages", always=True)
     def validate_pages_empty_list(cls, pages):
