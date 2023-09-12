@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.",
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (Optional[str]): Dashboard title to appear on every page on left-side. Defaults to `None`.",
   "type": "object",
   "properties": {
     "id": {
