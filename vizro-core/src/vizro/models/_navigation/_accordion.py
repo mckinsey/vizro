@@ -74,6 +74,7 @@ class Accordion(VizroBaseModel):
                 persistence_type="session",
             ),
             className="nav_panel",
+            id=f"{self.id}_outer",
         )
 
     def _create_accordion(self):
@@ -97,4 +98,5 @@ class Accordion(VizroBaseModel):
                 persistence_type="session",
             ),
             className="nav_panel",
+            id=f"{self.id}_outer",
         )

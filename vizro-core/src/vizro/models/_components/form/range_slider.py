@@ -80,7 +80,7 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title, id="range_slider_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.RangeSlider(
@@ -89,9 +89,9 @@ class RangeSlider(VizroBaseModel):
                             max=self.max,
                             step=self.step,
                             marks=self.marks,
-                            className="range_slider_control" if self.step else "range_slider_control_no_space",
                             value=value,
                             persistence=True,
+                            className="range_slider_control" if self.step else "range_slider_control_no_space",
                         ),
                         html.Div(
                             [
@@ -101,12 +101,12 @@ class RangeSlider(VizroBaseModel):
                                     placeholder="start",
                                     min=self.min,
                                     max=self.max,
-                                    className="slider_input_field_left"
-                                    if self.step
-                                    else "slider_input_field_no_space_left",
                                     value=value[0],
                                     size="24px",
                                     persistence=True,
+                                    className="slider_input_field_left"
+                                    if self.step
+                                    else "slider_input_field_no_space_left",
                                 ),
                                 dcc.Input(
                                     id=f"{self.id}_end_value",
@@ -114,11 +114,11 @@ class RangeSlider(VizroBaseModel):
                                     placeholder="end",
                                     min=self.min,
                                     max=self.max,
+                                    value=value[1],
+                                    persistence=True,
                                     className="slider_input_field_right"
                                     if self.step
                                     else "slider_input_field_no_space_right",
-                                    value=value[1],
-                                    persistence=True,
                                 ),
                                 dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
                             ],
@@ -129,4 +129,5 @@ class RangeSlider(VizroBaseModel):
                 ),
             ],
             className="selector_container",
+            id=f"{self.id}_outer",
         )
