@@ -13,7 +13,6 @@ VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 
 
 def check_no_version_pypi(pypi_endpoint, package_name, package_version):
-    print(f"Check if {package_name} {package_version} is on pypi")
     response = requests.get(pypi_endpoint, timeout=10)
     if response.status_code == 404:
         # Version doesn't exist on Pypi - do release
@@ -33,6 +32,7 @@ def check_dev_version(package_name, package_version):
 if __name__ == "__main__":
     """Check if a package needs to be released"""
     new_release = "false"
+    double_release = False
     package_name = sys.argv[1]
     package_version = "0.1.1"#sys.argv[2]
 
@@ -47,11 +47,13 @@ if __name__ == "__main__":
     if os.path.exists(env_file) and new_release == "true":
         with open(env_file, "r") as f:
             for line in f:
-                print(line)
                 if line.strip() == "NEW_RELEASE=true":
-                    sys.exit("Cannot release two packages at the same time. Please modify your PR.")
+                    double_release = True
 
     with open(env_file, "a") as f:
         f.write(f"NEW_RELEASE={new_release}\n")
         if new_release == "true":
             f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
+    
+    if double_release:
+        sys.exit("Cannot release two packages at the same time. Please modify your PR.")
