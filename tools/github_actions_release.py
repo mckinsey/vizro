@@ -39,7 +39,7 @@ if __name__ == "__main__":
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
     
 
-    if not check_no_dev_version(package_name,package_version) and not check_no_version_pypi(pypi_endpoint, package_name, package_version):
+    if check_no_dev_version(package_name,package_version) and check_no_version_pypi(pypi_endpoint, package_name, package_version):
         new_release = "true"
 
     env_file = os.getenv("GITHUB_ENV")
