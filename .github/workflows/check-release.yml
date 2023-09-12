@@ -76,8 +76,9 @@ jobs:
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
+          ls
           formatted_date=$(date +"%Y-%m-%d")
-          python /tools/extract_release_notes.py \
+          python tools/extract_release_notes.py \
           "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
           "${{needs.check-version.outputs.package_version}} — $formatted_date"
     #   - name: Create GitHub Release
