@@ -72,21 +72,13 @@ class TestAccordionBuild:
         with pytest.warns(UserWarning):
             Accordion(pages=["Page 1"])
 
-    @pytest.mark.parametrize(
-        "accordion_pages, id_accordion",
-        [
-            (["Page 1", "Page 2"], "accordion_4"),
-            (None, "accordion_5"),
-        ],
-    )
-    def test_accordion_same_result_with_different_config(
-        self, accordion_pages, id_accordion, accordion_from_page_as_list
-    ):
-        result_navigation = Accordion(pages=accordion_pages, id=id_accordion)
+    @pytest.mark.parametrize("accordion_pages", [(["Page 1", "Page 2"]), (None)])
+    def test_accordion_same_result_with_different_config(self, accordion_pages, accordion_from_page_as_list):
+        result_navigation = Accordion(pages=accordion_pages, id="accordion_list")
         expected_navigation = accordion_from_page_as_list
 
         # setting accordion id to fix the random id generation
-        expected_navigation.id = id_accordion
+        expected_navigation.children.id = "accordion_list"
 
         result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_navigation, cls=plotly.utils.PlotlyJSONEncoder))

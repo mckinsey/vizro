@@ -12,7 +12,7 @@ import vizro.models as vm
 
 @pytest.fixture
 def expected_card():
-    text = dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id_text")
+    text = dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id")
     button = html.Div(
         dbc.Button(
             href="https://www.google.com",
@@ -21,7 +21,7 @@ def expected_card():
         className="button_container",
     )
 
-    return html.Div([text, button], className="nav_card_container", id="card_id")
+    return html.Div([text, button], className="nav_card_container", id="card_id_outer")
 
 
 class TestCardInstantiation:
@@ -83,7 +83,7 @@ class TestBuildMethod:
     def test_markdown_setting(self, test_text, expected):
         card = vm.Card(text=test_text, id="id_valid")
         card = card.build()
-        card_markdown = card["id_valid_text"]
+        card_markdown = card["id_valid"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False
@@ -100,7 +100,7 @@ class TestBuildMethod:
     def test_markdown_build_invalid(self, test_text, expected):
         card = vm.Card(text=test_text, id="test_id")
         card = card.build()
-        card_markdown = card["test_id_text"]
+        card_markdown = card["test_id"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False

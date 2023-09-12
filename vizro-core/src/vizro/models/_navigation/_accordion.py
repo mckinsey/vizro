@@ -67,13 +67,14 @@ class Accordion(VizroBaseModel):
 
         return html.Div(
             children=dbc.Accordion(
+                id=self.id,
                 children=accordion_items,
                 class_name="accordion",
                 persistence=True,
                 persistence_type="session",
             ),
             className="nav_panel",
-            id=self.id,
+            id=f"{self.id}_outer",
         )
 
     def _create_accordion(self):

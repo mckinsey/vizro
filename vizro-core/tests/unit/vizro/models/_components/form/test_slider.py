@@ -17,6 +17,7 @@ def expected_slider():
             html.Div(
                 [
                     dcc.Slider(
+                        id="slider_id",
                         min=0,
                         max=10,
                         step=1,
@@ -27,6 +28,7 @@ def expected_slider():
                         className="slider_control",
                     ),
                     dcc.Input(
+                        id="slider_id_text_value",
                         type="number",
                         placeholder="end",
                         min=0,
@@ -41,7 +43,7 @@ def expected_slider():
             ),
         ],
         className="selector_container",
-        id="slider_id",
+        id="slider_id_outer",
     )
 
 

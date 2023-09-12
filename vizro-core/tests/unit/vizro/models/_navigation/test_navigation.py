@@ -61,22 +61,14 @@ class TestNavigationBuild:
 
         assert result == expected
 
-    @pytest.mark.parametrize(
-        "navigation_pages",
-        [
-            (["Page 1", "Page 2"]),
-            None,
-        ],
-    )
+    @pytest.mark.parametrize("navigation_pages", [(["Page 1", "Page 2"]), None])
     def test_navigation_same_result_with_different_config(self, navigation_pages, accordion_from_page_as_list):
-        id_accordion = "accordion_6"
-
         result_navigation = vm.Navigation(pages=navigation_pages)
         result_navigation.pre_build()
 
         # setting accordion id to fix the random id generation
-        result_navigation._selector.id = id_accordion
-        accordion_from_page_as_list.id = id_accordion
+        result_navigation._selector.id = "accordion_list"
+        accordion_from_page_as_list.children.id = "accordion_list"
 
         result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))

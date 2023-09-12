@@ -16,6 +16,7 @@ def expected_dropdown_with_all():
         [
             html.P("Title"),
             dcc.Dropdown(
+                id="dropdown_id",
                 options=["ALL", "A", "B", "C"],
                 value="ALL",
                 multi=True,
@@ -25,7 +26,7 @@ def expected_dropdown_with_all():
             ),
         ],
         className="selector_dropdown_container",
-        id="dropdown_id",
+        id="dropdown_id_outer",
     )
 
 
@@ -35,6 +36,7 @@ def expected_dropdown_without_all():
         [
             html.P("Title"),
             dcc.Dropdown(
+                id="dropdown_id",
                 options=["A", "B", "C"],
                 value="A",
                 multi=False,
@@ -44,7 +46,7 @@ def expected_dropdown_without_all():
             ),
         ],
         className="selector_dropdown_container",
-        id="dropdown_id",
+        id="dropdown_id_outer",
     )
 
 

@@ -15,12 +15,13 @@ def expected_button():
     return html.Div(
         [
             dbc.Button(
+                id="button_id",
                 children="Click me!",
                 className="button_primary",
             ),
         ],
         className="button_container",
-        id="button-id",
+        id="button_id_outer",
     )
 
 
@@ -53,7 +54,7 @@ class TestButtonInstantiation:
 
 class TestBuildMethod:
     def test_button_build(self, expected_button):
-        button = vm.Button(id="button-id", text="Click me!").build()
+        button = vm.Button(id="button_id", text="Click me!").build()
         result = json.loads(json.dumps(button, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_button, cls=plotly.utils.PlotlyJSONEncoder))
 
