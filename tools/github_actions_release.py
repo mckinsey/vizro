@@ -1,9 +1,11 @@
+"""Determine if new package should be release (based on version) and consequently write information to env."""
 import os
 import sys
 
 import requests
 
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
+RESPONSE_ERROR = 404
 
 
 # def get_package_version(base_path, package_path):
@@ -13,22 +15,22 @@ VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 ### GET PACKAGE VERSION THROUGH HATCH (FOR FUTURE COMPATIBILITY)
 
 
-def check_no_version_pypi(pypi_endpoint, package_name, package_version):
+def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
     response = requests.get(pypi_endpoint, timeout=10)
-    if response.status_code == 404:
+    if response.status_code == RESPONSE_ERROR:
         # Version doesn't exist on Pypi - do release
-        print(f"Potential release of {package_name} {package_version}")
+        print(f"Potential release of {package_name} {package_version}")  # noqa: T201
         return True
     else:
-        print(f"Skipped: {package_name} {package_version} already exists on PyPI")
+        print(f"Skipped: {package_name} {package_version} already exists on PyPI")  # noqa: T201
         return False
 
 
-def check_no_dev_version(package_name, package_version):
+def _check_no_dev_version(package_name, package_version):
     if "dev" not in package_version:
         return True  # TODO: CHANGE TO FALSE AFTER TESTING
     else:
-        print(f"Skipped: {package_name} {package_version} is still under development")
+        print(f"Skipped: {package_name} {package_version} is still under development")  # noqa: T201
         return True
 
 
@@ -41,7 +43,7 @@ if __name__ == "__main__":
 
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
 
-    if check_no_dev_version(package_name, package_version) and check_no_version_pypi(
+    if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
         pypi_endpoint, package_name, package_version
     ):
         new_release = "true"
