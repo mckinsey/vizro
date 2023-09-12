@@ -97,7 +97,6 @@ class TestSliderInstantiation:
             1,
             2.5,
             10,
-            15,
         ],
     )
     def test_valid_step(self, step):

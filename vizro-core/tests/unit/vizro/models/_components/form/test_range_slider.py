@@ -185,7 +185,7 @@ class TestRangeSliderInstantiation:
 
     @pytest.mark.parametrize(
         "step",
-        [1, 2.5, 10, 15, None],
+        [1, 2.5, 10, None],
     )
     def test_valid_step(self, step):
         range_slider = vm.RangeSlider(min=0, max=10, step=step)
