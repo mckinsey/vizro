@@ -105,19 +105,34 @@ class TestSliderInstantiation:
 
         assert slider.step == step
 
+    def test_invalid_step(self):
+        with pytest.raises(ValidationError, match="The step value of the slider must be less than the max value."):
+            vm.Slider(min=0, max=10, step=11)
+
     def test_valid_marks_with_step(self):
         slider = vm.Slider(min=0, max=10, step=1)
 
         assert slider.marks == {}
 
     @pytest.mark.parametrize(
+        "marks, step, expected_marks",
+        [
+            ({2: "2", 4: "4", 6: "6"}, 1, {}),
+            ({2: "2", 4: "4", 6: "6"}, None, {2: "2", 4: "4", 6: "6"}),
+            ({}, 1, {}),
+        ],
+    )
+    def test_step_precedence_over_marks(self, marks, step, expected_marks):
+        slider = vm.Slider(min=0, max=10, marks=marks, step=step)
+
+        assert slider.marks == expected_marks
+        assert slider.step == step
+
+    @pytest.mark.parametrize(
         "marks, expected",
         [
-            (
-                {str(i): i for i in range(0, 10, 5)},
-                {str(i): i for i in range(0, 10, 5)},
-            ),
-            ({15: 15, 25: 25}, {"15": 15.0, "25": 25.0}),
+            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
+            ({15: 15, 25: 25}, {15.0: "15", 25.0: "25"}),
             (None, None),
         ],
     )
@@ -131,7 +146,7 @@ class TestSliderInstantiation:
             ValidationError,
             match="2 validation errors for Slider",
         ):
-            vm.Slider(min=1, max=10, marks={0: "start", 10: "end"})
+            vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize(
         "title",

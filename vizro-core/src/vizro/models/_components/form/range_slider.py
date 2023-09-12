@@ -5,6 +5,7 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components.form._form_utils import validate_max, validate_slider_value, validate_step
 from vizro.models._models_utils import _log_call
 
 
@@ -30,7 +31,7 @@ class RangeSlider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[str, float]] = Field(None, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[float, str]] = Field(None, description="Marks to be displayed on slider.")
     value: Optional[List[float]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
     )
@@ -38,11 +39,14 @@ class RangeSlider(VizroBaseModel):
     actions: List[Action] = []
 
     # Re-used validators
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
+    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_step = validator("step", allow_reuse=True)(validate_step)
     _set_actions = _action_validator_factory("value")
 
     @validator("marks", always=True)
     def set_default_marks(cls, v, values):
-        return v if values["step"] is None else {}
+        return v if values.get("step") is None else {}
 
     @_log_call
     def build(self):
@@ -66,12 +70,7 @@ class RangeSlider(VizroBaseModel):
             trigger_id = callback_context.triggered_id
 
             return self._update_slider_values(
-                start=start,
-                end=end,
-                slider=slider,
-                input_store=input_store,
-                value=value,
-                trigger_id=trigger_id
+                start=start, end=end, slider=slider, input_store=input_store, value=value, trigger_id=trigger_id
             )
 
         return html.Div(
