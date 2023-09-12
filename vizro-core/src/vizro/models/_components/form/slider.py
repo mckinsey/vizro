@@ -53,12 +53,12 @@ class Slider(VizroBaseModel):
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
-            Output(f"temp-store-slider-{self.id}", "data"),
+            Output(f"{self.id}_temp_store", "data"),
         ]
         input = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
-            State(f"temp-store-slider-{self.id}", "data"),
+            State(f"{self.id}_temp_store", "data"),
         ]
 
         @callback(output=output, inputs=input)
@@ -72,6 +72,7 @@ class Slider(VizroBaseModel):
                 html.Div(
                     [
                         dcc.Slider(
+                            id=self.id,
                             min=self.min,
                             max=self.max,
                             step=self.step,
@@ -82,6 +83,7 @@ class Slider(VizroBaseModel):
                             className="slider_control" if self.step else "slider_control_no_space",
                         ),
                         dcc.Input(
+                            id=f"{self.id}_text_value",
                             type="number",
                             placeholder="end",
                             min=self.min,
@@ -90,13 +92,13 @@ class Slider(VizroBaseModel):
                             persistence=True,
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"temp-store-slider-{self.id}", storage_type="local"),
+                        dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
                     ],
                     className="slider_inner_container",
                 ),
             ],
             className="selector_container",
-            id=self.id,
+            id=f"{self.id}_outer",
         )
 
     def _update_slider_value(self, trigger_id, start, slider, input_store):

@@ -35,7 +35,7 @@ def expected_slider():
                         persistence=True,
                         className="slider_input_field_right",
                     ),
-                    dcc.Store(id="temp-store-slider-slider_id", storage_type="local"),
+                    dcc.Store(id="slider_id_temp_store", storage_type="local"),
                 ],
                 className="slider_inner_container",
             ),

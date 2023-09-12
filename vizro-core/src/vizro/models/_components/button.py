@@ -30,10 +30,11 @@ class Button(VizroBaseModel):
         return html.Div(
             [
                 dbc.Button(
+                    id=self.id,
                     children=self.text,
                     className="button_primary",
                 ),
             ],
             className="button_container",
-            id=self.id,
+            id=f"{self.id}_outer",
         )

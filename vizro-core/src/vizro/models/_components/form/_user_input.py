@@ -38,6 +38,7 @@ class UserInput(VizroBaseModel):
             [
                 html.P(self.title) if self.title else None,
                 dbc.Input(
+                    id=self.id,
                     placeholder=self.placeholder,
                     type=self.input_type,
                     persistence=True,
@@ -45,6 +46,6 @@ class UserInput(VizroBaseModel):
                     className="user_input",
                 ),
             ],
-            id=self.id,
             className="selector_container",
+            id=f"{self.id}_outer",
         )

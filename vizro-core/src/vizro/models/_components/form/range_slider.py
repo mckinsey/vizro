@@ -84,6 +84,7 @@ class RangeSlider(VizroBaseModel):
                 html.Div(
                     [
                         dcc.RangeSlider(
+                            id=self.id,
                             min=self.min,
                             max=self.max,
                             step=self.step,
@@ -95,6 +96,7 @@ class RangeSlider(VizroBaseModel):
                         html.Div(
                             [
                                 dcc.Input(
+                                    id=f"{self.id}_start_value",
                                     type="number",
                                     placeholder="start",
                                     min=self.min,
@@ -107,6 +109,7 @@ class RangeSlider(VizroBaseModel):
                                     else "slider_input_field_no_space_left",
                                 ),
                                 dcc.Input(
+                                    id=f"{self.id}_end_value",
                                     type="number",
                                     placeholder="end",
                                     min=self.min,
@@ -126,5 +129,5 @@ class RangeSlider(VizroBaseModel):
                 ),
             ],
             className="selector_container",
-            id=self.id,
+            id=f"{self.id}_outer",
         )

@@ -53,6 +53,7 @@ class Dropdown(VizroBaseModel):
             [
                 html.P(self.title) if self.title else None,
                 dcc.Dropdown(
+                    id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
@@ -62,5 +63,5 @@ class Dropdown(VizroBaseModel):
                 ),
             ],
             className="selector_dropdown_container",
-            id=self.id,
+            id=f"{self.id}_outer",
         )

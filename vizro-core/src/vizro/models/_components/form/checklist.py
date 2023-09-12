@@ -40,6 +40,7 @@ class Checklist(VizroBaseModel):
             [
                 html.P(self.title) if self.title else None,
                 dcc.Checklist(
+                    id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
@@ -47,5 +48,5 @@ class Checklist(VizroBaseModel):
                 ),
             ],
             className="selector_container",
-            id=self.id,
+            id=f"{self.id}_outer",
         )
