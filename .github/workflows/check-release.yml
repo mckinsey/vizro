@@ -24,7 +24,7 @@ jobs:
 
     - name: Check which 📦 needs to be released
       run: |
-        packages=("vizro" "vizro-core")
+        packages=("vizro") #  "vizro-core"
 
         for package in "${packages[@]}"; do
             if [[ "$package" == "vizro" ]]; then
@@ -76,7 +76,6 @@ jobs:
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
-          ls
           formatted_date=$(date +"%Y-%m-%d")
           python tools/extract_release_notes.py \
           "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \

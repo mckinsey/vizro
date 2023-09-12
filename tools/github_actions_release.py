@@ -24,7 +24,7 @@ def check_no_version_pypi(pypi_endpoint, package_name, package_version):
 
 def check_no_dev_version(package_name, package_version):
     if not "dev" in package_version:
-        return False
+        return True #TODO: CHANGE TO FALSE AFTER TESTING
     else:
         print(f"Skipped: {package_name} {package_version} is still under development")
         return True
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     new_release = "false"
     double_release = False
     package_name = sys.argv[1]
-    package_version = "0.1.1" if package_name=="vizro" else "0.1.0.dev0"#sys.argv[2]
+    package_version = sys.argv[2] #"0.1.1" if package_name=="vizro" else "0.1.0.dev0"#
 
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
     
