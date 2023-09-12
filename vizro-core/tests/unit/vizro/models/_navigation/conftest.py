@@ -22,6 +22,37 @@ def pages_as_dict():
 
 
 @pytest.fixture
+def single_accordion_single_page():
+    accordion_buttons = [
+        dbc.Button(
+            children=["Page 1"],
+            className="accordion_button",
+            key="/",
+            href="/",
+        ),
+    ]
+    accordion_items = [
+        dbc.AccordionItem(
+            children=[*accordion_buttons],
+            title="SELECT PAGE",
+            class_name="accordion_item",
+        )
+    ]
+    accordion = html.Div(
+        children=dbc.Accordion(
+            id="single_accordion",
+            children=accordion_items,
+            class_name="accordion",
+            persistence=True,
+            persistence_type="session",
+        ),
+        className="nav_panel",
+        id="accordion_list_outer",
+    )
+    return accordion
+
+
+@pytest.fixture
 def accordion_from_page_as_list():
     accordion_buttons = [
         dbc.Button(
