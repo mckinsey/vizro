@@ -58,6 +58,7 @@ def expected_range_slider_default():
             ),
         ],
         className="selector_container",
+        id="range_slider_outer"
     )
 
 
@@ -110,6 +111,7 @@ def expected_range_slider_with_optional():
             ),
         ],
         className="selector_container",
+        id="range_slider_outer"
     )
 
 
