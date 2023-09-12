@@ -31,7 +31,7 @@ For more information, see [here](https://dash.plotly.com/external-resources#chan
 
 ## Overwriting CSS properties
 To overwrite any CSS properties of existing Vizro components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
-For reference, all Vizro CSS files can be found [here](pages.md).
+For reference, all Vizro CSS files can be found [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
 !!! example "Customising CSS"
     === "my_css_file.css"
@@ -115,4 +115,4 @@ app = Vizro().build(dashboard).run()
 ```
 
 Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
-A guide on how to do that you can find [here](https://github.com/mckinsey/vizro/blob/main/docs/pages/user_guides/pages.md)
+A guide on how to do that you can find [here](pages.md).
