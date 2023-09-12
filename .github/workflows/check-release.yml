@@ -24,14 +24,10 @@ jobs:
 
     - name: Check which 📦 needs to be released
       run: |
-        packages=("vizro") #  "vizro-core"
+        packages=("vizro-core") #  "vizro-core"
 
         for package in "${packages[@]}"; do
-            if [[ "$package" == "vizro" ]]; then
-                cd vizro-core
-            else
-                cd $package
-            fi
+            cd $package
             version=$(hatch version)
             cd ..
             python tools/github_actions_release.py $package $version
@@ -65,12 +61,7 @@ jobs:
           pip install hatch
       - name: Build package
         run: |
-          package_name="${{ needs.check-version.outputs.package_name }}"
-          if [[ "${package_name}" == "vizro" ]]; then
-            cd vizro-core
-          else
-            cd "${package_name}"
-          fi
+          cd "${{ needs.check-version.outputs.package_name }}"
           hatch build
         
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
