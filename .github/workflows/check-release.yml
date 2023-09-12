@@ -65,40 +65,27 @@ jobs:
           pip install hatch
       - name: Build package
         run: |
-          if [[ "${{ needs.check-version.outputs.package_name }}" == "vizro" ]]; then
+          package_name="${{ needs.check-version.outputs.package_name }}"
+          if [[ "${package_name}" == "vizro" ]]; then
             cd vizro-core
           else
-            cd ${{ needs.check-version.outputs.package_name }}
+            cd "${package_name}"
           fi
           hatch build
-    # - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/RELEASE.md
-    #     id: extract
-    #     run: |
-    #     python tools/github_actions/extract_release_notes.py \
-    #     "${{needs.check-version.outputs.package_name}}/RELEASE.md" \
-    #     "Release ${{needs.check-version.outputs.package_version}}"
-    # - name: Create GitHub Release
-    #     uses: softprops/action-gh-release@v1
-    #     with:
-    #     tag_name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
-    #     name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
-    #     body_path: release_body.txt
-    #     draft: false
-    #     prerelease: false
-    #     token: ${{ secrets.GH_TAGGING_TOKEN }}
-    # - name: Set PyPI token
-    #     run: |
-    #     if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-airflow" ]; then
-    #         echo 'PYPI_TOKEN=${{ secrets.AIRFLOW_PYPI_TOKEN }}' >> $GITHUB_ENV
-    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-datasets" ]; then
-    #         echo 'PYPI_TOKEN=${{ secrets.DATASETS_PYPI_TOKEN }}' >> $GITHUB_ENV
-    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-docker" ]; then
-    #         echo 'PYPI_TOKEN=${{ secrets.DOCKER_PYPI_TOKEN }}' >> $GITHUB_ENV
-    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-telemetry" ]; then
-    #         echo 'PYPI_TOKEN=${{ secrets.TELEMETRY_PYPI_TOKEN }}' >> $GITHUB_ENV
-    #     fi
-    # - name: Publish distribution 📦 to PyPI
-    #     uses: pypa/gh-action-pypi-publish@release/v1
-    #     with:
-    #     packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
-    #     password: ${{ env.PYPI_TOKEN }}
+        
+      - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
+        id: extract
+        run: |
+          formatted_date=$(date +"%Y-%m-%d")
+          python ../tools/extract_release_notes.py \
+          "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
+          "${{needs.check-version.outputs.package_version}} — $formatted_date"
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+          name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+          body_path: release_body.txt
+          draft: true
+          prerelease: true
+          token: ${{ secrets.GH_TAGGING_TOKEN }}
