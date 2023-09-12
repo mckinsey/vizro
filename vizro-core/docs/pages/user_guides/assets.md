@@ -29,11 +29,11 @@ For example, you can leverage the `dash.get_asset_url()` function in your custom
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see [here](https://dash.plotly.com/external-resources#changing-the-favicon).
 
-## Overwriting CSS properties
-To overwrite any CSS properties of existing Vizro components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
-For reference, all Vizro CSS files can be found [here](pages.md).
+## Overwriting global CSS properties
+To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
+For reference, all Vizro CSS files can be found [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
-!!! example "Customising CSS"
+!!! example "Customising global CSS properties"
     === "my_css_file.css"
     ```css
     h1, h2 {
@@ -42,6 +42,7 @@ For reference, all Vizro CSS files can be found [here](pages.md).
     ```
     === "app.py"
         ```py
+        import os
         import vizro.models as vm
         from vizro import Vizro
 
@@ -61,6 +62,9 @@ For reference, all Vizro CSS files can be found [here](pages.md).
                 )
 
         dashboard = vm.Dashboard(pages=[page])
+
+        # only required if assets folder is not located at the same directory of app.py
+        Vizro._user_assets_folder = os.path.abspath("../assets")
 
         Vizro().build(dashboard).run()
         ```
@@ -84,6 +88,75 @@ For reference, all Vizro CSS files can be found [here](pages.md).
 
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
+
+## Overwriting CSS properties in selective components
+To overwrite CSS properties of selective components, provide an ID to the relevant component and target the right CSS property.
+For more information on how CSS selectors work, see [here](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure).
+
+Let's say we want to change the background and font-color of one [`Card`][vizro.models.Card] instead of all existing Cards in the Dashboard.
+We can use the ID of the outermost Div to target the inner sub-components of the card. Note that all our components have an ID attached to the outermost Div,
+following the pattern `"{component_id}_outer"`.
+
+To achieve this, do the following:
+
+1. Provide a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
+2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card_container"` or `"card_text"`
+3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
+
+
+!!! example "Customising CSS properties in selective components"
+    === "my_css_file.css"
+    ```css
+    #my_card_outer.card_container {
+      background-color: white;
+    }
+
+    #my_card_outer .card_text p {
+      color: black;
+    }
+    ```
+    === "app.py"
+        ```py
+        import os
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Changing the card color",
+            components=[
+                vm.Card(id="my_card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+                vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit.""")
+                     ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        # only required if assets folder is not located at the same directory of app.py
+        Vizro._user_assets_folder = os.path.abspath("../assets")
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+        - components:
+            - text: |
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              type: card
+              id: my_card
+            - text: |
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              type: card
+          title: Changing the card color
+        ```
+    === "Result"
+         [![CardCSS]][CardCSS]
+
+    [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
+
+
 ???+ note
 
     CSS properties will be applied with the last served file taking precedence.
@@ -97,6 +170,7 @@ For reference, all Vizro CSS files can be found [here](pages.md).
         - CSS/JS Files
         - Folders
            - CSS/JS Files
+
 
 ## Changing the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
@@ -115,4 +189,4 @@ app = Vizro().build(dashboard).run()
 ```
 
 Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
-A guide on how to do that you can find [here](https://github.com/mckinsey/vizro/blob/main/docs/pages/user_guides/pages.md)
+A guide on how to do that you can find [here](pages.md).

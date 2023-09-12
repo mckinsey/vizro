@@ -3,7 +3,7 @@ import json
 
 import plotly
 import pytest
-from dash import dcc
+from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -11,16 +11,39 @@ import vizro.models as vm
 
 @pytest.fixture()
 def expected_slider():
-    return dcc.Slider(
-        min=0,
-        max=10,
-        step=1,
-        marks={},
-        value=5,
-        included=False,
-        className="slider_control",
-        id="slider_id",
-        persistence=True,
+    return html.Div(
+        [
+            html.P("Test title"),
+            html.Div(
+                [
+                    dcc.Slider(
+                        id="slider_id",
+                        min=0,
+                        max=10,
+                        step=1,
+                        marks={},
+                        value=5,
+                        included=False,
+                        persistence=True,
+                        className="slider_control",
+                    ),
+                    dcc.Input(
+                        id="slider_id_text_value",
+                        type="number",
+                        placeholder="end",
+                        min=0,
+                        max=10,
+                        value=5,
+                        persistence=True,
+                        className="slider_input_field_right",
+                    ),
+                    dcc.Store(id="slider_id_temp_store", storage_type="local"),
+                ],
+                className="slider_inner_container",
+            ),
+        ],
+        className="selector_container",
+        id="slider_id_outer",
     )
 
 
@@ -172,9 +195,9 @@ class TestSliderInstantiation:
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
         slider = vm.Slider(min=0, max=10, step=1, value=5, id="slider_id", title="Test title")
-        component = slider.build()
+        slider = slider.build()
 
-        result = json.loads(json.dumps(component["slider_id"], cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.loads(json.dumps(slider, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
