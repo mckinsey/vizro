@@ -26,17 +26,16 @@ jobs:
       run: |
         packages=("vizro" "vizro-core")
 
-        for string in "${packages[@]}"; do
-            if [[ "$string" == "vizro" ]]; then
+        for package in "${packages[@]}"; do
+            if [[ "$package" == "vizro" ]]; then
                 cd vizro-core
             else
-                cd $string
+                cd $package
             fi
             version=$(hatch version)
             cd ..
-            python tools/github_actions_release.py $string $version
+            python tools/github_actions_release.py $package $version
         done
-
 
     - name: Set outputs
       id: version_check
@@ -48,11 +47,59 @@ jobs:
       new_release: ${{ steps.version_check.outputs.new_release }}
       package_name: ${{ steps.version_check.outputs.package_name }}
       package_version: ${{ steps.version_check.outputs.package_version }}
-    # - name: Create GitHub Release
-    #   uses: softprops/action-gh-release@v1
 
+  build-publish:
+      needs: [ check-version]
+      if: |
+        needs.check-version.outputs.new_release == 'true'
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+    # - name: Install dependencies
+    #     run: |
+    #     python -m pip install --upgrade pip
+    #     pip install build
+      - name: Build package
+        run: |
+          package = ${{ needs.check-version.outputs.package_name }}
+          if [[ "$package" == "vizro" ]]; then
+            cd vizro-core
+          else
+            cd $package
+          fi
+          hatch build
+    # - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/RELEASE.md
+    #     id: extract
+    #     run: |
+    #     python tools/github_actions/extract_release_notes.py \
+    #     "${{needs.check-version.outputs.package_name}}/RELEASE.md" \
+    #     "Release ${{needs.check-version.outputs.package_version}}"
+    # - name: Create GitHub Release
+    #     uses: softprops/action-gh-release@v1
+    #     with:
+    #     tag_name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+    #     name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+    #     body_path: release_body.txt
+    #     draft: false
+    #     prerelease: false
+    #     token: ${{ secrets.GH_TAGGING_TOKEN }}
+    # - name: Set PyPI token
+    #     run: |
+    #     if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-airflow" ]; then
+    #         echo 'PYPI_TOKEN=${{ secrets.AIRFLOW_PYPI_TOKEN }}' >> $GITHUB_ENV
+    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-datasets" ]; then
+    #         echo 'PYPI_TOKEN=${{ secrets.DATASETS_PYPI_TOKEN }}' >> $GITHUB_ENV
+    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-docker" ]; then
+    #         echo 'PYPI_TOKEN=${{ secrets.DOCKER_PYPI_TOKEN }}' >> $GITHUB_ENV
+    #     elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "kedro-telemetry" ]; then
+    #         echo 'PYPI_TOKEN=${{ secrets.TELEMETRY_PYPI_TOKEN }}' >> $GITHUB_ENV
+    #     fi
     # - name: Publish distribution 📦 to PyPI
-    #   uses: pypa/gh-action-pypi-publish@release/v1
-    #   with:
-    #     packages-dir: vizro-core/dist
-    #     password: abc1234
+    #     uses: pypa/gh-action-pypi-publish@release/v1
+    #     with:
+    #     packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
+    #     password: ${{ env.PYPI_TOKEN }}
