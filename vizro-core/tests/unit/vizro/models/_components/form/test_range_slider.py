@@ -66,11 +66,11 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            html.P("Title", id="range_slider_title"),
+            html.P("Title"),
             html.Div(
                 [
                     dcc.RangeSlider(
-                        id="range_slider",
+                        id="range_slider_with_all",
                         min=0,
                         max=10,
                         step=1,
@@ -82,7 +82,7 @@ def expected_range_slider_with_optional():
                     html.Div(
                         [
                             dcc.Input(
-                                id="range_slider_start_value",
+                                id="range_slider_with_all_start_value",
                                 type="number",
                                 placeholder="start",
                                 min=0,
@@ -93,7 +93,7 @@ def expected_range_slider_with_optional():
                                 persistence=True,
                             ),
                             dcc.Input(
-                                id="range_slider_end_value",
+                                id="range_slider_with_all_end_value",
                                 type="number",
                                 placeholder="end",
                                 min=0,
@@ -102,7 +102,7 @@ def expected_range_slider_with_optional():
                                 value=10,
                                 persistence=True,
                             ),
-                            dcc.Store(id="temp-store-range_slider-range_slider", storage_type="local"),
+                            dcc.Store(id="temp-store-range_slider-range_slider_with_all", storage_type="local"),
                         ],
                         className="slider_input_container",
                     ),
@@ -111,7 +111,7 @@ def expected_range_slider_with_optional():
             ),
         ],
         className="selector_container",
-        id="range_slider_outer"
+        id="range_slider_with_all_outer"
     )
 
 
@@ -272,7 +272,7 @@ class TestRangeSliderBuild:
         assert result == expected
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
-        range_slider = vm.RangeSlider(min=0, max=10, step=1, value=[0, 10], id="range_slider", title="Title")
+        range_slider = vm.RangeSlider(min=0, max=10, step=1, value=[0, 10], id="range_slider_with_all", title="Title")
         component = range_slider.build()
 
         result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
