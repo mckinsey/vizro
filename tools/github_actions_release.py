@@ -44,12 +44,12 @@ if __name__ == "__main__":
 
     env_file = os.getenv("GITHUB_ENV")
     
-    # Open the file for reading and check if "NEW_RELEASE=true" already exists
-    with open(env_file, "r") as f:
-        for line in f:
-            print(line)
-            if line.strip() == "NEW_RELEASE=true":
-                sys.exit("Cannot release two packages at the same time. Please modify your PR.")
+    if os.path.exists(env_file) and new_release == "true":
+        with open(env_file, "r") as f:
+            for line in f:
+                print(line)
+                if line.strip() == "NEW_RELEASE=true":
+                    sys.exit("Cannot release two packages at the same time. Please modify your PR.")
 
     with open(env_file, "a") as f:
         f.write(f"NEW_RELEASE={new_release}\n")
