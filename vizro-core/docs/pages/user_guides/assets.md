@@ -62,7 +62,10 @@ For reference, all Vizro CSS files can be found [here](https://github.com/mckins
                 )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro._user_assets_folder = os.path.abspath("../assets")  # only required if assets folder is not located at the same directory of app.py
+
+        # only required if assets folder is not located at the same directory of app.py
+        Vizro._user_assets_folder = os.path.abspath("../assets")
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
@@ -98,7 +101,7 @@ To achieve this, do the following:
 
 1. Provide a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
 2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card_container"` or `"card_text"`
-3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`.
+3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
 
 
 !!! example "Customising CSS properties in selective components"
@@ -127,7 +130,10 @@ To achieve this, do the following:
         )
 
         dashboard = vm.Dashboard(pages=[page])
-        Vizro._user_assets_folder = os.path.abspath("../assets")  # only required if assets folder is not located at the same directory of app.py
+
+        # only required if assets folder is not located at the same directory of app.py
+        Vizro._user_assets_folder = os.path.abspath("../assets")
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"

@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 <!--
 ### Changed
 
-- A bullet item for the Changed category.
+- Provide ID to outer div to enable CSS customization of component and its sub-components (#29)
 
 -->
 <!--
