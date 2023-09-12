@@ -47,6 +47,7 @@ if __name__ == "__main__":
     # Open the file for reading and check if "NEW_RELEASE=true" already exists
     with open(env_file, "r") as f:
         for line in f:
+            print(line)
             if line.strip() == "NEW_RELEASE=true":
                 sys.exit("Cannot release two packages at the same time. Please modify your PR.")
 
