@@ -65,7 +65,7 @@ class Accordion(VizroBaseModel):
 
         accordion_items = [self._create_accordion_item(accordion_buttons=accordion_buttons)]
 
-        # Don't create accordion navigation if only there is only one page and one accordion
+        # Don't create accordion navigation if there is only one page and one accordion item
         if len(accordion_buttons) == len(accordion_items) == 1:
             return None
 
