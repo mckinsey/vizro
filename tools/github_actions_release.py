@@ -22,12 +22,12 @@ def check_no_version_pypi(pypi_endpoint, package_name, package_version):
         print(f"Skipped: {package_name} {package_version} already exists on PyPI")
         return False
 
-def check_dev_version(package_name, package_version):
-    if "dev" in package_version:
+def check_no_dev_version(package_name, package_version):
+    if not "dev" in package_version:
+        return False
+    else:
         print(f"Skipped: {package_name} {package_version} is still under development")
         return True
-    else:
-        return False
 
 if __name__ == "__main__":
     """Check if a package needs to be released"""
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
     
 
-    if not check_dev_version(package_name,package_version) and check_no_version_pypi(pypi_endpoint, package_name, package_version):
+    if not check_no_dev_version(package_name,package_version) and not check_no_version_pypi(pypi_endpoint, package_name, package_version):
         new_release = "true"
 
     env_file = os.getenv("GITHUB_ENV")
