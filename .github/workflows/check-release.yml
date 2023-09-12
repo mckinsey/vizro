@@ -80,12 +80,12 @@ jobs:
           python ../tools/extract_release_notes.py \
           "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
           "${{needs.check-version.outputs.package_version}} — $formatted_date"
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
-          name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
-          body_path: release_body.txt
-          draft: true
-          prerelease: true
-          token: ${{ secrets.GH_TAGGING_TOKEN }}
+    #   - name: Create GitHub Release
+    #     uses: softprops/action-gh-release@v1
+    #     with:
+    #       tag_name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+    #       name: ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}}
+    #       body_path: release_body.txt
+    #       draft: true
+    #       prerelease: true
+    #       token: ${{ secrets.GH_TAGGING_TOKEN }}
