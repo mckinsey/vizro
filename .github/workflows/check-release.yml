@@ -1,61 +1,61 @@
 name: Check versions and build-publish
 
 on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - "main"
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
   check-version:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests
-        pip install --upgrade hatch
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          pip install --upgrade hatch
 
-    - name: Check which 📦 needs to be released
-      run: |
-        packages=("vizro-core") #  "vizro-core"
+      - name: Check which 📦 needs to be released
+        run: |
+          packages=("vizro-core") #  "vizro-core"
 
-        for package in "${packages[@]}"; do
-            cd $package
-            version=$(hatch version)
-            cd ..
-            python tools/github_actions_release.py $package $version
-        done
+          for package in "${packages[@]}"; do
+              cd $package
+              version=$(hatch version)
+              cd ..
+              python tools/github_actions_release.py $package $version
+          done
 
-    - name: Set outputs
-      id: version_check
-      run: |
-        echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
-        echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
-        echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
+      - name: Set outputs
+        id: version_check
+        run: |
+          echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
+          echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
+          echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
     outputs:
       new_release: ${{ steps.version_check.outputs.new_release }}
       package_name: ${{ steps.version_check.outputs.package_name }}
       package_version: ${{ steps.version_check.outputs.package_version }}
 
   build-publish:
-      needs: [ check-version]
-      if: |
-        needs.check-version.outputs.new_release == 'true'
-      runs-on: ubuntu-latest
-      steps:
+    needs: [check-version]
+    if: |
+      needs.check-version.outputs.new_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
