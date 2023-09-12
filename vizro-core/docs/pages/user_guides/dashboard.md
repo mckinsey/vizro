@@ -185,8 +185,6 @@ To create a dashboard, do the following steps:
             Vizro().build(dashboard).run()
         ```
 
-After running the dashboard, you can access the dashboard via `localhost:8050`.
-
 
 ## Adding a dashboard title
 
@@ -248,3 +246,5 @@ on the top of the left navigation panel.
         [![DashboardTitle]][DashboardTitle]
 
     [DashboardTitle]: ../../assets/user_guides/dashboard/dashboard_title.png
+
+After running the dashboard, you can access the dashboard via `localhost:8050`.
