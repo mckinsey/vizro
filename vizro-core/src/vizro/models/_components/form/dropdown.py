@@ -51,7 +51,7 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title, id="dropdown_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,
@@ -59,7 +59,9 @@ class Dropdown(VizroBaseModel):
                     multi=self.multi,
                     persistence=True,
                     clearable=False,
+                    className="selector_body_dropdown",
                 ),
             ],
             className="selector_dropdown_container",
+            id=f"{self.id}_outer",
         )

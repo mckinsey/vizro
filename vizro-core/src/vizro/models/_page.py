@@ -219,7 +219,7 @@ class Page(VizroBaseModel):
 
     def _make_page_layout(self, controls_content, components_content):
         # Create dashboard containers/elements
-        page_title = html.H2(id="page_title", children=self.title)
+        page_title = html.H2(children=self.title)
         theme_switch = self._create_theme_switch()
         nav_panel = self._create_nav_panel()
         control_panel = self._create_control_panel(controls_content)
@@ -235,7 +235,7 @@ class Page(VizroBaseModel):
         )
 
         return dbc.Container(
-            id=f"page_container_{self.id}",
+            id=self.id,
             children=[dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"), left_side, right_side],
             className="page_container",
         )
