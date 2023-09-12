@@ -76,6 +76,7 @@ jobs:
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
+          pwd
           formatted_date=$(date +"%Y-%m-%d")
           python ../tools/extract_release_notes.py \
           "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
