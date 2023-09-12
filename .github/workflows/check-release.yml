@@ -65,11 +65,10 @@ jobs:
           pip install hatch
       - name: Build package
         run: |
-          package = ${{ needs.check-version.outputs.package_name }}
-          if [[ "$package" == "vizro" ]]; then
+          if [[ "${{ needs.check-version.outputs.package_name }}" == "vizro" ]]; then
             cd vizro-core
           else
-            cd $package
+            cd ${{ needs.check-version.outputs.package_name }}
           fi
           hatch build
     # - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/RELEASE.md
