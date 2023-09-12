@@ -41,8 +41,9 @@ class TestAccordionInstantiation:
 class TestAccordionBuild:
     """Tests accordion build method."""
 
-    def test_accordion_build_default(self, accordion_from_page_as_list):
-        accordion = Accordion(id="accordion_list").build()
+    @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], None])
+    def test_accordion_build_default(self, pages, accordion_from_page_as_list):
+        accordion = Accordion(pages=pages, id="accordion_list").build()
         result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
@@ -66,10 +67,3 @@ class TestAccordionBuild:
     def test_navigation_not_all_pages_included(self, dashboard_build):
         with pytest.warns(UserWarning):
             Accordion(pages=["Page 1"])
-
-    @pytest.mark.parametrize("pages", [(["Page 1", "Page 2"]), (None)])
-    def test_accordion_same_result_with_different_config(self, pages, accordion_from_page_as_list):
-        accordion = Accordion(pages=pages, id="accordion_list").build()
-        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
