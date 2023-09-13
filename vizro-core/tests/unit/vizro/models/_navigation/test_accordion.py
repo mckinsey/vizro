@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._navigation._accordion import Accordion
+from vizro.models._navigation.accordion import Accordion
 
 
 @pytest.mark.usefixtures("dashboard_build")

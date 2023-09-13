@@ -524,12 +524,21 @@ dashboard = vm.Dashboard(
         create_continent_summary(),
         create_country_analysis(),
     ],
+    # navigation=vm.Navigation(
+    #     pages={
+    #         "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+    #         "Summary": ["Continent Summary"],
+    #     }
+    # ),
     navigation=vm.Navigation(
-        pages={
-            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-            "Summary": ["Continent Summary"],
-        }
-    ),
+        selector=vm.NavBar(
+            selector=[
+                vm.Icon(pages=["Homepage", "Variable Analysis"], src="assets/images/icons/content/collections.svg"),
+                vm.Icon(pages={"Relationship": ["Relationship Analysis"], "Country": ["Country Analysis"]}, src="assets/images/icons/content/features.svg"),
+                vm.Icon(pages=["Continent Summary"], src="assets/images/icons/content/collections.svg")
+            ]
+        )
+    )
 )
 
 if __name__ == "__main__":

@@ -168,7 +168,7 @@ class Page(VizroBaseModel):
         return control_panel
 
     def _create_nav_panel(self):
-        from vizro.models._navigation._accordion import Accordion
+        from vizro.models._navigation.accordion import Accordion
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         if dashboard.navigation:

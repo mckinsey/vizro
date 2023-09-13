@@ -11,7 +11,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import NavigationPagesType
 
 if TYPE_CHECKING:
-    from vizro.models._navigation._accordion import Accordion
+    from vizro.models._navigation.accordion import Accordion
 
 
 # Validator for re-use in other models to validate pages
@@ -57,7 +57,7 @@ class Navigation(VizroBaseModel):
     """
 
     pages: Optional[NavigationPagesType] = None
-    _selector: Accordion = PrivateAttr()
+    selector: Optional[Accordion] = None
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
@@ -67,10 +67,10 @@ class Navigation(VizroBaseModel):
         self._set_selector()
 
     def _set_selector(self):
-        from vizro.models._navigation._accordion import Accordion
-
-        self._selector = Accordion(pages=self.pages)
+        from vizro.models._navigation.accordion import Accordion
+        if self.selector is None:
+            self.selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self):
-        return self._selector.build()
+        return self.selector.build()
