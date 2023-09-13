@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enabled `title` in `Dashboard` ([#31](https://github.com/mckinsey/vizro/pull/31))
+- Enable `title` argument in `Dashboard` model, which allows a title to be added on every page on top left-side ([#31](https://github.com/mckinsey/vizro/pull/31))
 
 <!--
 ### Changed

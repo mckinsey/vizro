@@ -6,10 +6,13 @@ To create a dashboard, do the following steps:
 
 1. Choose one of the possible configuration syntaxes
 2. Create your `pages`, see our guide on [Pages](pages.md)
-3. Choose a `theme` (optional, defaults to `"vizro_dark"`), see our guide on [Themes](themes.md)
-4. Customise your `navigation` (optional, defaults to an accordion with title `SELECT PAGE`), see our guide on [Navigation](navigation.md)
-5. Provide a `title` to your dashboard (optional)
+3. (optional) Choose a `theme`, see our guide on [Themes](themes.md)
+4. (optional) Customise your `navigation`, see our guide on [Navigation](navigation.md)
+5. (optional) Provide a `title` to your dashboard
 6. Add your `dashboard` to the `build` call of Vizro
+
+
+## Using dashboard configuration options
 
 !!! example "Dashboard Configuration Syntaxes"
     === "app.py - pydantic models"
@@ -185,66 +188,8 @@ To create a dashboard, do the following steps:
             Vizro().build(dashboard).run()
         ```
 
+After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Adding a dashboard title
 
-By providing a `title` to the [`Dashboard`][vizro.models.Dashboard], a title will be added to each [`Page`][vizro.models.Page]
-on the top of the left navigation panel.
-
-!!! example "Adding a dashboard title"
-    === "app.py"
-        ```py
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        import vizro.models as vm
-
-        df = px.data.iris()
-
-        page = vm.Page(
-            title="My first dashboard",
-            components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="bar_chart", figure=px.bar(df, x="sepal_width", y="petal_length", color="species")),
-            ],
-            controls=[
-                vm.Filter(column="species"),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page], title="Vizro")
-        Vizro().build(dashboard).run()
-        ```
-    === "dashboard.yaml"
-        ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
-        pages:
-          - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                id: scatter_chart
-                type: graph
-              - figure:
-                  _target_: bar
-                  data_frame: iris
-                  x: sepal_width
-                  y: petal_length
-                  color: species
-                id: bar_chart
-                type: graph
-            controls:
-              - column: species
-                type: filter
-            title: My first dashboard
-        title: Vizro
-        ```
-    === "Result"
-        [![DashboardTitle]][DashboardTitle]
-
-    [DashboardTitle]: ../../assets/user_guides/dashboard/dashboard_title.png
-
-After running the dashboard, you can access the dashboard via `localhost:8050`.
+When providing a `title` to the [`Dashboard`][vizro.models.Dashboard], it will automatically be added as a header for each [`Page`][vizro.models.Page].

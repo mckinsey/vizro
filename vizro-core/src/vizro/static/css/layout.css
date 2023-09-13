@@ -28,7 +28,7 @@
 }
 
 .header {
-  align-items: center;
+  align-items: baseline;
   display: flex;
   flex-direction: row;
   height: 32px;
@@ -96,4 +96,5 @@
 
 .dashboard_title_outer {
   width: 100%;
+  height: 32px;
 }
