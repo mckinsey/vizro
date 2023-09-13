@@ -10,9 +10,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
+
 ### Added
 
--  Pre-commit `check-spelling` hook for words `colour` and `visualisation`.
+- Pre-commit `check-spelling` hook for words `colour` and `visualisation`.
 
 <!--
 ### Changed
