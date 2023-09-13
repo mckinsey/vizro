@@ -228,7 +228,7 @@ Vizro is a toolkit for creating modular data visualisation applications
 </a>
 
 
-<a class="card-wrapper" href="/vizro/pages/API_reference/models/">
+<a class="card-wrapper" href="/vizro/pages/API_reference/manager/">
   <div class="card">
     <div class="card-content">
       <h5>Data Manager</h5>
