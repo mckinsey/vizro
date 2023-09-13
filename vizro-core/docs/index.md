@@ -9,7 +9,7 @@ Vizro is a toolkit for creating modular data visualisation applications
     <div class="card-content">
       <h5>Get Started</h5>
       <p>
-        New to Vizro? Take a look at our quickstart guide and our tutorial explaining core features.
+        New to Vizro? Take a look at our tutorials to get started and to explore our core features.
       </p>
     </div>
   </div>
