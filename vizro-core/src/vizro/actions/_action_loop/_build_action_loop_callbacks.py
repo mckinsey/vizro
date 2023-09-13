@@ -61,6 +61,49 @@ def _build_action_loop_callbacks() -> None:
             )
         )
 
+    # TODO: need to be finished
+    # clientside_callback(
+    #     """
+    #     function gateway(remaining_actions, cycle_breaker_div, ...gateway_triggers) {
+    #         var ctx_triggered, triggered_actions_chains_ids, actions_chain_to_trigger, final_action_sequence, next_action, output_list, trigger_next;
+    #
+    #         ctx_triggered = dash_clientside.callback_context.triggered
+    #         triggered_actions_chains_ids = []
+    #
+    #         console.log("ctx_triggered")
+    #         console.log(ctx_triggered)
+    #
+    #         for (let i = 0; i < ctx_triggered.length; i++) {
+    #             triggered_actions_chains_ids.push(JSON.parse(ctx_triggered[i]['prop_id'].split('.')[0])['trigger_id']);
+    #         }
+    #
+    #         console.log("triggered_actions_chains_ids");
+    #         console.log(triggered_actions_chains_ids);
+    #
+    #         if (trigger_id === 'cycle_breaker_div') {
+    #             remaining_actions = remaining_actions.split(1);
+    #         }
+    #         else {
+    #
+    #         }
+    #
+    #         console.log("remaining_actions");
+    #         console.log(remaining_actions);
+    #         console.log("cycle_breaker_div");
+    #         console.log(cycle_breaker_div);
+    #         console.log("gateway_triggers");
+    #         console.log(gateway_triggers);
+    #         console.log('');
+    #     }
+    #     """,
+    #     # output=gateway_outputs,
+    #     output=[Output("remaining_actions", "data")] + [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions],
+    #     # inputs=gateway_inputs,
+    #     inputs=[State("remaining_actions", "data"), Input("cycle_breaker_div", "n_clicks")] + gateway_inputs["gateway_triggers"],
+    #     prevent_initial_call=True,
+    # )
+
+    # TODO: Move it to the clientside callback
     @callback(
         output=gateway_outputs,
         inputs=gateway_inputs,
