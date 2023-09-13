@@ -2,6 +2,9 @@ site_name: Vizro
 site_url: https://mckinsey.github.io/vizro/
 nav:
   - Vizro: index.md
+  - Quickstart:
+      - Get started: pages/tutorials/first_dashboard.md
+      - Explore Vizro: pages/tutorials/explore_components.md
   - User Guide:
       - Install: pages/user_guides/install.md
       - Themes: pages/user_guides/themes.md
@@ -18,9 +21,6 @@ nav:
       - Assets: pages/user_guides/assets.md
       - Integrations: pages/user_guides/integration.md
       - Run Methods: pages/user_guides/run.md
-  - Tutorials:
-      - Get started: pages/tutorials/first_dashboard.md
-      - Explore Vizro: pages/tutorials/explore_components.md
   - API reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md
@@ -35,16 +35,6 @@ theme:
   language: en
   palette:
     - scheme: default
-      primary: pink
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-
-    - scheme: slate
-      primary: pink
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
   font:
     text: Roboto
     code: Roboto Mono
@@ -81,6 +71,7 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.mark
   - attr_list
+  - md_in_html
 
 plugins:
   - search
