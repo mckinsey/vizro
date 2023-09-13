@@ -6,9 +6,13 @@ To create a dashboard, do the following steps:
 
 1. Choose one of the possible configuration syntaxes
 2. Create your `pages`, see our guide on [Pages](pages.md)
-3. Choose a `theme` (optional, defaults to `"vizro_dark"`), see our guide on [Themes](themes.md)
-4. Customise your `navigation` (optional, defaults to an accordion with title `SELECT PAGE`), see our guide on [Navigation](navigation.md)
-5. Add your `dashboard` to the `build` call of Vizro
+3. (optional) Choose a `theme`, see our guide on [Themes](themes.md)
+4. (optional) Customise your `navigation`, see our guide on [Navigation](navigation.md)
+5. (optional) Provide a `title` to your dashboard
+6. Add your `dashboard` to the `build` call of Vizro
+
+
+## Using dashboard configuration options
 
 !!! example "Dashboard Configuration Syntaxes"
     === "app.py - pydantic models"
@@ -185,3 +189,7 @@ To create a dashboard, do the following steps:
         ```
 
 After running the dashboard, you can access the dashboard via `localhost:8050`.
+
+## Adding a dashboard title
+
+When providing a `title` to the [`Dashboard`][vizro.models.Dashboard], it will automatically be added as a header for each [`Page`][vizro.models.Page].
