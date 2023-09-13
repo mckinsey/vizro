@@ -60,7 +60,7 @@ class TestAccordionBuild:
         expected = json.loads(json.dumps(accordion_from_pages_as_dict, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
-    def test_accordion_build_single_page_accordion(self, single_accordion_single_page):
+    def test_accordion_build_single_page_accordion(self):
         accordion = Accordion(pages=["Page 1"], id="single_accordion").build()
         assert accordion is None
 
