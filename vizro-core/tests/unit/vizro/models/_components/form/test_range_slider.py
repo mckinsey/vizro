@@ -297,25 +297,49 @@ class TestCallbackMethod:
     """Tests model callback method."""
 
     @pytest.mark.parametrize(
-        "trigger_id, min, max, input_store, value, expected_value",
+        "trigger_id, start, end, slider_value, input_store, value, expected_value",
         [
-            ("_start_value", 2, 10, [1, 10], None, (2, 10, [2, 10], (2, 10))),  # change start value by left handle
-            ("_input_store", 0, 10, [1, 9], None, (1, 9, [1, 9], (1, 9))),  # set new value by input store
-            ("_end_value", 0, 7, [1, 7], None, (0, 7, [0, 7], (0, 7))),  # change start value by right handle
-            ("", 0, 10, None, [1, 2], (0, 10, [0, 10], (0, 10))),  # set new value by slider
-            ("_start_value", 0, 10, [2, 19], None, (0, 10, [0, 10], (0, 10))),  # set outside possible range right input
-            ("_start_value", 0, 10, [-1, 7], None, (0, 10, [0, 10], (0, 10))),  # set outside possible range left input
+            (
+                "_start_value",
+                2,
+                10,
+                [3, 10],
+                [1, 10],
+                None,
+                (2, 10, [2, 10], (2, 10)),
+            ),  # change start value by left handle
+            ("_input_store", 0, 10, [3, 10], [1, 9], None, (1, 9, [1, 9], (1, 9))),  # set new value by input store
+            ("_end_value", 0, 7, [3, 7], [1, 7], None, (0, 7, [0, 7], (0, 7))),  # change start value by right handle
+            ("", 0, 10, [3, 7], None, [1, 2], (3, 7, [3, 7], (3, 7))),  # set new value by slider
+            (
+                "_start_value",
+                0,
+                10,
+                [3, 7],
+                [2, 19],
+                None,
+                (0, 10, [0, 10], (0, 10)),
+            ),  # set outside possible range right input
+            (
+                "_start_value",
+                0,
+                10,
+                [3, 7],
+                [-1, 7],
+                None,
+                (0, 10, [0, 10], (0, 10)),
+            ),  # set outside possible range left input
         ],
     )
-    def test_update_slider_value_valid(self, min, max, trigger_id, input_store, value, expected_value):
-        range_slider = vm.RangeSlider(min=min, max=max)
+    def test_update_slider_value_valid(self, trigger_id, start, end, slider_value, input_store, value, expected_value):
+        range_slider = vm.RangeSlider(min=0, max=10)
 
         result = range_slider._update_slider_values(
             trigger_id=f"{range_slider.id}{trigger_id}",
-            start=min,
-            end=max,
+            start=start,
+            end=end,
             value=value,
             input_store=input_store,
-            slider=[min, max],
+            slider=slider_value,
         )
         assert result == expected_value
