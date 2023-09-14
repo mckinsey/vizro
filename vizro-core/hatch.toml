@@ -47,7 +47,7 @@ prep-release = [
   "echo 'Raise a PR to prepare main for release'",
   "rm -rf schemas/*json",
   "hatch run schema",
-  "hatch run lint",
+  "hatch run lint prettier",
   "hatch run docs:changelog"
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
