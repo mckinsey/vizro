@@ -104,6 +104,7 @@ jobs:
       - name: Bump version to next patch
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
+          git checkout main
           git checkout -b "release/version_bump_next_minor"
           hatch version patch,dev
           hatch run docs:changelog
