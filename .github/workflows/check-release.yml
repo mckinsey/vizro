@@ -60,6 +60,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install hatch
+      - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
+        id: extract
+        run: |
+          formatted_date=$(date +"%Y-%m-%d")
+          python tools/extract_release_notes.py \
+          "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
+          "${{needs.check-version.outputs.package_version}} — $formatted_date"
+      - name: Tag main and create release on github
+        run: |
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} vizro ${{needs.check-version.outputs.package_version}} release_body.txt
       - name: Build package
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
