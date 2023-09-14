@@ -44,11 +44,11 @@ post-release = [
 prep-release = [
   "hatch version release",
   "hatch run docs:scriv collect",
-  "echo 'Raise a PR to prepare main for release'",
   "rm -rf schemas/*json",
   "hatch run schema",
   "hatch run lint prettier",
-  "hatch run docs:changelog"
+  "hatch run docs:changelog",
+  "echo 'Raise a PR to prepare main for release'"
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 schema = "python schemas/generate.py {args}"
