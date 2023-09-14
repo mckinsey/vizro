@@ -50,27 +50,28 @@
 
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
+  padding-right: 6px;
 }
 
 .accordion-button:not(.collapsed)::after {
   background-position: left;
-  transform: rotate(180deg);
-  float: left !important;
-  filter: var(--fill-accordion-button);
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'><path fill-rule='evenodd' clip-rule='evenodd' d='M8.49845 9L7 10.5016L11.9984 15.5016L17 10.5016L15.4984 9L11.9984 12.5016L8.49845 9Z' fill='white' fill-opacity='0.6'/></svg>");
+  transform: scaleX(1.3) rotate(180deg);
 }
 
 .accordion-button::after {
   flex-shrink: 0;
-  width: 24px;
+  width: 14px;
   height: 24px;
   margin-left: auto;
-  content: "";
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'><path fill-rule='evenodd' clip-rule='evenodd' d='M8.49845 9L7 10.5016L11.9984 15.5016L17 10.5016L15.4984 9L11.9984 12.5016L8.49845 9Z' fill='white' fill-opacity='0.6'/></svg>");
+  content: "\2304";
   background-repeat: no-repeat;
   filter: var(--fill-accordion-button);
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   float: left !important;
+  transform: scaleX(1.3);
+  font-size: 16px;
+  transform-origin: center center;
+  color: var(--fill-accordion-button);
 }
 
 .accordion-header {
