@@ -105,7 +105,7 @@ jobs:
           pip install hatch
       - name: Bump version to next patch
         run: |
-          formatted_date=$(date +"%Y-%m-%d %H:%M:%S")
+          formatted_date=$(date +"%Y-%m-%d %H-%M-%S")
           cd "${{ needs.check-version.outputs.package_name }}"
           git checkout -b "release/version_bump_next_minor/${formatted_date}"
           hatch version patch,dev
