@@ -11,20 +11,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
-<a id='changelog-0.0.5'></a>
-
-# 0.0.5 — 2023-09-14
-
-## Added
-
-- Enable `title` argument in `Dashboard` model, which allows a title to be added on every page on top left-side ([#31](https://github.com/mckinsey/vizro/pull/31))
-
-## Changed
-
-- Provide ID to outer div to enable CSS customization of component and its sub-components ([#29](https://github.com/mckinsey/vizro/pull/29))
-
-- Disable creation of accordion navigation if only one page is provided ([#32](https://github.com/mckinsey/vizro/pull/32))
-
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2023-09-08
