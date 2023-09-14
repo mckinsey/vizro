@@ -58,7 +58,7 @@ def expected_range_slider_default():
             ),
         ],
         className="selector_container",
-        id="range_slider_outer"
+        id="range_slider_outer",
     )
 
 
@@ -111,7 +111,7 @@ def expected_range_slider_with_optional():
             ),
         ],
         className="selector_container",
-        id="range_slider_with_all_outer"
+        id="range_slider_with_all_outer",
     )
 
 
@@ -132,7 +132,9 @@ class TestRangeSliderInstantiation:
         assert range_slider.actions == []
 
     def test_create_range_slider_mandatory_and_optional(self):
-        range_slider = vm.RangeSlider(min=0, max=10, step=1, marks={}, value=[1, 9], title="Test title", id="range_slider_id")
+        range_slider = vm.RangeSlider(
+            min=0, max=10, step=1, marks={}, value=[1, 9], title="Test title", id="range_slider_id"
+        )
 
         assert range_slider.min == 0
         assert range_slider.max == 10
@@ -146,12 +148,7 @@ class TestRangeSliderInstantiation:
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",
-        [
-            (0, None, 0, None),
-            (None, 10, None, 10),
-            (0, 10, 0, 10),
-            ("1", "10", 1, 10)
-        ],
+        [(0, None, 0, None), (None, 10, None, 10), (0, 10, 0, 10), ("1", "10", 1, 10)],
     )
     def test_valid_min_max(self, min, max, expected_min, expected_max):
         range_slider = vm.RangeSlider(min=min, max=max)
@@ -173,8 +170,8 @@ class TestRangeSliderInstantiation:
             ([0.1, 1.1], [0.1, 1.1]),
             ([-10, 10], [-10, 10]),
             ([10, 10], [10, 10]),
-            (["1", "10"], [1, 10])
-        ]
+            (["1", "10"], [1, 10]),
+        ],
     )
     def test_validate_slider_value_valid(self, value, expected):
         range_slider = vm.RangeSlider(min=-10, max=10, value=value)
@@ -207,7 +204,9 @@ class TestRangeSliderInstantiation:
         assert range_slider.step == expected
 
     def test_validate_step_invalid(self):
-        with pytest.raises(ValidationError, match="The step value of the slider must be less than the difference between max and min."):
+        with pytest.raises(
+            ValidationError, match="The step value of the slider must be less than the difference between max and min."
+        ):
             vm.RangeSlider(min=0, max=10, step=11)
 
     @pytest.mark.parametrize(
@@ -303,12 +302,12 @@ class TestCallbackMethod:
             ("_start_value", 2, 10, [1, 10], None, (2, 10, [2, 10], (2, 10))),  # change start value by left handle
             ("_input_store", 0, 10, [1, 9], None, (1, 9, [1, 9], (1, 9))),  # set new value by input store
             ("_end_value", 0, 7, [1, 7], None, (0, 7, [0, 7], (0, 7))),  # change start value by right handle
-            ("", 0, 10, None, [1, 2], (0, 10, [0, 10], (0, 10))),   # set new value by slider
+            ("", 0, 10, None, [1, 2], (0, 10, [0, 10], (0, 10))),  # set new value by slider
             ("_start_value", 0, 10, [2, 19], None, (0, 10, [0, 10], (0, 10))),  # set outside possible range right input
             ("_start_value", 0, 10, [-1, 7], None, (0, 10, [0, 10], (0, 10))),  # set outside possible range left input
         ],
     )
-    def test_update_slider_value_valid(self, min, max, trigger_id, input_store,value, expected_value):
+    def test_update_slider_value_valid(self, min, max, trigger_id, input_store, value, expected_value):
         range_slider = vm.RangeSlider(min=min, max=max)
 
         result = range_slider._update_slider_values(

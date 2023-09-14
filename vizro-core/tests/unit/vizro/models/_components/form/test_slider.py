@@ -124,7 +124,9 @@ class TestSliderInstantiation:
         assert slider.step == expected
 
     def test_validate_step_invalid(self):
-        with pytest.raises(ValidationError, match="The step value of the slider must be less than the difference between max and min."):
+        with pytest.raises(
+            ValidationError, match="The step value of the slider must be less than the difference between max and min."
+        ):
             vm.Slider(min=0, max=10, step=11)
 
     def test_valid_marks_with_step(self):

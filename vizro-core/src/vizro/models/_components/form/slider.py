@@ -5,7 +5,12 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_max, validate_slider_value, validate_step, set_default_marks
+from vizro.models._components.form._form_utils import (
+    set_default_marks,
+    validate_max,
+    validate_slider_value,
+    validate_step,
+)
 from vizro.models._models_utils import _log_call
 
 
