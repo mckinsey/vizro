@@ -37,6 +37,10 @@ cov-report = [
 ]
 example = "cd examples/{args:default}; python app.py"
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+post-release = [
+  "hatch version patch,dev",
+  "echo 'Raise a PR to bump to the new development version'"
+]
 prep-release = [
   "hatch version release",
   "hatch run docs:scriv collect",
@@ -47,10 +51,6 @@ prep-release = [
   "hatch run docs:changelog"
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
-post-release = [
-  "hatch version patch,dev",
-  "echo 'Raise a PR to bump to the new development version'"
-]
 schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [

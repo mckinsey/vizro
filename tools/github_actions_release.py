@@ -8,13 +8,6 @@ VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 
 
-# def get_package_version(base_path, package_path):
-#     init_file_path = Path(base_path) / package_path / "__init__.py"
-#     match_obj = re.search(VERSION_MATCHSTR, Path(init_file_path).read_text())
-#     return match_obj.group(1)
-### GET PACKAGE VERSION THROUGH HATCH (FOR FUTURE COMPATIBILITY)
-
-
 def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
     response = requests.get(pypi_endpoint, timeout=10)
     if response.status_code == RESPONSE_ERROR:
@@ -28,10 +21,10 @@ def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
 
 def _check_no_dev_version(package_name, package_version):
     if "dev" not in package_version:
-        return False
+        return True
     else:
         print(f"Skipped: {package_name} {package_version} is still under development")  # noqa: T201
-        return True
+        return False
 
 
 if __name__ == "__main__":
