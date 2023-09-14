@@ -31,7 +31,7 @@ jobs:
               cd $package
               version=$(hatch version)
               cd ..
-              python tools/github_actions_release.py $package $version
+              python tools/check_package_release.py $package $version
           done
 
       - name: Set outputs
@@ -45,46 +45,48 @@ jobs:
       package_name: ${{ steps.version_check.outputs.package_name }}
       package_version: ${{ steps.version_check.outputs.package_version }}
 
-#   build-publish:
-#     needs: [check-version]
-#     if: |
-#       needs.check-version.outputs.new_release == 'true'
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Set up Python
-#         uses: actions/setup-python@v3
-#         with:
-#           python-version: "3.10"
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install hatch
-#       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
-#         id: extract
-#         run: |
-#           formatted_date=$(date +"%Y-%m-%d")
-#           python tools/extract_release_notes.py \
-#           "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
-#           "${{needs.check-version.outputs.package_version}} — $formatted_date"
-#       - name: Tag main and create release on github
-#         run: |
-#           ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} ${{needs.check-version.outputs.package_name}} ${{needs.check-version.outputs.package_version}} release_body.txt
-#       - name: Build package
-#         run: |
-#           cd "${{ needs.check-version.outputs.package_name }}"
-#           hatch build
-#       - name: Set PyPI token
-#         run: |
-#           if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
-#               echo 'PYPI_TOKEN=${{ secrets.VIZRO_TEST_PYPI_TOKEN }}' >> $GITHUB_ENV
-#           fi
-#       - name: Publish distribution 📦 to PyPI
-#         uses: pypa/gh-action-pypi-publish@release/v1
-#         with:
-#           packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
-#           password: ${{ env.PYPI_TOKEN }}
-#           repository-url: https://test.pypi.org/legacy/
+  build-publish:
+    needs: [check-version]
+    if: |
+      needs.check-version.outputs.new_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
+        id: extract
+        run: |
+          formatted_date=$(date +"%Y-%m-%d")
+          python tools/extract_release_notes.py \
+          "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
+          "${{needs.check-version.outputs.package_version}} — $formatted_date"
+      - name: Tag main and create release on github
+        run: |
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release_body.txt
+      - name: Build package
+        run: |
+          cd "${{ needs.check-version.outputs.package_name }}"
+          hatch build
+      - name: Set PyPI token
+        run: |
+          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
+              echo 'PYPI_TOKEN=${{ secrets.VIZRO_TEST_PYPI_TOKEN }}' >> $GITHUB_ENV
+          fi
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
+          password: ${{ env.PYPI_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
 
   version-bump:
     needs: [check-version]
@@ -104,7 +106,6 @@ jobs:
       - name: Bump version to next patch
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
-          git checkout main
           git checkout -b "release/version_bump_next_minor"
           hatch version patch,dev
           hatch run docs:changelog
@@ -114,4 +115,6 @@ jobs:
           git config user.name "Vizro Team"
           git commit -am "version bump"
           git push --set-upstream origin release/version_bump_next_minor
-          ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} ${{needs.check-version.outputs.package_name}} ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor
+          ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor
