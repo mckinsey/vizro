@@ -33,7 +33,3 @@ STATUS=$(curl -L \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   ${GITHUB_ENDPOINT} \
   -d "${PAYLOAD}")
-
-echo "${STATUS}"
-
-[ "${STATUS}" == "201" ] || [ "${STATUS}" == "422" ]
