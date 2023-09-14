@@ -11,9 +11,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
+<!--
 ### Added
 
-- Pre-commit `check-spelling` hook for words `colour` and `visualisation`.
+- A bullet item for the Added category.
+
+-->
 
 <!--
 ### Changed
