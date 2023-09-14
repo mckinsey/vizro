@@ -11,14 +11,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
-<a id='changelog-0.0.2'></a>
-
-# 0.0.2 — 2023-09-14
-
-## Changed
-
-- Provide ID to outer div to enable CSS customization of component and its sub-components ([#29](https://github.com/mckinsey/vizro/pull/29))
-
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2023-09-08
