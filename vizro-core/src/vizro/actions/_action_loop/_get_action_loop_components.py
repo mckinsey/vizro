@@ -48,4 +48,25 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     # Additional component for every Action in the system
     components.extend([dcc.Store(id={"type": "action_trigger", "action_name": action.id}) for action in actions])
 
+    # Add a mapper that binds actions chain trigger id and actions ids on the client-side.
+    actions_chains_trigger_mapper = {
+        actions_chain.id: [action.id for action in actions_chain.actions]
+        for actions_chain in actions_chains
+    }
+    components.append(
+        dcc.Store(
+            id="actions_chains_trigger_mapper",
+            data=actions_chains_trigger_mapper,
+        )
+    )
+
+    # Add a store with all action_triggers ids
+    components.append(
+        dcc.Store(
+            id="action_trigger_actions_id",
+            data=[action.id for action in actions],
+        )
+
+    )
+
     return components
