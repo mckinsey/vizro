@@ -145,6 +145,23 @@ Vizro's version is given by `__version__` in [`src/vizro/__init__.py`](https://g
 
 To build the source distribution and wheel, run `hatch build`.
 
+### Steps to create a Vizro release
+
+The following steps are required to create a release of Vizro. Note that this is only done by maintainers:
+
+1. Checkout a new branch with a suitable name, e.g. `git checkout -b release/v0.2.4`
+2. Run `hatch run prep-release`
+3. Check that the resulting `CHANGELOG.md` and `version` are as expected
+4. Commit all changes, raise a PR, and get approval from at least 2 maintainers
+5. After the PR is merged, also merge the automatically created version bump PR
+6. Verify that the newly released package on PyPI works as intended
+
+!!!note
+
+    If there are any changes to `main` after the release PR has been created and `hatch run prep-release` has been run, please restart the process as this may mess up the `CHANGELOG`.
+
+-
+
 ## Code of conduct
 
 The Vizro team pledges to foster and maintain a friendly community. We enforce a [Code of Conduct](https://github.com/mckinsey/vizro/tree/main/CODE_OF_CONDUCT.md) to ensure every Vizro contributor is welcomed and treated with respect.
