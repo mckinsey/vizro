@@ -106,5 +106,8 @@ jobs:
           cd "${{ needs.check-version.outputs.package_name }}"
           git checkout -b "release/version_bump_next_minor"
           hatch version patch,dev
+          hatch run docs:changelog
+          git config user.email "83698606+maxschulz-COL@users.noreply.github.com"
+          git config user.name "Vizro Team"
           git commit -am "version bump"
           ./tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} ${{needs.check-version.outputs.package_name}} ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor
