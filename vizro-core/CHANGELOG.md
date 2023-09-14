@@ -13,7 +13,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <a id='changelog-0.1.1'></a>
 
-# 0.0.1.dev0 — 2023-09-12
+# 0.0.1.dev0 — 2023-09-14
 
 ## Changed
 
