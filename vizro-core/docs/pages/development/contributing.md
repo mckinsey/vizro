@@ -159,7 +159,8 @@ The following steps are required to create a release of Vizro. Note that this is
 !!!note
 
     If there are any changes to `main` after the release PR has been created and `hatch run prep-release` has been run, please restart the process as this may mess up the `CHANGELOG`.
-- 
+
+-
 
 ## Code of conduct
 
