@@ -105,15 +105,17 @@ jobs:
           pip install hatch
       - name: Bump version to next patch
         run: |
+          formatted_date=$(date +"%Y-%m-%d %H:%M:%S")
           cd "${{ needs.check-version.outputs.package_name }}"
-          git checkout -b "release/version_bump_next_minor"
+          git checkout -b "release/version_bump_next_minor/${formatted_date}"
           hatch version patch,dev
           hatch run docs:changelog
           hatch run schema
+          hatch run lint || hatch run lint
           git config user.email "83698606+maxschulz-COL@users.noreply.github.com"
           git config user.name "Vizro Team"
           git commit -am "version bump"
-          git push --set-upstream origin release/version_bump_next_minor
+          git push --set-upstream origin release/version_bump_next_minor/${formatted_date}
           ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
           ${{needs.check-version.outputs.package_name}} \
-          ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor
+          ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor/${formatted_date}
