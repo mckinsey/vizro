@@ -19,7 +19,7 @@ PAYLOAD=$(cat <<-END
     "target_commitish": "main",
     "name": "${PACKAGE}-${VERSION}",
     "body": ${BODY},
-    "draft": true,
+    "draft": false,
     "prerelease": false
 }
 END
