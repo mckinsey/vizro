@@ -1,7 +1,10 @@
+"""Extracts latest release notes from CHANGELOG.md and saves to file."""
 import sys
 
+ARG_NUM = 3
 
-def extract_section(filename, heading):
+
+def _extract_section(filename, heading):
     with open(filename, "r") as file:
         lines = file.readlines()
 
@@ -25,12 +28,12 @@ def extract_section(filename, heading):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) != ARG_NUM:
         raise Exception("Usage: python extract_release_notes.py <filename> <heading>")
 
     filename = sys.argv[1]
     heading = sys.argv[2]
-    section = extract_section(filename, heading)
+    section = _extract_section(filename, heading)
 
     if not section:
         raise Exception(f"Section not found under the {heading} heading")

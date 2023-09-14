@@ -69,7 +69,7 @@ jobs:
           "${{needs.check-version.outputs.package_version}} — $formatted_date"
       - name: Tag main and create release on github
         run: |
-          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} vizro ${{needs.check-version.outputs.package_version}} release_body.txt
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} ${{needs.check-version.outputs.package_name}} ${{needs.check-version.outputs.package_version}} release_body.txt
       - name: Build package
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
