@@ -40,14 +40,14 @@ lint = "SKIP=gitleaks pre-commit run {args} --all-files"
 prep-release = [
   "hatch version release",
   "hatch run docs:scriv collect",
-  "echo 'Raise a PR to prepare main for release'"
+  "echo 'Raise a PR to prepare main for release'",
+  "rm -rf schemas/*json",
+  "hatch run schema",
+  "hatch run lint",
+  "hatch run docs:changelog"
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
-release = [
-  "git tag -a v`hatch version` -m 'Release version'",
-  "git push origin v`hatch version`",
-  "hatch build",
-  "hatch publish {args}",
+post-release = [
   "hatch version patch,dev",
   "echo 'Raise a PR to bump to the new development version'"
 ]
