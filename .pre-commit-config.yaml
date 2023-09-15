@@ -17,6 +17,11 @@ repos:
         entry: python tools/check_for_datafiles.py
         language: python
         pass_filenames: false
+      - id: check-spelling
+        name: check-spelling
+        entry: tools/find_forbidden_words_in_repo.sh
+        language: script
+        pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.4
