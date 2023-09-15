@@ -29,7 +29,7 @@ def _check_no_dev_version(package_name, package_version):
 
 if __name__ == "__main__":
     """Check if a package needs to be released"""
-    new_release = "false"
+    new_release = False
     double_release = False
     package_name = sys.argv[1]
     package_version = sys.argv[2]
@@ -39,14 +39,14 @@ if __name__ == "__main__":
     if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
         pypi_endpoint, package_name, package_version
     ):
-        new_release = "true"
+        new_release = True
 
     env_file = os.getenv("GITHUB_ENV")
 
-    if os.path.exists(env_file) and new_release == "true":
+    if os.path.exists(env_file) and new_release:
         with open(env_file, "r") as f:
             for line in f:
-                if line.strip() == "NEW_RELEASE=true":
+                if line.strip() == "NEW_RELEASE=True":
                     double_release = True
 
     if double_release:
@@ -54,5 +54,5 @@ if __name__ == "__main__":
 
     with open(env_file, "a") as f:
         f.write(f"NEW_RELEASE={new_release}\n")
-        if new_release == "true":
+        if new_release:
             f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")

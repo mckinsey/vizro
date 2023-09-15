@@ -45,7 +45,7 @@ jobs:
   build-publish:
     needs: [check-version]
     if: |
-      needs.check-version.outputs.new_release == 'true'
+      needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -87,7 +87,7 @@ jobs:
   version-bump:
     needs: [check-version]
     if: |
-      needs.check-version.outputs.new_release == 'true'
+      needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
