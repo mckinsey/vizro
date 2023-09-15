@@ -86,10 +86,8 @@ def validate_step(cls, step, values):
     """Reusable validator for the "step" argument for sliders."""
     if step is None:
         return step
-    min_value = values["min"]
-    max_value = values["max"]
 
-    if max_value is not None and step > (max_value - min_value):
+    if values["max"] is not None and step > (values["max"] - values["min"]):
         raise ValueError(
             "The step value of the slider must be less than or equal to the difference between max and min."
         )
@@ -97,4 +95,4 @@ def validate_step(cls, step, values):
 
 
 def set_default_marks(cls, v, values):
-    return v if values.get("step") is None else {}
+    return v if values["step"] is None else {}

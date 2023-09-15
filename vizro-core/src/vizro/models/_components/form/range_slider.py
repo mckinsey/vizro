@@ -72,7 +72,7 @@ class RangeSlider(VizroBaseModel):
             trigger_id = callback_context.triggered_id
 
             return self._update_slider_values(
-                start=start, end=end, slider=slider, input_store=input_store, value=value, trigger_id=trigger_id
+                start_txt=start, end_txt=end, slider=slider, input_store=input_store, value=value, trigger_id=trigger_id
             )
 
         return html.Div(
@@ -129,9 +129,9 @@ class RangeSlider(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-    def _update_slider_values(self, trigger_id, start, end, slider, input_store, value):
+    def _update_slider_values(self, trigger_id, start_txt, end_txt, slider, input_store, value):
         if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
-            start_text_value, end_text_value = start, end
+            start_text_value, end_text_value = start_txt, end_txt
         elif trigger_id == self.id:
             start_text_value, end_text_value = slider
         else:

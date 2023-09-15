@@ -139,12 +139,12 @@ class TestRangeSliderInstantiation:
         assert range_slider.min == 0
         assert range_slider.max == 10
         assert range_slider.step == 1
+        assert range_slider.marks == {}
         assert range_slider.value == [1, 9]
         assert range_slider.title == "Test title"
-        assert range_slider.actions == []
         assert range_slider.id == "range_slider_id"
+        assert range_slider.actions == []
         assert range_slider.type == "range_slider"
-        assert range_slider.marks == {}
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",
@@ -298,47 +298,73 @@ class TestCallbackMethod:
     """Tests model callback method."""
 
     @pytest.mark.parametrize(
-        "trigger_id, start, end, slider_value, input_store, value, expected_value",
+        "trigger_id, start_txt, end_txt, slider_value, input_store, value, expected_value",
         [
-            (
+            (  # user changes left text field, slider and store update
                 "_start_value",
                 2,
                 10,
                 [3, 10],
-                [1, 10],
+                [3, 10],
                 None,
                 (2, 10, [2, 10], (2, 10)),
-            ),  # change start value by left handle
-            ("_input_store", 0, 10, [3, 10], [1, 9], None, (1, 9, [1, 9], (1, 9))),  # set new value by input store
-            ("_end_value", 0, 7, [3, 7], [1, 7], None, (0, 7, [0, 7], (0, 7))),  # change start value by right handle
-            ("", 0, 10, [3, 7], None, [1, 2], (3, 7, [3, 7], (3, 7))),  # set new value by slider
-            (
-                "_start_value",
+            ),
+            (  # user changes right text field, slider and store update
+                "_end_value",
                 0,
-                10,
-                [3, 7],
-                [2, 19],
+                7,
+                [0, 8],
+                [0, 8],
                 None,
-                (0, 10, [0, 10], (0, 10)),
-            ),  # set outside possible range right input
-            (
-                "_start_value",
+                (0, 7, [0, 7], (0, 7)),
+            ),
+            (  # user refreshes page, slider values are set by the input store
+                "_input_store",
                 0,
                 10,
+                [1, 9],
+                [1, 9],
+                None,
+                (1, 9, [1, 9], (1, 9)),
+            ),
+            (  # user sets new value with slider handles, slider and store update
+                "",
+                3,
+                7,
+                [3, 7],
+                [3, 7],
+                [1, 2],
+                (3, 7, [3, 7], (3, 7)),
+            ),
+            (  # user sets left input value outside possible range, slider and store are updated with min, max values
+                "_start_value",
+                -1,
+                7,
+                [3, 7],
                 [3, 7],
                 [-1, 7],
-                None,
+                (0, 7, [0, 7], (0, 7)),
+            ),
+            (  # user sets right input value outside possible range, slider and store are updated with min, max values
+                "_start_value",
+                0,
+                11,
+                [3, 7],
+                [3, 7],
+                [0, 11],
                 (0, 10, [0, 10], (0, 10)),
-            ),  # set outside possible range left input
+            ),
         ],
     )
-    def test_update_slider_value_valid(self, trigger_id, start, end, slider_value, input_store, value, expected_value):
+    def test_update_slider_value_valid(
+        self, trigger_id, start_txt, end_txt, slider_value, input_store, value, expected_value
+    ):
         range_slider = vm.RangeSlider(min=0, max=10)
 
         result = range_slider._update_slider_values(
             trigger_id=f"{range_slider.id}{trigger_id}",
-            start=start,
-            end=end,
+            start_txt=start_txt,
+            end_txt=end_txt,
             value=value,
             input_store=input_store,
             slider=slider_value,
