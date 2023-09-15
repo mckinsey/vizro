@@ -534,12 +534,12 @@ dashboard = vm.Dashboard(
         create_continent_summary(),
         create_country_analysis(),
     ],
-    # navigation=vm.Navigation(
-    #     pages={
-    #         "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-    #         "Summary": ["Continent Summary"],
-    #     }
-    # ),
+    navigation=vm.Navigation(
+        pages={
+            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+            "Summary": ["Continent Summary"],
+        }
+    ),
 )
 
 if __name__ == "__main__":
