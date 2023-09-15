@@ -18,13 +18,19 @@ By default, a navigation panel with an accordion item per page and a default tit
         iris = px.data.iris()
 
         page_1 = vm.Page(
-            title="My first page",
-            components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-            ],
-        )
+                    title="My first page",
+                    components=[
+                        vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                    ],
+                )
+        page_2 = vm.Page(
+                    title="My second page",
+                    components=[
+                        vm.Graph(id="line_chart", figure=px.line(iris, x="sepal_length", y="petal_width", color="species")),
+                    ],
+                )
 
-        dashboard = vm.Dashboard(pages=[page_1])
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
 
         Vizro().build(dashboard).run()
         ```
@@ -44,6 +50,15 @@ By default, a navigation panel with an accordion item per page and a default tit
                 type: graph
             title: My first page
         - components:
+             - figure:
+                  _target_: line
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                id: line_chart
+                type: graph
+            title: My second page
         ```
     === "Result"
         [![Dashboard]][Dashboard]
@@ -83,10 +98,10 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
         iris = px.data.iris()
 
         page_1 = vm.Page(
-            title="My first page",
-            components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-            ],
+                    title="My first page",
+                    components=[
+                        vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                    ],
         )
         page_2 = vm.Page(
                     title="My second page",

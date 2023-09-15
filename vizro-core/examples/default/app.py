@@ -516,21 +516,134 @@ def create_home_page():
     return page_home
 
 
-dashboard = vm.Dashboard(
-    pages=[
-        create_home_page(),
-        create_variable_analysis(),
-        create_relation_analysis(),
-        create_continent_summary(),
-        create_country_analysis(),
+# iris = px.data.iris()
+#
+# page_3 = vm.Page(
+#     title="Second Page",
+#     components=[
+#         vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+#     ],
+# )
+# page_2 = vm.Page(
+#     title="First Page",
+#     components=[
+#         vm.Graph(id="line_chart", figure=px.line(iris, x="sepal_length", y="petal_width", color="species")),
+#     ],
+# )
+# page_1 = vm.Page(
+#     title="Homepage",
+#     components=[
+#         vm.Card(
+#             text="""
+#             ![](assets/images/icons/content/collections.svg#icon-top)
+#
+#             ### First Page
+#
+#             Exemplary first dashboard page.
+#             """,
+#             href="/filters-and-parameters",
+#         ),
+#
+#         vm.Card(
+#             text="""
+#             ![](assets/images/icons/content/features.svg#icon-top)
+#
+#             ### Second Page
+#
+#             Exemplary second dashboard page.
+#             """,
+#         ),
+#     ],
+# )
+#
+# dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+df_gapminder = px.data.gapminder()
+
+df_gapminder_agg = px.data.gapminder()
+
+df_gapminder_agg["gdpPercap"] = df_gapminder_agg.groupby(by=["continent", "year"])["gdpPercap"].sum().reset_index()
+
+df_sum = (
+        df_gapminder.groupby(by=["continent", "year"]).agg({"lifeExp": "sum", "pop": "sum", "gdpPercap": "sum"}).reset_index()
+    )
+page_relation_analysis = vm.Page(
+    title="Relationship Analysis",
+    # layout=vm.Layout(
+    #     grid=[[0, 0, 0, 0, 1]] + [[2, 2, 3, 3, 3]] * 4 + [[4, 4, 4, 4, 4]] * 5,
+    #     row_min_height="100px",
+    #     row_gap="24px",
+    # ),
+    layout=vm.Layout(grid=[[0, 0, 0, 0, 0, 0]]*2 + [[1, 1, 1, 2, 2, 2]] * 4),
+    components=[
+        vm.Card(
+            text="""
+             ### First Dashboard Page
+            
+            This page shows the inclusion of markdown text in a page and how components can be structured using Layout.
+        """
+        ),
+        vm.Graph(
+            id="bar_relation_2007",
+            figure=px.box(
+                df_gapminder,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                hover_name="continent",
+                title="Relationship in 2007",
+                labels={
+                    "gdpPercap": "GDP per capita",
+                    "pop": "Population",
+                    "lifeExp": "Life expectancy",
+                    "continent": "Continent",
+                },
+                color_discrete_map={
+                    "Africa": "#00b4ff",
+                    "Americas": "#ff9222",
+                    "Asia": "#3949ab",
+                    "Europe": "#ff5267",
+                    "Oceania": "#08bdba",
+                },
+            ),
+        ),
+        vm.Graph(
+            id="stacked_bar",
+            figure=px.bar(
+                df_sum,
+                x="year",
+                y="gdpPercap",
+                color="continent",
+                color_discrete_map={
+                    "Africa": "#00b4ff",
+                    "Americas": "#ff9222",
+                    "Asia": "#3949ab",
+                    "Europe": "#ff5267",
+                    "Oceania": "#08bdba",
+                },
+            )
+        )
+
     ],
-    navigation=vm.Navigation(
-        pages={
-            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-            "Summary": ["Continent Summary"],
-        }
-    ),
+    controls=[
+        vm.Filter(column="continent", selector=vm.Dropdown(title="Continent")),
+    ],
 )
+dashboard = vm.Dashboard(pages=[page_relation_analysis])
+# dashboard = vm.Dashboard(
+#     pages=[
+#         create_home_page(),
+#         create_variable_analysis(),
+#         create_relation_analysis(),
+#         create_continent_summary(),
+#         create_country_analysis(),
+#     ],
+#     navigation=vm.Navigation(
+#         pages={
+#             "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+#             "Summary": ["Continent Summary"],
+#         }
+#     ),
+# )
 
 if __name__ == "__main__":
     Vizro._user_assets_folder = os.path.abspath("../assets")
