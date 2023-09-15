@@ -10,18 +10,17 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
-
+<!--
 ### Added
 
-- Added pydantic model Navigation:
-- Enabled the customization of the navigation panel.
-
-<!--
-### Changed
-
-- A bullet item for the Changed category.
+- A bullet item for the Added category.
 
 -->
+
+### Changed
+
+- Disable creation of accordion navigation if only one page is provided ([#32](https://github.com/mckinsey/vizro/pull/32))
+
 <!--
 ### Deprecated
 

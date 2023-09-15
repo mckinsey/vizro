@@ -49,60 +49,13 @@ class TestNavigationInstantiation:
 class TestNavigationBuild:
     """Tests navigation build method."""
 
-    def test_navigation_default(self, accordion_from_page_as_list):
-        result_navigation = vm.Navigation()
-        result_navigation.pre_build()
+    @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}, None])
+    def test_navigation_build(self, pages):
+        navigation = vm.Navigation(pages=pages)
+        navigation.pre_build()
+        accordion = Accordion(pages=pages)
+        navigation._selector.id = accordion.id
 
-        # setting accordion id to fix the random id generation
-        result_navigation._selector.id = "accordion_list"
-
-        result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
-
-    @pytest.mark.parametrize(
-        "navigation_pages",
-        [
-            (["Page 1", "Page 2"]),
-            None,
-        ],
-    )
-    def test_navigation_same_result_with_different_config(self, navigation_pages, accordion_from_page_as_list):
-        id_accordion = "accordion_6"
-
-        result_navigation = vm.Navigation(pages=navigation_pages)
-        result_navigation.pre_build()
-
-        # setting accordion id to fix the random id generation
-        result_navigation._selector.id = id_accordion
-        accordion_from_page_as_list.children.id = id_accordion
-
-        result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
-
-    def test_navigation_pages_as_list(self, pages_as_list, accordion_from_page_as_list):
-        result_navigation = vm.Navigation(pages=pages_as_list)
-        result_navigation.pre_build()
-
-        # setting accordion id to fix the random id generation
-        result_navigation._selector.id = "accordion_list"
-
-        result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
-
-    def test_navigation_pages_as_dict(self, pages_as_dict, accordion_from_pages_as_dict):
-        result_navigation = vm.Navigation(pages=pages_as_dict)
-        result_navigation.pre_build()
-
-        # setting accordion id to fix the random id generation
-        result_navigation._selector.id = "accordion_dict"
-
-        result = json.loads(json.dumps(result_navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_pages_as_dict, cls=plotly.utils.PlotlyJSONEncoder))
-
+        result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(accordion.build(), cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected

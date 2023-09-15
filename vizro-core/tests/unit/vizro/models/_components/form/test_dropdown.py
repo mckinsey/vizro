@@ -7,16 +7,14 @@ from dash import dcc, html
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.form import Dropdown
-from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture()
 def expected_dropdown_with_all():
     return html.Div(
         [
-            html.P("Title", id="dropdown_title"),
+            html.P("Title"),
             dcc.Dropdown(
                 id="dropdown_id",
                 options=["ALL", "A", "B", "C"],
@@ -24,9 +22,11 @@ def expected_dropdown_with_all():
                 multi=True,
                 persistence=True,
                 clearable=False,
+                className="selector_body_dropdown",
             ),
         ],
         className="selector_dropdown_container",
+        id="dropdown_id_outer",
     )
 
 
@@ -34,7 +34,7 @@ def expected_dropdown_with_all():
 def expected_dropdown_without_all():
     return html.Div(
         [
-            html.P("Title", id="dropdown_title"),
+            html.P("Title"),
             dcc.Dropdown(
                 id="dropdown_id",
                 options=["A", "B", "C"],
@@ -42,9 +42,11 @@ def expected_dropdown_without_all():
                 multi=False,
                 persistence=True,
                 clearable=False,
+                className="selector_body_dropdown",
             ),
         ],
         className="selector_dropdown_container",
+        id="dropdown_id_outer",
     )
 
 
@@ -176,15 +178,7 @@ class TestDropdownInstantiation:
     def test_set_action_via_validator(self, test_action_function):
         dropdown = Dropdown(actions=[Action(function=test_action_function)])
         actions_chain = dropdown.actions[0]
-        action = actions_chain.actions[0]
-
-        assert len(dropdown.actions) == 1
-        assert isinstance(actions_chain, ActionsChain)
         assert actions_chain.trigger.component_property == "value"
-        assert isinstance(action, Action)
-        assert isinstance(action.function, CapturedCallable)
-        assert action.inputs == []
-        assert action.outputs == []
 
 
 class TestDropdownBuild:

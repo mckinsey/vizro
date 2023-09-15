@@ -10,12 +10,14 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
+
 <!--
 ### Added
 
 - A bullet item for the Added category.
 
 -->
+
 <!--
 ### Changed
 

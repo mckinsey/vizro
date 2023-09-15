@@ -16,12 +16,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category.
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category.
+- Provide ID to outer div to enable CSS customization of component and its sub-components ([#29](https://github.com/mckinsey/vizro/pull/29))
 
--->
 <!--
 ### Deprecated
 

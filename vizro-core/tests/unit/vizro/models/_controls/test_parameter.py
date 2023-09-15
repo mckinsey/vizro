@@ -2,7 +2,9 @@ import pytest
 
 import vizro.models as vm
 from vizro.managers import model_manager
+from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
+from vizro.models.types import CapturedCallable
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -60,8 +62,6 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input, title",
         [
-            (vm.Slider(min=0, max=1, value=0.8), "x"),
-            (vm.RangeSlider(min=0, max=1, value=[0.2, 0.8]), "x"),
             (vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"]), "x"),
             (vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp"), "x"),
             (
@@ -70,7 +70,7 @@ class TestPreBuildMethod:
             ),
         ],
     )
-    def test_target_and_title_generation_valid(self, test_input, title):
+    def test_set_target_and_title_valid(self, test_input, title):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -78,8 +78,26 @@ class TestPreBuildMethod:
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.title == title
 
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            (vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"])),
+            (vm.Dropdown(options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp")),
+            (vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], value="lifeExp")),
+        ],
+    )
+    def test_set_actions(self, test_input):
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+        default_action = parameter.selector.actions[0]
+        assert isinstance(default_action, ActionsChain)
+        assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
+
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_parameter_failed_with_missing_min_max(self, test_input):
+    def test_set_slider_values_invalid(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -89,7 +107,7 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_parameter_failed_with_missing_options(self, test_input):
+    def test_set_categorical_selectors_with_missing_options(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]

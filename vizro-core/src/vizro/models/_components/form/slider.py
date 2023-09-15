@@ -5,6 +5,10 @@ from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components.form._form_utils import (
+    validate_max,
+    validate_slider_value,
+)
 from vizro.models._models_utils import _log_call
 
 
@@ -36,6 +40,8 @@ class Slider(VizroBaseModel):
     actions: List[Action] = []
 
     # Re-used validators
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
+    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
     _set_actions = _action_validator_factory("value")
 
     @validator("marks", always=True)
@@ -48,12 +54,12 @@ class Slider(VizroBaseModel):
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
-            Output(f"temp-store-slider-{self.id}", "data"),
+            Output(f"{self.id}_temp_store", "data"),
         ]
         inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
-            State(f"temp-store-slider-{self.id}", "data"),
+            State(f"{self.id}_temp_store", "data"),
             State(f"{self.id}_data", "data"),
         ]
 
@@ -87,12 +93,7 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Store(f"{self.id}_data", storage_type="local", data={
-                    "id": self.id,
-                    "min": self.min,
-                    "max": self.max,
-                }),
-                html.P(self.title, id="slider_title") if self.title else None,
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(
@@ -112,14 +113,15 @@ class Slider(VizroBaseModel):
                             placeholder="end",
                             min=self.min,
                             max=self.max,
-                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                             value=self.value or self.min,
                             persistence=True,
+                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"temp-store-slider-{self.id}", storage_type="local"),
+                        dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
                     ],
                     className="slider_inner_container",
                 ),
             ],
             className="selector_container",
+            id=f"{self.id}_outer",
         )

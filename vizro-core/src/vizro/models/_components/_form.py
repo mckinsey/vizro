@@ -86,6 +86,7 @@ class Form(VizroBaseModel):
                 "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
             },
             className="component_container_grid",
+            id=self.id,
         )
 
 

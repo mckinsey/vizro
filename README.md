@@ -3,7 +3,11 @@
 [![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)]()
 
-Vizro is a toolkit for creating modular data visualisation applications
+Vizro is a toolkit for creating modular data visualization applications
+
+## Documentation
+
+See the [`docs`](https://vizro.readthedocs.io/en/latest/) for more details
 
 ## Contributors
 

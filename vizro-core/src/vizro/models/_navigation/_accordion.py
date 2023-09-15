@@ -65,6 +65,10 @@ class Accordion(VizroBaseModel):
 
         accordion_items = [self._create_accordion_item(accordion_buttons=accordion_buttons)]
 
+        # Don't create accordion navigation if there is only one page and one accordion item
+        if len(accordion_buttons) == len(accordion_items) == 1:
+            return None
+
         return html.Div(
             children=dbc.Accordion(
                 id=self.id,
@@ -74,6 +78,7 @@ class Accordion(VizroBaseModel):
                 persistence_type="session",
             ),
             className="nav_panel",
+            id=f"{self.id}_outer",
         )
 
     def _create_accordion(self):
@@ -88,6 +93,9 @@ class Accordion(VizroBaseModel):
             accordion_buttons = self._create_accordion_buttons(accordion_pages=self.pages)
             accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
 
+        if len(accordion_buttons) == len(accordion_items) == 1:
+            return None
+
         return html.Div(
             children=dbc.Accordion(
                 id=self.id,
@@ -97,4 +105,5 @@ class Accordion(VizroBaseModel):
                 persistence_type="session",
             ),
             className="nav_panel",
+            id=f"{self.id}_outer",
         )

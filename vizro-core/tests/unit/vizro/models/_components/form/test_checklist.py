@@ -7,16 +7,14 @@ from dash import dcc, html
 from pydantic import ValidationError
 
 from vizro.models._action._action import Action
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._components.form import Checklist
-from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture()
 def expected_checklist():
     return html.Div(
         [
-            html.P("Title", id="checklist_title"),
+            html.P("Title"),
             dcc.Checklist(
                 id="checklist_id",
                 options=["ALL", "A", "B", "C"],
@@ -26,6 +24,7 @@ def expected_checklist():
             ),
         ],
         className="selector_container",
+        id="checklist_id_outer",
     )
 
 
@@ -138,15 +137,7 @@ class TestChecklistInstantiation:
     def test_set_action_via_validator(self, test_action_function):
         checklist = Checklist(actions=[Action(function=test_action_function)])
         actions_chain = checklist.actions[0]
-        action = actions_chain.actions[0]
-
-        assert len(checklist.actions) == 1
-        assert isinstance(actions_chain, ActionsChain)
         assert actions_chain.trigger.component_property == "value"
-        assert isinstance(action, Action)
-        assert isinstance(action.function, CapturedCallable)
-        assert action.inputs == []
-        assert action.outputs == []
 
 
 class TestChecklistBuild:
