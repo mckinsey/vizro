@@ -149,8 +149,8 @@ To build the source distribution and wheel, run `hatch build`.
 
 The following steps are required to create a release of Vizro. Note that this is only done by maintainers:
 
-1. Checkout a new branch with a suitable name, e.g. `git checkout -b release/v0.2.4`
-2. Run `hatch run prep-release`
+1. Checkout a new branch with a suitable name, e.g. `git checkout -b release/vx.y.z` (note that the branch name does not influence the versioning!)
+2. Run `hatch run prep-release` from the root folder of the package you want to release
 3. Check that the resulting `CHANGELOG.md` and `version` are as expected
 4. Commit all changes, raise a PR, and get approval from at least 2 maintainers
 5. After the PR is merged, also merge the automatically created version bump PR
@@ -159,8 +159,6 @@ The following steps are required to create a release of Vizro. Note that this is
 !!!note
 
     If there are any changes to `main` after the release PR has been created and `hatch run prep-release` has been run, please restart the process as this may mess up the `CHANGELOG`.
-
--
 
 ## Code of conduct
 
