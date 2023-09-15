@@ -49,10 +49,10 @@ if __name__ == "__main__":
                 if line.strip() == "NEW_RELEASE=true":
                     double_release = True
 
+    if double_release:
+        sys.exit("Cannot release two packages at the same time. Please modify your PR.")
+
     with open(env_file, "a") as f:
         f.write(f"NEW_RELEASE={new_release}\n")
         if new_release == "true":
             f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
-
-    if double_release:
-        sys.exit("Cannot release two packages at the same time. Please modify your PR.")
