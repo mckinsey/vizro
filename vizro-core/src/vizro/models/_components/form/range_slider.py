@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, clientside_callback, callback_context, dcc, html
+from dash import Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -59,14 +59,14 @@ class RangeSlider(VizroBaseModel):
             Input(f"{self.id}_end_value", "value"),
             Input(self.id, "value"),
             State(f"temp-store-range_slider-{self.id}", "data"),
-            State(f"{self.id}_data", "data"),
+            State(f"{self.id}_callback_data", "data"),
         ]
 
         clientside_callback(
             """
             function update_slider_values(start, end, slider, input_store, self_data) {
                 var end_text_value, end_value, slider_value, start_text_value, start_value, trigger_id;
-                
+
                 trigger_id = dash_clientside.callback_context.triggered
                 if (trigger_id.length != 0) {
                     trigger_id = dash_clientside.callback_context.triggered[0]['prop_id'].split('.')[0];
@@ -78,13 +78,13 @@ class RangeSlider(VizroBaseModel):
                 } else {
                   [start_text_value, end_text_value] = input_store !== null ? input_store : value;
                 }
-            
+
                 start_value = Math.min(start_text_value, end_text_value);
                 end_value = Math.max(start_text_value, end_text_value);
                 start_value = Math.max(self_data["min"], start_value);
                 end_value = Math.min(self_data["max"], end_value);
                 slider_value = [start_value, end_value];
-              
+
                 return [start_value, end_value, slider_value, [start_value, end_value]];
             }
             """,
@@ -94,11 +94,15 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Store(f"{self.id}_data", storage_type="local", data={
-                    "id": self.id,
-                    "min": self.min,
-                    "max": self.max,
-                }),
+                dcc.Store(
+                    f"{self.id}_callback_data",
+                    storage_type="local",
+                    data={
+                        "id": self.id,
+                        "min": self.min,
+                        "max": self.max,
+                    },
+                ),
                 html.P(self.title) if self.title else None,
                 html.Div(
                     [

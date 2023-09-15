@@ -32,13 +32,15 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     # Additional component for every ActionChain in the system.
     # Represents a proxy component between visible UI component and the gateway of the action loop mechanism.
     # Required to avoid the "Unknown callback Input" issue for multiple page app examples.
-    components.extend([
-        dcc.Store(
-            id={"type": "gateway_input", "trigger_id": actions_chain.id},
-            data=f"{actions_chain.id}",
-        )
-        for actions_chain in actions_chains
-    ])
+    components.extend(
+        [
+            dcc.Store(
+                id={"type": "gateway_input", "trigger_id": actions_chain.id},
+                data=f"{actions_chain.id}",
+            )
+            for actions_chain in actions_chains
+        ]
+    )
 
     # Additional component for every Action in the system.
     # This component is injected as the only Input (trigger) inside each Action.
@@ -51,7 +53,6 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
             id="action_trigger_actions_id",
             data=[action.id for action in actions],
         )
-
     )
 
     # Additional store that maps the actions chain trigger id and the list of action ids that should be executed.
@@ -59,9 +60,8 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
         dcc.Store(
             id="trigger_to_actions_chain_mapper",
             data={
-                actions_chain.id: [action.id for action in actions_chain.actions]
-                for actions_chain in actions_chains
-            }
+                actions_chain.id: [action.id for action in actions_chain.actions] for actions_chain in actions_chains
+            },
         )
     )
 

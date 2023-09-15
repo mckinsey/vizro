@@ -1,18 +1,13 @@
 """Contains utilities to create required dash callbacks for the action loop."""
-import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import List
 
-from dash import Input, Output, State, callback, clientside_callback, ctx, dcc, no_update
-from dash.exceptions import PreventUpdate
+from dash import Input, Output, State, clientside_callback
 
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import action_functions
 from vizro.actions._action_loop._action_loop_utils import (
     _get_actions_chains_on_registered_pages,
     _get_actions_on_registered_pages,
 )
-from vizro.managers import model_manager
 
 logger = logging.getLogger(__name__)
 
@@ -53,20 +48,20 @@ def _build_action_loop_callbacks() -> None:
     clientside_callback(
         """
         function gateway(
-            remaining_actions, 
-            trigger_to_actions_chain_mapper, 
-            action_trigger_actions_id, 
+            remaining_actions,
+            trigger_to_actions_chain_mapper,
+            action_trigger_actions_id,
             cycle_breaker_div,
-            ...gateway_triggers) 
+            ...gateway_triggers)
         {
             // Based on the triggered input, determines what is the next action to execute.
             var ctx_triggered, triggered_actions_chains_ids, actions_chain_to_trigger, next_action, trigger_next;
 
             ctx_triggered = dash_clientside.callback_context.triggered
 
-            // If the 'cycle_breaker_div' is triggered that means that at least one action is already executed. 
+            // If the 'cycle_breaker_div' is triggered that means that at least one action is already executed.
             if (ctx_triggered.length == 1 && ctx_triggered[0]['prop_id'].split('.')[0] === 'cycle_breaker_div') {
-                // If there's no more actions to execute, stop the loop perform. 
+                // If there's no more actions to execute, stop the loop perform.
                 if (remaining_actions.length == 0) {
                     return dash_clientside.PreventUpdate
                 }
@@ -77,7 +72,7 @@ def _build_action_loop_callbacks() -> None:
                 for (let i = 0; i < ctx_triggered.length; i++) {
                     triggered_actions_chains_ids.push(JSON.parse(ctx_triggered[i]['prop_id'].split('.')[0])['trigger_id']);
                 }
-                
+
                 // Trigger only the on_page_load action if exists.
                 // Otherwise, a single regular (non on_page_load) actions chain is triggered.
                 function findStringInList(list, string) {
@@ -110,13 +105,15 @@ def _build_action_loop_callbacks() -> None:
             return [remaining_actions.slice(1)].concat(trigger_next)
         }
         """,
-        output=[Output("remaining_actions", "data")] + [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions],
+        output=[Output("remaining_actions", "data")]
+        + [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions],
         inputs=[
             State("remaining_actions", "data"),
             State("trigger_to_actions_chain_mapper", "data"),
             State("action_trigger_actions_id", "data"),
-            Input("cycle_breaker_div", "n_clicks")
-       ] + gateway_inputs,
+            Input("cycle_breaker_div", "n_clicks"),
+            *gateway_inputs,
+        ],
         prevent_initial_call=True,
     )
 

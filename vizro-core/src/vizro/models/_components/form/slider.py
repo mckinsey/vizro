@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, clientside_callback, callback_context, dcc, html
+from dash import Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -50,7 +50,6 @@ class Slider(VizroBaseModel):
 
     @_log_call
     def build(self):
-
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
@@ -60,7 +59,7 @@ class Slider(VizroBaseModel):
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
             State(f"{self.id}_temp_store", "data"),
-            State(f"{self.id}_data", "data"),
+            State(f"{self.id}_callback_data", "data"),
         ]
 
         clientside_callback(
@@ -93,6 +92,15 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             [
+                dcc.Store(
+                    f"{self.id}_callback_data",
+                    storage_type="local",
+                    data={
+                        "id": self.id,
+                        "min": self.min,
+                        "max": self.max,
+                    },
+                ),
                 html.P(self.title) if self.title else None,
                 html.Div(
                     [
