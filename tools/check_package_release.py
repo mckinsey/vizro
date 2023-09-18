@@ -6,6 +6,7 @@ import requests
 
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
+ARG_NUM = 3
 
 
 def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
@@ -29,6 +30,10 @@ def _check_no_dev_version(package_name, package_version):
 
 if __name__ == "__main__":
     """Check if a package needs to be released"""
+
+    if len(sys.argv) != ARG_NUM:
+        raise Exception("Usage: python check_package_release.py <package_name> <package_version>")
+
     new_release = False
     double_release = False
     package_name = sys.argv[1]
