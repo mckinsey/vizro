@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Change the structure of user-guides in documentation to group topics ([#42](https://github.com/mckinsey/vizro/pull/42)).
 
-
 <!--
 ### Deprecated
 
