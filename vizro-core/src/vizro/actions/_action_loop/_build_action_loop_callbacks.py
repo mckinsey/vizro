@@ -70,6 +70,10 @@ def _build_action_loop_callbacks() -> None:
             else {
                 triggered_actions_chains_ids = []
                 for (let i = 0; i < ctx_triggered.length; i++) {
+                    if (ctx_triggered[i]['prop_id'].split('.')[0] === 'cycle_breaker_div') {
+                        // TODO: handle when a new action chain is started before the previous one has finished.
+                        continue;
+                    }
                     triggered_actions_chains_ids.push(JSON.parse(ctx_triggered[i]['prop_id'].split('.')[0])['trigger_id']);
                 }
 
