@@ -1,5 +1,6 @@
 """Determine if new package should be release (based on version) and consequently write information to env."""
 import os
+import re
 import sys
 
 import requests
@@ -21,6 +22,18 @@ def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
         return False
 
 
+def _check_valid_version(package_version):
+    pattern = re.compile("^(?P<major>0|[1-9]\\d*)\\.(?P<minor>0|[1-9]\\d*)\\.(?P<patch>0|[1-9]\\d*)$")
+    if not pattern.match(str(package_version)):
+        raise ValueError(f"Release version {package_version} not compatible with a semantic versioning release.")
+
+
+def _check_valid_package_name(package_name):
+    available_packages = ["vizro-core"]
+    if package_name not in available_packages:
+        raise ValueError(f"Package name {package_name} not in known list of packages.")
+
+
 def _check_no_dev_version(package_name, package_version):
     if "dev" not in package_version:
         return True
@@ -35,6 +48,10 @@ if __name__ == "__main__":
 
     PACKAGE_NAME = sys.argv[1]
     PACKAGE_VERSION = sys.argv[2]
+
+    _check_valid_package_name(PACKAGE_NAME)
+    _check_valid_version(PACKAGE_VERSION)
+
     PYPI_ENDPOINT = f"https://pypi.org/pypi/{PACKAGE_NAME}/{PACKAGE_VERSION}/json/"
 
     new_release = False
