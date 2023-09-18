@@ -74,7 +74,10 @@ class Action(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]):
-            logger.debug(f"Inputs to Action: {inputs}")
+            logger.debug("=============== ACTION ===============")
+            logger.debug(f'Action ID: "{self.id}"')
+            logger.debug(f'Action name: "{action_functions[self.function._function]}"')
+            logger.debug(f"Action inputs: {inputs}")
             return_value = self.function(**inputs) or {}
             if isinstance(return_value, dict):
                 return {"action_finished": None, **return_value}
