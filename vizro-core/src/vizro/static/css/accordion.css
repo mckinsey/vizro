@@ -56,6 +56,8 @@
 .accordion-button:not(.collapsed)::after {
   background-position: left;
   transform: scaleX(1.3) rotate(180deg);
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .accordion-button::after {
@@ -65,11 +67,11 @@
   margin-left: auto;
   content: "\2304";
   background-repeat: no-repeat;
-  filter: var(--fill-accordion-button);
   transition: transform 0.3s ease-in-out;
   float: left !important;
   transform: scaleX(1.3);
   font-size: 16px;
+  font-weight: 600;
   transform-origin: center center;
   color: var(--fill-accordion-button);
 }
