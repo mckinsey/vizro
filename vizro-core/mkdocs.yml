@@ -11,24 +11,26 @@ nav:
           - Pages: pages/user_guides/pages.md
           - Dashboards: pages/user_guides/dashboard.md
           - Run Methods: pages/user_guides/run.md
-      - Navigation:
-          - Accordion: pages/user_guides/navigation.md
       - Controls:
           - Filters: pages/user_guides/filters.md
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
-          - Actions: pages/user_guides/actions.md
       - Components:
           - Charts, Cards, Buttons: pages/user_guides/components.md
-          - Custom Charts: pages/user_guides/custom_charts.md
-          - Custom Components: pages/user_guides/custom_components.md
+      - Navigation:
+          - Accordion: pages/user_guides/navigation.md
       - Visual Formatting:
           - Layouts: pages/user_guides/layouts.md
           - Themes: pages/user_guides/themes.md
           - Assets: pages/user_guides/assets.md
+      - Actions:
+          - Actions: pages/user_guides/actions.md
       - Data Connections:
           - Data: pages/user_guides/data.md
           - Integrations: pages/user_guides/integration.md
+      - Extensions:
+          - Custom Charts: pages/user_guides/custom_charts.md
+          - Custom Components: pages/user_guides/custom_components.md
 
   - API reference:
       - Vizro: pages/API_reference/vizro.md
