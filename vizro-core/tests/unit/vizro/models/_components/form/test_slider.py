@@ -14,7 +14,7 @@ def expected_slider():
     return html.Div(
         [
             dcc.Store(
-                f"slider_id_callback_data",
+                "slider_id_callback_data",
                 storage_type="local",
                 data={
                     "id": "slider_id",
