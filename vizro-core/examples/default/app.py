@@ -561,11 +561,6 @@ df_gapminder = px.data.gapminder()
 
 df_gapminder_agg = px.data.gapminder()
 
-df_gapminder_agg["gdpPercap"] = df_gapminder_agg.groupby(by=["continent", "year"])["gdpPercap"].sum().reset_index()
-
-df_sum = (
-        df_gapminder.groupby(by=["continent", "year"]).agg({"lifeExp": "sum", "pop": "sum", "gdpPercap": "sum"}).reset_index()
-    )
 page_relation_analysis = vm.Page(
     title="Relationship Analysis",
     # layout=vm.Layout(
@@ -573,7 +568,7 @@ page_relation_analysis = vm.Page(
     #     row_min_height="100px",
     #     row_gap="24px",
     # ),
-    layout=vm.Layout(grid=[[0, 0, 0, 0, 0, 0]]*2 + [[1, 1, 1, 2, 2, 2]] * 4),
+    layout=vm.Layout(grid=[[0, 0, 0, 0, 0, 0]]*1 + [[1, 1, 1, 2, 2, 2]] * 5),
     components=[
         vm.Card(
             text="""
@@ -607,9 +602,9 @@ page_relation_analysis = vm.Page(
             ),
         ),
         vm.Graph(
-            id="stacked_bar",
-            figure=px.bar(
-                df_sum,
+            # id="stacked_bar",
+            figure=px.histogram(
+                df_gapminder,
                 x="year",
                 y="gdpPercap",
                 color="continent",
