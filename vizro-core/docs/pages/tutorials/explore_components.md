@@ -288,7 +288,7 @@ to have greater control and customization over the displayed data and components
 
 ??? info "Further information for `controls`"
     The user guides for [Filters](../user_guides/filters.md) and [Parameters](../user_guides/parameters.md) provide a comprehensive overview on how to apply
-    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter].
+    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [user guide on selectors](../user_guides/selectors.md).
 
 In order to link the `controls` to your two charts, it's important to understand the unique
 id assigned to each `component`. This id is unique across all dashboard pages and serves as a reference for
@@ -708,8 +708,9 @@ and how to bring them together.
 
 For future dashboard creations, you can explore more about the available dashboard `components` by going through the
 [user guide](../user_guides/components.md). To gain more in-depth knowledge about the usage and configuration
-details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md) or [Parameters](../user_guides/parameters.md). This guide
-will provide you with valuable insights on utilizing and customizing controls for interactive functionality in your
+details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user_guides/parameters.md)
+and [Selectors](../user_guides/selectors.md). This guide will provide you with valuable insights on utilizing and
+customizing controls for interactive functionality in your
 dashboards.
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
