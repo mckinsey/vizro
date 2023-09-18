@@ -81,8 +81,6 @@ class Slider(VizroBaseModel):
 
                 text_value = Math.min(Math.max(self_data["min"], text_value), self_data["max"]);
 
-                console.log(text_value);
-
                 return [text_value, text_value, text_value]
             }
             """,
