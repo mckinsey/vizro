@@ -3,7 +3,6 @@ import os
 import sys
 
 import requests
-
 from werkzeug.utils import secure_filename
 
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
@@ -31,7 +30,6 @@ def _check_no_dev_version(package_name, package_version):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) != ARG_NUM:
         raise TypeError("Usage: python check_package_release.py <package_name> <package_version>")
 

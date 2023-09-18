@@ -1,6 +1,8 @@
 """Extracts latest release notes from CHANGELOG.md and saves to file."""
 import sys
 
+from werkzeug.utils import secure_filename
+
 ARG_NUM = 3
 
 
@@ -23,19 +25,19 @@ def _extract_section(filename, heading):
         return None
 
     end_line = end_line or len(lines)
-    section = "".join(lines[start_line + 1 : end_line]).strip()
-    return section
+    section_out = "".join(lines[start_line + 1 : end_line]).strip()
+    return section_out
 
 
 if __name__ == "__main__":
     if len(sys.argv) != ARG_NUM:
-        raise Exception("Usage: python extract_release_notes.py <filename> <heading>")
+        raise TypeError("Usage: python extract_release_notes.py <filename> <heading>")
 
-    filename = sys.argv[1]
+    filename = secure_filename(sys.argv[1])
     heading = sys.argv[2]
     section = _extract_section(filename, heading)
 
     if not section:
-        raise Exception(f"Section not found under the {heading} heading")
+        raise ValueError(f"Section not found under the {heading} heading")
     with open("release_body.txt", "w") as text_file:
         text_file.write(section)
