@@ -356,7 +356,7 @@ class TestCallbackMethod:
             ),
         ],
     )
-    def test_update_slider_value_valid(
+    def test_update_slider_value_valid(  # noqa: PLR0913
         self, trigger_id, start_txt, end_txt, slider_value, input_store, value, expected_value
     ):
         range_slider = vm.RangeSlider(min=0, max=10)

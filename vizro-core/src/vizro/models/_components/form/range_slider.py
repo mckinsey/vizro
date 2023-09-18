@@ -129,7 +129,7 @@ class RangeSlider(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-    def _update_slider_values(self, trigger_id, start_txt, end_txt, slider, input_store, value):
+    def _update_slider_values(self, trigger_id, start_txt, end_txt, slider, input_store, value):  # noqa: PLR0913
         if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
             start_text_value, end_text_value = start_txt, end_txt
         elif trigger_id == self.id:
