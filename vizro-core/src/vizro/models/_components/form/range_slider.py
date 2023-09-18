@@ -76,7 +76,7 @@ class RangeSlider(VizroBaseModel):
                 } else if (trigger_id === self_data["id"]) {
                     [start_text_value, end_text_value] = [slider[0], slider[1]];
                 } else {
-                  [start_text_value, end_text_value] = input_store !== null ? input_store : value;
+                  [start_text_value, end_text_value] = input_store !== null ? input_store : [slider[0], slider[1]];
                 }
 
                 start_value = Math.min(start_text_value, end_text_value);
