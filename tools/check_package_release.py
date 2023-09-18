@@ -33,15 +33,15 @@ if __name__ == "__main__":
     if len(sys.argv) != ARG_NUM:
         raise TypeError("Usage: python check_package_release.py <package_name> <package_version>")
 
+    PACKAGE_NAME = sys.argv[1]
+    PACKAGE_VERSION = sys.argv[2]
+    PYPI_ENDPOINT = f"https://pypi.org/pypi/{PACKAGE_NAME}/{PACKAGE_VERSION}/json/"
+
     new_release = False
     double_release = False
-    package_name = sys.argv[1]
-    package_version = sys.argv[2]
 
-    pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
-
-    if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
-        pypi_endpoint, package_name, package_version
+    if _check_no_dev_version(PACKAGE_NAME, PACKAGE_VERSION) and _check_no_version_pypi(
+        PYPI_ENDPOINT, PACKAGE_NAME, PACKAGE_VERSION
     ):
         new_release = True
 
@@ -59,4 +59,4 @@ if __name__ == "__main__":
     with open(env_file, "a") as f:
         f.write(f"NEW_RELEASE={str(new_release)}\n")
         if new_release:
-            f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
+            f.write(f"PACKAGE_NAME={PACKAGE_NAME}\nPACKAGE_VERSION={PACKAGE_VERSION}\n")

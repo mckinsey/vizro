@@ -33,11 +33,12 @@ if __name__ == "__main__":
     if len(sys.argv) != ARG_NUM:
         raise TypeError("Usage: python extract_release_notes.py <filename> <heading>")
 
-    filename = secure_filename(sys.argv[1])
-    heading = sys.argv[2]
-    section = _extract_section(filename, heading)
+    FILE_NAME = secure_filename(sys.argv[1])
+    HEADING = sys.argv[2]
+
+    section = _extract_section(FILE_NAME, HEADING)
 
     if not section:
-        raise ValueError(f"Section not found under the {heading} heading")
+        raise ValueError(f"Section not found under the {HEADING} heading")
     with open("release_body.txt", "w") as text_file:
         text_file.write(section)
