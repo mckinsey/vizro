@@ -454,16 +454,6 @@ def create_country_analysis():
                             targets=["bar_country"],
                         )
                     ),
-                    vm.Action(
-                        function=export_data(
-                            targets=["bar_country"],
-                        )
-                    ),
-                    vm.Action(
-                        function=export_data(
-                            targets=["bar_country"],
-                        )
-                    ),
                 ],
             ),
         ],
