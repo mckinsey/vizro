@@ -32,7 +32,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro._actions import export_data
+        from vizro.actions import export_data
 
         iris = px.data.iris()
 
@@ -44,8 +44,8 @@ a result, when a dashboard user now clicks the button, all data on the page will
                     figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
                 ),
                 vm.Graph(
-                    id="bar",
-                    figure=px.bar(iris, x="petal_length", y="sepal_length", color="species"),
+                    id="hist",
+                    figure=px.histogram(iris, x="petal_length", color="species"),
                 ),
                 vm.Button(
                     text="Export data",
@@ -81,13 +81,12 @@ a result, when a dashboard user now clicks the button, all data on the page will
                 x: petal_length
                 y: sepal_length
             - type: graph
-              id: bar
+              id: hist
               figure:
-                _target_: bar
+                _target_: histogram
                 data_frame: iris
                 color: species
                 x: petal_length
-                y: sepal_length
             - type: button
               text: Export data
               id: export_data_button
@@ -222,7 +221,7 @@ The order of action execution is guaranteed, and the next action in the list wil
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro._actions import export_data
+        from vizro.actions import export_data
 
         iris = px.data.iris()
 
@@ -234,8 +233,8 @@ The order of action execution is guaranteed, and the next action in the list wil
                     figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
                 ),
                 vm.Graph(
-                    id="bar",
-                    figure=px.bar(iris, x="petal_length", y="sepal_length", color="species"),
+                    id="hist",
+                    figure=px.histogram(iris, x="petal_length", color="species"),
                 ),
                 vm.Button(
                     text="Export data",
@@ -247,7 +246,7 @@ The order of action execution is guaranteed, and the next action in the list wil
                         ),
                         vm.Action(
                             function=export_data(
-                                targets=["bar"],
+                                targets=["hist"],
                                 file_format="xlsx",
                             )
                         ),
@@ -277,13 +276,12 @@ The order of action execution is guaranteed, and the next action in the list wil
                 x: petal_length
                 y: sepal_length
             - type: graph
-              id: bar
+              id: hist
               figure:
-                _target_: bar
+                _target_: histogram
                 data_frame: iris
                 color: species
                 x: petal_length
-                y: sepal_length
             - type: button
               text: Export data
               id: export_data_button
@@ -295,7 +293,7 @@ The order of action execution is guaranteed, and the next action in the list wil
                 - function:
                     _target_: export_data
                     targets:
-                     - bar
+                     - hist
                     file_format: xlsx
             controls:
               - type: filter

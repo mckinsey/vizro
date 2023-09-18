@@ -27,8 +27,7 @@ To create a dashboard, do the following steps:
             title="My first dashboard",
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="bar_chart", figure=px.bar(df, x="sepal_width", y="petal_length", color="species")),
-            ],
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),            ],
             controls=[
                 vm.Filter(column="species"),
             ],
@@ -60,8 +59,12 @@ To create a dashboard, do the following steps:
                 },
                 {
                     "type": "graph",
-                    "id": "bar_chart",
-                    "figure": px.bar(df, x="sepal_width", y="petal_length", color="species"),
+                    "id": "hist_chart",
+                    "figure": px.histogram(
+                        df,
+                        x="sepal_width",
+                        color="species"
+                    ),
                 },
             ],
             "controls": [
@@ -91,12 +94,11 @@ To create a dashboard, do the following steps:
                 id: scatter_chart
                 type: graph
               - figure:
-                  _target_: bar
+                  _target_: histogram
                   data_frame: iris
                   x: sepal_width
-                  y: petal_length
                   color: species
-                id: bar_chart
+                id: hist_chart
                 type: graph
             controls:
               - column: species
@@ -122,13 +124,12 @@ To create a dashboard, do the following steps:
                         },
                         {
                             "figure": {
-                                "_target_": "bar",
+                                "_target_": "histogram",
                                 "color": "species",
                                 "data_frame": "iris",
                                 "x": "sepal_width",
-                                "y": "petal_length"
                             },
-                            "id": "bar_chart",
+                            "id": "hist_chart",
                             "type": "graph"
                         }
                     ],
