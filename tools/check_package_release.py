@@ -4,6 +4,8 @@ import sys
 
 import requests
 
+from werkzeug.utils import secure_filename
+
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 ARG_NUM = 3
@@ -29,10 +31,9 @@ def _check_no_dev_version(package_name, package_version):
 
 
 if __name__ == "__main__":
-    """Check if a package needs to be released"""
 
     if len(sys.argv) != ARG_NUM:
-        raise Exception("Usage: python check_package_release.py <package_name> <package_version>")
+        raise TypeError("Usage: python check_package_release.py <package_name> <package_version>")
 
     new_release = False
     double_release = False
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     ):
         new_release = True
 
-    env_file = os.getenv("GITHUB_ENV")
+    env_file = secure_filename(os.getenv("GITHUB_ENV"))
 
     if os.path.exists(env_file) and new_release:
         with open(env_file, "r") as f:
