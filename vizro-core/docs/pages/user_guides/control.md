@@ -283,11 +283,10 @@ If you want to modify nested parameters, you can specify the `targets` argument 
                     ),
                 ),
                 vm.Graph(
-                    id="bar_chart",
-                    figure=px.bar(
+                    id="hist_chart",
+                    figure=px.histogram(
                         iris,
                         x="sepal_width",
-                        y="sepal_length",
                         color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
                     ),
@@ -295,7 +294,7 @@ If you want to modify nested parameters, you can specify the `targets` argument 
             ],
             controls=[
                 vm.Parameter(
-                    targets=["scatter_chart.color_discrete_map.virginica", "bar_chart.color_discrete_map.virginica"],
+                    targets=["scatter_chart.color_discrete_map.virginica", "hist_chart.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"],
                         multi=False,
@@ -326,13 +325,12 @@ If you want to modify nested parameters, you can specify the `targets` argument 
                 id: scatter_chart
                 type: graph
               - figure:
-                  _target_: bar
+                  _target_: histogram
                   data_frame: iris
                   x: sepal_width
-                  y: sepal_length
                   color: species
                   color_discrete_map: {"setosa": "#00b4ff", "versicolor": "#ff9222"}
-                id: bar_chart
+                id: hist_chart
                 type: graph
             controls:
               - selector:
@@ -340,7 +338,7 @@ If you want to modify nested parameters, you can specify the `targets` argument 
                   value: #3949ab
                   multi: False
                   type: dropdown
-                targets: ["scatter_chart.color_discrete_map.virginica", "bar_chart.color_discrete_map.virginica"]
+                targets: ["scatter_chart.color_discrete_map.virginica", "hist_chart.color_discrete_map.virginica"]
                 type: parameter
             title: My first page
         ```
