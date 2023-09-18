@@ -71,6 +71,7 @@ update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}
 dependencies = [
   "mkdocs",
   "mkdocs-material",
+  "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
   "scriv"
 ]

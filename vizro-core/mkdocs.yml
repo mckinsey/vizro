@@ -39,6 +39,9 @@ nav:
       - Contributing: pages/development/contributing.md
       - Authors: pages/development/authors.md
 
+repo_url: https://github.com/mckinsey/vizro
+repo_name: mckinsey/vizro
+
 theme:
   name: material
   language: en
@@ -99,6 +102,8 @@ plugins:
             docstring_options:
               ignore_init_summary: true
           paths: [src]
+  - git-revision-date-localized:
+      enable_creation_date: false
 
 extra_css:
   - stylesheets/extra.css
