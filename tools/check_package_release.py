@@ -1,11 +1,13 @@
 """Determine if new package should be release (based on version) and consequently write information to env."""
 import os
 import re
+import subprocess
 import sys
 
 import requests
 from werkzeug.utils import secure_filename
 
+AVAILABLE_PACKAGES = ["vizro-core"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 ARG_NUM = 3
@@ -43,37 +45,22 @@ def _check_no_dev_version(package_name, package_version):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != ARG_NUM:
-        raise TypeError("Usage: python check_package_release.py <package_name> <package_version>")
-
-    PACKAGE_NAME = sys.argv[1]
-    PACKAGE_VERSION = sys.argv[2]
-
-    _check_valid_package_name(PACKAGE_NAME)
-    _check_valid_version(PACKAGE_VERSION)
-
-    PYPI_ENDPOINT = f"https://pypi.org/pypi/{PACKAGE_NAME}/{PACKAGE_VERSION}/json/"
-
     new_release = False
-    double_release = False
-
-    if _check_no_dev_version(PACKAGE_NAME, PACKAGE_VERSION) and _check_no_version_pypi(
-        PYPI_ENDPOINT, PACKAGE_NAME, PACKAGE_VERSION
-    ):
-        new_release = True
-
+    number_of_releases = False
     env_file = secure_filename(str(os.getenv("GITHUB_ENV")))
 
-    if os.path.exists(env_file) and new_release:
-        with open(env_file, "r") as f:
-            for line in f:
-                if line.strip() == "NEW_RELEASE=True":
-                    double_release = True
+    for package_name in AVAILABLE_PACKAGES:
+        package_version = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
+        pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
 
-    if double_release:
-        sys.exit("Cannot release two packages at the same time. Please modify your PR.")
+        if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
+            pypi_endpoint, package_name, package_version
+        ):
+            if new_release:
+                sys.exit("Cannot release two packages at the same time. Please modify your PR.")
+            new_release = True
 
-    with open(env_file, "a") as f:
-        f.write(f"NEW_RELEASE={str(new_release)}\n")
-        if new_release:
-            f.write(f"PACKAGE_NAME={PACKAGE_NAME}\nPACKAGE_VERSION={PACKAGE_VERSION}\n")
+        with open(env_file, "a") as f:
+            f.write(f"NEW_RELEASE={str(new_release)}\n")
+            if new_release:
+                f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
