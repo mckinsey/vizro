@@ -1,6 +1,5 @@
 """Determine if new package should be release (based on version) and consequently write information to env."""
 import os
-import re
 import subprocess
 import sys
 
@@ -22,7 +21,6 @@ def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
     else:
         print(f"Skipped: {package_name} {package_version} already exists on PyPI")  # noqa: T201
         return False
-
 
 
 def _check_no_dev_version(package_name, package_version):
