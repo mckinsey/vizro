@@ -5,6 +5,6 @@ from ._vizro import Vizro
 
 __all__ = ["Vizro"]
 
-__version__ = "0.0.7"
+__version__ = "0.0.8.dev0"
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
