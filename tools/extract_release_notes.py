@@ -33,7 +33,7 @@ if __name__ == "__main__":
     if len(sys.argv) != ARG_NUM:
         raise TypeError("Usage: python extract_release_notes.py <filename> <heading>")
 
-    FILE_NAME = secure_filename(sys.argv[1])
+    FILE_NAME = secure_filename(str(sys.argv[1]))
     HEADING = sys.argv[2]
 
     section = _extract_section(FILE_NAME, HEADING)
