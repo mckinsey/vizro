@@ -130,8 +130,8 @@ wide range of `components` available and how to make the most of them in your da
         ```py
 
         vm.Graph(
-            id="bar_gdp",
-            figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+            id="line_gdp",
+            figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
                             "gdpPercap":"GDP Per Cap"}),
         )
@@ -165,11 +165,12 @@ wide range of `components` available and how to make the most of them in your da
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
-                    ),
+                ),
+
             ],
         )
 
@@ -257,8 +258,8 @@ configure layouts, check out the [user guide](../user_guides/layouts.md)
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
@@ -305,7 +306,7 @@ the flexibility to apply the [`Filter`][vizro.models.Filter] to only one specifi
     === "Code"
         ```py
         controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ]
         ```
     === "app.py"
@@ -337,14 +338,14 @@ the flexibility to apply the [`Filter`][vizro.models.Filter] to only one specifi
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -397,10 +398,10 @@ for parameters](../user_guides/parameters.md).
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -408,12 +409,12 @@ for parameters](../user_guides/parameters.md).
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
@@ -447,14 +448,14 @@ for parameters](../user_guides/parameters.md).
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -471,10 +472,10 @@ for parameters](../user_guides/parameters.md).
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -482,12 +483,12 @@ for parameters](../user_guides/parameters.md).
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
@@ -633,14 +634,14 @@ providing a seamless and interactive user experience.
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -657,10 +658,10 @@ providing a seamless and interactive user experience.
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -668,12 +669,12 @@ providing a seamless and interactive user experience.
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
