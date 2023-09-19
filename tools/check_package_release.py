@@ -4,7 +4,6 @@ import subprocess
 import sys
 
 import requests
-from werkzeug.utils import secure_filename
 
 AVAILABLE_PACKAGES = ["vizro-core"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
@@ -12,7 +11,11 @@ RESPONSE_ERROR = 404
 ARG_NUM = 3
 
 
-def _check_no_version_pypi(pypi_endpoint, package_name, package_version):
+def _check_no_version_pypi(package_name, package_version):
+    if package_name == "vizro-core":
+        pypi_endpoint = f"https://pypi.org/pypi/vizro/{package_version}/json/"
+    else:
+        pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
     response = requests.get(pypi_endpoint, timeout=10)
     if response.status_code == RESPONSE_ERROR:
         # Version doesn't exist on Pypi - do release
@@ -34,14 +37,13 @@ def _check_no_dev_version(package_name, package_version):
 if __name__ == "__main__":
     new_release = False
     number_of_releases = False
-    env_file = os.getenv("GITHUB_ENV")
+    env_file = str(os.getenv("GITHUB_ENV"))
 
     for package_name in AVAILABLE_PACKAGES:
-        package_version = subprocess.check_output(["hatch", "version"],cwd=f"{package_name}").decode("utf-8").strip()
-        pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
+        package_version = subprocess.check_output(["hatch", "version"], cwd=f"{package_name}").decode("utf-8").strip()
 
         if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
-            pypi_endpoint, package_name, package_version
+            package_name, package_version
         ):
             if new_release:
                 sys.exit("Cannot release two packages at the same time. Please modify your PR.")
