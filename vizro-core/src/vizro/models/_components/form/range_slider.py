@@ -96,7 +96,6 @@ class RangeSlider(VizroBaseModel):
             [
                 dcc.Store(
                     f"{self.id}_callback_data",
-                    storage_type="local",
                     data={
                         "id": self.id,
                         "min": self.min,

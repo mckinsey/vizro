@@ -15,7 +15,6 @@ def expected_slider():
         [
             dcc.Store(
                 "slider_id_callback_data",
-                storage_type="local",
                 data={
                     "id": "slider_id",
                     "min": 0,

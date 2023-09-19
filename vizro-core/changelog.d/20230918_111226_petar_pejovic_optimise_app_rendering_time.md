@@ -17,9 +17,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 <!--
+
 ### Changed
 
-- A bullet item for the Changed category.
+- Optimise the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
 
 -->
 <!--
