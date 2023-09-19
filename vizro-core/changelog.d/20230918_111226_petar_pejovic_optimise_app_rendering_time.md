@@ -16,13 +16,13 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category.
 
 -->
-<!--
 
 ### Changed
 
 - Optimise the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
+  - Eliminate most server side callback in favour of client-side callbacks
+  - Logging information now only displayed for action function carried out (no trigger or finished information)
 
--->
 <!--
 ### Deprecated
 
