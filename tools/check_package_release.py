@@ -34,7 +34,7 @@ def _check_no_dev_version(package_name, package_version):
 if __name__ == "__main__":
     new_release = False
     number_of_releases = False
-    env_file = secure_filename(str(os.getenv("GITHUB_ENV")))
+    env_file = os.getenv("GITHUB_ENV")
 
     for package_name in AVAILABLE_PACKAGES:
         package_version = subprocess.check_output(["hatch", "version"],cwd=f"{package_name}").decode("utf-8").strip()
