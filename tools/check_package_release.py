@@ -23,7 +23,7 @@ def _check_no_version_pypi(package_name, package_version):
         return True
     else:
         print(f"Skipped: {package_name} {package_version} already exists on PyPI")  # noqa: T201
-        return True
+        return False
 
 
 def _check_no_dev_version(package_name, package_version):
