@@ -62,7 +62,7 @@ if __name__ == "__main__":
     ):
         new_release = True
 
-    env_file = secure_filename(os.getenv("GITHUB_ENV"))
+    env_file = secure_filename(str(os.getenv("GITHUB_ENV")))
 
     if os.path.exists(env_file) and new_release:
         with open(env_file, "r") as f:
