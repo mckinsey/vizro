@@ -5,7 +5,7 @@ nav:
   - Get started:
       - Quickstart: pages/tutorials/first_dashboard.md
       - Explore Vizro: pages/tutorials/explore_components.md
-  - User Guide:
+  - User Guides:
       - Fundamentals:
           - Install: pages/user_guides/install.md
           - Pages: pages/user_guides/pages.md
