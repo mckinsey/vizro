@@ -37,7 +37,7 @@ if __name__ == "__main__":
     env_file = secure_filename(str(os.getenv("GITHUB_ENV")))
 
     for package_name in AVAILABLE_PACKAGES:
-        package_version = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
+        package_version = subprocess.check_output(["cd",f"{package_name}","hatch", "version"]).decode("utf-8").strip()
         pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"
 
         if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
