@@ -6,8 +6,10 @@ from pydantic import Field, validator
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
+    set_default_marks,
     validate_max,
     validate_slider_value,
+    validate_step,
 )
 from vizro.models._models_utils import _log_call
 
@@ -24,7 +26,7 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[str, float]]): Marks to be displayed on slider. Defaults to `None`.
+        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `None`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (Optional[str]): Title to be displayed. Defaults to `None`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -34,7 +36,7 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[str, float]] = Field(None, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[float, str]] = Field(None, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
@@ -42,11 +44,9 @@ class Slider(VizroBaseModel):
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
     _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_step = validator("step", allow_reuse=True)(validate_step)
+    _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
-
-    @validator("marks", always=True)
-    def set_default_marks(cls, v, values):
-        return v if values["step"] is None else {}
 
     @_log_call
     def build(self):

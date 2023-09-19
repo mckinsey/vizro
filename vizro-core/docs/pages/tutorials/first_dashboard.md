@@ -60,10 +60,10 @@ You can now paste the below example into a jupyter notebook cell (or a python sc
             title="My first dashboard",
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="bar_chart", figure=px.bar(df, x="sepal_width", y="petal_length", color="species")),
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
             ],
             controls=[
-                vm.Filter(column="species"),
+                vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
             ],
         )
 
