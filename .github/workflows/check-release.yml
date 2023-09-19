@@ -26,7 +26,7 @@ jobs:
 
       - name: Check which 📦 needs to be released
         run: |
-            python tools/check_package_release.py
+          python tools/check_package_release.py
 
       - name: Set outputs
         id: version_check
