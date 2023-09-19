@@ -6,7 +6,7 @@ import sys
 import requests
 from werkzeug.utils import secure_filename
 
-AVAILABLE_PACKAGES = ["vizro-core","vizro-core"]
+AVAILABLE_PACKAGES = ["vizro-core"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 ARG_NUM = 3
