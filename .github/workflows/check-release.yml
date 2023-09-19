@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    # TODO: remove "dev/mono_repo_structure" after test
+    branches:
+      - "main"
+    
 
 jobs:
   check-version:
