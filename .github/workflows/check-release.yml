@@ -26,14 +26,7 @@ jobs:
 
       - name: Check which 📦 needs to be released
         run: |
-          packages=("vizro-core")
-
-          for package in "${packages[@]}"; do
-              cd $package
-              version=$(hatch version)
-              cd ..
-              python tools/check_package_release.py $package $version
-          done
+            python tools/check_package_release.py
 
       - name: Set outputs
         id: version_check
