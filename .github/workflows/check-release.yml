@@ -60,7 +60,7 @@ jobs:
         run: |
           formatted_date=$(date +"%Y-%m-%d")
           python tools/extract_release_notes.py \
-          "${{needs.check-version.outputs.package_name}}/CHANGELOG.md" \
+          "${{needs.check-version.outputs.package_name}}" \
           "${{needs.check-version.outputs.package_version}} — $formatted_date"
       - name: Tag main and create release on github
         run: |

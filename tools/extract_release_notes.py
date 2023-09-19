@@ -31,9 +31,10 @@ def _extract_section(filename, heading):
 
 if __name__ == "__main__":
     if len(sys.argv) != ARG_NUM:
-        raise TypeError("Usage: python extract_release_notes.py <filename> <heading>")
+        raise TypeError("Usage: python extract_release_notes.py <filename> <package_name>")
 
-    FILE_NAME = secure_filename(str(sys.argv[1]))
+    PACKAGE_NAME = secure_filename(str(sys.argv[1]))
+    FILE_NAME = PACKAGE_NAME + "/CHANGELOG.md"
     HEADING = sys.argv[2]
 
     section = _extract_section(FILE_NAME, HEADING)
