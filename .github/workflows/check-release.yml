@@ -79,7 +79,7 @@ jobs:
           password: ${{ env.PYPI_TOKEN }}
 
   version-bump:
-    needs: [check-version,build-publish]
+    needs: [check-version, build-publish]
     if: |
       needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest

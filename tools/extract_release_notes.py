@@ -1,8 +1,6 @@
 """Extracts latest release notes from CHANGELOG.md and saves to file."""
 import sys
 
-from werkzeug.utils import secure_filename
-
 ARG_NUM = 3
 
 
