@@ -8,7 +8,6 @@ import requests
 AVAILABLE_PACKAGES = ["vizro-core"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
-ARG_NUM = 3
 
 
 def _check_no_version_pypi(package_name, package_version):
