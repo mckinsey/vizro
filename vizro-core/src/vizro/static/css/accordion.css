@@ -42,8 +42,8 @@
   overflow-anchor: none;
   background-color: inherit;
   letter-spacing: -0.014px;
-  color: var(--text-secondary);
-  padding: var(--spacing-04) 0;
+  padding-top: var(--spacing-04);
+  padding-bottom: var(--spacing-04);
   padding-right: 2px;
   padding-left: 0;
 }
@@ -73,7 +73,6 @@
   font-size: 16px;
   font-weight: 600;
   transform-origin: center center;
-  color: var(--fill-accordion-button);
 }
 
 .accordion-header {
@@ -94,7 +93,6 @@
   background-color: inherit;
   width: 100%;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
-
 }
 
 .accordion-body {
