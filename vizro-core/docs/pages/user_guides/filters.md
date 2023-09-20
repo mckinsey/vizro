@@ -2,7 +2,8 @@
 
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. These models allow the automatic creation of selectors (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user interact with the charts/components on the screen.
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. 
+These models allow the automatic creation of selectors (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user interact with the charts/components on the screen.
 
 
 ## Basic Filters
@@ -12,7 +13,8 @@ To add a filter to your page, do the following:
 - add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
 - configure the `column` argument, which denotes the target column to be filtered
 
-By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen automatically based on the target column, e.g. a dropdown for categorical data or a range slider for numerical data.
+By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen
+automatically based on the target column, e.g. a dropdown for categorical data or a range slider for numerical data.
 
 !!! example "Basic Filter"
     === "app.py"
@@ -40,7 +42,7 @@ By default, all components on a page with such a `column` present will be filter
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see from_yaml example
-         # See from_yaml example
+        # See from_yaml example
         pages:
           - components:
               - figure:
