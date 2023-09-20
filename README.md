@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./.github/images/title.svg" width="200"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/title.svg" width="200"/>
 </p>
 
 <div align="center" markdown="1">
@@ -20,7 +20,7 @@
 ---
 
 <p align="center">
-<img src="./.github/images/example_screens.png" width="700"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/example_screens.png" width="700"/>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ Vizro is a toolkit for creating modular data visualization applications
 </p>
 
 <p align="center">
-<img src="./.github/images/tech_logos.png" width="270"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/tech_logos.png" width="270"/>
 </p>
 
 <p align="center">
@@ -49,11 +49,11 @@ View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive dem
 
 <p align="center">
 <a href="https://vizro.readthedocs.io/en/latest/">
-<img border="0" src="./.github/images/docs_button.svg" width="94" height="32">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/docs_button.svg" width="94" height="32">
 </a>
 &nbsp;&nbsp;&nbsp;&nbsp
 <a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/">
-<img border="0" src="./.github/images/get_started_button.svg" width="94" height="32">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/get_started_button.svg" width="94" height="32">
 </a>
 </p>
 
@@ -66,7 +66,7 @@ Rapidly self-serve the assembly of customised dashboards in minutes - without th
 </p>
 
 <p align="center">
-<img src="./.github/images/code_dashboard.png" width="1300"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
 </p>
 
 Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilising libraries such as **Plotly** and **Dash**, with inbuilt coding and design best practices
@@ -89,7 +89,7 @@ Optional high-code extensions allow almost infinite customisation in a modular w
 <br/>
 
 <p align="center">
-<img src="./.github/images/value_prop_icons.png" width="900"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/value_prop_icons.png" width="900"/>
 </p>
 
 <br/>
@@ -97,14 +97,14 @@ Optional high-code extensions allow almost infinite customisation in a modular w
 ### Examples
 
 <p align="center">
-<img src="./.github/images/dashboard_examples.png" width="1300"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
 </p>
 
 ### Live demo
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="./.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
 View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive demo </a>
