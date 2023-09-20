@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from dash import Input, Output, State, clientside_callback, ClientsideFunction
+from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
 from vizro.actions._action_loop._action_loop_utils import (
     _get_actions_chains_on_registered_pages,
@@ -24,10 +24,7 @@ def _build_action_loop_callbacks() -> None:
     for actions_chain in actions_chains:
         # Callback that enables gateway callback to work in the multiple page app
         clientside_callback(
-            ClientsideFunction(
-                namespace='clientside',
-                function_name='trigger_to_global_store'
-            ),
+            ClientsideFunction(namespace="clientside", function_name="trigger_to_global_store"),
             Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
             Input(
                 component_id=actions_chain.trigger.component_id,
@@ -45,10 +42,7 @@ def _build_action_loop_callbacks() -> None:
         )
 
     clientside_callback(
-        ClientsideFunction(
-            namespace='clientside',
-            function_name='gateway'
-        ),
+        ClientsideFunction(namespace="clientside", function_name="gateway"),
         output=[Output("remaining_actions", "data")]
         + [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions],
         inputs=[
@@ -63,10 +57,7 @@ def _build_action_loop_callbacks() -> None:
 
     # Callback that triggers the next iteration
     clientside_callback(
-        ClientsideFunction(
-            namespace='clientside',
-            function_name='after_action_cycle_breaker'
-        ),
+        ClientsideFunction(namespace="clientside", function_name="after_action_cycle_breaker"),
         Output("cycle_breaker_empty_output_store", "data"),
         Input("action_finished", "data"),
         prevent_initial_call=True,

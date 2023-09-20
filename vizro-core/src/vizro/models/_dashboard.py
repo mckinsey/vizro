@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List, Literal, Optional
 import dash
 import dash_bootstrap_components as dbc
 import plotly.io as pio
-from dash import Input, Output, clientside_callback, ClientsideFunction, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, html
 from pydantic import Field, validator
 
 import vizro
@@ -104,10 +104,7 @@ class Dashboard(VizroBaseModel):
     @staticmethod
     def _update_theme():
         clientside_callback(
-            ClientsideFunction(
-                namespace='clientside',
-                function_name='update_dashboard_theme'
-            ),
+            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
             Output("dashboard_container", "className"),
             Input("theme_selector", "on"),
         )

@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, clientside_callback, ClientsideFunction, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -63,10 +63,7 @@ class Slider(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(
-                namespace='clientside',
-                function_name='update_slider_values'
-            ),
+            ClientsideFunction(namespace="clientside", function_name="update_slider_values"),
             output=output,
             inputs=inputs,
         )

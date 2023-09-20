@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 import flask
 from dash import Dash
@@ -77,7 +77,7 @@ class Vizro:
                 model.pre_build()
 
 
-def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Union[Dict, str]], List[str]]:
+def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]], List[str]]:
     """Append vizro css and js resources."""
     _vizro_css = []
     _vizro_js = []
