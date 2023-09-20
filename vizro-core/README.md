@@ -1,49 +1,75 @@
 <p align="center">
-<img src="../.github/images/title.svg" width="200"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/title.svg" width="200"/>
 </p>
 
 <div align="center" markdown="1">
 
 [![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://pypi.org/project/vizro/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/McK-Internal/vizx-hyphen/blob/main/LICENSE.txt)
 
 </div>
 
 <div align="center" markdown="1">
 
 <a href="https://vizro.readthedocs.io/en/latest/" target="_blank">Documentation </a> |
-<a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/" target="_blank">Get Started </a>
+<a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
+<a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
 
 </div>
 
 ---
 
 <p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/example_screens.png" width="700"/>
+</p>
+
+<p align="center">
 <font size="+2">
 <b>
-Visual Intelligence. Beautifully engineered.
+Visual Intelligence. Beautifully engineered
 </b>
 </font>
 </p>
 
 <p align="center">
 <font size="+1">
-Vizro is a toolkit for creating modular data visualization applications.
+Vizro is a toolkit for creating modular data visualization applications
 </font>
 </p>
 
-(Built and maintained by QuantumBlack, AI by McKinsey - and enabled by Python and Plotly & Dash)
+<p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/tech_logos.png" width="270"/>
+</p>
 
----
+<p align="center">
+<font size="+1">
+View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive demo </a>
+</font>
+</p>
+
+<p align="center">
+<a href="https://vizro.readthedocs.io/en/latest/">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/docs_button.svg" width="94" height="32">
+</a>
+&nbsp;&nbsp;&nbsp;&nbsp
+<a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/get_started_button.svg" width="94" height="32">
+</a>
+</p>
 
 ## What is Vizro?
 
 <p align="center">
 <font size="+1">
-Rapidly self-serve the assembly of customised dashboards in minutes - without the need for advanced design or coding experience - to create flexible and scalable data science ready, Python based data visualization applications.
+Rapidly self-serve the assembly of customised dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications
 </font>
 </p>
 
-Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilising libraries such as **Plotly** and **Dash**.
+<p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
+</p>
+
+Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilising libraries such as **Plotly** and **Dash**, with inbuilt coding and design best practices
 
 Define high level categories within the configuration, including:
 
@@ -52,17 +78,36 @@ Define high level categories within the configuration, including:
 - **pages, layouts and navigation**: create multiple pages, with customisable layouts and flexible navigation across them
 - **actions and interactions**: create interactions between charts, and use pre-defined or customised actions (such as exporting)
 
-Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
+Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation
+
+Optional high-code extensions allow almost infinite customisation in a modular way, combining the best of low-code and high-code - for flexible and scalable, Python enabled data visualization applications
 
 <br/>
 
 ### Key benefits
 
-Vizro provides a low-code configuration with inbuilt best practices, allowing users to rapidly self-serve the assembly of powerful dashboards in minutes - without the need for advanced design or coding experience.
+<br/>
 
-Optional high-code extensions allow almost infinite customisation in a modular way, combining the best of low-code and high-code - for flexible and scalable data science ready, Python based data visualization applications.
+<p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/value_prop_icons.png" width="900"/>
+</p>
 
 <br/>
+
+### Examples
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
+</p>
+
+### Live demo
+
+<p align="left">
+<a href="http://vizro.mckinsey.com/">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+</p>
+
+View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive demo </a>
 
 ---
 
@@ -74,7 +119,7 @@ pip install vizro
 
 See the [Install guide](https://vizro.readthedocs.io/en/latest/pages/user_guides/install/) for more information
 
-Please note this repository is a monorepo and the core `vizro` package can be found in `/vizro-core/src`
+Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
 
 ## Getting started
 
@@ -82,7 +127,7 @@ See the [Tutorials](https://vizro.readthedocs.io/en/latest/pages/tutorials/first
 
 ## Documentation
 
-See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details.
+See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details
 
 ---
 
