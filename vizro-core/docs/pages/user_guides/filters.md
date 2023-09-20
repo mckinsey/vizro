@@ -40,6 +40,7 @@ By default, all components on a page with such a `column` present will be filter
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see from_yaml example
+         # See from_yaml example
         pages:
           - components:
               - figure:
