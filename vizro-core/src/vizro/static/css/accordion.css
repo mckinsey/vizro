@@ -42,10 +42,10 @@
   overflow-anchor: none;
   background-color: inherit;
   letter-spacing: -0.014px;
-  padding-left: 0;
-  padding-bottom: var(--spacing-04);
+  color: var(--text-secondary);
+  padding: var(--spacing-04) 0;
   padding-right: 2px;
-  color: var(--text-primary);
+  padding-left: 0;
 }
 
 .accordion-button:not(.collapsed) {
@@ -94,6 +94,7 @@
   background-color: inherit;
   width: 100%;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
+
 }
 
 .accordion-body {
@@ -134,5 +135,9 @@ div.page_container .accordion_button:focus {
 
 div.page_container .accordion_button:hover {
   background-color: var(--background-hover);
+  color: var(--text-primary);
+}
+
+div.page_container .accordion-button:hover {
   color: var(--text-primary);
 }
