@@ -1,0 +1,110 @@
+name: Check versions and build-publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/tools_requirements.txt
+          pip install --upgrade hatch
+
+      - name: Check which 📦 needs to be released
+        run: |
+          python tools/check_package_release.py
+
+      - name: Set outputs
+        id: version_check
+        run: |
+          echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
+          echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
+          echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
+    outputs:
+      new_release: ${{ steps.version_check.outputs.new_release }}
+      package_name: ${{ steps.version_check.outputs.package_name }}
+      package_version: ${{ steps.version_check.outputs.package_version }}
+
+  build-publish:
+    needs: [check-version]
+    if: |
+      needs.check-version.outputs.new_release == 'True'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/tools_requirements.txt
+          pip install hatch
+      - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
+        id: extract
+        run: |
+          formatted_date=$(date +"%Y-%m-%d")
+          python tools/extract_release_notes.py \
+          "${{needs.check-version.outputs.package_name}}" \
+          "${{needs.check-version.outputs.package_version}} — $formatted_date"
+      - name: Tag main and create release on github
+        run: |
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release_body.txt
+      - name: Build package
+        run: |
+          cd "${{ needs.check-version.outputs.package_name }}"
+          hatch build
+      - name: Set PyPI token
+        run: |
+          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
+              echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
+          fi
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
+          password: ${{ env.PYPI_TOKEN }}
+
+  version-bump:
+    needs: [check-version, build-publish]
+    if: |
+      needs.check-version.outputs.new_release == 'True'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Bump version to next patch
+        run: |
+          formatted_date=$(date +"%Y-%m-%d/%H-%M-%S")
+          cd "${{ needs.check-version.outputs.package_name }}"
+          git checkout -b "release/version_bump_next_minor/${formatted_date}"
+          hatch version patch,dev
+          hatch run docs:changelog
+          hatch run schema
+          git config user.email "83698606+maxschulz-COL@users.noreply.github.com"
+          git config user.name "Vizro Team"
+          git commit -am "version bump"
+          git push --set-upstream origin release/version_bump_next_minor/${formatted_date}
+          ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor/${formatted_date}
