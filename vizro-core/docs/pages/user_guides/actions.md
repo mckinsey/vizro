@@ -161,6 +161,7 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
                             ),
                         ),
                     ],
+                    controls=[vm.Filter(column='continent')]
                 ),
             ]
         )
@@ -198,6 +199,9 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
                 x: gdpPercap
                 y: lifeExp
                 size: pop
+              controls:
+                - column: continent
+                  type: filter
             title: Filter interaction
         ```
     === "Result"

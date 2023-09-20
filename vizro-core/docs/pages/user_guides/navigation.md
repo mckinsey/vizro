@@ -61,9 +61,9 @@ By default, a navigation panel with an accordion item per page and a default tit
             title: My second page
         ```
     === "Result"
-        [![Dashboard]][Dashboard]
+        [![DefaultNavigation]][DefaultNavigation]
 
-    [Dashboard]: ../../assets/user_guides/navigation/default_navigation.png
+    [DefaultNavigation]: ../../assets/user_guides/navigation/default_navigation.png
 
 ## Customizing your navigation panel
 
@@ -151,6 +151,6 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
                 - My second page
         ```
     === "Result"
-        [![Dashboard]][Dashboard]
+        [![CustomNavigation]][CustomNavigation]
 
-    [Dashboard]: ../../assets/user_guides/navigation/custom_navigation.png
+    [CustomNavigation]: ../../assets/user_guides/navigation/custom_navigation.png
