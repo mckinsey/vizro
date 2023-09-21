@@ -6,7 +6,6 @@
   <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="250">
 </picture>
 </p>
-
 <br/><br/>
 
 <div align="center" markdown="1">
