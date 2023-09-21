@@ -1,6 +1,5 @@
-<p align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/title.svg" width="200"/>
-</p>
+![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png#gh-light-mode-only)
+![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png#gh-dark-mode-only)
 
 <div align="center" markdown="1">
 
