@@ -11,11 +11,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 <!--
-### Added
 
-- A bullet item for the Added category.
+- (beta feature) Add the ability to use custom actions. in beta. Expect this to break at any time. ([#46](https://github.com/mckinsey/vizro/pull/46))
 
--->
 <!--
 ### Changed
 
