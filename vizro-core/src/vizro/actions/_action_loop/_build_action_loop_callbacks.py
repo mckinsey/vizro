@@ -7,7 +7,6 @@ from dash import Input, Output, State, callback, clientside_callback, ctx, dcc, 
 from dash.exceptions import PreventUpdate
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import action_functions
 from vizro.actions._action_loop._action_loop_utils import (
     _get_actions_chains_on_registered_pages,
     _get_actions_on_registered_pages,
@@ -89,7 +88,7 @@ def _build_action_loop_callbacks() -> None:
         logger.debug("=========== ACTION ===============")
         logger.debug(f"Triggered component: {triggered_actions_chains_ids[0]}.")
         final_action_sequence = [
-            {"Action ID": action.id, "Action name": action_functions[action.function._function]}
+            {"Action ID": action.id, "Action name": action.function._function.__name__}
             for action in model_manager[actions_chain_to_trigger].actions  # type: ignore[attr-defined]
         ]
         logger.debug(f"Actions to be executed as part of the triggered ActionsChain: {final_action_sequence}")
