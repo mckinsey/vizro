@@ -5,7 +5,7 @@
 <div align="center" markdown="1">
 
 [![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://pypi.org/project/vizro/)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/McK-Internal/vizx-hyphen/blob/main/LICENSE.txt)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 
 </div>
 
