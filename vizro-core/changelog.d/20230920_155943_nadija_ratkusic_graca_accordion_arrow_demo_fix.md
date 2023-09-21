@@ -33,7 +33,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fixed issue of accordion arrow not loading on deployed demo version
 
-
 <!--
 ### Security
 

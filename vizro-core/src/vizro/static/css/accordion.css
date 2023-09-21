@@ -83,7 +83,7 @@
 .accordion {
   display: flex;
   flex-direction: column;
-  max-height: 300px;
+  max-height: 400px;
   overflow-x: hidden;
   gap: var(--spacing-06);
 }
@@ -112,7 +112,7 @@ div.page_container .accordion_button {
   width: 100%;
   display: flex;
   padding: var(--spacing-02);
-  min-height: 32px;
+  min-height: 40px;
   align-items: center;
   font-size: var(--text-size-02);
   line-height: var(--text-size-03);
@@ -136,7 +136,7 @@ div.page_container .accordion_button:focus {
 }
 
 div.page_container .accordion_button:hover {
-  background-color: var(--background-hover);
+  background-color: var(--state-overlays-selected-hover);
   color: var(--text-primary);
 }
 
