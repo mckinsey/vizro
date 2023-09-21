@@ -41,6 +41,7 @@ def _build_action_loop_callbacks() -> None:
             )
         )
 
+    # Determines the final sequence of actions to be triggered.
     clientside_callback(
         ClientsideFunction(namespace="clientside", function_name="gateway"),
         output=[Output("remaining_actions", "data")]
