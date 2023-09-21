@@ -2,7 +2,7 @@
 
 This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function that creates the chart/component.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. If e.g. the charting function has a `title` argument, you could then configure a parameter that let's the dashboard user select the title of the chart via e.g. a dropdown.
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. If e.g. the charting function has a `title` argument, you could configure a parameter that allows the user to select the chart title via e.g. a dropdown.
 
 ## Basic Parameters
 
@@ -171,6 +171,6 @@ If you want to modify nested parameters, you can specify the `targets` argument 
 
     [Nested]: ../../assets/user_guides/control/control5.png
 
-In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (eg. `{"virginica":"blue"}`). In this case we do not want to change the entire dictionary, but only the value `blue`. We do this by specifying a target as `scatter.color_discrete_map.virginica`.
+In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (eg. `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
-Note that in the above example we also have one parameter affect multiple targets.
+Note that in the above example, one parameter affects multiple targets.
