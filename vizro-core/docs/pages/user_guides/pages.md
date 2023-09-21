@@ -9,7 +9,7 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, wh
 
 A [`Page`][vizro.models.Page] is split up into three main containers:
 
-1. The **control container**  where you can add your [Controls](control.md) to interact with the dashboard
+1. The **control container**  where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 2. The **page header** that contains the page title and the theme toggle switch button
 3. The **component container** where you can add your [Charts/Components](components.md) to visualize your data
 
@@ -19,8 +19,8 @@ To create and add a page to your dashboard, do the following steps:
 
 1. Provide a `title` to your [`Page`][vizro.models.Page]
 2. Configure your `components`, see our guide on [Charts/Components](components.md)
-3. Configure your `controls` (optional), see our guide on [Controls](control.md)
-4. Configure your `layout` (optional), see our guide on [Layouts](layouts.md)
+3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
+4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
 
 !!! example "Page"
     === "app.py"
