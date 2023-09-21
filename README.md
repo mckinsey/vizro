@@ -133,7 +133,7 @@ See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more detail
 
 ## Community and Development
 
-We encourage you to ask and answer technical questions via the GitHub Issues
+We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues)
 
 ## Contributing
 
