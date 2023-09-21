@@ -47,18 +47,17 @@ class Dropdown(VizroBaseModel):
 
     @_log_call
     def build(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
-
+        full_options, default_value = get_options_and_default(options=self.options, value=self.value, multi=self.multi)
         return html.Div(
             [
                 html.P(self.title) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,
-                    value=self.value if self.value is not None else default_value,
+                    value=default_value,  # self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
-                    clearable=False,
+                    clearable=True,
                     className="selector_body_dropdown",
                 ),
             ],

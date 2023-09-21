@@ -34,7 +34,7 @@ class Checklist(VizroBaseModel):
 
     @_log_call
     def build(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=True)
+        full_options, default_value = get_options_and_default(options=self.options, value=self.value, multi=True)
 
         return html.Div(
             [
@@ -42,7 +42,7 @@ class Checklist(VizroBaseModel):
                 dcc.Checklist(
                     id=self.id,
                     options=full_options,
-                    value=self.value if self.value is not None else [default_value],
+                    value=[default_value],
                     persistence=True,
                     className="selector_body_checklist",
                 ),
