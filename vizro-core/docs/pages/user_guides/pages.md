@@ -17,7 +17,7 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 ![Page Container](../../assets/user_guides/pages/page_containers.png)
 
 !!! note
-    Note that the navigation container needs to be configured via the Dashboard. 
+    Note that the navigation container needs to be configured via the Dashboard.
 
 To create and add a page to your dashboard, do the following steps:
 

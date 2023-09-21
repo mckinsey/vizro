@@ -515,6 +515,7 @@ def create_home_page():
     )
     return page_home
 
+
 dashboard = vm.Dashboard(
     pages=[
         create_home_page(),
