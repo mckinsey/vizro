@@ -41,25 +41,9 @@ Vizro is a toolkit for creating modular data visualization applications
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/tech_logos.png" width="270"/>
 </p>
 
-<p align="center">
-<font size="+1">
-View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive demo </a>
-</font>
-</p>
-
-<p align="center">
-<a href="https://vizro.readthedocs.io/en/latest/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/docs_button.svg" width="94" height="32">
-</a>
-&nbsp;&nbsp;&nbsp;&nbsp
-<a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/get_started_button.svg" width="94" height="32">
-</a>
-</p>
-
 ## What is Vizro?
 
-<p align="center">
+<p align="left">
 <font size="+1">
 Rapidly self-serve the assembly of customised dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications
 </font>
@@ -107,10 +91,6 @@ Optional high-code extensions allow almost infinite customisation in a modular w
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
-View a live <a href="http://vizro.mckinsey.com/" target="_blank">interactive demo </a>
-
----
-
 ## Installation
 
 ```console
@@ -140,9 +120,7 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 To learn more about making a contribution,
 please see the [Contributing Guide](https://vizro.readthedocs.io/en/latest/pages/development/contributing/) for more information
 
-## Contributors
-
-View current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
+You can also view current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
 
 ## License
 

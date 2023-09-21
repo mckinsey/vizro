@@ -91,8 +91,6 @@ Optional high-code extensions allow almost infinite customisation in a modular w
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
-
-
 ## Installation
 
 ```console
@@ -123,8 +121,6 @@ To learn more about making a contribution,
 please see the [Contributing Guide](https://vizro.readthedocs.io/en/latest/pages/development/contributing/) for more information
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
-
-
 
 ## License
 
