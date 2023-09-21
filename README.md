@@ -1,4 +1,5 @@
 <br/><br/>
+
 <p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
@@ -15,6 +16,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/)
 [![Downloads](https://static.pepy.tech/badge/vizro)](https://pepy.tech/project/vizro)
+
 </div>
 
 <div align="center" markdown="1">
@@ -116,7 +118,6 @@ See the [Tutorials](https://vizro.readthedocs.io/en/latest/pages/tutorials/first
 ## Documentation
 
 See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details
-
 
 ## Community and Development
 
