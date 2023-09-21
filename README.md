@@ -1,11 +1,3 @@
-<!-- ![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png#gh-light-mode-only)
-![Vizro Logo Banner - Dark](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png#gh-dark-mode-only) -->
-
-<!-- <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
-  <img  src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
-</picture> -->
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
   <source media="(prefers-color-scheme: light)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Light%20Mode.png">
