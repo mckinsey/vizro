@@ -10,7 +10,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
-<!--
+### Added
 
 - (beta feature) Add the ability to use custom actions. in beta. Expect this to break at any time. ([#46](https://github.com/mckinsey/vizro/pull/46))
 
