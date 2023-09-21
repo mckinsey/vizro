@@ -162,10 +162,10 @@ class Page(VizroBaseModel):
     def _create_control_panel(controls_content):
         keyline = html.Div(className="keyline")
         control_panel = html.Div(
-            children=[*controls_content, keyline],
+            children=[keyline, *controls_content, keyline],
             className="control_panel",
         )
-        return control_panel if controls_content else None
+        return control_panel if controls_content else keyline
 
     def _create_nav_panel(self):
         from vizro.models._navigation._accordion import Accordion

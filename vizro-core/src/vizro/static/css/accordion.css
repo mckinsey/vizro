@@ -51,6 +51,7 @@
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
   padding-right: 6px;
+  background-color: var(--state-overlays-selected);
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -84,7 +85,7 @@
   flex-direction: column;
   max-height: 300px;
   overflow-x: hidden;
-  gap: var(--spacing-04);
+  gap: var(--spacing-06);
 }
 
 .accordion_item {
@@ -95,6 +96,9 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
+.accordion_item:last-child {
+  border-bottom: none;
+}
 .accordion-body {
   display: flex;
   flex-direction: column;

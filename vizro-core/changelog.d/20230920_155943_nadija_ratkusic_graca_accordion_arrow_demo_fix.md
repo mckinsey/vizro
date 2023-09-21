@@ -28,12 +28,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category.
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category.
+- Fixed issue of accordion arrow not loading on deployed demo version
 
--->
+
 <!--
 ### Security
 
