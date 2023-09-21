@@ -1,9 +1,9 @@
 <br/><br/>
 <p align="center">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Light%20Mode.png">
-  <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="250">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
+  <img alt="Vizro logo" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png" width="250">
 </picture>
 </p>
 <br/><br/>
@@ -14,6 +14,7 @@
 [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/)
+[![Downloads](https://static.pepy.tech/badge/vizro)](https://pepy.tech/project/vizro)
 </div>
 
 <div align="center" markdown="1">
