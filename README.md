@@ -2,7 +2,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
   <source media="(prefers-color-scheme: light)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Light%20Mode.png">
-  <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="400">
+  <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="250">
 </picture>
 </p>
 
