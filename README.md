@@ -1,5 +1,16 @@
-![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png#gh-light-mode-only)
-![Vizro Logo Banner - Dark](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png#gh-dark-mode-only)
+<!-- ![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png#gh-light-mode-only)
+![Vizro Logo Banner - Dark](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png#gh-dark-mode-only) -->
+
+<!-- <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
+  <img  src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
+</picture> -->
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Dark_Mode.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Light_Mode.png">
+  <img alt="Hashnode logo" src="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Light_Mode.png" width="200">
+</picture>
 
 <div align="center" markdown="1">
 
