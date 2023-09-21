@@ -1,4 +1,4 @@
-&nbsp;
+<br/><br/>
 <p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
@@ -6,7 +6,8 @@
   <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="250">
 </picture>
 </p>
-&ensp;
+
+<br/><br/>
 
 <div align="center" markdown="1">
 
