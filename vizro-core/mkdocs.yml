@@ -5,22 +5,33 @@ nav:
   - Get started:
       - Quickstart: pages/tutorials/first_dashboard.md
       - Explore Vizro: pages/tutorials/explore_components.md
-  - User Guide:
-      - Install: pages/user_guides/install.md
-      - Themes: pages/user_guides/themes.md
-      - Dashboards: pages/user_guides/dashboard.md
-      - Pages: pages/user_guides/pages.md
-      - Navigation: pages/user_guides/navigation.md
-      - Charts/Components: pages/user_guides/components.md
-      - Layouts: pages/user_guides/layouts.md
-      - Controls: pages/user_guides/control.md
-      - Custom Charts: pages/user_guides/custom_charts.md
-      - Custom Components: pages/user_guides/custom_components.md
-      - Data: pages/user_guides/data.md
-      - Actions: pages/user_guides/actions.md
-      - Assets: pages/user_guides/assets.md
-      - Integrations: pages/user_guides/integration.md
-      - Run Methods: pages/user_guides/run.md
+  - User Guides:
+      - Fundamentals:
+          - Install: pages/user_guides/install.md
+          - Dashboards: pages/user_guides/dashboard.md
+          - Pages: pages/user_guides/pages.md
+          - Run Methods: pages/user_guides/run.md
+      - Components:
+          - Charts, Cards, Buttons: pages/user_guides/components.md
+      - Controls:
+          - Filters: pages/user_guides/filters.md
+          - Parameters: pages/user_guides/parameters.md
+          - Selectors: pages/user_guides/selectors.md
+      - Navigation:
+          - Accordion: pages/user_guides/navigation.md
+      - Visual Formatting:
+          - Layouts: pages/user_guides/layouts.md
+          - Themes: pages/user_guides/themes.md
+          - Assets: pages/user_guides/assets.md
+      - Actions:
+          - Actions: pages/user_guides/actions.md
+      - Data Connections:
+          - Data: pages/user_guides/data.md
+          - Integrations: pages/user_guides/integration.md
+      - Extensions:
+          - Custom Charts: pages/user_guides/custom_charts.md
+          - Custom Components: pages/user_guides/custom_components.md
+
   - API reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md
@@ -29,6 +40,9 @@ nav:
   - Contribute:
       - Contributing: pages/development/contributing.md
       - Authors: pages/development/authors.md
+
+repo_url: https://github.com/mckinsey/vizro
+repo_name: mckinsey/vizro
 
 theme:
   name: material
@@ -90,6 +104,8 @@ plugins:
             docstring_options:
               ignore_init_summary: true
           paths: [src]
+  - git-revision-date-localized:
+      enable_creation_date: false
 
 extra_css:
   - stylesheets/extra.css
