@@ -7,9 +7,9 @@
 </picture> -->
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Dark_Mode.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Light_Mode.png">
-  <img alt="Hashnode logo" src="https://raw.githubusercontent.com/mckinsey/vizro/docs/readme_fix/.github/images/Vizro_Github_Banner_Light_Mode.png" width="200">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png">
+  <img alt="Vizro logo" src="https://github.com/mckinsey/vizro/blob/docs/readme_fix/.github/images/Vizro_Github%20Banner%20Dark%20Mode.png" width="200">
 </picture>
 
 <div align="center" markdown="1">
