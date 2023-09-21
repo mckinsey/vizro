@@ -113,7 +113,6 @@ See the [Tutorials](https://vizro.readthedocs.io/en/latest/pages/tutorials/first
 
 See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details
 
----
 
 ## Community and Development
 
