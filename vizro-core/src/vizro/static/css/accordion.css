@@ -102,7 +102,7 @@
   gap: var(--spacing-01);
 }
 
-div.page_container .accordion_button {
+div.page_container .accordion-item-button {
   background-color: inherit;
   width: 100%;
   display: flex;
@@ -117,7 +117,7 @@ div.page_container .accordion_button {
 * Since the text inside a accordion btn is very specific
 * Adding important to increase the specificity
 */
-.accordion_button a {
+.accordion-item-button a {
   font-size: var(--text-size-02) !important;
   line-height: var(--text-size-03) !important;
   width: 100%;
@@ -125,12 +125,12 @@ div.page_container .accordion_button {
   display: flex;
 }
 
-div.page_container .accordion_button:focus {
+div.page_container .accordion-item-button:focus {
   background-color: var(--background-selected);
   color: var(--text-primary);
 }
 
-div.page_container .accordion_button:hover {
+div.page_container .accordion-item-button:hover {
   background-color: var(--state-overlays-selected-hover);
   color: var(--text-primary);
 }

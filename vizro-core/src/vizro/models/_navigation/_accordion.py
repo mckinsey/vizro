@@ -36,7 +36,7 @@ class Accordion(VizroBaseModel):
             dbc.Button(
                 children=[page["name"]],
                 key=page["relative_path"],
-                className="accordion_button",
+                className="accordion-item-button",
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
@@ -56,7 +56,7 @@ class Accordion(VizroBaseModel):
             dbc.Button(
                 children=[page["name"]],
                 key=page["relative_path"],
-                className="accordion_button",
+                className="accordion-item-button",
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
@@ -97,13 +97,16 @@ class Accordion(VizroBaseModel):
             return None
 
         return html.Div(
-            children=dbc.Accordion(
-                id=self.id,
-                children=accordion_items,
-                class_name="accordion",
-                persistence=True,
-                persistence_type="session",
-            ),
+            children=[
+                dbc.Accordion(
+                    id=self.id,
+                    children=accordion_items,
+                    class_name="accordion",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                html.Div(className="keyline"),
+            ],
             className="nav_panel",
             id=f"{self.id}_outer",
         )
