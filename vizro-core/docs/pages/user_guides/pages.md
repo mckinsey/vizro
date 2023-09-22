@@ -9,7 +9,7 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, wh
 
 A [`Page`][vizro.models.Page] is split up into four main containers:
 
-1. The **navigation container** where you can customise your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
+1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
 2. The **control container**  where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 3. The **page header** that contains the page title and the theme toggle switch button
 4. The **component container** where you can add your [Charts/Components](components.md) to visualize your data
