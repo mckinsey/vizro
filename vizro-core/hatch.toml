@@ -65,6 +65,7 @@ test-integration = [
   "pytest tests/integration --headless -k yaml {args}"
 ]
 test-unit = "pytest tests/unit {args}"
+test-js = "echo 'To run tests for the javascript files you need to:' && echo '1. Install Node.js by downloading LTS version for https://nodejs.org/en/download' && echo '2. run command: npm install' && echo '3. run command: npx jest'"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]

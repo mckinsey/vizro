@@ -1,4 +1,7 @@
 
+# npm node_modules
+node_modules/
+
 # Ipynb
 ipynb_checkpoints
 */.ipynb_checkpoints/*
