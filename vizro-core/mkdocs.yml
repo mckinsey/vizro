@@ -8,15 +8,15 @@ nav:
   - User Guides:
       - Fundamentals:
           - Install: pages/user_guides/install.md
-          - Pages: pages/user_guides/pages.md
           - Dashboards: pages/user_guides/dashboard.md
+          - Pages: pages/user_guides/pages.md
           - Run Methods: pages/user_guides/run.md
+      - Components:
+          - Charts, Cards, Buttons: pages/user_guides/components.md
       - Controls:
           - Filters: pages/user_guides/filters.md
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
-      - Components:
-          - Charts, Cards, Buttons: pages/user_guides/components.md
       - Navigation:
           - Accordion: pages/user_guides/navigation.md
       - Visual Formatting:

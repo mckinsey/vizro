@@ -46,7 +46,7 @@ prep-release = [
   "hatch run docs:scriv collect",
   "rm -rf schemas/*json",
   "hatch run schema",
-  "hatch run lint prettier",
+  "hatch run lint || hatch run lint",
   "hatch run docs:changelog",
   "echo 'Raise a PR to prepare main for release'"
 ]
