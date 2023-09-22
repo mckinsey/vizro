@@ -18,11 +18,11 @@
   --status-light-mode-error: rgba(240, 59, 58, 1);
   --status-light-mode-information: rgba(0, 158, 255, 1);
   --surfaces-dark-mode-bg-01: rgba(35, 38, 50, 1);
-  --surfaces-dark-mode-bg-02: rgba(27, 30, 42, 1);
+  --surfaces-dark-mode-bg-02: #1B1E2A;
   --surfaces-dark-mode-bg-03: rgba(20, 23, 33, 1);
   --surfaces-dark-mode-bg-card: rgba(35, 38, 50, 1);
   --surfaces-light-mode-bg-01: rgba(255, 255, 255, 1);
-  --surfaces-light-mode-bg-02: rgba(245, 246, 246, 1);
+  --surfaces-light-mode-bg-02: #F5F6F6;
   --surfaces-light-mode-bg-03: rgba(230, 232, 234, 1);
   --surfaces-light-mode-bg-card: rgba(245, 246, 246, 1);
   --field-dark-mode-enabled: rgba(43, 46, 57, 1);
