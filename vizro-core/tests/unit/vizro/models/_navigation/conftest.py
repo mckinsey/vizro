@@ -26,13 +26,13 @@ def accordion_from_page_as_list():
     accordion_buttons = [
         dbc.Button(
             children=["Page 1"],
-            className="accordion_button",
+            className="accordion-item-button",
             key="/",
             href="/",
         ),
         dbc.Button(
             children=["Page 2"],
-            className="accordion_button",
+            className="accordion-item-button",
             key="/page-2",
             href="/page-2",
         ),
@@ -62,12 +62,12 @@ def accordion_from_page_as_list():
 def accordion_from_pages_as_dict():
     accordion_items = [
         dbc.AccordionItem(
-            children=[dbc.Button(children=["Page 1"], className="accordion_button", key="/", href="/")],
+            children=[dbc.Button(children=["Page 1"], className="accordion-item-button", key="/", href="/")],
             title="PAGE 1",
             class_name="accordion_item",
         ),
         dbc.AccordionItem(
-            children=[dbc.Button(children=["Page 2"], className="accordion_button", key="/page-2", href="/page-2")],
+            children=[dbc.Button(children=["Page 2"], className="accordion-item-button", key="/page-2", href="/page-2")],
             title="PAGE 2",
             class_name="accordion_item",
         ),
