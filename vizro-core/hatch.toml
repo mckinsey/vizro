@@ -64,8 +64,8 @@ test-integration = [
   "pytest tests/integration --headless -k json {args}",
   "pytest tests/integration --headless -k yaml {args}"
 ]
-test-unit = "pytest tests/unit {args}"
 test-js = "./tools/run_jest.sh"
+test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
