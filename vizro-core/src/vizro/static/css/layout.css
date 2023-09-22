@@ -93,3 +93,20 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   width: 100%;
 }
+
+.nav_bar {
+  display: flex;
+  flex-direction: column;
+  width: 56px;
+  padding-top: 48px;
+  gap: 16px;
+  background-color: var(--surfaces-bg-02);
+  border-right: 1px solid var(--border-subtle-alpha-01);
+}
+
+.icon_button {
+  background-color: var(--surfaces-bg-02);
+}
+.icon {
+  filter: var(--fill-accordion-button);
+}
