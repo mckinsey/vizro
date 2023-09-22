@@ -18,7 +18,7 @@ Vizro is a toolkit for creating modular data visualization applications
 <a class="card-wrapper" href="pages/user_guides/install/">
   <div class="card">
     <div class="card-content">
-      <h5>User Guide</h5>
+      <h5>User Guides</h5>
       <p>
         Our user guides provide step-by-step instructions on how to leverage our core features.
       </p>
