@@ -130,6 +130,10 @@ please see the [Contributing Guide](https://vizro.readthedocs.io/en/latest/pages
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
 
+## Reporting a Security Vulnerability
+
+Please see our [security policy](https://github.com/mckinsey/vizro/security/policy)
+
 ## License
 
 `vizro` is distributed under the terms of the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
