@@ -1,10 +1,21 @@
-![Vizro Logo Banner - Light](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png#gh-light-mode-only)
-![Vizro Logo Banner - Dark](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png#gh-dark-mode-only)
+<br/><br/>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
+  <img alt="Vizro logo" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png" width="250">
+</picture>
+</p>
+<br/><br/>
 
 <div align="center" markdown="1">
 
 [![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://pypi.org/project/vizro/)
+[![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
+[![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 </div>
 
@@ -108,8 +119,6 @@ See the [Tutorials](https://vizro.readthedocs.io/en/latest/pages/tutorials/first
 
 See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details
 
----
-
 ## Community and Development
 
 We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues)
@@ -120,6 +129,10 @@ To learn more about making a contribution,
 please see the [Contributing Guide](https://vizro.readthedocs.io/en/latest/pages/development/contributing/) for more information
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
+
+## Reporting a Security Vulnerability
+
+Please see our [security policy](https://github.com/mckinsey/vizro/security/policy)
 
 ## License
 
