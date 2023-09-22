@@ -70,13 +70,16 @@ class Accordion(VizroBaseModel):
             return None
 
         return html.Div(
-            children=dbc.Accordion(
-                id=self.id,
-                children=accordion_items,
-                class_name="accordion",
-                persistence=True,
-                persistence_type="session",
-            ),
+            children=[
+                dbc.Accordion(
+                    id=self.id,
+                    children=accordion_items,
+                    class_name="accordion",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                html.Div(className="keyline"),
+            ],
             className="nav_panel",
             id=f"{self.id}_outer",
         )
