@@ -7,5 +7,5 @@ contact_links:
     url: https://github.com/mckinsey/vizro/issues/new
     about: For maintainers only.
   - name: Documentation
-    url: https://vizro.readthedocs.io/en/latest/
+    url: https://vizro.readthedocs.io
     about: To learn more about how Vizro works
