@@ -54,15 +54,15 @@ class Parameter(VizroBaseModel):
             raise ValueError(f"Target {target_id} not found in model_manager.")
         return target
 
-    @validator("targets")
-    def check_duplicate_parameter_target(cls, targets):
-        all_targets = targets.copy()
-        for _, param in model_manager._items_with_type(Parameter):
-            all_targets.extend(param.targets)
-        duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
-        if duplicate_targets:
-            raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
-        return targets
+    # @validator("targets")
+    # def check_duplicate_parameter_target(cls, targets):
+    #     all_targets = targets.copy()
+    #     for _, param in model_manager._items_with_type(Parameter):
+    #         all_targets.extend(param.targets)
+    #     duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
+    #     if duplicate_targets:
+    #         raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
+    #     return targets
 
     @_log_call
     def pre_build(self):
