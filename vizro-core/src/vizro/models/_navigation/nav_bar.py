@@ -16,29 +16,27 @@ if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
 
 
-
-
 class NavBar(VizroBaseModel):
-    selector: Optional[Any]
+    # selector: Optional[Any]
     pages: Optional[Union[List[str], Dict[str, List[str]]]]
-    icons: Optional[List[Icon]]
+    items: Optional[List[Icon]]
+
+    @_log_call
+    def pre_build(self):
+        if self.items is None:
+            if isinstance(self.pages, list):
+                self.items = [Icon(pages=page) for page in self.pages]
+            if isinstance(self.pages, dict):
+                self.items = [Icon(pages=value) for page, value in self.pages.values()]
+
     @_log_call
     def build(self):
-        if isinstance(self.pages, list):
-            self.selector = [Icon(pages=page) for page in self.pages]
-        if self.icons:
-            icons = [icon.build() for icon in self.icons]
-            icon_bar = html.Div(
-                children=icons,
-                style={
-                    "display": "flex",
-                    "flexDirection": "column",
-                    "width": "56px",
-                    "backgroundColor": "gray",
-                    "paddingTop": "40px",
-                    "alignItems": "center",
-                    "gap": "16px"
-                }
+        if self.items:
+            items = [item.build() for item in self.items]
+            nav_bar = html.Div(
+                children=items,
+                className="nav_bar",
             )
+            nav_panel = [item.selector.build() for item in self.items]
 
-            return icon_bar
+            return nav_bar, nav_panel[0]

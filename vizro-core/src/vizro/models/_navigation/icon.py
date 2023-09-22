@@ -29,7 +29,7 @@ class Icon(VizroBaseModel):
     src: Optional[str]  # src matches html.Img attribute name but maybe call it something else?
     # pages: Optional[Union[str], List[str], Dict[str, List[str]]]  # note can have single string to make it link to just one page
     pages: Optional[Union[str, List[str], Dict[str, List[str]]]]
-    _selector: Accordion = PrivateAttr()
+    selector: Accordion = None
 
     # @_log_call
     # def build(self):
@@ -65,12 +65,22 @@ class Icon(VizroBaseModel):
 
     def _set_selector(self):
         from vizro.models._navigation.accordion import Accordion
-        if self._selector is None:
-            self._selector = Accordion(pages=self.pages)
+        if self.selector is None:
+            self.selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self):
-        return self._selector.build()
+
+        icon = dbc.Button(
+            children=html.Img(
+                src=self.src,
+                width=24,
+                height=24,
+                className="icon",
+            ),
+            className="icon_button"
+        )
+        return icon
 
 
 
