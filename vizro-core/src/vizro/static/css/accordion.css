@@ -42,16 +42,14 @@
   overflow-anchor: none;
   background-color: inherit;
   letter-spacing: -0.014px;
-  padding-top: var(--spacing-04);
-  padding-bottom: var(--spacing-04);
-  padding-right: 2px;
-  padding-left: 0;
+  padding: 16px 8px;
+  height: 56px;
 }
 
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
-  padding-right: 6px;
   background-color: var(--state-overlays-selected);
+  padding: 16px 8px;
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -63,7 +61,6 @@
 
 .accordion-button::after {
   flex-shrink: 0;
-  width: 14px;
   height: 24px;
   margin-left: auto;
   content: "\2304";
@@ -83,9 +80,7 @@
 .accordion {
   display: flex;
   flex-direction: column;
-  max-height: 400px;
   overflow-x: hidden;
-  gap: var(--spacing-06);
 }
 
 .accordion_item {
@@ -112,7 +107,7 @@ div.page_container .accordion_button {
   width: 100%;
   display: flex;
   padding: var(--spacing-02);
-  min-height: 40px;
+  height: 40px;
   align-items: center;
   font-size: var(--text-size-02);
   line-height: var(--text-size-03);
