@@ -16,12 +16,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category.
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category.
+- Replaced all screenshots in the docs to reflect new navigation designs ([#48](https://github.com/mckinsey/vizro/pull/48))
 
--->
 <!--
 ### Deprecated
 

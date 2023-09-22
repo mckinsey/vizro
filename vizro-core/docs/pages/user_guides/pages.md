@@ -88,9 +88,9 @@ To create and add a page to your dashboard, do the following steps:
 !!! note
 
     Note that an accordion page selector is automatically added to your dashboard in the top-left of the control container.
-    This accordinon allows navigating through the different pages.
+    This accordion allows navigating through the different pages.
 
-    Accordion page selector will not be added if your dashboard consists of only one page.
+    The accordion page selector will not be added if your dashboard consists of only one page.
 
     You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
