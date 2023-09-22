@@ -51,12 +51,12 @@ class DataManager:
         """Adds a mapping from `component_id` to `dataset_name`."""
         if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
             raise KeyError(f"Dataset {dataset_name} does not exist.")
-        if component_id in self.__component_to_original:
-            raise ValueError(
-                f"Component with id={component_id} already exists and is mapped to dataset "
-                f"{self.__component_to_original[component_id]}. Components must have a unique id across the "
-                f"whole dashboard."
-            )
+        # if component_id in self.__component_to_original:
+        #     raise ValueError(
+        #         f"Component with id={component_id} already exists and is mapped to dataset "
+        #         f"{self.__component_to_original[component_id]}. Components must have a unique id across the "
+        #         f"whole dashboard."
+        #     )
         self.__component_to_original[component_id] = dataset_name
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
