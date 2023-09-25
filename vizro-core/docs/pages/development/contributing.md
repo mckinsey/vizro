@@ -87,8 +87,7 @@ Arguments are passed through to the underlying `npx jest` command, e.g.
 hatch run test-js --help
 ```
 
-executes `npx jest --help` and shows all jest optional arguments you can also propagate through `hatch run test-js`. 
-
+executes `npx jest --help` and shows all jest optional arguments you can also propagate through `hatch run test-js`.
 
 <!-- ## Documentation
 
