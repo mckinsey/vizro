@@ -47,13 +47,16 @@ If no example is specified (`hatch run example`) then the [default example](http
 
 ## Testing
 
-Tests are handled using the [`pytest`](https://docs.pytest.org/) framework, and test environments are managed by Hatch. To run all tests, run
+Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](https://jestjs.io/) frameworks, and test environments are managed by Hatch. To run all tests, run
 
 ```console
 hatch run test
 ```
 
-To run only unit tests, run `hatch run test-unit` and for integration tests only, run `hatch run test-integration`. Note that the latter executes all examples in separate testing sessions due to [this](https://github.com/mckinsey/vizro/issues/10) issue by providing the `-k` tag per example.
+To run only unit tests run `hatch run test-unit`, to run only jest unit tests for javascript functions run `hatch run test-js` and for integration tests only run `hatch run test-integration`.
+Note that Node.js is required for running test written in jest tests. Guidelines on how to install Node.js are described when you run the command: `hatch run test-js`.
+
+For unit and integration tests, note that the latter executes all examples in separate testing sessions due to [this](https://github.com/mckinsey/vizro/issues/10) issue by providing the `-k` tag per example.
 
 Arguments are passed through to the underlying `pytest` command, e.g.
 
