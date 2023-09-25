@@ -47,17 +47,13 @@ If no example is specified (`hatch run example`) then the [default example](http
 
 ## Testing
 
-Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](https://jestjs.io/) frameworks, and test environments are managed by Hatch. To run all tests, run
+Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](https://jestjs.io/) frameworks, and test environments are managed by Hatch. To run all python tests, run
 
 ```console
 hatch run test
 ```
 
 To run only python unit tests, run `hatch run test-unit`, and for python integration tests only run `hatch run test-integration`.
-
-To run only jest unit tests for javascript functions, run `hatch run test-js`.
-Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
-Otherwise, if `Node.js` is installed, then the same command (`hatch run test-js`) runs jest unit tests.
 
 For integration tests, all examples are executed in separate testing sessions due to [this](https://github.com/mckinsey/vizro/issues/10) issue by providing the `-k` tag per example.
 
@@ -80,6 +76,19 @@ hatch run all.py3.10:test -vv
 ```
 
 The script executed by `hatch run cov` measures test coverage and generates a report.
+
+To run jest unit tests for javascript functions, run `hatch run test-js`.
+Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
+Otherwise, if `Node.js` is installed, then the same command (`hatch run test-js`) runs jest unit tests.
+
+Arguments are passed through to the underlying `npx jest` command, e.g.
+
+```console
+hatch run test-js --help
+```
+
+executes `npx jest --help` and shows all jest optional arguments you can also propagate through `hatch run test-js`. 
+
 
 <!-- ## Documentation
 
