@@ -121,7 +121,7 @@ See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more detail
 
 ## Community and Development
 
-We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues)
+We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). This is also the place where you can submit bug reports or request new features.
 
 ## Contributing
 
