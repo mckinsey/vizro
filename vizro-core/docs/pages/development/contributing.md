@@ -1,14 +1,18 @@
 ## Contributing guidelines
 
-Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate all of them. We are still defining a detailed process, but for the time being, please use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions.
+Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate all of them. Please use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions.
 
 ### Found a bug
 
-Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. We will try to reproduce your reported bug as soon as possible before getting back to you on next steps.
+Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would greatly assist us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will promptly work on reproducing the bug you've reported and will follow up with the next steps.
 
 ### Request a feature
 
-Splendid! In order to raise a feature request, please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+Splendid! In order to raise a feature request, please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+
+### General question
+
+Nice! We are happy to receive general questions around Vizro. Please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
 
 ## How to interact with the repository
 
@@ -142,6 +146,9 @@ adding or removing dependencies.
 
 ## Changelog
 
+Vizro keeps a changelog, where all notable changes to the project will be documented. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 Vizro uses [scriv](https://pypi.org/project/scriv/) to build and maintain a meaningful `CHANGELOG.md`. When creating a PR, the developer needs to ensure that
 a changelog fragment has been created in the folder `changelog.d`. This fragment is a small `.md` file describing the changes of the current PR that should be mentioned in the `CHANGELOG.md` entry of the next release.
 
@@ -151,7 +158,7 @@ You can easily create such a fragment by running
 hatch run docs:changelog
 ```
 
-and then uncommenting the relevant section(s) you want to describe. In case your PR does not contain `CHANGELOG.md` relevant changes, leave everything commented out.
+Please begin by uncommenting the relevant section(s) you wish to describe. If your PR includes changes that are not relevant to `CHANGELOG.md`, please leave everything commented out. If you are uncertain about what to add or whether to add anything, please refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
 
 ## Releases
 
