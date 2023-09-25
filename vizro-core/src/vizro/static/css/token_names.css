@@ -2,9 +2,13 @@
   --state-overlays-dark-mode-enable: rgba(255, 255, 255, 0);
   --state-overlays-dark-mode-hover: rgba(255, 255, 255, 0.12);
   --state-overlays-dark-mode-active: rgba(255, 255, 255, 0.08);
+  --state-overlays-dark-mode-selected: rgba(255, 255, 255, 0.1);
+  --state-overlays-dark-mode-selected-hover: rgba(255, 255, 255, 0.16);
   --state-overlays-light-mode-enable: rgba(20, 23, 33, 0);
   --state-overlays-light-mode-hover: rgba(20, 23, 33, 0.08);
   --state-overlays-light-mode-active: rgba(20, 23, 33, 0.12);
+  --state-overlays-light-mode-selected: rgba(20, 23, 33, 0.08);
+  --state-overlays-light-mode-selected-hover: rgba(20, 23, 33, 0.24);
   --status-dark-mode-success: rgba(64, 216, 110, 1);
   --status-dark-mode-warning: rgba(255, 193, 7, 1);
   --status-dark-mode-error: rgba(245, 101, 101, 1);
