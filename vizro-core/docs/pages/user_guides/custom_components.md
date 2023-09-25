@@ -224,9 +224,9 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         # TBD
         ```
     === "Result"
-        [![Graph]][Graph]
+        [![CustomComponent1]][CustomComponent1]
 
-    [Graph]: ../../assets/user_guides/custom_components/customcomponent_1.png
+    [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
 ## Entirely new component
@@ -346,6 +346,6 @@ vm.Page.add_new_type("components", Jumbotron)
         # TBD
         ```
     === "Result"
-        [![Graph]][Graph]
+        [![CustomComponent2]][CustomComponent2]
 
-    [Graph]: ../../assets/user_guides/custom_components/customcomponent_2.png
+    [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
