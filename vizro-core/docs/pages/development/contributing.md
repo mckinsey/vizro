@@ -8,7 +8,11 @@ Great! We would appreciate if you could head to our [issues page](https://github
 
 ### Request a feature
 
-Splendid! In order to raise a feature request, please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+Splendid! In order to raise a feature request, please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+
+### General question
+
+Nice! We are happy to receive general questions around Vizro. Please also head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket.
 
 ## How to interact with the repository
 
