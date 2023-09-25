@@ -140,8 +140,7 @@ You can easily create such a fragment by running
 hatch run docs:changelog
 ```
 
-and then uncommenting the relevant section(s) you want to describe. In case your PR does not contain `CHANGELOG.md` relevant changes, leave everything commented out. If you are unsure whether or what to add to the fragment, please
-refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
+Please begin by uncommenting the relevant section(s) you wish to describe. If your PR includes changes that are not relevant to `CHANGELOG.md`, please leave everything commented out. If you are uncertain about what to add or whether to add anything, please refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
 
 ## Releases
 
