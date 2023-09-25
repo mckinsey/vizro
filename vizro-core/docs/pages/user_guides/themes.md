@@ -26,6 +26,7 @@ you can still switch between the themes via the toggle button in the upper-right
                     ),
                 ),
             ],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page], theme="vizro_light")
@@ -44,6 +45,9 @@ you can still switch between the themes via the toggle button in the upper-right
               data_frame: iris
               dimensions: ["sepal_length", "sepal_width", "petal_length", "petal_width"]
             type: graph
+          controls:
+            - column: species
+              type: filter
           title: Changing themes
         theme: vizro_light
         ```
