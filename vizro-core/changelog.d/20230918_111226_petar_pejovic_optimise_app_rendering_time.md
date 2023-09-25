@@ -21,7 +21,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
 ``
-  - Eliminate most server side callback in favour of client-side callbacks
+  - Eliminate most server side callbacks in favour of client-side callbacks
   - Add tests for client-side callbacks written in Node.js framework called `jest`.
   - Add hatch command `hatch run test-js` that runs unit tests written in the jest.
   - Logging information now only displayed for action function carried out (no trigger or finished information)
