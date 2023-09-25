@@ -23,7 +23,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ``
   - Eliminate most server side callbacks in favour of client-side callbacks
   - Add tests for client-side callbacks written in Node.js framework called `jest`.
-  - Add hatch command `hatch run test-js` that runs unit tests written in the jest.
+  - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
   - Logging information now only displayed for action function carried out (no trigger or finished information)
 
 <!--
