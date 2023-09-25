@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Add additional warnings in case of duplicate `model_manager` ID's to guide users if this occurs in a Jupyter Notebooks. ([#59](https://github.com/mckinsey/vizro/pull/59))
 
-
 <!--
 ### Changed
 
