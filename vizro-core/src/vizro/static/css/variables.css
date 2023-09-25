@@ -81,6 +81,10 @@
   --status-warning: var(--status-dark-mode-warning);
   --background-selected: rgba(0, 0, 0, 0.12);
   --background-hover: rgba(255, 255, 255, 0.08);
+  --state-overlays-selected: var(--state-overlays-dark-mode-selected);
+  --state-overlays-selected-hover: var(
+    --state-overlays-dark-mode-selected-hover
+  );
 }
 
 .vizro_light {
@@ -135,4 +139,8 @@
   --fill-accordion-button: invert(64%) sepia(0%) saturate(1375%);
   --background-selected: var(--overlays-on-light-ui-high-contrast);
   --background-hover: var(--overlays-on-light-ui-medium-contrast);
+  --state-overlays-selected: var(--state-overlays-light-mode-selected);
+  --state-overlays-selected-hover: var(
+    --state-overlays-light-mode-selected-hover
+  );
 }
