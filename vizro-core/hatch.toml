@@ -55,8 +55,7 @@ schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
   "test-unit",
-  "test-integration",
-  "test-js"
+  "test-integration"
 ]
 test-cov = "coverage run -m pytest tests/unit {args}"
 test-integration = [
@@ -65,7 +64,7 @@ test-integration = [
   "pytest tests/integration --headless -k json {args}",
   "pytest tests/integration --headless -k yaml {args}"
 ]
-test-js = "./tools/run_jest.sh"
+test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 

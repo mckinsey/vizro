@@ -4,7 +4,7 @@ if node --version >/dev/null 2>&1; then
   echo "Execute the command \"npm install\" to update your node modules to the latest versions..."
   npm install >/dev/null 2>&1;
   echo "Running jest tests."
-  npx jest;
+  npx jest "$@";
 else
   echo "
   Node.js is not installed or there was an issue.
