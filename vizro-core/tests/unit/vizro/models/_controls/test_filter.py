@@ -116,7 +116,8 @@ class TestPreBuildMethod:
         filter = vm.Filter(column="country", selector=test_input)
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
-            ValueError, match=f"Chosen selector {test_input.type} is not compatible with column_type categorical."
+            ValueError,
+            match=f"No numeric values detected in chosen column 'country' for numerical selector {test_input.type}.",
         ):
             filter.pre_build()
 
@@ -157,9 +158,17 @@ class TestPreBuildMethod:
         filter.pre_build()
         assert filter.selector.options == ["Africa", "Europe"]
 
+    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
+    def test_set_actions(self, test_input):
+        filter = vm.Filter(column=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        default_action = filter.selector.actions[0]
+        assert isinstance(default_action, ActionsChain)
+        assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].id == f"filter_action_{filter.id}"
 
-# TODO: split out pre_build method, and test only the units
-# TODO: write test for: "No numeric value detected in chosen column lifeExp for numerical selector.")
+
 # TODO: write tests for where there are columns shared, but the content is different
 
 
@@ -184,13 +193,3 @@ class TestFilterBuild:
         result = str(filter.build())
         expected = str(test_selector.build())
         assert result == expected
-
-    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
-    def test_set_actions(self, test_input):
-        filter = vm.Filter(column=test_input)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-        default_action = filter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].id == f"filter_action_{filter.id}"

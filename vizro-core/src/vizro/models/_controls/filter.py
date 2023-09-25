@@ -119,7 +119,8 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["numerical"]):
             if self._column_type != "numerical":
                 raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible with column_type {self._column_type}."
+                    f"No numeric values detected in chosen column '{self.column}' for "
+                    f"numerical selector {self.selector.type}."
                 )
             min_values = []
             max_values = []
@@ -127,8 +128,6 @@ class Filter(VizroBaseModel):
                 data_frame = data_manager._get_component_data(target_id)
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
-            if not is_numeric_dtype(min(min_values)) or not is_numeric_dtype(max(max_values)):
-                raise ValueError(f"No numeric value detected in chosen column {self.column} for numerical selector.")
             if self.selector.min is None:
                 self.selector.min = min(min_values)
             if self.selector.max is None:
