@@ -4,7 +4,7 @@ Contributions of all experience levels are welcome! There are many ways to contr
 
 ### Found a bug
 
-Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. I would be very helpful if you searched the existing issues for a similar description before raising a new ticket. We will try to reproduce your reported bug as soon as possible before getting back to you on next steps.
+Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would be very helpful if you search the existing issues for a similar description before raising a new ticket. We will try to reproduce your reported bug as soon as possible before getting back to you with the next steps.
 
 ### Request a feature
 
