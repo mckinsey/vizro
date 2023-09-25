@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, callback, callback_context, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -60,23 +60,30 @@ class RangeSlider(VizroBaseModel):
             Output(self.id, "value"),
             Output(f"temp-store-range_slider-{self.id}", "data"),
         ]
-        input = [
+        inputs = [
             Input(f"{self.id}_start_value", "value"),
             Input(f"{self.id}_end_value", "value"),
             Input(self.id, "value"),
             State(f"temp-store-range_slider-{self.id}", "data"),
+            State(f"{self.id}_callback_data", "data"),
         ]
 
-        @callback(output=output, inputs=input)
-        def update_slider_values_callback(start, end, slider, input_store):
-            trigger_id = callback_context.triggered_id
-
-            return self._update_slider_values(
-                start_txt=start, end_txt=end, slider=slider, input_store=input_store, value=value, trigger_id=trigger_id
-            )
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_range_slider_values"),
+            output=output,
+            inputs=inputs,
+        )
 
         return html.Div(
             [
+                dcc.Store(
+                    f"{self.id}_callback_data",
+                    data={
+                        "id": self.id,
+                        "min": self.min,
+                        "max": self.max,
+                    },
+                ),
                 html.P(self.title) if self.title else None,
                 html.Div(
                     [
@@ -128,20 +135,3 @@ class RangeSlider(VizroBaseModel):
             className="selector_container",
             id=f"{self.id}_outer",
         )
-
-    def _update_slider_values(self, trigger_id, start_txt, end_txt, slider, input_store, value):  # noqa: PLR0913
-        if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
-            start_text_value, end_text_value = start_txt, end_txt
-        elif trigger_id == self.id:
-            start_text_value, end_text_value = slider
-        else:
-            start_text_value, end_text_value = input_store if input_store is not None else value
-
-        start_value = min(start_text_value, end_text_value)
-        end_value = max(start_text_value, end_text_value)
-
-        start_value = max(self.min, start_value)
-        end_value = min(self.max, end_value)
-        slider_value = [start_value, end_value]
-
-        return start_value, end_value, slider_value, (start_value, end_value)

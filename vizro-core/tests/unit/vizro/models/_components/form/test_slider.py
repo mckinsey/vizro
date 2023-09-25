@@ -13,6 +13,14 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
+            dcc.Store(
+                "slider_id_callback_data",
+                data={
+                    "id": "slider_id",
+                    "min": 0,
+                    "max": 10,
+                },
+            ),
             html.P("Test title"),
             html.Div(
                 [
@@ -206,40 +214,3 @@ class TestBuildMethod:
         expected = json.loads(json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
-
-
-class TestCallbackMethod:
-    @pytest.mark.parametrize(
-        "trigger, start_value, slider_value, input_store_value, expected",
-        [
-            ("_text_value", 3, 1, 1, (3, 3, 3)),  # set new value by start
-            ("", 1, 4, 1, (4, 4, 4)),  # set new value by slider
-            ("_input_store", 1, 1, 5, (5, 5, 5)),  # set new value by input store
-            ("_text_value", 0, 1, 1, (0, 0, 0)),  # set to minimum value
-            ("_text_value", 12, 1, 1, (10, 10, 10)),  # set outside of possible range
-            ("_text_value", -1, 1, 1, (0, 0, 0)),  # set outside of possible range
-            ("_text_value", 1, 8, 1, (1, 1, 1)),  # triggerdID value is only used
-        ],
-    )
-    def test_update_slider_value_triggered(  # noqa
-        self, trigger, start_value, slider_value, input_store_value, expected
-    ):
-        slider = vm.Slider(min=0, max=10, value=1)
-        result = slider._update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)
-
-        assert result == expected
-
-    @pytest.mark.parametrize(
-        "trigger, start_value, slider_value, input_store_value",
-        [
-            ("_text_value", None, 1, 1),  # set new value by start
-        ],
-    )
-    def test_update_slider_invalid(self, trigger, start_value, slider_value, input_store_value):
-        slider = vm.Slider(min=0, max=10, value=1)
-
-        with pytest.raises(
-            TypeError,
-            match="'>' not supported between instances of 'NoneType' and 'float'",
-        ):
-            slider._update_slider_value(f"{slider.id}{trigger}", start_value, slider_value, input_store_value)
