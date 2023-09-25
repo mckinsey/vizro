@@ -4,7 +4,7 @@ Contributions of all experience levels are welcome! There are many ways to contr
 
 ### Found a bug
 
-Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would be very helpful if you search the existing issues for a similar description before raising a new ticket. We will try to reproduce your reported bug as soon as possible before getting back to you with the next steps.
+Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would greatly assist us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will promptly work on reproducing the bug you've reported and will follow up with the next steps.
 
 ### Request a feature
 
@@ -12,7 +12,7 @@ Splendid! In order to raise a feature request, please head to our [issues page](
 
 ### General question
 
-Nice! We are happy to receive general questions around Vizro. Please also head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket.
+Nice! We are happy to receive general questions around Vizro. Please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
 
 ## How to interact with the repository
 
