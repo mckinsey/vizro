@@ -56,8 +56,8 @@ hatch run test
 To run only python unit tests, run `hatch run test-unit`, and for python integration tests only run `hatch run test-integration`.
 
 To run only jest unit tests for javascript functions, run `hatch run test-js`.
-Note that Node.js is required to run tests written in jest framework. If you don't have Node.js installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
-Otherwise, if Node.js is installed, then the same command (`hatch run test-js`) runs jest unit tests.
+Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
+Otherwise, if `Node.js` is installed, then the same command (`hatch run test-js`) runs jest unit tests.
 
 For unit and integration tests, note that the latter executes all examples in separate testing sessions due to [this](https://github.com/mckinsey/vizro/issues/10) issue by providing the `-k` tag per example.
 
