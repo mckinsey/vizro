@@ -128,6 +128,9 @@ adding or removing dependencies.
 
 ## Changelog
 
+Vizro keeps a changelog, where all notable changes to the project will be documented. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 Vizro uses [scriv](https://pypi.org/project/scriv/) to build and maintain a meaningful `CHANGELOG.md`. When creating a PR, the developer needs to ensure that
 a changelog fragment has been created in the folder `changelog.d`. This fragment is a small `.md` file describing the changes of the current PR that should be mentioned in the `CHANGELOG.md` entry of the next release.
 
@@ -137,7 +140,8 @@ You can easily create such a fragment by running
 hatch run docs:changelog
 ```
 
-and then uncommenting the relevant section(s) you want to describe. In case your PR does not contain `CHANGELOG.md` relevant changes, leave everything commented out.
+and then uncommenting the relevant section(s) you want to describe. In case your PR does not contain `CHANGELOG.md` relevant changes, leave everything commented out. If you are unsure whether or what to add to the fragment, please
+refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
 
 ## Releases
 
