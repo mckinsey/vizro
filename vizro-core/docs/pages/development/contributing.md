@@ -53,7 +53,7 @@ Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](ht
 hatch run test
 ```
 
-To run only unit tests, run `hatch run test-unit`, and for integration tests only run `hatch run test-integration`.
+To run only python unit tests, run `hatch run test-unit`, and for python integration tests only run `hatch run test-integration`.
 
 To run only jest unit tests for javascript functions, run `hatch run test-js`.
 Note that Node.js is required to run tests written in jest framework. If you don't have Node.js installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
