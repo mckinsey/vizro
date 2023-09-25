@@ -9,10 +9,16 @@
     "test": "jest"
   },
   "jest": {
-    "testMatch": ["**/tests/js/**/*.test.js"],
-    "transform": {"^.+\\.js$": "babel-jest"}
+    "testMatch": [
+      "**/tests/js/**/*.test.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   },
   "babel": {
-    "presets": ["@babel/preset-env"]
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
