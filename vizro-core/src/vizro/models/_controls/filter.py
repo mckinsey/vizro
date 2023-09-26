@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Literal, Optional
 
 import pandas as pd
-from pandas.api.types import is_numeric_dtype, is_period_dtype
+from pandas.api.types import is_numeric_dtype
 from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
@@ -103,7 +103,7 @@ class Filter(VizroBaseModel):
 
     def _set_column_type(self):
         data_frame = data_manager._get_component_data(self.targets[0])
-        if is_period_dtype(data_frame[self.column]) or is_numeric_dtype(data_frame[self.column]):
+        if isinstance(data_frame[self.column], pd.PeriodDtype) or is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
         else:
             self._column_type = "categorical"
@@ -119,7 +119,8 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["numerical"]):
             if self._column_type != "numerical":
                 raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible with column_type {self._column_type}."
+                    f"Non-numeric values detected in chosen column '{self.column}' "
+                    f"for numerical selector {self._column_type}."
                 )
             min_values = []
             max_values = []
@@ -127,8 +128,11 @@ class Filter(VizroBaseModel):
                 data_frame = data_manager._get_component_data(target_id)
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
-            if not is_numeric_dtype(min(min_values)) or not is_numeric_dtype(max(max_values)):
-                raise ValueError(f"No numeric value detected in chosen column {self.column} for numerical selector.")
+            if not is_numeric_dtype(pd.Series(min_values)) or not is_numeric_dtype(pd.Series(max_values)):
+                raise ValueError(
+                    f"Non-numeric values detected in chosen column '{self.column}' "
+                    f"for numerical selector {self._column_type}."
+                )
             if self.selector.min is None:
                 self.selector.min = min(min_values)
             if self.selector.max is None:
