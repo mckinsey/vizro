@@ -1,7 +1,6 @@
 import pytest
 from pydantic import ValidationError
-import plotly
-import json
+
 import vizro.models as vm
 from vizro import Vizro
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
