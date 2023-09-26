@@ -64,6 +64,7 @@ jobs:
             
             echo "Created workflow successful"
 
+
 workflows:
   version: 2
   vizro:
