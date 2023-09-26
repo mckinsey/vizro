@@ -532,13 +532,18 @@ dashboard = vm.Dashboard(
     # ),
     navigation=vm.Navigation(
         selector=vm.NavBar(
+            # pages=["Homepage", "Variable Analysis", "Relationship Analysis"]
             items=[
-                # vm.Icon(pages=["Homepage", "Variable Analysis", "Relationship Analysis"], src="assets/images/icons/content/collections.svg"),
-                vm.Icon(pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]}, src="assets/images/icons/content/collections.svg"),
-                vm.Icon(pages=["Country Analysis", "Continent Summary"], src="assets/images/icons/content/features.svg")
+                vm.Icon(
+                    pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
+                    src="assets/images/icons/content/collections.svg",
+                ),
+                vm.Icon(
+                    pages=["Country Analysis", "Continent Summary"], src="assets/images/icons/content/features.svg"
+                ),
             ]
         )
-    )
+    ),
 )
 
 if __name__ == "__main__":

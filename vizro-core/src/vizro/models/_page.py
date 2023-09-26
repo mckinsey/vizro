@@ -172,7 +172,6 @@ class Page(VizroBaseModel):
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         if dashboard.navigation:
-
             return dashboard.navigation.build(page_id=self.id)
 
         return Accordion().build()
@@ -201,10 +200,7 @@ class Page(VizroBaseModel):
 
         To change arrangement, one has to change the order in the header, left_side and/or right_side_elements.
         """
-        if len(nav_panel) == 2:
-            nav_bar_div, nav_panel_div = nav_panel
-        else:
-            nav_bar_div, nav_panel_div = None, nav_panel
+        nav_bar_div, nav_panel_div = nav_panel if len(nav_panel) == 2 else (None, nav_panel)
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (
@@ -227,10 +223,7 @@ class Page(VizroBaseModel):
             className="left_side",
         )
 
-        left_side = html.Div(
-            children=[nav_bar_div, left_side_panel],
-            style={"display": "flex", "flexDirection": "row"}
-        )
+        left_side = html.Div(children=[nav_bar_div, left_side_panel], style={"display": "flex", "flexDirection": "row"})
         right_side_elements = [header, component_container]
         right_side = html.Div(
             children=right_side_elements,

@@ -1,15 +1,11 @@
 from __future__ import annotations
 
-import warnings
-from typing import TYPE_CHECKING, Optional, Union, List, Dict, Any
+from typing import Dict, List, Optional, Union
 
-from pydantic import PrivateAttr, validator
-from dash import dcc, html
+from dash import html
 
-from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import NavigationPagesType
 from vizro.models._navigation.icon import Icon
 
 
@@ -41,11 +37,9 @@ class NavBar(VizroBaseModel):
         for item in self.items:
             if isinstance(item.pages, list):
                 if page_id in item.pages:
-                    return item.selector.build()
+                    return item._selector.build()
 
             if isinstance(item.pages, dict):
-                pages = []
-                for row in item.pages.values():
-                    pages.extend(row)
+                pages = [page for row in item.pages.values() for page in row]
                 if page_id in pages:
-                    return item.selector.build()
+                    return item._selector.build()

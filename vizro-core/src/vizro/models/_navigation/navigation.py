@@ -2,17 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
 
-from pydantic import PrivateAttr, validator
+from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import NavigationPagesType
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.nav_bar import NavBar
+from vizro.models.types import NavigationPagesType
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
-    from vizro.models._navigation.nav_bar import NavBar
 
 
 class Navigation(VizroBaseModel):
@@ -35,6 +34,7 @@ class Navigation(VizroBaseModel):
 
     def _set_selector(self):
         from vizro.models._navigation.accordion import Accordion
+
         if self.selector is None:
             self.selector = Accordion(pages=self.pages)
 

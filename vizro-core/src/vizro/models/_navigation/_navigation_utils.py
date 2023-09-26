@@ -1,4 +1,5 @@
 import warnings
+
 from vizro.managers import model_manager
 
 
