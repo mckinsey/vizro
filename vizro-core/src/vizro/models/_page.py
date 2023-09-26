@@ -172,13 +172,8 @@ class Page(VizroBaseModel):
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         if dashboard.navigation:
-            # nav_panel = dashboard.navigation.build()
-            # if len(nav_panel) == 2:
-            #     nav_bar_div, nav_panel_div = nav_panel
-            #     return nav_bar_div, nav_panel_div
-            # return nav_panel
 
-            return dashboard.navigation.build()
+            return dashboard.navigation.build(page_id=self.id)
 
         return Accordion().build()
 
@@ -220,11 +215,8 @@ class Page(VizroBaseModel):
             children=left_side_elements,
             className="left_side",
         )
+
         left_side = html.Div(
-            children=left_side_elements,
-            className="left_side",
-        )
-        new_left_side = html.Div(
             children=[nav_bar_div, left_side_panel],
             style={"display": "flex", "flexDirection": "row"}
         )
@@ -233,7 +225,7 @@ class Page(VizroBaseModel):
             children=right_side_elements,
             className="right_side",
         )
-        return new_left_side, right_side
+        return left_side, right_side
 
     def _make_page_layout(self, controls_content, components_content):
         # Create dashboard containers/elements

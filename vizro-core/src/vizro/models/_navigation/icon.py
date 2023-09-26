@@ -28,36 +28,8 @@ class Icon(VizroBaseModel):
     title: Optional[str]
     src: Optional[str]  # src matches html.Img attribute name but maybe call it something else?
     # pages: Optional[Union[str], List[str], Dict[str, List[str]]]  # note can have single string to make it link to just one page
-    pages: Optional[Union[str, List[str], Dict[str, List[str]]]]
+    pages: Optional[Union[List[str], Dict[str, List[str]]]]
     selector: Accordion = None
-
-    # @_log_call
-    # def build(self):
-
-        # if self.pages:
-        #     icon = dbc.Button(
-        #         children=[
-        #             html.Img(
-        #                 src=self.src,
-        #                 width=24,
-        #                 height=24,
-        #             ),
-        #         ],
-        #         href=pages_dict.get(self.pages)
-        #     )
-
-
-        # return [
-        #     dbc.Button(
-        #         children=[page["name"]],
-        #         key=page["relative_path"],
-        #         className="accordion_button",
-        #         href=page["relative_path"],
-        #     )
-        #     for page in dash.page_registry.values()
-        #     for accordion_page in accordion_pages
-        #     if accordion_page == page["module"] and page["module"] != MODULE_PAGE_404
-        # ]
 
     @_log_call
     def pre_build(self):
@@ -78,10 +50,18 @@ class Icon(VizroBaseModel):
                 height=24,
                 className="icon",
             ),
-            className="icon_button"
+            className="icon_button",
+            href=self._get_page_href(),
         )
         return icon
 
+    def _get_page_href(self):
+        if self.pages:
+            if isinstance(self.pages, dict):
+                first_page = next(iter(self.selector.pages.values()))[0]
+            else:
+                first_page = self.pages[0]
 
-
-
+            for page in dash.page_registry.values():
+                if page["module"] == first_page:
+                    return page["relative_path"]

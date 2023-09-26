@@ -12,12 +12,8 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import NavigationPagesType
 from vizro.models._navigation.icon import Icon
 
-if TYPE_CHECKING:
-    from vizro.models._navigation.accordion import Accordion
-
 
 class NavBar(VizroBaseModel):
-    # selector: Optional[Any]
     pages: Optional[Union[List[str], Dict[str, List[str]]]]
     items: Optional[List[Icon]]
 
@@ -30,13 +26,26 @@ class NavBar(VizroBaseModel):
                 self.items = [Icon(pages=value) for page, value in self.pages.values()]
 
     @_log_call
-    def build(self):
+    def build(self, page_id):
         if self.items:
             items = [item.build() for item in self.items]
             nav_bar = html.Div(
                 children=items,
                 className="nav_bar",
             )
-            nav_panel = [item.selector.build() for item in self.items]
+            nav_panel = self._nav_panel_build(page_id=page_id)
 
-            return nav_bar, nav_panel[0]
+            return nav_bar, nav_panel
+
+    def _nav_panel_build(self, page_id):
+        for item in self.items:
+            if isinstance(item.pages, list):
+                if page_id in item.pages:
+                    return item.selector.build()
+
+            if isinstance(item.pages, dict):
+                pages = []
+                for row in item.pages.values():
+                    pages.extend(row)
+                if page_id in pages:
+                    return item.selector.build()

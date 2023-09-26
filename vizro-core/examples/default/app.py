@@ -533,9 +533,9 @@ dashboard = vm.Dashboard(
     navigation=vm.Navigation(
         selector=vm.NavBar(
             items=[
-                vm.Icon(pages=["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"], src="assets/images/icons/content/collections.svg"),
-                # vm.Icon(pages={"Relationship": ["Relationship Analysis"], "Country": ["Country Analysis"]}, src="assets/images/icons/content/features.svg"),
-                # vm.Icon(pages=["Continent Summary"], src="assets/images/icons/content/collections.svg")
+                # vm.Icon(pages=["Homepage", "Variable Analysis", "Relationship Analysis"], src="assets/images/icons/content/collections.svg"),
+                vm.Icon(pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]}, src="assets/images/icons/content/collections.svg"),
+                vm.Icon(pages=["Country Analysis", "Continent Summary"], src="assets/images/icons/content/features.svg")
             ]
         )
     )

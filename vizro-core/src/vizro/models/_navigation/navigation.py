@@ -8,6 +8,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import NavigationPagesType
 from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models._navigation.nav_bar import NavBar
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
@@ -38,5 +39,7 @@ class Navigation(VizroBaseModel):
             self.selector = Accordion(pages=self.pages)
 
     @_log_call
-    def build(self):
+    def build(self, page_id):
+        if isinstance(self.selector, NavBar):
+            return self.selector.build(page_id=page_id)
         return self.selector.build()
