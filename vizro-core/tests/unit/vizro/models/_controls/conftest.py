@@ -1,11 +1,13 @@
 import random
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import pytest
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+
 
 @pytest.fixture
 def dfs_with_shared_column():
@@ -18,6 +20,7 @@ def dfs_with_shared_column():
     df2["shared_column"] = random.choices(["CATEGORY 1", "CATEGORY 2"], k=100)
 
     return df1, df2
+
 
 @pytest.fixture
 def managers_one_page_two_graphs(gapminder):
