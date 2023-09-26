@@ -14,7 +14,7 @@ from vizro.models._components.form import RadioItems
 def expected_radio_items():
     return html.Div(
         [
-            html.P("Title", id="radio_items_title"),
+            html.P("Title"),
             dcc.RadioItems(
                 id="radio_items_id",
                 options=["A", "B", "C"],
@@ -24,6 +24,7 @@ def expected_radio_items():
             ),
         ],
         className="selector_container",
+        id="radio_items_id_outer",
     )
 
 

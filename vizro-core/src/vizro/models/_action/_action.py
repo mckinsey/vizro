@@ -5,7 +5,6 @@ from dash import Input, Output, State, callback, ctx
 from pydantic import Field
 
 import vizro.actions
-from vizro.actions import action_functions
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
@@ -62,7 +61,7 @@ class Action(VizroBaseModel):
 
         logger.debug(
             f"Creating Callback mapping for Action ID {self.id} with "
-            f"function name: {action_functions[self.function._function]}"
+            f"function name: {self.function._function.__name__}"
         )
         logger.debug("---------- INPUTS ----------")
         for name, object in callback_inputs.items():
@@ -74,7 +73,10 @@ class Action(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]):
-            logger.debug(f"Inputs to Action: {inputs}")
+            logger.debug("=============== ACTION ===============")
+            logger.debug(f'Action ID: "{self.id}"')
+            logger.debug(f'Action name: "{self.function._function.__name__}"')
+            logger.debug(f"Action inputs: {inputs}")
             return_value = self.function(**inputs) or {}
             if isinstance(return_value, dict):
                 return {"action_finished": None, **return_value}

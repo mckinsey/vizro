@@ -11,6 +11,47 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.2'></a>
+
+# 0.1.2 — 2023-09-25
+
+## Added
+
+- Add additional information in case of duplicate `model_manager` ID's to guide users if this occurs in a Jupyter Notebooks. ([#59](https://github.com/mckinsey/vizro/pull/59))
+
+## Changed
+
+- Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
+
+  - Eliminate most server side callbacks in favour of client-side callbacks
+  - Add tests for client-side callbacks written in Node.js framework called `jest`.
+  - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
+  - Logging information now only displayed for action function carried out (no trigger or finished information)
+
+- Replaced all screenshots in the docs to reflect new navigation designs ([#48](https://github.com/mckinsey/vizro/pull/48))
+
+## Fixed
+
+- Fixed issue of accordion arrow not loading on deployed demo version ([#44](https://github.com/mckinsey/vizro/pull/44))
+
+<a id='changelog-0.1.1'></a>
+
+# 0.1.1 — 2023-09-21
+
+## Added
+
+- Enable `title` argument in `Dashboard` model, which allows a title to be added on every page on top left-side ([#31](https://github.com/mckinsey/vizro/pull/31))
+
+- Add the ability to use custom actions. Currently in beta, expect this to break at any time. ([#46](https://github.com/mckinsey/vizro/pull/46))
+
+## Changed
+
+- Provide ID to outer div to enable CSS customization of component and its sub-components ([#29](https://github.com/mckinsey/vizro/pull/29))
+
+- Disable creation of accordion navigation if only one page is provided ([#32](https://github.com/mckinsey/vizro/pull/32))
+
+- Change the structure of user-guides in documentation to group topics ([#42](https://github.com/mckinsey/vizro/pull/42)).
+
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2023-09-08

@@ -130,8 +130,8 @@ wide range of `components` available and how to make the most of them in your da
         ```py
 
         vm.Graph(
-            id="bar_gdp",
-            figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+            id="line_gdp",
+            figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
                             "gdpPercap":"GDP Per Cap"}),
         )
@@ -165,11 +165,12 @@ wide range of `components` available and how to make the most of them in your da
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
-                    ),
+                ),
+
             ],
         )
 
@@ -257,8 +258,8 @@ configure layouts, check out the [user guide](../user_guides/layouts.md)
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
@@ -287,8 +288,8 @@ By incorporating `controls` into your dashboard, you enhance its interactivity a
 to have greater control and customization over the displayed data and components.
 
 ??? info "Further information for `controls`"
-    The user guide for [Controls](../user_guides/control.md) provides a comprehensive overview on how to apply
-    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter].
+    The user guides for [Filters](../user_guides/filters.md) and [Parameters](../user_guides/parameters.md) provide a comprehensive overview on how to apply
+    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [user guide on selectors](../user_guides/selectors.md).
 
 In order to link the `controls` to your two charts, it's important to understand the unique
 id assigned to each `component`. This id is unique across all dashboard pages and serves as a reference for
@@ -305,7 +306,7 @@ the flexibility to apply the [`Filter`][vizro.models.Filter] to only one specifi
     === "Code"
         ```py
         controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ]
         ```
     === "app.py"
@@ -337,14 +338,14 @@ the flexibility to apply the [`Filter`][vizro.models.Filter] to only one specifi
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -378,8 +379,8 @@ general, `targets` for [`Parameters`][vizro.models.Parameter] are set following 
 `component_id.argument`. In certain cases, you may encounter a nested structure for the `targets`. An example of this is
 `scatter_iris.color_discrete_map.virginica`.  This nested structure allows you to target a specific attribute within a
 component. In this particular example, it specifies that only the color of the virginica flower type should be changed.
-More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the user guide
-for [controls](../user_guides/control.md).
+More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [user guide
+for parameters](../user_guides/parameters.md).
 
 !!! example "Second page"
     === "Code"
@@ -397,10 +398,10 @@ for [controls](../user_guides/control.md).
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -408,12 +409,12 @@ for [controls](../user_guides/control.md).
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
@@ -447,14 +448,14 @@ for [controls](../user_guides/control.md).
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -471,10 +472,10 @@ for [controls](../user_guides/control.md).
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -482,12 +483,12 @@ for [controls](../user_guides/control.md).
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
@@ -633,14 +634,14 @@ providing a seamless and interactive user experience.
                                     labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
                 ),
                 vm.Graph(
-                    id="bar_gdp",
-                    figure=px.bar(gapminder_data, x="year", y="gdpPercap", color="continent",
+                    id="line_gdp",
+                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
                     ),
             ],
             controls=[
-                vm.Filter(column="continent", targets=["box_cont", "bar_gdp"]),
+                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
@@ -657,10 +658,10 @@ providing a seamless and interactive user experience.
                     ),
                 ),
                 vm.Graph(
-                    id="bar_iris",
-                    figure=px.bar(iris_data, x="sepal_width", y="sepal_length", color="species",
+                    id="hist_iris",
+                    figure=px.histogram(iris_data, x="sepal_width", color="species",
                         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
+                        labels={"sepal_width": "Sepal Width", "count": "Count",
                                 "species": "Species"},
                     ),
                 ),
@@ -668,12 +669,12 @@ providing a seamless and interactive user experience.
             controls=[
                 vm.Parameter(
                     targets=["scatter_iris.color_discrete_map.virginica",
-                                "bar_iris.color_discrete_map.virginica"],
+                                "hist_iris.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity"],
+                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
@@ -708,13 +709,13 @@ and how to bring them together.
 
 For future dashboard creations, you can explore more about the available dashboard `components` by going through the
 [user guide](../user_guides/components.md). To gain more in-depth knowledge about the usage and configuration
-details of `controls`, check out the user guide dedicated to [Controls](../user_guides/control.md). This guide
-will provide you with valuable insights on utilizing and customizing controls for interactive functionality in your
-dashboards.
+details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user_guides/parameters.md)
+and [Selectors](../user_guides/selectors.md). This guide will provide you with valuable insights on utilizing and
+customizing controls for interactive functionality in your dashboards.
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
-- How to create you own components under [custom components]()
-- How to add custom styling using [custom css]()
-- How to use [Actions]() for e.g. chart interaction or custom controls
-- How to create dashboards from `yaml`, `dict` or `json` following the [user guide]()
+- How to create you own components under [custom components](../user_guides/custom_components.md)
+- How to add custom styling using [custom css](../user_guides/assets.md)
+- How to use [Actions](../user_guides/actions.md) for e.g. chart interaction or custom controls
+- How to create dashboards from `yaml`, `dict` or `json` following the [user guide](../user_guides/dashboard.md)

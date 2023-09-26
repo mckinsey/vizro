@@ -1,5 +1,5 @@
 name: Bug report
-description: Something is not working correctly.
+description: Something is not working correctly
 labels: "Status: Needs triage :mag:, Issue: Bug Report :bug:"
 
 body:

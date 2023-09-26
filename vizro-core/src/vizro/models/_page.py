@@ -160,12 +160,12 @@ class Page(VizroBaseModel):
 
     @staticmethod
     def _create_control_panel(controls_content):
-        keyline = html.Div(className="keyline") if controls_content else None
+        keyline = html.Div(className="keyline")
         control_panel = html.Div(
             children=[*controls_content, keyline],
             className="control_panel",
         )
-        return control_panel
+        return control_panel if controls_content else None
 
     def _create_nav_panel(self):
         from vizro.models._navigation.accordion import Accordion
@@ -205,8 +205,19 @@ class Page(VizroBaseModel):
             nav_bar_div, nav_panel_div = nav_panel
         else:
             nav_bar_div, nav_panel_div = None, nav_panel
+
+        _, dashboard = next(model_manager._items_with_type(Dashboard))
+        dashboard_title = (
+            html.Div(
+                children=[html.H2(dashboard.title), html.Div(className="keyline")], className="dashboard_title_outer"
+            )
+            if dashboard.title
+            else None
+        )
+
         header_elements = [page_title, theme_switch]
-        left_side_elements = [nav_panel_div, control_panel]
+        left_side_elements = [dashboard_title, nav_panel_div, control_panel]
+
         header = html.Div(
             children=header_elements,
             className="header",
@@ -229,7 +240,7 @@ class Page(VizroBaseModel):
 
     def _make_page_layout(self, controls_content, components_content):
         # Create dashboard containers/elements
-        page_title = html.H2(id="page_title", children=self.title)
+        page_title = html.H2(children=self.title)
         theme_switch = self._create_theme_switch()
         nav_panel = self._create_nav_panel()
         control_panel = self._create_control_panel(controls_content)
@@ -245,7 +256,7 @@ class Page(VizroBaseModel):
         )
 
         return dbc.Container(
-            id=f"page_container_{self.id}",
+            id=self.id,
             children=[dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"), left_side, right_side],
             className="page_container",
         )

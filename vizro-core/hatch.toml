@@ -37,20 +37,20 @@ cov-report = [
 ]
 example = "cd examples/{args:default}; python app.py"
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
-prep-release = [
-  "hatch version release",
-  "hatch run docs:scriv collect",
-  "echo 'Raise a PR to prepare main for release'"
-]
-pypath = "hatch run python -c 'import sys; print(sys.executable)'"
-release = [
-  "git tag -a v`hatch version` -m 'Release version'",
-  "git push origin v`hatch version`",
-  "hatch build",
-  "hatch publish {args}",
+post-release = [
   "hatch version patch,dev",
   "echo 'Raise a PR to bump to the new development version'"
 ]
+prep-release = [
+  "hatch version release",
+  "hatch run docs:scriv collect",
+  "rm -rf schemas/*json",
+  "hatch run schema",
+  "hatch run lint || hatch run lint",
+  "hatch run docs:changelog",
+  "echo 'Raise a PR to prepare main for release'"
+]
+pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
@@ -64,6 +64,7 @@ test-integration = [
   "pytest tests/integration --headless -k json {args}",
   "pytest tests/integration --headless -k yaml {args}"
 ]
+test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
@@ -71,6 +72,7 @@ update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}
 dependencies = [
   "mkdocs",
   "mkdocs-material",
+  "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
   "scriv"
 ]

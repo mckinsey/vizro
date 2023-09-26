@@ -1,10 +1,27 @@
 """Unit tests for vizro.models.Card."""
+import json
+
 import dash_bootstrap_components as dbc
+import plotly
 import pytest
-from dash import dcc
+from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
+
+
+@pytest.fixture
+def expected_card():
+    text = dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id")
+    button = html.Div(
+        dbc.Button(
+            href="https://www.google.com",
+            className="card_button",
+        ),
+        className="button_container",
+    )
+
+    return html.Div([text, button], className="nav_card_container", id="card_id_outer")
 
 
 class TestCardInstantiation:
@@ -39,6 +56,13 @@ class TestCardInstantiation:
 class TestBuildMethod:
     """Tests build method."""
 
+    def test_card_build(self, expected_card):
+        card = vm.Card(text="Hello", id="card_id", href="https://www.google.com")
+        card = card.build()
+        result = json.loads(json.dumps(card, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(expected_card, cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
+
     @pytest.mark.parametrize(
         "test_text, expected",
         [
@@ -56,22 +80,14 @@ class TestBuildMethod:
             ("""[Example page](/test_page)""", "[Example page](/test_page)"),
         ],
     )
-    def test_markdown_creation_build(self, test_text, expected):
+    def test_markdown_setting(self, test_text, expected):
         card = vm.Card(text=test_text, id="id_valid")
         card = card.build()
-        card_markdown = card["id_valid_text"]
+        card_markdown = card["id_valid"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False
         assert card_markdown.children == expected
-
-    def test_button_creation_build(self, href="https://www.google.de/"):
-        card = vm.Card(text="Test", href=href, id="test_href")
-        card = card.build()
-        button = card["test_href_button"]
-
-        assert isinstance(button, dbc.Button)
-        assert button.href == href
 
     @pytest.mark.parametrize(
         "test_text, expected",
@@ -84,7 +100,7 @@ class TestBuildMethod:
     def test_markdown_build_invalid(self, test_text, expected):
         card = vm.Card(text=test_text, id="test_id")
         card = card.build()
-        card_markdown = card["test_id_text"]
+        card_markdown = card["test_id"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False

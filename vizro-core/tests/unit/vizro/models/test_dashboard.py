@@ -8,6 +8,7 @@ import pytest
 from dash import html
 from pydantic import ValidationError
 
+import vizro
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
@@ -19,7 +20,11 @@ from vizro.models._dashboard import create_layout_page_404, update_theme
 def dashboard_container():
     return dbc.Container(
         id="dashboard_container",
-        children=[*ActionLoop._create_app_callbacks(), dash.page_container],
+        children=[
+            html.Div(id=f"vizro_version_{vizro.__version__}"),
+            *ActionLoop._create_app_callbacks(),
+            dash.page_container,
+        ],
         className="vizro_dark",
         fluid=True,
     )
@@ -101,12 +106,14 @@ class TestDashboardInstantiation:
         assert hasattr(dashboard, "id")
         assert dashboard.pages == two_pages
         assert dashboard.theme == "vizro_dark"
+        assert dashboard.title is None
 
     def test_create_dashboard_mandatory_and_optional(self, two_pages):
-        dashboard = vm.Dashboard(pages=two_pages, theme="vizro_light")
+        dashboard = vm.Dashboard(pages=two_pages, theme="vizro_light", title="Vizro")
         assert hasattr(dashboard, "id")
         assert dashboard.pages == two_pages
         assert dashboard.theme == "vizro_light"
+        assert dashboard.title == "Vizro"
 
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="field required"):

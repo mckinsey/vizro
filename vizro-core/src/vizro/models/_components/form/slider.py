@@ -1,13 +1,15 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, callback, callback_context, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
+    set_default_marks,
     validate_max,
     validate_slider_value,
+    validate_step,
 )
 from vizro.models._models_utils import _log_call
 
@@ -24,7 +26,7 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[str, float]]): Marks to be displayed on slider. Defaults to `None`.
+        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `None`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (Optional[str]): Title to be displayed. Defaults to `None`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -34,7 +36,7 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[str, float]] = Field(None, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[float, str]] = Field(None, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
@@ -42,33 +44,41 @@ class Slider(VizroBaseModel):
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
     _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_step = validator("step", allow_reuse=True)(validate_step)
+    _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
-
-    @validator("marks", always=True)
-    def set_default_marks(cls, v, values):
-        return v if values["step"] is None else {}
 
     @_log_call
     def build(self):
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
-            Output(f"temp-store-slider-{self.id}", "data"),
+            Output(f"{self.id}_temp_store", "data"),
         ]
-        input = [
+        inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
-            State(f"temp-store-slider-{self.id}", "data"),
+            State(f"{self.id}_temp_store", "data"),
+            State(f"{self.id}_callback_data", "data"),
         ]
 
-        @callback(output=output, inputs=input)
-        def update_slider_value_callback(start, slider, input_store):
-            trigger_id = callback_context.triggered_id
-            return self._update_slider_value(trigger_id, start, slider, input_store)
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_slider_values"),
+            output=output,
+            inputs=inputs,
+        )
 
         return html.Div(
             [
-                html.P(self.title, id="slider_title") if self.title else None,
+                dcc.Store(
+                    f"{self.id}_callback_data",
+                    data={
+                        "id": self.id,
+                        "min": self.min,
+                        "max": self.max,
+                    },
+                ),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(
@@ -88,25 +98,15 @@ class Slider(VizroBaseModel):
                             placeholder="end",
                             min=self.min,
                             max=self.max,
-                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                             value=self.value or self.min,
                             persistence=True,
+                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"temp-store-slider-{self.id}", storage_type="local"),
+                        dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
                     ],
                     className="slider_inner_container",
                 ),
             ],
             className="selector_container",
+            id=f"{self.id}_outer",
         )
-
-    def _update_slider_value(self, trigger_id, start, slider, input_store):
-        if trigger_id == f"{self.id}_text_value":
-            text_value = start
-        elif trigger_id == f"{self.id}":
-            text_value = slider
-        else:
-            text_value = input_store or self.value or self.min
-        text_value = min(max(self.min, text_value), self.max)
-
-        return text_value, text_value, text_value
