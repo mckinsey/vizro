@@ -524,22 +524,15 @@ dashboard = vm.Dashboard(
         create_continent_summary(),
         create_country_analysis(),
     ],
-    # navigation=vm.Navigation(
-    #     pages={
-    #         "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-    #         "Summary": ["Continent Summary"],
-    #     }
-    # ),
     navigation=vm.Navigation(
         selector=vm.NavBar(
-            # pages=["Homepage", "Variable Analysis", "Relationship Analysis"]
             items=[
                 vm.Icon(
                     pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
-                    src="assets/images/icons/content/collections.svg",
+                    icon_src="assets/images/icons/content/collections.svg",
                 ),
                 vm.Icon(
-                    pages=["Country Analysis", "Continent Summary"], src="assets/images/icons/content/features.svg"
+                    pages=["Country Analysis", "Continent Summary"], icon_src="assets/images/icons/content/features.svg"
                 ),
             ]
         )

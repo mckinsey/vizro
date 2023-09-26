@@ -174,7 +174,7 @@ class Page(VizroBaseModel):
         if dashboard.navigation:
             return dashboard.navigation.build(page_id=self.id)
 
-        return Accordion().build()
+        return None, Accordion().build(page_id=self.id)
 
     def _create_component_container(self, components_content):
         component_container = html.Div(
@@ -200,7 +200,7 @@ class Page(VizroBaseModel):
 
         To change arrangement, one has to change the order in the header, left_side and/or right_side_elements.
         """
-        nav_bar_div, nav_panel_div = nav_panel if len(nav_panel) == 2 else (None, nav_panel)
+        nav_bar_div, nav_panel_div = nav_panel
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (

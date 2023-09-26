@@ -1,33 +1,40 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import PrivateAttr
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models.types import NavigationPagesType
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
 
 
 class Icon(VizroBaseModel):
-    """A navigation model in [Dashboard][src.vizro.models.Icon].
+    """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
-    name (str): Title to be displayed.
-    href (Optional[str]): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
-            only. Defaults to None.
-    children (list): list of pages or list of accordions.
+        title (Optional[str]): Title to be displayed in the tooltip on hover.
+        icon_src (Optional[str]): URI (relative or absolute) of the embeddable content. Defaults to None.
+        icon_href (Optional[str]): Existing page path to navigate to given page. Defaults to `None`.
+        pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
+                Defaults to `None`.
     """
 
     title: Optional[str]
-    src: Optional[str]  # src matches html.Img attribute name but maybe call it something else?
-    pages: Union[List[str], Dict[str, List[str]]]  # note can have single string to make it link to one page
+    icon_src: Optional[str]
+    icon_href: Optional[str] = Field(None, description="Existing page path to navigate to given page.")
+    pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()
+
+    # Re-used validators
+    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):
@@ -42,22 +49,19 @@ class Icon(VizroBaseModel):
     def build(self):
         icon = dbc.Button(
             children=html.Img(
-                src=self.src,
+                src=self.icon_src,
                 width=24,
                 height=24,
                 className="icon",
             ),
             className="icon_button",
-            href=self._get_page_href(),
+            href=self.icon_href if bool(self.icon_href) else self._get_page_href(),
         )
         return icon
 
     def _get_page_href(self):
         if self.pages:
-            if isinstance(self.pages, dict):
-                first_page = next(iter(self.pages.values()))[0]
-            else:
-                first_page = self.pages[0]
+            first_page = next(iter(self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
 
             for page in dash.page_registry.values():
                 if page["module"] == first_page:

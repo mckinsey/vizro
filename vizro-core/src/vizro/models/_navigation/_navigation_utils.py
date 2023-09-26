@@ -4,6 +4,7 @@ from vizro.managers import model_manager
 
 
 # Validator for re-use in other models to validate pages
+# TODO: Adjust validator to take into account pages on different icons
 def _validate_pages(pages):
     from vizro.models import Page
 
