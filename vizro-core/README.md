@@ -63,7 +63,7 @@ Rapidly self-serve the assembly of customised dashboards in minutes - without th
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
 </p>
 
-Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilising libraries such as **Plotly** and **Dash**, with inbuilt coding and design best practices
+Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilising libraries such as [**Plotly**](https://github.com/plotly/plotly.py) and [**Dash**](https://github.com/plotly/dash), with inbuilt coding and design best practices
 
 Define high level categories within the configuration, including:
 
@@ -121,7 +121,7 @@ See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more detail
 
 ## Community and Development
 
-We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues)
+We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). This is also the place where you can submit bug reports or request new features.
 
 ## Contributing
 

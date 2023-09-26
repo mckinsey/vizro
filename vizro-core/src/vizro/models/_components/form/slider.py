@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional
 
-from dash import Input, Output, State, callback, callback_context, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import Field, validator
 
 from vizro.models import Action, VizroBaseModel
@@ -55,19 +55,29 @@ class Slider(VizroBaseModel):
             Output(self.id, "value"),
             Output(f"{self.id}_temp_store", "data"),
         ]
-        input = [
+        inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
             State(f"{self.id}_temp_store", "data"),
+            State(f"{self.id}_callback_data", "data"),
         ]
 
-        @callback(output=output, inputs=input)
-        def update_slider_value_callback(start, slider, input_store):
-            trigger_id = callback_context.triggered_id
-            return self._update_slider_value(trigger_id, start, slider, input_store)
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_slider_values"),
+            output=output,
+            inputs=inputs,
+        )
 
         return html.Div(
             [
+                dcc.Store(
+                    f"{self.id}_callback_data",
+                    data={
+                        "id": self.id,
+                        "min": self.min,
+                        "max": self.max,
+                    },
+                ),
                 html.P(self.title) if self.title else None,
                 html.Div(
                     [
@@ -100,14 +110,3 @@ class Slider(VizroBaseModel):
             className="selector_container",
             id=f"{self.id}_outer",
         )
-
-    def _update_slider_value(self, trigger_id, start, slider, input_store):
-        if trigger_id == f"{self.id}_text_value":
-            text_value = start
-        elif trigger_id == f"{self.id}":
-            text_value = slider
-        else:
-            text_value = input_store or self.value or self.min
-        text_value = min(max(self.min, text_value), self.max)
-
-        return text_value, text_value, text_value

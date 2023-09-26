@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import flask
 from dash import Dash
@@ -77,7 +77,7 @@ class Vizro:
                 model.pre_build()
 
 
-def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[str], List[str]]:
+def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]], List[str]]:
     """Append vizro css and js resources."""
     _vizro_css = []
     _vizro_js = []
@@ -88,7 +88,7 @@ def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[str], List[str]
             path = os.path.join("/" + url_prefix, base, f) if base else os.path.join("/" + url_prefix, f)
             extension = os.path.splitext(f)[1]
             if extension == ".js":
-                _vizro_js.append(path)
+                _vizro_js.append({"src": path, "type": "module"})
             elif extension == ".css":
                 _vizro_css.append(path)
     return _vizro_js, _vizro_css
