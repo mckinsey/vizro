@@ -137,7 +137,7 @@ class CapturedCallable:
         else:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
 
-    # TODO-actions: Find the way how to compare CapturedCallable and function
+    # TODO-actions: Find a way how to compare CapturedCallable and function
     @property
     def _function(self):
         return self.__function
