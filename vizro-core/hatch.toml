@@ -46,7 +46,7 @@ prep-release = [
   "hatch run docs:scriv collect",
   "rm -rf schemas/*json",
   "hatch run schema",
-  "hatch run lint prettier",
+  "hatch run lint || hatch run lint",
   "hatch run docs:changelog",
   "echo 'Raise a PR to prepare main for release'"
 ]
@@ -64,6 +64,7 @@ test-integration = [
   "pytest tests/integration --headless -k json {args}",
   "pytest tests/integration --headless -k yaml {args}"
 ]
+test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 

@@ -101,9 +101,11 @@ jobs:
           hatch version patch,dev
           hatch run docs:changelog
           hatch run schema
-          git config user.email "83698606+maxschulz-COL@users.noreply.github.com"
+          hatch run lint || hatch run lint
+          git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
-          git commit -am "version bump"
+          git add -A
+          git commit -m "version bump"
           git push --set-upstream origin release/version_bump_next_minor/${formatted_date}
           ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
           ${{needs.check-version.outputs.package_name}} \

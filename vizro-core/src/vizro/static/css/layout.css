@@ -11,11 +11,11 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: var(--spacing-04);
   padding: 40px 32px 0 32px;
   scrollbar-gutter: stable;
   width: 352px;
   overflow: auto;
+  gap: var(--spacing-04);
 }
 
 .right_side {
@@ -51,8 +51,6 @@
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-02);
-  padding: 0 0 24px 0;
 }
 
 .control_panel {

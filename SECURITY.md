@@ -12,7 +12,9 @@ The latest version of Vizro is supported. We encourage you to update your Vizro 
 
 **Please do not report security vulnerabilities through public GitHub issues to limit the potential impact on current users.**
 
-If you think you found a vulnerability, and even if you are not sure about it, please report it right away by sending an email to: vizro@mckinsey.com
+If you think you found a vulnerability, and even if you are not sure about it, please report it right away by sending an email to: vizro-security@mckinsey.com
+
+Note that this mail address is only monitored for security reports.
 
 Please try to be as explicit as possible to help us better understand the nature and scope of the possible issue by providing:
 
