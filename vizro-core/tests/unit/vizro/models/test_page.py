@@ -1,7 +1,9 @@
 import pytest
 from pydantic import ValidationError
-
+import plotly
+import json
 import vizro.models as vm
+from vizro import Vizro
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.models._action._actions_chain import ActionsChain
 
@@ -95,3 +97,11 @@ class TestPagePreBuildMethod:
         assert len(page.actions) == 1
         assert isinstance(page.actions[0], ActionsChain)
         assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+
+
+class TestPageBuild:
+    def test_single_page_build_no_left_side(self, standard_px_chart):
+        page = vm.Page(title="Page 1", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
+        Vizro().build(vm.Dashboard(pages=[page]))
+        result = str(page.build())
+        assert ("left_side" not in result) is True
