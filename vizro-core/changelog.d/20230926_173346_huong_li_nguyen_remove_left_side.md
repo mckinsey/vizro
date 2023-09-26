@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Remove `left_side` container by default if there are no elements present ([#68](https://github.com/mckinsey/vizro/pull/68))
 
-
 <!--
 ### Deprecated
 

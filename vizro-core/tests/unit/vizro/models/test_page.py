@@ -1,4 +1,5 @@
 import pytest
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -95,3 +96,11 @@ class TestPagePreBuildMethod:
         assert len(page.actions) == 1
         assert isinstance(page.actions[0], ActionsChain)
         assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+
+
+class TestPageBuild:
+    def test_no_left_side_container(self):
+        dashboard_title, nav_panel, control_panel = None, None, None
+        left_side_elements = [dashboard_title, nav_panel, control_panel]
+        left_side = html.Div(children=left_side_elements, className="left_side") if any(left_side_elements) else None
+        assert left_side is None
