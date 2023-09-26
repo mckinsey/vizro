@@ -119,8 +119,8 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["numerical"]):
             if self._column_type != "numerical":
                 raise ValueError(
-                    f"Non-numeric values detected in chosen column '{self.column}' "
-                    f"for numerical selector {self._column_type}."
+                    f"Chosen selector {self.selector.type} is not compatible "
+                    f"with {self._column_type} column '{self.column}'."
                 )
             min_values = []
             max_values = []
@@ -130,8 +130,8 @@ class Filter(VizroBaseModel):
                 max_values.append(data_frame[self.column].max())
             if not is_numeric_dtype(pd.Series(min_values)) or not is_numeric_dtype(pd.Series(max_values)):
                 raise ValueError(
-                    f"Non-numeric values detected in chosen column '{self.column}' "
-                    f"for numerical selector {self._column_type}."
+                    f"Non-numeric values detected in the shared data column '{self.column}' for targeted charts. "
+                    f"Please ensure that the data column contains the same data type across all targeted charts."
                 )
             if self.selector.min is None:
                 self.selector.min = min(min_values)
