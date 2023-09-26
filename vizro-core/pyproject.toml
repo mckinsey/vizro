@@ -48,7 +48,7 @@ Issues = "https://github.com/mckinsey/vizro/issues"
 Source = "https://github.com/mckinsey/vizro"
 
 [tool.coverage.paths]
-source = ["src/vizro"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
+vizro = ["src/vizro"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
 
 [tool.coverage.report]
 exclude_lines = [
