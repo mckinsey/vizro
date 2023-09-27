@@ -166,7 +166,7 @@ class Page(VizroBaseModel):
         )
         return control_panel if controls_content else None
 
-    def _create_nav_panel(self):
+    def _create_navigation(self):
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         return cast(Navigation, dashboard.navigation).build(active_page_id=self.id)
 
@@ -189,12 +189,12 @@ class Page(VizroBaseModel):
         return component_container
 
     @staticmethod
-    def _arrange_containers(page_title, theme_switch, nav_panel, control_panel, component_container):
+    def _arrange_containers(page_title, theme_switch, navigation, control_panel, component_container):
         """Defines div container arrangement on page.
 
         To change arrangement, one has to change the order in the header, left_side and/or right_side_elements.
         """
-        nav_bar_div, nav_panel_div = nav_panel
+        nav_bar, nav_panel = navigation
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (
@@ -204,18 +204,18 @@ class Page(VizroBaseModel):
         )
 
         header_elements = [page_title, theme_switch]
-        left_side_elements = [dashboard_title, nav_panel_div, control_panel]
+        left_side_elements = [dashboard_title, nav_panel, control_panel]
 
         header = html.Div(
             children=header_elements,
             className="header",
         )
-        left_side_panel = html.Div(
+        left_side_inner = html.Div(
             children=left_side_elements,
-            className="left_side",
+            className="left_side_inner",
         )
 
-        left_side = html.Div(children=[nav_bar_div, left_side_panel], style={"display": "flex", "flexDirection": "row"})
+        left_side = html.Div(children=[nav_bar, left_side_inner], className="left_side")
         right_side_elements = [header, component_container]
         right_side = html.Div(
             children=right_side_elements,
@@ -227,7 +227,7 @@ class Page(VizroBaseModel):
         # Create dashboard containers/elements
         page_title = html.H2(children=self.title)
         theme_switch = self._create_theme_switch()
-        nav_panel = self._create_nav_panel()
+        navigation = self._create_navigation()
         control_panel = self._create_control_panel(controls_content)
         component_container = self._create_component_container(components_content)
 
@@ -235,7 +235,7 @@ class Page(VizroBaseModel):
         left_side, right_side = self._arrange_containers(
             page_title=page_title,
             theme_switch=theme_switch,
-            nav_panel=nav_panel,
+            navigation=navigation,
             control_panel=control_panel,
             component_container=component_container,
         )

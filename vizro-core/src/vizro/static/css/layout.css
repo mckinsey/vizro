@@ -5,7 +5,7 @@
   width: 100vw;
 }
 
-.left_side {
+.left_side_inner {
   align-items: flex-start;
   background: var(--surfaces-bg-02);
   display: flex;
@@ -16,6 +16,11 @@
   width: 352px;
   overflow: auto;
   gap: var(--spacing-04);
+}
+
+.left_side {
+  display: flex;
+  flex-direction: row;
 }
 
 .right_side {
@@ -98,18 +103,22 @@ hr {
 }
 
 .nav_bar {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
-  width: 56px;
-  padding-top: 48px;
+  width: 64px;
+  padding-top: 40px;
   align-items: center;
-  gap: 24px;
   background-color: var(--surfaces-bg-02);
   border-right: 1px solid var(--border-subtle-alpha-01);
 }
 
 .icon_button {
   background-color: var(--surfaces-bg-02);
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .icon {
   filter: var(--fill-accordion-button);
