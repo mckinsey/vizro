@@ -95,3 +95,6 @@ class TestPagePreBuildMethod:
         assert len(page.actions) == 1
         assert isinstance(page.actions[0], ActionsChain)
         assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+
+
+# TODO: Add unit tests for private methods in page build
