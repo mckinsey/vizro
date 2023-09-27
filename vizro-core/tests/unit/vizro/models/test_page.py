@@ -1,5 +1,4 @@
 import pytest
-from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -99,9 +98,3 @@ class TestPagePreBuildMethod:
 
 
 # TODO: Add unit tests for private methods in page build
-class TestPageBuild:
-    def test_no_left_side_container(self):
-        dashboard_title, nav_panel, control_panel = None, None, None
-        left_side_elements = [dashboard_title, nav_panel, control_panel]
-        left_side = html.Div(children=left_side_elements, className="left_side") if any(left_side_elements) else None
-        assert left_side is None
