@@ -86,6 +86,23 @@ class TestPageInstantiation:
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
             vm.Page(title="Page 4", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
+    def test_valid_component_types(self, standard_px_chart):
+        vm.Page(
+            title="Page Title",
+            components=[vm.Graph(figure=standard_px_chart), vm.Card(text="""# Header 1"""), vm.Button()],
+        )
+
+    def test_valid_control_types(self, standard_px_chart):
+        vm.Page(
+            title="Page Title",
+            components=[vm.Graph(id="scatter", figure=standard_px_chart)],
+            controls=[
+                vm.Filter(column="continent"),
+                vm.Parameter(targets=["scatter.x"], selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"])),
+                vm.Button(text="Click me!"),
+            ],
+        )
+
 
 # TODO: Remove this if we can get rid of on-page-load action
 class TestPagePreBuildMethod:
