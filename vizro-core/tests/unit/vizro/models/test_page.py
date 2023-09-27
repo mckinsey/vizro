@@ -99,7 +99,7 @@ class TestPageInstantiation:
             controls=[
                 vm.Filter(column="continent"),
                 vm.Parameter(targets=["scatter.x"], selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"])),
-                vm.Button(text="Click me!"),
+                vm.Button(),
             ],
         )
 
