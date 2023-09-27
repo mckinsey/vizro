@@ -48,7 +48,7 @@
 
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
-  background-color: var(--state-overlays-selected);
+  /*background-color: var(--state-overlays-selected); */
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -88,6 +88,7 @@
   background-color: inherit;
   width: 100%;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
+  gap: var(--spacing-01);
 }
 
 .accordion_item:last-child {
@@ -102,7 +103,8 @@
   gap: var(--spacing-01);
 }
 
-div.page_container .accordion-item-button {
+div.page_container .accordion-item-button,
+.accordion-item-button-active{
   background-color: inherit;
   width: 100%;
   display: flex;
@@ -111,6 +113,11 @@ div.page_container .accordion-item-button {
   align-items: center;
   font-size: var(--text-size-02);
   line-height: var(--text-size-03);
+}
+
+.accordion-item-button-active {
+  background-color: var(--state-overlays-selected);
+  color: var(--text-primary);
 }
 
 /*

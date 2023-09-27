@@ -172,9 +172,9 @@ class Page(VizroBaseModel):
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         if dashboard.navigation:
-            return dashboard.navigation.build()
+            return dashboard.navigation.build(page_id=self.id)
 
-        return Accordion().build()
+        return Accordion().build(page_id=self.id)
 
     def _create_component_container(self, components_content):
         component_container = html.Div(

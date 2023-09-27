@@ -26,17 +26,17 @@ class Accordion(VizroBaseModel):
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
     @_log_call
-    def build(self):
+    def build(self, page_id):
         if self.pages:
-            return self._create_accordion()
-        return self._create_default_accordion()
+            return self._create_accordion(page_id=page_id)
+        return self._create_default_accordion(page_id=page_id)
 
-    def _create_accordion_buttons(self, accordion_pages):
+    def _create_accordion_buttons(self, accordion_pages, page_id):
         return [
             dbc.Button(
                 children=[page["name"]],
                 key=page["relative_path"],
-                className="accordion-item-button",
+                className="accordion-item-button-active" if page_id == page["name"] else "accordion-item-button",
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
@@ -51,12 +51,12 @@ class Accordion(VizroBaseModel):
             class_name="accordion_item",
         )
 
-    def _create_default_accordion(self):
+    def _create_default_accordion(self, page_id):
         accordion_buttons = [
             dbc.Button(
                 children=[page["name"]],
                 key=page["relative_path"],
-                className="accordion-item-button",
+                className="accordion-item-button-active" if page_id == page["name"] else "accordion-item-button",
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
@@ -84,16 +84,16 @@ class Accordion(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-    def _create_accordion(self):
+    def _create_accordion(self, page_id):
         accordion_items = []
 
         if isinstance(self.pages, dict):
             for title, accordion_pages in self.pages.items():
-                accordion_buttons = self._create_accordion_buttons(accordion_pages=accordion_pages)
+                accordion_buttons = self._create_accordion_buttons(accordion_pages=accordion_pages, page_id=page_id)
                 accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons, title=title))
 
         if isinstance(self.pages, list):
-            accordion_buttons = self._create_accordion_buttons(accordion_pages=self.pages)
+            accordion_buttons = self._create_accordion_buttons(accordion_pages=self.pages, page_id=page_id)
             accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
 
         if len(accordion_buttons) == len(accordion_items) == 1:
