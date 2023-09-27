@@ -826,11 +826,15 @@
             "discriminator": {
               "propertyName": "type",
               "mapping": {
+                "button": "#/definitions/Button",
                 "filter": "#/definitions/Filter",
                 "parameter": "#/definitions/Parameter"
               }
             },
             "oneOf": [
+              {
+                "$ref": "#/definitions/Button"
+              },
               {
                 "$ref": "#/definitions/Filter"
               },
