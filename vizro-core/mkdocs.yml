@@ -31,12 +31,13 @@ nav:
       - Extensions:
           - Custom Charts: pages/user_guides/custom_charts.md
           - Custom Components: pages/user_guides/custom_components.md
-
   - API reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md
       - Data Manager: pages/API_reference/manager.md
       - Actions: pages/API_reference/actions.md
+  - Explanation:
+      - Why Vizro: pages/explanation/why_vizro.md
   - Contribute:
       - Contributing: pages/development/contributing.md
       - Authors: pages/development/authors.md
