@@ -36,8 +36,8 @@ nav:
       - Models: pages/API_reference/models.md
       - Data Manager: pages/API_reference/manager.md
       - Actions: pages/API_reference/actions.md
-  - Discussion:
-      - Why Vizro: pages/discussion/why_vizro.md
+  - Explanation:
+      - Why Vizro: pages/explanation/why_vizro.md
   - Contribute:
       - Contributing: pages/development/contributing.md
       - Authors: pages/development/authors.md

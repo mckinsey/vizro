@@ -76,11 +76,7 @@ Configuration can be written in multiple formats including **Pydantic models**, 
 
 Optional high-code extensions allow almost infinite customization in a modular way, combining the best of low-code and high-code - for flexible and scalable, Python enabled data visualization applications
 
-<br/>
-
-### Why Vizro
-
-For an explanation of why you want to use Vizro, please visit the [`Why Vizro section`](https://vizro.readthedocs.io/en/latest/pages/discussion/why_vizro/) of our docs
+(Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases)
 
 <br/>
 
