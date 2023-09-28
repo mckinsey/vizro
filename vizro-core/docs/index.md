@@ -37,6 +37,17 @@ Vizro is a toolkit for creating modular data visualization applications
   </div>
 </a>
 
+<a class="card-wrapper" href="pages/discussion/why_vizro/">
+  <div class="card">
+    <div class="card-content">
+      <h5>Discussion</h5>
+      <p>
+        Our discussion section contains background information and the answer to "why" questions.
+      </p>
+    </div>
+  </div>
+</a>
+
 <a class="card-wrapper" href="pages/development/contributing/">
   <div class="card">
     <div class="card-content">
