@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Add a "why Vizro" section to the docs ([#73](https://github.com/mckinsey/vizro/pull/73))
 
-
 <!--
 ### Changed
 
