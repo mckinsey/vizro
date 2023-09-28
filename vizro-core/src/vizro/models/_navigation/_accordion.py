@@ -77,6 +77,7 @@ class Accordion(VizroBaseModel):
                     class_name="accordion",
                     persistence=True,
                     persistence_type="session",
+                    always_open=True,
                 ),
                 html.Div(className="keyline"),
             ],

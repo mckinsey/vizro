@@ -26,7 +26,7 @@ def accordion_from_page_as_list():
     accordion_buttons = [
         dbc.Button(
             children=["Page 1"],
-            className="accordion-item-button",
+            className="accordion-item-button-active",
             key="/",
             href="/",
         ),
@@ -52,6 +52,7 @@ def accordion_from_page_as_list():
                 class_name="accordion",
                 persistence=True,
                 persistence_type="session",
+                always_open=True,
             ),
             html.Div(className="keyline"),
         ],
@@ -65,7 +66,7 @@ def accordion_from_page_as_list():
 def accordion_from_pages_as_dict():
     accordion_items = [
         dbc.AccordionItem(
-            children=[dbc.Button(children=["Page 1"], className="accordion-item-button", key="/", href="/")],
+            children=[dbc.Button(children=["Page 1"], className="accordion-item-button-active", key="/", href="/")],
             title="PAGE 1",
             class_name="accordion_item",
         ),
@@ -85,6 +86,7 @@ def accordion_from_pages_as_dict():
                 class_name="accordion",
                 persistence=True,
                 persistence_type="session",
+                always_open=True,
             ),
             html.Div(className="keyline"),
         ],

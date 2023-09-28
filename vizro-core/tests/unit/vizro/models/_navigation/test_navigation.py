@@ -56,6 +56,6 @@ class TestNavigationBuild:
         accordion = Accordion(pages=pages)
         navigation._selector.id = accordion.id
 
-        result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.loads(json.dumps(navigation.build(page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(accordion.build(page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
