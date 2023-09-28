@@ -213,6 +213,11 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
+        elif self._mode == "react":
+            # React component
+            @functools.wraps(func)
+            def wrapped(*args, **kwargs):
+                return CapturedCallable(func, *args, **kwargs)
 
         raise ValueError("Valid modes of the capture decorator are @capture('graph') and @capture('action').")
 
@@ -265,7 +270,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph"],
+    Union["Button", "Card", "Graph", "Table", "React"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",

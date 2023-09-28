@@ -2,5 +2,7 @@
 from vizro.models._components.button import Button
 from vizro.models._components.card import Card
 from vizro.models._components.graph import Graph
+from vizro.models._components.react import React
+from vizro.models._components.table import Table
 
-__all__ = ["Button", "Card", "Graph"]
+__all__ = ["Button", "Card", "Graph", "React", "Table"]

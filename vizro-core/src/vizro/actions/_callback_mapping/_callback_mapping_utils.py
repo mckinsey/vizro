@@ -160,7 +160,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property="figure",
+            component_property="children" if model_manager[target].type == "react" else "figure",
             allow_duplicate=True,
         )
         for target in targets
