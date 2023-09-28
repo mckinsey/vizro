@@ -3,8 +3,6 @@
 Vizro is a toolkit for creating modular data visualization applications.
 
 
-
-
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
 

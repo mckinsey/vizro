@@ -6,7 +6,7 @@ The simple and largely declarative configuration language follows a “grammar o
 
 <figure markdown>
   ![Image title](https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png)
-  <figcaption>Example of how Vizro's configuration layer translates into an app</figcaption>
+  <figcaption>Example of how Vizro's configuration language translates into an app</figcaption>
 </figure>
 
 Using configuration rather than a GUI to define the output facilitates collaboration during the creation process, and increases reusability and scalability in a Python setting.
