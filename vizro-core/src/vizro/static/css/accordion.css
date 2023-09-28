@@ -48,7 +48,6 @@
 
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
-  /*background-color: var(--state-overlays-selected); */
 }
 
 .accordion-button:not(.collapsed)::after {
