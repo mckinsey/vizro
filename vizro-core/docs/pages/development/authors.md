@@ -14,8 +14,8 @@
 
 ## Previous team members and code contributors
 
-[Jo Stichbury](https://github.com/stichbury)
-[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu)
+[Jo Stichbury](https://github.com/stichbury),
+[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
 [Qiuyi Chen](https://github.com/Qiuyi-Chen),
 [Elena Fridman](https://github.com/EllenWie),
