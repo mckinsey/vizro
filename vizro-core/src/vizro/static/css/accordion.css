@@ -87,7 +87,6 @@
   background-color: inherit;
   width: 100%;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
-  gap: var(--spacing-01);
 }
 
 .accordion_item:last-child {
