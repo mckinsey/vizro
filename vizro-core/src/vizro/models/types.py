@@ -255,7 +255,7 @@ _FormComponentType = Annotated[
 ]
 
 ControlType = Annotated[
-    Union["Filter", "Parameter"],
+    Union["Card", "Filter", "Parameter"],
     Field(
         discriminator="type",
         description="Control that affects components on the page.",

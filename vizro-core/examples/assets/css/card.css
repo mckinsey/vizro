@@ -1,0 +1,4 @@
+div.left_side .card_container {
+  background-color: var(--surfaces-bg-02);
+  padding: 0;
+}

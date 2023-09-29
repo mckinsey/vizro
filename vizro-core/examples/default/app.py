@@ -299,17 +299,41 @@ def create_relation_analysis():
             ),
         ],
         controls=[
+            vm.Card(
+                text="""
+                #### Group A
+
+                ___
+
+                """,
+            ),
             vm.Parameter(
                 targets=["scatter_relation_2007.x", "scatter_relation.x"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
                 ),
             ),
+            vm.Card(
+                text="""
+                #### Group B
+
+                ___
+
+                """,
+            ),
             vm.Parameter(
                 targets=["scatter_relation_2007.y", "scatter_relation.y", "bar_relation_2007.y"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
                 ),
+            ),
+            vm.Card(
+                text="""
+                #### Group C
+
+                ___
+
+                """,
             ),
             vm.Parameter(
                 targets=["scatter_relation_2007.size", "scatter_relation.size"],
