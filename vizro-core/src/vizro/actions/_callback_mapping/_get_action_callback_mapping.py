@@ -1,8 +1,8 @@
 """Creates action_callback_mapping to map callback arguments to action functions."""
 
-from typing import Any, Callable, Dict, Union
+from typing import Any, Dict, List, Union
 
-from dash import Input, Output, State
+from dash import Input, Output, State, dcc
 
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._callback_mapping._callback_mapping_utils import (
@@ -18,7 +18,9 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
 
-def _get_action_callback_mapping(action_id: ModelID, argument: str) -> Union[Dict[str, Union[Input, State, Output]]]:
+def _get_action_callback_mapping(
+    action_id: ModelID, argument: str
+) -> Union[List[dcc.Download], Dict[str, Union[Input, State, Output]]]:
     """Creates mapping of action name and required callback input/output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
 
@@ -43,7 +45,7 @@ def _get_action_callback_mapping(action_id: ModelID, argument: str) -> Union[Dic
         _on_page_load.__wrapped__: {"inputs": _get_action_callback_inputs, "outputs": _get_action_callback_outputs},
     }
     action_call = action_callback_mapping.get(action_function, {}).get(argument)
-    if isinstance(action_call, Callable):
-        return action_call(action_id=action_id)
-
-    return [] if argument == "components" else {}
+    default_value: Union[List[dcc.Download], Dict[str, Union[Input, State, Output]]] = (
+        [] if argument == "components" else {}
+    )
+    return default_value if not action_call else action_call(action_id=action_id)

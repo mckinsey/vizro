@@ -92,5 +92,3 @@ def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]]
             elif extension == ".css":
                 _vizro_css.append(path)
     return _vizro_js, _vizro_css
-
-    # TODO: increase a code coverage percentage in pyproject.toml

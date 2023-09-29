@@ -58,7 +58,9 @@ class Action(VizroBaseModel):
             "action_finished": Output("action_finished", "data", allow_duplicate=True),
         }
 
-        action_components = _get_action_callback_mapping(action_id=self.id, argument="components")  # type: ignore[arg-type]
+        action_components = _get_action_callback_mapping(
+            action_id=self.id, argument="components"  # type: ignore[arg-type]
+        )
 
         return callback_inputs, callback_outputs, action_components
 
@@ -72,13 +74,15 @@ class Action(VizroBaseModel):
         return_value = self.function(**inputs) or {}
 
         # Raising the custom exception if return value length doesn't match the number of outputs
-        return_value_len = 1 if not hasattr(return_value, '__len__') or isinstance(return_value, str) else len(return_value)
+        return_value_len = (
+            1 if not hasattr(return_value, "__len__") or isinstance(return_value, str) else len(return_value)
+        )
         outputs = list(ctx.outputs_grouping.keys())
         outputs.remove("action_finished")
         if len(outputs) != return_value_len:
             raise ValueError(
-                f'Number of action\'s returned elements: {return_value_len} does not match the number'
-                f' of action\'s defined outputs: {len(outputs)}.'
+                f"Number of action's returned elements: {return_value_len} does not match the number"
+                f" of action's defined outputs: {len(outputs)}."
             )
 
         if isinstance(return_value, dict):
