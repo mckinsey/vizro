@@ -7,7 +7,7 @@ from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models._navigation._navigation_utils import _validate_items
 from vizro.models._navigation.icon import Icon
 from vizro.models.types import NavigationPagesType
 
@@ -16,24 +16,14 @@ class NavBar(VizroBaseModel):
     """NavBar to be used in Navigation Panel of Dashboard.
 
     Args:
-        pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
-                Defaults to `None`.
         items (Optional[List[Icon]]): List of icons
     """
 
-    pages: Optional[NavigationPagesType] = None
+    # pages: Optional[NavigationPagesType] = None
     items: Optional[List[Icon]]
 
     # Re-used validators
-    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
-
-    @_log_call
-    def pre_build(self):
-        if self.items is None:
-            if isinstance(self.pages, list):
-                self.items = [Icon(pages=[page]) for page in self.pages]
-            if isinstance(self.pages, dict):
-                self.items = [Icon(pages=list(value)) for page, value in self.pages.values()]
+    _validate_items = validator("items", allow_reuse=True, always=True)(_validate_items)
 
     @_log_call
     def build(self, active_page_id):

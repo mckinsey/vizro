@@ -21,14 +21,14 @@ class Icon(VizroBaseModel):
 
     Args:
         title (Optional[str]): Title to be displayed in the tooltip on hover.
-        icon_src (Optional[str]): URI (relative or absolute) of the embeddable content. Defaults to None.
+        icon_src (str): URI (relative or absolute) of the embeddable content.
         icon_href (Optional[str]): Existing page path to navigate to given page. Defaults to `None`.
         pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
                 Defaults to `None`.
     """
 
     title: Optional[str]
-    icon_src: Optional[str]
+    icon_src: str
     icon_href: Optional[str] = Field(None, description="Existing page path to navigate to given page.")
     pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()

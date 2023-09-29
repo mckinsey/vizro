@@ -37,3 +37,10 @@ def _validate_pages(pages):
             f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
         )
     return pages
+
+
+def _validate_items(items):
+    if items is not None and not items:
+        raise ValueError("Ensure this value has at least 1 item.")
+
+    return items
