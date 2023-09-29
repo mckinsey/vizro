@@ -21,8 +21,8 @@
 
 <div align="center" markdown="1">
 
-<a href="https://vizro.readthedocs.io/en/latest/" target="_blank">Documentation </a> |
-<a href="https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
+<a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
+<a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
 <a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
 
 </div>
@@ -76,7 +76,7 @@ Configuration can be written in multiple formats including **Pydantic models**, 
 
 Optional high-code extensions allow almost infinite customization in a modular way, combining the best of low-code and high-code - for flexible and scalable, Python enabled data visualization applications
 
-(Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases)
+(Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/stable/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases)
 
 <br/>
 
@@ -109,17 +109,17 @@ Optional high-code extensions allow almost infinite customization in a modular w
 pip install vizro
 ```
 
-See the [Install guide](https://vizro.readthedocs.io/en/latest/pages/user_guides/install/) for more information
+See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information
 
 Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
 
 ## Getting started
 
-See the [Tutorials](https://vizro.readthedocs.io/en/latest/pages/tutorials/first_dashboard/) for creating your first dashboard
+See the [Tutorials](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) for creating your first dashboard
 
 ## Documentation
 
-See the [Documentation](https://vizro.readthedocs.io/en/latest/) for more details
+See the [Documentation](https://vizro.readthedocs.io/en/stable/) for more details
 
 ## Community and Development
 
@@ -128,9 +128,9 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 ## Contributing
 
 To learn more about making a contribution,
-please see the [Contributing Guide](https://vizro.readthedocs.io/en/latest/pages/development/contributing/) for more information
+please see the [Contributing Guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
 
-You can also view current and former [contributors](https://vizro.readthedocs.io/en/latest/pages/development/authors/)
+You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/development/authors/)
 
 ## Reporting a Security Vulnerability
 
