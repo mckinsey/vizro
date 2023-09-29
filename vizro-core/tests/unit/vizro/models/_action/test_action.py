@@ -25,7 +25,7 @@ def custom_action_function(request):
 
 @pytest.fixture
 def callback_context_outputs_grouping(request):
-    """Mock dash.callback_context that represents outputs grouping  Filter value selection."""
+    """Mock dash.callback_context that represents outputs grouping for custom action."""
     outputs = request.param
 
     outputs_grouping = {output: None for output in outputs}
