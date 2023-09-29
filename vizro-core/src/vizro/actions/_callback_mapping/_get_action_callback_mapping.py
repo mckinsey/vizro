@@ -1,6 +1,6 @@
 """Creates action_callback_mapping to map callback arguments to action functions."""
 
-from typing import Any, Dict, Union
+from typing import Any, Callable, Dict, Union
 
 from dash import Input, Output, State
 
@@ -42,5 +42,8 @@ def _get_action_callback_mapping(action_id: ModelID, argument: str) -> Union[Dic
         },
         _on_page_load.__wrapped__: {"inputs": _get_action_callback_inputs, "outputs": _get_action_callback_outputs},
     }
-    action_call = action_callback_mapping.get(action_function, {}).get(argument, {})
-    return action_call if isinstance(action_call, dict) else action_call(action_id=action_id)
+    action_call = action_callback_mapping.get(action_function, {}).get(argument)
+    if isinstance(action_call, Callable):
+        return action_call(action_id=action_id)
+
+    return [] if argument == "components" else {}
