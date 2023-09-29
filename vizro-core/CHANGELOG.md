@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.3'></a>
+
+# 0.1.3 — 2023-09-29
+
+## Added
+
+- Add a "why Vizro" section to the docs ([#73](https://github.com/mckinsey/vizro/pull/73))
+
+## Changed
+
+- Remove `left_side` container by default if there are no elements present ([#68](https://github.com/mckinsey/vizro/pull/68))
+
+## Fixed
+
+- Raise `ValueError` of shared column with inconsistent dtypes properly ([#64](https://github.com/mckinsey/vizro/pull/64))
+
 <a id='changelog-0.1.2'></a>
 
 # 0.1.2 — 2023-09-25
