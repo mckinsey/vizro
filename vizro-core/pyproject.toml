@@ -46,3 +46,21 @@ kedro = [
 Documentation = "https://github.com/mckinsey/vizro#readme"
 Issues = "https://github.com/mckinsey/vizro/issues"
 Source = "https://github.com/mckinsey/vizro"
+
+[tool.coverage.paths]
+vizro = ["src/vizro"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+fail_under = 82
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source_pkgs = ["vizro"]

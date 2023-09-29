@@ -1,19 +1,21 @@
 ## Current team members
 
-[Joseph Perkins](https://github.com/Joseph-Perkins),
-[Dan Dumitriu](https://github.com/dandumitriu1),
-[Antony Milne](https://github.com/antonymilne),
-[Huong Li Nguyen](https://github.com/huong-li-nguyen),
-[Maximilian Schulz](https://github.com/maxschulz-COL),
-[Lingyi Zhang](https://github.com/lingyielia),
-[Alexey Snigir](https://github.com/l0uden),
-[Nadija Graca](https://github.com/nadijagraca),
 [Chiara Pullem](https://github.com/chiara-sophie),
-[Anna Xiong](https://github.com/AnnaXiongQB),
+[Antony Milne](https://github.com/antonymilne),
+[Anna Xiong](https://github.com/Anna-Xiong),
+[Lingyi Zhang](https://github.com/lingyielia),
+[Nadija Graca](https://github.com/nadijagraca),
 [Petar Pejovic](https://github.com/petar-qb)
+[Alexey Snigir](https://github.com/l0uden),
+[Maximilian Schulz](https://github.com/maxschulz-COL),
+[Huong Li Nguyen](https://github.com/huong-li-nguyen),
+[Dan Dumitriu](https://github.com/dandumitriu1),
+[Joseph Perkins](https://github.com/Joseph-Perkins),
 
 ## Previous team members and code contributors
 
+[Jo Stichbury](https://github.com/stichbury),
+[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
 [Qiuyi Chen](https://github.com/Qiuyi-Chen),
 [Elena Fridman](https://github.com/EllenWie),

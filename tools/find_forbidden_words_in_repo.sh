@@ -1,7 +1,7 @@
 #!/bin/bash
 
 words=$"colour\|visualisation"
-words_finder=$(grep -Irwno --exclude=find_forbidden_words_in_repo.sh --exclude-dir={.git,*cache*,*node_modules*} . -e "$words")
+words_finder=$(grep -Irwno --exclude=find_forbidden_words_in_repo.sh --exclude-dir={.git,*cache*,*node_modules*,venv} . -e "$words")
 
 if [[ $words_finder ]]
 then
