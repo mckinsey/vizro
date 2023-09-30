@@ -133,22 +133,16 @@ class TestDashboardInstantiation:
 class TestDashboardBuild:
     """Tests dashboard build method."""
 
-    def test_dashboard_container(self, dashboard_container, two_pages):
-        test_dashboard = vm.Dashboard(pages=two_pages).build()
-        result = json.loads(json.dumps(test_dashboard, cls=plotly.utils.PlotlyJSONEncoder))
+    def test_dashboard_build(self, dashboard_container, dashboard_build):
+        result = json.loads(json.dumps(dashboard_build, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
-        del dash.page_registry["Page 1"]
-        del dash.page_registry["Page 2"]
 
-    def test_dashboard_page_registry(self, mock_page_registry, two_pages):
-        vm.Dashboard(pages=two_pages).build()
+    def test_dashboard_page_registry(self, mock_page_registry, dashboard_build):
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
-        del dash.page_registry["Page 1"]
-        del dash.page_registry["Page 2"]
 
 
 @pytest.mark.parametrize("on, expected", [(True, "vizro_dark"), (False, "vizro_light")])
