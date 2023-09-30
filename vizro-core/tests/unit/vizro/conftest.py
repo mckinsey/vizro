@@ -1,8 +1,11 @@
 """Fixtures to be shared across several tests."""
+
+import dash
 import pytest
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 
 
 @pytest.fixture
@@ -36,3 +39,10 @@ def two_pages():
 def dashboard(two_pages):
     dashboard = vm.Dashboard(pages=two_pages)
     return dashboard
+
+
+@pytest.fixture
+def app_build(dashboard):
+    yield Vizro().build(dashboard)
+    del dash.page_registry["Page 1"]
+    del dash.page_registry["Page 2"]

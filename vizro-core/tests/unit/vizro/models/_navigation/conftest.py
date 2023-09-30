@@ -1,14 +1,8 @@
 """Fixtures to be shared across several tests."""
+
 import dash_bootstrap_components as dbc
 import pytest
 from dash import html
-
-from vizro import Vizro
-
-
-@pytest.fixture
-def dashboard_build(dashboard):
-    return Vizro().build(dashboard)
 
 
 @pytest.fixture()

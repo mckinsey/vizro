@@ -9,7 +9,7 @@ import vizro.models as vm
 from vizro.models._navigation._accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("app_build")
 class TestNavigationInstantiation:
     """Tests navigation model instantiation."""
 
@@ -28,7 +28,7 @@ class TestNavigationInstantiation:
         assert navigation.id == "navigation"
         assert navigation.pages == pages_as_dict
 
-    def test_navigation_not_all_pages_included(self, dashboard_build):
+    def test_navigation_not_all_pages_included(self):
         with pytest.warns(UserWarning):
             vm.Navigation(pages=["Page 1"])
 
@@ -45,7 +45,7 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("app_build")
 class TestNavigationBuild:
     """Tests navigation build method."""
 

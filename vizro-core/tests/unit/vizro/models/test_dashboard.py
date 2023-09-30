@@ -10,7 +10,6 @@ from pydantic import ValidationError
 
 import vizro
 import vizro.models as vm
-from vizro import Vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.managers import model_manager
 from vizro.models._dashboard import create_layout_page_404, update_theme
@@ -132,17 +131,16 @@ class TestDashboardInstantiation:
             vm.Dashboard(pages=two_pages, theme="not_existing")
 
 
+@pytest.mark.usefixtures("app_build")
 class TestDashboardBuild:
     """Tests dashboard build method."""
 
-    def test_dashboard_container(self, dashboard, dashboard_container):
-        app = Vizro().build(dashboard)
-        result = json.loads(json.dumps(app.dash.layout, cls=plotly.utils.PlotlyJSONEncoder))
+    def test_dashboard_container(self, dashboard_container, app_build):
+        result = json.loads(json.dumps(app_build.dash.layout, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
-    def test_dashboard_page_registry(self, dashboard, mock_page_registry):
-        Vizro().build(dashboard)
+    def test_dashboard_page_registry(self, mock_page_registry):
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise

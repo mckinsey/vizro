@@ -56,7 +56,7 @@ class Accordion(VizroBaseModel):
         )
 
     def _get_accordion_container(self, accordion_items, accordion_buttons):
-        # Don't create accordion container if there is only one page and one accordion item
+        # Return no container if there is only one page in the dashboard
         if len(accordion_buttons) == len(accordion_items) == 1:
             return None
 

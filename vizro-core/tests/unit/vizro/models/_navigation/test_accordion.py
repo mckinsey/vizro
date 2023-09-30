@@ -9,7 +9,7 @@ import vizro.models as vm
 from vizro.models._navigation._accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("app_build")
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
 
@@ -37,7 +37,7 @@ class TestAccordionInstantiation:
             Accordion(pages=[])
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("app_build")
 class TestAccordionBuild:
     """Tests accordion build method."""
 
@@ -64,6 +64,6 @@ class TestAccordionBuild:
         accordion = Accordion(pages=["Page 1"], id="single_accordion").build()
         assert accordion is None
 
-    def test_navigation_not_all_pages_included(self, dashboard_build):
+    def test_navigation_not_all_pages_included(self):
         with pytest.warns(UserWarning):
             Accordion(pages=["Page 1"])
