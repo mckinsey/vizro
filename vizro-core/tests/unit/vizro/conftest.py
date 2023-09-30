@@ -36,13 +36,8 @@ def page2():
 
 
 @pytest.fixture()
-def two_pages(page1, page2):
-    return [page1, page2]
-
-
-@pytest.fixture()
-def dashboard(two_pages):
-    dashboard = vm.Dashboard(pages=two_pages)
+def dashboard(page1, page2):
+    dashboard = vm.Dashboard(pages=[page1, page2])
     return dashboard
 
 

@@ -99,17 +99,17 @@ def mock_page_registry(page1, page2):
 class TestDashboardInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
-    def test_create_dashboard_mandatory_only(self, two_pages):
-        dashboard = vm.Dashboard(pages=two_pages)
+    def test_create_dashboard_mandatory_only(self, page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2])
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == two_pages
+        assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title is None
 
-    def test_create_dashboard_mandatory_and_optional(self, two_pages):
-        dashboard = vm.Dashboard(pages=two_pages, theme="vizro_light", title="Vizro")
+    def test_create_dashboard_mandatory_and_optional(self, page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2], theme="vizro_light", title="Vizro")
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == two_pages
+        assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_light"
         assert dashboard.title == "Vizro"
 
@@ -125,9 +125,9 @@ class TestDashboardInstantiation:
         with pytest.raises(ValidationError, match="4 validation errors for Dashboard"):
             vm.Dashboard(pages=[vm.Button()])
 
-    def test_field_invalid_theme_input_type(self, two_pages):
+    def test_field_invalid_theme_input_type(self, page1):
         with pytest.raises(ValidationError, match="unexpected value; permitted: 'vizro_dark', 'vizro_light'"):
-            vm.Dashboard(pages=two_pages, theme="not_existing")
+            vm.Dashboard(pages=[page1], theme="not_existing")
 
 
 class TestDashboardBuild:
