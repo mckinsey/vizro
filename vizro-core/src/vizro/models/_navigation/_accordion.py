@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import validator
 
-from vizro._constants import ACCORDION_TITLE, MODULE_PAGE_404
+from vizro._constants import ACCORDION_DEFAULT_TITLE, MODULE_PAGE_404
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.navigation import _validate_pages
@@ -31,7 +31,7 @@ class Accordion(VizroBaseModel):
             return self._create_custom_accordion()
         return self._create_default_accordion()
 
-    def _create_accordion_buttons(self, accordion_pages):
+    def _create_accordion_buttons(self, pages):
         """Creates a button for each provided page."""
         # TODO: Better if we loop through pages from MM so the Accordion.build does not depend on app build.
         # However, this would require that only pages used in the Dashboard are registered in the MM.
@@ -44,10 +44,10 @@ class Accordion(VizroBaseModel):
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
-            if page["name"] in accordion_pages
+            if page["name"] in pages
         ]
 
-    def _create_accordion_item(self, accordion_buttons, title=ACCORDION_TITLE):
+    def _create_accordion_item(self, accordion_buttons, title):
         """Creates an accordion item for each sub-group of pages."""
         return dbc.AccordionItem(
             children=accordion_buttons,
@@ -78,7 +78,7 @@ class Accordion(VizroBaseModel):
     def _create_default_accordion(self):
         """Creates a default accordion with all pages provided to the Dashboard."""
         registered_pages = [page for page in dash.page_registry.keys() if page != MODULE_PAGE_404]
-        accordion_buttons = self._create_accordion_buttons(accordion_pages=registered_pages)
+        accordion_buttons = self._create_accordion_buttons(pages=registered_pages)
         accordion_items = [self._create_accordion_item(accordion_buttons=accordion_buttons)]
         return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)
 
@@ -86,11 +86,15 @@ class Accordion(VizroBaseModel):
         """Creates a custom accordion only with user-provided pages."""
         accordion_items = []
         if isinstance(self.pages, dict):
-            for title, accordion_pages in self.pages.items():
-                accordion_buttons = self._create_accordion_buttons(accordion_pages=accordion_pages)
-                accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons, title=title))
+            for page_group, page_members in self.pages.items():
+                accordion_buttons = self._create_accordion_buttons(pages=page_members)
+                accordion_items.append(
+                    self._create_accordion_item(accordion_buttons=accordion_buttons, title=page_group)
+                )
 
         if isinstance(self.pages, list):
-            accordion_buttons = self._create_accordion_buttons(accordion_pages=self.pages)
-            accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
+            accordion_buttons = self._create_accordion_buttons(pages=self.pages)
+            accordion_items.append(
+                self._create_accordion_item(accordion_buttons=accordion_buttons, title=ACCORDION_DEFAULT_TITLE)
+            )
         return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)

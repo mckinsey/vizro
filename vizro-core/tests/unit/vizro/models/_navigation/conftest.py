@@ -4,6 +4,8 @@ import dash_bootstrap_components as dbc
 import pytest
 from dash import html
 
+from vizro._constants import ACCORDION_DEFAULT_TITLE
+
 
 @pytest.fixture()
 def pages_as_list():
@@ -34,7 +36,7 @@ def accordion_from_page_as_list():
     accordion_items = [
         dbc.AccordionItem(
             children=[*accordion_buttons],
-            title="SELECT PAGE",
+            title=ACCORDION_DEFAULT_TITLE,
             class_name="accordion_item",
         )
     ]
