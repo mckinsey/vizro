@@ -33,7 +33,7 @@ class Accordion(VizroBaseModel):
 
     def _create_accordion_buttons(self, pages):
         """Creates a button for each provided page."""
-        # TODO: Better if we loop through pages from MM so the Accordion.build does not depend on app build.
+        # TODO: Better if we loop through pages from MM so the Accordion.build does not depend on dashboard build.
         # However, this would require that only pages used in the Dashboard are registered in the MM.
         # Note: Relative path currently deviates from page.path for first page.
         return [
@@ -47,7 +47,7 @@ class Accordion(VizroBaseModel):
             if page["name"] in pages
         ]
 
-    def _create_accordion_item(self, accordion_buttons, title):
+    def _create_accordion_item(self, accordion_buttons, title=ACCORDION_DEFAULT_TITLE):
         """Creates an accordion item for each sub-group of pages."""
         return dbc.AccordionItem(
             children=accordion_buttons,
@@ -94,7 +94,5 @@ class Accordion(VizroBaseModel):
 
         if isinstance(self.pages, list):
             accordion_buttons = self._create_accordion_buttons(pages=self.pages)
-            accordion_items.append(
-                self._create_accordion_item(accordion_buttons=accordion_buttons, title=ACCORDION_DEFAULT_TITLE)
-            )
+            accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
         return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)
