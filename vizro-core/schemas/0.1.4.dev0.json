@@ -826,11 +826,15 @@
             "discriminator": {
               "propertyName": "type",
               "mapping": {
+                "card": "#/definitions/Card",
                 "filter": "#/definitions/Filter",
                 "parameter": "#/definitions/Parameter"
               }
             },
             "oneOf": [
+              {
+                "$ref": "#/definitions/Card"
+              },
               {
                 "$ref": "#/definitions/Filter"
               },
