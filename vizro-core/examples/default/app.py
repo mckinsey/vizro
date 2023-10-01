@@ -303,7 +303,7 @@ def create_relation_analysis():
                 text="""
                 #### Group A
 
-                ___
+                ***
 
                 """,
             ),
@@ -331,7 +331,7 @@ def create_relation_analysis():
                 text="""
                 #### Group C
 
-                ___
+                ---
 
                 """,
             ),
