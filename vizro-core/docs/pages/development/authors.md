@@ -2,7 +2,7 @@
 
 [Chiara Pullem](https://github.com/chiara-sophie),
 [Antony Milne](https://github.com/antonymilne),
-[Anna Xiong](https://github.com/AnnaXiongQB),
+[Anna Xiong](https://github.com/Anna-Xiong),
 [Lingyi Zhang](https://github.com/lingyielia),
 [Nadija Graca](https://github.com/nadijagraca),
 [Petar Pejovic](https://github.com/petar-qb)
@@ -14,8 +14,9 @@
 
 ## Previous team members and code contributors
 
-[Jo Stichbury](https://github.com/stichbury)
-[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu)
+[axa99](https://github.com/axa99),
+[Jo Stichbury](https://github.com/stichbury),
+[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
 [Qiuyi Chen](https://github.com/Qiuyi-Chen),
 [Elena Fridman](https://github.com/EllenWie),

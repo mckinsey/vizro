@@ -16,7 +16,7 @@ class TestNavigationInstantiation:
     def test_navigation_default(self):
         navigation = vm.Navigation(id="navigation")
         assert navigation.id == "navigation"
-        assert navigation.pages is None
+        assert navigation.pages == ["Page 1", "Page 2"]
 
     def test_navigation_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, id="navigation")
@@ -28,7 +28,7 @@ class TestNavigationInstantiation:
         assert navigation.id == "navigation"
         assert navigation.pages == pages_as_dict
 
-    def test_navigation_not_all_pages_included(self, dashboard_build):
+    def test_navigation_not_all_pages_included(self):
         with pytest.warns(UserWarning):
             vm.Navigation(pages=["Page 1"])
 
