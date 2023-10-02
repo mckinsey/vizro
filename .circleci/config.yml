@@ -71,6 +71,9 @@ workflows:
       - trigger-new-pipeline:
           context:
             - circleci-api
+          filters:
+            tags:
+              only: /(\d+\.\d+\.\d+)/
       - wait-for-triggered-pipeline:
           type: approval
           requires:
@@ -80,11 +83,3 @@ workflows:
             - wait-for-triggered-pipeline
           context:
             - circleci-api
-  vizro-core-tag:
-    jobs:
-      - trigger-new-pipeline:
-          context:
-            - circleci-api-tag
-          filters:
-            tags:
-              only: /(\d+\.\d+\.\d+)/
