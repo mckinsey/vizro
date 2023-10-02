@@ -31,7 +31,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 <!--
 ### Fixed
 
-- A bullet item for the Fixed category.
+- Fix bug of horizontal rulers not being visible in `Card` ([#88](https://github.com/mckinsey/vizro/pull/88))
 
 -->
 <!--
