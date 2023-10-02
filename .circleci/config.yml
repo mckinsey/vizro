@@ -80,3 +80,11 @@ workflows:
             - wait-for-triggered-pipeline
           context:
             - circleci-api
+  vizro-core-tag:
+    jobs:
+      - trigger-new-pipeline:
+          context:
+            - circleci-api-tag
+          filters:
+            tags:
+              only: /(\d+\.\d+\.\d+)/
