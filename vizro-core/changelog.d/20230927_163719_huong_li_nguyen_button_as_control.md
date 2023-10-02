@@ -28,12 +28,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category.
 
 -->
-<!--
+
 ### Fixed
 
 - Fix bug of horizontal rulers not being visible in `Card` ([#88](https://github.com/mckinsey/vizro/pull/88))
 
--->
 <!--
 ### Security
 

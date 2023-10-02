@@ -17,6 +17,7 @@ nav:
           - Filters: pages/user_guides/filters.md
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
+          - Buttons: pages/user_guides/buttons.md
       - Navigation:
           - Accordion: pages/user_guides/navigation.md
       - Visual Formatting:
