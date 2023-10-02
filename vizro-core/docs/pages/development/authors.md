@@ -14,6 +14,7 @@
 
 ## Previous team members and code contributors
 
+[axa99](https://github.com/axa99),
 [Jo Stichbury](https://github.com/stichbury),
 [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
