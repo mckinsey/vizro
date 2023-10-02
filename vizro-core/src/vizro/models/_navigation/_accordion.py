@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import validator
 
-from vizro._constants import ACCORDION_DEFAULT_TITLE, MODULE_PAGE_404
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.navigation import _validate_pages
@@ -27,9 +27,7 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self):
-        if self.pages:
-            return self._create_custom_accordion()
-        return self._create_default_accordion()
+        return self._create_accordion()
 
     def _create_accordion_buttons(self, pages):
         """Creates a button for each provided page."""
@@ -75,14 +73,7 @@ class Accordion(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-    def _create_default_accordion(self):
-        """Creates a default accordion with all pages provided to the Dashboard."""
-        registered_pages = [page for page in dash.page_registry.keys() if page != MODULE_PAGE_404]
-        accordion_buttons = self._create_accordion_buttons(pages=registered_pages)
-        accordion_items = [self._create_accordion_item(accordion_buttons=accordion_buttons)]
-        return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)
-
-    def _create_custom_accordion(self):
+    def _create_accordion(self):
         """Creates a custom accordion only with user-provided pages."""
         accordion_items = []
         if isinstance(self.pages, dict):

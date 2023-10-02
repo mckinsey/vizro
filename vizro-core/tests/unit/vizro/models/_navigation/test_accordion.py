@@ -16,7 +16,7 @@ class TestAccordionInstantiation:
     def test_create_accordion_default(self):
         accordion = Accordion(id="accordion_id")
         assert accordion.id == "accordion_id"
-        assert accordion.pages is None
+        assert accordion.pages == ["Page 1", "Page 2"]
 
     def test_create_accordion_pages_as_list(self, pages_as_list):
         accordion = Accordion(pages=pages_as_list, id="accordion_id")

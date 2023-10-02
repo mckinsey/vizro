@@ -3,8 +3,10 @@ from __future__ import annotations
 import warnings
 from typing import TYPE_CHECKING, Optional
 
+import dash
 from pydantic import PrivateAttr, validator
 
+from vizro._constants import MODULE_PAGE_404
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -44,6 +46,9 @@ def _validate_pages(pages):
             raise ValueError(
                 f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
             )
+
+    if pages is None:
+        return [page for page in dash.page_registry.keys() if page != MODULE_PAGE_404]
 
     return pages
 
