@@ -674,7 +674,7 @@ To enhance dashboard interactions, you can use the [`Button`][vizro.models.Butto
 action functions such as e.g. exporting chart data. Please refer to the [user guide][vizro.actions] on
 [`Actions`][vizro.models.Action] for currently available options.
 
-To add a [`Button`][vizro.models.Button], simply insert it into the `components` argument of the
+To add a [`Button`][vizro.models.Button] as a component, simply insert it into the `components` argument of the
 [`Page`][vizro.models.Page].
 
 You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button] and the
