@@ -29,7 +29,7 @@ class Accordion(VizroBaseModel):
     def build(self, page_id):
         return self._create_accordion(page_id=page_id)
 
-    def _create_accordion_buttons(self, pages):
+    def _create_accordion_buttons(self, pages, page_id):
         """Creates a button for each provided page."""
         # TODO: Better if we loop through pages from MM so the Accordion.build does not depend on dashboard build.
         # However, this would require that only pages used in the Dashboard are registered in the MM.
