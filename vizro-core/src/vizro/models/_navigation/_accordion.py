@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import validator
 
-from vizro._constants import ACCORDION_TITLE, MODULE_PAGE_404
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.navigation import _validate_pages
@@ -27,11 +27,13 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self):
-        if self.pages:
-            return self._create_accordion()
-        return self._create_default_accordion()
+        return self._create_accordion()
 
-    def _create_accordion_buttons(self, accordion_pages):
+    def _create_accordion_buttons(self, pages):
+        """Creates a button for each provided page."""
+        # TODO: Better if we loop through pages from MM so the Accordion.build does not depend on dashboard build.
+        # However, this would require that only pages used in the Dashboard are registered in the MM.
+        # Note: Relative path currently deviates from page.path for first page.
         return [
             dbc.Button(
                 children=[page["name"]],
@@ -40,33 +42,20 @@ class Accordion(VizroBaseModel):
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
-            for accordion_page in accordion_pages
-            if accordion_page == page["module"] and page["module"] != MODULE_PAGE_404
+            if page["module"] in pages
         ]
 
-    def _create_accordion_item(self, accordion_buttons, title=ACCORDION_TITLE):
+    def _create_accordion_item(self, accordion_buttons, title=ACCORDION_DEFAULT_TITLE):
+        """Creates an accordion item for each sub-group of pages."""
         return dbc.AccordionItem(
             children=accordion_buttons,
             title=title.upper(),
             class_name="accordion_item",
         )
 
-    def _create_default_accordion(self):
-        accordion_buttons = [
-            dbc.Button(
-                children=[page["name"]],
-                key=page["relative_path"],
-                className="accordion-item-button",
-                href=page["relative_path"],
-            )
-            for page in dash.page_registry.values()
-            if page["module"] != MODULE_PAGE_404
-        ]
-
-        accordion_items = [self._create_accordion_item(accordion_buttons=accordion_buttons)]
-
-        # Don't create accordion navigation if there is only one page and one accordion item
-        if len(accordion_buttons) == len(accordion_items) == 1:
+    def _get_accordion_container(self, accordion_items, accordion_buttons):
+        # Return no container if there is only one page in the dashboard or no pages exist
+        if (len(accordion_buttons) == len(accordion_items) == 1) or not accordion_buttons:
             return None
 
         return html.Div(
@@ -85,31 +74,16 @@ class Accordion(VizroBaseModel):
         )
 
     def _create_accordion(self):
+        """Creates a custom accordion only with user-provided pages."""
         accordion_items = []
-
         if isinstance(self.pages, dict):
-            for title, accordion_pages in self.pages.items():
-                accordion_buttons = self._create_accordion_buttons(accordion_pages=accordion_pages)
-                accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons, title=title))
+            for page_group, page_members in self.pages.items():
+                accordion_buttons = self._create_accordion_buttons(pages=page_members)
+                accordion_items.append(
+                    self._create_accordion_item(accordion_buttons=accordion_buttons, title=page_group)
+                )
 
         if isinstance(self.pages, list):
-            accordion_buttons = self._create_accordion_buttons(accordion_pages=self.pages)
+            accordion_buttons = self._create_accordion_buttons(pages=self.pages)
             accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
-
-        if len(accordion_buttons) == len(accordion_items) == 1:
-            return None
-
-        return html.Div(
-            children=[
-                dbc.Accordion(
-                    id=self.id,
-                    children=accordion_items,
-                    class_name="accordion",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-                html.Div(className="keyline"),
-            ],
-            className="nav_panel",
-            id=f"{self.id}_outer",
-        )
+        return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)
