@@ -42,7 +42,7 @@ class Accordion(VizroBaseModel):
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
-            if page["name"] in pages
+            if page["module"] in pages
         ]
 
     def _create_accordion_item(self, accordion_buttons, title=ACCORDION_DEFAULT_TITLE):
