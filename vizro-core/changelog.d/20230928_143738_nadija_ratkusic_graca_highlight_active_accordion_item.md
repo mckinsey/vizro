@@ -31,7 +31,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed highlighting for active accordion item and arranged a setup to maintain the expanded state of the parent accordion item when page is active. ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Add highlighting to selected page accordion button and change the collapsible default behavior of accordion ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 <!--
 ### Security

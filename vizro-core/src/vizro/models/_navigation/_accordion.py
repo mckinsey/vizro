@@ -38,7 +38,8 @@ class Accordion(VizroBaseModel):
             dbc.Button(
                 children=[page["name"]],
                 key=page["relative_path"],
-                className="accordion-item-button-active" if page_id == page["name"] else "accordion-item-button",
+                className="accordion-item-button",
+                active=True if page_id == page["name"] else False,
                 href=page["relative_path"],
             )
             for page in dash.page_registry.values()
