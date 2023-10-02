@@ -20,7 +20,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Add `Button` to `ControlType`
+- Add `Button` to `ControlType` ([#88](https://github.com/mckinsey/vizro/pull/88))
 
 <!--
 ### Deprecated
