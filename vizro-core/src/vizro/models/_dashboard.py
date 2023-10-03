@@ -79,16 +79,20 @@ class Dashboard(VizroBaseModel):
         pio.templates.default = self.theme
 
     @_log_call
-    def build(self):
+    def pre_build(self):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
             dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=page.build)
+        self._create_error_page_404()
+
+    @_log_call
+    def build(self):
+        for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
         self._update_theme()
-        self._create_error_page_404()
 
         return dbc.Container(
             id="dashboard_container",

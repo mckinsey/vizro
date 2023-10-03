@@ -9,7 +9,7 @@ import vizro.models as vm
 from vizro.models._navigation._accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("dashboard_prebuild")
 class TestNavigationInstantiation:
     """Tests navigation model instantiation."""
 
@@ -45,7 +45,7 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("dashboard_prebuild")
 class TestNavigationBuild:
     """Tests navigation build method."""
 
