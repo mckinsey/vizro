@@ -36,3 +36,7 @@
 :root > * {
   --md-code-hl-color: #119bec3e;
 }
+
+.md-typeset td:not([class]):not(:last-child) {
+  border-right: 1px solid lightgrey;
+}
