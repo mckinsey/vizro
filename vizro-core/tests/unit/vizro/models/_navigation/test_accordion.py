@@ -43,25 +43,25 @@ class TestAccordionBuild:
 
     @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], None])
     def test_accordion_build_default(self, pages, accordion_from_page_as_list):
-        accordion = Accordion(pages=pages, id="accordion_list").build(page_id="Page 1")
+        accordion = Accordion(pages=pages, id="accordion_list").build(active_page_id="Page 1")
         result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
     def test_accordion_build_pages_as_list(self, pages_as_list, accordion_from_page_as_list):
-        accordion = Accordion(pages=pages_as_list, id="accordion_list").build(page_id="Page 1")
+        accordion = Accordion(pages=pages_as_list, id="accordion_list").build(active_page_id="Page 1")
         result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
     def test_accordion_build_pages_as_dict(self, pages_as_dict, accordion_from_pages_as_dict):
-        accordion = Accordion(pages=pages_as_dict, id="accordion_dict").build(page_id="Page 1")
+        accordion = Accordion(pages=pages_as_dict, id="accordion_dict").build(active_page_id="Page 1")
         result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(accordion_from_pages_as_dict, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
     def test_accordion_build_single_page_accordion(self):
-        accordion = Accordion(pages=["Page 1"], id="single_accordion").build(page_id="Page 1")
+        accordion = Accordion(pages=["Page 1"], id="single_accordion").build(active_page_id="Page 1")
         assert accordion is None
 
     def test_navigation_not_all_pages_included(self):
