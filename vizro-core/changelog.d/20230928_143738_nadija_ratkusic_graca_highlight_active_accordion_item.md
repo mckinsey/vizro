@@ -16,12 +16,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category.
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category.
+- Move creation of `dash.page_registry` to `Dashboard.pre-build` ([#74](https://github.com/mckinsey/vizro/pull/74))
 
--->
 <!--
 ### Deprecated
 
@@ -31,7 +30,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Add highlighting to selected page accordion button and change the collapsible default behavior of accordion ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Add highlighting to accordion button of active page and change the collapsible default behavior of accordion ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 <!--
 ### Security
