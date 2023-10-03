@@ -168,8 +168,6 @@ class Page(VizroBaseModel):
 
     def _create_nav_panel(self):
         _, dashboard = next(model_manager._items_with_type(Dashboard))
-        # TODO: Optimally remove pre_build() call but currently required due to page.build() in dashboard.build()
-        dashboard.navigation.pre_build()  # type: ignore[union-attr]
         return dashboard.navigation.build(active_page_id=self.id)  # type: ignore[union-attr]
 
     def _create_component_container(self, components_content):
