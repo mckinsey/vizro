@@ -153,6 +153,7 @@ class TestDashboardBuild:
     """Tests dashboard build method."""
 
     def test_dashboard_build(self, dashboard_container, dashboard):
+        dashboard.pre_build()
         result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
