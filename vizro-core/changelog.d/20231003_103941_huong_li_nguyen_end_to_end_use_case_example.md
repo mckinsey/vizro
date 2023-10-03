@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add comparison table to `Why Vizro` docs page ([#89](https://github.com/mckinsey/vizro/pull/89))
+- Add comparison table to `Why Vizro` docs page ([#90](https://github.com/mckinsey/vizro/pull/90))
 
 <!--
 ### Changed
