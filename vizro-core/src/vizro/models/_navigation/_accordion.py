@@ -69,7 +69,7 @@ class Accordion(VizroBaseModel):
                     persistence_type="session",
                     always_open=True,
                 ),
-                html.Div(className="keyline"),
+                html.Hr(),
             ],
             className="nav_panel",
             id=f"{self.id}_outer",

@@ -87,7 +87,7 @@
   width: 336px;
 }
 
-.keyline {
+hr {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   width: 100%;
 }
