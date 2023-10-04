@@ -101,6 +101,8 @@ class TestPagePreBuildMethod:
 # TODO: Add unit tests for private methods in page build
 def test_page_build_left_side_removed(standard_px_chart):
     page = vm.Page(title="Single Page", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
-    vm.Dashboard(pages=[page]).build()
+    dashboard = vm.Dashboard(pages=[page])
+    dashboard.pre_build()
+    dashboard.navigation.pre_build()
     assert ("className='left_side'" not in str(page.build())) is True
     del dash.page_registry["Single Page"]

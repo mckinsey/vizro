@@ -167,13 +167,8 @@ class Page(VizroBaseModel):
         return control_panel if controls_content else None
 
     def _create_nav_panel(self):
-        from vizro.models._navigation.accordion import Accordion
-
         _, dashboard = next(model_manager._items_with_type(Dashboard))
-        if dashboard.navigation:
-            return dashboard.navigation.build(page_id=self.id)
-
-        return None, Accordion().build(page_id=self.id)
+        return dashboard.navigation.build(active_page_id=self.id)  # type: ignore[union-attr]
 
     def _create_component_container(self, components_content):
         component_container = html.Div(

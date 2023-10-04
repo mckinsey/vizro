@@ -9,7 +9,7 @@ import vizro.models as vm
 from vizro.models._navigation.accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("dashboard_prebuild")
 class TestNavigationInstantiation:
     """Tests navigation model instantiation."""
 
@@ -45,7 +45,7 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("dashboard_build")
+@pytest.mark.usefixtures("dashboard_prebuild")
 class TestNavigationBuild:
     """Tests navigation build method."""
 
@@ -56,6 +56,6 @@ class TestNavigationBuild:
         accordion = Accordion(pages=pages)
         navigation._selector.id = accordion.id
 
-        result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.loads(json.dumps(navigation.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(accordion.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
