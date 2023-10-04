@@ -146,7 +146,7 @@ def export_data_action_targets(request):
 
 @pytest.mark.usefixtures("managers_one_page_four_controls_two_graphs_filter_interaction")
 class TestCallbackMapping:
-    """Tests action callback mapping for predefined actions."""
+    """Tests action callback mapping for predefined and custom actions."""
 
     @pytest.mark.parametrize(
         "action_id, expected_inputs",
