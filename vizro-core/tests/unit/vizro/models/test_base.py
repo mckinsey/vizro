@@ -166,14 +166,14 @@ class TestChildForwardRefDiscriminatedUnion:
         # Make it as if these are in vizro.models so that update_forward_refs call in add_type works on them.
         mocker.patch.dict(vm.__dict__, {"ChildXForwardRef": ChildX})
         Parent.add_type("child", ChildWithForwardRef)
-        parent = Parent(child=ChildWithForwardRef())
+        parent = Parent(child=ChildWithForwardRef(grandchild=ChildX()))
         assert isinstance(parent.child, ChildWithForwardRef)
 
     def test_add_type_dict_instantiation(self, Parent, mocker):
         # Make it as if these are in vizro.models so that update_forward_refs call in add_type works on them.
         mocker.patch.dict(vm.__dict__, {"ChildXForwardRef": ChildX})
         Parent.add_type("child", ChildWithForwardRef)
-        parent = Parent(child={"type": "child_forward_ref"})
+        parent = Parent(child={"type": "child_forward_ref", "grandchild": {"type": "child_x"}})
         assert isinstance(parent.child, ChildWithForwardRef)
 
 
