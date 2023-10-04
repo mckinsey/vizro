@@ -112,7 +112,7 @@ def callback_context_parameter_y_and_x(request):
 class TestParameter:
     @pytest.mark.parametrize(
         "callback_context_parameter_y, target_scatter_parameter_y",
-        [("pop", "pop"), ("gdpPercap", "gdpPercap")],
+        [("pop", "pop"), ("gdpPercap", "gdpPercap"),("NONE",None)],
         indirect=True,
     )
     def test_one_parameter_one_target(
