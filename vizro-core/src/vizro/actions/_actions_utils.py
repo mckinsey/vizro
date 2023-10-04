@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from vizro.models import Action
 
 
-def validate_selector_value_parameters(
+def validate_selector_value_NONE(
     value: Union[SingleValueType, MultiValueType]
 ) -> Union[SingleValueType, MultiValueType]:
     if value == [NONE_OPTION]:
@@ -126,13 +126,13 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
-        for ctx_trigger_dict in parameters:
-            selector_value = ctx_trigger_dict["value"]
+        for ctd in parameters:
+            selector_value = ctd["value"]
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
-                selector: SelectorType = model_manager[ctx_trigger_dict["id"]]
+                selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
-            selector_value = validate_selector_value_parameters(selector_value)
-            selector_actions = _get_component_actions(model_manager[ctx_trigger_dict["id"]])
+            selector_value = validate_selector_value_NONE(selector_value)
+            selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
             for action in selector_actions:
                 action_targets = _create_target_arg_mapping(action.function["targets"])
