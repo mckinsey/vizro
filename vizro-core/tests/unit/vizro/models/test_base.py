@@ -21,7 +21,7 @@ class ChildZ(vm.VizroBaseModel):
 
 class ChildWithForwardRef(vm.VizroBaseModel):
     type: Literal["child_forward_ref"] = "child_forward_ref"
-    grandchild: "ChildXForwardRef" = None
+    grandchild: "ChildXForwardRef" = None  # noqa: F821
 
 
 # ChildType does not include ChildZ initially.
