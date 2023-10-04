@@ -160,9 +160,8 @@ class Page(VizroBaseModel):
 
     @staticmethod
     def _create_control_panel(controls_content):
-        keyline = html.Div(className="keyline")
         control_panel = html.Div(
-            children=[*controls_content, keyline],
+            children=[*controls_content, html.Hr()],
             className="control_panel",
         )
         return control_panel if controls_content else None
@@ -202,9 +201,7 @@ class Page(VizroBaseModel):
         """
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (
-            html.Div(
-                children=[html.H2(dashboard.title), html.Div(className="keyline")], className="dashboard_title_outer"
-            )
+            html.Div(children=[html.H2(dashboard.title), html.Hr()], className="dashboard_title_outer")
             if dashboard.title
             else None
         )
@@ -215,10 +212,7 @@ class Page(VizroBaseModel):
             children=header_elements,
             className="header",
         )
-        left_side = html.Div(
-            children=left_side_elements,
-            className="left_side",
-        )
+        left_side = html.Div(children=left_side_elements, className="left_side") if any(left_side_elements) else None
         right_side_elements = [header, component_container]
         right_side = html.Div(
             children=right_side_elements,

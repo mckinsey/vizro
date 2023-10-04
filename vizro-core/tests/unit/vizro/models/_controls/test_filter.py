@@ -75,9 +75,8 @@ class TestFilterInstantiation:
             Filter(column="foo", targets=["invalid_target"])
 
 
-@pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestPreBuildMethod:
-    def test_set_targets_valid(self):
+    def test_set_targets_valid(self, managers_one_page_two_graphs):
         # Core of tests is still interface level
         filter = vm.Filter(column="country")
         # Special case - need filter in the context of page in order to run filter.pre_build
@@ -85,7 +84,7 @@ class TestPreBuildMethod:
         filter.pre_build()
         assert set(filter.targets) == {"scatter_chart", "bar_chart"}
 
-    def test_set_targets_invalid(self):
+    def test_set_targets_invalid(self, managers_one_page_two_graphs):
         filter = vm.Filter(column="invalid_choice")
         model_manager["test_page"].controls = [filter]
 
@@ -95,7 +94,7 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input,expected", [("country", "categorical"), ("year", "numerical"), ("lifeExp", "numerical")]
     )
-    def test_set_column_type(self, test_input, expected):
+    def test_set_column_type(self, test_input, expected, managers_one_page_two_graphs):
         filter = vm.Filter(column=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -104,7 +103,7 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input,expected", [("country", vm.Dropdown), ("year", vm.RangeSlider), ("lifeExp", vm.RangeSlider)]
     )
-    def test_set_selector(self, test_input, expected):
+    def test_set_selector(self, test_input, expected, managers_one_page_two_graphs):
         filter = vm.Filter(column=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -112,16 +111,30 @@ class TestPreBuildMethod:
         assert filter.selector.title == test_input.title()
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_determine_slider_defaults_invalid_selector(self, test_input):
+    def test_set_slider_values_incompatible_column_type(self, test_input, managers_one_page_two_graphs):
         filter = vm.Filter(column="country", selector=test_input)
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
-            ValueError, match=f"Chosen selector {test_input.type} is not compatible with column_type categorical."
+            ValueError,
+            match=f"Chosen selector {test_input.type} is not compatible with categorical column '{filter.column}'.",
         ):
             filter.pre_build()
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_defaults_min_max_none(self, test_input, gapminder):
+    def test_set_slider_values_shared_column_inconsistent_dtype(
+        self, test_input, managers_shared_column_different_dtype
+    ):
+        filter = vm.Filter(column="shared_column", selector=test_input)
+        model_manager["graphs_with_shared_column"].controls = [filter]
+        with pytest.raises(
+            ValueError,
+            match=f"Non-numeric values detected in the shared data column '{filter.column}' for targeted charts. "
+            f"Please ensure that the data column contains the same data type across all targeted charts.",
+        ):
+            filter.pre_build()
+
+    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
+    def test_set_slider_values_defaults_min_max_none(self, test_input, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -129,7 +142,7 @@ class TestPreBuildMethod:
         assert filter.selector.max == gapminder.lifeExp.max()
 
     @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
-    def test_set_slider_values_defaults_min_max_fix(self, test_input):
+    def test_set_slider_values_defaults_min_max_fix(self, test_input, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -137,7 +150,9 @@ class TestPreBuildMethod:
         assert filter.selector.max == 5
 
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_set_categorical_selectors_options_defaults_options_none(self, test_input, gapminder):
+    def test_set_categorical_selectors_options_defaults_options_none(
+        self, test_input, gapminder, managers_one_page_two_graphs
+    ):
         filter = vm.Filter(column="continent", selector=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -151,16 +166,21 @@ class TestPreBuildMethod:
             vm.RadioItems(options=["Africa", "Europe"]),
         ],
     )
-    def test_set_categorical_selectors_options_defaults_options_fix(self, test_input):
+    def test_set_categorical_selectors_options_defaults_options_fix(self, test_input, managers_one_page_two_graphs):
         filter = vm.Filter(column="continent", selector=test_input)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == ["Africa", "Europe"]
 
-
-# TODO: split out pre_build method, and test only the units
-# TODO: write test for: "No numeric value detected in chosen column lifeExp for numerical selector.")
-# TODO: write tests for where there are columns shared, but the content is different
+    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
+    def test_set_actions(self, test_input, managers_one_page_two_graphs):
+        filter = vm.Filter(column=test_input)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        default_action = filter.selector.actions[0]
+        assert isinstance(default_action, ActionsChain)
+        assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].id == f"filter_action_{filter.id}"
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -184,13 +204,3 @@ class TestFilterBuild:
         result = str(filter.build())
         expected = str(test_selector.build())
         assert result == expected
-
-    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
-    def test_set_actions(self, test_input):
-        filter = vm.Filter(column=test_input)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-        default_action = filter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].id == f"filter_action_{filter.id}"

@@ -77,6 +77,7 @@ Vizro, you need:
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
             ],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -96,6 +97,9 @@ Vizro, you need:
                 color: species
               id: scatter_chart
               type: graph
+            controls:
+              - column: species
+                type: filter
             title: My first page
         ```
     === "Result"
@@ -140,6 +144,7 @@ that accepts different SQL queries as arguments.
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter("species_setosa", x="sepal_length", y="petal_width", color="species")),
             ],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -169,6 +174,7 @@ that accepts different SQL queries as arguments.
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter("species_setosa", x="sepal_length", y="petal_width", color="species")),
             ],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])

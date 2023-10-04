@@ -10,12 +10,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category.
+- Add comparison table to `Why Vizro` docs page ([#90](https://github.com/mckinsey/vizro/pull/90))
 
--->
 <!--
 ### Changed
 

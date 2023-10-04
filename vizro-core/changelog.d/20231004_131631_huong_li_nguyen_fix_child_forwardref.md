@@ -28,12 +28,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category.
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category.
+Fix bug so that `add_type` updates forward references in new type added ([#92](https://github.com/mckinsey/vizro/pull/92))
 
--->
 <!--
 ### Security
 

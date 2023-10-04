@@ -1,7 +1,7 @@
 dash>=2.11
 dash_bootstrap_components
 pandas
-pydantic<2.0.0
+pydantic>=1.10.13, <2
 dash_daq
 ipython>=8.10.0
 numpy>=1.22.2

@@ -1,232 +1,85 @@
 version: 2.1
 
-orbs:
-  browser-tools: circleci/browser-tools@1.4.1
-
-parameters:
-  triggering-pipeline-id:
-    type: string
-    default: ""
-  branch:
-    type: string
-    default: ""
-  qa_branch:
-    type: string
-    default: ""
-  app_repo_name:
-    type: string
-    default: "vizro"
-  app_core_name:
-    type: string
-    default: "vizro-core"
-  qa_repo_name:
-    type: string
-    default: "vizro-qa"
-
-commands:
-  approve-job-in-triggering-pipeline:
-    steps:
-      - run:
-          name: Ping CircleCI API to get workflow
-          command: |
-            echo << pipeline.parameters.triggering-pipeline-id >>
-            if ! [ -z "<< pipeline.parameters.triggering-pipeline-id >>" ]
-            then
-              workflow_id=$(curl --request GET \
-                --url https://circleci.com/api/v2/pipeline/<< pipeline.parameters.triggering-pipeline-id >>/workflow \
-                --header "Circle-Token: $CIRCLECI_API_KEY" \
-                --header "content-type: application/json" \
-              | jq -r '.items[0].id')
-
-              echo $workflow_id
-
-              waiting_job_id=$(curl --request GET \
-                --url https://circleci.com/api/v2/workflow/$workflow_id/job \
-                --header "Circle-Token: $CIRCLECI_API_KEY" \
-                --header "content-type: application/json" \
-              | jq -r '.items[] | select(.name == "wait-for-triggered-pipeline").id')
-
-              echo $waiting_job_id
-
-              curl --request POST \
-                --url https://circleci.com/api/v2/workflow/$workflow_id/approve/$waiting_job_id \
-                --header "Circle-Token: $CIRCLECI_API_KEY" \
-                --header "content-type: application/json"
-
-            fi
-          when: always
-
-  chromedriver_install:
-    description: Installation of Chrome and chromedriver
-    parameters:
-      version:
-        default: 114.0.5735.90
-        type: string
-    steps:
-      - run:
-          name: Install Google Chrome
-          command: |
-            cd ~
-            sudo apt-get update
-            sudo apt-get install libu2f-udev -y
-            wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_<< parameters.version >>-1_amd64.deb"
-            sudo apt-get install -y --allow-downgrades ~/google-chrome-stable_<< parameters.version >>-1_amd64.deb
-            rm ~/google-chrome-stable_<< parameters.version >>-1_amd64.deb
-      - browser-tools/install-chromedriver
-
-  custom_checkout:
-    steps:
-      - run:
-          name: Checkout logic for qa and app repos
-          command: |
-            touch ~/.ssh/known_hosts
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
-            cd /home/circleci/
-            git clone -v "$TESTS_REPO_URL"
-            if ! [ -z "<< pipeline.parameters.qa_branch >>" ]
-            then
-              echo "from pipeline"
-              echo "<< pipeline.parameters.qa_repo_name >> branch:"
-              cd /home/circleci/<< pipeline.parameters.qa_repo_name >>
-              git switch "<< pipeline.parameters.qa_branch >>"
-              git rev-parse HEAD
-              cd /home/circleci/project/
-              existed_in_remote=$(git ls-remote --heads origin "<< pipeline.parameters.qa_branch >>")
-              if ! [[ -z ${existed_in_remote} ]]; then
-                  echo "<< pipeline.parameters.app_repo_name >> branch:"
-                  git switch "<< pipeline.parameters.branch >>"
-                  git rev-parse HEAD
-              fi
-            elif ! [ -z "$CIRCLE_BRANCH" ]
-            then
-              echo "from git"
-              echo "<< pipeline.parameters.app_repo_name >> branch:"
-              cd /home/circleci/project/
-              git switch "$CIRCLE_BRANCH"
-              git rev-parse HEAD
-              cd /home/circleci/<< pipeline.parameters.qa_repo_name >>
-              existed_in_remote=$(git ls-remote --heads origin "$CIRCLE_BRANCH")
-              if ! [[ -z ${existed_in_remote} ]]; then
-                  echo "<< pipeline.parameters.qa_repo_name >> branch:"
-                  git switch "$CIRCLE_BRANCH"
-                  git rev-parse HEAD
-              fi
-            fi
-
-  create_env_and_install_reqs:
-    description: Create environment and install requirements
-    steps:
-      - run:
-          name: Create qa environment
-          command: |
-            python3 -m venv ~/.venv/<< pipeline.parameters.qa_repo_name >>
-            echo "source ~/.venv/<< pipeline.parameters.qa_repo_name >>/bin/activate" >> $BASH_ENV
-            touch Pipfile.lock
-      - restore_cache:
-          keys:
-            - pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-            - pip-packages-v1-{{ .Branch }}-
-            - pip-packages-v1
-      - run:
-          name: Install requirements
-          command: |
-            sudo apt-get update
-            sudo apt-get install rsync -y
-            pip install -U pip
-            pip install -U setuptools wheel
-            pip install -r /home/circleci/<< pipeline.parameters.qa_repo_name >>/requirements.txt
-            cd /home/circleci/project/<< pipeline.parameters.app_core_name >>
-            hatch build
-            pip install dist/vizro*.tar.gz
-      - save_cache:
-          paths:
-            - ~/.venv/
-          key: pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-
 jobs:
-  run_tests:
+  trigger-new-pipeline:
     docker:
-      - image: cimg/python:3.8.17
+      - image: cimg/base:2021.11
+    resource_class: small
     steps:
-      - checkout
-      - custom_checkout
-      - create_env_and_install_reqs
-      - chromedriver_install
       - run:
-          name: Run dashboards and tests
+          name: Ping another pipeline
           command: |
-            export PYTHONPATH="/home/circleci/<< pipeline.parameters.qa_repo_name >>:$PYTHONPATH"
-            cd /home/circleci/<< pipeline.parameters.qa_repo_name >>
-            python dashboards/run_all_dashboards.py
-            dashboards/wait_for_dashboard.sh
-            TEST_FILES=$(circleci tests glob "tests/test_*.py" | circleci tests split --split-by=timings)
-            python -m pytest -v --reruns 1 --junitxml=test-results/junit.xml --override-ini junit_family=xunit1 $TEST_FILES
-      - run:
-          name: Collecting failed screenshots
-          command: |
-            mkdir /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_screenshots/
-            cd /home/circleci/<< pipeline.parameters.qa_repo_name >>/
-            cp tests*.png failed_screenshots
-          when: on_fail
-      - store_test_results:
-          path: /home/circleci/<< pipeline.parameters.qa_repo_name >>/test-results
-      - store_artifacts:
-          path: /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_screenshots/
+            CREATED_PIPELINE=$(curl --request POST \
+              --url "$QA_PIPELINE_URL" \
+              --header "Circle-Token: $CIRCLECI_API_KEY" \
+              --header "content-type: application/json" \
+              --data '{"branch":"<< pipeline.git.branch >>", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"<< pipeline.git.branch >>", "vizro_branch": "<< pipeline.git.branch >>", "tag": "<< pipeline.git.tag >>"}}' \
+            | jq -r '.id'
+            )
+            echo "my created pipeline"
+            echo $CREATED_PIPELINE
+            if [[ "$CREATED_PIPELINE" == "null" ]]; then
+              CREATED_PIPELINE=$(curl --request POST \
+              --url "$QA_PIPELINE_URL" \
+              --header "Circle-Token: $CIRCLECI_API_KEY" \
+              --header "content-type: application/json" \
+              --data '{"branch":"main", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"main", "vizro_branch": "<< pipeline.git.branch >>", "tag": "<< pipeline.git.tag >>"}}' \
+              | jq -r '.id'
+              )
+            fi
+            echo "my created pipeline"
+            echo $CREATED_PIPELINE
+            mkdir ~/workspace
+            echo $CREATED_PIPELINE > pipeline.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - pipeline.txt
 
-  run_notebooks:
+  check-status-of-triggered-pipeline:
     docker:
-      - image: cimg/python:3.8.17
+      - image: cimg/base:2021.11
+    resource_class: small
     steps:
-      - checkout
-      - custom_checkout
-      - create_env_and_install_reqs
-      - chromedriver_install
+      - attach_workspace:
+          at: workspace
       - run:
-          name: Run notebooks
+          name: Check triggered workflow status
           command: |
-            export PYTHONPATH="/home/circleci/<< pipeline.parameters.qa_repo_name >>:$PYTHONPATH"
-            ipython kernel install --name "<< pipeline.parameters.qa_repo_name >>" --user
-            cd /home/circleci/project/<< pipeline.parameters.app_core_name >>
-            ../../<< pipeline.parameters.qa_repo_name >>/scripts/run_notebooks.sh
-      - run:
-          name: Run notebooks as python scripts
-          command: |
-            export PYTHONPATH="/home/circleci/<< pipeline.parameters.qa_repo_name >>:$PYTHONPATH"
-            cd /home/circleci/project/<< pipeline.parameters.app_core_name >>
-            ../../<< pipeline.parameters.qa_repo_name >>/scripts/convert_notebooks_to_python.sh
-            cd examples/jupyter
-            python app.py &
-            cd /home/circleci/<< pipeline.parameters.qa_repo_name >>
-            dashboards/wait_for_notebooks.sh
-            python -m pytest -v --reruns 1 --junitxml=test-results/junit.xml tests_notebooks
-      - run:
-          name: Collecting failed notebooks
-          command: |
-            mkdir /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_notebooks/
-            cd /home/circleci/project/<< pipeline.parameters.app_core_name >>
-            cp examples*.txt /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_notebooks/
-          when: on_fail
-      - run:
-          name: Collecting failed screenshots
-          command: |
-            mkdir /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_screenshots/
-            cd /home/circleci/<< pipeline.parameters.qa_repo_name >>/
-            cp tests*.png failed_screenshots
-          when: on_fail
-      - store_test_results:
-          path: /home/circleci/<< pipeline.parameters.qa_repo_name >>/test-results
-      - store_test_results:
-          path: /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_notebooks/
-      - store_artifacts:
-          path: /home/circleci/<< pipeline.parameters.qa_repo_name >>/failed_screenshots/
+            triggered_pipeline_id=$(cat workspace/pipeline.txt)
+
+            created_workflow_status=$(curl --request GET \
+                --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+                --header "Circle-Token: $CIRCLECI_API_KEY" \
+                --header "content-type: application/json" \
+              | jq -r '.items[0].status'
+            )
+
+            echo $created_workflow_status
+
+            if [[ "$created_workflow_status" != "success" ]]; then
+              echo "Workflow not successful - ${created_workflow_status}"
+              (exit -1)
+            fi
+
+            echo "Created workflow successful"
 
 workflows:
   version: 2
   vizro-core:
     jobs:
-      - run_tests:
-          post-steps:
-            - approve-job-in-triggering-pipeline
+      - trigger-new-pipeline:
           context:
-            - circleci-apix
-      - run_notebooks
+            - circleci-api
+          filters:
+            tags:
+              only: /(\d+\.\d+\.\d+)/
+      - wait-for-triggered-pipeline:
+          type: approval
+          requires:
+            - trigger-new-pipeline
+      - check-status-of-triggered-pipeline:
+          requires:
+            - wait-for-triggered-pipeline
+          context:
+            - circleci-api

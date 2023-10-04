@@ -1,0 +1,52 @@
+name: General question
+description: General questions around Vizro
+labels: "Status: Needs triage :mag:, Issue: General Question :question:"
+
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Hi there! Thank you so much for taking the time to fill in this question form. It will be
+        a valuable contribution to Vizro.
+
+        We'd appreciate it if you could search on Vizro's existing issues prior to filing
+        a general question to avoid any duplicate tickets, as we have limited maintainer capacity to triage
+        them. Thanks!
+
+  - type: textarea
+    attributes:
+      label: Question
+      description: >-
+        Please post your question here.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Code/Examples
+      description: >-
+        Please post any supporting code around your question here.
+
+  - type: textarea
+    attributes:
+      label: Other information
+      description: >-
+        Please provide any attempts on answering the question, or any related information you already found here.
+
+  - type: input
+    attributes:
+      label: vizro version
+  - type: input
+    attributes:
+      label: Python version
+  - type: input
+    attributes:
+      label: OS
+
+  - type: checkboxes
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: >-
+            I agree to follow the [Code of Conduct](https://github.com/mckinsey/vizro/blob/main/CODE_OF_CONDUCT.md).
+          required: true

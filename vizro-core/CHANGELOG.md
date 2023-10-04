@@ -11,6 +11,45 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.3'></a>
+
+# 0.1.3 — 2023-09-29
+
+## Added
+
+- Add a "why Vizro" section to the docs ([#73](https://github.com/mckinsey/vizro/pull/73))
+
+## Changed
+
+- Remove `left_side` container by default if there are no elements present ([#68](https://github.com/mckinsey/vizro/pull/68))
+
+## Fixed
+
+- Raise `ValueError` of shared column with inconsistent dtypes properly ([#64](https://github.com/mckinsey/vizro/pull/64))
+
+<a id='changelog-0.1.2'></a>
+
+# 0.1.2 — 2023-09-25
+
+## Added
+
+- Add additional information in case of duplicate `model_manager` ID's to guide users if this occurs in a Jupyter Notebooks. ([#59](https://github.com/mckinsey/vizro/pull/59))
+
+## Changed
+
+- Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
+
+  - Eliminate most server side callbacks in favour of client-side callbacks
+  - Add tests for client-side callbacks written in Node.js framework called `jest`.
+  - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
+  - Logging information now only displayed for action function carried out (no trigger or finished information)
+
+- Replaced all screenshots in the docs to reflect new navigation designs ([#48](https://github.com/mckinsey/vizro/pull/48))
+
+## Fixed
+
+- Fixed issue of accordion arrow not loading on deployed demo version ([#44](https://github.com/mckinsey/vizro/pull/44))
+
 <a id='changelog-0.1.1'></a>
 
 # 0.1.1 — 2023-09-21
