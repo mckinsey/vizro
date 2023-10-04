@@ -19,17 +19,6 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
 
-def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
-    validated_value: ValidatedNoneValueType = value
-    if value == [NONE_OPTION]:
-        validated_value = [None]
-    elif value == NONE_OPTION:
-        validated_value = None
-    elif isinstance(value, list) and len(value) > 1 and NONE_OPTION in value:
-        validated_value = [i for i in value if i != NONE_OPTION]  # type: ignore[assignment]
-    return validated_value
-
-
 class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
     id: ModelID  # the component ID. If it`s a pattern matching ID, it will be a dict.
     property: Literal["clickData", "value", "n_clicks"]  #  the component property used in the callback.
@@ -45,6 +34,17 @@ def _get_component_actions(component) -> List[Action]:
         if hasattr(component, "actions")
         else []
     )
+
+
+def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+    validated_value: ValidatedNoneValueType = value
+    if value == [NONE_OPTION]:
+        validated_value = [None]
+    elif value == NONE_OPTION:
+        validated_value = None
+    elif isinstance(value, list) and len(value) > 1 and NONE_OPTION in value:
+        validated_value = [i for i in value if i != NONE_OPTION]  # type: ignore[assignment]
+    return validated_value
 
 
 def _apply_filters(
