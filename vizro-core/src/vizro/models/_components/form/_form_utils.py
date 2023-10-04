@@ -1,23 +1,24 @@
 """Helper functions for models inside form folder."""
-from typing import Optional, Union
+from typing import Union
 
 from vizro._constants import ALL_OPTION
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
-def get_options_and_default(
-    options: OptionsType, value: Optional[Union[SingleValueType, MultiValueType]], multi: bool = False
-):
+def get_options_and_default(options: OptionsType, multi: bool = False):
     """Gets list of full options and default value based on user input type of `options`."""
     if multi:
         if all(isinstance(option, dict) for option in options):
             options = [{"label": ALL_OPTION, "value": ALL_OPTION}, *options]
         else:
             options = [ALL_OPTION, *options]
-        default_value = value or ALL_OPTION
-        return options, default_value
 
-    return options, value
+    if all(isinstance(option, dict) for option in options):
+        default_value = options[0]["value"]  # type: ignore[index]
+    else:
+        default_value = options[0]
+
+    return options, default_value
 
 
 # Utils for validators

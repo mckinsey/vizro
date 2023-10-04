@@ -4,23 +4,37 @@ from __future__ import annotations
 
 from collections import defaultdict
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
 import pandas as pd
 
-from vizro._constants import ALL_OPTION
+from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import SelectorType
+from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
     from vizro.models import Action
 
 
+def validate_selector_value_parameters(
+    value: Union[SingleValueType, MultiValueType]
+) -> Union[SingleValueType, MultiValueType]:
+    if value == [NONE_OPTION]:
+        validated_value = [None]
+    elif value == NONE_OPTION:
+        validated_value = None
+    elif isinstance(value, list) and len(value) > 1 and NONE_OPTION in value:
+        validated_value = [i for i in value if i != NONE_OPTION]
+    else:
+        validated_value = value
+    return validated_value
+
+
 class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
     id: ModelID  # the component ID. If it`s a pattern matching ID, it will be a dict.
     property: Literal["clickData", "value", "n_clicks"]  #  the component property used in the callback.
-    value: Optional[List[Any]]  # the value of the component property at the time the callback was fired.
+    value: Optional[Any]  # the value of the component property at the time the callback was fired.
     str_id: str  # for pattern matching IDs, it`s the stringified dict ID with no white spaces.
     triggered: bool  #  a boolean indicating whether this input triggered the callback.
 
@@ -114,6 +128,10 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
 
         for ctx_trigger_dict in parameters:
             selector_value = ctx_trigger_dict["value"]
+            if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
+                selector: SelectorType = model_manager[ctx_trigger_dict["id"]]
+                selector_value = selector.options
+            selector_value = validate_selector_value_parameters(selector_value)
             selector_actions = _get_component_actions(model_manager[ctx_trigger_dict["id"]])
 
             for action in selector_actions:
@@ -121,10 +139,6 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
 
                 if target not in action_targets:
                     continue
-
-                if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
-                    selector: SelectorType = model_manager[ctx_trigger_dict["id"]]
-                    selector_value = selector.options
 
                 for action_targets_arg in action_targets[target]:
                     graph_config = _update_nested_graph_properties(

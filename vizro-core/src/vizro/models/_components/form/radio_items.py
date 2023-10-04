@@ -35,7 +35,7 @@ class RadioItems(VizroBaseModel):
 
     @_log_call
     def build(self):
-        full_options, default_value = get_options_and_default(options=self.options, value=self.value, multi=False)
+        full_options, default_value = get_options_and_default(options=self.options, multi=False)
 
         return html.Div(
             [
@@ -43,7 +43,7 @@ class RadioItems(VizroBaseModel):
                 dcc.RadioItems(
                     id=self.id,
                     options=full_options,
-                    value=default_value,
+                    value=self.value if self.value is not None else default_value,
                     persistence=True,
                     className="selector_body_radio_items",
                 ),

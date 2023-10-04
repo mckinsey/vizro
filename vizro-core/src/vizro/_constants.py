@@ -1,5 +1,6 @@
 """File to store constants."""
 ALL_OPTION = "ALL"
+NONE_OPTION = "NONE"
 STATIC_URL_PREFIX = "vizro"
 MODULE_PAGE_404 = "not_found_404"
 EMPTY_SPACE_CONST = -1
