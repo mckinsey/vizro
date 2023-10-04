@@ -102,8 +102,7 @@
   gap: var(--spacing-01);
 }
 
-div.page_container .accordion-item-button,
-.accordion-item-button-active {
+div.page_container .accordion-item-button {
   background-color: inherit;
   width: 100%;
   display: flex;
@@ -112,9 +111,6 @@ div.page_container .accordion-item-button,
   align-items: center;
   font-size: var(--text-size-02);
   line-height: var(--text-size-03);
-}
-.accordion-item-button-active {
-  background-color: var(--state-overlays-selected);
 }
 
 .accordion-item-button.btn.btn-primary.active {
