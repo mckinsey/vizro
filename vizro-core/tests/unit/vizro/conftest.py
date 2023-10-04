@@ -42,7 +42,7 @@ def dashboard(page1, page2):
 
 
 @pytest.fixture()
-def dashboard_build(dashboard):
-    yield dashboard.build()
+def dashboard_prebuild(dashboard):
+    yield dashboard.pre_build()
     del dash.page_registry["Page 1"]
     del dash.page_registry["Page 2"]
