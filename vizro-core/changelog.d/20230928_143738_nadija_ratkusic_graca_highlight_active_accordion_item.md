@@ -10,16 +10,15 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category.
-
--->
+- Add validator for `Dashboard.navigation` to default to `Navigation()` if not provided ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 ### Changed
 
-- Move creation of `dash.page_registry` to `Dashboard.pre-build` ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Move creation of `dash.page_registry` to `Dashboard.pre_build` ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Change the default collapsible behavior and highlighting color of the selected accordion group ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 <!--
 ### Deprecated
@@ -30,7 +29,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Add highlighting to accordion button of active page and change the collapsible default behavior of accordion ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Add highlighting to accordion button of active page ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 <!--
 ### Security

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import dash_bootstrap_components as dbc
 import dash_daq as daq
@@ -12,7 +12,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError
-from vizro.models import Action, Dashboard, Graph, Layout, VizroBaseModel
+from vizro.models import Action, Dashboard, Graph, Layout, Navigation, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
@@ -168,7 +168,7 @@ class Page(VizroBaseModel):
 
     def _create_nav_panel(self):
         _, dashboard = next(model_manager._items_with_type(Dashboard))
-        return dashboard.navigation.build(active_page_id=self.id)  # type: ignore[union-attr]
+        return cast(Navigation, dashboard.navigation).build(active_page_id=self.id)
 
     def _create_component_container(self, components_content):
         component_container = html.Div(

@@ -38,7 +38,7 @@ class Navigation(VizroBaseModel):
             self.selector = Accordion(pages=self.pages)
 
     @_log_call
-    def build(self, active_page_id):
+    def build(self, *, active_page_id=None):
         if isinstance(self.selector, NavBar):
             return self.selector.build(active_page_id=active_page_id)
         if isinstance(self.selector, Accordion):

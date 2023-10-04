@@ -61,7 +61,7 @@ class TestAccordionBuild:
         assert result == expected
 
     def test_accordion_build_single_page_accordion(self):
-        accordion = Accordion(pages=["Page 1"], id="single_accordion").build(active_page_id="Page 1")
+        accordion = Accordion(pages=["Page 1"], id="single_accordion").build()
         assert accordion is None
 
     def test_navigation_not_all_pages_included(self):
