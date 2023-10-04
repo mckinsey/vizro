@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
 
-def validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
     validated_value: ValidatedNoneValueType = value
     if value == [NONE_OPTION]:
         validated_value = [None]
@@ -130,7 +130,7 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
-            selector_value = validate_selector_value_NONE(selector_value)
+            selector_value = _validate_selector_value_NONE(selector_value)
             selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
             for action in selector_actions:
