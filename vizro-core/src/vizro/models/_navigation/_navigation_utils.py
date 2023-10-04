@@ -1,8 +1,5 @@
 import warnings
 
-import dash
-
-from vizro._constants import MODULE_PAGE_404
 from vizro.managers import model_manager
 
 
@@ -10,6 +7,7 @@ from vizro.managers import model_manager
 # TODO: Adjust validator to take into account pages on different icons
 def _validate_pages(pages):
     from vizro.models import Page
+
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
 
     if pages is None:

@@ -36,25 +36,25 @@ class NavBar(VizroBaseModel):
                 self.items = [Icon(pages=list(value)) for page, value in self.pages.values()]
 
     @_log_call
-    def build(self, page_id):
+    def build(self, active_page_id):
         if self.items:
             items = [item.build() for item in self.items]
             nav_bar = html.Div(
                 children=items,
                 className="nav_bar",
             )
-            nav_panel = self._nav_panel_build(page_id=page_id)
+            nav_panel = self._nav_panel_build(active_page_id=active_page_id)
 
             return nav_bar, nav_panel
 
-    def _nav_panel_build(self, page_id):
+    def _nav_panel_build(self, active_page_id):
         if self.items:
             for item in self.items:
                 if isinstance(item.pages, list):
-                    if page_id in item.pages:
-                        return item._selector.build(page_id=page_id)
+                    if active_page_id in item.pages:
+                        return item._selector.build(active_page_id=active_page_id)
 
                 if isinstance(item.pages, dict):
                     pages = [page for row in item.pages.values() for page in row]
-                    if page_id in pages:
-                        return item._selector.build(page_id=page_id)
+                    if active_page_id in pages:
+                        return item._selector.build(active_page_id=active_page_id)
