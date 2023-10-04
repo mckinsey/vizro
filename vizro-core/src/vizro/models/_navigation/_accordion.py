@@ -35,8 +35,10 @@ class Accordion(VizroBaseModel):
         for page_id in pages:
             try:
                 page = dash.page_registry[page_id]
-            except KeyError:
-                raise KeyError(f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`")
+            except KeyError as exc:
+                raise KeyError(
+                    f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
+                ) from exc
             accordion_buttons.append(
                 dbc.Button(
                     children=[page["name"]],
