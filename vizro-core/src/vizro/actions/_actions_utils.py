@@ -16,18 +16,17 @@ from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 if TYPE_CHECKING:
     from vizro.models import Action
 
+ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
-def validate_selector_value_NONE(
-    value: Union[SingleValueType, MultiValueType]
-) -> Union[SingleValueType, MultiValueType]:
+
+def validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+    validated_value: ValidatedNoneValueType = value
     if value == [NONE_OPTION]:
         validated_value = [None]
     elif value == NONE_OPTION:
         validated_value = None
     elif isinstance(value, list) and len(value) > 1 and NONE_OPTION in value:
-        validated_value = [i for i in value if i != NONE_OPTION]
-    else:
-        validated_value = value
+        validated_value = [i for i in value if i != NONE_OPTION]  # type: ignore[assignment]
     return validated_value
 
 
@@ -87,7 +86,7 @@ def _apply_filter_interaction(
         except KeyError as exc:
             raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
 
-        customdata = ctd["value"]["points"][0]["customdata"]  # type: ignore[call-overload]
+        customdata = ctd["value"]["points"][0]["customdata"]
 
         for action in source_chart_actions:
             if target not in action.function["targets"]:
