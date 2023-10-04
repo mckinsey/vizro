@@ -277,7 +277,7 @@ type: Literal["jumbotron"] = "jumbotron"
 ```
     - register the type with the parent model(s):
 ```py
-vm.Page.add_new_type("components", Jumbotron)
+vm.Page.add_type("components", Jumbotron)
 ```
 
 
