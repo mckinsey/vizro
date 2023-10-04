@@ -12,22 +12,6 @@ exclude_dirs = ["tests"]
 line-length = 120
 target-version = ["py38"]
 
-[tool.coverage.paths]
-tests = ["tests"]
-vizro = ["src/vizro"]
-
-[tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:"
-]
-
-[tool.coverage.run]
-branch = true
-parallel = true
-source_pkgs = ["vizro", "tests"]
-
 [tool.mypy]
 # strict checks : strict = true
 check_untyped_defs = true
