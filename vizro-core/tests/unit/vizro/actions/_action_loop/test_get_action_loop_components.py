@@ -11,15 +11,6 @@ from vizro.actions import export_data
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
 from vizro.managers import model_manager
 
-"""
-1. No action_chains -> []
-2. Test fundamental components
-3. Test gateway components for every actions_chain in the app
-4. Test action_trigger components for every action in the system
-5. Test action_trigger_actions_id component
-6. Test trigger_to_actions_chain_mapper component
-"""
-
 
 @pytest.fixture
 def fundamental_components():
