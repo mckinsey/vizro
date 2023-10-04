@@ -33,7 +33,10 @@ class Accordion(VizroBaseModel):
         """Creates a button for each provided page that is registered."""
         accordion_buttons = []
         for page_id in pages:
-            page = dash.page_registry[page_id]
+            try:
+                page = dash.page_registry[page_id]
+            except KeyError:
+                raise KeyError(f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`")
             accordion_buttons.append(
                 dbc.Button(
                     children=[page["name"]],
