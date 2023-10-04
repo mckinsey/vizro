@@ -13,12 +13,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add validator for `dashboard.navigation` to default to `Navigation()` if not provided ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Add validator for `Dashboard.navigation` to default to `Navigation()` if not provided ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 ### Changed
 
 - Move creation of `dash.page_registry` to `Dashboard.pre_build` ([#74](https://github.com/mckinsey/vizro/pull/74))
-- Change the collapsible default behavior and highlighting color of the selected accordion group ([#74](https://github.com/mckinsey/vizro/pull/74))
+- Change the default collapsible behavior and highlighting color of the selected accordion group ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 <!--
 ### Deprecated

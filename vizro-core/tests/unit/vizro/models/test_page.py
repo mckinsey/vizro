@@ -104,5 +104,5 @@ def test_page_build_left_side_removed(standard_px_chart):
     dashboard = vm.Dashboard(pages=[page])
     dashboard.pre_build()
     dashboard.navigation.pre_build()
-    assert ("className='left_side'" not in str(page.build())) is True
+    assert "className='left_side'" not in str(page.build())
     del dash.page_registry["Single Page"]

@@ -26,7 +26,7 @@ class Accordion(VizroBaseModel):
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
     @_log_call
-    def build(self, active_page_id):
+    def build(self, *, active_page_id=None):
         return self._create_accordion(active_page_id=active_page_id)
 
     def _create_accordion_buttons(self, pages, active_page_id):
@@ -39,7 +39,7 @@ class Accordion(VizroBaseModel):
                     children=[page["name"]],
                     key=page["relative_path"],
                     className="accordion-item-button",
-                    active=True if active_page_id == page["module"] else False,
+                    active=page_id == active_page_id,
                     href=page["relative_path"],
                 )
             )

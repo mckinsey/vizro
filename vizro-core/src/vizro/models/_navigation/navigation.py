@@ -73,5 +73,5 @@ class Navigation(VizroBaseModel):
         self._selector = Accordion(pages=self.pages)
 
     @_log_call
-    def build(self, active_page_id):
+    def build(self, *, active_page_id=None):
         return self._selector.build(active_page_id=active_page_id)
