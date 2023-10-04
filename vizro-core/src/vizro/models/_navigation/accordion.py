@@ -73,17 +73,17 @@ class Accordion(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-    def _create_accordion(self):
+    def _create_accordion(self, page_id):
         """Creates a custom accordion only with user-provided pages."""
         accordion_items = []
         if isinstance(self.pages, dict):
             for page_group, page_members in self.pages.items():
-                accordion_buttons = self._create_accordion_buttons(pages=page_members)
+                accordion_buttons = self._create_accordion_buttons(pages=page_members, page_id=page_id)
                 accordion_items.append(
                     self._create_accordion_item(accordion_buttons=accordion_buttons, title=page_group)
                 )
 
         if isinstance(self.pages, list):
-            accordion_buttons = self._create_accordion_buttons(pages=self.pages)
+            accordion_buttons = self._create_accordion_buttons(pages=self.pages, page_id=page_id)
             accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
         return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)

@@ -1,5 +1,8 @@
 import warnings
 
+import dash
+
+from vizro._constants import MODULE_PAGE_404
 from vizro.managers import model_manager
 
 
@@ -34,5 +37,8 @@ def _validate_pages(pages):
             raise ValueError(
                 f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
             )
+
+    if pages is None:
+        return [page for page in dash.page_registry.keys() if page != MODULE_PAGE_404]
 
     return pages
