@@ -33,7 +33,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fix bug on `ChildWithForwardRef.update_forward_refs()` having to be called explicitly ([#92](https://github.com/mckinsey/vizro/pull/92))
 
-
 <!--
 ### Security
 
