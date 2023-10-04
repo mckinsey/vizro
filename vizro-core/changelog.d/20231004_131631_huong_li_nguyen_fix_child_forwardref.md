@@ -31,7 +31,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug on `ChildWithForwardRef.update_forward_refs()` having to be called explicitly ([#92](https://github.com/mckinsey/vizro/pull/92))
+Fix bug so that `add_type` updates forward references in new type added ([#92](https://github.com/mckinsey/vizro/pull/92))
 
 <!--
 ### Security
