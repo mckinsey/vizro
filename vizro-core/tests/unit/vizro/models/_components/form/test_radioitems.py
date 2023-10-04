@@ -18,7 +18,7 @@ def expected_radio_items():
             dcc.RadioItems(
                 id="radio_items_id",
                 options=["A", "B", "C"],
-                value=None,
+                value="A",
                 className="selector_body_radio_items",
                 persistence=True,
             ),
