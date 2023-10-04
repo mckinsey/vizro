@@ -13,7 +13,7 @@ jobs:
               --url "$QA_PIPELINE_URL" \
               --header "Circle-Token: $CIRCLECI_API_KEY" \
               --header "content-type: application/json" \
-              --data '{"branch":"<< pipeline.git.branch >>", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"<< pipeline.git.branch >>", "vizro_branch": "<< pipeline.git.branch >>"}}' \
+              --data '{"branch":"<< pipeline.git.branch >>", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"<< pipeline.git.branch >>", "vizro_branch": "<< pipeline.git.branch >>", "tag": "<< pipeline.git.tag >>"}}' \
             | jq -r '.id'
             )
             echo "my created pipeline"
@@ -23,7 +23,7 @@ jobs:
               --url "$QA_PIPELINE_URL" \
               --header "Circle-Token: $CIRCLECI_API_KEY" \
               --header "content-type: application/json" \
-              --data '{"branch":"main", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"main", "vizro_branch": "<< pipeline.git.branch >>"}}' \
+              --data '{"branch":"main", "parameters":{"triggering-pipeline-id":"<< pipeline.id >>", "branch":"main", "vizro_branch": "<< pipeline.git.branch >>", "tag": "<< pipeline.git.tag >>"}}' \
               | jq -r '.id'
               )
             fi
@@ -71,6 +71,9 @@ workflows:
       - trigger-new-pipeline:
           context:
             - circleci-api
+          filters:
+            tags:
+              only: /(\d+\.\d+\.\d+)/
       - wait-for-triggered-pipeline:
           type: approval
           requires:

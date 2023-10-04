@@ -10,9 +10,7 @@ from pydantic import ValidationError
 
 import vizro
 import vizro.models as vm
-from vizro import Vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.managers import model_manager
 from vizro.models._dashboard import create_layout_page_404, update_theme
 
 
@@ -31,7 +29,7 @@ def dashboard_container():
 
 
 @pytest.fixture()
-def mock_page_registry():
+def mock_page_registry(page1, page2):
     return OrderedDict(
         {
             "Page 1": {
@@ -46,12 +44,12 @@ def mock_page_registry():
                 "description": "",
                 "order": 0,
                 "supplied_order": 0,
-                "supplied_layout": model_manager["Page 1"].build,
+                "supplied_layout": page1.build,
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": model_manager["Page 1"].build,
+                "layout": page1.build,
                 "relative_path": "/",
             },
             "Page 2": {
@@ -66,12 +64,12 @@ def mock_page_registry():
                 "description": "",
                 "order": 1,
                 "supplied_order": 1,
-                "supplied_layout": model_manager["Page 2"].build,
+                "supplied_layout": page2.build,
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": model_manager["Page 2"].build,
+                "layout": page2.build,
                 "relative_path": "/page-2",
             },
             "not_found_404": {
@@ -101,17 +99,17 @@ def mock_page_registry():
 class TestDashboardInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
-    def test_create_dashboard_mandatory_only(self, two_pages):
-        dashboard = vm.Dashboard(pages=two_pages)
+    def test_create_dashboard_mandatory_only(self, page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2])
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == two_pages
+        assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title is None
 
-    def test_create_dashboard_mandatory_and_optional(self, two_pages):
-        dashboard = vm.Dashboard(pages=two_pages, theme="vizro_light", title="Vizro")
+    def test_create_dashboard_mandatory_and_optional(self, page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2], theme="vizro_light", title="Vizro")
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == two_pages
+        assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_light"
         assert dashboard.title == "Vizro"
 
@@ -127,26 +125,30 @@ class TestDashboardInstantiation:
         with pytest.raises(ValidationError, match="4 validation errors for Dashboard"):
             vm.Dashboard(pages=[vm.Button()])
 
-    def test_field_invalid_theme_input_type(self, two_pages):
+    def test_field_invalid_theme_input_type(self, page1):
         with pytest.raises(ValidationError, match="unexpected value; permitted: 'vizro_dark', 'vizro_light'"):
-            vm.Dashboard(pages=two_pages, theme="not_existing")
+            vm.Dashboard(pages=[page1], theme="not_existing")
 
 
 class TestDashboardBuild:
     """Tests dashboard build method."""
 
-    def test_dashboard_container(self, dashboard, dashboard_container):
-        app = Vizro().build(dashboard)
-        result = json.loads(json.dumps(app.dash.layout, cls=plotly.utils.PlotlyJSONEncoder))
+    def test_dashboard_build(self, dashboard_container, dashboard_build):
+        result = json.loads(json.dumps(dashboard_build, cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
-    def test_dashboard_page_registry(self, dashboard, mock_page_registry):
-        Vizro().build(dashboard)
+    def test_dashboard_page_registry(self, mock_page_registry, dashboard_build):
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
+
+
+@pytest.mark.parametrize("on, expected", [(True, "vizro_dark"), (False, "vizro_light")])
+def test_update_theme(on, expected):
+    result = update_theme(on)
+    assert result == expected
 
 
 def test_create_layout_page_404():
@@ -157,9 +159,3 @@ def test_create_layout_page_404():
     assert isinstance(result, html.Div)
     assert isinstance(result_image, html.Img)
     assert isinstance(result_div, html.Div)
-
-
-@pytest.mark.parametrize("on, expected", [(True, "vizro_dark"), (False, "vizro_light")])
-def test_update_theme(on, expected):
-    result = update_theme(on)
-    assert result == expected
