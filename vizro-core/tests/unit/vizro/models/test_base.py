@@ -19,6 +19,11 @@ class ChildZ(vm.VizroBaseModel):
     type: Literal["child_Z"] = "child_Z"
 
 
+class ChildWithForwardRef(vm.VizroBaseModel):
+    type: Literal["child_with_forward_ref"] = "child_with_forward_ref"
+    grandchild: "ChildXForwardRef" = None  # noqa: F821
+
+
 # ChildType does not include ChildZ initially.
 ChildType = Annotated[Union[ChildX, ChildY], Field(discriminator="type")]
 
@@ -130,7 +135,7 @@ class TestListDiscriminatedUnion:
         assert isinstance(parent.child[0], ChildZ)
 
 
-class TestForwardRefDiscriminatedUnion:
+class TestParentForwardRefDiscriminatedUnion:
     def test_no_type_match(self, ParentWithForwardRef):
         child = ChildZ()
         with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
@@ -149,6 +154,29 @@ class TestForwardRefDiscriminatedUnion:
         ParentWithForwardRef.add_type("child", ChildZ)
         parent = ParentWithForwardRef(child={"type": "child_Z"})
         assert isinstance(parent.child, ChildZ)
+
+
+class TestChildWithForwardRef:
+    def test_no_type_match(self, Parent):
+        child = ChildWithForwardRef()
+        with pytest.raises(
+            ValidationError, match="No match for discriminator 'type' and value 'child_with_forward_ref'"
+        ):
+            Parent(child=child)
+
+    def test_add_type_model_instantiation(self, Parent, mocker):
+        # Make it as if these are in vizro.models so that update_forward_refs call in add_type works on them.
+        mocker.patch.dict(vm.__dict__, {"ChildXForwardRef": ChildX})
+        Parent.add_type("child", ChildWithForwardRef)
+        parent = Parent(child=ChildWithForwardRef(grandchild=ChildX()))
+        assert isinstance(parent.child, ChildWithForwardRef) and isinstance(parent.child.grandchild, ChildX)
+
+    def test_add_type_dict_instantiation(self, Parent, mocker):
+        # Make it as if these are in vizro.models so that update_forward_refs call in add_type works on them.
+        mocker.patch.dict(vm.__dict__, {"ChildXForwardRef": ChildX})
+        Parent.add_type("child", ChildWithForwardRef)
+        parent = Parent(child={"type": "child_with_forward_ref", "grandchild": {}})
+        assert isinstance(parent.child, ChildWithForwardRef) and isinstance(parent.child.grandchild, ChildX)
 
 
 def test_no_type_match(ParentWithNonDiscriminatedUnion):
