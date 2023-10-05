@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, Union
+from typing import Optional, Union
 
 from pydantic import Field, validator
+from typing_extensions import Annotated
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
