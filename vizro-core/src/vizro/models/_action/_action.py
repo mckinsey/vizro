@@ -36,6 +36,7 @@ class Action(VizroBaseModel):
         regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
     )
 
+    # TODO: Abstract away once pattern becomes clear regarding function/import checks
     @validator("function")
     def check_export_imports(cls, function):
         if (
