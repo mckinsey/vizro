@@ -762,3 +762,19 @@ In the below example we show how to configure a button to export the filtered da
         [![Button]][Button]
 
     [Button]: ../../assets/user_guides/components/button.png
+
+The [`Button`][vizro.models.Button] component is currently reserved to be used inside the right-side of the dashboard (output side).
+However, there might be use cases where one wants to place the `Button` on the left-side with the controls.
+
+In this case, simply follow the user-guide outlined for [custom components](custom_components.md) and manually add the `Button` as a control type
+by running the following lines before your dashboard configurations:
+
+```python
+from vizro import Vizro
+import vizro.models as vm
+
+vm.Page.add_type("controls", vm.Button)
+
+# Add dashboard configurations below
+...
+```
