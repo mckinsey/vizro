@@ -36,6 +36,17 @@ class Action(VizroBaseModel):
     )
 
     def _get_callback_mapping(self):
+        """Builds callback inputs and outputs for the Action model callback, and returns action required components.
+
+        callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
+            1. User configured inputs/outputs - for custom actions,
+            2. Vizro configured inputs/outputs - for predefined actions,
+            3. Hardcoded inputs/outputs - for custom and predefined actions
+                (enable callbacks to live inside the Action loop).
+
+        Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
+            container. Those components represent the return value of the Action build method.
+        """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         callback_inputs: Dict[str, Any] = {
@@ -85,14 +96,12 @@ class Action(VizroBaseModel):
                 f" of action's defined outputs: {len(outputs)}."
             )
 
+        # If return_value is a single element, ensure return_value is a list
+        if not isinstance(return_value, (list, tuple, dict)):
+            return_value = [return_value]
         if isinstance(return_value, dict):
             return {"action_finished": None, **return_value}
 
-        # If return_value is a single element, ensure return_value is a list
-        if not isinstance(return_value, (list, tuple)):
-            return_value = [return_value]
-
-        # Map returned values to dictionary format where None belongs to the "action_finished" output
         return {"action_finished": None, **dict(zip(outputs, return_value))}
 
     @_log_call
@@ -100,13 +109,8 @@ class Action(VizroBaseModel):
         """Builds a callback for the Action model and returns required components for the callback.
 
         Returns:
-            List of required components for the Action model added in the `Dashboard` level e.g. List[dcc.Download].
+            List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
         """
-        # callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
-        # 1. User configured inputs/outputs - for custom actions,
-        # 2. Vizro configured inputs/outputs - for predefined actions,
-        # 3. Hardcoded inputs/outputs - for custom and predefined actions (enable callbacks to live inside Action loop).
-        # action_components represents return value of the build method.
         callback_inputs, callback_outputs, action_components = self._get_callback_mapping()
 
         logger.debug(

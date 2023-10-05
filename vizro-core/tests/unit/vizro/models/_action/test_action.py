@@ -4,18 +4,14 @@ import dash
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
+from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models.types import capture
 
 
 @pytest.fixture
-def expected_function_return_value(request):
-    return request.param
-
-
-@pytest.fixture
-def custom_action_function(request):
+def custom_action_function_mock_return(request):
     @capture("action")
     def action_function():
         return request.param
@@ -24,7 +20,27 @@ def custom_action_function(request):
 
 
 @pytest.fixture
-def callback_context_outputs_grouping(request):
+def expected_get_callback_mapping_inputs(request):
+    return {
+        f'{input["component_id"]}_{input["component_property"]}': dash.State(
+            input["component_id"], input["component_property"]
+        )
+        for input in request.param
+    }
+
+
+@pytest.fixture
+def expected_get_callback_mapping_outputs(request):
+    return {
+        f'{output["component_id"]}_{output["component_property"]}': dash.Output(
+            output["component_id"], output["component_property"], allow_duplicate=True
+        )
+        for output in request.param
+    }
+
+
+@pytest.fixture
+def callback_context_set_outputs_grouping(request):
     """Mock dash.callback_context that represents outputs grouping for custom action."""
     outputs = request.param
 
@@ -77,7 +93,6 @@ class TestActionInstantiation:
     @pytest.mark.parametrize(
         "inputs",
         [
-            None,
             "string",
             "component_property",
             "compo-nent.property",
@@ -85,13 +100,12 @@ class TestActionInstantiation:
         ],
     )
     def test_inputs_invalid(self, inputs, test_action_function):
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError, match=".* value is not a valid list .*"):
             Action(function=test_action_function, inputs=inputs, outputs=[])
 
     @pytest.mark.parametrize(
         "outputs",
         [
-            None,
             "string",
             "component_property",
             "compo-nent.property",
@@ -99,7 +113,7 @@ class TestActionInstantiation:
         ],
     )
     def test_outputs_invalid(self, outputs, test_action_function):
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError, match=".* value is not a valid list .*"):
             Action(function=test_action_function, inputs=[], outputs=outputs)
 
 
@@ -126,64 +140,88 @@ class TestActionPrivateMethods:
         assert action_components == []
 
     @pytest.mark.parametrize(
-        "inputs, outputs",
+        "inputs_and_outputs, expected_get_callback_mapping_inputs, expected_get_callback_mapping_outputs",
         [
-            (["component_1.property"], ["component_1.property"]),
-            (["component_1.property", "component_2.property"], ["component_1.property", "component_2.property"]),
+            (
+                ["component_1.property"],
+                [{"component_id": "component_1", "component_property": "property"}],
+                [{"component_id": "component_1", "component_property": "property"}],
+            ),
+            (
+                ["component_1.property", "component_2.property"],
+                [
+                    {"component_id": "component_1", "component_property": "property"},
+                    {"component_id": "component_2", "component_property": "property"},
+                ],
+                [
+                    {"component_id": "component_1", "component_property": "property"},
+                    {"component_id": "component_2", "component_property": "property"},
+                ],
+            ),
         ],
+        indirect=["expected_get_callback_mapping_inputs", "expected_get_callback_mapping_outputs"],
     )
-    def test_get_callback_mapping_with_inputs_and_outputs(self, inputs, outputs, test_action_function):
+    def test_get_callback_mapping_with_inputs_and_outputs(  # pylint: disable=too-many-arguments
+        self,
+        inputs_and_outputs,
+        test_action_function,
+        expected_get_callback_mapping_inputs,
+        expected_get_callback_mapping_outputs,
+    ):
         action = Action(
+            id="action_test",
             function=test_action_function,
-            inputs=inputs,
-            outputs=outputs,
+            inputs=inputs_and_outputs,
+            outputs=inputs_and_outputs,
         )
         callback_inputs, callback_outputs, action_components = action._get_callback_mapping()
         assert callback_inputs == {
-            **{
-                f'{input.split(".")[0]}_{input.split(".")[1]}': dash.State(input.split(".")[0], input.split(".")[1])
-                for input in inputs
-            },
-            "trigger": dash.Input({"action_name": action.id, "type": "action_trigger"}, "data"),
+            **expected_get_callback_mapping_inputs,
+            "trigger": dash.Input({"action_name": "action_test", "type": "action_trigger"}, "data"),
         }
         assert callback_outputs == {
-            **{
-                f'{output.split(".")[0]}_{output.split(".")[1]}': dash.Output(
-                    output.split(".")[0], output.split(".")[1], allow_duplicate=True
-                )
-                for output in outputs
-            },
+            **expected_get_callback_mapping_outputs,
             "action_finished": dash.Output("action_finished", "data"),
         }
         assert action_components == []
 
     @pytest.mark.parametrize(
-        "custom_action_function, callback_context_outputs_grouping, expected_function_return_value",
+        "custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value",
         [
+            # custom action function return value - None
             (None, [], {"action_finished": None}),
-            (
-                {"component_1_property": "new_value"},
-                ["component_1_property"],
-                {"action_finished": None, "component_1_property": "new_value"},
-            ),
+            # custom action function return value - single value
             ("new_value", ["component_1_property"], {"action_finished": None, "component_1_property": "new_value"}),
+            # custom action function return value - list of values
             (
                 ["new_value", "new_value_2"],
                 ["component_1_property", "component_2_property"],
                 {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
             ),
+            # custom action function return value - tuple
+            (
+                ("new_value", "new_value_2"),
+                ["component_1_property", "component_2_property"],
+                {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
+            ),
+            # custom action function return value - dictionary
+            (
+                {"component_1_property": "new_value"},
+                ["component_1_property"],
+                {"action_finished": None, "component_1_property": "new_value"},
+            ),
         ],
-        indirect=True,
+        indirect=["custom_action_function_mock_return", "callback_context_set_outputs_grouping"],
     )
     def test_action_callback_function_return_value_valid(
-        self, custom_action_function, callback_context_outputs_grouping, expected_function_return_value
+        self, custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value
     ):
-        action = Action(function=custom_action_function())
+        action = Action(function=custom_action_function_mock_return())
         result = action._action_callback_function()
         assert result == expected_function_return_value
 
     @pytest.mark.parametrize(
-        "custom_action_function, callback_context_outputs_grouping",
+        "custom_action_function_mock_return, callback_context_set_outputs_grouping",
         [
             (None, ["component_1_property"]),
             ("new_value", []),
@@ -198,8 +236,11 @@ class TestActionPrivateMethods:
         indirect=True,
     )
     def test_action_callback_function_return_value_invalid(
-        self, custom_action_function, callback_context_outputs_grouping
+        self, custom_action_function_mock_return, callback_context_set_outputs_grouping
     ):
-        action = Action(function=custom_action_function())
-        with pytest.raises(ValueError):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Number of action's returned elements: .? does not match the number of action's defined outputs: .?.",
+        ):
             action._action_callback_function()
