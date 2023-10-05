@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Raise `ModuleNotFoundError` in case the `export_data` action is used, the export type is `xlsx`, but neither `openpyxl` or `xlsxwriter` are installed. ([#97](https://github.com/mckinsey/vizro/pull/97))
 
-
 <!--
 ### Changed
 
