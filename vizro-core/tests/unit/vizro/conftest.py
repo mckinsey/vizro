@@ -1,4 +1,6 @@
 """Fixtures to be shared across several tests."""
+
+import dash
 import pytest
 
 import vizro.models as vm
@@ -24,15 +26,23 @@ def standard_px_chart(gapminder):
 
 
 @pytest.fixture()
-def two_pages():
-    two_pages = [
-        vm.Page(title="Page 1", components=[vm.Button(), vm.Button()]),
-        vm.Page(title="Page 2", components=[vm.Button(), vm.Button()]),
-    ]
-    return two_pages
+def page1():
+    return vm.Page(title="Page 1", components=[vm.Button(), vm.Button()])
 
 
 @pytest.fixture()
-def dashboard(two_pages):
-    dashboard = vm.Dashboard(pages=two_pages)
+def page2():
+    return vm.Page(title="Page 2", components=[vm.Button(), vm.Button()])
+
+
+@pytest.fixture()
+def dashboard(page1, page2):
+    dashboard = vm.Dashboard(pages=[page1, page2])
     return dashboard
+
+
+@pytest.fixture()
+def dashboard_prebuild(dashboard):
+    yield dashboard.pre_build()
+    del dash.page_registry["Page 1"]
+    del dash.page_registry["Page 2"]

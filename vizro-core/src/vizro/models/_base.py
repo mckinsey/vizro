@@ -91,6 +91,7 @@ class VizroBaseModel(BaseModel):
         import vizro.models as vm
 
         cls.update_forward_refs(**vm.__dict__.copy())
+        new_type.update_forward_refs(**vm.__dict__.copy())
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
