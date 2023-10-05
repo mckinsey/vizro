@@ -130,32 +130,37 @@ class TestDashboardInstantiation:
             vm.Dashboard(pages=[page1], theme="not_existing")
 
 
-class TestDashboardBuild:
-    """Tests dashboard build method."""
+class TestDashboardPreBuild:
+    """Tests dashboard pre_build method."""
 
-    def test_dashboard_build(self, dashboard_container, dashboard_build):
-        result = json.loads(json.dumps(dashboard_build, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
-
-    def test_dashboard_page_registry(self, mock_page_registry, dashboard_build):
+    def test_dashboard_page_registry(self, mock_page_registry, dashboard_prebuild):
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
+
+    def test_create_layout_page_404(self):
+        result = create_layout_page_404()
+        result_image = result.children[0]
+        result_div = result.children[1]
+
+        assert isinstance(result, html.Div)
+        assert isinstance(result_image, html.Img)
+        assert isinstance(result_div, html.Div)
+
+
+class TestDashboardBuild:
+    """Tests dashboard build method."""
+
+    def test_dashboard_build(self, dashboard_container, dashboard):
+        dashboard.pre_build()
+        dashboard.navigation.pre_build()
+        result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
 
 
 @pytest.mark.parametrize("on, expected", [(True, "vizro_dark"), (False, "vizro_light")])
 def test_update_theme(on, expected):
     result = update_theme(on)
     assert result == expected
-
-
-def test_create_layout_page_404():
-    result = create_layout_page_404()
-    result_image = result.children[0]
-    result_div = result.children[1]
-
-    assert isinstance(result, html.Div)
-    assert isinstance(result_image, html.Img)
-    assert isinstance(result_div, html.Div)
