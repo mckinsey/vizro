@@ -1,8 +1,9 @@
+import importlib.util
 import logging
 from typing import Any, Dict, List
 
 from dash import Input, Output, State, callback, ctx
-from pydantic import Field
+from pydantic import Field, validator
 
 import vizro.actions
 from vizro.models import VizroBaseModel
@@ -34,6 +35,16 @@ class Action(VizroBaseModel):
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
         regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
     )
+
+    @validator("function")
+    def check_export_imports(cls, function):
+        if (
+            function._CapturedCallable__function.__name__ == "export_data"
+            and function._arguments.get("file_format") == "xlsx"
+        ):
+            if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
+                raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
+        return function
 
     @_log_call
     def build(self):
