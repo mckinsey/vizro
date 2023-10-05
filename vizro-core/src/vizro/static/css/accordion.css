@@ -48,7 +48,6 @@
 
 .accordion-button:not(.collapsed) {
   color: var(--text-primary);
-  background-color: var(--state-overlays-selected);
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -111,6 +110,11 @@ div.page_container .accordion-item-button {
   align-items: center;
   font-size: var(--text-size-02);
   line-height: var(--text-size-03);
+}
+
+.accordion-item-button.btn.btn-primary.active {
+  background-color: var(--state-overlays-selected);
+  color: var(--text-primary);
 }
 
 /*
