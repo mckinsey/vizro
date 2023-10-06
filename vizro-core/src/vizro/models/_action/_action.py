@@ -36,15 +36,22 @@ class Action(VizroBaseModel):
         regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
     )
 
-    # TODO: Abstract away once pattern becomes clear regarding function/import checks
+    # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
+    # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
+    # require, and make the code here look up the appropriate validation using the function as key
+    # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
+    # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
     @validator("function")
-    def check_export_imports(cls, function):
-        if (
-            function._function.__name__ == "export_data"
-            and function._arguments.get("file_format") == "xlsx"
-        ):
-            if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-                raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
+    def validate_predefined_actions(cls, function):
+        if function._function.__name__ == "export_data":
+            file_format = function._arguments.get("file_format")
+            if file_format not in ["csv", "xlsx"]:
+                raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
+            if file_format == "xlsx":
+                if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
+                    raise ModuleNotFoundError(
+                        "You must install either openpyxl or xlsxwriter to export to xlsx format."
+                    )
         return function
 
     @_log_call
