@@ -19,6 +19,13 @@ def target_scatter_parameter_y(request, gapminder_2007, scatter_params):
 
 
 @pytest.fixture
+def target_scatter_parameter_hover_data(request, gapminder_2007, scatter_params):
+    hover_data = request.param
+    scatter_params["hover_data"] = hover_data
+    return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
+
+
+@pytest.fixture
 def target_box_parameter_y(request, gapminder_2007, box_params):
     y = request.param
     box_params["y"] = y
@@ -55,6 +62,36 @@ def callback_context_parameter_y(request):
                     property="value",
                     value=y,
                     str_id="y_parameter",
+                    triggered=False,
+                )
+            ],
+            "theme_selector": CallbackTriggerDict(
+                id="theme_selector",
+                property="on",
+                value=True,
+                str_id="theme_selector",
+                triggered=False,
+            ),
+        }
+    }
+    context_value.set(AttributeDict(**mock_callback_context))
+    return context_value
+
+
+@pytest.fixture
+def callback_context_parameter_hover_data(request):
+    """Mock dash.callback_context that represents hover_data Parameter value selection."""
+    hover_data = request.param
+    mock_callback_context = {
+        "args_grouping": {
+            "filter_interaction": [],
+            "filters": [],
+            "parameters": [
+                CallbackTriggerDict(
+                    id="hover_data_parameter",
+                    property="value",
+                    value=hover_data,
+                    str_id="hover_data_parameter",
                     triggered=False,
                 )
             ],
@@ -112,7 +149,7 @@ def callback_context_parameter_y_and_x(request):
 class TestParameter:
     @pytest.mark.parametrize(
         "callback_context_parameter_y, target_scatter_parameter_y",
-        [("pop", "pop"), ("gdpPercap", "gdpPercap")],
+        [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
         indirect=True,
     )
     def test_one_parameter_one_target(
@@ -135,6 +172,42 @@ class TestParameter:
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
 
         assert result["scatter_chart"] == target_scatter_parameter_y
+        assert "box_chart" not in result
+
+    @pytest.mark.parametrize(
+        "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
+        [
+            (["NONE"], [None]),
+            (["NONE", "pop"], ["pop"]),
+            (["NONE", "NONE"], [None]),
+            (["ALL"], ["lifeExp", "pop", "gdpPercap"]),
+            (["ALL", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
+            (["ALL", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
+        ],
+        indirect=True,
+    )
+    def test_one_parameter_one_target_NONE_list(
+        self,
+        callback_context_parameter_hover_data,
+        target_scatter_parameter_hover_data,
+    ):
+        # Creating and adding a Parameter object to the existing Page
+        y_parameter = vm.Parameter(
+            id="test_parameter",
+            targets=["scatter_chart.hover_data"],
+            selector=vm.Dropdown(
+                id="hover_data_parameter", multi=True, options=["NONE", "lifeExp", "pop", "gdpPercap"], value=["NONE"]
+            ),
+        )
+        model_manager["test_page"].controls = [y_parameter]
+
+        # Adds a default _parameter Action to the "y_parameter" selector object
+        y_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+
+        assert result["scatter_chart"] == target_scatter_parameter_hover_data
         assert "box_chart" not in result
 
     @pytest.mark.parametrize(
