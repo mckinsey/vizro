@@ -45,7 +45,7 @@ class Action(VizroBaseModel):
     def validate_predefined_actions(cls, function):
         if function._function.__name__ == "export_data":
             file_format = function._arguments.get("file_format")
-            if file_format not in ["csv", "xlsx"]:
+            if file_format not in [None,"csv", "xlsx"]:
                 raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
             if file_format == "xlsx":
                 if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
