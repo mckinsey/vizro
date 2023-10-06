@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Passing `NONE` (`str`) to options of `Parameter` selectors pass `None` (`value`) to underlying component. This allows optional parameters. ([#95](https://github.com/mckinsey/vizro/pull/95))
+- Parameters can be optional: use the string `"NONE"` as an option of `Parameter.selector` to pass `None`([#95](https://github.com/mckinsey/vizro/pull/95))
 
 <!--
 ### Changed
