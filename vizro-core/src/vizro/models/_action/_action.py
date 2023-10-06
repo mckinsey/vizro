@@ -40,7 +40,7 @@ class Action(VizroBaseModel):
     @validator("function")
     def check_export_imports(cls, function):
         if (
-            function._CapturedCallable__function.__name__ == "export_data"
+            function._function.__name__ == "export_data"
             and function._arguments.get("file_format") == "xlsx"
         ):
             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
