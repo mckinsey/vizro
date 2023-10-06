@@ -82,21 +82,6 @@ def managers_one_page_four_controls_two_graphs_filter_interaction():
 
 
 @pytest.fixture
-def export_data_inputs_expected():
-    return {
-        "filters": [
-            dash.State("filter_continent_selector", "value"),
-            dash.State("filter_country_selector", "value"),
-        ],
-        "parameters": [],
-        "filter_interaction": [
-            dash.State("scatter_chart", "clickData"),
-        ],
-        "theme_selector": [],
-    }
-
-
-@pytest.fixture
 def action_callback_inputs_expected():
     return {
         "filters": [
@@ -116,8 +101,24 @@ def action_callback_inputs_expected():
 
 @pytest.fixture
 def action_callback_outputs_expected(request):
+    targets = request.param
     return {
-        f'{target.split(".")[0]}': dash.Output(target.split(".")[0], target.split(".")[1]) for target in request.param
+        target["component_id"]: dash.Output(target["component_id"], target["component_property"]) for target in targets
+    }
+
+
+@pytest.fixture
+def export_data_inputs_expected():
+    return {
+        "filters": [
+            dash.State("filter_continent_selector", "value"),
+            dash.State("filter_country_selector", "value"),
+        ],
+        "parameters": [],
+        "filter_interaction": [
+            dash.State("scatter_chart", "clickData"),
+        ],
+        "theme_selector": [],
     }
 
 
@@ -139,17 +140,12 @@ def export_data_components_expected(request):
     ]
 
 
-@pytest.fixture
-def export_data_action_targets(request):
-    return request.param
-
-
 @pytest.mark.usefixtures("managers_one_page_four_controls_two_graphs_filter_interaction")
 class TestCallbackMapping:
     """Tests action callback mapping for predefined and custom actions."""
 
     @pytest.mark.parametrize(
-        "action_id, expected_inputs",
+        "action_id, callback_mapping_inputs_expected",
         [
             ("filter_action_filter_continent", "action_callback_inputs_expected"),
             ("filter_interaction_action", "action_callback_inputs_expected"),
@@ -158,22 +154,40 @@ class TestCallbackMapping:
             ("export_data_action", "export_data_inputs_expected"),
         ],
     )
-    def test_action_callback_mapping_inputs(self, action_id, expected_inputs, request):
+    def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):
         result = _get_action_callback_mapping(
             action_id=action_id,
             argument="inputs",
         )
 
-        expected_inputs = request.getfixturevalue(expected_inputs)
-        assert result == expected_inputs
+        callback_mapping_inputs_expected = request.getfixturevalue(callback_mapping_inputs_expected)
+        assert result == callback_mapping_inputs_expected
 
     @pytest.mark.parametrize(
         "action_id, action_callback_outputs_expected",
         [
-            ("filter_action_filter_continent", ["scatter_chart.figure", "scatter_chart_2.figure"]),
-            ("filter_interaction_action", ["scatter_chart_2.figure"]),
-            ("parameter_action_parameter_x", ["scatter_chart.figure", "scatter_chart_2.figure"]),
-            ("on_page_load_action_action_test_page", ["scatter_chart.figure", "scatter_chart_2.figure"]),
+            (
+                "filter_action_filter_continent",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
+            ),
+            ("filter_interaction_action", [{"component_id": "scatter_chart_2", "component_property": "figure"}]),
+            (
+                "parameter_action_parameter_x",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
+            ),
+            (
+                "on_page_load_action_action_test_page",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
+            ),
         ],
         indirect=["action_callback_outputs_expected"],
     )
@@ -191,7 +205,7 @@ class TestCallbackMapping:
             (["scatter_chart"], ["scatter_chart"]),
             (["scatter_chart", "scatter_chart_2"], ["scatter_chart", "scatter_chart_2"]),
         ],
-        indirect=True,
+        indirect=["export_data_outputs_expected"],
     )
     def test_export_data_mapping_outputs(self, export_data_action_targets, export_data_outputs_expected):
         export_data_action = model_manager["export_data_action"]
@@ -213,7 +227,7 @@ class TestCallbackMapping:
             (["scatter_chart"], ["scatter_chart"]),
             (["scatter_chart", "scatter_chart_2"], ["scatter_chart", "scatter_chart_2"]),
         ],
-        indirect=True,
+        indirect=["export_data_components_expected"],
     )
     def test_export_data_mapping_components(self, export_data_action_targets, export_data_components_expected):
         export_data_action = model_manager["export_data_action"]
@@ -259,7 +273,7 @@ class TestCallbackMapping:
             ("unknown-argument", {}),
         ],
     )
-    def test_custom_action_with_known_name_mapping(self, argument, expected):
+    def test_custom_action_with_predefined_name_mapping(self, argument, expected):
         result = _get_action_callback_mapping(
             action_id="export_data_custom_action",
             argument=argument,

@@ -168,3 +168,38 @@ class TestGetActionLoopComponents:
         result = _get_action_loop_components()
         for component in trigger_to_actions_chain_mapper_component:
             assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
+
+    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
+    @pytest.mark.parametrize(
+        "gateway_components, "
+        "action_trigger_components, "
+        "action_trigger_actions_id_component, "
+        "trigger_to_actions_chain_mapper_component",
+        [
+            (
+                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+            )
+        ],
+        indirect=True,
+    )
+    def test_all_action_loop_components(  # noqa: PLR0913  # pylint: disable=too-many-arguments
+        self,
+        fundamental_components,
+        gateway_components,
+        action_trigger_components,
+        action_trigger_actions_id_component,
+        trigger_to_actions_chain_mapper_component,
+    ):
+        result = _get_action_loop_components()
+        all_action_loop_components_expected = (
+            fundamental_components
+            + gateway_components
+            + action_trigger_components
+            + [action_trigger_actions_id_component]
+            + [trigger_to_actions_chain_mapper_component]
+        )
+        for component in all_action_loop_components_expected:
+            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
