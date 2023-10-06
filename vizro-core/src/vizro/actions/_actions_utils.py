@@ -39,8 +39,6 @@ def _get_component_actions(component) -> List[Action]:
 def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
     if value == NONE_OPTION:
         return None
-    elif value == [NONE_OPTION]:
-        return [None]
     elif isinstance(value, list):
         return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
     return value
