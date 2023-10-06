@@ -176,7 +176,14 @@ class TestParameter:
 
     @pytest.mark.parametrize(
         "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
-        [(["NONE", "pop"], ["pop"]), (["NONE"], [None])],
+        [
+            (["NONE"], [None]),
+            (["NONE", "pop"], ["pop"]),
+            (["NONE", "NONE"], [None]),
+            (["ALL"], ["lifeExp", "pop", "gdpPercap"]),
+            (["ALL", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
+            (["ALL", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
+        ],
         indirect=True,
     )
     def test_one_parameter_one_target_NONE_list(
@@ -189,7 +196,7 @@ class TestParameter:
             id="test_parameter",
             targets=["scatter_chart.hover_data"],
             selector=vm.Dropdown(
-                id="hover_data_parameter", multi=True, options=["None", "lifeExp", "pop", "gdpPercap"], value=["None"]
+                id="hover_data_parameter", multi=True, options=["NONE", "lifeExp", "pop", "gdpPercap"], value=["NONE"]
             ),
         )
         model_manager["test_page"].controls = [y_parameter]

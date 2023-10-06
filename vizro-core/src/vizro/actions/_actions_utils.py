@@ -42,7 +42,7 @@ def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType])
     elif value == [NONE_OPTION]:
         return [None]
     elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None] # type: ignore[list-item, return-value]
+        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
     return value
 
 
