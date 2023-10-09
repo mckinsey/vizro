@@ -1,6 +1,9 @@
 """Unit tests for vizro.actions._action_loop._get_action_loop_components file."""
 
+import json
+
 import dash
+import plotly
 import pytest
 from dash import dcc, html
 
@@ -120,56 +123,6 @@ class TestGetActionLoopComponents:
         assert result == []
 
     @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
-    def test_fundamental_components(self, fundamental_components):
-        result = _get_action_loop_components()
-        for component in fundamental_components:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
-
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
-    @pytest.mark.parametrize(
-        "gateway_components",
-        [("test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector")],
-        indirect=True,
-    )
-    def test_gateway_components(self, gateway_components):
-        result = _get_action_loop_components()
-        for component in gateway_components:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
-
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
-    @pytest.mark.parametrize(
-        "action_trigger_components",
-        [("test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector")],
-        indirect=True,
-    )
-    def test_action_trigger_components(self, action_trigger_components):
-        result = _get_action_loop_components()
-        for component in action_trigger_components:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
-
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
-    @pytest.mark.parametrize(
-        "action_trigger_actions_id_component",
-        [("test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector")],
-        indirect=True,
-    )
-    def test_action_trigger_actions_id_component(self, action_trigger_actions_id_component):
-        result = _get_action_loop_components()
-        for component in action_trigger_actions_id_component:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
-
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
-    @pytest.mark.parametrize(
-        "trigger_to_actions_chain_mapper_component",
-        [("test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector")],
-        indirect=True,
-    )
-    def test_trigger_to_actions_chain_mapper_component(self, trigger_to_actions_chain_mapper_component):
-        result = _get_action_loop_components()
-        for component in trigger_to_actions_chain_mapper_component:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
-
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
     @pytest.mark.parametrize(
         "gateway_components, "
         "action_trigger_components, "
@@ -193,7 +146,13 @@ class TestGetActionLoopComponents:
         action_trigger_actions_id_component,
         trigger_to_actions_chain_mapper_component,
     ):
-        result = _get_action_loop_components()
+        result_components = _get_action_loop_components()
+
+        formatted_result = [
+            json.loads(json.dumps(result_component, cls=plotly.utils.PlotlyJSONEncoder))
+            for result_component in result_components
+        ]
+
         all_action_loop_components_expected = (
             fundamental_components
             + gateway_components
@@ -201,5 +160,9 @@ class TestGetActionLoopComponents:
             + [action_trigger_actions_id_component]
             + [trigger_to_actions_chain_mapper_component]
         )
+
         for component in all_action_loop_components_expected:
-            assert repr(component) in map(repr, result), f"Can't find component: {repr(component)} in: {repr(result)}"
+            formatted_component = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
+            assert (
+                formatted_component in formatted_result
+            ), f"Can't find component: {formatted_component} in: {formatted_result}"
