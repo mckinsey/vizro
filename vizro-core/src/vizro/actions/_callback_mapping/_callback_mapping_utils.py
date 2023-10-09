@@ -106,7 +106,7 @@ def _get_inputs_of_chart_interactions(
     )
     return [
         State(
-            component_id=_get_triggered_model(action_id=action.id).id,  # type: ignore[arg-type]
+            component_id=_get_triggered_model(action_id=ModelID(str(action.id))).id,
             component_property="clickData",
         )
         for action in chart_interactions_on_page
