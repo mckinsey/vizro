@@ -1,9 +1,10 @@
 """Unit tests for vizro.actions._callback_mapping._get_action_callback_mapping file."""
 
-import dash
-import pytest
-import plotly
 import json
+
+import dash
+import plotly
+import pytest
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -249,16 +250,14 @@ class TestCallbackMapping:
     )
     def test_export_data_mapping_components(self, export_data_action_targets, export_data_components_expected):
         export_data_action = model_manager["export_data_action"]
-        export_data_action.function = (
-            export_data(targets=export_data_action_targets)
-        )
+        export_data_action.function = export_data(targets=export_data_action_targets)
 
         result_components = _get_action_callback_mapping(
             action_id="export_data_action",
             argument="components",
         )
-        result = (json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = (json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
+        expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
         assert result == expected
 
     @pytest.mark.parametrize(
@@ -275,8 +274,8 @@ class TestCallbackMapping:
             argument="components",
         )
 
-        result = (json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = (json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
+        expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
         assert result == expected
 
     def test_known_action_unknown_argument(self):

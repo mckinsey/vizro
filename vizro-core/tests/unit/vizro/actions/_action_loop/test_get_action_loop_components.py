@@ -162,10 +162,7 @@ class TestGetActionLoopComponents:
             + [trigger_to_actions_chain_mapper_component]
         )
 
-        expected = html.Div(
-            children=all_action_loop_components_expected,
-            id="action_loop_components_div"
-        )
+        expected = html.Div(children=all_action_loop_components_expected, id="action_loop_components_div")
         expected = json.loads(json.dumps(expected, cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
