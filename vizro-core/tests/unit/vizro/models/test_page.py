@@ -1,8 +1,12 @@
+import re
+
 import dash
+import pandas as pd
 import pytest
 from pydantic import ValidationError
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.models._action._actions_chain import ActionsChain
 
@@ -86,6 +90,47 @@ class TestPageInstantiation:
     def test_set_layout_invalid(self):
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
             vm.Page(title="Page 4", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+
+    def test_valid_component_types(self, standard_px_chart):
+        vm.Page(
+            title="Page Title",
+            components=[vm.Graph(figure=standard_px_chart), vm.Card(text="""# Header 1"""), vm.Button()],
+        )
+
+    @pytest.mark.parametrize(
+        "test_component",
+        [vm.Checklist(), vm.Dropdown(), vm.RadioItems(), vm.RangeSlider(), vm.Slider()],
+    )
+    def test_invalid_component_types(self, test_component):
+        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'button', 'card', 'graph')")):
+            vm.Page(title="Page Title", components=[test_component])
+
+    def test_valid_control_types(self, standard_px_chart):
+        vm.Page(
+            title="Page Title",
+            components=[vm.Graph(id="scatter", figure=standard_px_chart)],
+            controls=[
+                vm.Filter(column="continent"),
+                vm.Parameter(targets=["scatter.x"], selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"])),
+            ],
+        )
+
+    @pytest.mark.parametrize(
+        "test_control",
+        [
+            vm.Button(),
+            vm.Card(text="""Text"""),
+            vm.Graph(figure=px.bar(data_frame=pd.DataFrame({"x": ["A", "B"], "y": [1, 2]}), x="x", y="y")),
+            vm.Checklist(),
+            vm.Dropdown(),
+            vm.RadioItems(),
+            vm.RangeSlider(),
+            vm.Slider(),
+        ],
+    )
+    def test_invalid_control_types(self, test_control):
+        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'filter', 'parameter')")):
+            vm.Page(title="Page Title", components=[vm.Button()], controls=[test_control])
 
 
 # TODO: Remove this if we can get rid of on-page-load action

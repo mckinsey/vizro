@@ -56,7 +56,6 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-# TODO: Increase the fail_under again after merging unit tests for the action model
 fail_under = 91
 show_missing = true
 skip_covered = true

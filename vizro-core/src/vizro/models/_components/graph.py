@@ -73,7 +73,7 @@ class Graph(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
+        kwargs.setdefault("data_frame", data_manager._get_component_data(str(self.id)))
         fig = self.figure(**kwargs)
 
         # Remove top margin if title is provided

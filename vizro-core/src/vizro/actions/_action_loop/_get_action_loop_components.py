@@ -1,5 +1,4 @@
 """Contains utilities to create required components for the action loop."""
-from typing import List, Union
 
 from dash import dcc, html
 
@@ -9,7 +8,7 @@ from vizro.actions._action_loop._action_loop_utils import (
 )
 
 
-def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
+def _get_action_loop_components() -> html.Div:
     """Gets all required components for the action loop.
 
     Returns:
@@ -19,7 +18,7 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
     actions = _get_actions_on_registered_pages()
 
     if not actions_chains:
-        return []
+        return html.Div(id="action_loop_components_div")
 
     # Fundamental components required for the smooth operation of the action loop mechanism.
     components = [
@@ -65,4 +64,4 @@ def _get_action_loop_components() -> List[Union[dcc.Store, html.Div]]:
         )
     )
 
-    return components
+    return html.Div(components, id="action_loop_components_div")

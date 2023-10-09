@@ -55,8 +55,7 @@ def export_data(
             writer = data_frames[target_id].to_csv
         elif file_format == "xlsx":
             writer = data_frames[target_id].to_excel
-        else:
-            raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
+        # Invalid file_format should be caught by Action validation
 
         callback_outputs[f"download-dataframe_{target_id}"] = dcc.send_data_frame(
             writer=writer, filename=f"{target_id}.{file_format}", index=False

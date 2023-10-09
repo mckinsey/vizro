@@ -291,7 +291,7 @@ class TestCallbackMapping:
         [
             ("inputs", {}),
             ("outputs", {}),
-            pytest.param("components", [], marks=pytest.mark.xfail()),
+            ("components", []),
             ("unknown-argument", {}),
         ],
     )
@@ -307,7 +307,7 @@ class TestCallbackMapping:
         [
             ("inputs", {}),
             ("outputs", {}),
-            pytest.param("components", [], marks=pytest.mark.xfail()),
+            ("components", []),
             ("unknown-argument", {}),
         ],
     )
