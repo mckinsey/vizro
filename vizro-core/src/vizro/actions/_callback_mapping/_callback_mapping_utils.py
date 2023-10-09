@@ -170,9 +170,9 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[State]]:
     """Gets mapping of relevant output target name and Outputs for `export_data` action."""
     action = model_manager[action_id]
-    try:
-        targets = action.function["targets"]  # type: ignore[attr-defined]
-    except KeyError:
+
+    targets = action.function._arguments.get("targets")  # type: ignore[attr-defined]
+    if not targets:
         targets = _get_components_with_data(action_id=action_id)
 
     return {
@@ -193,9 +193,8 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
     """Creates dcc.Downloads for target components of the `export_data` action."""
     action = model_manager[action_id]
 
-    try:
-        targets = action.function["targets"]  # type: ignore[attr-defined]
-    except KeyError:
+    targets = action.function._arguments.get("targets")  # type: ignore[attr-defined]
+    if not targets:
         targets = _get_components_with_data(action_id=action_id)
 
     return [

@@ -202,6 +202,7 @@ class TestCallbackMapping:
         "export_data_action_targets, export_data_outputs_expected",
         [
             (None, ["scatter_chart", "scatter_chart_2"]),
+            ([], ["scatter_chart", "scatter_chart_2"]),
             (["scatter_chart"], ["scatter_chart"]),
             (["scatter_chart", "scatter_chart_2"], ["scatter_chart", "scatter_chart_2"]),
         ],
@@ -209,9 +210,23 @@ class TestCallbackMapping:
     )
     def test_export_data_mapping_outputs(self, export_data_action_targets, export_data_outputs_expected):
         export_data_action = model_manager["export_data_action"]
-        export_data_action.function = (
-            export_data(targets=export_data_action_targets) if export_data_action_targets else export_data()
+        export_data_action.function = export_data(targets=export_data_action_targets)
+
+        result = _get_action_callback_mapping(
+            action_id="export_data_action",
+            argument="outputs",
         )
+
+        assert result == export_data_outputs_expected
+
+    @pytest.mark.parametrize(
+        "export_data_outputs_expected",
+        [("scatter_chart", "scatter_chart_2")],
+        indirect=["export_data_outputs_expected"],
+    )
+    def test_export_data_no_targets_set_mapping_outputs(self, export_data_outputs_expected):
+        export_data_action = model_manager["export_data_action"]
+        export_data_action.function = export_data()
 
         result = _get_action_callback_mapping(
             action_id="export_data_action",
