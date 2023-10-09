@@ -151,7 +151,7 @@ class Filter(VizroBaseModel):
     def _set_actions(self):
         self.selector: SelectorType
         if not self.selector.actions:
-            filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
+            filter_function = _filter_between # HARD CODED FOR NOW - INVALIDATES EXISTING FUNCTIONALITY
             self.selector.actions = [
                 Action(
                     function=_filter(

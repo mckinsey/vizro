@@ -49,6 +49,9 @@ def _apply_filters(
     ctds_filters: List[CallbackTriggerDict],
     target: str,
 ) -> pd.DataFrame:
+    # HARD CODED FOR NOW - INVALIDATES EXISTING FUNCTIONALITY
+    ctds_filters[0]["value"] = [ctds_filters[0]["value"],ctds_filters[1]["value"]]
+    ctds_filters = ctds_filters[0:1]
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
