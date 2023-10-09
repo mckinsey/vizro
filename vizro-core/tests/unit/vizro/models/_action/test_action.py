@@ -1,9 +1,12 @@
 """Unit tests for vizro.models.Action."""
 
-import importlib
+import json
+import sys
 
 import dash
+import plotly
 import pytest
+from dash import html
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 from pydantic import ValidationError
@@ -51,6 +54,14 @@ def callback_context_set_outputs_grouping(request):
     mock_callback_context = {"outputs_grouping": {"action_finished": None, **outputs_grouping}}
     context_value.set(AttributeDict(**mock_callback_context))
     return context_value
+
+
+@pytest.fixture
+def custom_action_build_expected():
+    return html.Div(
+        children=[],
+        id="action_test_action_model_components_div",
+    )
 
 
 class TestActionInstantiation:
@@ -133,12 +144,13 @@ class TestActionInstantiation:
             Action(function=export_data(file_format="invalid_file_format"))
 
     def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
-        # Mock only if the 'importlib.util.find_spec(argument)' argument is "openpyxl" or "xlsxwriter".
-        monkeypatch.setattr(
-            importlib.util,
-            "find_spec",
-            lambda arg: None if arg in ["openpyxl", "xlsxwriter"] else importlib.util.find_spec(arg),
-        )
+        monkeypatch.setitem(sys.modules, "openpyxl", None)
+        monkeypatch.setitem(sys.modules, "xlswriter", None)
+        # monkeypatch.setattr(
+        #     importlib.util,
+        #     "find_spec",
+        #     lambda arg: None if arg in ["openpyxl", "xlsxwriter"] else importlib.util.find_spec(arg),
+        # )
 
         with pytest.raises(
             ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
@@ -149,10 +161,11 @@ class TestActionInstantiation:
 class TestActionBuild:
     """Tests action build method."""
 
-    def test_build_no_returned_components_for_custom_action(self, test_action_function):
+    def test_custom_action_build(self, test_action_function, custom_action_build_expected):
         action = Action(id="action_test", function=test_action_function)
-        result = action.build()
-        assert result is None
+        result = json.loads(json.dumps(action.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(custom_action_build_expected, cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
 
 
 class TestActionPrivateMethods:

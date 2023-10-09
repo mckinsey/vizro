@@ -159,11 +159,7 @@ class Action(VizroBaseModel):
             return self._action_callback_function(**inputs)
 
         # return action_components
-        return (
-            html.Div(
-                children=action_components,
-                id=f"{self.id}_action_model_components_div",
-            )
-            if action_components
-            else None
+        return html.Div(
+            children=action_components,
+            id=f"{self.id}_action_model_components_div",
         )
