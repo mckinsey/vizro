@@ -1,12 +1,15 @@
 """Unit tests for vizro.models.Action."""
 # TODO: Add tests for file_format and installed export_xlsx libraries
 
+import importlib
+
 import dash
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 from pydantic import ValidationError
 
+from vizro.actions import export_data
 from vizro.models._action._action import Action
 from vizro.models.types import capture
 
@@ -117,15 +120,40 @@ class TestActionInstantiation:
         with pytest.raises(ValidationError, match="value is not a valid list"):
             Action(function=test_action_function, inputs=[], outputs=outputs)
 
+    @pytest.mark.parametrize("file_format", [None, "csv", "xlsx"])
+    def test_export_data_file_format_valid(self, file_format):
+        action = Action(id="action_test", function=export_data(file_format=file_format))
+        assert action.id == "action_test"
+        assert action.inputs == []
+        assert action.outputs == []
+
+    def test_export_data_file_format_invalid(self):
+        with pytest.raises(
+            ValueError, match='Unknown "file_format": invalid_file_format.' ' Known file formats: "csv", "xlsx".'
+        ):
+            Action(function=export_data(file_format="invalid_file_format"))
+
+    def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
+        # Mock only if the 'importlib.util.find_spec(argument)' argument is "openpyxl" or "xlsxwriter".
+        monkeypatch.setattr(
+            importlib.util,
+            "find_spec",
+            lambda arg: None if arg in ["openpyxl", "xlsxwriter"] else importlib.util.find_spec(arg),
+        )
+
+        with pytest.raises(
+            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
+        ):
+            Action(function=export_data(file_format="xlsx"))
+
 
 class TestActionBuild:
     """Tests action build method."""
 
     def test_build_no_returned_components_for_custom_action(self, test_action_function):
-        action = Action(function=test_action_function)
+        action = Action(id="action_test", function=test_action_function)
         result = action.build()
-        expected = []
-        assert result == expected
+        assert result is None
 
 
 class TestActionPrivateMethods:
