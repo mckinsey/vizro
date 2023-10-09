@@ -123,3 +123,11 @@ hr {
 .icon {
   filter: var(--fill-accordion-button);
 }
+
+div.dashboard_container .tooltip-inner {
+  color: var(--text-primary);
+}
+
+div.dashboard_container .custom_tooltip {
+  color: var(--text-primary);
+}

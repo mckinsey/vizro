@@ -48,12 +48,16 @@ class Icon(VizroBaseModel):
     @_log_call
     def build(self):
         icon = dbc.Button(
-            children=html.Img(
+            id=self.id,
+            children=[
+                html.Img(
                 src=self.icon_src,
                 width=24,
                 height=24,
                 className="icon",
-            ),
+                ),
+                self._create_icon_tooltip()
+            ],
             className="icon_button",
             href=self.icon_href if bool(self.icon_href) else self._get_page_href(),
         )
@@ -66,3 +70,15 @@ class Icon(VizroBaseModel):
             for page in dash.page_registry.values():
                 if page["module"] == first_page:
                     return page["relative_path"]
+
+    def _create_icon_tooltip(self):
+        if self.title:
+            tooltip = dbc.Tooltip(
+                children=html.P(self.title),
+                target=self.id,
+                placement="bottom",
+                className="custom_tooltip",
+                is_open=True,
+
+            )
+            return tooltip
