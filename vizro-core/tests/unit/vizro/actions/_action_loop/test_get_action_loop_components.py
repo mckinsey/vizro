@@ -51,7 +51,7 @@ def action_trigger_actions_id_component(request):
     actions_ids = [model_manager[component].actions[0].actions[0].id for component in components]
     return dcc.Store(
         id="action_trigger_actions_id",
-        data=list(actions_ids),
+        data=actions_ids,
     )
 
 
@@ -120,7 +120,12 @@ class TestGetActionLoopComponents:
     @pytest.mark.usefixtures("managers_one_page_no_actions")
     def test_no_components(self):
         result = _get_action_loop_components()
-        assert result == []
+        result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
+
+        expected = html.Div(id="action_loop_components_div")
+        expected = json.loads(json.dumps(expected, cls=plotly.utils.PlotlyJSONEncoder))
+
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
     @pytest.mark.parametrize(
@@ -146,12 +151,8 @@ class TestGetActionLoopComponents:
         action_trigger_actions_id_component,
         trigger_to_actions_chain_mapper_component,
     ):
-        result_components = _get_action_loop_components()
-
-        formatted_result = [
-            json.loads(json.dumps(result_component, cls=plotly.utils.PlotlyJSONEncoder))
-            for result_component in result_components
-        ]
+        result = _get_action_loop_components()
+        result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
 
         all_action_loop_components_expected = (
             fundamental_components
@@ -161,8 +162,10 @@ class TestGetActionLoopComponents:
             + [trigger_to_actions_chain_mapper_component]
         )
 
-        for component in all_action_loop_components_expected:
-            formatted_component = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
-            assert (
-                formatted_component in formatted_result
-            ), f"Can't find component: {formatted_component} in: {formatted_result}"
+        expected = html.Div(
+            children=all_action_loop_components_expected,
+            id="action_loop_components_div"
+        )
+        expected = json.loads(json.dumps(expected, cls=plotly.utils.PlotlyJSONEncoder))
+
+        assert result == expected
