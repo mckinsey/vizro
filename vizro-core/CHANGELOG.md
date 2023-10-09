@@ -17,6 +17,8 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
+- Add highlighting to accordion button of active page ([#74](https://github.com/mckinsey/vizro/pull/74))
+
 - Add validator for `Dashboard.navigation` to default to `Navigation()` if not provided ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 - Add comparison table to `Why Vizro` docs page ([#90](https://github.com/mckinsey/vizro/pull/90))
@@ -32,13 +34,11 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Add highlighting to accordion button of active page ([#74](https://github.com/mckinsey/vizro/pull/74))
-
 - Fix unit test interdependence issue due to shared dash.page_registry ([#84](https://github.com/mckinsey/vizro/pull/84))
 
 - Fix bug of horizontal rulers not being visible in `Card` ([#91](https://github.com/mckinsey/vizro/pull/91))
 
-Fix bug so that `add_type` updates forward references in new type added ([#92](https://github.com/mckinsey/vizro/pull/92))
+- Fix bug so that `add_type` updates forward references in new type added ([#92](https://github.com/mckinsey/vizro/pull/92))
 
 ## Security
 
