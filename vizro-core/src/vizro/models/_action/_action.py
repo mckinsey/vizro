@@ -1,10 +1,11 @@
 import logging
 from typing import Any, Dict, List
 
-from dash import Input, Output, State, callback, ctx
-from pydantic import Field
+from dash import Input, Output, State, callback, ctx, html
+from pydantic import Field, ValidationError
 
 import vizro.actions
+from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
@@ -35,6 +36,21 @@ class Action(VizroBaseModel):
         regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
     )
 
+    @staticmethod
+    def _validate_output_number(outputs, return_value):
+        return_value_len = (
+            1
+            if not hasattr(return_value, "__len__") or isinstance(return_value, str)
+            else len(return_value)
+        )
+
+        # Raising the custom exception if the callback return value length doesn't match the number of defined outputs.
+        if len(outputs) != return_value_len:
+            raise ValueError(
+                f"Number of action's returned elements ({return_value_len}) does not match the number"
+                f" of action's defined outputs ({len(outputs)})."
+            )
+
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -50,7 +66,7 @@ class Action(VizroBaseModel):
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         callback_inputs: Dict[str, Any] = {
-            **_get_action_callback_mapping(action_id=self.id, argument="inputs"),  # type: ignore[arg-type]
+            **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs"),
             **{
                 f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
                 for input in self.inputs
@@ -59,7 +75,7 @@ class Action(VizroBaseModel):
         }
 
         callback_outputs: Dict[str, Any] = {
-            **_get_action_callback_mapping(action_id=self.id, argument="outputs"),  # type: ignore[arg-type]
+            **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs"),
             **{
                 f'{output.split(".")[0]}_{output.split(".")[1]}': Output(
                     output.split(".")[0], output.split(".")[1], allow_duplicate=True
@@ -69,9 +85,7 @@ class Action(VizroBaseModel):
             "action_finished": Output("action_finished", "data", allow_duplicate=True),
         }
 
-        action_components = _get_action_callback_mapping(
-            action_id=self.id, argument="components"  # type: ignore[arg-type]
-        )
+        action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
 
@@ -84,17 +98,15 @@ class Action(VizroBaseModel):
         # Invoking the action's function
         return_value = self.function(**inputs) or {}
 
-        # Raising the custom exception if return value length doesn't match the number of outputs
-        return_value_len = (
-            1 if not hasattr(return_value, "__len__") or isinstance(return_value, str) else len(return_value)
-        )
+        # Action callback outputs
         outputs = list(ctx.outputs_grouping.keys())
         outputs.remove("action_finished")
-        if len(outputs) != return_value_len:
-            raise ValueError(
-                f"Number of action's returned elements: {return_value_len} does not match the number"
-                f" of action's defined outputs: {len(outputs)}."
-            )
+
+        # Validate number of outputs
+        self._validate_output_number(
+            outputs=outputs,
+            return_value=return_value,
+        )
 
         # If return_value is a single element, ensure return_value is a list
         if not isinstance(return_value, (list, tuple, dict)):
@@ -129,4 +141,12 @@ class Action(VizroBaseModel):
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
             return self._action_callback_function(**inputs)
 
-        return action_components
+        # return action_components
+        return (
+            html.Div(
+                children=action_components,
+                id=f"{self.id}_action_model_components_div",
+            )
+            if action_components
+            else None
+        )

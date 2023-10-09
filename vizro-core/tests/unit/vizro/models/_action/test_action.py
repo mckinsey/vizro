@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.Action."""
+# TODO: Add tests for file_format and installed export_xlsx libraries
 
 import dash
 import pytest
@@ -44,7 +45,7 @@ def callback_context_set_outputs_grouping(request):
     """Mock dash.callback_context that represents outputs grouping for custom action."""
     outputs = request.param
 
-    outputs_grouping = {output: None for output in outputs}
+    outputs_grouping = dict.fromkeys(outputs)
     mock_callback_context = {"outputs_grouping": {"action_finished": None, **outputs_grouping}}
     context_value.set(AttributeDict(**mock_callback_context))
     return context_value
@@ -100,7 +101,7 @@ class TestActionInstantiation:
         ],
     )
     def test_inputs_invalid(self, inputs, test_action_function):
-        with pytest.raises(ValidationError, match=".* value is not a valid list .*"):
+        with pytest.raises(ValidationError, match="value is not a valid list"):
             Action(function=test_action_function, inputs=inputs, outputs=[])
 
     @pytest.mark.parametrize(
@@ -113,7 +114,7 @@ class TestActionInstantiation:
         ],
     )
     def test_outputs_invalid(self, outputs, test_action_function):
-        with pytest.raises(ValidationError, match=".* value is not a valid list .*"):
+        with pytest.raises(ValidationError, match="value is not a valid list"):
             Action(function=test_action_function, inputs=[], outputs=outputs)
 
 
@@ -241,6 +242,7 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Number of action's returned elements: .? does not match the number of action's defined outputs: .?.",
+            match="Number of action's returned elements .(.?.)"
+            " does not match the number of action's defined outputs .(.?.).",
         ):
             action._action_callback_function()

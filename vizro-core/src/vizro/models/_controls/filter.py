@@ -93,7 +93,7 @@ class Filter(VizroBaseModel):
 
     def _set_targets(self):
         if not self.targets:
-            for component in _get_component_page(self.id).components:  # type: ignore[arg-type]
+            for component in _get_component_page(str(self.id)).components:
                 if data_manager._has_registered_data(component.id):
                     data_frame = data_manager._get_component_data(component.id)
                     if self.column in data_frame.columns:
