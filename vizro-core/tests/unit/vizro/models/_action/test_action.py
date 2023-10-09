@@ -1,5 +1,4 @@
 """Unit tests for vizro.models.Action."""
-# TODO: Add tests for file_format and installed export_xlsx libraries
 
 import importlib
 
