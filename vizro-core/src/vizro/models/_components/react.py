@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class React(VizroBaseModel):
     """Wrapper for react components to visualize in dashboard.
+
     Args:
         type (Literal["react"]): Defaults to `"react"`.
         figure (CapturedCallable): React object to be displayed.

@@ -27,7 +27,8 @@ dependencies = [
   "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
   "tornado>=6.3.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
   "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
-  "MarkupSafe"  # required to sanitise user input
+  "MarkupSafe",  # required to sanitise user input
+  "d3_bar_chart @ file:///Users/huong_li_nguyen/Desktop/d3_bar_chart-0.0.1-py3-none-any.whl"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -64,3 +65,6 @@ skip_covered = true
 branch = true
 parallel = true
 source_pkgs = ["vizro"]
+
+[tool.hatch.metadata]
+allow-direct-references = true

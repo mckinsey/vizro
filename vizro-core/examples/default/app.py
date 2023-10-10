@@ -1,6 +1,7 @@
 """Example to show dashboard configuration specified as pydantic models."""
 import os
 
+import d3_bar_chart
 import pandas as pd
 import plotly.graph_objects as go
 from dash import dash_table, dcc
@@ -9,6 +10,7 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
+
 
 def retrieve_table_data():
     """Return data for table for testing."""
@@ -32,7 +34,6 @@ def retrieve_table_data():
     return pd.DataFrame(data)
 
 
-
 # Option 1: Use graph objects table
 @capture("graph")
 def table_go(data_frame=None, template=None):
@@ -47,14 +48,24 @@ def table_go(data_frame=None, template=None):
     )
 
 
+@capture("graph")
+def d3_bar(data_frame=None):
+    """Custom table."""
+    return d3_bar_chart.D3BarChart(
+        id="input",
+        value="my-value",
+        label="my-label",
+    )
+
 
 @capture("action")
 def table_dash(data_frame=None, style_header=None):
     """Custom table."""
     return dash_table.DataTable(
-                data=data_frame.to_dict("records"),
-                columns=[{"name": i, "id": i} for i in data_frame.columns],
-                style_header=style_header)
+        data=data_frame.to_dict("records"),
+        columns=[{"name": i, "id": i} for i in data_frame.columns],
+        style_header=style_header,
+    )
 
 
 @capture("action")
@@ -70,26 +81,8 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        # Option 1
-        # vm.Graph(
-        #     id="go_table",
-        #     figure=table_go(data_frame='table_data'),
-        # ),
-        # Option 2
-        # vm.Table(data_frame="table_data", style_header={ 'border': '1px solid black' }),
-        # Option 3 with pd.DataFrame()
-      #  vm.Table(
-      #      id="table1",
-      #      figure=table_dash(
-      #          data_frame=pd.DataFrame({"A": 1.0, "B": pd.Series(1, index=list(range(4)), dtype="float32")})
-      #      ),
-       # ),
-        # Option 3 with str
         vm.React(id="table2", figure=table_dash(data_frame="table_data")),
-        # Option 3 with different react model
-        # vm.React(id="table3",
-        #          figure=markdown(data_frame='table_data')
-        #          )
+        vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),

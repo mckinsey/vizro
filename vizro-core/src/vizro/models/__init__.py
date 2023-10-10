@@ -9,7 +9,9 @@ from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
 
-Page.update_forward_refs(Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter,Table=Table,React=React)
+Page.update_forward_refs(
+    Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, React=React
+)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 
 # Please keep alphabetically ordered
@@ -31,5 +33,5 @@ __all__ = [
     "React",
     "Slider",
     "VizroBaseModel",
-    "Table"
+    "Table",
 ]

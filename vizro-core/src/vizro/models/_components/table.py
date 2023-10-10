@@ -13,11 +13,12 @@ logger = logging.getLogger(__name__)
 
 class Table(VizroBaseModel):
     """Creates a table utilizing dash_table.DataTable.
+
     Args:
         type (Literal["table"]): Defaults to `"table"`.
         data_frame (pd.DataFrame): Dataframe to be used for table.
         style_header (Dict[str, str]): Custom styling for header
-        filter_action (str): 'native' to
+        filter_action (str): 'native' to.
     """
 
     type: Literal["table"] = "table"
