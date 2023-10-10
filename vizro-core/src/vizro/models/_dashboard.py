@@ -106,7 +106,7 @@ class Dashboard(VizroBaseModel):
             id="dashboard_container",
             children=[
                 html.Div(id=f"vizro_version_{vizro.__version__}"),
-                *ActionLoop._create_app_callbacks(),
+                ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
             className=self.theme,

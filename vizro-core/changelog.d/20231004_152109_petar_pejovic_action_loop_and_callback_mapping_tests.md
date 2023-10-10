@@ -31,7 +31,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug of horizontal rulers not being visible in `Card` ([#91](https://github.com/mckinsey/vizro/pull/91))
+- If the `targets` argument in the `export_data` action function is specified as `"falsy"` value (`None`, `[]`), triggering the action will result in the same outcome as if the argument were not set, exporting data from all charts on the current page. ([#93](https://github.com/mckinsey/vizro/pull/93))
 
 <!--
 ### Security

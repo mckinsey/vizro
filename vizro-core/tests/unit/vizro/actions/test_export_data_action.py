@@ -116,6 +116,28 @@ class TestExportData:
         assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
+        "callback_context_export_data, targets",
+        [
+            ([["scatter_chart", "box_chart"], None, None], None),
+            ([["scatter_chart", "box_chart"], None, None], []),
+        ],
+        indirect=["callback_context_export_data"],
+    )
+    def test_graphs_false_targets(self, callback_context_export_data, targets, gapminder_2007):
+        # Add action to relevant component
+        model_manager["button"].actions = [vm.Action(id="test_action", function=export_data(targets=targets))]
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager["test_action"].function()
+
+        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
+        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
+
+        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
+        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("callback_context_export_data", [(["scatter_chart"], None, None)], indirect=True)
     def test_one_target(self, callback_context_export_data, gapminder_2007):
         # Add action to relevant component
@@ -215,28 +237,3 @@ class TestExportData:
 
         assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
         assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize(
-        "callback_context_export_data", [(["scatter_chart", "box_chart"], None, None)], indirect=True
-    )
-    def test_invalid_file_format(
-        self,
-        callback_context_export_data,
-    ):
-        # Add action to relevant component
-        model_manager["button"].actions = [
-            vm.Action(
-                id="test_action",
-                function=export_data(
-                    targets=["scatter_chart", "box_chart"],
-                    file_format="invalid_file_format",
-                ),
-            )
-        ]
-
-        with pytest.raises(
-            ValueError, match='Unknown "file_format": invalid_file_format.' ' Known file formats: "csv", "xlsx".'
-        ):
-            # Run action by picking the above added action function and executing it with ()
-            model_manager["test_action"].function()
