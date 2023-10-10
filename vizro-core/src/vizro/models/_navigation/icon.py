@@ -51,12 +51,12 @@ class Icon(VizroBaseModel):
             id=self.id,
             children=[
                 html.Img(
-                src=self.icon_src,
-                width=24,
-                height=24,
-                className="icon",
+                    src=self.icon_src,
+                    width=24,
+                    height=24,
+                    className="icon",
                 ),
-                self._create_icon_tooltip()
+                self._create_icon_tooltip(),
             ],
             className="icon_button",
             href=self.icon_href if bool(self.icon_href) else self._get_page_href(),
@@ -79,6 +79,5 @@ class Icon(VizroBaseModel):
                 placement="bottom",
                 className="custom_tooltip",
                 is_open=True,
-
             )
             return tooltip

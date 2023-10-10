@@ -9,7 +9,6 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_items
 from vizro.models._navigation.icon import Icon
-from vizro.models.types import NavigationPagesType
 
 
 class NavBar(VizroBaseModel):
