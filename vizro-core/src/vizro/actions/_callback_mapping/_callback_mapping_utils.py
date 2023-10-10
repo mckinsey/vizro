@@ -107,7 +107,7 @@ def _get_inputs_of_chart_interactions(
     return [
         State(
             component_id=_get_triggered_model(action_id=action.id).id,  # type: ignore[arg-type]
-            component_property="clickData",
+            component_property="clickData",  # LN: Needs to be refactored so plotly-independent or extendable
         )
         for action in chart_interactions_on_page
     ]
@@ -160,7 +160,9 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property="children" if model_manager[target].type == "react" else "figure",
+            component_property="children"
+            if model_manager[target].type == "react"
+            else "figure",  # LN: Needs to be refactored so plotly-independent or extendable
             allow_duplicate=True,
         )
         for target in targets

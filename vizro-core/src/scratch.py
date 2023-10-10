@@ -8,12 +8,10 @@ from vizro.models.types import capture
 
 # Dash Table
 @capture("graph")
-def dash_table(data_frame=None, style_header=None):
+def dash_table(data_frame=None, **kwargs):
     """Custom table."""
     return dash_table.DataTable(
-        data=data_frame.to_dict("records"),
-        columns=[{"name": i, "id": i} for i in data_frame.columns],
-        style_header=style_header,
+        data=data_frame.to_dict("records"), columns=[{"name": i, "id": i} for i in data_frame.columns], **kwargs
     )
 
 
