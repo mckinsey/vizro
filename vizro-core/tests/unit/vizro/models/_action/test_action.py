@@ -146,11 +146,6 @@ class TestActionInstantiation:
     def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "openpyxl", None)
         monkeypatch.setitem(sys.modules, "xlswriter", None)
-        # monkeypatch.setattr(
-        #     importlib.util,
-        #     "find_spec",
-        #     lambda arg: None if arg in ["openpyxl", "xlsxwriter"] else importlib.util.find_spec(arg),
-        # )
 
         with pytest.raises(
             ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."

@@ -33,7 +33,7 @@ def export_data(
     Returns:
         Dict mapping target component id to modified charts/components e.g. {'my_scatter': Figure({})}
     """
-    if targets is None:
+    if not targets:
         targets = [
             output["id"]["target_id"]
             for output in ctx.outputs_list
