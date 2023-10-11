@@ -71,46 +71,56 @@ def trigger_to_actions_chain_mapper_component(request):
 @pytest.fixture
 def managers_one_page_two_components_two_controls():
     """Instantiates managers with one page that contains two controls and two components."""
-    page = vm.Page(
-        id="test_page",
-        title="First page",
-        components=[
-            vm.Graph(
-                id="scatter_chart",
-                figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap"),
-            ),
-            vm.Button(
-                id="export_data_button",
-                actions=[vm.Action(id="export_data_action", function=export_data())],
-            ),
-        ],
-        controls=[
-            vm.Filter(id="filter_continent", column="continent", selector=vm.Dropdown(id="filter_continent_selector")),
-            vm.Parameter(
-                id="parameter_x",
-                targets=["scatter_chart.x"],
-                selector=vm.Dropdown(
-                    id="parameter_x_selector",
-                    options=["lifeExp", "gdpPercap", "pop"],
-                ),
-            ),
-        ],
+    vm.Dashboard(
+        pages=[
+            vm.Page(
+                id="test_page",
+                title="First page",
+                components=[
+                    vm.Graph(
+                        id="scatter_chart",
+                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap"),
+                    ),
+                    vm.Button(
+                        id="export_data_button",
+                        actions=[vm.Action(id="export_data_action", function=export_data())],
+                    ),
+                ],
+                controls=[
+                    vm.Filter(
+                        id="filter_continent", column="continent", selector=vm.Dropdown(id="filter_continent_selector")
+                    ),
+                    vm.Parameter(
+                        id="parameter_x",
+                        targets=["scatter_chart.x"],
+                        selector=vm.Dropdown(
+                            id="parameter_x_selector",
+                            options=["lifeExp", "gdpPercap", "pop"],
+                        ),
+                    ),
+                ],
+            )
+        ]
     )
-    # TODO: Call the Dashboard._pre_build() method once the pages registration is moved into this method.
-    yield Vizro().build(vm.Dashboard(pages=[page]))
+
+    yield Vizro._pre_build()
     del dash.page_registry["test_page"]
 
 
 @pytest.fixture
 def managers_one_page_no_actions():
     """Instantiates managers with one "empty" page."""
-    page = vm.Page(
-        id="test_page_no_actions",
-        title="Second page",
-        components=[vm.Card(text="")],
+    vm.Dashboard(
+        pages=[
+            vm.Page(
+                id="test_page_no_actions",
+                title="Second page",
+                components=[vm.Card(text="")],
+            )
+        ]
     )
-    # TODO: Call the Dashboard._pre_build() method once the pages registration is moved into this method.
-    yield Vizro().build(vm.Dashboard(pages=[page]))
+
+    yield Vizro._pre_build()
     del dash.page_registry["test_page_no_actions"]
 
 
@@ -122,8 +132,7 @@ class TestGetActionLoopComponents:
         result = _get_action_loop_components()
         result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
 
-        expected = html.Div(id="action_loop_components_div")
-        expected = json.loads(json.dumps(expected, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(html.Div(id="action_loop_components_div"), cls=plotly.utils.PlotlyJSONEncoder))
 
         assert result == expected
 
@@ -151,8 +160,7 @@ class TestGetActionLoopComponents:
         action_trigger_actions_id_component,
         trigger_to_actions_chain_mapper_component,
     ):
-        result = _get_action_loop_components()
-        result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
+        result = json.loads(json.dumps(_get_action_loop_components(), cls=plotly.utils.PlotlyJSONEncoder))
 
         all_action_loop_components_expected = (
             fundamental_components
@@ -162,7 +170,11 @@ class TestGetActionLoopComponents:
             + [trigger_to_actions_chain_mapper_component]
         )
 
-        expected = html.Div(children=all_action_loop_components_expected, id="action_loop_components_div")
-        expected = json.loads(json.dumps(expected, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(
+            json.dumps(
+                html.Div(children=all_action_loop_components_expected, id="action_loop_components_div"),
+                cls=plotly.utils.PlotlyJSONEncoder,
+            )
+        )
 
         assert result == expected
