@@ -22,7 +22,7 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 1. [Install `hatch`](https://hatch.pypa.io/latest/install/) by running `brew install hatch` or `pipx install hatch` (preferable to `pip install hatch`).
 2. Clone this repository.
-3. Run `hatch -v env create` from the `vizro_core` folder of your cloned repository. This creates Hatch's `default` environment with dependencies installed and the project installed in development mode (i.e. using `pip install --editable`). It will take a few minutes to complete. All following commands should be executed from this folder as well.
+3. Run `hatch -v env create` from the `vizro-core` folder of your cloned repository. This creates Hatch's `default` environment with dependencies installed and the project installed in development mode (i.e. using `pip install --editable`). It will take a few minutes to complete. All following commands should be executed from this folder as well.
 4. Run `hatch run example` to open an [example Vizro dashboard](#examples) with [Dash dev tools](https://dash.plotly.com/devtools) enabled.
 5. Edit the code to your heart's desire! Thanks to Dash dev tools' hot reloading, any changes to the example app or `vizro` source code should automatically show in your dashboard without needing refresh or restart any process.
 
@@ -30,19 +30,19 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
     The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
 
-    If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all of Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro_core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
+    If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all of Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro-core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
 
 ---
 
 ## Examples
 
-Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro_core/examples). To run, for instance, the `from_dict` example, execute:
+Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `from_dict` example, execute:
 
 ```console
 hatch run example from_dict
 ```
 
-If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro_core/examples/default/app.py) is used.
+If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/default/app.py) is used.
 
 ## Debugging tips
 
@@ -99,7 +99,7 @@ The diagram `docs/assets/diagram.png` is generated with `hatch run docs:diagram`
 
 ## Schema
 
-The JSON schema in [`schemas`](https://github.com/mckinsey/vizro/tree/main/vizro_core/schemas) is generated with `hatch run schema`. We ensure this is kept up to date with a check in CI.
+The JSON schema in [`schemas`](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas) is generated with `hatch run schema`. We ensure this is kept up to date with a check in CI.
 
 ## Pre-commit hooks (for linting etc.)
 
@@ -162,7 +162,7 @@ Please begin by uncommenting the relevant section(s) you wish to describe. If yo
 
 ## Releases
 
-Vizro's version is given by `__version__` in [`src/vizro/__init__.py`](https://github.com/mckinsey/vizro/blob/main/vizro_core/src/vizro/__init__.py). To bump the version, run, e.g. `hatch version minor`. See [Hatch's documentation](https://hatch.pypa.io/latest/version/) for more details.
+Vizro's version is given by `__version__` in [`src/vizro/__init__.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/__init__.py). To bump the version, run, e.g. `hatch version minor`. See [Hatch's documentation](https://hatch.pypa.io/latest/version/) for more details.
 
 To build the source distribution and wheel, run `hatch build`.
 

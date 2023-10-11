@@ -57,5 +57,5 @@ To later upgrade Vizro to a different version, simply run:
 pip install vizro -U
 ```
 
-The best way to safely upgrade is to check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro_core/CHANGELOG.md) for any notable breaking changes before migrating an
+The best way to safely upgrade is to check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any notable breaking changes before migrating an
 existing project.
