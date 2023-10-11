@@ -1,7 +1,7 @@
 """Example to show dashboard configuration specified as pydantic models."""
 import os
 
-import d3_bar_chart
+# import d3_bar_chart
 import pandas as pd
 import plotly.graph_objects as go
 from dash import dash_table, dcc
@@ -48,14 +48,14 @@ def table_go(data_frame=None, template=None):
     )
 
 
-@capture("graph")
-def d3_bar(data_frame=None):
-    """Custom table."""
-    return d3_bar_chart.D3BarChart(
-        id="input",
-        value="my-value",
-        label="my-label",
-    )
+#@capture("graph")
+#def d3_bar(data_frame=None):
+#    """Custom table."""
+#    return d3_bar_chart.D3BarChart(
+#        id="input",
+#        value="my-value",
+#        label="my-label",
+#    )
 
 
 @capture("action")
@@ -82,7 +82,7 @@ page_0 = vm.Page(
     path="color-manager",
     components=[
         vm.React(id="table2", figure=table_dash(data_frame="table_data")),
-        vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
+        # vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
