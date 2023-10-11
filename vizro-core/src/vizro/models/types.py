@@ -213,7 +213,7 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
-        elif self._mode == "react":
+        elif self._mode == "table":
             # React component
             @functools.wraps(func)
             def wrapped(*args, **kwargs):

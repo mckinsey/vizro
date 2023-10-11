@@ -161,7 +161,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
         target: Output(
             component_id=target,
             component_property="children"
-            if model_manager[target].type == "react"
+            if model_manager[target].type == "table" or model_manager[target].type == "react"
             else "figure",  # LN: Needs to be refactored so plotly-independent or extendable
             allow_duplicate=True,
         )

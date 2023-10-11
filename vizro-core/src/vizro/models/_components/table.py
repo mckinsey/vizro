@@ -1,53 +1,80 @@
 import logging
-from typing import Dict, Literal
+from typing import Callable, List, Literal
 
-from dash import dash_table, html
-from pydantic import Field
+from dash import html
+from pydantic import Field, validator
 
 from vizro.managers import data_manager
-from vizro.models import VizroBaseModel
+from vizro.models import Action, VizroBaseModel
+from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models.types import CapturedCallable
 
 logger = logging.getLogger(__name__)
 
 
 class Table(VizroBaseModel):
-    """Creates a table utilizing dash_table.DataTable.
+    """Wrapper for react components to visualize in dashboard.
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        data_frame (pd.DataFrame): Dataframe to be used for table.
-        style_header (Dict[str, str]): Custom styling for header
-        filter_action (str): 'native' to.
+        figure (CapturedCallable): React object to be displayed.
+        # actions (List[Action]): List of the Action objects, that allows to
+        #     configure app interactions, triggered by affecting this component.
     """
 
     type: Literal["table"] = "table"
-    data_frame: str = Field(..., description="Data frame to be visualized as table.")
-    style_header: Dict[str, str]
-    # filter_action: str = 'custom'
-    # Todo:
-    # Add parameters: style_table, style_cell, style_data, style_filter, style_header, style_cell_conditional,
-    # style_data_conditional, style_filter_conditional, style_header_conditional, cols_to_remove
+    data: Callable = None
+    figure: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
+    actions: List[Action] = []
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        if isinstance(self.data_frame, str):
-            data_manager._add_component(self.id, self.data_frame)
+    # validator
+    set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
 
-    @classmethod
-    def update_layout(self, template=None):
-        pass
+    @validator("figure")
+    def process_component_data_frame(cls, figure, values):
+        data_frame = figure["data_frame"]
+
+        # Enable running "iris" from the Python API and specification of "data_frame": "iris" through JSON.
+        # In these cases, data already exists in the data manager and just needs to be linked to the component.
+        if isinstance(data_frame, str):
+            data_manager._add_component(values["id"], data_frame)
+            return figure
+
+        # Standard case for df: pd.DataFrame.
+        # Extract dataframe from the captured function and put it into the data manager.
+        dataset_name = str(id(data_frame))
+
+        logger.debug("Adding data to data manager for Graph with id %s", values["id"])
+        # If the dataset already exists in the data manager then it's not a problem, it just means that we don't need
+        # to duplicate it. Just log the exception for debugging purposes.
+        try:
+            data_manager[dataset_name] = data_frame
+        except ValueError as exc:
+            logger.debug(exc)
+
+        data_manager._add_component(values["id"], dataset_name)
+
+        # No need to keep the data in the captured function any more so remove it to save memory.
+        # del figure["data_frame"]
+        return figure
+
+    # Convenience wrapper/syntactic sugar.
+    def __call__(self, **kwargs):
+        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
+        return self.figure(**kwargs)
+
+    # Convenience wrapper/syntactic sugar.
+    def __getitem__(self, arg_name: str):
+        # pydantic discriminated union validation seems to try Graph["type"], which throws an error unless we
+        # explicitly redirect it to the correct attribute.
+        if arg_name == "type":
+            return self.type
+        return self.figure[arg_name]
 
     @_log_call
     def build(self):
         data = data_manager._get_component_data(self.id)  # type: ignore
-
-        table = dash_table.DataTable(
-            data=data.to_dict("records"),
-            columns=[{"name": i, "id": i} for i in data.columns],
-            style_header=self.style_header,
-            filter_action="custom",  # link: https://dash.plotly.com/datatable/filtering
-        )
-        table_container = "table_container"
-
-        return html.Div(table, className=table_container)
+        additional_args = self.figure._arguments.copy()
+        additional_args.pop("data_frame", None)
+        return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)

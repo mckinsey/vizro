@@ -189,7 +189,7 @@ def _get_modified_page_charts(
             outputs[target] = model_manager[target](  # type: ignore[index, operator]
                 data_frame=filtered_data[target], **parameterized_config[target]
             ).update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
-        elif model_manager[target].type == "react":
+        elif model_manager[target].type == "table" or model_manager[target].type == "react":
             outputs[target] = model_manager[target](  # type: ignore[index, operator]
                 data_frame=filtered_data[target], **parameterized_config[target]
             )

@@ -47,8 +47,8 @@ To consider
 
 
 # 2) Table & React --------------------
-vm.Table(data_frame, **kwargs)
-vm.ReactFigure(figure=d3_bar_chart)
+vm.Table2(data_frame, **kwargs)
+vm.React(figure=d3_bar_chart)
 
 """
 Pro:
@@ -62,7 +62,7 @@ Con:
 
 # 3) Table & React (currently preferred) --------------------
 vm.Table(figure=dash_table)
-vm.ReactFigure(figure=d3_bar_chart)
+vm.React(figure=d3_bar_chart)
 
 """
 Pro:
@@ -80,8 +80,8 @@ To consider
 
 
 # 4) ReactFigure --------------------
-vm.ReactFigure(figure=dash_table)
-vm.ReactFigure(figure=d3_bar_chart)
+vm.React(figure=dash_table)
+vm.React(figure=d3_bar_chart)
 
 """
 Pro:
