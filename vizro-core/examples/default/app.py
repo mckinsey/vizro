@@ -1,56 +1,12 @@
 """Example to show dashboard configuration."""
 import os
-from typing import List, Literal, Optional
 
 import pandas as pd
-from dash import Input, Output, callback, dcc, html
-from pydantic import Field
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.models import Action, VizroBaseModel
-from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._models_utils import _log_call
-
-
-class Textarea(VizroBaseModel):
-    """TextArea for testing only."""
-
-    type: Literal["text_area"] = "text_area"  # Note change here
-    value: Optional[str] = Field(None, description="Default value for textarea.")
-    title: Optional[str] = Field(None, description="Title to be displayed.")
-    actions: List[Action] = []
-
-    # Validator for actions, if needed
-    _set_actions = _action_validator_factory("value")
-
-    @_log_call
-    def build(self):
-        """Build method."""
-
-        @callback(Output(f"{self.id}_output", "children"), [Input(f"{self.id}", "value")])
-        def update_text_area_output(value):
-            if value:
-                return "You have entered: \n{}".format(value)
-
-        return html.Div(
-            [
-                html.P(self.title) if self.title else None,
-                dcc.Textarea(
-                    id=self.id,
-                    value=self.value,
-                    style={"width": "100%", "height": 300},
-                ),
-                html.Div(id=f"{self.id}_output", style={"whiteSpace": "pre-line"}),
-            ],
-            className="selector_container",  # Note change here for better CSS styling
-            id=f"{self.id}_outer",
-        )
-
-
-vm.Page.add_type("controls", Textarea)  # Note change here
 
 
 def retrieve_avg_continent_data():
@@ -504,11 +460,6 @@ def create_country_analysis():
         controls=[
             vm.Filter(column="country", selector=vm.Dropdown(value="India", multi=False, title="Select country")),
             vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe")),
-            vm.Filter(column="country", selector=vm.Dropdown(value="India", multi=False, title="Select country")),
-            vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe")),
-            vm.Filter(column="country", selector=vm.Dropdown(value="India", multi=False, title="Select country")),
-            vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe")),
-            Textarea(title="Input Query"),
         ],
     )
     return page_country
@@ -573,7 +524,12 @@ dashboard = vm.Dashboard(
         create_continent_summary(),
         create_country_analysis(),
     ],
-    title="This is a very long dashboard title",
+    navigation=vm.Navigation(
+        pages={
+            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+            "Summary": ["Continent Summary"],
+        }
+    ),
 )
 
 if __name__ == "__main__":
