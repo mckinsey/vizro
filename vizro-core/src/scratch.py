@@ -60,7 +60,7 @@ Con:
 - Would need another wrapper for other react charts -> bad paradigm to create new model for each new react chart
 """
 
-# 3) Table & React --------------------
+# 3) Table & React (currently preferred) --------------------
 vm.Table(figure=dash_table)
 vm.ReactFigure(figure=d3_bar_chart)
 
@@ -95,6 +95,3 @@ To consider:
 - Should we actually extend the concept of this to vm.Html or vm.Container as essentially it just wraps the component inside an html.Div?
   That model could then also be re-used for several other things? (Would mix lots of different concepts then though, so maybe bad idea)
 """
-
-# Preferences:
-# 4, 1/3, 2
