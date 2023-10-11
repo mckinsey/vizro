@@ -7,7 +7,7 @@ This project adheres to Semantic Versioning (http://semver.org/). -->
 
 ## Unreleased
 
-See the fragment files in the [changelog.d directory](https://github.com/mckinsey/vizro/tree/main/vizro-core/changelog.d).
+See the fragment files in the [changelog.d directory](https://github.com/mckinsey/vizro/tree/main/vizro_core/changelog.d).
 
 <!-- scriv-insert-here -->
 

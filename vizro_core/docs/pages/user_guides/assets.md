@@ -31,7 +31,7 @@ For more information, see [here](https://dash.plotly.com/external-resources#chan
 
 ## Overwriting global CSS properties
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
-For reference, all Vizro CSS files can be found [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
+For reference, all Vizro CSS files can be found [here](https://github.com/mckinsey/vizro/tree/main/vizro_core/src/vizro/static/css).
 
 !!! example "Customising global CSS properties"
     === "my_css_file.css"
