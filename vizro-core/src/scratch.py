@@ -37,8 +37,10 @@ Pro:
 
 Con:
 - Returning different object based on figure -> dcc.Graph or html.Div
+- Would contradict our current paradigm of naming models close to what is being used underneath
 
 To consider
+- dash keeps Graph and Table separate as well -> Graph enables all plotly.js powered charts, Table has different figure json schema and is therefore separate
 - clickEvent property differs from the rest of px.charts --> needs to be refactored out of Graph
 - post update calls differ (e.g. update_layout not available) --> needs to be refactored out of Graph
 """
@@ -54,7 +56,7 @@ Pro:
 
 Con:
 - Need to enable many of the args from the dash datatable or enable users to provide *kwargs which deviates from all other models
-- Would need to enable additional transformer arg or create a custom chart from Table instance to enable more sophisticated tables
+- Would need to create a custom chart from Table instance anyways to enable more sophisticated functionality required by verticals
 - Would need another wrapper for other react charts -> bad paradigm to create new model for each new react chart
 """
 
@@ -68,7 +70,8 @@ Pro:
 
 Con:
 - Users have to create a custom chart first and then provide it to the table
-- Separate models for Table and other react components - should we give the table even that special treatment?
+- Separate models for Table and other react components
+- Table would only support one type of figure - does it then even deserve its own model?
 
 To consider
 - Does it make sense to have a figure argument if only one type of figure can be provided?
@@ -82,12 +85,16 @@ vm.ReactFigure(figure=d3_bar_chart)
 
 """
 Pro:
-- Eventually gives us more freedom increating custom js components
+- Eventually gives us more freedom in creating custom js components
+- Is only a thin wrapper and consistently returns an html.Div (one possible return type per model)
 
 Con:
-- Will have different clickEvent properties
-- Graph is essentially already doing what React will do - should we even add this model?
+- Will have different clickEvent properties (that could be configured via custom actions though)
+
+To consider:
+- Should we actually extend the concept of this to vm.Html or vm.Container as essentially it just wraps the component inside an html.Div?
+  That model could then also be re-used for several other things? (Would mix lots of different concepts then though, so maybe bad idea)
 """
 
 # Preferences:
-# 1, 3/4, 2
+# 4, 1/3, 2
