@@ -13,7 +13,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add template for waterfall charts and default styling for `textarea` ([#106](https://github.com/mckinsey/vizro/pull/106))
+- Add plotly layout template for waterfall chart type ([#106](https://github.com/mckinsey/vizro/pull/106))
+- Add CSS default styling for `textarea` ([#106](https://github.com/mckinsey/vizro/pull/106))
 
 <!--
 ### Changed
