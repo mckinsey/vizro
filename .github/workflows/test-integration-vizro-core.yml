@@ -1,8 +1,8 @@
-name: test-integration-vizro-core
+name: test-integration-vizro_core
 
 defaults:
   run:
-    working-directory: vizro-core
+    working-directory: vizro_core
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
       - name: Run windows integration tests
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          $env:PYTHONPATH=".;D:\a\vizro\vizro\vizro-core\src"
+          $env:PYTHONPATH=".;D:\a\vizro\vizro\vizro_core\src"
           pip install -r ../.github/requirements.txt
           pip install .
           pytest tests/integration --headless -k default

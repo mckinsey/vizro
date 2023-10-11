@@ -62,7 +62,7 @@ repos:
     rev: v1.2.0
     hooks:
       - id: mypy
-        files: ^vizro-core/src/
+        files: ^vizro_core/src/
         additional_dependencies:
           - pydantic>=1.10.13, <2
 
