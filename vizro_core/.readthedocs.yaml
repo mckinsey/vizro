@@ -11,6 +11,6 @@ build:
     python: "3.11"
   commands:
     - pip install hatch
-    - cd vizro_core/ && hatch run docs:mkdocs build
+    - cd vizro-core/ && hatch run docs:mkdocs build
     - mkdir --parents $READTHEDOCS_OUTPUT
-    - mv vizro_core/site/ $READTHEDOCS_OUTPUT/html
+    - mv vizro-core/site/ $READTHEDOCS_OUTPUT/html
