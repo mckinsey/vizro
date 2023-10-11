@@ -86,11 +86,6 @@
   width: 336px;
 }
 
-hr {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
-  width: 100%;
-}
-
 .dashboard_title_outer {
   display: flex;
   flex-direction: column;

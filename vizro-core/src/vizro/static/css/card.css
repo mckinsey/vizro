@@ -22,11 +22,6 @@
   top: -8px;
 }
 
-blockquote {
-  border-left: var(--spacing-01) var(--text-secondary) solid;
-  padding-left: var(--spacing-01);
-}
-
 .card_button {
   height: 84%;
   position: absolute;
