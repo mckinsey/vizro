@@ -12,7 +12,6 @@
   flex: 0 0 auto;
   flex-direction: column;
   padding: 30px 32px 0 32px;
-  scrollbar-gutter: stable;
   width: 352px;
   overflow: auto;
   gap: var(--spacing-04);
