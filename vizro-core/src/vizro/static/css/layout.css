@@ -131,3 +131,28 @@ div.dashboard_container .tooltip-inner {
 div.dashboard_container .custom_tooltip {
   color: var(--text-primary);
 }
+
+.square {
+  color: var(--text-primary);
+  border: 0.5px solid var(--border-subtle-alpha-01);
+  width: 28px;
+  height: 28px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color:var(--surfaces-bg-01);
+}
+
+.placeholder-image {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(55deg, #2251FF 30%, transparent 30%, transparent 70%, #2251FF 70%, #2251FF);
+}
+/*
+.nav_bar div:nth-child(2) {
+ background: linear-gradient(55deg, #00A9F4 30%, transparent 30%, transparent 70%, #00A9F4 70%, #00A9F4);
+}
+*/
+.placeholder-image:hover {
+  background: linear-gradient(55deg, #00A9F4 30%, transparent 30%, transparent 70%, #00A9F4 70%, #00A9F4);
+}

@@ -529,10 +529,11 @@ dashboard = vm.Dashboard(
             items=[
                 vm.Icon(
                     pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
-                    icon_src="assets/images/icons/content/collections.svg",
+                    # icon_src="assets/images/icons/content/collections.svg",
                 ),
                 vm.Icon(
-                    pages=["Country Analysis", "Continent Summary"], icon_src="assets/images/icons/content/features.svg"
+                    pages=["Country Analysis", "Continent Summary"],
+                    # icon_src="assets/images/icons/content/features.svg"
                 ),
             ]
         )

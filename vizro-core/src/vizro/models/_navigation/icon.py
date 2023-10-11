@@ -11,6 +11,8 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import NavigationPagesType
+import base64
+from vizro._constants import STATIC_URL_PREFIX
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
@@ -21,14 +23,14 @@ class Icon(VizroBaseModel):
 
     Args:
         title (Optional[str]): Title to be displayed in the tooltip on hover.
-        icon_src (str): URI (relative or absolute) of the embeddable content.
+        icon_src (Optional[str]): URI (relative or absolute) of the embeddable content.
         icon_href (Optional[str]): Existing page path to navigate to given page. Defaults to `None`.
         pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
                 Defaults to `None`.
     """
 
     title: Optional[str]
-    icon_src: str
+    icon_src: Optional[str]
     icon_href: Optional[str] = Field(None, description="Existing page path to navigate to given page.")
     pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()
@@ -50,12 +52,7 @@ class Icon(VizroBaseModel):
         icon = dbc.Button(
             id=self.id,
             children=[
-                html.Img(
-                    src=self.icon_src,
-                    width=24,
-                    height=24,
-                    className="icon",
-                ),
+                self._get_icon_image(),
                 self._create_icon_tooltip(),
             ],
             className="icon_button",
@@ -81,3 +78,18 @@ class Icon(VizroBaseModel):
                 is_open=True,
             )
             return tooltip
+
+    def _get_icon_image(self):
+        if self.icon_src:
+            return html.Img(
+                src=self.icon_src,
+                width=24,
+                height=24,
+                className="icon",
+            )
+        return html.Div(
+            className="placeholder-image"
+        )
+
+    def _get_default_img(self):
+        pass
