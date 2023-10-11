@@ -69,7 +69,7 @@ jobs:
           hatch build
       - name: Set PyPI token
         run: |
-          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro_core" ]; then
+          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
               echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
           fi
       - name: Publish distribution 📦 to PyPI

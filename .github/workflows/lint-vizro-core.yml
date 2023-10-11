@@ -1,8 +1,8 @@
-name: lint-vizro_core
+name: lint-vizro-core
 
 defaults:
   run:
-    working-directory: vizro_core
+    working-directory: vizro-core
 
 on:
   push:

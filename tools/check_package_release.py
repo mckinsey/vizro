@@ -5,13 +5,13 @@ import sys
 
 import requests
 
-AVAILABLE_PACKAGES = ["vizro_core"]
+AVAILABLE_PACKAGES = ["vizro-core"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 
 
 def _check_no_version_pypi(package_name, package_version):
-    if package_name == "vizro_core":
+    if package_name == "vizro-core":
         pypi_endpoint = f"https://pypi.org/pypi/vizro/{package_version}/json/"
     else:
         pypi_endpoint = f"https://pypi.org/pypi/{package_name}/{package_version}/json/"

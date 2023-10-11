@@ -66,7 +66,7 @@ jobs:
 
 workflows:
   version: 2
-  vizro_core:
+  vizro-core:
     jobs:
       - trigger-new-pipeline:
           context:

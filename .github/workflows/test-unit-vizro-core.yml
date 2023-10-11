@@ -1,8 +1,8 @@
-name: test-unit-vizro_core
+name: test-unit-vizro-core
 
 defaults:
   run:
-    working-directory: vizro_core
+    working-directory: vizro-core
 
 on:
   push:

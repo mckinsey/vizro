@@ -111,7 +111,7 @@ pip install vizro
 
 See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information
 
-Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro_core](https://github.com/mckinsey/vizro/tree/main/vizro_core)
+Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
 
 ## Getting started
 

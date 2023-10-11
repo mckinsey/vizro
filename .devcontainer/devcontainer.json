@@ -8,6 +8,6 @@
     "ghcr.io/devcontainers-contrib/features/hatch:2": {}
   },
   "image": "mcr.microsoft.com/devcontainers/python:0-3.8",
-  "postAttachCommand": "cd vizro_core; hatch -v run example",
+  "postAttachCommand": "cd vizro-core; hatch -v run example",
   "postCreateCommand": "hatch -v env create; hatch run pre-commit install-hooks"
 }
