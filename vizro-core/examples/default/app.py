@@ -16,6 +16,8 @@ from vizro.models._models_utils import _log_call
 
 
 class Textarea(VizroBaseModel):
+    """TextArea for testing only."""
+
     type: Literal["text_area"] = "text_area"  # Note change here
     value: Optional[str] = Field(None, description="Default value for textarea.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
@@ -569,7 +571,7 @@ dashboard = vm.Dashboard(
         create_continent_summary(),
         create_country_analysis(),
     ],
-    title="This is a very long dashboard title"
+    title="This is a very long dashboard title",
 )
 
 if __name__ == "__main__":
