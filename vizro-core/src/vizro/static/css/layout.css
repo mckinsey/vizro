@@ -93,6 +93,8 @@ hr {
 }
 
 .dashboard_title_outer {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
   width: 100%;
-  height: 32px;
 }
