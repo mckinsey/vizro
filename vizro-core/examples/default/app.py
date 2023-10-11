@@ -28,6 +28,8 @@ class Textarea(VizroBaseModel):
 
     @_log_call
     def build(self):
+        """Build method."""
+
         @callback(Output(f"{self.id}_output", "children"), [Input(f"{self.id}", "value")])
         def update_text_area_output(value):
             if value:

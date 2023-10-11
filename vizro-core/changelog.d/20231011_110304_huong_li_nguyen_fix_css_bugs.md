@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Add template for waterfall charts and default styling for `textarea` ([#106](https://github.com/mckinsey/vizro/pull/106))
 
-
 <!--
 ### Changed
 
@@ -32,8 +31,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Fixed
 
 - Fix alignment between control panel, dashboard title and page title ([#106](https://github.com/mckinsey/vizro/pull/106))
-
-
 
 <!--
 ### Security
