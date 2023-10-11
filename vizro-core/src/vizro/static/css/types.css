@@ -3,7 +3,7 @@ textarea {
   padding: var(--spacing-02);
 }
 
-textarea:focus{
+textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
 }
@@ -12,7 +12,6 @@ hr {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   width: 100%;
 }
-
 
 blockquote {
   border-left: var(--spacing-01) var(--text-secondary) solid;
