@@ -90,6 +90,19 @@ def create_template_light() -> Template:
         )
     ]
 
+    template_light.data.waterfall = [
+        go.Waterfall(
+            decreasing=dict(marker=dict(color=COLORS["DISCRETE_10"][1])),
+            increasing=dict(marker=dict(color=COLORS["DISCRETE_10"][0])),
+            totals=dict(marker=dict(color=COLORS["GREY_30"])),
+            textfont_color=template_light.layout.title.font.color,
+            textposition="outside",
+            connector={
+                "line": {"color": template_light.layout.xaxis.tickcolor, "width": 1}
+            },
+        )
+    ]
+
     return template_light
 
 
