@@ -1,7 +1,7 @@
 #!/bin/sh
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-REGEX="^(main|(release|feat|bug|docs|qa|dev|demo|ci)\/[^/]+(/[^/]+)*)$"
+REGEX="^(main|(release|feat|bug|docs|qa|dev|demo|ci|tidy)\/[^/]+(/[^/]+)*)$"
 
 
 if ! [[ $BRANCH =~ $REGEX ]]; then
