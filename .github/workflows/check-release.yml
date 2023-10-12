@@ -77,6 +77,14 @@ jobs:
         with:
           packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
           password: ${{ env.PYPI_TOKEN }}
+      - name: Check correct package uploaded to PyPI
+        run: |
+          cd "${{ needs.check-version.outputs.package_name }}/dist"
+          local=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          cd "${{ needs.check-version.outputs.package_name }}"
+          pip download vizro==${{needs.check-version.outputs.package_version}} -d . --no-deps --timeout 300
+          pypi=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          if [ $local=$pypi ]; then; echo "md5 hash is the same"; else; echo "md5 hash is not the same" exit 1; fi;            
 
   version-bump:
     needs: [check-version, build-publish]
