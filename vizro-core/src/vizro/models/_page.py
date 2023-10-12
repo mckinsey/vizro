@@ -207,7 +207,7 @@ class Page(VizroBaseModel):
             children=header_elements,
             className="header",
         )
-        left_side = html.Div(children=left_side_elements, className="left_side") if any(left_side_elements) else None
+        left_side = html.Div(children=left_side_elements, className="left_side", id="left_side") if any(left_side_elements) else None
         right_side_elements = [header, component_container]
         right_side = html.Div(
             children=right_side_elements,
