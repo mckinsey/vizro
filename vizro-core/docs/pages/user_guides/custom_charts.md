@@ -3,8 +3,14 @@
 This guide shows you how to create custom charts and how to add them to your dashboard.
 
 The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the user guide on [components][graph].
+The figures provided there work out of the box without having to create a custom chart. However, there are several use cases where you might want to create a custom chart.
 
-We always recommend starting with [`plotly.express`](https://plotly.com/python/plotly-express/) charts first, but in case that none of the available charts fulfill your requirements, you can also use any custom created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short `go.Figure()`). It is equally possible to _enhance_ the resulting `go.Figure()` of a `plotly.express` function call. In general, custom/customized charts need to obey the following conditions:
+**When to use a custom chart?**
+
+- If you want to use any of the post figure update calls by `plotly` e.g., `update_layout`, `update_xaxes`, `update_traces`, etc. (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
+- If you want to use a custom-created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short, `go.Figure()`) and add traces yourself via [`add_trace`](https://plotly.com/python/creating-and-updating-figures/#adding-traces)
+
+In general, custom/customized charts need to obey the following conditions:
 
 !!! note "Conditions for using any `go.Figure()` in [`Graph`][vizro.models.Graph]"
     - a `go.Figure()` object is returned by a function
