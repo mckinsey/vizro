@@ -7,7 +7,7 @@ To create a dashboard, do the following steps:
 1. Choose one of the possible configuration syntaxes
 2. Create your `pages`, see our guide on [Pages](pages.md)
 3. (optional) Choose a `theme`, see our guide on [Themes](themes.md)
-4. (optional) Customise your `navigation`, see our guide on [Navigation](navigation.md)
+4. (optional) Customize your `navigation`, see our guide on [Navigation](navigation.md)
 5. (optional) Provide a `title` to your dashboard
 6. Add your `dashboard` to the `build` call of Vizro
 

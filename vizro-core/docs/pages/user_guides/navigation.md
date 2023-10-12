@@ -88,7 +88,7 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
     )
     ```
 
-!!! example "Customising the navigation panel"
+!!! example "Customizing the navigation panel"
     === "app.py"
         ```py
         from vizro import Vizro

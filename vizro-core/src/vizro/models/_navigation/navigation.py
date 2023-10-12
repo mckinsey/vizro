@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from vizro.models._navigation._accordion import Accordion
 
 
-# Validator for re-use in other models to validate pages
+# Validator for reuse in other models to validate pages
 def _validate_pages(pages):
     from vizro.models import Page
 
