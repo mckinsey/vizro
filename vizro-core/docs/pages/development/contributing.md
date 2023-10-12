@@ -1,6 +1,6 @@
 ## Contributing guidelines
 
-Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate all of them. Please use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions. Please ensure to first open an issue to discuss a contribution before opening a pull request.
+Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate all of them. Please use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions. Before opening a pull request, please ensure you've first opened an issue to discuss the contribution.
 
 ### Found a bug
 
