@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BRANCH=$(git name-rev --name-only HEAD)
 REGEX="^(main|(release|feat|bug|docs|qa|dev|demo|ci|tidy)\/[^/]+(/[^/]+)*)$"
 
 
