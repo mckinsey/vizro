@@ -71,6 +71,9 @@ workflows:
       - trigger-new-pipeline:
           context:
             - circleci-api
+          filters:
+            tags:
+              only: /(\d+\.\d+\.\d+)/
       - wait-for-triggered-pipeline:
           type: approval
           requires:

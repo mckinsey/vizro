@@ -64,7 +64,7 @@ repos:
       - id: mypy
         files: ^vizro-core/src/
         additional_dependencies:
-          - pydantic<2.0.0
+          - pydantic>=1.10.13, <2
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.16.4

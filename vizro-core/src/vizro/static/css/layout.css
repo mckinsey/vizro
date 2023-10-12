@@ -11,7 +11,7 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  padding: 40px 32px 0 32px;
+  padding: 30px 32px 0 32px;
   scrollbar-gutter: stable;
   width: 352px;
   overflow: auto;
@@ -87,7 +87,7 @@
   width: 336px;
 }
 
-.keyline {
+hr {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   width: 100%;
 }

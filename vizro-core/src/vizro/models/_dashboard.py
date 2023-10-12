@@ -12,11 +12,11 @@ from pydantic import Field, validator
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import VizroBaseModel
+from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 if TYPE_CHECKING:
-    from vizro.models import Navigation, Page
+    from vizro.models import Page
 
 logger = logging.getLogger(__name__)
 
@@ -66,10 +66,18 @@ class Dashboard(VizroBaseModel):
     title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
-    def validate_pages_empty_list(cls, pages):
+    def validate_pages(cls, pages):
         if not pages:
             raise ValueError("Ensure this value has at least 1 item.")
         return pages
+
+    @validator("navigation", always=True)
+    def validate_navigation(cls, navigation, values):
+        if "pages" not in values:
+            return navigation
+        if navigation is None:
+            return Navigation(pages=[page.id for page in values["pages"]])
+        return navigation
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,22 +87,26 @@ class Dashboard(VizroBaseModel):
         pio.templates.default = self.theme
 
     @_log_call
-    def build(self):
+    def pre_build(self):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
             dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=page.build)
+        self._create_error_page_404()
+
+    @_log_call
+    def build(self):
+        for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
         self._update_theme()
-        self._create_error_page_404()
 
         return dbc.Container(
             id="dashboard_container",
             children=[
                 html.Div(id=f"vizro_version_{vizro.__version__}"),
-                *ActionLoop._create_app_callbacks(),
+                ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
             className=self.theme,
