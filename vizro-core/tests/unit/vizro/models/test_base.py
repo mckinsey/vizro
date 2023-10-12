@@ -93,7 +93,7 @@ class TestDiscriminatedUnion:
 class TestOptionalDiscriminatedUnion:
     # Optional[ChildType] does not work correctly as a discriminated union - pydantic turns it into a regular union.
     # Hence the validation error messages are not as expected. The tests of add_type pass because in practice a
-    # discriminated union is not actually needed to achieve the desired behaviour. The union is still a regular one
+    # discriminated union is not actually needed to achieve the desired behavior. The union is still a regular one
     # even after add_type.
     @pytest.mark.xfail
     def test_no_type_match(self, ParentWithOptional):
