@@ -24,9 +24,11 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.4
+    rev: v2.2.6
     hooks:
       - id: codespell
+        additional_dependencies:
+          - tomli
 
   # Linter for json, yaml, md, css and more
   - repo: https://github.com/pre-commit/mirrors-prettier
