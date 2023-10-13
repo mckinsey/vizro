@@ -11,29 +11,29 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import NavigationPagesType
-import base64
+
 from vizro._constants import STATIC_URL_PREFIX
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
 
 
-class Icon(VizroBaseModel):
+class NavItem(VizroBaseModel):
     """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
-        title (Optional[str]): Title to be displayed in the tooltip on hover.
-        icon_src (Optional[str]): URI (relative or absolute) of the embeddable content.
-        icon_href (Optional[str]): Existing page path to navigate to given page. Defaults to `None`.
+        tooltip (Optional[str]): Text to be displayed in the tooltip on icon hover.
+        image (Optional[str]): URI (relative or absolute) of the embeddable content.
         pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
                 Defaults to `None`.
     """
 
-    title: Optional[str]
-    icon_src: Optional[str]
-    icon_href: Optional[str] = Field(None, description="Existing page path to navigate to given page.")
-    pages: Optional[NavigationPagesType] = None
+    tooltip: Optional[str]
+    image: Optional[str]
+    pages: Optional[NavigationPagesType] = None # not optional
     _selector: Accordion = PrivateAttr()
+
+    # text: Optional[str]
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
@@ -44,21 +44,19 @@ class Icon(VizroBaseModel):
 
     def _set_selector(self):
         from vizro.models._navigation.accordion import Accordion
-
         self._selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self):
-        icon = dbc.Button(
+        return dbc.Button(
             id=self.id,
             children=[
                 self._get_icon_image(),
                 self._create_icon_tooltip(),
             ],
             className="icon_button",
-            href=self.icon_href if bool(self.icon_href) else self._get_page_href(),
+            href=self._get_page_href(),
         )
-        return icon
 
     def _get_page_href(self):
         if self.pages:
@@ -69,9 +67,9 @@ class Icon(VizroBaseModel):
                     return page["relative_path"]
 
     def _create_icon_tooltip(self):
-        if self.title:
+        if self.tooltip:
             tooltip = dbc.Tooltip(
-                children=html.P(self.title),
+                children=html.P(self.tooltip),
                 target=self.id,
                 placement="bottom",
                 className="custom_tooltip",
@@ -80,16 +78,12 @@ class Icon(VizroBaseModel):
             return tooltip
 
     def _get_icon_image(self):
-        if self.icon_src:
-            return html.Img(
-                src=self.icon_src,
-                width=24,
-                height=24,
-                className="icon",
-            )
-        return html.Div(
-            className="placeholder-image"
+        return html.Img(
+            src=self.image if self.image else self._get_default_img(),
+            width=24,
+            height=24,
+            className="icon",
         )
 
     def _get_default_img(self):
-        pass
+        return STATIC_URL_PREFIX + "/images/icon_1.svg"
