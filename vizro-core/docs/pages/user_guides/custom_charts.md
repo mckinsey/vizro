@@ -3,9 +3,9 @@
 This guide shows you how to create custom charts and how to add them to your dashboard.
 
 The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the user guide on [components][graph].
-In general, the usage of our custom chart decorator `@capture("graph")` is required if your plotly express chart requires any post-update calls or customization.
+In general, the usage of our custom chart decorator `@capture("graph")` is required if your plotly chart requires any post-update calls or customization.
 
-**When to use our custom chart decorator?**
+When to use our custom chart decorator
 
 - If you want to use any of the post figure update calls by `plotly` e.g., `update_layout`, `update_xaxes`, `update_traces`, etc. (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
 - If you want to use a custom-created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short, `go.Figure()`) and add traces yourself via [`add_trace`](https://plotly.com/python/creating-and-updating-figures/#adding-traces)

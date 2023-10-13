@@ -91,7 +91,7 @@ in the cmd. For more gunicorn configuration, please refer to [gunicorn docs](htt
 
 
 ## Deployment of Vizro app
-In general, Vizro is functioning as a higher-level wrapper around Dash. So if you want to deploy a Vizro app, similar steps apply as if you were to deploy a Dash app.
+In general, Vizro is returning a Dash app. So if you want to deploy a Vizro app, similar steps apply as if you were to deploy a Dash app.
 For more details, see the docs on [Dash for deployment](https://dash.plotly.com/deployment#heroku-for-sharing-public-dash-apps).
 
 For reference (where app is a Dash app):

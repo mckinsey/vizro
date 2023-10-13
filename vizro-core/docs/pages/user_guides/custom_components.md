@@ -8,7 +8,7 @@ In general, you can create a custom component based on any dash-compatible compo
 
 
 !!!warning
-    When creating your own custom components, you are responsible for the security of your component (e.g. setting HTML from code which might expose users to cross-site scripting). Vizro cannot guarantee
+    When creating your own custom components, you are responsible for the security of your component (e.g. prevent setting HTML from code which might expose users to cross-site scripting). Vizro cannot guarantee
     the security of custom created components, so make sure you keep this in mind when publicly deploying your dashboard.
 
 
