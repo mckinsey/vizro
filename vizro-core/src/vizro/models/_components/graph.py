@@ -39,7 +39,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path=px
-    )  # LN: Needs to be refactored so plotly-independent or extendable
+    )  # MS: needs to be refactored so plotly-independent or extendable
     actions: List[Action] = []
 
     # Re-used validators
@@ -80,7 +80,7 @@ class Graph(VizroBaseModel):
 
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)  # LN: Needs to be refactored so plotly-independent or extendable
+            fig.update_layout(margin_t=24)  # MS: needs to be refactored so plotly-independent or extendable
         return fig
 
     # Convenience wrapper/syntactic sugar.
