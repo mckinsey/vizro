@@ -1,16 +1,23 @@
 # How to create custom charts
 
 This guide shows you how to create custom charts and how to add them to your dashboard.
-
 The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the user guide on [components][graph].
 
-We always recommend starting with [`plotly.express`](https://plotly.com/python/plotly-express/) charts first, but in case that none of the available charts fulfill your requirements, you can also use any custom created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short `go.Figure()`). It is equally possible to _enhance_ the resulting `go.Figure()` of a `plotly.express` function call. In general, custom/customized charts need to obey the following conditions:
+## Overview of custom charts
 
-!!! note "Conditions for using any `go.Figure()` in [`Graph`][vizro.models.Graph]"
-    - a `go.Figure()` object is returned by a function
-    - this function must be decorated with the `@capture("graph")` decorator
-    - this function accepts a `data_frame` argument (of type `pandas.DataFrame`)
-    - the visualization is derived from and requires only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
+In general, the usage of the custom chart decorator `@capture("graph")` is required if your plotly chart requires any post-update calls or customization.
+
+### When to use a custom chart
+
+- If you want to use any of the post figure update calls by `plotly` e.g., `update_layout`, `update_xaxes`, `update_traces`, etc. (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
+- If you want to use a custom-created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short, `go.Figure()`) and add traces yourself via [`add_trace`](https://plotly.com/python/creating-and-updating-figures/#adding-traces)
+
+### Requirements of a custom chart function
+
+- a `go.Figure()` object is returned by the function
+- the function must be decorated with the `@capture("graph")` decorator
+- the function accepts a `data_frame` argument (of type `pandas.DataFrame`)
+- the visualization is derived from and requires only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
 
 The below minimal example can be used as a base to build more sophisticated charts.
 
