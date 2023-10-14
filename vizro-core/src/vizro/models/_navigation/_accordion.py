@@ -76,7 +76,7 @@ class Accordion(VizroBaseModel):
                 html.Hr(),
             ],
             className="nav_panel",
-            id=f"{self.id}_outer",
+            id="nav_panel_outer",
         )
 
     def _create_accordion(self, active_page_id):

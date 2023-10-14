@@ -103,7 +103,7 @@ class Dashboard(VizroBaseModel):
         self._update_theme()
 
         return dbc.Container(
-            id="dashboard_container",
+            id="dashboard_container_outer",
             children=[
                 html.Div(id=f"vizro_version_{vizro.__version__}"),
                 ActionLoop._create_app_callbacks(),
@@ -117,7 +117,7 @@ class Dashboard(VizroBaseModel):
     def _update_theme():
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
-            Output("dashboard_container", "className"),
+            Output("dashboard_container_outer", "className"),
             Input("theme_selector", "on"),
         )
 
