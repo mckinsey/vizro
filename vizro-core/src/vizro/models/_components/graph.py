@@ -127,16 +127,14 @@ class Graph(VizroBaseModel):
             patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
             return patched_figure
 
-    def _update_theme_call(self, theme_bool, **kwargs):
-        """Define __call__ method that includes theme update if applicable."""
-        return self.__call__(**kwargs).update_layout(template="vizro_dark" if theme_bool else "vizro_light")
-
     def _get_action_callback_output(self):
-        return Output(
+        return Output( # maybe just do the string? check with Petar, is that 
             component_id=self.id,
             component_property="figure",
             allow_duplicate=True,
         )
+    
+    # do private attribute with a value
 
     # def _get_click_trigger_property(self):
     #     """Define trigger property for click interaction"""

@@ -194,12 +194,9 @@ def _get_modified_page_charts(
 
     outputs = {}
     for target in targets:
-        if hasattr(model_manager[target], "_update_theme_call"):
-            outputs[target] = model_manager[target]._update_theme_call(
-                theme_bool=ctd_theme["value"], data_frame=filtered_data[target], **parameterized_config[target]
-            )
-        else:
-            outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
+        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
+        if hasattr(outputs[target], "update_layout"):
+            outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
         # LN: needs to be refactored so plotly-independent or extendable - DONE
         # MS: is the common theme to be targetable?
 
