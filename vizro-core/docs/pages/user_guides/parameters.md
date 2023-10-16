@@ -77,6 +77,9 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
     [Parameter]: ../../assets/user_guides/control/control4.png
 
+!!! tip
+    If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
+
 ## Nested Parameters
 
 If you want to modify nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.

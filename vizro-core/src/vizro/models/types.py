@@ -68,8 +68,8 @@ class CapturedCallable:
 
     @property
     def _arguments(self):
-        # TODO: This is only used once in _get_parametrized_config and should be removed when that reference is
-        #  removed.
+        # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
+        # references are removed.
         return self.__bound_arguments.arguments
 
     @classmethod
@@ -214,7 +214,7 @@ class capture:
 
             return wrapped
         elif self._mode == "table":
-            # React component
+            # The table component
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 return CapturedCallable(func, *args, **kwargs)

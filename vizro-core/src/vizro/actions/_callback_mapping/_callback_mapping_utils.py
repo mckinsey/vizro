@@ -89,7 +89,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",
+            component_property="value",  # LN: needs to be refactored so that it is independent of implementation details
         )
         for control in page.controls
         if isinstance(control, control_type)
@@ -208,13 +208,23 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
             })
     return outputs
 
+    # return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
+    #     target: model_manager[target]._get_action_callback_output()
+    #     for target in targets
+    #     if hasattr(model_manager[target], "_get_action_callback_output")
+    # }
+
 
 def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[State]]:
     """Gets mapping of relevant output target name and Outputs for `export_data` action."""
     action = model_manager[action_id]
+
     try:
         targets = action.function["targets"]  # type: ignore[attr-defined]
     except KeyError:
+        targets = None
+
+    if not targets:
         targets = _get_components_with_data(action_id=action_id)
 
     return {
@@ -238,6 +248,9 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
     try:
         targets = action.function["targets"]  # type: ignore[attr-defined]
     except KeyError:
+        targets = None
+
+    if not targets:
         targets = _get_components_with_data(action_id=action_id)
 
     return [

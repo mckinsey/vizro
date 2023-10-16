@@ -27,7 +27,8 @@ class Parameter(VizroBaseModel):
     Args:
         type (Literal["parameter"]): Defaults to `"parameter"`.
         targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.
-        selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+        selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value
+            `"NONE"` into `None` to allow optional parameters.
 
     Raises:
         ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.

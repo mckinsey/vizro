@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import Input, Output, Patch, callback, dcc, html
+from dash import dcc, html
 from pydantic import Field, root_validator, validator
 
-import vizro._themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError
-from vizro.models import Action, Dashboard, Graph, Layout, VizroBaseModel
+from vizro.models import Action, Dashboard, Graph, Layout, Navigation, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
@@ -116,7 +115,6 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self):
-        self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         components_content = [
             html.Div(
@@ -132,24 +130,6 @@ class Page(VizroBaseModel):
         ]
         return self._make_page_layout(controls_content, components_content)
 
-    def _update_graph_theme(self):  # LN: Needs to be refactored so plotly-independent or extendable
-        outputs = [
-            Output(component.id, "figure", allow_duplicate=True)
-            for component in self.components
-            if isinstance(component, Graph)
-        ]
-        if outputs:
-
-            @callback(
-                outputs,
-                Input("theme_selector", "on"),
-                prevent_initial_call="initial_duplicate",
-            )
-            def update_graph_theme(theme_selector_on: bool):
-                patched_figure = Patch()
-                patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
-                return [patched_figure] * len(outputs)
-
     @staticmethod
     def _create_theme_switch():
         _, dashboard = next(model_manager._items_with_type(Dashboard))
@@ -160,21 +140,15 @@ class Page(VizroBaseModel):
 
     @staticmethod
     def _create_control_panel(controls_content):
-        keyline = html.Div(className="keyline")
         control_panel = html.Div(
-            children=[*controls_content, keyline],
+            children=[*controls_content, html.Hr()],
             className="control_panel",
         )
         return control_panel if controls_content else None
 
     def _create_nav_panel(self):
-        from vizro.models._navigation._accordion import Accordion
-
         _, dashboard = next(model_manager._items_with_type(Dashboard))
-        if dashboard.navigation:
-            return dashboard.navigation.build()
-
-        return Accordion().build()
+        return cast(Navigation, dashboard.navigation).build(active_page_id=self.id)
 
     def _create_component_container(self, components_content):
         component_container = html.Div(
@@ -202,9 +176,7 @@ class Page(VizroBaseModel):
         """
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (
-            html.Div(
-                children=[html.H2(dashboard.title), html.Div(className="keyline")], className="dashboard_title_outer"
-            )
+            html.Div(children=[html.H2(dashboard.title), html.Hr()], className="dashboard_title_outer")
             if dashboard.title
             else None
         )

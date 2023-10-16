@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from dash import dash_table, dcc
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
@@ -117,7 +118,7 @@ page_0 = vm.Page(
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
-        # vm.Parameter(targets=["datatable_id.page_size"], selector=vm.RadioItems(options=[3, 6]))
+        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
     ],
 )
 dashboard = vm.Dashboard(pages=[page_0])

@@ -1,14 +1,10 @@
 """Fixtures to be shared across several tests."""
+
 import dash_bootstrap_components as dbc
 import pytest
 from dash import html
 
-from vizro import Vizro
-
-
-@pytest.fixture
-def dashboard_build(dashboard):
-    return Vizro().build(dashboard)
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 
 
 @pytest.fixture()
@@ -27,12 +23,14 @@ def accordion_from_page_as_list():
         dbc.Button(
             children=["Page 1"],
             className="accordion-item-button",
+            active=True,
             key="/",
             href="/",
         ),
         dbc.Button(
             children=["Page 2"],
             className="accordion-item-button",
+            active=False,
             key="/page-2",
             href="/page-2",
         ),
@@ -40,7 +38,7 @@ def accordion_from_page_as_list():
     accordion_items = [
         dbc.AccordionItem(
             children=[*accordion_buttons],
-            title="SELECT PAGE",
+            title=ACCORDION_DEFAULT_TITLE,
             class_name="accordion_item",
         )
     ]
@@ -52,8 +50,9 @@ def accordion_from_page_as_list():
                 class_name="accordion",
                 persistence=True,
                 persistence_type="session",
+                always_open=True,
             ),
-            html.Div(className="keyline"),
+            html.Hr(),
         ],
         className="nav_panel",
         id="accordion_list_outer",
@@ -65,13 +64,17 @@ def accordion_from_page_as_list():
 def accordion_from_pages_as_dict():
     accordion_items = [
         dbc.AccordionItem(
-            children=[dbc.Button(children=["Page 1"], className="accordion-item-button", key="/", href="/")],
+            children=[
+                dbc.Button(children=["Page 1"], className="accordion-item-button", active=True, key="/", href="/")
+            ],
             title="PAGE 1",
             class_name="accordion_item",
         ),
         dbc.AccordionItem(
             children=[
-                dbc.Button(children=["Page 2"], className="accordion-item-button", key="/page-2", href="/page-2")
+                dbc.Button(
+                    children=["Page 2"], className="accordion-item-button", active=False, key="/page-2", href="/page-2"
+                )
             ],
             title="PAGE 2",
             class_name="accordion_item",
@@ -85,8 +88,9 @@ def accordion_from_pages_as_dict():
                 class_name="accordion",
                 persistence=True,
                 persistence_type="session",
+                always_open=True,
             ),
-            html.Div(className="keyline"),
+            html.Hr(),
         ],
         className="nav_panel",
         id="accordion_dict_outer",

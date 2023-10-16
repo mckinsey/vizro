@@ -54,9 +54,9 @@ class DataManager:
         if component_id in self.__component_to_original:
             raise ValueError(
                 f"Component with id={component_id} already exists and is mapped to dataset "
-                f"{self.__component_to_original[component_id]}. Components must have a unique id across the "
+                f"{self.__component_to_original[component_id]}. Components must uniquely map to a dataset across the "
                 f"whole dashboard. If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro.managers import model_manager; model_manager._reset()`."
+                f"use 'from vizro.managers import data_manager; data_manager._reset()`."
             )
         self.__component_to_original[component_id] = dataset_name
 
