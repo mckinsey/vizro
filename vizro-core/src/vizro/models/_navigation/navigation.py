@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 def _validate_pages(pages):
     from vizro.models import Page
 
+    # No to page[0]
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
 
     if pages is None:
@@ -26,6 +27,10 @@ def _validate_pages(pages):
     if not pages:
         raise ValueError("Ensure this value has at least 1 item.")
 
+    # Understand this, change to sets. Tests should still work ok.
+    # Don't want to have switch between types here - just take in leaves of nested structure, so list of pages.
+    # sum(d.values(), []) or chain(*d.values())
+    # Do with sets
     if isinstance(pages, dict):
         missing_pages = [
             page
@@ -53,9 +58,11 @@ class Navigation(VizroBaseModel):
     """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
     Args:
-        pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
+        pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].
             Defaults to `None`.
     """
+    # Make pages non-optional here? Probably yes even though technically breaking.
+    # Could have check that you need to set pages OR selector.
 
     pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()
@@ -70,6 +77,9 @@ class Navigation(VizroBaseModel):
     def _set_selector(self):
         from vizro.models._navigation._accordion import Accordion
 
+        # Put in pre_build directly.
+
+        # if self.selector is None?
         self._selector = Accordion(pages=self.pages)
 
     @_log_call

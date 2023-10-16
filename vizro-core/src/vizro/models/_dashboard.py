@@ -75,6 +75,7 @@ class Dashboard(VizroBaseModel):
     def validate_navigation(cls, navigation, values):
         if "pages" not in values:
             return navigation
+        # Does this go here? I think yes.
         if navigation is None:
             return Navigation(pages=[page.id for page in values["pages"]])
         return navigation
