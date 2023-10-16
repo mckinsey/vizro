@@ -27,7 +27,8 @@ class Accordion(VizroBaseModel):
     # currently accepts List[str] too
     # don't want to get all pages here.
     # Make it non-optional for now anyway. Doesn't make sense as optional given now don't have Dropdown etc.
-    # (technically breaking)
+    # And there's only one field here anyway.
+    # (technically breaking if it was public)
     pages: Optional[NavigationPagesType] = None
     # 2 cases: list of pages, dictionary of pages
     # Convert both in validator to dict.

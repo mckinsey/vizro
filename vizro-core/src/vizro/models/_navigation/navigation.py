@@ -61,14 +61,12 @@ class Navigation(VizroBaseModel):
         pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].
             Defaults to `None`.
     """
-    # Make pages non-optional here? Probably yes even though technically breaking.
-    # Could have check that you need to set pages OR selector.
-
     pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
+    # does this set to all pages also?
 
     @_log_call
     def pre_build(self):
@@ -78,8 +76,6 @@ class Navigation(VizroBaseModel):
         from vizro.models._navigation._accordion import Accordion
 
         # Put in pre_build directly.
-
-        # if self.selector is None?
         self._selector = Accordion(pages=self.pages)
 
     @_log_call
