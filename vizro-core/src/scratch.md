@@ -5,9 +5,9 @@
 2. Tab and Page model look very similar in configurations (essentially Tabs are sub-pages within a Page) - should we do configurations differently?
 3. Should we have Tabs and Tab as separate models? In Dash they are treated as separate models as well, but it kind of adds another layer of hierarchy
 4. Shall we define components within tabs or globally on page and then reference as ID in tabs?
-5. How should the filter/parameter flow look like? 
+5. How should the filter/parameter flow look like?
    1. If no targets specified -> apply to all tabs or only visible tabs?
-   2. If targets specified -> should enable ability to target specific figure in  tab as normal
+   2. If targets specified -> should enable ability to target specific figure in tab as normal
    3. If filters only affect a tab - should it still live on the left-side or be moved to the tab? Where should it go?
 6. Still to fix:
    - CSS
@@ -26,10 +26,10 @@ class Page(VizroBaseModel):
 class Tab(VizroBaseModel):
     components: List[TabComponentType]
     label: str = Field(..., description="Tab Lable to be displayed.")
-    title: Optional[str]  # do we need this one? 
+    title: Optional[str]  # do we need this one?
     # layout: Optional[Layout]
     # controls: List[ControlType] = []  -> should be done implicitly without configuring? -> tendency to remove it
-    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it  
+    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it
 
 
 class Tabs(VizroBaseModel):

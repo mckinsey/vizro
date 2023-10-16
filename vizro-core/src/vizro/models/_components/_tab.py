@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from dash import dcc, html
-from pydantic import Field
 import dash_bootstrap_components as dbc
+from dash import html
+from pydantic import Field
+
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import TabComponentType
@@ -25,8 +26,8 @@ class Tab(VizroBaseModel):
             html.Div(children=[html.H3(self.title), *components]),
             id=self.id,
             label=self.label,
-            tabClassName='custom-tab',
-            labelClassName='custom-tab-label',
-            activeTabClassName='custom-tab-active',
-            activeLabelClassName='custom-tab-label-active'
+            tabClassName="custom-tab",
+            labelClassName="custom-tab-label",
+            activeTabClassName="custom-tab-active",
+            activeLabelClassName="custom-tab-label-active",
         )

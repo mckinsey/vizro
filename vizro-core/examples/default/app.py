@@ -19,19 +19,16 @@ page = vm.Page(
                     components=[
                         vm.Graph(
                             id="variable_map",
-                            figure=px.choropleth(
-                                df_gapminder,
-                                locations="iso_alpha",
-                                color="lifeExp",
+                            figure=px.scatter(
+                                df_gapminder.query("year==2007"),
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
                                 hover_name="country",
-                                animation_frame="year",
-                                labels={
-                                    "year": "year",
-                                    "lifeExp": "Life expectancy",
-                                    "pop": "Population",
-                                    "gdpPercap": "GDP per capita",
-                                },
-                                title="Global development over time",
+                                log_x=True,
+                                size_max=60,
+                                title="Comparison of gdpPercap and lifeExp",
                             ),
                         )
                     ],
@@ -71,7 +68,7 @@ page = vm.Page(
     ],
     controls=[
         vm.Parameter(
-            targets=["variable_map.color", "variable_boxplot.y"],
+            targets=["variable_map.y", "variable_boxplot.y"],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         )
     ],

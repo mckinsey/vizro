@@ -1,30 +1,30 @@
 .tabs_container_outer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-03);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
 }
 
 .tabs_container {
-    display: flex;
-    padding: 0;
-    height: 32px;
-    align-items: flex-start;
-    gap: var(--spacing-04);
-    border-bottom: 1px solid var(--border-subtle-alpha-01);
+  display: flex;
+  padding: 0;
+  height: 32px;
+  align-items: flex-start;
+  gap: var(--spacing-04);
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
 .custom-tab {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-02);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-02);
 }
 
 .custom-tab-active {
-    color: var(--text-active);
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--text-active);
- }
+  color: var(--text-active);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--text-active);
+}
 
 .custom-tab-label-active {
-    color: var(--text-active);
+  color: var(--text-active);
 }
