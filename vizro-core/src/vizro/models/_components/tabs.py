@@ -6,7 +6,7 @@ from dash import dcc, html
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-
+import dash_bootstrap_components as dbc
 if TYPE_CHECKING:
     from vizro.models._components import Tab
 
@@ -19,6 +19,12 @@ class Tabs(VizroBaseModel):
     @_log_call
     def build(self):
         return html.Div(
-            [html.H3(self.title), dcc.Tabs(id=self.id, children=[tab.build() for tab in self.tabs])],
-            className="tabs_container",
+            [html.H3(self.title),
+             dbc.Tabs(
+                id=self.id,
+                children=[tab.build() for tab in self.tabs],
+                className='tabs_container'
+             ),
+             ],
+            className="tabs_container_outer"
         )

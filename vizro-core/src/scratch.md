@@ -9,6 +9,9 @@
    1. If no targets specified -> apply to all tabs or only visible tabs?
    2. If targets specified -> should enable ability to target specific figure in  tab as normal
    3. If filters only affect a tab - should it still live on the left-side or be moved to the tab? Where should it go?
+6. Still to fix:
+   - CSS
+   - Themes do not update on chart currently -> caused by the fact that theme_update in charts live in Page - should optimally be refactored out and live in the components
 
 ```
 class Page(VizroBaseModel):
@@ -17,6 +20,7 @@ class Page(VizroBaseModel):
     layout: Optional[Layout]
     controls: List[ControlType] = []
     actions: List[ActionsChain] = []
+    path
 
 
 class Tab(VizroBaseModel):
@@ -25,7 +29,7 @@ class Tab(VizroBaseModel):
     title: Optional[str]  # do we need this one? 
     # layout: Optional[Layout]
     # controls: List[ControlType] = []  -> should be done implicitly without configuring? -> tendency to remove it
-    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it
+    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it  
 
 
 class Tabs(VizroBaseModel):

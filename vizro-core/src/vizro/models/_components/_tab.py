@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from dash import dcc, html
 from pydantic import Field
-
+import dash_bootstrap_components as dbc
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import TabComponentType
@@ -21,11 +21,12 @@ class Tab(VizroBaseModel):
     @_log_call
     def build(self):
         components = [component.build() for component in self.components]
-        return dcc.Tab(
+        return dbc.Tab(
+            html.Div(children=[html.H3(self.title), *components]),
             id=self.id,
             label=self.label,
-            children=html.Div(
-                children=[html.H4(self.title), *components],
-                id=f"{self.id}_outer",
-            ),
+            tabClassName='custom-tab',
+            labelClassName='custom-tab-label',
+            activeTabClassName='custom-tab-active',
+            activeLabelClassName='custom-tab-label-active'
         )

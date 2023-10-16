@@ -11,11 +11,11 @@ page = vm.Page(
     title="Testing out tabs",
     components=[
         vm.Tabs(
-            title="Global Title",
+            title="Global Tabs Title",
             tabs=[
                 vm.Tab(
-                    label="Tab 1 Label",
-                    title="Tab 1 Title",
+                    label="Tab I Label",
+                    title="Tab I Title",
                     components=[
                         vm.Graph(
                             id="variable_map",
@@ -37,8 +37,8 @@ page = vm.Page(
                     ],
                 ),
                 vm.Tab(
-                    label="Tab 2 Label",
-                    title="Tab 2 Title",
+                    label="Tab II Label",
+                    title="Tab II Title",
                     components=[
                         vm.Graph(
                             id="variable_boxplot",
