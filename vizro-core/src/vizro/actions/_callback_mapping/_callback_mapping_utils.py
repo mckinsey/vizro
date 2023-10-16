@@ -89,7 +89,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",
+            component_property="value", #LN: needs to be refactored so that it is independent of implementation details
         )
         for control in page.controls
         if isinstance(control, control_type)
@@ -107,7 +107,7 @@ def _get_inputs_of_chart_interactions(
     return [
         State(
             component_id=_get_triggered_model(action_id=ModelID(str(action.id))).id,
-            component_property="clickData",  # MS: needs to be refactored so plotly-independent or extendable
+            component_property="clickData",   #LN: needs to be refactored so that it is independent of implementation details
         )
         for action in chart_interactions_on_page
     ]
@@ -162,7 +162,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
             component_id=target,
             component_property="children"
             if model_manager[target].type == "table" or model_manager[target].type == "react"
-            else "figure",  # MS: needs to be refactored so plotly-independent or extendable
+            else "figure",  # LN: needs to be refactored so plotly-independent or extendable
             allow_duplicate=True,
         )
         for target in targets

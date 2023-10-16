@@ -78,3 +78,13 @@ class Table(VizroBaseModel):
         additional_args = self.figure._arguments.copy()
         additional_args.pop("data_frame", None)
         return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)
+
+    def _update_theme_call(self,theme_bool,**kwargs):
+        return self.__call__(**kwargs)#.update_layout(template="vizro_dark" if theme_bool else "vizro_light")
+    
+    def _get_update_graph_theme_output(self):
+        pass
+    
+    # def _get_click_trigger_property(self):
+    #     """Define trigger property for click interaction"""
+    #     return "active_cell"

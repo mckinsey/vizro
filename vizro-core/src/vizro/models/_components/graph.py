@@ -12,6 +12,8 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
+from dash import Input, Output, Patch, callback, dcc, html
+
 logger = logging.getLogger(__name__)
 
 
@@ -39,7 +41,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path=px
-    )  # MS: needs to be refactored so plotly-independent or extendable
+    )  # LN: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
     actions: List[Action] = []
 
     # Re-used validators
@@ -80,7 +82,7 @@ class Graph(VizroBaseModel):
 
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)  # MS: needs to be refactored so plotly-independent or extendable
+            fig.update_layout(margin_t=24)  # LN: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -111,3 +113,15 @@ class Graph(VizroBaseModel):
             color="grey",
             parent_className="chart_container",
         )
+
+    def _update_theme_call(self,theme_bool,**kwargs):
+        """Define __call__ method that includes theme update if applicable"""
+        return self.__call__(**kwargs).update_layout(template="vizro_dark" if theme_bool else "vizro_light")
+    
+    def _get_update_graph_theme_output(self):
+        """Define output for theme selector callback"""
+        return Output(self.id, "figure", allow_duplicate=True)
+    
+    # def _get_click_trigger_property(self):
+    #     """Define trigger property for click interaction"""
+    #     return "clickData"

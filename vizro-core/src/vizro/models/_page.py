@@ -132,11 +132,10 @@ class Page(VizroBaseModel):
         ]
         return self._make_page_layout(controls_content, components_content)
 
-    def _update_graph_theme(self):  # MS: needs to be refactored so plotly-independent or extendable
+    def _update_graph_theme(self):  # LN: needs to be refactored so plotly-independent or extendable - DONE
         outputs = [
-            Output(component.id, "figure", allow_duplicate=True)
-            for component in self.components
-            if isinstance(component, Graph)
+            component._get_update_graph_theme_output()
+            for component in self.components if component._get_update_graph_theme_output() is not None
         ]
         if outputs:
 
