@@ -98,19 +98,50 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
 
 def _get_inputs_of_chart_interactions(
     action_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[State]:
+) -> Dict[str, Dict[str, State]]:
     """Gets list of States for selected chart interaction `action_name` of triggered page."""
     chart_interactions_on_page = _get_matching_actions_by_function(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
-    return [
-        State(
-            component_id=_get_triggered_model(action_id=action.id).id,  # type: ignore[arg-type]
-            component_property="clickData",  # LN: Needs to be refactored so plotly-independent or extendable
-        )
-        for action in chart_interactions_on_page
-    ]
+
+    states = {}
+    for action in chart_interactions_on_page:
+        triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
+        if triggered_model.type == "table" or triggered_model.type == "react":
+            states.update({
+                action.id: {
+                    "active_cell": State(
+                        component_id=triggered_model.id,
+                        component_property="active_cell"
+                    ),
+                    "derived_viewport_data": State(
+                        component_id=triggered_model.id,
+                        component_property="derived_viewport_data"
+                    )
+                }
+            })
+
+        else:
+            states.update({
+                action.id: {
+                    "clickData": State(
+                        component_id=triggered_model.id,
+                        component_property="clickData"
+                    ),
+                }
+            })
+
+
+    # return [
+    #     State(
+    #         component_id=_get_triggered_model(action_id=action.id).id,  # type: ignore[arg-type]
+    #         component_property="clickData",  # LN: Needs to be refactored so plotly-independent or extendable
+    #     )
+    #     for action in chart_interactions_on_page
+    # ]
+
+    return states
 
 
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
@@ -134,7 +165,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
         "filter_interaction": (
             _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
-            else []
+            else {}
         ),
         "theme_selector": (State("theme_selector", "on") if "theme_selector" in include_inputs else []),
     }
@@ -157,16 +188,25 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
 
-    return {
-        target: Output(
-            component_id=target,
-            component_property="children"
-            if model_manager[target].type == "table" or model_manager[target].type == "react"
-            else "figure",  # LN: Needs to be refactored so plotly-independent or extendable
-            allow_duplicate=True,
-        )
-        for target in targets
-    }
+    outputs = {}
+    for target in targets:
+        if model_manager[target].type == "table" or model_manager[target].type == "react":
+            outputs.update({
+                target: Output(
+                    component_id=f"{target}_outer",
+                    component_property="children",
+                    allow_duplicate=True,
+                )
+            })
+        else:
+            outputs.update({
+                target: Output(
+                    component_id=target,
+                    component_property="figure",
+                    allow_duplicate=True,
+                )
+            })
+    return outputs
 
 
 def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[State]]:

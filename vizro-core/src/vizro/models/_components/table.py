@@ -77,4 +77,7 @@ class Table(VizroBaseModel):
         data = data_manager._get_component_data(self.id)  # type: ignore
         additional_args = self.figure._arguments.copy()
         additional_args.pop("data_frame", None)
-        return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)
+
+        datatable = self.figure._function(data_frame=data, **additional_args)
+
+        return html.Div(datatable, id=f"{self.id}_outer")

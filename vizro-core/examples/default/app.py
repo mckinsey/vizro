@@ -10,12 +10,13 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
+import vizro.plotly.express as px
+from vizro.actions import filter_interaction, export_data
 
 
 def retrieve_table_data():
     """Return data for table for testing."""
-    data = {
-        "State": [
+    states = [
             "California",
             "Arizona",
             "Nevada",
@@ -24,11 +25,14 @@ def retrieve_table_data():
             "Texas",
             "North Carolina",
             "New York",
-        ],
-        "Number of Solar Plants": [289, 48, 11, 33, 20, 12, 148, 13],
-        "Installed Capacity (MW)": [4395, 1078, 238, 261, 118, 187, 669, 53],
-        "Average MW Per Plant": [15.3, 22.5, 21.6, 7.9, 5.9, 15.6, 4.5, 4.1],
-        "Generation (GWh)": [10826, 2550, 557, 590, 235, 354, 1162, 84],
+        ]
+
+    data = {
+        "State": states + states[::-1],
+        "Number of Solar Plants": [289, 48, 11, 33, 20, 12, 148, 13] * 2,
+        "Installed Capacity (MW)": [4395, 1078, 238, 261, 118, 187, 669, 53] * 2,
+        "Average MW Per Plant": [15.3, 22.5, 21.6, 7.9, 5.9, 15.6, 4.5, 4.1] * 2,
+        "Generation (GWh)": [10826, 2550, 557, 590, 235, 354, 1162, 84] * 2,
     }
 
     return pd.DataFrame(data)
@@ -48,8 +52,8 @@ def table_go(data_frame=None, template=None):
     )
 
 
-#@capture("graph")
-#def d3_bar(data_frame=None):
+# @capture("graph")
+# def d3_bar(data_frame=None):
 #    """Custom table."""
 #    return d3_bar_chart.D3BarChart(
 #        id="input",
@@ -58,13 +62,19 @@ def table_go(data_frame=None, template=None):
 #    )
 
 
-@capture("action")
-def table_dash(data_frame=None, style_header=None):
+@capture("graph")
+def table_dash(data_frame=None, style_header=None, **kwargs):
     """Custom table."""
     return dash_table.DataTable(
+
+        # PP: Don't know a better way how to insert the 'id' into datatable than manually.
+        id="datatable_id",
+
         data=data_frame.to_dict("records"),
         columns=[{"name": i, "id": i} for i in data_frame.columns],
         style_header=style_header,
+        # page_size=6,
+        **kwargs
     )
 
 
@@ -81,12 +91,33 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        vm.React(id="table2", figure=table_dash(data_frame="table_data")),
+        vm.Table(
+            id="datatable_id",
+            figure=table_dash(
+                data_frame="table_data"
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+        ),
+        vm.Graph(
+            id="scatter_chart",
+            figure=px.scatter(
+                data_frame="table_data",
+                x="State",
+                y="Number of Solar Plants",
+                color="Number of Solar Plants",
+                custom_data=["State"]
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["datatable_id"]))]
+        ),
         # vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
+        vm.Button(
+            id='export_data_button',
+            actions=[vm.Action(function=export_data())]
+        )
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
-        # vm.Parameter(targets=["table2.figure.page_size"], selector=vm.RadioItems(options=[3,5]))
+        # vm.Parameter(targets=["datatable_id.page_size"], selector=vm.RadioItems(options=[3, 6]))
     ],
 )
 dashboard = vm.Dashboard(pages=[page_0])

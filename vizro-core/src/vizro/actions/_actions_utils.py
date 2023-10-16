@@ -61,26 +61,47 @@ def _apply_filter_interaction(
     ctds_filter_interaction: List[CallbackTriggerDict],
     target: str,
 ) -> pd.DataFrame:
-    for ctd in ctds_filter_interaction:
-        if not ctd["value"]:
-            continue
-
-        source_chart_id = ctd["id"]
-        source_chart_actions = _get_component_actions(model_manager[source_chart_id])
-
-        try:
-            custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
-        except KeyError as exc:
-            raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
-
-        customdata = ctd["value"]["points"][0]["customdata"]  # type: ignore[call-overload]
-
-        for action in source_chart_actions:
-            if target not in action.function["targets"]:
+    for ctd_key, ctd_value in ctds_filter_interaction.items():
+        if 'clickData' in ctd_value:
+            ctd_click_data = ctd_value["clickData"]
+            if not ctd_click_data["value"]:
                 continue
 
-            for custom_data_idx, column in enumerate(custom_data_columns):
-                data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
+            source_chart_id = ctd_click_data["id"]
+            source_chart_actions = _get_component_actions(model_manager[source_chart_id])
+
+            try:
+                custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
+            except KeyError as exc:
+                raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
+
+            customdata = ctd_click_data["value"]["points"][0]["customdata"]  # type: ignore[call-overload]
+
+            for action in source_chart_actions:
+                if target not in action.function["targets"]:
+                    continue
+
+                for custom_data_idx, column in enumerate(custom_data_columns):
+                    data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
+
+        if 'active_cell' in ctd_value and "derived_viewport_data" in ctd_value:
+            ctd_active_cell = ctd_value["active_cell"]
+            ctd_derived_viewport_data = ctd_value["derived_viewport_data"]
+            if not ctd_active_cell["value"] or not ctd_value["derived_viewport_data"]:
+                continue
+
+            source_chart_id = ctd_active_cell["id"]
+            source_chart_actions = _get_component_actions(model_manager[source_chart_id])
+
+            for action in source_chart_actions:
+                if target not in action.function["targets"]:
+                    continue
+
+                column = ctd_active_cell["value"]["column_id"]
+                derived_viewport_data_row = ctd_active_cell["value"]["row"]
+                clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
+                data_frame = data_frame[data_frame[column].isin([clicked_data])]
+
     return data_frame
 
 
