@@ -135,7 +135,7 @@ class Page(VizroBaseModel):
     def _update_graph_theme(self):  # LN: needs to be refactored so plotly-independent or extendable - DONE
         outputs = [
             component._get_update_graph_theme_output()
-            for component in self.components if component._get_update_graph_theme_output() is not None
+            for component in self.components if hasattr(component,"_get_update_graph_theme_output")
         ]
         if outputs:
 
