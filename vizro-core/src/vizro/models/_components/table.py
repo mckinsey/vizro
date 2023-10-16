@@ -86,9 +86,6 @@ class Table(VizroBaseModel):
             allow_duplicate=True,
         )
 
-    def _update_theme_call(self, theme_bool, **kwargs):
-        return self.__call__(**kwargs)  # .update_layout(template="vizro_dark" if theme_bool else "vizro_light")
-
     # def _get_click_trigger_property(self):
     #     """Define trigger property for click interaction"""
     #     return "active_cell"

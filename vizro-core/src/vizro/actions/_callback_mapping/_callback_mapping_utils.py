@@ -157,7 +157,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
 
-    return {# LN: needs to be refactored so plotly-independent or extendable - DONE
+    return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
         target: model_manager[target]._get_action_callback_output()
         for target in targets
         if hasattr(model_manager[target], "_get_action_callback_output")
