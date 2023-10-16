@@ -23,7 +23,7 @@ class Tab(VizroBaseModel):
     def build(self):
         components = [component.build() for component in self.components]
         return dbc.Tab(
-            html.Div(children=[html.H3(self.title), *components]),
+            html.Div(children=[html.H3(self.title, className="tab-title"), *components]),
             id=self.id,
             label=self.label,
             tabClassName="custom-tab",

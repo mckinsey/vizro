@@ -28,3 +28,7 @@
 .custom-tab-label-active {
   color: var(--text-active);
 }
+
+.tab-title {
+  padding-top: 12px;
+}
