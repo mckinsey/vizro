@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Provide ID to unique outer HTML divs on page ([#111](https://github.com/mckinsey/vizro/pull/111))
 
-
 <!--
 ### Changed
 
