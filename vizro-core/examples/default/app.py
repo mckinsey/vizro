@@ -7,10 +7,10 @@ import plotly.graph_objects as go
 from dash import dash_table, dcc
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
-import vizro.plotly.express as px
 
 
 def retrieve_table_data():
@@ -49,8 +49,8 @@ def table_go(data_frame=None, template=None):
     )
 
 
-#@capture("graph")
-#def d3_bar(data_frame=None):
+# @capture("graph")
+# def d3_bar(data_frame=None):
 #    """Custom table."""
 #    return d3_bar_chart.D3BarChart(
 #        id="input",
@@ -82,13 +82,18 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        vm.Table(id="table2", figure=table_dash(data_frame="table_data",style_header={ 'border': '1px solid green' })),
-        vm.Graph(id="graph", figure=px.scatter(data_frame=px.data.iris(),x="sepal_width",y="sepal_length",color="species")),
+        vm.Table(id="table2", figure=table_dash(data_frame="table_data", style_header={"border": "1px solid green"})),
+        vm.Graph(
+            id="graph", figure=px.scatter(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species")
+        ),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
-        vm.Parameter(targets=["table2.style_header.border"], selector=vm.RadioItems(options=["1px solid green","1px solid pink"])),
-        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length","sepal_length"]))
+        vm.Parameter(
+            targets=["table2.style_header.border"],
+            selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
+        ),
+        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
     ],
 )
 dashboard = vm.Dashboard(pages=[page_0])

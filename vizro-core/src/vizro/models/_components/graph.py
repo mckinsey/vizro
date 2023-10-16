@@ -1,10 +1,11 @@
 import logging
 from typing import List, Literal
 
-from dash import Output, dcc
+from dash import Input, Output, Patch, callback, dcc
 from plotly import graph_objects as go
 from pydantic import Field, validator
 
+import vizro._themes as themes
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
@@ -95,6 +96,7 @@ class Graph(VizroBaseModel):
 
     @_log_call
     def build(self):
+        self._update_graph_theme()
         return dcc.Loading(
             dcc.Graph(
                 id=self.id,
@@ -114,6 +116,17 @@ class Graph(VizroBaseModel):
             parent_className="chart_container",
         )
 
+    def _update_graph_theme(self):  # LN: needs to be refactored so plotly-independent or extendable - DONE
+        @callback(
+            Output(self.id, "figure", allow_duplicate=True),
+            Input("theme_selector", "on"),
+            prevent_initial_call="initial_duplicate",
+        )
+        def update_graph_theme(theme_selector_on: bool):
+            patched_figure = Patch()
+            patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
+            return patched_figure
+
     def _update_theme_call(self, theme_bool, **kwargs):
         """Define __call__ method that includes theme update if applicable."""
         return self.__call__(**kwargs).update_layout(template="vizro_dark" if theme_bool else "vizro_light")
@@ -124,10 +137,6 @@ class Graph(VizroBaseModel):
             component_property="figure",
             allow_duplicate=True,
         )
-
-    def _get_update_graph_theme_output(self):
-        """Define output for theme selector callback."""
-        return Output(self.id, "figure", allow_duplicate=True)
 
     # def _get_click_trigger_property(self):
     #     """Define trigger property for click interaction"""
