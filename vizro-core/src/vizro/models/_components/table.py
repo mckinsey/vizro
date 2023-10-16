@@ -1,7 +1,7 @@
 import logging
 from typing import Callable, List, Literal
 
-from dash import html
+from dash import Output, html
 from pydantic import Field, validator
 
 from vizro.managers import data_manager
@@ -79,10 +79,16 @@ class Table(VizroBaseModel):
         additional_args.pop("data_frame", None)
         return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)
 
-    def _update_theme_call(self,theme_bool,**kwargs):
-        return self.__call__(**kwargs)#.update_layout(template="vizro_dark" if theme_bool else "vizro_light")
-    
-    
+    def _get_action_callback_output(self):
+        return Output(
+            component_id=self.id,
+            component_property="children",
+            allow_duplicate=True,
+        )
+
+    def _update_theme_call(self, theme_bool, **kwargs):
+        return self.__call__(**kwargs)  # .update_layout(template="vizro_dark" if theme_bool else "vizro_light")
+
     # def _get_click_trigger_property(self):
     #     """Define trigger property for click interaction"""
     #     return "active_cell"

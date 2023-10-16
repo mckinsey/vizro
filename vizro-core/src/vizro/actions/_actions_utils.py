@@ -194,8 +194,9 @@ def _get_modified_page_charts(
 
     outputs = {}
     for target in targets:
-        outputs[target] = model_manager[target]._update_theme_call(theme_bool = ctd_theme["value"],
-                data_frame=filtered_data[target], **parameterized_config[target]
-            ) #LN: needs to be refactored so plotly-independent or extendable - DONE
+        outputs[target] = model_manager[target]._update_theme_call(
+            theme_bool=ctd_theme["value"], data_frame=filtered_data[target], **parameterized_config[target]
+        )  # LN: needs to be refactored so plotly-independent or extendable - DONE
+        # MS: is the common theme to be targetable?
 
     return outputs

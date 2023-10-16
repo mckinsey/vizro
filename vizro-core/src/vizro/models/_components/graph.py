@@ -1,7 +1,7 @@
 import logging
 from typing import List, Literal
 
-from dash import dcc
+from dash import Output, dcc
 from plotly import graph_objects as go
 from pydantic import Field, validator
 
@@ -11,8 +11,6 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
-
-from dash import Input, Output, Patch, callback, dcc, html
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +80,9 @@ class Graph(VizroBaseModel):
 
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)  # LN: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
+            fig.update_layout(
+                margin_t=24
+            )  # LN: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -114,14 +114,21 @@ class Graph(VizroBaseModel):
             parent_className="chart_container",
         )
 
-    def _update_theme_call(self,theme_bool,**kwargs):
-        """Define __call__ method that includes theme update if applicable"""
+    def _update_theme_call(self, theme_bool, **kwargs):
+        """Define __call__ method that includes theme update if applicable."""
         return self.__call__(**kwargs).update_layout(template="vizro_dark" if theme_bool else "vizro_light")
-    
+
+    def _get_action_callback_output(self):
+        return Output(
+            component_id=self.id,
+            component_property="figure",
+            allow_duplicate=True,
+        )
+
     def _get_update_graph_theme_output(self):
-        """Define output for theme selector callback"""
+        """Define output for theme selector callback."""
         return Output(self.id, "figure", allow_duplicate=True)
-    
+
     # def _get_click_trigger_property(self):
     #     """Define trigger property for click interaction"""
     #     return "clickData"
