@@ -63,7 +63,7 @@ class TestSliderInstantiation:
 
         assert hasattr(slider, "id")
         assert slider.type == "slider"
-        assert slider.marks == {}
+        assert slider.marks is None
         assert slider.min is None
         assert slider.max is None
         assert slider.step is None
@@ -178,7 +178,7 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, {})])
+    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
     def test_set_default_marks(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
         assert slider.marks == expected

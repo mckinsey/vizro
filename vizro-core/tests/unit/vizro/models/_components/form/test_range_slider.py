@@ -30,7 +30,7 @@ def expected_range_slider_default():
                         persistence=True,
                         min=None,
                         max=None,
-                        marks={},
+                        marks=None,
                         value=[None, None],
                         step=None,
                     ),
@@ -139,7 +139,7 @@ class TestRangeSliderInstantiation:
 
         assert hasattr(range_slider, "id")
         assert range_slider.type == "range_slider"
-        assert range_slider.marks == {}
+        assert range_slider.marks is None
         assert range_slider.min is None
         assert range_slider.max is None
         assert range_slider.step is None
@@ -261,7 +261,7 @@ class TestRangeSliderInstantiation:
         ):
             vm.RangeSlider(min=1, max=10, marks={"start": 0, "end": 10})
 
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, {})])
+    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
     def test_set_default_marks(self, step, expected):
         slider = vm.RangeSlider(min=0, max=10, step=step)
         assert slider.marks == expected
