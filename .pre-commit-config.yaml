@@ -22,6 +22,11 @@ repos:
         entry: tools/find_forbidden_words_in_repo.sh
         language: script
         pass_filenames: false
+      - id: check-branch-name
+        name: check-branch-name
+        entry: tools/check_branch_name.sh
+        language: script
+        pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
