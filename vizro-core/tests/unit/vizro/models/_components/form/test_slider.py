@@ -170,6 +170,19 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
+        "step, marks, expected",
+        [
+            (1, None, None),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (1, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (None, {}, None),
+        ],
+    )
+    def test_set_step_and_marks(self, step, marks, expected):
+        slider = vm.Slider(min=0, max=10, step=step, marks=marks)
+        assert slider.marks == expected
+
+    @pytest.mark.parametrize(
         "title",
         [
             "test",
