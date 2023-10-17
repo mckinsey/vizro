@@ -17,8 +17,11 @@ div.page_container .Select-menu-outer {
   line-height: var(--text-size-05);
 }
 
+/* Dropdown background color when focused */
 div.page_container .Select.is-focused > .Select-control {
   background-color: var(--field-enabled);
+  height: 100%;
+  padding: 0 !important;
 }
 
 /* Dropdown menu options */
@@ -135,11 +138,12 @@ div.nav_panel a {
 
 /** spacing for tag elements only when elements are present inside
 wrapper **/
+/* Padding allows elements not to jump but may be too large */
 .Select--multi.has-value .Select-multi-value-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 13px 8px;
 }
 
 .Select-input > input {
