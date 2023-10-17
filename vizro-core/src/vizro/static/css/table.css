@@ -9,3 +9,7 @@ div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadshe
 div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
   --hover: var(--main-container-bg-color);
 }
+
+div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+  padding: 0px 4px;
+}
