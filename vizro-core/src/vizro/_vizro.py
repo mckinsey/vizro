@@ -20,7 +20,7 @@ class Vizro:
     _lib_assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
     def __init__(self):
-        """Initialises Dash."""
+        """Initializes Dash."""
         _js, _css = _append_styles(self._lib_assets_folder, STATIC_URL_PREFIX)
         self.dash = Dash(
             use_pages=True,

@@ -33,7 +33,7 @@ For more information, see [here](https://dash.plotly.com/external-resources#chan
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
 For reference, all Vizro CSS files can be found [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
-!!! example "Customising global CSS properties"
+!!! example "Customizing global CSS properties"
     === "my_css_file.css"
     ```css
     h1, h2 {
@@ -104,7 +104,7 @@ To achieve this, do the following:
 3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
 
 
-!!! example "Customising CSS properties in selective components"
+!!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
     #my_card_outer.card_container {

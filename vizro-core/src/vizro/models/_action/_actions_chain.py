@@ -16,7 +16,7 @@ class ActionsChain(VizroBaseModel):
     actions: List[Action] = []
 
 
-# Validators for re-use in other models to convert to ActionsChain
+# Validators for reuse in other models to convert to ActionsChain
 def _set_actions(actions: List[Action], values: Dict[str, Any], trigger_property: str) -> List[ActionsChain]:
     return [
         ActionsChain(

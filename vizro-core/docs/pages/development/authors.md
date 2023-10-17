@@ -14,6 +14,8 @@
 
 ## Previous team members and code contributors
 
+Natalia Kurakina,
+[Leon Nallamuthu](https://github.com/leonnallamuthu),
 [axa99](https://github.com/axa99),
 [Jo Stichbury](https://github.com/stichbury),
 [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),

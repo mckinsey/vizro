@@ -279,6 +279,10 @@ class TestCallbackMapping:
         )
         assert result == {}
 
+    # "export_data_custom_action" represents a unique scenario within custom actions, where the function's name
+    # coincides with an already predefined action function (in this instance, "export_data").
+    # It requires handling them as conventional custom actions.
+    @pytest.mark.parametrize("action_id", ["custom_action", "export_data_custom_action"])
     @pytest.mark.parametrize(
         "argument, expected",
         [
@@ -288,25 +292,9 @@ class TestCallbackMapping:
             ("unknown-argument", {}),
         ],
     )
-    def test_custom_action_mapping(self, argument, expected):
+    def test_custom_action_mapping(self, action_id, argument, expected):
         result = _get_action_callback_mapping(
-            action_id="custom_action",
-            argument=argument,
-        )
-        assert result == expected
-
-    @pytest.mark.parametrize(
-        "argument, expected",
-        [
-            ("inputs", {}),
-            ("outputs", {}),
-            ("components", []),
-            ("unknown-argument", {}),
-        ],
-    )
-    def test_custom_action_with_predefined_name_mapping(self, argument, expected):
-        result = _get_action_callback_mapping(
-            action_id="export_data_custom_action",
+            action_id=action_id,
             argument=argument,
         )
         assert result == expected
