@@ -8,7 +8,6 @@ from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
 
-
 logger = logging.getLogger(__name__)
 # Really ComponentID and DatasetName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
@@ -25,6 +24,7 @@ class DataManager:
         >>> data_manager["iris"] = px.data.iris()
 
     """
+
     _cache = Cache(config={"CACHE_TYPE": "NullCache"})
 
     def __init__(self):
@@ -86,6 +86,8 @@ class DataManager:
     def _get_original_data(self, dataset_name: DatasetName) -> pd.DataFrame:
         """Returns the original data for `dataset_name`."""
         # Populate original data on first access only
+        logger.debug("get original data: %s", dataset_name)
+        logger.debug("loading...")
         time.sleep(2.0)
         if dataset_name not in self.__original_data:
             self.__original_data[dataset_name] = self.__lazy_data[dataset_name]()
