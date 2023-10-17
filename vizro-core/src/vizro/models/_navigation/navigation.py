@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import warnings
 from typing import TYPE_CHECKING, Optional
 
@@ -15,39 +16,28 @@ if TYPE_CHECKING:
 
 
 # Validator for re-use in other models to validate pages
-def _validate_pages(pages):
+def _validate_pages(pages, registered_pages):
     from vizro.models import Page
 
-    # No to page[0]
+    # Ideally we would use dash.page_registry or maybe dashboard.pages here, but we only register pages in
+    # dashboard.pre_build.
+    # page[0] gives the page model ID.
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
+    # _, dashboard = next(model_manager._items_with_type(Dashboard))
+    # registered_pages = dashboard.pages
 
-    if pages is None:
-        return registered_pages
+    # Probably don't need this any more:
+    # if pages is None:
+    #     return registered_pages
 
     if not pages:
         raise ValueError("Ensure this value has at least 1 item.")
 
-    # Understand this, change to sets. Tests should still work ok.
-    # Don't want to have switch between types here - just take in leaves of nested structure, so list of pages.
-    # sum(d.values(), []) or chain(*d.values())
-    # Do with sets
     if isinstance(pages, dict):
-        missing_pages = [
-            page
-            for page in registered_pages
-            if page not in {page for nav_pages in pages.values() for page in nav_pages}
-        ]
-        unknown_pages = [page for nav_pages in pages.values() for page in nav_pages if page not in registered_pages]
-    else:
-        missing_pages = [page for page in registered_pages if page not in pages]
-        unknown_pages = [page for page in pages if page not in registered_pages]
+        pages = list(itertools.chain(pages.values()))
+    # now guaranteed that pages is a list
 
-    if missing_pages:
-        warnings.warn(
-            f"Not all registered pages used in Navigation 'pages'. Missing pages {missing_pages}!", UserWarning
-        )
-
-    if unknown_pages:
+    if (unknown_pages := [page for page in pages if page not in registered_pages]):
         raise ValueError(
             f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
         )
@@ -70,12 +60,8 @@ class Navigation(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._set_selector()
-
-    def _set_selector(self):
         from vizro.models._navigation._accordion import Accordion
 
-        # Put in pre_build directly.
         self._selector = Accordion(pages=self.pages)
 
     @_log_call

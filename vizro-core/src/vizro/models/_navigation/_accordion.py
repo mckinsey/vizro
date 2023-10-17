@@ -1,5 +1,5 @@
 import itertools
-from typing import Optional
+from typing import Optional, Dict, List
 
 import dash
 import dash_bootstrap_components as dbc
@@ -10,7 +10,6 @@ from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.navigation import _validate_pages
-from vizro.models.types import NavigationPagesType
 
 
 class Accordion(VizroBaseModel):
@@ -20,40 +19,23 @@ class Accordion(VizroBaseModel):
         pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].
             Defaults to `None`.
     """
-
-    # I went for Li's idea of being strict about e.g. NavigationDropdown taking only a flat list and Accordion only
-    # taking a grouped dictionary. We can change this if it seems to make things more confusing though and just e.g.
-    # convert a pages dictionary inside NavigationDropdown to flatten it to just take the values.
-    # pages: Optional[Dict[str, List[str]]]
-    # currently accepts List[str] too
-    # don't want to get all pages here.
-    # Make it non-optional for now anyway. Doesn't make sense as optional given now don't have Dropdown etc.
-    # And there's only one field here anyway.
-    # (technically breaking if it was public)
-    pages: Optional[NavigationPagesType] = None
-    # 2 cases: list of pages, dictionary of pages
-    # Convert both in validator to dict.
+    pages: Dict[str, List[str]]
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
+    # in validator:
+    # if isinstance(self.pages, list):
+    #     self.pages = {ACCORDION_DEFAULT_TITLE: self.pages}
+
     @_log_call
     def build(self, *, active_page_id=None):
-        # Could now be None in return - probably not good. Traces through to page._arrange_containers
-        # Remember union types awkward and lead to bugs, especially None type
-        accordion_items = []
-
-        # self.pages = {"section 1": ["Page 1", "Page 2"], "section 2": ["Page 3"]}
-
-        # self.pages = ["Page 1", "Page 2"]  -> ACCORDION_DEFAULT_TITLE
-        if isinstance(self.pages, list):
-            self.pages = {ACCORDION_DEFAULT_TITLE: self.pages}
-        # Turn into top case either here or in validator.
-
         # assume for now that self.pages has at least one item.
         # Check if "not accordion_buttons" check also needed
         if len(list(itertools.chain(*self.pages.values()))) == 1:
             return html.Div(className="hidden")
+
+        accordion_items = []
 
         for page_group, page_members in self.pages.items():
             accordion_buttons = self._create_accordion_buttons(pages=page_members, active_page_id=active_page_id)
