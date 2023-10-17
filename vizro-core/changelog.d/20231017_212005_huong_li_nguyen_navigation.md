@@ -4,11 +4,9 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
 ### Removed
 
 - Remove warning message if not all registered pages are used in `Navigation` ([#117](https://github.com/mckinsey/vizro/pull/117))
-
 
 <!--
 ### Added
@@ -19,8 +17,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Autopopulate `navigation.pages` during `Dashboard` validation if None ([#117](https://github.com/mckinsey/vizro/pull/117))
-
+- Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if None ([#117](https://github.com/mckinsey/vizro/pull/117))
 
 <!--
 ### Deprecated
