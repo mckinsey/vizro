@@ -1,42 +1,43 @@
 import itertools
-from typing import Optional, Dict, List
+from typing import Dict, List
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import validator
+from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation.navigation import _validate_pages
+from vizro.models._navigation._navigation_utils import _validate_pages
 
 
 class Accordion(VizroBaseModel):
-    """Accordion to be used in Navigation Panel of Dashboard.
+    """Accordion to be used as selector in [`Navigation`][vizro.models.Navigation].
 
     Args:
-        pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].
-            Defaults to `None`.
+        pages (Dict[str, List[str]]): A dictionary with a page group title as key and a list of page IDs as values.
     """
-    pages: Dict[str, List[str]]
 
-    # validators
+    pages: Dict[str, List[str]] = Field(
+        ..., description="A dictionary with a page group title as key and a list of page IDs as values."
+    )
+
+    @validator("pages", pre=True)
+    def validate_pages_format(cls, pages):
+        if isinstance(pages, list):
+            return {ACCORDION_DEFAULT_TITLE: pages}
+        return pages
+
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
-
-    # in validator:
-    # if isinstance(self.pages, list):
-    #     self.pages = {ACCORDION_DEFAULT_TITLE: self.pages}
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # assume for now that self.pages has at least one item.
-        # Check if "not accordion_buttons" check also needed
+        # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
             return html.Div(className="hidden")
 
         accordion_items = []
-
         for page_group, page_members in self.pages.items():
             accordion_buttons = self._create_accordion_buttons(pages=page_members, active_page_id=active_page_id)
             accordion_items.append(
@@ -63,7 +64,6 @@ class Accordion(VizroBaseModel):
             id=f"{self.id}_outer",
         )
 
-
     def _create_accordion_buttons(self, pages, active_page_id):
         """Creates a button for each provided page that is registered."""
         accordion_buttons = []
@@ -84,4 +84,3 @@ class Accordion(VizroBaseModel):
                 )
             )
         return accordion_buttons
-
