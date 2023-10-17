@@ -29,7 +29,7 @@ class Accordion(VizroBaseModel):
             return {ACCORDION_DEFAULT_TITLE: pages}
         return pages
 
-    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @_log_call
     def build(self, *, active_page_id=None):

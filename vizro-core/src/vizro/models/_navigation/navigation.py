@@ -25,7 +25,7 @@ class Navigation(VizroBaseModel):
     _selector: Accordion = PrivateAttr()
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):

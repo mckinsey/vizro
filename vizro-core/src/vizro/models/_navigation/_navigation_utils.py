@@ -17,7 +17,5 @@ def _validate_pages(pages):
     provided_pages = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
 
     if unknown_pages := [page for page in provided_pages if page not in registered_pages]:
-        raise ValueError(
-            f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
-        )
+        raise ValueError(f"Unknown page ID {unknown_pages} provided to argument 'pages'.")
     return pages
