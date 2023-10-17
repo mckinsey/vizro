@@ -28,6 +28,8 @@ class Vizro:
             external_scripts=_js,
             external_stylesheets=_css,
             assets_folder=self._user_assets_folder,
+            # Needs investigation: Added to avoid ID not found in layout error
+            suppress_callback_exceptions=True,
         )
 
         @self.dash.server.route("/<url_prefix>/<path:filepath>")

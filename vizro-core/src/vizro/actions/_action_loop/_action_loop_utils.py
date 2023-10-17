@@ -26,11 +26,23 @@ def _get_actions(model: VizroBaseModel) -> List[ActionsChain]:
 
 def _get_all_actions_chains_on_page(page: Page) -> List[ActionsChain]:
     """Gets the list of the ActionsChain models for the Page model."""
-    return [
+    page_actions_chains = [
         actions_chain
         for page_item in chain([page], page.components, page.controls)
         for actions_chain in _get_actions(model=page_item)
     ]
+
+    # Search for actions chains through tabs
+    for page_component in page.components:
+        if hasattr(page_component, "tabs"):
+            for tab in page_component.tabs:
+                if hasattr(tab, "actions") and tab.actions:
+                    page_actions_chains.extend(tab.actions)
+                for component in tab.components:
+                    if hasattr(component, "actions") and component.actions:
+                        page_actions_chains.extend(component.actions)
+
+    return page_actions_chains
 
 
 def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
