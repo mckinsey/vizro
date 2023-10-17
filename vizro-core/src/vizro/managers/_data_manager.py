@@ -1,10 +1,15 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+import logging
+import time
 from typing import Callable, Dict, Union
 
 import pandas as pd
+from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
 
+
+logger = logging.getLogger(__name__)
 # Really ComponentID and DatasetName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 ComponentID = str
@@ -20,6 +25,7 @@ class DataManager:
         >>> data_manager["iris"] = px.data.iris()
 
     """
+    _cache = Cache(config={"CACHE_TYPE": "NullCache"})
 
     def __init__(self):
         self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
@@ -27,6 +33,7 @@ class DataManager:
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
 
+    # happens before dashboard build
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
@@ -46,6 +53,7 @@ class DataManager:
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
             )
 
+    # happens before dashboard build
     @_state_modifier
     def _add_component(self, component_id: ComponentID, dataset_name: DatasetName):
         """Adds a mapping from `component_id` to `dataset_name`."""
@@ -60,19 +68,41 @@ class DataManager:
             )
         self.__component_to_original[component_id] = dataset_name
 
-    def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
-        """Returns the original data for `component_id`."""
-        if component_id not in self.__component_to_original:
-            raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-        dataset_name = self.__component_to_original[component_id]
+    # def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
+    #     """Returns the original data for `component_id`."""
+    #     if component_id not in self.__component_to_original:
+    #         raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
+    #     dataset_name = self.__component_to_original[component_id]
+    #
+    #     # Populate original data on first access only
+    #     if dataset_name not in self.__original_data:
+    #         self.__original_data[dataset_name] = self.__lazy_data[dataset_name]()
+    #
+    #     # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
+    #     # to not do any inplace=True operations, but probably safest to leave it here.
+    #     return self.__original_data[dataset_name].copy()
 
+    @_cache.memoize()
+    def _get_original_data(self, dataset_name: DatasetName) -> pd.DataFrame:
+        """Returns the original data for `dataset_name`."""
         # Populate original data on first access only
+        time.sleep(2.0)
         if dataset_name not in self.__original_data:
             self.__original_data[dataset_name] = self.__lazy_data[dataset_name]()
 
         # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
         # to not do any inplace=True operations, but probably safest to leave it here.
         return self.__original_data[dataset_name].copy()
+
+    # @_cache.memoize()
+    def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
+        """Returns the original data for `component_id`."""
+        logger.debug("get_component_data: %s", component_id)
+        if component_id not in self.__component_to_original:
+            raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
+        dataset_name = self.__component_to_original[component_id]
+
+        return self._get_original_data(dataset_name)
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:

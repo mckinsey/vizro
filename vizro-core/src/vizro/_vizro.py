@@ -18,6 +18,7 @@ class Vizro:
 
     _user_assets_folder = Path.cwd() / "assets"
     _lib_assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    _cache_config = {"CACHE_TYPE": "NullCache"}
 
     def __init__(self):
         """Initializes Dash."""
@@ -44,6 +45,7 @@ class Vizro:
         Returns:
             Vizro: App object
         """
+        data_manager._cache.init_app(self.dash.server, config=self._cache_config)
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 
