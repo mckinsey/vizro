@@ -11,6 +11,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
+from vizro.actions import filter_interaction
 
 
 def retrieve_table_data():
@@ -84,7 +85,10 @@ page_0 = vm.Page(
     components=[
         vm.Table(id="table2", figure=table_dash(data_frame="table_data", style_header={"border": "1px solid green"})),
         vm.Graph(
-            id="graph", figure=px.scatter(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species")
+            id="graph", figure=px.scatter(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species",custom_data=["species"]),actions=[vm.Action(function=filter_interaction(targets=["hist"]))]
+        ),
+        vm.Graph(
+            id="hist", figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species")
         ),
     ],
     controls=[
