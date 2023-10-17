@@ -17,6 +17,10 @@ div.page_container .Select-menu-outer {
   line-height: var(--text-size-05);
 }
 
+div.page_container .Select.is-focused > .Select-control {
+  background-color: var(--field-enabled);
+}
+
 /* Dropdown menu options */
 div.page_container .VirtualizedSelectOption {
   color: var(--text-primary);

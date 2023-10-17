@@ -93,6 +93,7 @@ page_0 = vm.Page(
             targets=["table2.style_header.border"],
             selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
         ),
+        vm.Filter(column="species", selector=vm.Dropdown()),
         vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
     ],
 )
