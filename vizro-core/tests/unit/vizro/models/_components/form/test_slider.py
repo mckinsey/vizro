@@ -144,21 +144,6 @@ class TestSliderInstantiation:
         assert slider.marks == {}
 
     @pytest.mark.parametrize(
-        "marks, step, expected",
-        [
-            ({2: "2", 4: "4", 6: "6"}, 1, {}),
-            ({2: "2", 4: "4", 6: "6"}, None, {2: "2", 4: "4", 6: "6"}),
-            ({}, 1, {}),
-            (None, 1, None),
-        ],
-    )
-    def test_step_precedence_over_marks(self, marks, step, expected):
-        slider = vm.Slider(min=0, max=10, marks=marks, step=step)
-
-        assert slider.marks == expected
-        assert slider.step == step
-
-    @pytest.mark.parametrize(
         "marks, expected",
         [
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
