@@ -4,7 +4,7 @@ from vizro.managers import model_manager
 
 
 def _validate_pages(pages):
-    """Validator for re-use in `Navigation` and `Accordion` to validate pages."""
+    """Validator for reuse in `Navigation` and `Accordion` to validate pages."""
     from vizro.models import Page
 
     pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages

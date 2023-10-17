@@ -13,6 +13,7 @@ from vizro.models._navigation._accordion import Accordion
 @pytest.mark.usefixtures("dashboard_prebuild")
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
+
     def test_accordion_valid_pages_as_list(self, pages_as_list):
         accordion = Accordion(pages=pages_as_list, id="accordion_id")
         assert accordion.id == "accordion_id"
