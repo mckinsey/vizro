@@ -12,6 +12,7 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
 from vizro.actions import filter_interaction
+import dash_ag_grid as dag
 
 
 def retrieve_table_data():
@@ -36,30 +37,6 @@ def retrieve_table_data():
     return pd.DataFrame(data)
 
 
-# Option 1: Use graph objects table
-@capture("graph")
-def table_go(data_frame=None, template=None):
-    """Custom table."""
-    return go.Figure(
-        data=[
-            go.Table(
-                header={"values": data_frame.columns.to_list()},
-                cells={"values": data_frame.values.transpose().tolist()},
-            )
-        ]
-    )
-
-
-# @capture("graph")
-# def d3_bar(data_frame=None):
-#    """Custom table."""
-#    return d3_bar_chart.D3BarChart(
-#        id="input",
-#        value="my-value",
-#        label="my-label",
-#    )
-
-
 @capture("action")
 def table_dash(data_frame=None, style_header=None):
     """Custom table."""
@@ -71,9 +48,13 @@ def table_dash(data_frame=None, style_header=None):
 
 
 @capture("action")
-def markdown(data_frame=None):
-    """Custom table."""
-    return dcc.Markdown(f"Data columns: {data_frame.columns.to_list()}")
+def AgGrid(data_frame=None):
+    """Custom AgGrid."""
+    return dag.AgGrid(
+        id="get-started-example-basic",
+        rowData=data_frame.to_dict("records"),
+        columnDefs=[{"field": col} for col in data_frame.columns],
+    )
 
 
 data_manager["table_data"] = retrieve_table_data
@@ -95,6 +76,7 @@ page_0 = vm.Page(
             id="hist",
             figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
         ),
+        vm.Table(id="grid", figure=AgGrid(data_frame="table_data")),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),

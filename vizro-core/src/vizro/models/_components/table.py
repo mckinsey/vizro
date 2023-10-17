@@ -25,7 +25,6 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    data: Callable = None
     figure: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
