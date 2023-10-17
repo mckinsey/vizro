@@ -37,7 +37,7 @@ def retrieve_table_data():
     return pd.DataFrame(data)
 
 
-@capture("action")
+@capture("table")
 def table_dash(data_frame=None, style_header=None):
     """Custom table."""
     return dash_table.DataTable(
@@ -47,13 +47,14 @@ def table_dash(data_frame=None, style_header=None):
     )
 
 
-@capture("action")
+@capture("table")
 def AgGrid(data_frame=None):
     """Custom AgGrid."""
     return dag.AgGrid(
         id="get-started-example-basic",
         rowData=data_frame.to_dict("records"),
         columnDefs=[{"field": col} for col in data_frame.columns],
+        # className="ag-theme-alpine-dark",
     )
 
 
@@ -64,7 +65,7 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        vm.Table(id="table2", figure=table_dash(data_frame="table_data", style_header={"border": "1px solid green"})),
+        vm.Table(id="table2", table=table_dash(data_frame=data, style_header={"border": "1px solid green"})),
         vm.Graph(
             id="graph",
             figure=px.scatter(
@@ -76,7 +77,7 @@ page_0 = vm.Page(
             id="hist",
             figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
         ),
-        vm.Table(id="grid", figure=AgGrid(data_frame="table_data")),
+        vm.Table(id="grid", table=AgGrid(data_frame="table_data")),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),

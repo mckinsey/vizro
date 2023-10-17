@@ -118,12 +118,18 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
     for target in targets:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
-        graph_config = deepcopy(model_manager[target].figure._arguments)  # type: ignore[index, attr-defined]
+        graph_config = (
+            deepcopy(model_manager[target].figure._arguments)  # type: ignore[index, attr-defined]
+            if hasattr(model_manager[target], "figure")
+            else deepcopy(model_manager[target].table._arguments)
+        )
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
         for ctd in parameters:
-            selector_value = ctd["value"]
+            selector_value = ctd[
+                "value"
+            ]  # LN: needs to be refactored so that it is independent of implementation details
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options

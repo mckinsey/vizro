@@ -217,9 +217,21 @@ class capture:
             # The table component
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
-                return CapturedCallable(func, *args, **kwargs)
+                if "data_frame" not in inspect.signature(func).parameters:
+                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
-        raise ValueError("Valid modes of the capture decorator are @capture('graph') and @capture('action').")
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+
+                try:
+                    captured_callable["data_frame"]
+                except KeyError as exc:
+                    raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
+                return captured_callable
+
+            return wrapped
+        raise ValueError(
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action') or @capture('table')."
+        )
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
@@ -270,7 +282,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Table", "React"],
+    Union["Button", "Card", "Graph", "Table"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",

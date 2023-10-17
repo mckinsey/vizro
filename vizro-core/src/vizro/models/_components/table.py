@@ -15,17 +15,17 @@ logger = logging.getLogger(__name__)
 
 
 class Table(VizroBaseModel):
-    """Wrapper for react components to visualize in dashboard.
+    """Wrapper for table components to visualize in dashboard.
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): React object to be displayed.
+        table (CapturedCallable): React object to be displayed.
         # actions (List[Action]): List of the Action objects, that allows to
         #     configure app interactions, triggered by affecting this component.
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
+    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -35,15 +35,15 @@ class Table(VizroBaseModel):
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
 
-    @validator("figure")
-    def process_component_data_frame(cls, figure, values):
-        data_frame = figure["data_frame"]
+    @validator("table")
+    def process_component_data_frame(cls, table, values):
+        data_frame = table["data_frame"]
 
         # Enable running "iris" from the Python API and specification of "data_frame": "iris" through JSON.
         # In these cases, data already exists in the data manager and just needs to be linked to the component.
         if isinstance(data_frame, str):
             data_manager._add_component(values["id"], data_frame)
-            return figure
+            return table
 
         # Standard case for df: pd.DataFrame.
         # Extract dataframe from the captured function and put it into the data manager.
@@ -60,13 +60,13 @@ class Table(VizroBaseModel):
         data_manager._add_component(values["id"], dataset_name)
 
         # No need to keep the data in the captured function any more so remove it to save memory.
-        # del figure["data_frame"]
-        return figure
+        # del table["data_frame"]
+        return table
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
-        return self.figure(**kwargs)
+        return self.table(**kwargs)
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
@@ -74,11 +74,11 @@ class Table(VizroBaseModel):
         # explicitly redirect it to the correct attribute.
         if arg_name == "type":
             return self.type
-        return self.figure[arg_name]
+        return self.table[arg_name]
 
     @_log_call
     def build(self):
         data = data_manager._get_component_data(self.id)  # type: ignore
-        additional_args = self.figure._arguments.copy()
+        additional_args = self.table._arguments.copy()
         additional_args.pop("data_frame", None)
-        return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)
+        return html.Div(self.table._function(data_frame=data, **additional_args), id=self.id)
