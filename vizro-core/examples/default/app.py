@@ -14,6 +14,7 @@ page = vm.Page(
             title="Global Tabs Title",
             tabs=[
                 vm.Tab(
+                    id="tab-1",
                     label="Tab I Label",
                     title="Tab I Title",
                     components=[
@@ -34,6 +35,7 @@ page = vm.Page(
                     ],
                 ),
                 vm.Tab(
+                    id="tab-2",
                     label="Tab II Label",
                     title="Tab II Title",
                     components=[
@@ -67,10 +69,10 @@ page = vm.Page(
         ),
     ],
     controls=[
-        vm.Parameter(
-            targets=["variable_map.y", "variable_boxplot.y"],
-            selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
-        )
+    #    vm.Parameter(
+    #        targets=["variable_map.y", "variable_boxplot.y"],
+    #        selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
+    #    )
     ],
 )
 
