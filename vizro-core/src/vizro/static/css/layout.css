@@ -86,7 +86,7 @@
   width: 336px;
 }
 
-.dashboard_title_outer {
+.dashboard_title {
   display: flex;
   flex-direction: column;
   width: 100%;
