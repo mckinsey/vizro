@@ -149,6 +149,7 @@ class TestSliderInstantiation:
             ({2: "2", 4: "4", 6: "6"}, 1, {}),
             ({2: "2", 4: "4", 6: "6"}, None, {2: "2", 4: "4", 6: "6"}),
             ({}, 1, {}),
+            (None, 1, None),
         ],
     )
     def test_step_precedence_over_marks(self, marks, step, expected):

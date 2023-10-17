@@ -31,7 +31,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Enabled turning off marks when step is define in slider and range_slider. ([#115](https://github.com/mckinsey/vizro/pull/115))
+- Enable turning off `marks` when `step` is defined in `Slider` and `RangeSlider` ([#115](https://github.com/mckinsey/vizro/pull/115))
 
 <!--
 ### Security
