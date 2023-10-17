@@ -85,10 +85,15 @@ page_0 = vm.Page(
     components=[
         vm.Table(id="table2", figure=table_dash(data_frame="table_data", style_header={"border": "1px solid green"})),
         vm.Graph(
-            id="graph", figure=px.scatter(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species",custom_data=["species"]),actions=[vm.Action(function=filter_interaction(targets=["hist"]))]
+            id="graph",
+            figure=px.scatter(
+                data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["hist"]))],
         ),
         vm.Graph(
-            id="hist", figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species")
+            id="hist",
+            figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
         ),
     ],
     controls=[

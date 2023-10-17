@@ -9,6 +9,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
+from pydantic import PrivateAttr
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,10 @@ class Table(VizroBaseModel):
     data: Callable = None
     figure: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("active_cell")
+    _output_property: str = PrivateAttr("children")
 
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
@@ -78,14 +83,3 @@ class Table(VizroBaseModel):
         additional_args = self.figure._arguments.copy()
         additional_args.pop("data_frame", None)
         return html.Div(self.figure._function(data_frame=data, **additional_args), id=self.id)
-
-    def _get_action_callback_output(self):
-        return Output(
-            component_id=self.id,
-            component_property="children",
-            allow_duplicate=True,
-        )
-
-    # def _get_click_trigger_property(self):
-    #     """Define trigger property for click interaction"""
-    #     return "active_cell"

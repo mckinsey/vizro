@@ -21,7 +21,7 @@ ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]
 
 class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
     id: ModelID  # the component ID. If it`s a pattern matching ID, it will be a dict.
-    property: Literal["clickData", "value", "n_clicks"]  #  the component property used in the callback.
+    property: Literal["clickData", "value", "n_clicks", "active_cell"]  #  the component property used in the callback.
     value: Optional[Any]  # the value of the component property at the time the callback was fired.
     str_id: str  # for pattern matching IDs, it`s the stringified dict ID with no white spaces.
     triggered: bool  #  a boolean indicating whether this input triggered the callback.

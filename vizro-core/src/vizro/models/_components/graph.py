@@ -12,6 +12,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
+from pydantic import PrivateAttr
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,10 @@ class Graph(VizroBaseModel):
         ..., import_path=px
     )  # LN: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("clickData")
+    _output_property: str = PrivateAttr("figure")
 
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
@@ -127,13 +132,6 @@ class Graph(VizroBaseModel):
             patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
             return patched_figure
 
-    def _get_action_callback_output(self):
-        return Output( # maybe just do the string? check with Petar, is that 
-            component_id=self.id,
-            component_property="figure",
-            allow_duplicate=True,
-        )
-    
     # do private attribute with a value
 
     # def _get_click_trigger_property(self):

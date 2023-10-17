@@ -12,6 +12,7 @@ from vizro.models._components.form._form_utils import (
     validate_step,
 )
 from vizro.models._models_utils import _log_call
+from pydantic import PrivateAttr
 
 
 class Slider(VizroBaseModel):
@@ -40,6 +41,9 @@ class Slider(VizroBaseModel):
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
 
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
