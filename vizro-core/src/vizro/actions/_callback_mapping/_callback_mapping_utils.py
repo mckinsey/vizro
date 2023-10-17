@@ -89,7 +89,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     return [
         State(
             component_id=control.selector.id,
-            component_property=control.selector._input_property,  # LN: needs to be refactored so that it is independent of implementation details - DONE
+            component_property=control.selector._input_property,
         )
         for control in page.controls
         if isinstance(control, control_type)
@@ -110,7 +110,7 @@ def _get_inputs_of_chart_interactions(
         inputs.append(
             State(
                 component_id=triggered_model.id,
-                component_property=triggered_model._input_property,  # LN: needs to be refactored so that it is independent of implementation details - DONE
+                component_property=triggered_model._input_property,
             )
         )
     return inputs
@@ -160,7 +160,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
 
-    return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
+    return {
         target: Output(
             component_id=target,
             component_property=model_manager[target]._output_property,

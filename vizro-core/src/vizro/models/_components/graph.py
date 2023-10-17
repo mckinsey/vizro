@@ -41,7 +41,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path=px
-    )  # LN: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
+    )  # TODO: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -88,7 +88,7 @@ class Graph(VizroBaseModel):
         if fig.layout.title.text is None:
             fig.update_layout(
                 margin_t=24
-            )  # LN: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
+            )  # TODO: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -121,7 +121,7 @@ class Graph(VizroBaseModel):
             parent_className="chart_container",
         )
 
-    def _update_graph_theme(self):  # LN: needs to be refactored so plotly-independent or extendable - DONE
+    def _update_graph_theme(self):
         @callback(
             Output(self.id, "figure", allow_duplicate=True),
             Input("theme_selector", "on"),
@@ -131,9 +131,3 @@ class Graph(VizroBaseModel):
             patched_figure = Patch()
             patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
             return patched_figure
-
-    # do private attribute with a value
-
-    # def _get_click_trigger_property(self):
-    #     """Define trigger property for click interaction"""
-    #     return "clickData"

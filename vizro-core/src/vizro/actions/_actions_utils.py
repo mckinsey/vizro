@@ -129,7 +129,7 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
         for ctd in parameters:
             selector_value = ctd[
                 "value"
-            ]  # LN: needs to be refactored so that it is independent of implementation details
+            ]  # TODO: needs to be refactored so that it is independent of implementation details
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
@@ -203,7 +203,5 @@ def _get_modified_page_charts(
         outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
         if hasattr(outputs[target], "update_layout"):
             outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
-        # LN: needs to be refactored so plotly-independent or extendable - DONE
-        # MS: is the common theme to be targetable?
 
     return outputs
