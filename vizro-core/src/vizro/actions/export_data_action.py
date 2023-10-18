@@ -10,11 +10,12 @@ from vizro.actions._actions_utils import (
 )
 from vizro.managers import model_manager
 from vizro.models.types import capture
+from vizro.managers._model_manager import ModelID
 
 
 @capture("action")
 def export_data(
-    targets: Optional[List[str]] = None,
+    targets: Optional[List[ModelID]] = None,
     file_format: Literal["csv", "xlsx"] = "csv",
     **inputs: Dict[str, Any],
 ) -> Dict[str, Any]:
@@ -40,7 +41,7 @@ def export_data(
             if isinstance(output["id"], dict) and output["id"]["type"] == "download-dataframe"
         ]
     for target in targets:
-        if target not in model_manager:  # type: ignore[operator]
+        if target not in model_manager:
             raise ValueError(f"Component '{target}' does not exist.")
 
     data_frames = _get_filtered_data(
@@ -50,7 +51,7 @@ def export_data(
     )
 
     callback_outputs = {}
-    for _, target_id in enumerate(targets):
+    for target_id in targets:
         if file_format == "csv":
             writer = data_frames[target_id].to_csv
         elif file_format == "xlsx":

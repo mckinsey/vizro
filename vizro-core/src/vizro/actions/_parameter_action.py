@@ -8,11 +8,13 @@ from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
 from vizro.models.types import capture
+from vizro.managers._model_manager import ModelID
+
 
 
 # TODO - consider using dash.Patch() for parameter action
 @capture("action")
-def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
     """Modifies parameters of targeted charts/components on page.
 
     Args:
@@ -23,10 +25,10 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
-    targets = [target.split(".")[0] for target in targets]
+    target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 
     return _get_modified_page_charts(
-        targets=targets,
+        targets=target_ids,
         ctds_filter=ctx.args_grouping["filters"],
         ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
         ctds_parameters=ctx.args_grouping["parameters"],

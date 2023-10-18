@@ -1,15 +1,32 @@
-div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  th {
   background-color: var(--main-container-bg-color);
 }
 
-div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  td {
   background-color: var(--main-container-bg-color);
 }
 
-div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  table {
   --hover: var(--main-container-bg-color);
 }
 
-div.right_side .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  td,
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
   padding: 0px 4px;
 }

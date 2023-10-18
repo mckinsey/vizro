@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, NewType, Tuple, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Dict, Generator, Tuple, Type, TypeVar, cast, NewType
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 rd = random.Random(0)
 
+# Type used for model_manager IDs
 ModelID = NewType("ModelID", str)
+
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
-
-    pass
 
 
 class ModelManager:

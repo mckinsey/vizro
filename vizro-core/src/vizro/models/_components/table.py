@@ -1,15 +1,14 @@
 import logging
-from typing import Callable, List, Literal
+from typing import List, Literal
 
-from dash import Output, html
-from pydantic import Field, validator
+from dash import html
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
-from pydantic import PrivateAttr
 
 logger = logging.getLogger(__name__)
 

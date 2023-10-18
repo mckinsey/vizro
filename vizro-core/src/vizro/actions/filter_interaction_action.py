@@ -8,13 +8,14 @@ from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
 from vizro.models.types import capture
+from vizro.managers._model_manager import ModelID
 
 
 @capture("action")
 def filter_interaction(
-    targets: Optional[List[str]] = None,
+    targets: Optional[List[ModelID]] = None,
     **inputs: Dict[str, Any],
-) -> Dict[str, Any]:
+) -> Dict[ModelID, Any]:
     """Filters targeted charts/components on page by clicking on data points of the source chart.
 
     To set up filtering on specific columns of the target chart(s), include these columns in the 'custom_data'

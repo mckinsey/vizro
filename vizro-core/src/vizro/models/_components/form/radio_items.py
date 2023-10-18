@@ -1,14 +1,13 @@
 from typing import List, Literal, Optional
 
 from dash import dcc, html
-from pydantic import Field, root_validator, validator
+from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
 from vizro.models.types import OptionsType, SingleValueType
-from pydantic import PrivateAttr
 
 
 class RadioItems(VizroBaseModel):

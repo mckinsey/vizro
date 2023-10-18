@@ -1,7 +1,7 @@
 from typing import Dict, List, Literal, Optional
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -12,7 +12,6 @@ from vizro.models._components.form._form_utils import (
     validate_step,
 )
 from vizro.models._models_utils import _log_call
-from pydantic import PrivateAttr
 
 
 class Slider(VizroBaseModel):

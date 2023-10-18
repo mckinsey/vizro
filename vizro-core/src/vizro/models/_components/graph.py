@@ -3,7 +3,7 @@ from typing import List, Literal
 
 from dash import Input, Output, Patch, callback, dcc
 from plotly import graph_objects as go
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 import vizro._themes as themes
 import vizro.plotly.express as px
@@ -12,7 +12,6 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
-from pydantic import PrivateAttr
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +40,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path=px
-    )  # TODO: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
+    )  # TODO: needs to be refactored so plotly-independent or extendable - No, as within the boundaries of Graph model
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -88,7 +87,7 @@ class Graph(VizroBaseModel):
         if fig.layout.title.text is None:
             fig.update_layout(
                 margin_t=24
-            )  # TODO: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
+            )  # TODO: needs to be refactored so plotly-independent or extendable: No, as boundaries of Graph model
         return fig
 
     # Convenience wrapper/syntactic sugar.

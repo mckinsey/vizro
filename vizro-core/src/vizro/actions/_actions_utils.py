@@ -113,15 +113,17 @@ def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_
     return graph_config
 
 
-def _get_parametrized_config(targets: List[str], parameters: List[CallbackTriggerDict]) -> Dict[str, Dict[str, Any]]:
+def _get_parametrized_config(
+    targets: List[ModelID], parameters: List[CallbackTriggerDict]
+) -> Dict[ModelID, Dict[str, Any]]:
     parameterized_config = {}
     for target in targets:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = (
-            deepcopy(model_manager[target].figure._arguments)  # type: ignore[index, attr-defined]
+            deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
             if hasattr(model_manager[target], "figure")
-            else deepcopy(model_manager[target].table._arguments)
+            else deepcopy(model_manager[target].table._arguments)  # type: ignore[attr-defined]
         )
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
@@ -154,10 +156,10 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
 
 # Helper functions used in pre-defined actions ----
 def _get_filtered_data(
-    targets: List[str],
+    targets: List[ModelID],
     ctds_filters: List[CallbackTriggerDict],
     ctds_filter_interaction: List[CallbackTriggerDict],
-) -> Dict[str, pd.DataFrame]:
+) -> Dict[ModelID, pd.DataFrame]:
     filtered_data = {}
     for target in targets:
         data_frame = data_manager._get_component_data(target)
@@ -183,8 +185,8 @@ def _get_modified_page_charts(
     ctds_filter_interaction: List[CallbackTriggerDict],
     ctds_parameters: List[CallbackTriggerDict],
     ctd_theme: CallbackTriggerDict,
-    targets: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    targets: Optional[List[ModelID]] = None,
+) -> Dict[ModelID, Any]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -200,7 +202,7 @@ def _get_modified_page_charts(
 
     outputs = {}
     for target in targets:
-        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
+        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])  # type: ignore[operator]
         if hasattr(outputs[target], "update_layout"):
             outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
 

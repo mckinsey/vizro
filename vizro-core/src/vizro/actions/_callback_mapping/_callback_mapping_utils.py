@@ -110,7 +110,7 @@ def _get_inputs_of_chart_interactions(
         inputs.append(
             State(
                 component_id=triggered_model.id,
-                component_property=triggered_model._input_property,
+                component_property=triggered_model._input_property,  # type: ignore[attr-defined]
             )
         )
     return inputs
@@ -148,6 +148,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    # TODO: here and above, could we fix mypy (and ideally have better code), by defining these attributes in the base?
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
@@ -163,7 +164,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property=model_manager[target]._output_property,
+            component_property=model_manager[target]._output_property,  # type: ignore[attr-defined]
             allow_duplicate=True,
         )
         for target in targets
