@@ -94,5 +94,7 @@ def validate_step(cls, step, values):
     return step
 
 
-def set_default_marks(cls, v, values):
-    return v if values.get("step") is None else {}
+def set_default_marks(cls, marks, values):
+    if not marks and values.get("step") is None:
+        marks = None
+    return marks

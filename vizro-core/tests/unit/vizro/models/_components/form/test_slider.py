@@ -40,6 +40,7 @@ def expected_slider():
                         type="number",
                         placeholder="end",
                         min=0,
+                        step=1,
                         max=10,
                         value=5,
                         persistence=True,
@@ -63,9 +64,9 @@ class TestSliderInstantiation:
 
         assert hasattr(slider, "id")
         assert slider.type == "slider"
+        assert slider.step is None
         assert slider.min is None
         assert slider.max is None
-        assert slider.step is None
         assert slider.marks is None
         assert slider.value is None
         assert slider.title is None
@@ -139,23 +140,9 @@ class TestSliderInstantiation:
             vm.Slider(min=0, max=10, step=11)
 
     def test_valid_marks_with_step(self):
-        slider = vm.Slider(min=0, max=10, step=1)
+        slider = vm.Slider(min=0, max=10, step=2)
 
         assert slider.marks == {}
-
-    @pytest.mark.parametrize(
-        "marks, step, expected",
-        [
-            ({2: "2", 4: "4", 6: "6"}, 1, {}),
-            ({2: "2", 4: "4", 6: "6"}, None, {2: "2", 4: "4", 6: "6"}),
-            ({}, 1, {}),
-        ],
-    )
-    def test_step_precedence_over_marks(self, marks, step, expected):
-        slider = vm.Slider(min=0, max=10, marks=marks, step=step)
-
-        assert slider.marks == expected
-        assert slider.step == step
 
     @pytest.mark.parametrize(
         "marks, expected",
@@ -181,6 +168,19 @@ class TestSliderInstantiation:
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
     def test_set_default_marks(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
+        assert slider.marks == expected
+
+    @pytest.mark.parametrize(
+        "step, marks, expected",
+        [
+            (1, None, None),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (None, {}, None),
+        ],
+    )
+    def test_set_step_and_marks(self, step, marks, expected):
+        slider = vm.Slider(min=0, max=10, step=step, marks=marks)
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
