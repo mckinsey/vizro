@@ -1,33 +1,69 @@
-from typing import Optional
+import itertools
+from collections.abc import Mapping
+from typing import Dict, List
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import validator
+from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation.navigation import _validate_pages
-from vizro.models.types import NavigationPagesType
+from vizro.models._navigation._navigation_utils import _validate_pages
 
 
 class Accordion(VizroBaseModel):
-    """Accordion to be used in Navigation Panel of Dashboard.
+    """Accordion to be used as selector in [`Navigation`][vizro.models.Navigation].
 
     Args:
-        pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].
-            Defaults to `None`.
+        pages (Dict[str, List[str]]): A dictionary with a page group title as key and a list of page IDs as values.
     """
 
-    pages: Optional[NavigationPagesType] = None
+    pages: Dict[str, List[str]] = Field(
+        ..., description="A dictionary with a page group title as key and a list of page IDs as values."
+    )
 
-    # validators
-    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
+
+    @validator("pages", pre=True)
+    def coerce_pages_type(cls, pages):
+        if isinstance(pages, Mapping):
+            return pages
+        return {ACCORDION_DEFAULT_TITLE: pages}
 
     @_log_call
     def build(self, *, active_page_id=None):
-        return self._create_accordion(active_page_id=active_page_id)
+        # Hide navigation panel if there is only one page
+        if len(list(itertools.chain(*self.pages.values()))) == 1:
+            return html.Div(className="hidden")
+
+        accordion_items = []
+        for page_group, page_members in self.pages.items():
+            accordion_buttons = self._create_accordion_buttons(pages=page_members, active_page_id=active_page_id)
+            accordion_items.append(
+                dbc.AccordionItem(
+                    children=accordion_buttons,
+                    title=page_group.upper(),
+                    class_name="accordion_item",
+                )
+            )
+
+        return html.Div(
+            children=[
+                dbc.Accordion(
+                    id=self.id,
+                    children=accordion_items,
+                    class_name="accordion",
+                    persistence=True,
+                    persistence_type="session",
+                    always_open=True,
+                ),
+                html.Hr(),
+            ],
+            className="nav_panel",
+            id="nav_panel_outer",
+        )
 
     def _create_accordion_buttons(self, pages, active_page_id):
         """Creates a button for each provided page that is registered."""
@@ -49,47 +85,3 @@ class Accordion(VizroBaseModel):
                 )
             )
         return accordion_buttons
-
-    def _create_accordion_item(self, accordion_buttons, title=ACCORDION_DEFAULT_TITLE):
-        """Creates an accordion item for each sub-group of pages."""
-        return dbc.AccordionItem(
-            children=accordion_buttons,
-            title=title.upper(),
-            class_name="accordion_item",
-        )
-
-    def _get_accordion_container(self, accordion_items, accordion_buttons):
-        # Return no container if there is only one page in the dashboard or no pages exist
-        if (len(accordion_buttons) == len(accordion_items) == 1) or not accordion_buttons:
-            return None
-
-        return html.Div(
-            children=[
-                dbc.Accordion(
-                    id=self.id,
-                    children=accordion_items,
-                    class_name="accordion",
-                    persistence=True,
-                    persistence_type="session",
-                    always_open=True,
-                ),
-                html.Hr(),
-            ],
-            className="nav_panel",
-            id="nav_panel_outer",
-        )
-
-    def _create_accordion(self, active_page_id):
-        """Creates a custom accordion only with user-provided pages."""
-        accordion_items = []
-        if isinstance(self.pages, dict):
-            for page_group, page_members in self.pages.items():
-                accordion_buttons = self._create_accordion_buttons(pages=page_members, active_page_id=active_page_id)
-                accordion_items.append(
-                    self._create_accordion_item(accordion_buttons=accordion_buttons, title=page_group)
-                )
-
-        if isinstance(self.pages, list):
-            accordion_buttons = self._create_accordion_buttons(pages=self.pages, active_page_id=active_page_id)
-            accordion_items.append(self._create_accordion_item(accordion_buttons=accordion_buttons))
-        return self._get_accordion_container(accordion_items=accordion_items, accordion_buttons=accordion_buttons)
