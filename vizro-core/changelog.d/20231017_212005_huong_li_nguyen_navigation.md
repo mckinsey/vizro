@@ -17,7 +17,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if None ([#117](https://github.com/mckinsey/vizro/pull/117))
+- Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if `navigation.pages = None` ([#117](https://github.com/mckinsey/vizro/pull/117))
 
 <!--
 ### Deprecated

@@ -1,4 +1,5 @@
 import itertools
+from collections.abc import Mapping
 from typing import Dict, List
 
 import dash
@@ -26,10 +27,10 @@ class Accordion(VizroBaseModel):
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @validator("pages", pre=True)
-    def validate_pages_format(cls, pages):
-        if isinstance(pages, list):
-            return {ACCORDION_DEFAULT_TITLE: pages}
-        return pages
+    def coerce_pages_type(cls, pages):
+        if isinstance(pages, Mapping):
+            return pages
+        return {ACCORDION_DEFAULT_TITLE: pages}
 
     @_log_call
     def build(self, *, active_page_id=None):
