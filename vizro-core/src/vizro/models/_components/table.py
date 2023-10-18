@@ -78,6 +78,6 @@ class Table(VizroBaseModel):
     @_log_call
     def build(self):
         data = data_manager._get_component_data(self.id)  # type: ignore
-        additional_args = self.table._arguments.copy()
-        additional_args.pop("data_frame", None)
-        return html.Div(self.table._function(data_frame=data, **additional_args), id=self.id)
+        kwargs = self.table._arguments.copy()
+        kwargs.pop("data_frame", None)
+        return html.Div(self.table._function(data_frame=data, **kwargs), id=self.id)

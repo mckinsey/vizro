@@ -11,6 +11,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction
+from vizro.charts.tables import dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
@@ -65,7 +66,7 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        vm.Table(id="table2", table=table_dash(data_frame=data, style_header={"border": "1px solid green"})),
+        vm.Table(id="table2", table=dash_data_table(data_frame=data, style_header={"border": "1px solid green"})),
         vm.Graph(
             id="graph",
             figure=px.scatter(
@@ -92,5 +93,8 @@ page_0 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_0])
 
 if __name__ == "__main__":
+    # data_manager["table_data"] = retrieve_table_data
+    # data = retrieve_table_data()
+    # print(vm.Table(id="table2", table=dash_data_table(data, style_header={"border": "1px solid green"}))())
     Vizro._user_assets_folder = os.path.abspath("../assets")
     Vizro().build(dashboard).run()

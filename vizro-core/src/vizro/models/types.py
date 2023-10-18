@@ -43,6 +43,11 @@ class CapturedCallable:
         """
         self.__function = function
         self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs)
+        # Below is required as otherwise kwargs provided to captured functions will sit under the key "kwargs"
+        kwargs_to_unfold = self.__bound_arguments.arguments.get("kwargs")
+        if kwargs_to_unfold:
+            self.__bound_arguments.arguments.update(kwargs_to_unfold)
+            del self.__bound_arguments.arguments["kwargs"]
 
     def __call__(self, **kwargs):
         """Run the `function` with the initial arguments overridden by **kwargs.
