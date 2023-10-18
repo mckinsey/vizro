@@ -91,3 +91,7 @@
   flex-direction: column;
   width: 100%;
 }
+
+.hidden {
+  display: none;
+}
