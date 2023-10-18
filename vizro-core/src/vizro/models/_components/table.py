@@ -18,7 +18,8 @@ class Table(VizroBaseModel):
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        table (CapturedCallable): Table like object to be displayed. Current choices include: [`dash_table.DataTable`].
+        table (CapturedCallable): Table like object to be displayed. Current choices include:
+            [`dash_table.DataTable`](https://dash.plotly.com/datatable).
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
