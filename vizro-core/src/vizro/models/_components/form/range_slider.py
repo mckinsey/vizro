@@ -95,9 +95,7 @@ class RangeSlider(VizroBaseModel):
                             marks=self.marks,
                             value=value,
                             persistence=True,
-                            className="range_slider_control"
-                            if self.step
-                            else "range_slider_control_no_space",
+                            className="range_slider_control" if self.step else "range_slider_control_no_space",
                         ),
                         html.Div(
                             [
