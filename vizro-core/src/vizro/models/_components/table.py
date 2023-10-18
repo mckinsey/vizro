@@ -18,9 +18,8 @@ class Table(VizroBaseModel):
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        table (CapturedCallable): React object to be displayed.
-        # actions (List[Action]): List of the Action objects, that allows to
-        #     configure app interactions, triggered by affecting this component.
+        table (CapturedCallable): Table like object to be displayed. Current choices include: [`dash_table.DataTable`].
+        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["table"] = "table"
@@ -48,7 +47,7 @@ class Table(VizroBaseModel):
         # Extract dataframe from the captured function and put it into the data manager.
         dataset_name = str(id(data_frame))
 
-        logger.debug("Adding data to data manager for Graph with id %s", values["id"])
+        logger.debug("Adding data to data manager for Table with id %s", values["id"])
         # If the dataset already exists in the data manager then it's not a problem, it just means that we don't need
         # to duplicate it. Just log the exception for debugging purposes.
         try:
@@ -59,7 +58,7 @@ class Table(VizroBaseModel):
         data_manager._add_component(values["id"], dataset_name)
 
         # No need to keep the data in the captured function any more so remove it to save memory.
-        # del table["data_frame"]
+        del table["data_frame"]
         return table
 
     # Convenience wrapper/syntactic sugar.
@@ -69,7 +68,7 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
-        # pydantic discriminated union validation seems to try Graph["type"], which throws an error unless we
+        # pydantic discriminated union validation seems to try Table["type"], which throws an error unless we
         # explicitly redirect it to the correct attribute.
         if arg_name == "type":
             return self.type
