@@ -86,10 +86,18 @@ def _get_matching_actions_by_function(page: Page, action_function: Callable[[Any
 def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> List[State]:
     """Gets list of States for selected control_type of triggered page."""
     page = _get_triggered_page(action_id=action_id)
+    # HARD CODED FOR NOW - INVALIDATES EXISTING FUNCTIONALITY
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",
+            component_property="start_date",
+        )
+        for control in page.controls
+        if isinstance(control, control_type)
+    ] + [
+        State(
+            component_id=control.selector.id,
+            component_property="end_date",
         )
         for control in page.controls
         if isinstance(control, control_type)
