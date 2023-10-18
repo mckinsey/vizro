@@ -120,45 +120,45 @@ class DataManager:
 data_manager = DataManager()
 
 
-if __name__ == "__main__":
-    from functools import partial
-
-    import vizro.plotly.express as px
-
-    dm = data_manager
-    dm["iris"] = px.data.iris()
-
-    dm._add_component("component_id_a", "iris")
-    print(len(dm._get_component_data("component_id_a")))  # 150   # noqa: T201
-
-    dm._add_component("component_id_b", "iris")
-    df_a = dm._get_component_data("component_id_a")
-    df_a.drop(columns="species", inplace=True)
-    print(df_a.shape)  # (150, 5)   # noqa: T201
-    df_b = dm._get_component_data("component_id_b")
-    print(df_b.shape)  # (150, 6)   # noqa: T201
-
-    # Lazy loading example 1
-    def retrieve_iris():
-        df = px.data.iris()
-        subset = df.query("species == 'setosa'")
-        return subset
-
-    dm["iris_subset"] = retrieve_iris
-    dm._add_component("component_id_c", "iris_subset")
-    print(len(dm._get_component_data("component_id_c")))  # 50   # noqa: T201
-
-    # Lazy loading example 2
-    def retrieve_one_species(species):
-        df = px.data.iris()
-        subset = df[df["species"] == species].copy()
-        return subset
-
-    dm["data_from_external_1"] = lambda: retrieve_one_species("setosa")
-    dm._add_component("component_id_d", "data_from_external_1")
-    print(len(dm._get_component_data("component_id_d")))  # 50   # noqa: T201
-
-    # Lazy loading example 3
-    dm["data_from_external_2"] = partial(retrieve_one_species, "setosa")
-    dm._add_component("component_id_e", "data_from_external_2")
-    print(len(dm._get_component_data("component_id_e")))  # 50   # noqa: T201
+# if __name__ == "__main__":
+#     from functools import partial
+#
+#     import vizro.plotly.express as px
+#
+#     dm = data_manager
+#     dm["iris"] = px.data.iris()
+#
+#     dm._add_component("component_id_a", "iris")
+#     print(len(dm._get_component_data("component_id_a")))  # 150   # noqa: T201
+#
+#     dm._add_component("component_id_b", "iris")
+#     df_a = dm._get_component_data("component_id_a")
+#     df_a.drop(columns="species", inplace=True)
+#     print(df_a.shape)  # (150, 5)   # noqa: T201
+#     df_b = dm._get_component_data("component_id_b")
+#     print(df_b.shape)  # (150, 6)   # noqa: T201
+#
+#     # Lazy loading example 1
+#     def retrieve_iris():
+#         df = px.data.iris()
+#         subset = df.query("species == 'setosa'")
+#         return subset
+#
+#     dm["iris_subset"] = retrieve_iris
+#     dm._add_component("component_id_c", "iris_subset")
+#     print(len(dm._get_component_data("component_id_c")))  # 50   # noqa: T201
+#
+#     # Lazy loading example 2
+#     def retrieve_one_species(species):
+#         df = px.data.iris()
+#         subset = df[df["species"] == species].copy()
+#         return subset
+#
+#     dm["data_from_external_1"] = lambda: retrieve_one_species("setosa")
+#     dm._add_component("component_id_d", "data_from_external_1")
+#     print(len(dm._get_component_data("component_id_d")))  # 50   # noqa: T201
+#
+#     # Lazy loading example 3
+#     dm["data_from_external_2"] = partial(retrieve_one_species, "setosa")
+#     dm._add_component("component_id_e", "data_from_external_2")
+#     print(len(dm._get_component_data("component_id_e")))  # 50   # noqa: T201

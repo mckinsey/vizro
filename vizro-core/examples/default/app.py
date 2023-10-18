@@ -17,11 +17,11 @@ data_manager["gapminder"] = retrieve_gapminder
 
 
 @capture("action")
-def delete_memoized_cache(collapse_button_id_n_clicks):
+def delete_memoized_cache(delete_button_id_n_clicks):
     """Delete memoized cache."""
-    if collapse_button_id_n_clicks:
-        data_manager._cache.delete_memoized(data_manager._get_component_data, data_manager, "the_graph")
-        # data_manager._cache.delete_memoized(data_manager._get_component_data, data_manager, "the_graph2")
+    if delete_button_id_n_clicks:
+        data_manager._cache.delete_memoized(data_manager._get_original_data, data_manager, "gapminder")
+        return None
 
 
 page = vm.Page(
@@ -47,17 +47,17 @@ page = vm.Page(
         #     ),
         #     id="the_graph2",
         # ),
-        # vm.Button(
-        #     id="delete_button_id",
-        #     text="delete_memoized_cache",
-        #     actions=[
-        #         vm.Action(
-        #             function=delete_memoized_cache(),
-        #             inputs=["collapse_button_id.n_clicks"],
-        #             outputs=[],
-        #         )
-        #     ]
-        # )
+        vm.Button(
+            id="delete_button_id",
+            text="delete_memoized_cache",
+            actions=[
+                vm.Action(
+                    function=delete_memoized_cache(),
+                    inputs=["delete_button_id.n_clicks"],
+                    outputs=[],
+                )
+            ]
+        )
     ],
     controls=[
         vm.Filter(
@@ -78,6 +78,7 @@ if __name__ == "__main__":
         "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
         "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
     }
+    # Vizro._cache_config = {"CACHE_TYPE": "redis", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 3000,}
     Vizro().build(dashboard).run()
     # Vizro().build(dashboard).run(
     #     threaded=False,
