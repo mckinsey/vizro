@@ -29,7 +29,7 @@ def expected_slider():
                         min=0,
                         max=10,
                         step=1,
-                        marks={},
+                        marks=None,
                         value=5,
                         included=False,
                         persistence=True,
@@ -66,10 +66,10 @@ class TestSliderInstantiation:
         assert slider.marks is None
         assert slider.min is None
         assert slider.max is None
-        assert slider.step is None
         assert slider.value is None
         assert slider.title is None
         assert slider.actions == []
+        assert slider.step == 1
 
     @pytest.mark.parametrize(
         "min, max",
@@ -139,7 +139,7 @@ class TestSliderInstantiation:
             vm.Slider(min=0, max=10, step=11)
 
     def test_valid_marks_with_step(self):
-        slider = vm.Slider(min=0, max=10, step=1)
+        slider = vm.Slider(min=0, max=10, step=2)
 
         assert slider.marks == {}
 
@@ -164,7 +164,7 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
-    @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
+    @pytest.mark.parametrize("step, expected", [(1, None), (None, {}), (2, {})])
     def test_set_default_marks(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
         assert slider.marks == expected
@@ -174,8 +174,8 @@ class TestSliderInstantiation:
         [
             (1, None, None),
             (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (1, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (None, {}, None),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (None, {}, {}),
         ],
     )
     def test_set_step_and_marks(self, step, marks, expected):

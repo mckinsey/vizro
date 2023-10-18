@@ -25,7 +25,7 @@ class RangeSlider(VizroBaseModel):
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
-        step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
+        step (Optional[float]): Step-size for marks on slider. Defaults to `1`.
         marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (Optional[str]): Title to be displayed. Defaults to `None`.
@@ -35,7 +35,7 @@ class RangeSlider(VizroBaseModel):
     type: Literal["range_slider"] = "range_slider"
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
-    step: Optional[float] = Field(None, description="Step-size for marks on slider.")
+    step: Optional[float] = Field(1, description="Step-size for marks on slider.")
     marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[List[float]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
@@ -95,7 +95,9 @@ class RangeSlider(VizroBaseModel):
                             marks=self.marks,
                             value=value,
                             persistence=True,
-                            className="range_slider_control" if self.step else "range_slider_control_no_space",
+                            className="range_slider_control"
+                            if self.marks is not None
+                            else "range_slider_control_no_space",
                         ),
                         html.Div(
                             [
@@ -109,7 +111,7 @@ class RangeSlider(VizroBaseModel):
                                     size="24px",
                                     persistence=True,
                                     className="slider_input_field_left"
-                                    if self.step
+                                    if self.marks is not None
                                     else "slider_input_field_no_space_left",
                                 ),
                                 dcc.Input(
@@ -121,7 +123,7 @@ class RangeSlider(VizroBaseModel):
                                     value=value[1],
                                     persistence=True,
                                     className="slider_input_field_right"
-                                    if self.step
+                                    if self.marks is not None
                                     else "slider_input_field_no_space_right",
                                 ),
                                 dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
