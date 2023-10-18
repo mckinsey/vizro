@@ -9,24 +9,23 @@ from dash import dash_table, dcc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import export_data, filter_interaction
 from vizro.managers import data_manager
 from vizro.models.types import capture
-import vizro.plotly.express as px
-from vizro.actions import filter_interaction, export_data
 
 
 def retrieve_table_data():
     """Return data for table for testing."""
     states = [
-            "California",
-            "Arizona",
-            "Nevada",
-            "New Mexico",
-            "Colorado",
-            "Texas",
-            "North Carolina",
-            "New York",
-        ]
+        "California",
+        "Arizona",
+        "Nevada",
+        "New Mexico",
+        "Colorado",
+        "Texas",
+        "North Carolina",
+        "New York",
+    ]
 
     data = {
         "State": states + states[::-1],
@@ -64,18 +63,14 @@ def table_go(data_frame=None, template=None):
 
 
 @capture("graph")
-def table_dash(data_frame=None, style_header=None, **kwargs):
+def table_dash(data_frame=None, style_header=None):
     """Custom table."""
     return dash_table.DataTable(
-
-        # PP: Don't know a better way how to insert the 'id' into datatable than manually.
-        id="datatable_id",
-
+        id="dash_datatable_id",
         data=data_frame.to_dict("records"),
         columns=[{"name": i, "id": i} for i in data_frame.columns],
         style_header=style_header,
-        # page_size=6,
-        **kwargs
+        page_size=6,
     )
 
 
@@ -93,11 +88,12 @@ page_0 = vm.Page(
     path="color-manager",
     components=[
         vm.Table(
-            id="datatable_id",
+            id="table_id",
             figure=table_dash(
-                data_frame="table_data"
+                data_frame="table_data",
+                style_header={"border": "1px solid green"},
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+            actions=[vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart"]))],
         ),
         vm.Graph(
             id="scatter_chart",
@@ -106,19 +102,19 @@ page_0 = vm.Page(
                 x="State",
                 y="Number of Solar Plants",
                 color="Number of Solar Plants",
-                custom_data=["State"]
+                custom_data=["State"],
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["datatable_id"]))]
+            actions=[vm.Action(function=filter_interaction(targets=["table_id"]))],
         ),
         # vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
-        vm.Button(
-            id='export_data_button',
-            actions=[vm.Action(function=export_data())]
-        )
+        vm.Button(id="export_data_button", actions=[vm.Action(function=export_data())]),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
-        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
+        vm.Parameter(
+            targets=["table_id.style_header.border"],
+            selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
+        ),
     ],
 )
 dashboard = vm.Dashboard(pages=[page_0])

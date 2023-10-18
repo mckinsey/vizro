@@ -2,7 +2,7 @@ import logging
 from typing import Callable, List, Literal
 
 from dash import Output, html
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
@@ -27,6 +27,8 @@ class Table(VizroBaseModel):
     data: Callable = None
     figure: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
     actions: List[Action] = []
+
+    _datatable_id: str = PrivateAttr()
 
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
@@ -72,15 +74,30 @@ class Table(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
-    @_log_call
-    def build(self):
+    def _build_datatable_object(self):
         data = data_manager._get_component_data(self.id)  # type: ignore
         additional_args = self.figure._arguments.copy()
         additional_args.pop("data_frame", None)
+        return self.figure._function(data_frame=data, **additional_args)
 
-        datatable = self.figure._function(data_frame=data, **additional_args)
+    @_log_call
+    def pre_build(self):
+        if self.actions:
+            # The Datatable object is pre-built, so we can fetch its ID.
+            datatable_object = self._build_datatable_object()
 
-        return html.Div(datatable, id=f"{self.id}_outer")
+            # Datatable object has to have "id" defined if it triggers actions chain.
+            if not hasattr(datatable_object, "id"):
+                raise ValueError(
+                    "'DataTable' object has no attribute 'id'. To perform specified actions, a valid 'id' to the"
+                    " 'Datatable' object has to be provided."
+                )
+
+            self._datatable_id = datatable_object.id
+
+    @_log_call
+    def build(self):
+        return html.Div(self._build_datatable_object(), id=self.id)
 
     def _get_action_callback_output(self):
         return Output(

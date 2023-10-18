@@ -8,6 +8,7 @@ from vizro.actions._action_loop._action_loop_utils import (
     _get_actions_chains_on_registered_pages,
     _get_actions_on_registered_pages,
 )
+from vizro.managers import model_manager
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +23,22 @@ def _build_action_loop_callbacks() -> None:
 
     gateway_inputs: List[Input] = []
     for actions_chain in actions_chains:
+        actions_chain_trigger_component_id = actions_chain.trigger.component_id
+        try:
+            actions_chain_trigger_component = model_manager[actions_chain_trigger_component_id]
+            # Use underlying 'Datatable' object as a trigger component.
+            if actions_chain_trigger_component.type in ["table", "react"]:
+                actions_chain_trigger_component_id = actions_chain_trigger_component._datatable_id
+        # Not all action_chain_trigger_components are included in model_manager. eg on_page_load_action_trigger
+        except KeyError:
+            pass
+
         # Callback that enables gateway callback to work in the multiple page app
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="trigger_to_global_store"),
             Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
             Input(
-                component_id=actions_chain.trigger.component_id,
+                component_id=actions_chain_trigger_component_id,
                 component_property=actions_chain.trigger.component_property,
             ),
             State({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),

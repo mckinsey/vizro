@@ -109,37 +109,26 @@ def _get_inputs_of_chart_interactions(
     for action in chart_interactions_on_page:
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
         if triggered_model.type == "table" or triggered_model.type == "react":
-            states.update({
-                action.id: {
-                    "active_cell": State(
-                        component_id=triggered_model.id,
-                        component_property="active_cell"
-                    ),
-                    "derived_viewport_data": State(
-                        component_id=triggered_model.id,
-                        component_property="derived_viewport_data"
-                    )
+            states.update(
+                {
+                    action.id: {
+                        "active_cell": State(
+                            component_id=triggered_model._datatable_id, component_property="active_cell"
+                        ),
+                        "derived_viewport_data": State(
+                            component_id=triggered_model._datatable_id, component_property="derived_viewport_data"
+                        ),
+                    }
                 }
-            })
-
+            )
         else:
-            states.update({
-                action.id: {
-                    "clickData": State(
-                        component_id=triggered_model.id,
-                        component_property="clickData"
-                    ),
+            states.update(
+                {
+                    action.id: {
+                        "clickData": State(component_id=triggered_model.id, component_property="clickData"),
+                    }
                 }
-            })
-
-
-    # return [
-    #     State(
-    #         component_id=_get_triggered_model(action_id=action.id).id,  # type: ignore[arg-type]
-    #         component_property="clickData",  # LN: Needs to be refactored so plotly-independent or extendable
-    #     )
-    #     for action in chart_interactions_on_page
-    # ]
+            )
 
     return states
 
@@ -188,31 +177,11 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
 
-    outputs = {}
-    for target in targets:
-        if model_manager[target].type == "table" or model_manager[target].type == "react":
-            outputs.update({
-                target: Output(
-                    component_id=f"{target}_outer",
-                    component_property="children",
-                    allow_duplicate=True,
-                )
-            })
-        else:
-            outputs.update({
-                target: Output(
-                    component_id=target,
-                    component_property="figure",
-                    allow_duplicate=True,
-                )
-            })
-    return outputs
-
-    # return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
-    #     target: model_manager[target]._get_action_callback_output()
-    #     for target in targets
-    #     if hasattr(model_manager[target], "_get_action_callback_output")
-    # }
+    return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
+        target: model_manager[target]._get_action_callback_output()
+        for target in targets
+        if hasattr(model_manager[target], "_get_action_callback_output")
+    }
 
 
 def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[State]]:
