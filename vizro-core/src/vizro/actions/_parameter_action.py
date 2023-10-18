@@ -7,9 +7,8 @@ from dash import ctx
 from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
-from vizro.models.types import capture
 from vizro.managers._model_manager import ModelID
-
+from vizro.models.types import capture
 
 
 # TODO - consider using dash.Patch() for parameter action

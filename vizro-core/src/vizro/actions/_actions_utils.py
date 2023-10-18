@@ -202,7 +202,9 @@ def _get_modified_page_charts(
 
     outputs = {}
     for target in targets:
-        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])  # type: ignore[operator]
+        outputs[target] = model_manager[target](  # type: ignore[operator]
+            data_frame=filtered_data[target], **parameterized_config[target]
+        )
         if hasattr(outputs[target], "update_layout"):
             outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
 

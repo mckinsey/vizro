@@ -9,8 +9,8 @@ from vizro.actions._actions_utils import (
     _get_filtered_data,
 )
 from vizro.managers import model_manager
-from vizro.models.types import capture
 from vizro.managers._model_manager import ModelID
+from vizro.models.types import capture
 
 
 @capture("action")

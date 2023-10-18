@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, Tuple, Type, TypeVar, cast, NewType
+from typing import TYPE_CHECKING, Dict, Generator, NewType, Tuple, Type, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 

@@ -1,18 +1,18 @@
 """Example to show dashboard configuration specified as pydantic models."""
 import os
 
+import dash_ag_grid as dag
+
 # import d3_bar_chart
 import pandas as pd
-import plotly.graph_objects as go
-from dash import dash_table, dcc
+from dash import dash_table
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import filter_interaction
 from vizro.managers import data_manager
 from vizro.models.types import capture
-from vizro.actions import filter_interaction
-import dash_ag_grid as dag
 
 
 def retrieve_table_data():

@@ -5,7 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 from copy import deepcopy
-from typing import Any, Dict, List, Literal, NewType, Protocol, Union, runtime_checkable
+from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
 from pydantic import Field, StrictBool
 from pydantic.fields import ModelField
@@ -299,5 +299,3 @@ NavigationPagesType = Annotated[
     ),
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
-
-
