@@ -30,9 +30,9 @@ def expected_range_slider_default():
                         persistence=True,
                         min=None,
                         max=None,
-                        marks=None,
+                        marks={},
                         value=[None, None],
-                        step=1,
+                        step=None,
                     ),
                     html.Div(
                         [
@@ -42,6 +42,7 @@ def expected_range_slider_default():
                                 placeholder="start",
                                 className="slider_input_field_no_space_left",
                                 size="24px",
+                                step=None,
                                 persistence=True,
                                 min=None,
                                 max=None,
@@ -53,6 +54,7 @@ def expected_range_slider_default():
                                 placeholder="end",
                                 className="slider_input_field_no_space_right",
                                 persistence=True,
+                                step=None,
                                 min=None,
                                 max=None,
                                 value=None,
@@ -102,6 +104,7 @@ def expected_range_slider_with_optional():
                                 type="number",
                                 placeholder="start",
                                 min=0,
+                                step=2,
                                 max=10,
                                 className="slider_input_field_left",
                                 value=0,
@@ -114,6 +117,7 @@ def expected_range_slider_with_optional():
                                 placeholder="end",
                                 min=0,
                                 max=10,
+                                step=2,
                                 className="slider_input_field_right",
                                 value=10,
                                 persistence=True,
@@ -139,13 +143,13 @@ class TestRangeSliderInstantiation:
 
         assert hasattr(range_slider, "id")
         assert range_slider.type == "range_slider"
-        assert range_slider.marks is None
         assert range_slider.min is None
         assert range_slider.max is None
+        assert range_slider.step is None
         assert range_slider.value is None
         assert range_slider.title is None
         assert range_slider.actions == []
-        assert range_slider.step == 1
+        assert range_slider.marks == {}
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(

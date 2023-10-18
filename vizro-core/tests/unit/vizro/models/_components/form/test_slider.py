@@ -40,6 +40,7 @@ def expected_slider():
                         type="number",
                         placeholder="end",
                         min=0,
+                        step=1,
                         max=10,
                         value=5,
                         persistence=True,
@@ -63,13 +64,13 @@ class TestSliderInstantiation:
 
         assert hasattr(slider, "id")
         assert slider.type == "slider"
-        assert slider.marks is None
+        assert slider.step is None
         assert slider.min is None
         assert slider.max is None
         assert slider.value is None
         assert slider.title is None
         assert slider.actions == []
-        assert slider.step == 1
+        assert slider.marks == {}
 
     @pytest.mark.parametrize(
         "min, max",
