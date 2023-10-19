@@ -2,7 +2,6 @@
 
 import json
 
-import dash
 import plotly
 import pytest
 from dash import dcc, html
@@ -104,7 +103,6 @@ def managers_one_page_two_components_two_controls():
     )
 
     yield Vizro._pre_build()
-    del dash.page_registry["test_page"]
 
 
 @pytest.fixture
@@ -120,14 +118,13 @@ def managers_one_page_no_actions():
         ]
     )
 
-    yield Vizro._pre_build()
-    del dash.page_registry["test_page_no_actions"]
+    Vizro._pre_build()
 
 
 class TestGetActionLoopComponents:
     """Tests getting required components for the action loop."""
 
-    @pytest.mark.usefixtures("managers_one_page_no_actions")
+    @pytest.mark.usefixtures("vizro_app", "managers_one_page_no_actions")
     def test_no_components(self):
         result = _get_action_loop_components()
         result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
@@ -136,7 +133,7 @@ class TestGetActionLoopComponents:
 
         assert result == expected
 
-    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
+    @pytest.mark.usefixtures("vizro_app", "managers_one_page_two_components_two_controls")
     @pytest.mark.parametrize(
         "gateway_components, "
         "action_trigger_components, "

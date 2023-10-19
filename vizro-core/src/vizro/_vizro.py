@@ -3,14 +3,26 @@ import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+import dash
 import flask
-from dash import Dash
 
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
 
 logger = logging.getLogger(__name__)
+
+
+def _clear_state():
+    """Private method that clears all state in the vizro package."""
+    data_manager._reset()
+    model_manager._reset()
+    dash._callback.GLOBAL_CALLBACK_LIST = []
+    dash._callback.GLOBAL_CALLBACK_MAP = {}
+    dash._callback.GLOBAL_INLINE_SCRIPTS = []
+    dash._pages.PAGE_REGISTRY.clear()
+    dash._pages.CONFIG.clear()
+    dash._pages.CONFIG.__dict__.clear()
 
 
 class Vizro:
@@ -22,7 +34,7 @@ class Vizro:
     def __init__(self):
         """Initializes Dash."""
         _js, _css = _append_styles(self._lib_assets_folder, STATIC_URL_PREFIX)
-        self.dash = Dash(
+        self.dash = dash.Dash(
             use_pages=True,
             pages_folder="",
             external_scripts=_js,
