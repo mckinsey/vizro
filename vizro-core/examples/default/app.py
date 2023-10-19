@@ -526,18 +526,16 @@ dashboard = vm.Dashboard(
     ],
     navigation=vm.Navigation(
         selector=vm.NavBar(
-            pages={"Analysis": ["Homepage", "Country Analysis"], "Summary": ["Relationship Analysis", "Variable Analysis"]},
-            # pages=["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis", "Continent Summary"],
-            # items=[
-            #     vm.NavItem(
-            #         pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
-            #         # image="assets/images/icons/content/collections.svg",
-            #     ),
-            #     vm.NavItem(
-            #         pages=["Country Analysis", "Continent Summary"],
-            #         # image="assets/images/icons/content/features.svg"
-            #     ),
-            # ]
+            items=[
+                vm.NavItem(
+                    pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
+                    image="assets/images/icons/content/collections.svg",
+                ),
+                vm.NavItem(
+                    pages=["Country Analysis", "Continent Summary"],
+                    image="assets/images/icons/content/features.svg"
+                ),
+            ]
         )
     ),
 )

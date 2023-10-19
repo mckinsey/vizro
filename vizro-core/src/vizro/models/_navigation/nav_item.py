@@ -30,19 +30,14 @@ class NavItem(VizroBaseModel):
 
     tooltip: Optional[str]
     image: Optional[str]
-    pages: Optional[NavigationPagesType] = None # not optional
+    pages: Optional[NavigationPagesType] = None
     _selector: Accordion = PrivateAttr()
-
-    # text: Optional[str]
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):
-        self._set_selector()
-
-    def _set_selector(self):
         from vizro.models._navigation.accordion import Accordion
         self._selector = Accordion(pages=self.pages)
 
@@ -73,17 +68,15 @@ class NavItem(VizroBaseModel):
                 target=self.id,
                 placement="bottom",
                 className="custom_tooltip",
-                is_open=True,
             )
             return tooltip
 
     def _get_icon_image(self):
+        image_path = self.image if self.image else STATIC_URL_PREFIX + "/images/icon_1.svg"
+
         return html.Img(
-            src=self.image if self.image else self._get_default_img(),
+            src=image_path,
             width=24,
             height=24,
             className="icon",
         )
-
-    def _get_default_img(self):
-        return STATIC_URL_PREFIX + "/images/icon_1.svg"

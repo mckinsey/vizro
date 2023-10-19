@@ -27,7 +27,13 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._set_items()
+        if not self.items:
+            if isinstance(self.pages, list):
+                self.items = [NavItem(pages=[page]) for page in self.pages]
+            if isinstance(self.pages, dict):
+                self.items = [NavItem(pages=value) for page, value in self.pages.items()]
+
+            [item.pre_build() for item in self.items]
 
     @_log_call
     def build(self, active_page_id):
@@ -40,15 +46,6 @@ class NavBar(VizroBaseModel):
         nav_panel = self._nav_panel_build(active_page_id=active_page_id)
 
         return nav_bar, nav_panel
-
-    def _set_items(self):
-        if not self.items:
-            if isinstance(self.pages, list):
-                self.items = [NavItem(pages=[page]) for page in self.pages]
-            if isinstance(self.pages, dict):
-                self.items = [NavItem(pages=value) for page, value in self.pages.items()]
-
-            [item.pre_build() for item in self.items]
 
     def _nav_panel_build(self, active_page_id):
         for item in self.items:
