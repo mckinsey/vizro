@@ -13,7 +13,6 @@ from vizro.models import Dashboard
 logger = logging.getLogger(__name__)
 
 
-
 class Vizro:
     """The main class of the `vizro` package."""
 
@@ -76,7 +75,7 @@ class Vizro:
             model = model_manager[model_id]
             if hasattr(model, "pre_build"):
                 model.pre_build()
-    
+
     @staticmethod
     def _clear_state():
         """Private method that clears all state in the vizro package."""
