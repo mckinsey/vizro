@@ -123,7 +123,8 @@ def _get_parametrized_config(
         graph_config = (
             deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
             if hasattr(model_manager[target], "figure")
-            else deepcopy(model_manager[target].table._arguments)  # type: ignore[attr-defined]
+            else (deepcopy(model_manager[target].table._arguments)  # type: ignore[attr-defined]
+            if hasattr(model_manager[target], "table") else deepcopy(model_manager[target].text._arguments))
         )
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
