@@ -3,7 +3,7 @@ from typing import List, Literal
 
 from dash import Input, Output, Patch, callback, dcc
 from plotly import graph_objects as go
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 import vizro._themes as themes
 import vizro.plotly.express as px
@@ -40,8 +40,12 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path=px
-    )  # LN: needs to be refactored so plotly-independent or extendable - No, as this is within the boundaries of Graph model
+    )  # TODO: needs to be refactored so plotly-independent or extendable - No, as within the boundaries of Graph model
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("clickData")
+    _output_property: str = PrivateAttr("figure")
 
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
@@ -83,7 +87,7 @@ class Graph(VizroBaseModel):
         if fig.layout.title.text is None:
             fig.update_layout(
                 margin_t=24
-            )  # LN: needs to be refactored so plotly-independent or extendable: No, as this is within the boundaries of Graph model
+            )  # TODO: needs to be refactored so plotly-independent or extendable: No, as boundaries of Graph model
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -116,7 +120,7 @@ class Graph(VizroBaseModel):
             parent_className="chart_container",
         )
 
-    def _update_graph_theme(self):  # LN: needs to be refactored so plotly-independent or extendable - DONE
+    def _update_graph_theme(self):
         @callback(
             Output(self.id, "figure", allow_duplicate=True),
             Input("theme_selector", "on"),
@@ -126,18 +130,3 @@ class Graph(VizroBaseModel):
             patched_figure = Patch()
             patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
             return patched_figure
-
-    def _update_theme_call(self, theme_bool, **kwargs):
-        """Define __call__ method that includes theme update if applicable."""
-        return self.__call__(**kwargs).update_layout(template="vizro_dark" if theme_bool else "vizro_light")
-
-    def _get_action_callback_output(self):
-        return Output(
-            component_id=self.id,
-            component_property="figure",
-            allow_duplicate=True,
-        )
-
-    # def _get_click_trigger_property(self):
-    #     """Define trigger property for click interaction"""
-    #     return "clickData"

@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 rd = random.Random(0)
 
+# Type used for model_manager IDs
 ModelID = NewType("ModelID", str)
+
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
-
-    pass
 
 
 class ModelManager:

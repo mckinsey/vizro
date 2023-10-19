@@ -1,15 +1,17 @@
 """Example to show dashboard configuration specified as pydantic models."""
 import os
 
+import dash_ag_grid as dag
+
 # import d3_bar_chart
 import pandas as pd
-import plotly.graph_objects as go
-from dash import dash_table, dcc
+from dash import dash_table
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.charts.tables import dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
@@ -38,31 +40,7 @@ def retrieve_table_data():
     return pd.DataFrame(data)
 
 
-# Option 1: Use graph objects table
-@capture("graph")
-def table_go(data_frame=None, template=None):
-    """Custom table."""
-    return go.Figure(
-        data=[
-            go.Table(
-                header={"values": data_frame.columns.to_list()},
-                cells={"values": data_frame.values.transpose().tolist()},
-            )
-        ]
-    )
-
-
-# @capture("graph")
-# def d3_bar(data_frame=None):
-#    """Custom table."""
-#    return d3_bar_chart.D3BarChart(
-#        id="input",
-#        value="my-value",
-#        label="my-label",
-#    )
-
-
-@capture("graph")
+@capture("table")
 def table_dash(data_frame=None, style_header=None):
     """Custom table."""
     return dash_table.DataTable(
@@ -74,22 +52,28 @@ def table_dash(data_frame=None, style_header=None):
     )
 
 
-@capture("action")
-def markdown(data_frame=None):
-    """Custom table."""
-    return dcc.Markdown(f"Data columns: {data_frame.columns.to_list()}")
+@capture("table")
+def AgGrid(data_frame=None):
+    """Custom AgGrid."""
+    return dag.AgGrid(
+        id="get-started-example-basic",
+        rowData=data_frame.to_dict("records"),
+        columnDefs=[{"field": col} for col in data_frame.columns],
+        # className="ag-theme-alpine-dark",
+    )
 
 
 data_manager["table_data"] = retrieve_table_data
 data = retrieve_table_data()
 
+# TODO: Check the Page.layout. There seem to be some issues when there are several tables on a page.
 page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
         vm.Table(
             id="table_id",
-            figure=table_dash(
+            table=table_dash(
                 data_frame="table_data",
                 style_header={"border": "1px solid green"},
             ),
@@ -106,13 +90,23 @@ page_0 = vm.Page(
             ),
             actions=[vm.Action(function=filter_interaction(targets=["table_id"]))],
         ),
-        # vm.React(id="d3_bar", figure=d3_bar(data_frame="table_data")),
+        vm.Table(
+            id="table_2_id",
+            table=dash_data_table(data_frame=data, id="dash_datatable_id_2", style_header={"border": "1px solid green"}),
+            actions=[vm.Action(id="filter_interaction_2", function=filter_interaction(targets=["scatter_chart"]))]
+        ),
+        # vm.Table(
+        #     id="ag_grid",
+        #     table=AgGrid(data_frame="table_data"),
+        #     # TODO: Probably we need to enable filter_interactions out of the box only for AgGrid objects.
+        #     # actions=[vm.Action(id="filter_interaction_2", function=filter_interaction(targets=["scatter_chart"]))]
+        # ),
         vm.Button(id="export_data_button", actions=[vm.Action(function=export_data())]),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),
         vm.Parameter(
-            targets=["table_id.style_header.border"],
+            targets=["table_id.style_header.border", "table_2_id.style_header.border"],
             selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
         ),
     ],
@@ -120,5 +114,8 @@ page_0 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_0])
 
 if __name__ == "__main__":
+    # data_manager["table_data"] = retrieve_table_data
+    # data = retrieve_table_data()
+    # print(vm.Table(id="table2", table=dash_data_table(data, style_header={"border": "1px solid green"}))())
     Vizro._user_assets_folder = os.path.abspath("../assets")
     Vizro().build(dashboard).run()

@@ -8,16 +8,17 @@ from dash import ctx
 from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
+from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 
 
 @capture("action")
 def _filter(
     filter_column: str,
-    targets: List[str],
+    targets: List[ModelID],
     filter_function: Callable[[pd.Series, Any], pd.Series],
     **inputs: Dict[str, Any],
-) -> Dict[str, Any]:
+) -> Dict[ModelID, Any]:
     """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:

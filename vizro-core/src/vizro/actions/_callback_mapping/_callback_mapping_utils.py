@@ -89,7 +89,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",  # LN: needs to be refactored so that it is independent of implementation details
+            component_property=control.selector._input_property,
         )
         for control in page.controls
         if isinstance(control, control_type)
@@ -104,12 +104,12 @@ def _get_inputs_of_chart_interactions(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
-
-    states = {}
+    inputs = {}
     for action in chart_interactions_on_page:
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
-        if triggered_model.type == "table" or triggered_model.type == "react":
-            states.update(
+        # TODO: Consider do we want to move the following logic into Model implementations.
+        if triggered_model.type in ["table", "react"]:
+            inputs.update(
                 {
                     action.id: {
                         "active_cell": State(
@@ -122,7 +122,7 @@ def _get_inputs_of_chart_interactions(
                 }
             )
         else:
-            states.update(
+            inputs.update(
                 {
                     action.id: {
                         "clickData": State(component_id=triggered_model.id, component_property="clickData"),
@@ -130,7 +130,7 @@ def _get_inputs_of_chart_interactions(
                 }
             )
 
-    return states
+    return inputs
 
 
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
@@ -165,6 +165,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    # TODO: here and above, could we fix mypy (and ideally have better code), by defining these attributes in the base?
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
@@ -177,10 +178,13 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
 
-    return {  # LN: needs to be refactored so plotly-independent or extendable - DONE
-        target: model_manager[target]._get_action_callback_output()
+    return {
+        target: Output(
+            component_id=target,
+            component_property=model_manager[target]._output_property,  # type: ignore[attr-defined]
+            allow_duplicate=True,
+        )
         for target in targets
-        if hasattr(model_manager[target], "_get_action_callback_output")
     }
 
 
