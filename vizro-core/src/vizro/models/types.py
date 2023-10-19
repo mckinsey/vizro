@@ -306,17 +306,24 @@ NavigationPagesType = Annotated[
 """Permissible value types for page attribute. Values are displayed as default."""
 
 if __name__ == "__main__":
-    from vizro.charts.tables import dash_data_table
-    from vizro.managers import data_manager
     from vizro.models.types import capture
     import vizro.plotly.express as px
-    import vizro.models as vm
-    print("hello")
-    # bar = dash_data_table(data_frame=px.data.iris(), style_header={"border": "1px solid green"})
-    # foo = vm.Table(id="table2", table=dash_data_table(data_frame=px.data.iris(), style_header={"border": "1px solid green"}))
+    
+    # Define test function and capture via decorator, important, allow **kwargs
     @capture("table")
     def test(data_frame, a,**kwargs):
-        pass
-    
+        print("Kwargs are: ",kwargs)
+        return kwargs
+
     foo = test(data_frame=px.data.iris(),a=1,b=3)
-    print(foo._arguments)
+    foo()
+
+    # Obtain signature
+    sig = inspect.signature(test)
+    print(sig)
+    
+    # Create variable mapping (simulating what happens via *args,**kwargs inside the capture decorator)
+    ba = sig.bind_partial(data_frame=px.data.iris(),a=1,b=3)
+    
+    # Note that b=3 gets added under .arguments as kwargs
+    print(ba.arguments)
