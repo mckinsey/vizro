@@ -14,6 +14,7 @@
 
 ## Previous team members and code contributors
 
+[Ned Letcher](https://github.com/ned2),
 Natalia Kurakina,
 [Leon Nallamuthu](https://github.com/leonnallamuthu),
 [axa99](https://github.com/axa99),
