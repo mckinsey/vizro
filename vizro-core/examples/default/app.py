@@ -62,41 +62,32 @@ def AgGrid(data_frame=None):
 data_manager["table_data"] = retrieve_table_data
 data = retrieve_table_data()
 
-# ignore the fact the captured decorator has argument "table"
-@capture("table")
-def text(data_frame):
-    number_of_solar_plants = data_frame["Number of Solar Plants"]
-    return f"Total number of Solar Plants is {number_of_solar_plants.sum()}"
-
-
-
 page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
         vm.Table(id="table2", table=dash_data_table(data_frame=data, style_header={"border": "1px solid green"})),
-        vm.Card(id="card", text=text(data_frame=data)),
-        # vm.Graph(
-        #     id="graph",
-        #     figure=px.scatter(
-        #         data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
-        #     ),
-        #     actions=[vm.Action(function=filter_interaction(targets=["hist"]))],
-        # ),
-        # vm.Graph(
-        #     id="hist",
-        #     figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
-        # ),
+        vm.Graph(
+            id="graph",
+            figure=px.scatter(
+                data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["hist"]))],
+        ),
+        vm.Graph(
+            id="hist",
+            figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
+        ),
         vm.Table(id="grid", table=AgGrid(data_frame="table_data")),
     ],
     controls=[
-        vm.Filter(column="State", selector=vm.Dropdown(), targets=["card", "table2", "grid"]),
-        # vm.Parameter(
-        #     targets=["table2.style_header.border"],
-        #     selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
-        # ),
-        # vm.Filter(column="species", selector=vm.Dropdown()),
-        # vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
+        vm.Filter(column="State", selector=vm.Dropdown()),
+        vm.Parameter(
+            targets=["table2.style_header.border"],
+            selector=vm.RadioItems(options=["1px solid green", "1px solid pink"]),
+        ),
+        vm.Filter(column="species", selector=vm.Dropdown()),
+        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["petal_length", "sepal_length"])),
     ],
 )
 dashboard = vm.Dashboard(pages=[page_0])
