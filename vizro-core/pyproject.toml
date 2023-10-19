@@ -64,6 +64,3 @@ skip_covered = true
 branch = true
 parallel = true
 source_pkgs = ["vizro"]
-
-[tool.hatch.metadata]
-allow-direct-references = true
