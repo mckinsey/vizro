@@ -17,10 +17,10 @@ from vizro.models._dashboard import create_layout_page_404, update_theme
 @pytest.fixture()
 def dashboard_container():
     return dbc.Container(
-        id="dashboard_container",
+        id="dashboard_container_outer",
         children=[
             html.Div(id=f"vizro_version_{vizro.__version__}"),
-            *ActionLoop._create_app_callbacks(),
+            ActionLoop._create_app_callbacks(),
             dash.page_container,
         ],
         className="vizro_dark",

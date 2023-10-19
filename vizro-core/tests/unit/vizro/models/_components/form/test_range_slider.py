@@ -42,6 +42,7 @@ def expected_range_slider_default():
                                 placeholder="start",
                                 className="slider_input_field_no_space_left",
                                 size="24px",
+                                step=None,
                                 persistence=True,
                                 min=None,
                                 max=None,
@@ -53,6 +54,7 @@ def expected_range_slider_default():
                                 placeholder="end",
                                 className="slider_input_field_no_space_right",
                                 persistence=True,
+                                step=None,
                                 min=None,
                                 max=None,
                                 value=None,
@@ -89,8 +91,8 @@ def expected_range_slider_with_optional():
                         id="range_slider_with_all",
                         min=0,
                         max=10,
-                        step=1,
-                        marks={},
+                        step=2,
+                        marks={1.0: "1", 5.0: "5", 10.0: "10"},
                         className="range_slider_control",
                         value=[0, 10],
                         persistence=True,
@@ -102,6 +104,7 @@ def expected_range_slider_with_optional():
                                 type="number",
                                 placeholder="start",
                                 min=0,
+                                step=2,
                                 max=10,
                                 className="slider_input_field_left",
                                 value=0,
@@ -114,6 +117,7 @@ def expected_range_slider_with_optional():
                                 placeholder="end",
                                 min=0,
                                 max=10,
+                                step=2,
                                 className="slider_input_field_right",
                                 value=10,
                                 persistence=True,
@@ -149,13 +153,19 @@ class TestRangeSliderInstantiation:
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(
-            min=0, max=10, step=1, marks={}, value=[1, 9], title="Test title", id="range_slider_id"
+            min=0,
+            max=10,
+            step=1,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[1, 9],
+            title="Test title",
+            id="range_slider_id",
         )
 
         assert range_slider.min == 0
         assert range_slider.max == 10
         assert range_slider.step == 1
-        assert range_slider.marks == {}
+        assert range_slider.marks == {1: "1", 5: "5", 10: "10"}
         assert range_slider.value == [1, 9]
         assert range_slider.title == "Test title"
         assert range_slider.id == "range_slider_id"
@@ -227,20 +237,6 @@ class TestRangeSliderInstantiation:
             vm.RangeSlider(min=0, max=10, step=11)
 
     @pytest.mark.parametrize(
-        "marks, step, expected",
-        [
-            ({2: "2", 4: "4", 6: "6"}, 1, {}),
-            ({2: "2", 4: "4", 6: "6"}, None, {2: "2", 4: "4", 6: "6"}),
-            ({}, 1, {}),
-        ],
-    )
-    def test_step_precedence_over_marks(self, marks, step, expected):
-        slider = vm.RangeSlider(min=0, max=10, marks=marks, step=step)
-
-        assert slider.marks == expected
-        assert slider.step == step
-
-    @pytest.mark.parametrize(
         "marks, expected",
         [
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
@@ -264,6 +260,19 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
     def test_set_default_marks(self, step, expected):
         slider = vm.RangeSlider(min=0, max=10, step=step)
+        assert slider.marks == expected
+
+    @pytest.mark.parametrize(
+        "step, marks, expected",
+        [
+            (1, None, None),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (1, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
+            (None, {}, None),
+        ],
+    )
+    def test_set_step_and_marks(self, step, marks, expected):
+        slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks)
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
@@ -301,7 +310,15 @@ class TestRangeSliderBuild:
         assert result == expected
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
-        range_slider = vm.RangeSlider(min=0, max=10, step=1, value=[0, 10], id="range_slider_with_all", title="Title")
+        range_slider = vm.RangeSlider(
+            min=0,
+            max=10,
+            step=2,
+            value=[0, 10],
+            id="range_slider_with_all",
+            title="Title",
+            marks={1: "1", 5: "5", 10: "10"},
+        )
         component = range_slider.build()
 
         result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))

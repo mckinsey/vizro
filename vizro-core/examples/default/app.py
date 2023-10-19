@@ -459,7 +459,7 @@ def create_country_analysis():
         ],
         controls=[
             vm.Filter(column="country", selector=vm.Dropdown(value="India", multi=False, title="Select country")),
-            vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe")),
+            vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
         ],
     )
     return page_country

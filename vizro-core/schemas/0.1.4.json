@@ -680,7 +680,7 @@
     },
     "Parameter": {
       "title": "Parameter",
-      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.\n\nRaises:\n    ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.",
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.\n\nRaises:\n    ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.",
       "type": "object",
       "properties": {
         "id": {

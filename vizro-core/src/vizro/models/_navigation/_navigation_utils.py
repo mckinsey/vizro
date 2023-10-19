@@ -1,42 +1,6 @@
-import warnings
+import itertools
 
 from vizro.managers import model_manager
-
-
-# Validator for re-use in other models to validate pages
-# TODO: Adjust validator to take into account pages on different icons
-def _validate_pages(pages):
-    from vizro.models import Page
-
-    registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
-
-    if pages is None:
-        return registered_pages
-
-    if not pages:
-        raise ValueError("Ensure this value has at least 1 item.")
-
-    if isinstance(pages, dict):
-        missing_pages = [
-            page
-            for page in registered_pages
-            if page not in {page for nav_pages in pages.values() for page in nav_pages}
-        ]
-        unknown_pages = [page for nav_pages in pages.values() for page in nav_pages if page not in registered_pages]
-    else:
-        missing_pages = [page for page in registered_pages if page not in pages]
-        unknown_pages = [page for page in pages if page not in registered_pages]
-
-    if missing_pages:
-        warnings.warn(
-            f"Not all registered pages used in Navigation 'pages'. Missing pages {missing_pages}!", UserWarning
-        )
-
-    if unknown_pages:
-        raise ValueError(
-            f"Unknown page ID or page title provided to Navigation 'pages'. " f"Unknown pages: {unknown_pages}"
-        )
-    return pages
 
 
 def _validate_items(items):
@@ -44,3 +8,21 @@ def _validate_items(items):
         raise ValueError("Ensure this value has at least 1 item.")
 
     return items
+
+
+def _validate_pages(pages):
+    """Reusable validator to check if provided Page IDs exist as registered pages."""
+    from vizro.models import Page
+
+    pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
+
+    if not pages_as_list:
+        raise ValueError("Ensure this value has at least 1 item.")
+
+    # Ideally we would use dash.page_registry or maybe dashboard.pages here, but we only register pages in
+    # dashboard.pre_build and model manager cannot find a Dashboard at validation time.
+    # page[0] gives the page model ID.
+    registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
+    if unknown_pages := [page for page in pages_as_list if page not in registered_pages]:
+        raise ValueError(f"Unknown page ID {unknown_pages} provided to argument 'pages'.")
+    return pages

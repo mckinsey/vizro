@@ -21,7 +21,6 @@ class NavBar(VizroBaseModel):
 
     pages: Optional[NavigationPagesType] = None
     items: Optional[List[NavItem]] = None
-    # position: left/top
 
     # Re-used validators
     _validate_items = validator("items", allow_reuse=True, always=True)(_validate_items)

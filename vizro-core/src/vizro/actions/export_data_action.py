@@ -1,4 +1,4 @@
-"""Pre-defined action function "export_data" to be re-used in `action` parameter of VizroBaseModels."""
+"""Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
 from typing import Any, Dict, List, Optional
 
@@ -33,7 +33,7 @@ def export_data(
     Returns:
         Dict mapping target component id to modified charts/components e.g. {'my_scatter': Figure({})}
     """
-    if targets is None:
+    if not targets:
         targets = [
             output["id"]["target_id"]
             for output in ctx.outputs_list
@@ -55,8 +55,7 @@ def export_data(
             writer = data_frames[target_id].to_csv
         elif file_format == "xlsx":
             writer = data_frames[target_id].to_excel
-        else:
-            raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
+        # Invalid file_format should be caught by Action validation
 
         callback_outputs[f"download-dataframe_{target_id}"] = dcc.send_data_frame(
             writer=writer, filename=f"{target_id}.{file_format}", index=False

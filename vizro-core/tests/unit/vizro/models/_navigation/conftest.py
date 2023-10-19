@@ -55,7 +55,7 @@ def accordion_from_page_as_list():
             html.Hr(),
         ],
         className="nav_panel",
-        id="accordion_list_outer",
+        id="nav_panel_outer",
     )
     return accordion
 
@@ -93,6 +93,6 @@ def accordion_from_pages_as_dict():
             html.Hr(),
         ],
         className="nav_panel",
-        id="accordion_dict_outer",
+        id="nav_panel_outer",
     )
     return accordion

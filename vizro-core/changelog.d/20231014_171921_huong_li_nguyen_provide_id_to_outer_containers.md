@@ -10,12 +10,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category.
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category.
+- Provide ID to unique outer HTML divs on page ([#111](https://github.com/mckinsey/vizro/pull/111))
 
--->
 <!--
 ### Changed
 
@@ -28,11 +27,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category.
 
 -->
-
+<!--
 ### Fixed
 
-- Fix bug of horizontal rulers not being visible in `Card` ([#91](https://github.com/mckinsey/vizro/pull/91))
+- A bullet item for the Fixed category.
 
+-->
 <!--
 ### Security
 

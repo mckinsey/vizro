@@ -37,4 +37,4 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Security
 
-- Update pydantic requirement to `pydantic>=1.10.13, <2` due to medium Snyk vulnerability ([#83](https://github.com/mckinsey/vizro/pull/83))
+- Bump @babel/traverse from 7.22.20 to 7.23.2 ([#118](https://github.com/mckinsey/vizro/pull/118))

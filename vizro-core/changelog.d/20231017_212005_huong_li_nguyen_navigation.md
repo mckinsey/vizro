@@ -4,35 +4,33 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
 ### Removed
 
-- A bullet item for the Removed category.
+- Remove warning message if not all registered pages are used in `Navigation` ([#117](https://github.com/mckinsey/vizro/pull/117))
 
--->
 <!--
 ### Added
 
 - A bullet item for the Added category.
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category.
+- Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if `navigation.pages = None` ([#117](https://github.com/mckinsey/vizro/pull/117))
 
--->
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category.
 
 -->
-
+<!--
 ### Fixed
 
-Fix bug so that `add_type` updates forward references in new type added ([#92](https://github.com/mckinsey/vizro/pull/92))
+- A bullet item for the Fixed category.
 
+-->
 <!--
 ### Security
 

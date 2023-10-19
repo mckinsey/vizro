@@ -161,8 +161,7 @@ class Page(VizroBaseModel):
     @staticmethod
     def _create_control_panel(controls_content):
         control_panel = html.Div(
-            children=[*controls_content, html.Hr()],
-            className="control_panel",
+            children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer"
         )
         return control_panel if controls_content else None
 
@@ -185,6 +184,7 @@ class Page(VizroBaseModel):
                 className="component_container_grid",
             ),
             className="component_container",
+            id="component_container_outer",
         )
         return component_container
 
@@ -198,7 +198,9 @@ class Page(VizroBaseModel):
 
         _, dashboard = next(model_manager._items_with_type(Dashboard))
         dashboard_title = (
-            html.Div(children=[html.H2(dashboard.title), html.Hr()], className="dashboard_title_outer")
+            html.Div(
+                children=[html.H2(dashboard.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer"
+            )
             if dashboard.title
             else None
         )
@@ -206,21 +208,20 @@ class Page(VizroBaseModel):
         header_elements = [page_title, theme_switch]
         left_side_elements = [dashboard_title, nav_panel, control_panel]
 
-        header = html.Div(
-            children=header_elements,
-            className="header",
-        )
         left_side_inner = html.Div(
             children=left_side_elements,
             className="left_side_inner",
         )
 
-        left_side = html.Div(children=[nav_bar, left_side_inner], className="left_side")
-        right_side_elements = [header, component_container]
-        right_side = html.Div(
-            children=right_side_elements,
-            className="right_side",
+        header = html.Div(children=header_elements, className="header", id="header_outer")
+        left_side = (
+            html.Div(children=[nav_bar, left_side_inner], className="left_side", id="left_side_outer")
+            if any(left_side_elements)
+            else None
         )
+
+        right_side_elements = [header, component_container]
+        right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
         return left_side, right_side
 
     def _make_page_layout(self, controls_content, components_content):
