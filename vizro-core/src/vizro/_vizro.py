@@ -13,17 +13,6 @@ from vizro.models import Dashboard
 logger = logging.getLogger(__name__)
 
 
-def _clear_state():
-    """Private method that clears all state in the vizro package."""
-    data_manager._clear()
-    model_manager._clear()
-    dash._callback.GLOBAL_CALLBACK_LIST = []
-    dash._callback.GLOBAL_CALLBACK_MAP = {}
-    dash._callback.GLOBAL_INLINE_SCRIPTS = []
-    dash._pages.PAGE_REGISTRY.clear()
-    dash._pages.CONFIG.clear()
-    dash._pages.CONFIG.__dict__.clear()
-
 
 class Vizro:
     """The main class of the `vizro` package."""
@@ -87,6 +76,18 @@ class Vizro:
             model = model_manager[model_id]
             if hasattr(model, "pre_build"):
                 model.pre_build()
+    
+    @staticmethod
+    def _clear_state():
+        """Private method that clears all state in the vizro package."""
+        data_manager._clear()
+        model_manager._clear()
+        dash._callback.GLOBAL_CALLBACK_LIST = []
+        dash._callback.GLOBAL_CALLBACK_MAP = {}
+        dash._callback.GLOBAL_INLINE_SCRIPTS = []
+        dash._pages.PAGE_REGISTRY.clear()
+        dash._pages.CONFIG.clear()
+        dash._pages.CONFIG.__dict__.clear()
 
 
 def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]], List[str]]:
