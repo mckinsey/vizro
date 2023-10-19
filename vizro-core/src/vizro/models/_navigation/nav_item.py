@@ -5,14 +5,13 @@ from typing import TYPE_CHECKING, Optional
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, PrivateAttr, validator
+from pydantic import PrivateAttr, validator
 
+from vizro._constants import STATIC_URL_PREFIX
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import NavigationPagesType
-
-from vizro._constants import STATIC_URL_PREFIX
 
 if TYPE_CHECKING:
     from vizro.models._navigation.accordion import Accordion
@@ -39,6 +38,7 @@ class NavItem(VizroBaseModel):
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
+
         self._selector = Accordion(pages=self.pages)
 
     @_log_call

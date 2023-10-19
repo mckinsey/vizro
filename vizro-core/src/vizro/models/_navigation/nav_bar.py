@@ -9,8 +9,8 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_items
 from vizro.models._navigation.nav_item import NavItem
-from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavigationPagesType
+
 
 class NavBar(VizroBaseModel):
     """NavBar to be used in Navigation Panel of Dashboard.
@@ -37,7 +37,6 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def build(self, active_page_id):
-
         items = [item.build() for item in self.items]
         nav_bar = html.Div(
             children=items,
@@ -48,12 +47,13 @@ class NavBar(VizroBaseModel):
         return nav_bar, nav_panel
 
     def _nav_panel_build(self, active_page_id):
-        for item in self.items:
-            if isinstance(item.pages, list):
-                if active_page_id in item.pages:
-                    return item._selector.build(active_page_id=active_page_id)
+        if self.items:
+            for item in self.items:
+                if isinstance(item.pages, list):
+                    if active_page_id in item.pages:
+                        return item._selector.build(active_page_id=active_page_id)
 
-            if isinstance(item.pages, dict):
-                pages = [page for row in item.pages.values() for page in row]
-                if active_page_id in pages:
-                    return item._selector.build(active_page_id=active_page_id)
+                if isinstance(item.pages, dict):
+                    pages = [page for row in item.pages.values() for page in row]
+                    if active_page_id in pages:
+                        return item._selector.build(active_page_id=active_page_id)
