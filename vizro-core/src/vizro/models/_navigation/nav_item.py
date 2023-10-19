@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 from typing import TYPE_CHECKING, Optional
 
 import dash
@@ -55,7 +56,7 @@ class NavItem(VizroBaseModel):
 
     def _get_page_href(self):
         if self.pages:
-            first_page = next(iter(self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
+            first_page = list(itertools.chain(*self.pages.values())) if isinstance(self.pages, dict) else self.pages[0]
 
             for page in dash.page_registry.values():
                 if page["module"] == first_page:

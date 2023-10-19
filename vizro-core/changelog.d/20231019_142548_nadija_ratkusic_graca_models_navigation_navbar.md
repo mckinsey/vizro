@@ -15,7 +15,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Added `NavBar` and `NavItem` navigation models which enable use of icons in the dashboard. ([#70](https://github.com/mckinsey/vizro/pull/70))
 
-
 <!--
 ### Changed
 
