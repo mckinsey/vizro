@@ -42,12 +42,12 @@ class CapturedCallable:
         Partially binds *args and **kwargs to the function call.
         """
         self.__function = function
-        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs)
+        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs) # this adds
         # Below is required as otherwise kwargs provided to captured functions will sit under the key "kwargs"
         kwargs_to_unfold = self.__bound_arguments.arguments.get("kwargs")
-        if kwargs_to_unfold:
-            self.__bound_arguments.arguments.update(kwargs_to_unfold)
-            del self.__bound_arguments.arguments["kwargs"]
+        # if kwargs_to_unfold:
+        #     self.__bound_arguments.arguments.update(kwargs_to_unfold)
+        #     del self.__bound_arguments.arguments["kwargs"]
 
     def __call__(self, **kwargs):
         """Run the `function` with the initial arguments overridden by **kwargs.
@@ -304,3 +304,19 @@ NavigationPagesType = Annotated[
     ),
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
+
+if __name__ == "__main__":
+    from vizro.charts.tables import dash_data_table
+    from vizro.managers import data_manager
+    from vizro.models.types import capture
+    import vizro.plotly.express as px
+    import vizro.models as vm
+    print("hello")
+    # bar = dash_data_table(data_frame=px.data.iris(), style_header={"border": "1px solid green"})
+    # foo = vm.Table(id="table2", table=dash_data_table(data_frame=px.data.iris(), style_header={"border": "1px solid green"}))
+    @capture("table")
+    def test(data_frame, a,**kwargs):
+        pass
+    
+    foo = test(data_frame=px.data.iris(),a=1,b=3)
+    print(foo._arguments)
