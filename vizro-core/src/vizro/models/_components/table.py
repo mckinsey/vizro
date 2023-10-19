@@ -79,4 +79,4 @@ class Table(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict('records'), []), id=self.id)
+        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict('records'), []), id=self.id) # DOES NOT WORK IF NO CONTROL, CHECK WHY GRAPH WORKS
