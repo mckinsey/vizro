@@ -58,7 +58,7 @@ class ModelManager:
     def _generate_id() -> ModelID:
         return ModelID(str(uuid.UUID(int=rd.getrandbits(128))))
 
-    def _reset(self):
+    def _clear(self):
         self.__init__()  # type: ignore[misc]
 
 

@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 def _clear_state():
     """Private method that clears all state in the vizro package."""
-    data_manager._reset()
-    model_manager._reset()
+    data_manager._clear()
+    model_manager._clear()
     dash._callback.GLOBAL_CALLBACK_LIST = []
     dash._callback.GLOBAL_CALLBACK_MAP = {}
     dash._callback.GLOBAL_INLINE_SCRIPTS = []

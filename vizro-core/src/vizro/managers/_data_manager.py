@@ -81,7 +81,7 @@ class DataManager:
         except KeyError:
             return False
 
-    def _reset(self):
+    def _clear(self):
         self.__init__()  # type: ignore[misc]
 
 
