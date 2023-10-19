@@ -42,4 +42,4 @@ def dashboard(page1, page2):
 
 @pytest.fixture()
 def dashboard_prebuild(dashboard):
-    yield dashboard.pre_build()
+    dashboard.pre_build()

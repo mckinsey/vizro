@@ -102,7 +102,7 @@ def managers_one_page_two_components_two_controls():
         ]
     )
 
-    yield Vizro._pre_build()
+    Vizro._pre_build()
 
 
 @pytest.fixture
