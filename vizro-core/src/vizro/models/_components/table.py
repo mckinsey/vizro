@@ -2,6 +2,8 @@ import logging
 from typing import List, Literal
 
 from dash import html
+from dash import Dash, dash_table
+import pandas as pd
 from pydantic import Field, PrivateAttr, validator
 
 from vizro.managers import data_manager
@@ -24,7 +26,7 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard")
+    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard") #ADD import path
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -77,7 +79,4 @@ class Table(VizroBaseModel):
 
     @_log_call
     def build(self):
-        data = data_manager._get_component_data(self.id)  # type: ignore
-        kwargs = self.table._arguments.copy()
-        kwargs.pop("data_frame", None)
-        return html.Div(self.table._function(data_frame=data, **kwargs), id=self.id)
+        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict('records'), []), id=self.id)
