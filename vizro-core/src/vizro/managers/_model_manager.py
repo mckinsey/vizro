@@ -33,7 +33,7 @@ class ModelManager:
             raise DuplicateIDError(
                 f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
                 f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._clear_state()`."
+                f"use 'from vizro import Vizro; Vizro._reset()`."
             )
         self.__models[model_id] = model
 

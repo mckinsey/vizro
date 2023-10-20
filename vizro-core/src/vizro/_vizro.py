@@ -77,7 +77,7 @@ class Vizro:
                 model.pre_build()
 
     @staticmethod
-    def _clear_state():
+    def _reset():
         """Private method that clears all state in the vizro app."""
         data_manager._clear()
         model_manager._clear()
