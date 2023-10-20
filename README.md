@@ -48,7 +48,7 @@ Vizro is a toolkit for creating modular data visualization applications
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/tech_logos.png" width="270"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/tech_logos.png" width="300"/>
 </p>
 
 ## What is Vizro?
