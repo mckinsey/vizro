@@ -121,9 +121,7 @@ def _get_parametrized_config(
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = (
-            deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
-            if hasattr(model_manager[target], "figure")
-            else deepcopy(model_manager[target].table._arguments)  # type: ignore[attr-defined]
+            deepcopy(model_manager[target]._callable_component._arguments)  # type: ignore[attr-defined]
         )
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")

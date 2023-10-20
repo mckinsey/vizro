@@ -32,6 +32,7 @@ class Table(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("active_cell")
     _output_property: str = PrivateAttr("children")
+    _callable_component: CapturedCallable = PrivateAttr()
 
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
@@ -79,4 +80,8 @@ class Table(VizroBaseModel):
 
     @_log_call
     def build(self):
+        self._set_callable_component()
         return html.Div(dash_table.DataTable(pd.DataFrame().to_dict('records'), []), id=self.id) # DOES NOT WORK IF NO CONTROL, CHECK WHY GRAPH WORKS
+
+    def _set_callable_component(self):
+        self._callable_component = self.table

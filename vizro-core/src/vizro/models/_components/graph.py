@@ -46,6 +46,7 @@ class Graph(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("clickData")
     _output_property: str = PrivateAttr("figure")
+    _callable_component: CapturedCallable = PrivateAttr()
 
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
@@ -101,6 +102,7 @@ class Graph(VizroBaseModel):
     @_log_call
     def build(self):
         self._update_graph_theme()
+        self._set_callable_component()
         return dcc.Loading(
             dcc.Graph(
                 id=self.id,
@@ -130,3 +132,6 @@ class Graph(VizroBaseModel):
             patched_figure = Patch()
             patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
             return patched_figure
+
+    def _set_callable_component(self):
+        self._callable_component = self.figure
