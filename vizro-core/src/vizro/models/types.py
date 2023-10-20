@@ -42,7 +42,7 @@ class CapturedCallable:
         Partially binds *args and **kwargs to the function call.
         """
         self.__function = function
-        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs) # this adds
+        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs)
         # Below is required as otherwise kwargs provided to captured functions will sit under the key "kwargs"
         kwargs_to_unfold = self.__bound_arguments.arguments.get("kwargs")
         if kwargs_to_unfold:
@@ -306,24 +306,24 @@ NavigationPagesType = Annotated[
 """Permissible value types for page attribute. Values are displayed as default."""
 
 if __name__ == "__main__":
-    from vizro.models.types import capture
     import vizro.plotly.express as px
-    
+    from vizro.models.types import capture
+
     # Define test function and capture via decorator, important, allow **kwargs
     @capture("table")
-    def test(data_frame, a,**kwargs):
-        print("Kwargs are: ",kwargs)
+    def test(data_frame, a, **kwargs):
+        print("Kwargs are: ", kwargs)
         return kwargs
 
-    foo = test(data_frame=px.data.iris(),a=1,b=3)
+    foo = test(data_frame=px.data.iris(), a=1, b=3)
     foo()
 
     # Obtain signature
     sig = inspect.signature(test)
     print(sig)
-    
+
     # Create variable mapping (simulating what happens via *args,**kwargs inside the capture decorator)
-    ba = sig.bind_partial(data_frame=px.data.iris(),a=1,b=3)
-    
+    ba = sig.bind_partial(data_frame=px.data.iris(), a=1, b=3)
+
     # Note that b=3 gets added under .arguments as kwargs
     print(ba.arguments)

@@ -1,14 +1,14 @@
 import logging
 from typing import List, Literal
 
-from dash import html
-from dash import Dash, dash_table
 import pandas as pd
+from dash import dash_table, html
 from pydantic import Field, PrivateAttr, validator
 
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -26,7 +26,7 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard") #ADD import path
+    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard")  # ADD import path
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -36,34 +36,7 @@ class Table(VizroBaseModel):
 
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
-
-    @validator("table")
-    def process_component_data_frame(cls, table, values):
-        data_frame = table["data_frame"]
-
-        # Enable running "iris" from the Python API and specification of "data_frame": "iris" through JSON.
-        # In these cases, data already exists in the data manager and just needs to be linked to the component.
-        if isinstance(data_frame, str):
-            data_manager._add_component(values["id"], data_frame)
-            return table
-
-        # Standard case for df: pd.DataFrame.
-        # Extract dataframe from the captured function and put it into the data manager.
-        dataset_name = str(id(data_frame))
-
-        logger.debug("Adding data to data manager for Table with id %s", values["id"])
-        # If the dataset already exists in the data manager then it's not a problem, it just means that we don't need
-        # to duplicate it. Just log the exception for debugging purposes.
-        try:
-            data_manager[dataset_name] = data_frame
-        except ValueError as exc:
-            logger.debug(exc)
-
-        data_manager._add_component(values["id"], dataset_name)
-
-        # No need to keep the data in the captured function any more so remove it to save memory.
-        del table["data_frame"]
-        return table
+    _validate_callable = validator("table", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -81,7 +54,9 @@ class Table(VizroBaseModel):
     @_log_call
     def build(self):
         self._set_callable_component()
-        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict('records'), []), id=self.id) # DOES NOT WORK IF NO CONTROL, CHECK WHY GRAPH WORKS
+        return html.Div(
+            dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id
+        )  # DOES NOT WORK IF NO CONTROL, CHECK WHY GRAPH WORKS
 
     def _set_callable_component(self):
         self._callable_component = self.table
