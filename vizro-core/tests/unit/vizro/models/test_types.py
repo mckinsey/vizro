@@ -69,10 +69,15 @@ def varkwargs_function2():
     def function(a, b=2, **kwargs):
         return a + b + kwargs["c"]
 
-    return CapturedCallable(function, 1, c=3)   # Note c=3 is given here unlike in varkwargs_function
+    return CapturedCallable(function, 1, c=3)  # Note c=3 is given here unlike in varkwargs_function
+
 
 def test_varkwargs2(varkwargs_function2):
     varkwargs_function2(d=4) == 1 + 2 + 3
+
+
+def test_varkwargs_argument_attribute(varkwargs_function2):
+    assert varkwargs_function2._arguments == {"a": 1, "c": 3}
 
 
 @pytest.fixture
