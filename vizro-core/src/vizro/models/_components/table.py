@@ -30,7 +30,7 @@ class Table(VizroBaseModel):
     actions: List[Action] = []
 
     # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("active_cell")
+    # _input_property: str = PrivateAttr("active_cell")
     _output_property: str = PrivateAttr("children")
     _callable_component: CapturedCallable = PrivateAttr()
 

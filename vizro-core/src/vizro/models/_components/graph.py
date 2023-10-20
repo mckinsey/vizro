@@ -44,7 +44,7 @@ class Graph(VizroBaseModel):
     actions: List[Action] = []
 
     # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("clickData")
+    # _input_property: str = PrivateAttr("clickData")
     _output_property: str = PrivateAttr("figure")
     _callable_component: CapturedCallable = PrivateAttr()
 
