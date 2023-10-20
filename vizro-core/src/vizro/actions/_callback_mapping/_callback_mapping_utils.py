@@ -110,7 +110,7 @@ def _get_inputs_of_chart_interactions(
         inputs.append(
             State(
                 component_id=triggered_model.id,
-                component_property="clickData",  # type: ignore[attr-defined] #TODO: needs to be refactored
+                component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
             )
         )
     return inputs

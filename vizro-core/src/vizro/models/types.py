@@ -166,7 +166,7 @@ class capture:
     [custom charts](../user_guides/custom_charts.md).
     """
 
-    def __init__(self, mode: Literal["graph", "action"]):
+    def __init__(self, mode: Literal["graph", "action", "table"]):
         """Instantiates the decorator to capture a function call. Valid modes are "graph" and "action"."""
         self._mode = mode
 
@@ -304,26 +304,3 @@ NavigationPagesType = Annotated[
     ),
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
-
-if __name__ == "__main__":
-    import vizro.plotly.express as px
-    from vizro.models.types import capture
-
-    # Define test function and capture via decorator, important, allow **kwargs
-    @capture("table")
-    def test(data_frame, a, **kwargs):
-        print("Kwargs are: ", kwargs)
-        return kwargs
-
-    foo = test(data_frame=px.data.iris(), a=1, b=3)
-    foo()
-
-    # Obtain signature
-    sig = inspect.signature(test)
-    print(sig)
-
-    # Create variable mapping (simulating what happens via *args,**kwargs inside the capture decorator)
-    ba = sig.bind_partial(data_frame=px.data.iris(), a=1, b=3)
-
-    # Note that b=3 gets added under .arguments as kwargs
-    print(ba.arguments)
