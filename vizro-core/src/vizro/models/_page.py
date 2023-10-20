@@ -4,9 +4,10 @@ from typing import List, Optional, cast
 
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import dcc, html
+from dash import Input, Output, Patch, callback, dcc, html
 from pydantic import Field, root_validator, validator
 
+import vizro._themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
@@ -115,6 +116,7 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self):
+        self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         components_content = [
             html.Div(
@@ -129,6 +131,24 @@ class Page(VizroBaseModel):
             )
         ]
         return self._make_page_layout(controls_content, components_content)
+
+    def _update_graph_theme(self):
+        outputs = [
+            Output(component.id, "figure", allow_duplicate=True)
+            for component in self.components
+            if isinstance(component, Graph)
+        ]
+        if outputs:
+
+            @callback(
+                outputs,
+                Input("theme_selector", "on"),
+                prevent_initial_call="initial_duplicate",
+            )
+            def update_graph_theme(theme_selector_on: bool):
+                patched_figure = Patch()
+                patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
+                return [patched_figure] * len(outputs)
 
     @staticmethod
     def _create_theme_switch():
