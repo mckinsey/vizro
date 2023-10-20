@@ -84,7 +84,7 @@ class Vizro:
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
-        dash._pages.PAGE_REGISTRY.clear()
+        dash.page_registry.clear()
         dash._pages.CONFIG.clear()
         dash._pages.CONFIG.__dict__.clear()
 
