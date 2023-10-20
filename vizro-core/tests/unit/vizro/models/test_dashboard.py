@@ -133,8 +133,9 @@ class TestDashboardInstantiation:
 class TestDashboardPreBuild:
     """Tests dashboard pre_build method."""
 
-    @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-    def test_dashboard_page_registry(self, mock_page_registry):
+    @pytest.mark.usefixtures("vizro_app")
+    def test_dashboard_page_registry(self, dashboard, mock_page_registry):
+        dashboard.pre_build()
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise

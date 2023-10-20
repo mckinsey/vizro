@@ -78,7 +78,7 @@ class Vizro:
 
     @staticmethod
     def _clear_state():
-        """Private method that clears all state in the vizro package."""
+        """Private method that clears all state in the vizro app."""
         data_manager._clear()
         model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
