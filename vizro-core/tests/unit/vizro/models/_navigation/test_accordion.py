@@ -3,6 +3,7 @@ import json
 
 import plotly
 import pytest
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -13,40 +14,38 @@ from vizro.models._navigation._accordion import Accordion
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
 
-    def test_create_accordion_default(self):
-        accordion = Accordion(id="accordion_id")
-        assert accordion.id == "accordion_id"
-        assert accordion.pages == ["Page 1", "Page 2"]
-
-    def test_create_accordion_pages_as_list(self, pages_as_list):
+    def test_accordion_valid_pages_as_list(self, pages_as_list):
         accordion = Accordion(pages=pages_as_list, id="accordion_id")
         assert accordion.id == "accordion_id"
-        assert accordion.pages == pages_as_list
+        assert accordion.pages == {"SELECT PAGE": pages_as_list}
 
-    def test_create_accordion_pages_as_dict(self, pages_as_dict):
+    def test_accordion_valid_pages_as_dict(self, pages_as_dict):
         accordion = Accordion(pages=pages_as_dict, id="accordion_id")
         assert accordion.id == "accordion_id"
         assert accordion.pages == pages_as_dict
 
-    def test_field_invalid_pages_input_type(self):
-        with pytest.raises(ValidationError, match="2 validation errors for Accordion"):
-            Accordion(pages=[vm.Button()])
+    def test_navigation_valid_pages_not_all_included(self):
+        accordion = Accordion(pages=["Page 1"], id="accordion_id")
+        assert accordion.id == "accordion_id"
+        assert accordion.pages == {"SELECT PAGE": ["Page 1"]}
 
-    def test_field_invalid_pages_empty_list(self):
+    def test_invalid_field_pages_required(self):
+        with pytest.raises(ValidationError, match="field required"):
+            Accordion()
+
+    @pytest.mark.parametrize("pages", [{"SELECT PAGE": []}, []])
+    def test_invalid_field_pages_no_ids_provided(self, pages):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
-            Accordion(pages=[])
+            Accordion(pages=pages)
+
+    def test_invalid_field_pages_wrong_input_type(self):
+        with pytest.raises(ValidationError, match="str type expected"):
+            Accordion(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
 
 @pytest.mark.usefixtures("dashboard_prebuild")
 class TestAccordionBuild:
     """Tests accordion build method."""
-
-    @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], None])
-    def test_accordion_build_default(self, pages, accordion_from_page_as_list):
-        accordion = Accordion(pages=pages, id="accordion_list").build(active_page_id="Page 1")
-        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
 
     def test_accordion_build_pages_as_list(self, pages_as_list, accordion_from_page_as_list):
         accordion = Accordion(pages=pages_as_list, id="accordion_list").build(active_page_id="Page 1")
@@ -60,10 +59,8 @@ class TestAccordionBuild:
         expected = json.loads(json.dumps(accordion_from_pages_as_dict, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
-    def test_accordion_build_single_page_accordion(self):
-        accordion = Accordion(pages=["Page 1"], id="single_accordion").build()
-        assert accordion is None
-
-    def test_navigation_not_all_pages_included(self):
-        with pytest.warns(UserWarning):
-            Accordion(pages=["Page 1"])
+    def test_single_page_and_hidden_div(self):
+        accordion = Accordion(pages=["Page 1"]).build()
+        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(html.Div(className="hidden"), cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
