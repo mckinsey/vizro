@@ -10,7 +10,7 @@ from ._layout import Layout
 from ._page import Page
 
 
-Tab.update_forward_refs(Button=Button, Card=Card, Graph=Graph)
+Tab.update_forward_refs(Button=Button, Card=Card, Graph=Graph, Tabs=Tabs)
 Tabs.update_forward_refs(Tab=Tab)
 Page.update_forward_refs(Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Tabs=Tabs)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)

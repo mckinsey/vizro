@@ -271,14 +271,6 @@ ComponentType = Annotated[
         description="Component that makes up part of the layout on the page.",
     ),
 ]
-
-TabComponentType = Annotated[
-    Union["Button", "Card", "Graph"],
-    Field(
-        discriminator="type",
-        description="Component that makes up part of the layout on the page.",
-    ),
-]
 """Discriminated union. Type of component that makes up part of the layout on the page:
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card] or [`Graph`][vizro.models.Graph]."""
 

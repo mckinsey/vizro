@@ -11,7 +11,6 @@ page = vm.Page(
     title="Testing out tabs",
     components=[
         vm.Tabs(
-            title="Global Tabs Title",
             tabs=[
                 vm.Tab(
                     label="Tab I Label",

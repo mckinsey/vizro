@@ -2,32 +2,25 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import TabComponentType
+from vizro.models.types import ComponentType
 
 
 class Tab(VizroBaseModel):
-    components: List[TabComponentType]
+    components: List[ComponentType]
     label: str = Field(..., description="Tab Lable to be displayed.")
     title: Optional[str]  # do we need this one?
     # layout: Optional[Layout]
-    # controls: List[ControlType] = []  -> should be done implicitly without configuring? -> tendency to remove it
-    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it
 
     @_log_call
     def build(self):
         components = [component.build() for component in self.components]
-        return dbc.Tab(
+        return dcc.Tab(
             html.Div(children=[html.H3(self.title, className="tab-title"), *components]),
             id=self.id,
             label=self.label,
-            tabClassName="custom-tab",
-            labelClassName="custom-tab-label",
-            activeTabClassName="custom-tab-active",
-            activeLabelClassName="custom-tab-label-active",
         )
