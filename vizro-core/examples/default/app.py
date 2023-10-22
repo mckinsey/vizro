@@ -87,8 +87,10 @@ page = vm.Page(
     ],
     controls=[
         # TODO: Fix issue of graphs only being updated if they are target of controls
+        # e.g. if you don't add the parameter below, all of the charts will not get loaded
+        # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
-            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y"],
+            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y", "graph-5.y"],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         )
     ],
