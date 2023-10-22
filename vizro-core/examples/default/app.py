@@ -19,7 +19,14 @@ page = vm.Page(
                     components=[
                         vm.Graph(
                             id="graph-1",
-                            figure=px.line(df_gapminder, x="year", y="lifeExp", color="continent", line_group="country", hover_name="country"),
+                            figure=px.line(
+                                df_gapminder,
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
                         ),
                         vm.Graph(
                             id="graph-2",
@@ -36,15 +43,16 @@ page = vm.Page(
                             id="graph-3",
                             figure=px.scatter(
                                 df_gapminder.query("year==2007"),
-                                x="gdpPercap", y="lifeExp", size="pop", color="continent",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
                             ),
                         ),
                         vm.Button(
                             text="Export data",
                             actions=[
-                                vm.Action(
-                                    function=export_data()
-                                ),
+                                vm.Action(function=export_data()),
                             ],
                         ),
                     ],

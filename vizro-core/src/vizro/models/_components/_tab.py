@@ -12,7 +12,7 @@ from vizro.models.types import ComponentType
 
 class Tab(VizroBaseModel):
     components: List[ComponentType]
-    label: str = Field(..., description="Tab Lable to be displayed.")
+    label: str = Field(..., description="Tab label to be displayed.")
     title: Optional[str]  # do we need this one?
     # layout: Optional[Layout]
 

@@ -1,17 +1,14 @@
 # To think about
 
 1. Shall we leverage callbacks or children of Tab? (Method 1 vs. 2) https://dash.plotly.com/dash-core-components/tab
-   -> probably children of Tabs as otherwise model build will be moved to callback
-2. Tab and Page model look very similar in configurations (essentially Tabs are sub-pages within a Page) - should we do configurations differently?
-3. Should we have Tabs and Tab as separate models? In Dash they are treated as separate models as well, but it kind of adds another layer of hierarchy
-4. Shall we define components within tabs or globally on page and then reference as ID in tabs?
-5. How should the filter/parameter flow look like?
-   1. If no targets specified -> apply to all tabs or only visible tabs?
-   2. If targets specified -> should enable ability to target specific figure in tab as normal
-   3. If filters only affect a tab - should it still live on the left-side or be moved to the tab? Where should it go?
-6. Still to fix:
-   - CSS
-   - Themes do not update on chart currently -> caused by the fact that theme_update in charts live in Page - should optimally be refactored out and live in the components
+   -> Start off with children of Tab and see when we hit performance issues
+2. Shall we use dcc or dbc components?
+   -> If we go for the "children of tab" method then dcc components are preferred, otherwise there is bug using the dbc components that seems to be solved by using the callback method
+3. Tab and Container/Subpage model concepts look very similar in configurations - should we create a Tab model as a stand-alone of abstract to a higher level SubPage model?
+4. Still to fix:
+   - Fix CSS if using dcc.components
+   - theme_update, on_page_load for charts --> chart do not update yet
+   - If you apply parameter, some charts disappear?
 
 ```
 class Page(VizroBaseModel):
@@ -23,17 +20,14 @@ class Page(VizroBaseModel):
     path
 
 
-class Tab(VizroBaseModel):
-    components: List[TabComponentType]
+class Tab/SubPage(VizroBaseModel):
+    components: List[ComponentType]
     label: str = Field(..., description="Tab Lable to be displayed.")
     title: Optional[str]  # do we need this one?
-    # layout: Optional[Layout]
-    # controls: List[ControlType] = []  -> should be done implicitly without configuring? -> tendency to remove it
-    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it
+    layout: Optional[Layout]
 
 
 class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
-    title: str
     tabs: List[Tab] = []
 ```
