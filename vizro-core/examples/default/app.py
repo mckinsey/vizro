@@ -14,8 +14,7 @@ page = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Tab(
-                    label="Tab I Label",
-                    title="Tab I Title",
+                    title="Tab I",
                     components=[
                         vm.Graph(
                             id="graph-1",
@@ -58,8 +57,7 @@ page = vm.Page(
                     ],
                 ),
                 vm.Tab(
-                    label="Tab II Label",
-                    title="Tab II Title",
+                    title="Tab II",
                     components=[
                         vm.Graph(
                             id="graph-4",
@@ -90,7 +88,7 @@ page = vm.Page(
     controls=[
         # TODO: Fix issue of graphs only being updated if they are target of controls
         vm.Parameter(
-            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y", "graph-5.y"],
+            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y"],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         )
     ],
