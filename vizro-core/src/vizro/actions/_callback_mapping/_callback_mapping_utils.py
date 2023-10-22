@@ -145,7 +145,6 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
-    print(f"action_function {action_function}")
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
@@ -157,7 +156,6 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 
     if action_function == _on_page_load.__wrapped__:
         targets = _get_components_with_data(action_id=action_id)
-        print(f"targets: {targets}")
 
     return {
         target: Output(

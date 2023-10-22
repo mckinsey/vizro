@@ -24,7 +24,7 @@ class Page(VizroBaseModel):
 
 
 class Tab(VizroBaseModel):
-    components: List[TabComponentType] -> Graph, Card, Button
+    components: List[TabComponentType]
     label: str = Field(..., description="Tab Lable to be displayed.")
     title: Optional[str]  # do we need this one?
     # layout: Optional[Layout]

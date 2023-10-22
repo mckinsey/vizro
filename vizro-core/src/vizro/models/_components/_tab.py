@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import _on_page_load
-
-from vizro.models import Action
-from vizro.models._action._actions_chain import ActionsChain, Trigger
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, validator
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -22,43 +17,17 @@ class Tab(VizroBaseModel):
     title: Optional[str]  # do we need this one?
     # layout: Optional[Layout]
     # controls: List[ControlType] = []  -> should be done implicitly without configuring? -> tendency to remove it
-    actions: List[ActionsChain] = []
-
-    @validator("actions", always=True)
-    def validate_tab_actions(cls, actions, values):
-        from vizro.models import Graph
-        # TODO: Remove default on page load action if possible
-        if any(isinstance(component, Graph) for component in values["components"]):
-            actions = [
-                ActionsChain(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{values['id']}",
-                    trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{values['id']}",
-                        component_property="data",
-                    ),
-                    actions=[
-                        Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{values['id']}", function=_on_page_load(page_id=values['id'])
-                        )
-                    ],
-                )
-            ]
-        return actions
+    # actions: List[ActionsChain] = []  -> do we even need to make this configurable? -> tendency to remove it
 
     @_log_call
-    def pre_build(self):
-        print(self.actions)
+    def build(self):
+        components = [component.build() for component in self.components]
         return dbc.Tab(
+            html.Div(children=[html.H3(self.title, className="tab-title"), *components]),
             id=self.id,
             label=self.label,
-            tab_id=self.id,
             tabClassName="custom-tab",
             labelClassName="custom-tab-label",
             activeTabClassName="custom-tab-active",
             activeLabelClassName="custom-tab-label-active",
         )
-
-    @_log_call
-    def build(self):
-        components = [component.build() for component in self.components]
-        return html.Div(children=[html.H3(self.title, className="tab-title"), *components])
