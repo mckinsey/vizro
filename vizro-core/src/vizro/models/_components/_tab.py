@@ -8,7 +8,7 @@ from vizro.models._action._actions_chain import ActionsChain, Trigger
 from typing import List, Optional, TYPE_CHECKING
 
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import html
 from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
@@ -61,10 +61,4 @@ class Tab(VizroBaseModel):
     @_log_call
     def build(self):
         components = [component.build() for component in self.components]
-        return html.Div(children=[
-            html.H3(self.title, className="tab-title"),
-            # Component that triggers _on_page_load action which returns tab Graphs
-            # Needs improvements: Probably we need to create new action called "_on_tab_load".
-            dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
-            *components
-        ])
+        return html.Div(children=[html.H3(self.title, className="tab-title"), *components])

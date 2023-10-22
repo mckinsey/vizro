@@ -27,10 +27,10 @@ def _get_actions(model) -> List[ActionsChain]:
         return model.actions
     return []
 
-# TODO: Reimplemented below
-# def _get_all_actions_chains_on_page(page: Page) -> chain:  # type: ignore[type-arg]
-#     """Creates an itertools chain of all ActionsChains present on selected Page."""
-#     return chain(*(_get_actions(page_item) for page_item in chain([page], page.components, page.controls)))
+
+def _get_all_actions_chains_on_page(page: Page) -> chain:  # type: ignore[type-arg]
+    """Creates an itertools chain of all ActionsChains present on selected Page."""
+    return chain(*(_get_actions(page_item) for page_item in chain([page], page.components, page.controls)))
 
 
 def _get_model_actions_chains_mapping(page: Page) -> Dict[str, ModelActionsChains]:
@@ -42,26 +42,6 @@ def _get_model_actions_chains_mapping(page: Page) -> Dict[str, ModelActionsChain
         )
     return model_actions_chains_mapping
 
-
-# TODO: Duplication of function defined in _action_loop_utils.py
-def _get_all_actions_chains_on_page(page: Page) -> List[ActionsChain]:
-    """Gets the list of the ActionsChain models for the Page model."""
-    page_actions_chains = [
-        actions_chain
-        for page_item in chain([page], page.components, page.controls)
-        for actions_chain in _get_actions(model=page_item)
-    ]
-
-    for page_compoenent in page.components:
-        if hasattr(page_compoenent, "tabs"):
-            for tab in page_compoenent.tabs:
-                if hasattr(tab, "actions") and tab.actions:
-                    page_actions_chains.extend(tab.actions)
-                for component in tab.components:
-                    if hasattr(component, "actions") and component.actions:
-                        page_actions_chains.extend(component.actions)
-
-    return page_actions_chains
 
 def _get_triggered_page(action_id: ModelID) -> Page:  # type: ignore[return]
     """Gets the page where the provided `action_id` has been triggered."""
@@ -89,15 +69,6 @@ def _get_triggered_model(action_id: ModelID) -> VizroBaseModel:  # type: ignore[
 def _get_components_with_data(action_id: ModelID) -> List[str]:
     """Gets all components that have a registered dataframe on the page where `action_id` was triggered."""
     page = _get_triggered_page(action_id=action_id)
-
-    # TODO: Remove hardcoded part
-    # TODO: Reimplement to dynamically returns tab targets if on_page_load action is created for the tab
-    # TODO: Probably we need to create new action called "_on_tab_load".
-    if action_id == 'on_page_load_action_action_tab-1':
-        return ["variable_map"]
-    if action_id == 'on_page_load_action_action_tab-2':
-        return ["variable_boxplot"]
-
     return [component.id for component in page.components if data_manager._has_registered_data(component.id)]
 
 
@@ -153,23 +124,17 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 
     action_input_mapping = {
         "filters": (
-            # TODO: Implement filters to work with tabs
-            []
-            # _get_inputs_of_controls(action_id=action_id, control_type=Filter) if "filters" in include_inputs else []
+            _get_inputs_of_controls(action_id=action_id, control_type=Filter) if "filters" in include_inputs else []
         ),
         "parameters": (
-            # TODO: Implement parameters to work with tabs
-            []
-            # _get_inputs_of_controls(action_id=action_id, control_type=Parameter)
-            # if "parameters" in include_inputs
-            # else []
+            _get_inputs_of_controls(action_id=action_id, control_type=Parameter)
+            if "parameters" in include_inputs
+            else []
         ),
         "filter_interaction": (
-            # TODO: Implement filter interaction to work with tabs
-            []
-            # _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
-            # if "filter_interaction" in include_inputs
-            # else []
+            _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
+            if "filter_interaction" in include_inputs
+            else []
         ),
         "theme_selector": (State("theme_selector", "on") if "theme_selector" in include_inputs else []),
     }
