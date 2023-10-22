@@ -4,6 +4,7 @@ import os
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import export_data
 
 df_gapminder = px.data.gapminder()
 
@@ -17,19 +18,35 @@ page = vm.Page(
                     title="Tab I Title",
                     components=[
                         vm.Graph(
-                            id="variable_map",
+                            id="graph-1",
+                            figure=px.line(df_gapminder, x="year", y="lifeExp", color="continent", line_group="country", hover_name="country"),
+                        ),
+                        vm.Graph(
+                            id="graph-2",
                             figure=px.scatter(
                                 df_gapminder.query("year==2007"),
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
                                 color="continent",
-                                hover_name="country",
-                                log_x=True,
-                                size_max=60,
                                 title="Comparison of gdpPercap and lifeExp",
                             ),
-                        )
+                        ),
+                        vm.Graph(
+                            id="graph-3",
+                            figure=px.scatter(
+                                df_gapminder.query("year==2007"),
+                                x="gdpPercap", y="lifeExp", size="pop", color="continent",
+                            ),
+                        ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                vm.Action(
+                                    function=export_data()
+                                ),
+                            ],
+                        ),
                     ],
                 ),
                 vm.Tab(
@@ -37,27 +54,24 @@ page = vm.Page(
                     title="Tab II Title",
                     components=[
                         vm.Graph(
-                            id="variable_boxplot",
+                            id="graph-4",
+                            figure=px.scatter(
+                                df_gapminder.query("year==2007"),
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                                title="Comparison of gdpPercap and lifeExp",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-5",
                             figure=px.box(
                                 df_gapminder,
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
-                                labels={
-                                    "year": "year",
-                                    "lifeExp": "Life expectancy",
-                                    "pop": "Population",
-                                    "gdpPercap": "GDP per capita",
-                                    "continent": "Continent",
-                                },
                                 title="Distribution per continent",
-                                color_discrete_map={
-                                    "Africa": "#00b4ff",
-                                    "Americas": "#ff9222",
-                                    "Asia": "#3949ab",
-                                    "Europe": "#ff5267",
-                                    "Oceania": "#08bdba",
-                                },
                             ),
                         ),
                     ],
@@ -66,8 +80,9 @@ page = vm.Page(
         ),
     ],
     controls=[
+        # TODO: Fix issue of graphs only being updated if they are target of controls
         vm.Parameter(
-            targets=["variable_map.y", "variable_boxplot.y"],
+            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y", "graph-5.y"],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         )
     ],
