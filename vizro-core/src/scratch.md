@@ -16,18 +16,34 @@ class Page(VizroBaseModel):
     title: str = Field(..., description="Title to be displayed.")
     layout: Optional[Layout]
     controls: List[ControlType] = []
-    actions: List[ActionsChain] = []
-    path
+    path: Optional[str] = Field(None, description="Path to navigate to page.")
 
 
-class Tab/SubPage(VizroBaseModel):
+class Tab(VizroBaseModel):
     components: List[ComponentType]
-    label: str = Field(..., description="Tab Lable to be displayed.")
     title: Optional[str]  # do we need this one?
-    layout: Optional[Layout]
+    # layout: Optional[Layout]
+
+    @_log_call
+    def build(self):
+        components = [component.build() for component in self.components]
+        return dcc.Tab(
+            html.Div(children=[html.H3(self.title, className="tab-title"), *components]),
+            id=self.id,
+            label=self.title,
+        )
 
 
 class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
     tabs: List[Tab] = []
+
+    @_log_call
+    def build(self):
+        return html.Div(
+            [
+                dcc.Tabs(id=self.id, children=[tab.build() for tab in self.tabs], className="tabs_container"),
+            ],
+            className="tabs_container_outer",
+        )
 ```
