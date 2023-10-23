@@ -11,9 +11,9 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction
-from vizro.tables import dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
+from vizro.tables import dash_data_table
 
 
 def retrieve_table_data():

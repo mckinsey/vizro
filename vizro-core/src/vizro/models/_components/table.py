@@ -5,13 +5,13 @@ import pandas as pd
 from dash import dash_table, html
 from pydantic import Field, PrivateAttr, validator
 
+import vizro.tables as vt
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
-import vizro.tables as vt
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(..., import_path = vt, description="Table to be visualized on dashboard")
+    figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -48,10 +48,8 @@ class Table(VizroBaseModel):
         # explicitly redirect it to the correct attribute.
         if arg_name == "type":
             return self.type
-        return self.table[arg_name]
+        return self.figure[arg_name]
 
     @_log_call
     def build(self):
-        return html.Div(
-            dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id
-        )
+        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id)

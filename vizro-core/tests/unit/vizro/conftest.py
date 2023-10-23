@@ -1,6 +1,7 @@
 """Fixtures to be shared across several tests."""
 
 import dash
+import plotly.graph_objects as go
 import pytest
 
 import vizro.models as vm
@@ -23,6 +24,11 @@ def standard_px_chart(gapminder):
         hover_name="country",
         size_max=60,
     )
+
+
+@pytest.fixture
+def standard_go_chart(gapminder):
+    return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
 
 
 @pytest.fixture()
