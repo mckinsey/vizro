@@ -14,7 +14,7 @@ page = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.SubPage(
-                    title="Tab I",
+                    title="Tab I Title",
                     components=[
                         vm.Graph(
                             id="graph-1",

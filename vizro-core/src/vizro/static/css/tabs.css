@@ -1,34 +1,38 @@
-.tabs_container_outer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-03);
+.tabs-list {
+    align-items: flex-start;
+    align-self: stretch;
+    border-bottom: 1px solid var(--border-subtle-alpha-01);
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.tabs_container {
-  display: flex;
-  padding: 0;
-  height: 32px;
-  align-items: flex-start;
-  gap: var(--spacing-04);
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+.tab-single {
+    align-items: flex-start;
+    border-bottom: 1px solid transparent;
+    display: flex;
+    font-size: 16px;
+    height: 32px;
+    line-height: 20px;
+    margin: 0;
+    padding: 0;
 }
 
-.custom-tab {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-02);
+.tab-single:hover {
+    background-color: transparent;
+    border-bottom: 1px solid var(--text-active);
 }
 
-.custom-tab-active {
-  color: var(--text-active);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--text-active);
+.tab-single[data-active] {
+    border-bottom: 1px solid var(--text-active);
+    color: var(--text-active);
 }
 
-.custom-tab-label-active {
-  color: var(--text-active);
+.tab-single[data-active]:hover {
+    background-color: transparent;
+    border-color: 1px solid var(--text-active);
 }
 
-.tab-title {
-  padding-top: 12px;
+.tab-single[data-active] .mantine-Tabs-tabLabel {
+    color: var(--text-active);
 }

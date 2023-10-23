@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal
 
-from dash import dcc, html
+import dash_mantine_components as dmc
+from dash import html
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -17,20 +18,13 @@ class Tabs(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(
-            [
-                dcc.Tabs(
-                    id=self.id,
-                    children=[
-                        dcc.Tab(
-                            html.Div(children=[subpage.build()]),
-                            id=subpage.title,
-                            label=subpage.title,
-                        )
-                        for subpage in self.tabs
-                    ],
-                    className="tabs_container",
+        return dmc.Tabs(
+            id=self.id,
+            children=[
+                dmc.TabsList(
+                    [dmc.Tab(subpage.title, value=subpage.id, className="tab-single") for subpage in self.tabs],
+                    className="tabs-list",
                 ),
-            ],
-            className="tabs_container_outer",
+            ]
+            + [dmc.TabsPanel(html.Div(children=[subpage.build()]), value=subpage.id) for subpage in self.tabs],
         )

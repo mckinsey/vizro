@@ -95,3 +95,8 @@
 .hidden {
   display: none;
 }
+
+.subpage-container {
+  display: flex;
+  flex-direction: column;
+}

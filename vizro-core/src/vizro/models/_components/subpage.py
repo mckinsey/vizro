@@ -18,4 +18,4 @@ class SubPage(VizroBaseModel):
     @_log_call
     def build(self):
         components = [component.build() for component in self.components]
-        return html.Div(children=[html.H3(self.title), *components], id=self.id)
+        return html.Div(children=[html.H3(self.title), *components], id=self.id, className="subpage-container")
