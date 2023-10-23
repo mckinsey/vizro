@@ -30,7 +30,6 @@ class Table(VizroBaseModel):
     actions: List[Action] = []
 
     # Component properties for actions and interactions
-    # _input_property: str = PrivateAttr("active_cell")
     _output_property: str = PrivateAttr("children")
     _callable_component: str = PrivateAttr("table")
 
@@ -55,4 +54,4 @@ class Table(VizroBaseModel):
     def build(self):
         return html.Div(
             dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id
-        )  # DOES NOT WORK IF NO CONTROL, CHECK WHY GRAPH WORKS
+        )
