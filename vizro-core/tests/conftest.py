@@ -6,11 +6,11 @@ from vizro import Vizro
 @pytest.fixture(autouse=True)
 def reset_managers():
     # this ensures that the managers are reset before and after each test
-    # in principle clearing after every test should suffice, but this serves as a safety measure
-    # there are two tests in `test_get_action_loop_components.py` that fail without this
-    Vizro._clear_state()
+    # the reset BEFORE all tests is important because at pytest test collection, fixtures are evaluated and hence
+    # the model_manager may be populated with models from other tests
+    Vizro._reset()
     yield
-    Vizro._clear_state()
+    Vizro._reset()
 
 
 @pytest.fixture()
