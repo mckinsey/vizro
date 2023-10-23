@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import functools
 import inspect
-from copy import deepcopy
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
 from pydantic import Field, StrictBool
@@ -41,36 +40,68 @@ class CapturedCallable:
 
         Partially binds *args and **kwargs to the function call.
         """
+        # It is difficult to get positional-only and variadic positional arguments working at the same time as
+        # variadic keyword arguments. Ideally we would do the __call__ as
+        # self.__function(*bound_arguments.args, **bound_arguments.kwargs) as in the
+        # Python documentation. This would handle positional-only and variadic positional arguments better but makes
+        # it more difficult to handle variadic keyword arguments due to https://bugs.python.org/issue41745.
+        # Hence we abandon bound_arguments.args and bound_arguments.kwargs in favor of just using
+        # self.__function(**bound_arguments.arguments).
+        parameters = inspect.signature(function).parameters
+        invalid_params = {
+            param.name
+            for param in parameters.values()
+            if param.kind in [inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.VAR_POSITIONAL]
+        }
+
+        if invalid_params:
+            raise ValueError(
+                f"Invalid parameter {', '.join(invalid_params)}. CapturedCallable does not accept functions with "
+                f"positional-only or variadic positional parameters (*args)."
+            )
+
         self.__function = function
-        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs)
+        self.__arguments = inspect.signature(function).bind_partial(*args, **kwargs).arguments
+
+        # A function can only ever have one variadic keyword parameter. {""} is just here so that var_keyword_param
+        # is always unpacking a one element set.
+        (var_keyword_param,) = {
+            param.name for param in parameters.values() if param.kind == inspect.Parameter.VAR_KEYWORD
+        } or {""}
+
+        # Since we do __call__ as self.__function(**bound_arguments.arguments), we need to restructure the arguments
+        # a bit to put the kwargs in the right place.
+        # For a function with parameter **kwargs this converts self.__arguments = {"kwargs": {"a": 1}} into
+        # self.__arguments = {"a": 1}.
+        if var_keyword_param in self.__arguments:
+            self.__arguments.update(self.__arguments[var_keyword_param])
+            del self.__arguments[var_keyword_param]
 
     def __call__(self, **kwargs):
         """Run the `function` with the initial arguments overridden by **kwargs.
 
         Note *args are not possible here, but you can still override positional arguments using argument name.
         """
-        if not kwargs:
-            return self.__function(*self.__bound_arguments.args, **self.__bound_arguments.kwargs)
-
-        bound_arguments = deepcopy(self.__bound_arguments)
-        bound_arguments.arguments.update(kwargs)
-        # This looks like it should be self.__function(*bound_arguments.args, **bound_arguments.kwargs) as in the
-        # Python documentation, but that leads to problems due to https://bugs.python.org/issue41745.
-        return self.__function(**bound_arguments.arguments)
+        return self.__function(**{**self.__arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""
-        return self.__bound_arguments.arguments[arg_name]
+        return self.__arguments[arg_name]
 
     def __delitem__(self, arg_name: str):
         """Deletes a bound argument."""
-        del self.__bound_arguments.arguments[arg_name]
+        del self.__arguments[arg_name]
 
     @property
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
-        return self.__bound_arguments.arguments
+        return self.__arguments
+
+    # TODO-actions: Find a way how to compare CapturedCallable and function
+    @property
+    def _function(self):
+        return self.__function
 
     @classmethod
     def __get_validators__(cls):
@@ -136,11 +167,6 @@ class CapturedCallable:
             return captured_callable._captured_callable
         else:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
-
-    # TODO-actions: Find a way how to compare CapturedCallable and function
-    @property
-    def _function(self):
-        return self.__function
 
 
 class capture:
@@ -278,7 +304,8 @@ ComponentType = Annotated[
 NavigationPagesType = Annotated[
     Union[List[str], Dict[str, List[str]]],
     Field(
-        None, description="List of Page IDs or dict mapping of Page IDs and titles (for hierarchical sub-navigation)"
+        None,
+        description="List of Page IDs or dict mapping of Page IDs and titles (for hierarchical sub-navigation)",
     ),
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
