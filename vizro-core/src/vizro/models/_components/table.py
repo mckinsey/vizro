@@ -21,22 +21,21 @@ class Table(VizroBaseModel):
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        table (CapturedCallable): Table like object to be displayed. Current choices include:
+        figure (CapturedCallable): Table like object to be displayed. Current choices include:
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["table"] = "table"
-    table: CapturedCallable = Field(..., import_path = vt, description="Table to be visualized on dashboard")
+    figure: CapturedCallable = Field(..., import_path = vt, description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("children")
-    _callable_component: str = PrivateAttr("table")
 
     # validator
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
-    _validate_callable = validator("table", allow_reuse=True, always=True)(_process_callable_data_frame)
+    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

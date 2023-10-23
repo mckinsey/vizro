@@ -66,7 +66,7 @@ page_0 = vm.Page(
     title="Color manager",
     path="color-manager",
     components=[
-        vm.Table(id="table2", table=dash_data_table(data_frame=data, style_header={"border": "1px solid green"})),
+        vm.Table(id="table2", figure=dash_data_table(data_frame=data, style_header={"border": "1px solid green"})),
         vm.Graph(
             id="graph",
             figure=px.scatter(
@@ -78,7 +78,7 @@ page_0 = vm.Page(
             id="hist",
             figure=px.histogram(data_frame=px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
         ),
-        vm.Table(id="grid", table=AgGrid(data_frame="table_data")),
+        vm.Table(id="grid", figure=AgGrid(data_frame="table_data")),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),

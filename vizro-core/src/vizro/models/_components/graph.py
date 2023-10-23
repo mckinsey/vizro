@@ -45,7 +45,6 @@ class Graph(VizroBaseModel):
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("figure")
-    _callable_component: str = PrivateAttr("figure")
 
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
