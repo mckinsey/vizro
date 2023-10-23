@@ -1,8 +1,10 @@
 """Unit tests for vizro.models.Table."""
 import json
 
+import pandas as pd
+import plotly
 import pytest
-from dash import dcc
+from dash import dash_table, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -10,29 +12,27 @@ import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
-import plotly
-from dash import dash_table, html
-
-import pandas as pd
 
 
 @pytest.fixture
 def standard_dash_table():
     return dash_data_table(data_frame=px.data.gapminder())
 
+
 @pytest.fixture
 def dash_table_with_arguments():
     return dash_data_table(data_frame=px.data.gapminder(), style_header={"border": "1px solid green"})
+
 
 @pytest.fixture
 def dash_table_with_str_dataframe():
     return dash_data_table(data_frame="gapminder")
 
+
 @pytest.fixture
 def expected_table():
-    return html.Div(
-            dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id="text_table"
-        )
+    return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id="text_table")
+
 
 class TestDunderMethodsTable:
     def test_create_graph_mandatory_only(self, standard_dash_table):
@@ -59,14 +59,14 @@ class TestDunderMethodsTable:
         with pytest.raises(ValidationError, match="field required"):
             vm.Table()
 
-    def test_failed_graph_with_no_captured_callable(self, standard_go_chart):
+    def test_failed_table_with_no_captured_callable(self, standard_go_chart):
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.Table(
                 figure=standard_go_chart,
             )
 
     @pytest.mark.xfail(reason="This test is failing as we are not yet detecting different types of captured callables")
-    def test_failed_graph_with_no_captured_callable(self, standard_px_chart):
+    def test_failed_table_with_wrong_captured_callable(self, standard_px_chart):
         with pytest.raises(ValidationError, match="must provide a valid table function vm.Table"):
             vm.Table(
                 figure=standard_px_chart,
@@ -116,7 +116,6 @@ class TestProcessTableDataFrame:
         assert data_manager._get_component_data("table").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
             table_with_str_df.figure["data_frame"]
-
 
 
 class TestBuildTable:

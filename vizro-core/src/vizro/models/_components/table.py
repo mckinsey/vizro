@@ -40,7 +40,7 @@ class Table(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
-        return self.table(**kwargs)
+        return self.figure(**kwargs)
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
