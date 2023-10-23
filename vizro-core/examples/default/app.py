@@ -12,8 +12,9 @@ page = vm.Page(
     title="Testing out tabs",
     components=[
         vm.Tabs(
-            tabs=[
+            subpages=[
                 vm.SubPage(
+                    id="tab-1",
                     title="Tab I Title",
                     components=[
                         vm.Graph(
@@ -40,12 +41,12 @@ page = vm.Page(
                         ),
                         vm.Graph(
                             id="graph-3",
-                            figure=px.scatter(
-                                df_gapminder.query("year==2007"),
-                                x="gdpPercap",
+                            figure=px.box(
+                                df_gapminder,
+                                x="continent",
                                 y="lifeExp",
-                                size="pop",
                                 color="continent",
+                                title="Distribution per continent",
                             ),
                         ),
                         vm.Button(
@@ -57,6 +58,7 @@ page = vm.Page(
                     ],
                 ),
                 vm.SubPage(
+                    id="tab-2",
                     title="Tab II",
                     components=[
                         vm.Graph(
