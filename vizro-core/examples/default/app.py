@@ -13,7 +13,7 @@ page = vm.Page(
     components=[
         vm.Tabs(
             tabs=[
-                vm.Tab(
+                vm.SubPage(
                     title="Tab I",
                     components=[
                         vm.Graph(
@@ -56,7 +56,7 @@ page = vm.Page(
                         ),
                     ],
                 ),
-                vm.Tab(
+                vm.SubPage(
                     title="Tab II",
                     components=[
                         vm.Graph(
