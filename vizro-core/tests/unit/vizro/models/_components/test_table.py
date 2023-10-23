@@ -82,16 +82,6 @@ class TestDunderMethodsTable:
         with pytest.raises(KeyError):
             table["unknown_args"]
 
-    # @pytest.mark.parametrize("title, expected", [(None, 24), ("Test", None)])
-    # def test_title_margin_adjustment(self, gapminder, title, expected):
-    #     figure = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
-
-    #     assert figure.layout.margin.t == expected
-    #     assert figure.layout.template.layout.margin.t == 64
-    #     assert figure.layout.template.layout.margin.l == 80
-    #     assert figure.layout.template.layout.margin.b == 64
-    #     assert figure.layout.template.layout.margin.r == 12
-
     def test_set_action_via_validator(self, standard_dash_table, test_action_function):
         table = vm.Table(figure=standard_dash_table, actions=[Action(function=test_action_function)])
         actions_chain = table.actions[0]

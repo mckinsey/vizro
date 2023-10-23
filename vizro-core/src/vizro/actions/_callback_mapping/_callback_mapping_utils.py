@@ -104,16 +104,13 @@ def _get_inputs_of_chart_interactions(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
-    inputs = []
-    for action in chart_interactions_on_page:
-        triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
-        inputs.append(
-            State(
-                component_id=triggered_model.id,
-                component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
-            )
+    return [
+        State(
+            component_id=_get_triggered_model(action_id=ModelID(str(action.id))).id,
+            component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
         )
-    return inputs
+        for action in chart_interactions_on_page
+    ]
 
 
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:

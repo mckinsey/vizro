@@ -57,9 +57,7 @@ class Graph(VizroBaseModel):
 
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
-            fig.update_layout(
-                margin_t=24
-            )  # TODO: needs to be refactored so plotly-independent or extendable: No, as boundaries of Graph model
+            fig.update_layout(margin_t=24)
         return fig
 
     # Convenience wrapper/syntactic sugar.

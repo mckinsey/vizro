@@ -21,7 +21,7 @@ See below for an overview of currently supported table functions.
 
 The [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table component designed for viewing, editing, and exploring large datasets.
 
-You can use the [Dash DataTable](https://dash.plotly.com/datatable) in Vizro by importing 
+You can use the [Dash DataTable](https://dash.plotly.com/datatable) in Vizro by importing
 ```py
 from vizro.tables import dash_data_table
 ```

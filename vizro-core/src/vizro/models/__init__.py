@@ -29,6 +29,6 @@ __all__ = [
     "RadioItems",
     "RangeSlider",
     "Slider",
-    "VizroBaseModel",
     "Table",
+    "VizroBaseModel",
 ]
