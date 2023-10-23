@@ -11,6 +11,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
+import vizro.tables as vt
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    table: CapturedCallable = Field(..., description="Table to be visualized on dashboard")  # ADD import path
+    table: CapturedCallable = Field(..., import_path = vt, description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
