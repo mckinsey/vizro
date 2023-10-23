@@ -1,6 +1,5 @@
 """Fixtures to be shared across several tests."""
 
-import dash
 import pytest
 
 import vizro.models as vm
@@ -43,6 +42,4 @@ def dashboard(page1, page2):
 
 @pytest.fixture()
 def dashboard_prebuild(dashboard):
-    yield dashboard.pre_build()
-    del dash.page_registry["Page 1"]
-    del dash.page_registry["Page 2"]
+    dashboard.pre_build()

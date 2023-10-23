@@ -14,7 +14,7 @@ target-version = ["py38"]
 
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
-ignore-words-list = "grey"
+ignore-words-list = "grey,ned"
 
 [tool.mypy]
 # strict checks : strict = true

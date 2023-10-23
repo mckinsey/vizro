@@ -10,7 +10,7 @@ import vizro.models as vm
 from vizro.models._navigation._accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
 
@@ -43,7 +43,7 @@ class TestAccordionInstantiation:
             Accordion(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
 
-@pytest.mark.usefixtures("dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestAccordionBuild:
     """Tests accordion build method."""
 
