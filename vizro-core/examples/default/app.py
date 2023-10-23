@@ -82,6 +82,54 @@ page = vm.Page(
                                 title="Distribution per continent",
                             ),
                         ),
+                        vm.Tabs(
+                            subpages=[
+                                vm.SubPage(
+                                    id="subtab-1",
+                                    title="Subtab I Title",
+                                    components=[
+                                        vm.Graph(
+                                            id="graph-6",
+                                            figure=px.line(
+                                                df_gapminder,
+                                                x="year",
+                                                y="lifeExp",
+                                                color="continent",
+                                                line_group="country",
+                                                hover_name="country",
+                                            ),
+                                        ),
+                                        vm.Graph(
+                                            id="graph-7",
+                                            figure=px.scatter(
+                                                df_gapminder.query("year==2007"),
+                                                x="gdpPercap",
+                                                y="lifeExp",
+                                                size="pop",
+                                                color="continent",
+                                                title="Comparison of gdpPercap and lifeExp",
+                                            ),
+                                        ),
+                                    ],
+                                ),
+                                vm.SubPage(
+                                    id="subtab-2",
+                                    title="Subtab II",
+                                    components=[
+                                        vm.Graph(
+                                            id="graph-8",
+                                            figure=px.box(
+                                                df_gapminder,
+                                                x="continent",
+                                                y="lifeExp",
+                                                color="continent",
+                                                title="Distribution per continent",
+                                            ),
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
                     ],
                 ),
             ],
@@ -92,7 +140,16 @@ page = vm.Page(
         # e.g. if you don't add the parameter below, all of the charts will not get loaded
         # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
-            targets=["graph-1.y", "graph-2.y", "graph-3.y", "graph-4.y", "graph-5.y"],
+            targets=[
+                "graph-1.y",
+                "graph-2.y",
+                "graph-3.y",
+                "graph-4.y",
+                "graph-5.y",
+                "graph-6.y",
+                "graph-7.y",
+                "graph-8.y",
+            ],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         )
     ],
