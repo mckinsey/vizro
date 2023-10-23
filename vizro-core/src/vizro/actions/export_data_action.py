@@ -1,4 +1,4 @@
-"""Pre-defined action function "export_data" to be re-used in `action` parameter of VizroBaseModels."""
+"""Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
 from typing import Any, Dict, List, Optional
 

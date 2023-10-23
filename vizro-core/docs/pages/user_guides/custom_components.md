@@ -1,9 +1,14 @@
 # How to create custom components
 
-This guide shows you how to create custom components or enhance existing ones. What is a component? A component in this context would be any of the currently existing models such as e.g. [`Filter`][vizro.models.Filter], [`Parameter`][vizro.models.Parameter], etc.
+If you can't find a component that you would like to have in the code basis, you can easily create your own custom component.
+This guide shows you how to create custom components or enhance existing ones.
+
+In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
+[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
+
 
 !!!warning
-    When creating your own custom components, you are responsible for the security of your creation. Vizro cannot guarantee
+    When creating your own custom components, you are responsible for the security of your component (e.g. prevent setting HTML from code which might expose users to cross-site scripting). Vizro cannot guarantee
     the security of custom created components, so make sure you keep this in mind when publicly deploying your dashboard.
 
 

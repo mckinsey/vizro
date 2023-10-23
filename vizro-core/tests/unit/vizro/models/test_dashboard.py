@@ -17,7 +17,7 @@ from vizro.models._dashboard import create_layout_page_404, update_theme
 @pytest.fixture()
 def dashboard_container():
     return dbc.Container(
-        id="dashboard_container",
+        id="dashboard_container_outer",
         children=[
             html.Div(id=f"vizro_version_{vizro.__version__}"),
             ActionLoop._create_app_callbacks(),
@@ -133,7 +133,9 @@ class TestDashboardInstantiation:
 class TestDashboardPreBuild:
     """Tests dashboard pre_build method."""
 
-    def test_dashboard_page_registry(self, mock_page_registry, dashboard_prebuild):
+    @pytest.mark.usefixtures("vizro_app")
+    def test_dashboard_page_registry(self, dashboard, mock_page_registry):
+        dashboard.pre_build()
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise
@@ -149,6 +151,7 @@ class TestDashboardPreBuild:
         assert isinstance(result_div, html.Div)
 
 
+@pytest.mark.usefixtures("vizro_app")
 class TestDashboardBuild:
     """Tests dashboard build method."""
 

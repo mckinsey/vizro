@@ -1,4 +1,4 @@
-"""Pre-defined action function "_filter" to be re-used in `action` parameter of VizroBaseModels."""
+"""Pre-defined action function "_filter" to be reused in `action` parameter of VizroBaseModels."""
 
 from typing import Any, Callable, Dict, List
 

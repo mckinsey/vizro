@@ -92,6 +92,21 @@ def create_template_dark() -> Template:
         )
     ]
 
+    template_dark.data.waterfall = [
+        go.Waterfall(
+            decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
+            increasing={"marker": {"color": COLORS["DISCRETE_10"][0]}},
+            totals={"marker": {"color": COLORS["GREY_55"]}},
+            textfont_color=template_dark.layout.title.font.color,
+            textposition="outside",
+            connector={
+                "line": {
+                    "color": template_dark.layout.xaxis.tickcolor,
+                    "width": 1,
+                }
+            },
+        )
+    ]
     return template_dark
 
 

@@ -30,7 +30,7 @@ def is_value_contained(value: Union[SingleValueType, MultiValueType], options: O
         return value in options
 
 
-# Validators for re-use
+# Validators for reuse
 def validate_options_dict(cls, values):
     """Reusable validator for the "options" argument of categorical selectors."""
     if "options" not in values or not isinstance(values["options"], list):
@@ -94,5 +94,7 @@ def validate_step(cls, step, values):
     return step
 
 
-def set_default_marks(cls, v, values):
-    return v if values.get("step") is None else {}
+def set_default_marks(cls, marks, values):
+    if not marks and values.get("step") is None:
+        marks = None
+    return marks

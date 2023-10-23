@@ -528,7 +528,7 @@
     },
     "RangeSlider": {
       "title": "RangeSlider",
-      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `None`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -560,6 +560,7 @@
         "marks": {
           "title": "Marks",
           "description": "Marks to be displayed on slider.",
+          "default": {},
           "type": "object",
           "additionalProperties": {
             "type": "string"
@@ -593,7 +594,7 @@
     },
     "Slider": {
       "title": "Slider",
-      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `None`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -625,6 +626,7 @@
         "marks": {
           "title": "Marks",
           "description": "Marks to be displayed on slider.",
+          "default": {},
           "type": "object",
           "additionalProperties": {
             "type": "string"
@@ -890,7 +892,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [NavigationPagesType][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
