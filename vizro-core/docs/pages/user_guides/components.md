@@ -59,9 +59,9 @@ currently available charts of the open source library [`plotly.express`](https:/
             id: my_chart
             type: graph
           controls:
-            - column: continent
+            - column: species
               type: filter
-            - selector:
+              selector:
                 title: Species
                 type: dropdown
           title: My first page
