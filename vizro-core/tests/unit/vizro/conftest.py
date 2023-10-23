@@ -1,6 +1,5 @@
 """Fixtures to be shared across several tests."""
 
-import dash
 import plotly.graph_objects as go
 import pytest
 
