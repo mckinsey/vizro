@@ -17,13 +17,6 @@ div.page_container .Select-menu-outer {
   line-height: var(--text-size-05);
 }
 
-/* Dropdown background color when focused */
-div.page_container .Select.is-focused > .Select-control {
-  background-color: var(--field-enabled);
-  height: 100%;
-  padding: 0 !important;
-}
-
 /* Dropdown menu options */
 div.page_container .VirtualizedSelectOption {
   color: var(--text-primary);
@@ -43,9 +36,16 @@ div.page_container .Select-control {
   height: 32px;
 }
 
+/* Dropdown background color when focused */
+div.page_container .Select.is-focused > .Select-control {
+  background-color: var(--field-enabled);
+}
+
 /* User input */
-div.page_container .Select-input {
+div.page_container .dash-dropdown .Select-input {
+  display: block;
   height: var(--tag-height);
+  margin-left: unset;
 }
 
 div.page_container.Select-input > input {
@@ -143,9 +143,9 @@ wrapper **/
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  padding: 13px 8px;
+  padding: 4px 8px;
 }
 
 .Select-input > input {
-  padding: 0;
+  padding: 0 !important;
 }
