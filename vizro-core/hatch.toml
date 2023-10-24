@@ -40,17 +40,19 @@ lint = "SKIP=gitleaks pre-commit run {args} --all-files"
 post-release = [
   "hatch version patch,dev",
   "echo 'Raise a PR to bump to the new development version'"
-]
+] # can it be automated?
+
 prep-release = [
   "hatch version release",
-  "hatch run changelog:scriv collect",
-  "rm -rf schemas/*json",
-  "hatch run schema",
-  "hatch run lint || hatch run lint",
-  "hatch run changelog:add",
-  "echo 'Raise a PR to prepare main for release'"
+  "git checkout -b release/vizro-core/$(hatch version) origin/main",
+  #"hatch run changelog:scriv collect --add",
+#  "rm -rf schemas/*json",
+#  "schema",
+#  "hatch run lint || hatch run lint",  #why?
+#  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"',
 ]
-pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+pypath = "python -c 'import sys; print(sys.executable)'"
 schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
