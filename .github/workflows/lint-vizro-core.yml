@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}  #why?
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -50,14 +50,11 @@ jobs:
         run: hatch run all.py${{ matrix.python-version }}:schema --check
 
       - name: Check requirements for Snyk are up to date
-        run: |
-          pwd
-          hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
+        run: hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
 
       - name: Find added changelog fragments
         id: added-files
         run: |
-          pwd
           if ${{ github.event_name == 'pull_request' }}; then
               echo "added_files=$(git diff --name-only --diff-filter=A -r HEAD^1 HEAD -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
           else

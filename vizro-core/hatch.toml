@@ -40,16 +40,15 @@ lint = "SKIP=gitleaks pre-commit run {args} --all-files"
 post-release = [
   "hatch version patch,dev",
   "echo 'Raise a PR to bump to the new development version'"
-] # can it be automated?
+] # No longer needed?
 
 prep-release = [
   "hatch version release",
-  "git checkout -b release/vizro-core/$(hatch version) origin/main",
-  #"hatch run changelog:scriv collect --add",
-#  "rm -rf schemas/*json",
-#  "schema",
-#  "hatch run lint || hatch run lint",  #why?
-#  "hatch run changelog:add",
+  "hatch run changelog:scriv collect --add",
+  "rm -rf schemas/*json",
+  "schema",
+  "hatch run lint || hatch run lint",
+  "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"',
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
