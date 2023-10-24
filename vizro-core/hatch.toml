@@ -83,7 +83,7 @@ scripts = {serve = "mkdocs serve"}
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-scripts = {add = "scriv create -add"}
+scripts = {add = "scriv create --add"}
 
 
 [publish.index]
