@@ -20,11 +20,16 @@ ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]
 
 
 class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
-    id: ModelID  # the component ID. If it`s a pattern matching ID, it will be a dict.
-    property: Literal["clickData", "value", "n_clicks", "active_cell"]  #  the component property used in the callback.
-    value: Optional[Any]  # the value of the component property at the time the callback was fired.
-    str_id: str  # for pattern matching IDs, it`s the stringified dict ID with no white spaces.
-    triggered: bool  #  a boolean indicating whether this input triggered the callback.
+    # The component ID. If it`s a pattern matching ID, it will be a dict.
+    id: ModelID
+    # The component property used in the callback.
+    property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
+    # The value of the component property at the time the callback was fired.
+    value: Optional[Any]
+    # For pattern matching IDs, it`s the stringified dict ID with no white spaces.
+    str_id: str
+    # A boolean indicating whether this input triggered the callback.
+    triggered: bool
 
 
 # Utility functions for helper functions used in pre-defined actions ----
@@ -34,14 +39,6 @@ def _get_component_actions(component) -> List[Action]:
         if hasattr(component, "actions")
         else []
     )
-
-
-def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
-    if value == NONE_OPTION:
-        return None
-    elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
-    return value
 
 
 def _apply_filters(
@@ -66,32 +63,90 @@ def _apply_filters(
     return data_frame
 
 
+def _apply_chart_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_value: CallbackTriggerDict):
+    ctd_click_data = ctd_value["clickData"]
+    if not ctd_click_data["value"]:
+        return data_frame
+
+    source_chart_id = ctd_click_data["id"]
+    source_chart_actions = _get_component_actions(model_manager[source_chart_id])
+    try:
+        custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
+    except KeyError as exc:
+        raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
+
+    customdata = ctd_click_data["value"]["points"][0]["customdata"]  # type: ignore[call-overload]
+
+    for action in source_chart_actions:
+        if target not in action.function["targets"]:
+            continue
+        for custom_data_idx, column in enumerate(custom_data_columns):
+            data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
+
+    return data_frame
+
+
+def _get_parent_vizro_table(dash_datatable_id: str):
+    from vizro.models import Table
+
+    for _, table in model_manager._items_with_type(Table):
+        if table._datatable_id == dash_datatable_id:
+            return table
+
+
+def _apply_table_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_value: CallbackTriggerDict):
+    ctd_active_cell = ctd_value["active_cell"]
+    ctd_derived_viewport_data = ctd_value["derived_viewport_data"]
+    if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
+        return data_frame
+
+    source_table_id = ctd_active_cell["id"]
+    try:
+        source_table_actions = _get_component_actions(model_manager[source_table_id])
+    except KeyError:
+        # source_table_id is dash.Datatable id and we need to fetch actions from parent Vizro.Table component
+        source_table_actions = _get_component_actions(_get_parent_vizro_table(source_table_id))
+
+    for action in source_table_actions:
+        if target not in action.function["targets"]:
+            continue
+        column = ctd_active_cell["value"]["column_id"]
+        derived_viewport_data_row = ctd_active_cell["value"]["row"]
+        clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
+        data_frame = data_frame[data_frame[column].isin([clicked_data])]
+
+    return data_frame
+
+
 def _apply_filter_interaction(
     data_frame: pd.DataFrame,
     ctds_filter_interaction: List[CallbackTriggerDict],
     target: str,
 ) -> pd.DataFrame:
-    for ctd in ctds_filter_interaction:
-        if not ctd["value"]:
-            continue
+    for ctd_key, ctd_value in ctds_filter_interaction.items():
+        if "clickData" in ctd_value:
+            data_frame = _apply_chart_filter_interaction(
+                data_frame=data_frame,
+                target=target,
+                ctd_value=ctd_value,
+            )
 
-        source_chart_id = ctd["id"]
-        source_chart_actions = _get_component_actions(model_manager[source_chart_id])
+        if "active_cell" in ctd_value and "derived_viewport_data" in ctd_value:
+            data_frame = _apply_table_filter_interaction(
+                data_frame=data_frame,
+                target=target,
+                ctd_value=ctd_value,
+            )
 
-        try:
-            custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
-        except KeyError as exc:
-            raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
-
-        customdata = ctd["value"]["points"][0]["customdata"]
-
-        for action in source_chart_actions:
-            if target not in action.function["targets"]:
-                continue
-
-            for custom_data_idx, column in enumerate(custom_data_columns):
-                data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
     return data_frame
+
+
+def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+    if value == NONE_OPTION:
+        return None
+    elif isinstance(value, list):
+        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
+    return value
 
 
 def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, List[str]]:

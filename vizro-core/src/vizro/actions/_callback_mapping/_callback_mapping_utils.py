@@ -98,19 +98,39 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
 
 def _get_inputs_of_chart_interactions(
     action_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[State]:
+) -> Dict[str, Dict[str, State]]:
     """Gets list of States for selected chart interaction `action_name` of triggered page."""
     chart_interactions_on_page = _get_matching_actions_by_function(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
-    return [
-        State(
-            component_id=_get_triggered_model(action_id=ModelID(str(action.id))).id,
-            component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
-        )
-        for action in chart_interactions_on_page
-    ]
+    inputs = {}
+    for action in chart_interactions_on_page:
+        triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
+        # TODO: Consider do we want to move the following logic into Model implementations.
+        if triggered_model.type in ["table", "react"]:
+            inputs.update(
+                {
+                    action.id: {
+                        "active_cell": State(
+                            component_id=triggered_model._datatable_id, component_property="active_cell"
+                        ),
+                        "derived_viewport_data": State(
+                            component_id=triggered_model._datatable_id, component_property="derived_viewport_data"
+                        ),
+                    }
+                }
+            )
+        else:
+            inputs.update(
+                {
+                    action.id: {
+                        "clickData": State(component_id=triggered_model.id, component_property="clickData"),
+                    }
+                }
+            )
+
+    return inputs
 
 
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
@@ -134,7 +154,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
         "filter_interaction": (
             _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
-            else []
+            else {}
         ),
         "theme_selector": (State("theme_selector", "on") if "theme_selector" in include_inputs else []),
     }

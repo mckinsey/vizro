@@ -30,6 +30,8 @@ class Table(VizroBaseModel):
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
+    _datatable_id: str = PrivateAttr()
+
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("children")
 
@@ -50,6 +52,28 @@ class Table(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
+    def _build_datatable_object(self):
+        data = data_manager._get_component_data(self.id)  # type: ignore
+        kwargs = self.figure._arguments.copy()
+        kwargs.pop("data_frame", None)
+        return self.figure._function(data_frame=data, **kwargs)
+
+    @_log_call
+    def pre_build(self):
+        if self.actions:
+            # The Datatable object is pre-built, so we can fetch its ID.
+            datatable_object = self._build_datatable_object()
+
+            # Datatable object has to have "id" defined if it triggers actions chain.
+            if not hasattr(datatable_object, "id"):
+                raise ValueError(
+                    "'DataTable' object has no attribute 'id'. To perform specified actions, a valid 'id' to the"
+                    " 'Datatable' object has to be provided."
+                )
+
+            self._datatable_id = datatable_object.id
+
     @_log_call
     def build(self):
-        return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id)
+        # return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id)
+        return html.Div(self._build_datatable_object(), id=self.id)
