@@ -26,7 +26,7 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `None`.
+        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (Optional[str]): Title to be displayed. Defaults to `None`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -36,7 +36,7 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[float, str]] = Field(None, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
@@ -98,6 +98,7 @@ class Slider(VizroBaseModel):
                             placeholder="end",
                             min=self.min,
                             max=self.max,
+                            step=self.step,
                             value=self.value or self.min,
                             persistence=True,
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",

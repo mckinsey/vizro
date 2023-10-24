@@ -12,7 +12,7 @@ from vizro._themes._color_values import COLORS
 @pytest.fixture
 def template():
     """Fixture for template."""
-    yield np.random.choice([themes.dark, themes.light], 1)[0]
+    return np.random.choice([themes.dark, themes.light], 1)[0]
 
 
 @pytest.fixture
@@ -25,7 +25,7 @@ def chart_data():
             "y": np.random.normal(0, 200, data_points),
         }
     )
-    yield data
+    return data
 
 
 def test_template(template):
