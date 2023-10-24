@@ -43,11 +43,11 @@ post-release = [
 ]
 prep-release = [
   "hatch version release",
-  "hatch run docs:scriv collect",
+  "hatch run changelog:scriv collect",
   "rm -rf schemas/*json",
   "hatch run schema",
   "hatch run lint || hatch run lint",
-  "hatch run docs:changelog",
+  "hatch run changelog:add",
   "echo 'Raise a PR to prepare main for release'"
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
@@ -77,10 +77,13 @@ dependencies = [
   "scriv"
 ]
 detached = true
+scripts = {serve = "mkdocs serve"}
 
-[envs.docs.scripts]
-changelog = "scriv create"
-serve = "mkdocs serve"
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+scripts = {add = "scriv create -add"}
+
 
 [publish.index]
 disable = true
