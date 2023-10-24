@@ -3,13 +3,6 @@ import itertools
 from vizro.managers import model_manager
 
 
-def _validate_items(items):
-    if items is not None and not items:
-        raise ValueError("Ensure this value has at least 1 item.")
-
-    return items
-
-
 def _validate_pages(pages):
     """Reusable validator to check if provided Page IDs exist as registered pages."""
     from vizro.models import Page

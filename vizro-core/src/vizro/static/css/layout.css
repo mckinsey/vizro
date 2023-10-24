@@ -5,7 +5,7 @@
   width: 100vw;
 }
 
-.left_side_inner {
+.nav_control_panel {
   align-items: flex-start;
   background: var(--surfaces-bg-02);
   display: flex;
@@ -119,8 +119,10 @@
   align-items: center;
   justify-content: center;
 }
-.icon {
+.nav-icon {
   filter: var(--fill-accordion-button);
+  width: 24px;
+  height: 24px;
 }
 
 div.dashboard_container .tooltip-inner {

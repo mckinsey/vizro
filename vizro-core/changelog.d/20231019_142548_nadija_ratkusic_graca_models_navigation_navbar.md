@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Added `NavBar` and `NavItem` navigation models which enable use of icons in the dashboard. ([#70](https://github.com/mckinsey/vizro/pull/70))
+- Enable `NavBar` as a selector for `Navigation` to create icon and text navigation bars ([#70](https://github.com/mckinsey/vizro/pull/70))
 
 <!--
 ### Changed

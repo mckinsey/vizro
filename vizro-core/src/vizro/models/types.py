@@ -275,10 +275,10 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card] or [`Graph`][vizro.models.Graph]."""
 
 # Types used for pages values in the Navigation model.
-NavigationPagesType = Annotated[
+NavPagesType = Annotated[
     Union[List[str], Dict[str, List[str]]],
-    Field(
-        None, description="List of Page IDs or dict mapping of Page IDs and titles (for hierarchical sub-navigation)"
-    ),
+    Field(..., description="List of Page IDs or dict mapping of Page IDs and titles (for hierarchical sub-navigation)"),
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
+
+NavSelectorType = Annotated[Union["Accordion", "NavBar"], Field(discriminator="type", description="...")]

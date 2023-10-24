@@ -529,10 +529,10 @@ dashboard = vm.Dashboard(
             items=[
                 vm.NavItem(
                     pages={"Analysis": ["Homepage", "Variable Analysis"], "Summary": ["Relationship Analysis"]},
-                    image="assets/images/icons/content/collections.svg",
+                    icon="assets/images/icons/content/collections.svg",
                 ),
                 vm.NavItem(
-                    pages=["Country Analysis", "Continent Summary"], image="assets/images/icons/content/features.svg"
+                    pages=["Country Analysis", "Continent Summary"], icon="assets/images/icons/content/features.svg"
                 ),
             ]
         )
