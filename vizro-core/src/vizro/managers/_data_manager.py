@@ -101,6 +101,15 @@ class DataManager:
     def _clear(self):
         self.__init__()  # type: ignore[misc]
 
+    # to clear original data if the cache type is not NullCache
+    def _drop_original_data(self):
+        logger.debug(f"__original_data: {self.__original_data}")
+        logger.debug(f"config: {self._cache.config}")
+        logger.debug("drop original data")
+        if self._cache.config["CACHE_TYPE"] != "NullCache":
+            self.__original_data = {}
+        logger.debug(f"__original_data: {self.__original_data}")
+
 
 data_manager = DataManager()
 

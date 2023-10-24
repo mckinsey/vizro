@@ -70,30 +70,30 @@ page = vm.Page(
 )
 dashboard = vm.Dashboard(pages=[page])
 
-### when launching with gunicorn ###
-Vizro._user_assets_folder = os.path.abspath("../assets")
-Vizro._cache_config = {
-    "CACHE_TYPE": "FileSystemCache",
-    "CACHE_DIR": "cache",
-    "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
-    "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
-}
-# Vizro._cache_config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 120}
-app = Vizro()
-app.build(dashboard)
-server = app.dash.server
-### when launching with gunicorn ###
+# ### when launching with gunicorn ###
+# Vizro._user_assets_folder = os.path.abspath("../assets")
+# data_manager._cache.config = {
+#     "CACHE_TYPE": "FileSystemCache",
+#     "CACHE_DIR": "cache",
+#     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
+#     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
+# }
+# # data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 120}
+# app = Vizro()
+# app.build(dashboard)
+# server = app.dash.server
+# ### when launching with gunicorn ###
 
 
 if __name__ == "__main__":
     Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro._cache_config = {
-        "CACHE_TYPE": "FileSystemCache",
-        "CACHE_DIR": "cache",
-        "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
-        "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
-    }
-    # Vizro._cache_config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 3000,}
+    # data_manager._cache.config = {
+    #     "CACHE_TYPE": "FileSystemCache",
+    #     "CACHE_DIR": "cache",
+    #     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
+    #     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
+    # }
+    data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 3000,}
     Vizro().build(dashboard).run()
     # Vizro().build(dashboard).run(
     #     threaded=False,
