@@ -9,7 +9,7 @@ from dash import dash_table
 from vizro.models.types import capture
 
 
-def _set_defaults_nested(supplied: Mapping[str,Any], defaults: Mapping[str,Any]) -> dict[str,Any]:
+def _set_defaults_nested(supplied: Mapping[str, Any], defaults: Mapping[str, Any]) -> dict[str, Any]:
     supplied = defaultdict(dict, supplied)
     for default_key, default_value in defaults.items():
         if isinstance(default_value, Mapping):

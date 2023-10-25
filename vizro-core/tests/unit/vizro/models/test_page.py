@@ -90,10 +90,15 @@ class TestPageInstantiation:
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
             vm.Page(title="Page 4", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
-    def test_valid_component_types(self, standard_px_chart,standard_dash_table):
+    def test_valid_component_types(self, standard_px_chart, standard_dash_table):
         vm.Page(
             title="Page Title",
-            components=[vm.Graph(figure=standard_px_chart), vm.Card(text="""# Header 1"""), vm.Button(),vm.Table(figure=standard_dash_table)],
+            components=[
+                vm.Graph(figure=standard_px_chart),
+                vm.Card(text="""# Header 1"""),
+                vm.Button(),
+                vm.Table(figure=standard_dash_table),
+            ],
         )
 
     @pytest.mark.parametrize(
