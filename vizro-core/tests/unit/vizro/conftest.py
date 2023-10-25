@@ -25,6 +25,7 @@ def standard_px_chart(gapminder):
         size_max=60,
     )
 
+
 @pytest.fixture
 def standard_dash_table(gapminder):
     return dash_data_table(data_frame=gapminder)
