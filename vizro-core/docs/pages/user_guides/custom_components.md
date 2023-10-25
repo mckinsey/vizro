@@ -354,6 +354,6 @@ vm.Page.add_type("components", Jumbotron)
 
 ???+ warning
 
-    Please note that Vizro is not responsible for any custom-created component or integration.
-    Ensure that your custom-created components or integrations do not leak any sensitive information or expose users
-    to any security threat before deploying your dashboards.
+    Please note that users of this package are responsible for the content of any custom-created component,
+    function or integration they write - especially with regard to leaking any sensitive information or exposing to
+    any security threat during implementation.
