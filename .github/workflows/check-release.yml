@@ -107,7 +107,7 @@ jobs:
           cd "${{ needs.check-version.outputs.package_name }}"
           git checkout -b "release/version_bump_next_minor/${formatted_date}"
           hatch version patch,dev
-          hatch run docs:changelog
+          hatch run changelog:add
           hatch run schema
           hatch run lint || hatch run lint
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
