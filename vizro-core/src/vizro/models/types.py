@@ -315,4 +315,7 @@ NavPagesType = Annotated[
 ]
 """Permissible value types for page attribute. Values are displayed as default."""
 
-NavSelectorType = Annotated[Union["Accordion", "NavBar"], Field(discriminator="type", description="...")]
+NavSelectorType = Annotated[
+    Union["Accordion", "NavBar"],
+    Field(discriminator="type", description="Component that makes up part of the navigation panel"),
+]
