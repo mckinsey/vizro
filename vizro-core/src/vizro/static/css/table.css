@@ -30,3 +30,12 @@ div.right_side
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
   padding: 0px 4px;
 }
+
+.table-title {
+  padding-bottom: 14px;
+}
+
+.table-container {
+  padding: 12px;
+  padding-left: 18px;
+}

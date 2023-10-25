@@ -219,7 +219,7 @@ class capture:
 
             return wrapped
         elif self._mode == "table":
-            # The table component
+
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 if "data_frame" not in inspect.signature(func).parameters:

@@ -38,9 +38,7 @@ class Graph(VizroBaseModel):
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(
-        ..., import_path=px
-    )  # TODO: needs to be refactored so plotly-independent or extendable - No, as within the boundaries of Graph model
+    figure: CapturedCallable = Field(..., import_path=px)
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -48,7 +46,7 @@ class Graph(VizroBaseModel):
 
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
+    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
