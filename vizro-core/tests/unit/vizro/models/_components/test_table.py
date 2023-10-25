@@ -1,7 +1,6 @@
 """Unit tests for vizro.models.Table."""
 import json
 
-import pandas as pd
 import plotly
 import pytest
 from dash import dash_table, html
@@ -27,12 +26,12 @@ def dash_table_with_str_dataframe():
 @pytest.fixture
 def expected_table():
     return html.Div(
-            [
-                None,
-                html.Div(dash_table.DataTable(), id="text_table"),
-            ],
-            className="table-container",
-        )
+        [
+            None,
+            html.Div(dash_table.DataTable(), id="text_table"),
+        ],
+        className="table-container",
+    )
 
 
 class TestDunderMethodsTable:

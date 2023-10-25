@@ -4,6 +4,7 @@ from vizro.managers import data_manager
 
 logger = logging.getLogger(__name__)
 
+
 def _process_callable_data_frame(captured_callable, values):
     data_frame = captured_callable["data_frame"]
 
