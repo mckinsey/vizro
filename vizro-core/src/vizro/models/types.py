@@ -39,6 +39,9 @@ class CapturedCallable:
         """Creates a new CapturedCallable object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
+
+        Raises:
+            ValueError if `function` contains positional-only or variadic positional parameters (*args).
         """
         # It is difficult to get positional-only and variadic positional arguments working at the same time as
         # variadic keyword arguments. Ideally we would do the __call__ as
@@ -201,6 +204,8 @@ class capture:
             # The more difficult case, where we need to still have a valid plotly figure that renders in a notebook.
             # Hence we attach the CapturedCallable as a property instead of returning it directly.
             # TODO: move point of checking that data_frame argument exists earlier on.
+            # TODO: also would be nice to raise errors in CapturedCallable.__init__ at point of function definition
+            #  rather than point of calling if possible.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> _DashboardReadyFigure:
                 if "data_frame" not in inspect.signature(func).parameters:
