@@ -6,6 +6,7 @@ from typing import List, Optional
 from dash import html
 from pydantic import validator
 
+from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.nav_item import NavItem
@@ -24,16 +25,26 @@ class NavBar(VizroBaseModel):
     pages: Optional[NavPagesType] = None
     items: Optional[List[NavItem]] = None
 
+    @_log_call
+    def pre_build(self):
+        from vizro.models._navigation import Navigation
+
+        _, navigation = next(model_manager._items_with_type(Navigation))
+
+        if self.pages is None:
+            self.pages = navigation.pages
+
+        if not self.items:
+            if isinstance(self.pages, list):
+                self.items = [NavItem(pages=[page]) for page in self.pages]
+            if isinstance(self.pages, dict):
+                self.items = [NavItem(pages=value) for page, value in self.pages.items()]
+
     @validator("items", always=True)
-    def _validate_items(cls, items, values):
+    def _validate_items(cls, items):
         if items is not None and not items:
             raise ValueError("Ensure this value has at least 1 item.")
 
-        if not items:
-            if isinstance(values.get("pages"), list):
-                return [NavItem(pages=[page]) for page in values.get("pages")]
-            if isinstance(values.get("pages"), dict):
-                return [NavItem(pages=value) for page, value in values.get("pages").items()]
         return items
 
     @_log_call
@@ -55,6 +66,5 @@ class NavBar(VizroBaseModel):
                 if active_page_id in item.pages:
                     return item.selector.build(active_page_id=active_page_id)
             if isinstance(item.pages, dict):
-                # pages = list(itertools.chain(*item.pages.values()))
                 if active_page_id in list(itertools.chain(*item.pages.values())):
                     return item.selector.build(active_page_id=active_page_id)

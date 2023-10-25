@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import Field, validator
 
-from vizro._constants import ACCORDION_DEFAULT_TITLE
+from vizro._constants import ACCORDION_DEFAULT_TITLE, MIN_NO_OF_PAGES
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
@@ -35,7 +35,7 @@ class Accordion(VizroBaseModel):
     @_log_call
     def build(self, *, active_page_id=None):
         # Hide navigation panel if there is only one page
-        if len(list(itertools.chain(*self.pages.values()))) == 1 and len(dash.page_registry.keys()) == 2:
+        if len(list(itertools.chain(*self.pages.values()))) == 1 and len(dash.page_registry.keys()) == MIN_NO_OF_PAGES:
             return html.Div(className="hidden", id="nav_panel_outer")
 
         accordion_items = []
