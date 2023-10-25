@@ -8,6 +8,11 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10"]}
 ]
 
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+scripts = {add = "scriv create --add"}
+
 [envs.default]
 dependencies = [
   "devtools[pygments]",
@@ -37,11 +42,6 @@ cov-report = [
 ]
 example = "cd examples/{args:default}; python app.py"
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
-post-release = [
-  "hatch version patch,dev",
-  "echo 'Raise a PR to bump to the new development version'"
-] # No longer needed?
-
 prep-release = [
   "hatch version release",
   "hatch run changelog:scriv collect --add",
@@ -49,7 +49,7 @@ prep-release = [
   "schema",
   "hatch run lint || hatch run lint",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"',
+  'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 schema = "python schemas/generate.py {args}"
@@ -79,12 +79,6 @@ dependencies = [
 ]
 detached = true
 scripts = {serve = "mkdocs serve"}
-
-[envs.changelog]
-dependencies = ["scriv"]
-detached = true
-scripts = {add = "scriv create --add"}
-
 
 [publish.index]
 disable = true
