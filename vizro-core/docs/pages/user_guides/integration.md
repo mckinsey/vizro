@@ -50,5 +50,6 @@ register the datasets with [`kedro_datasets.pandas`](https://docs.kedro.org/en/s
 
 ???+ warning
 
-    Please note that Vizro is not responsible for any custom-created component or integration. 
-    Ensure that your custom-created components or integrations do not leak any sensitive information or expose users to any security threat.
+    Please note that Vizro is not responsible for any custom-created component or integration.
+    Ensure that your custom-created components or integrations do not leak any sensitive information or expose users
+    to any security threat before deploying your dashboards.
