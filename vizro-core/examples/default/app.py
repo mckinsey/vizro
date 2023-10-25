@@ -10,6 +10,10 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+<<<<<<< HEAD
+=======
+from vizro.charts.tables import dash_data_table
+>>>>>>> 4493fd48385c4a5567d76241da3eaca7d471612b
 from vizro.managers import data_manager
 from vizro.models.types import capture
 from vizro.tables import dash_data_table

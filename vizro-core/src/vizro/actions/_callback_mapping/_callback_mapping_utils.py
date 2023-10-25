@@ -104,7 +104,6 @@ def _get_inputs_of_chart_interactions(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
-
     inputs = []
     for action in chart_interactions_on_page:
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
@@ -153,7 +152,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
         "filter_interaction": (
             _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
-            else []
+            else {}
         ),
         "theme_selector": (State("theme_selector", "on") if "theme_selector" in include_inputs else []),
     }
