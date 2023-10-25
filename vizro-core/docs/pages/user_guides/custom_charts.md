@@ -153,3 +153,9 @@ The below examples shows a more involved use-case. We create and style a waterfa
         [![Graph3]][Graph3]
 
     [Graph3]: ../../assets/user_guides/custom_charts/custom_chart_waterfall.png
+
+
+???+ warning
+
+    Please note that Vizro is not responsible for any custom-created component or integration. 
+    Ensure that your custom-created components or integrations do not leak any sensitive information or expose users to any security threat.

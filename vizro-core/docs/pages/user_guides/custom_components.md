@@ -354,3 +354,10 @@ vm.Page.add_type("components", Jumbotron)
         [![CustomComponent2]][CustomComponent2]
 
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
+
+
+
+???+ warning
+
+    Please note that Vizro is not responsible for any custom-created component or integration. 
+    Ensure that your custom-created components or integrations do not leak any sensitive information or expose users to any security threat.
