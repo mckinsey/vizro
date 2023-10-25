@@ -63,8 +63,10 @@ def _apply_filters(
     return data_frame
 
 
-def _apply_chart_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_value: CallbackTriggerDict):
-    ctd_click_data = ctd_value["clickData"]
+def _apply_chart_filter_interaction(
+    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+):
+    ctd_click_data = ctd_filter_interaction["clickData"]
     if not ctd_click_data["value"]:
         return data_frame
 
@@ -75,7 +77,7 @@ def _apply_chart_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_v
     except KeyError as exc:
         raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
 
-    customdata = ctd_click_data["value"]["points"][0]["customdata"]  # type: ignore[call-overload]
+    customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
     for action in source_chart_actions:
         if target not in action.function["targets"]:
@@ -86,17 +88,19 @@ def _apply_chart_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_v
     return data_frame
 
 
-def _get_parent_vizro_table(dash_datatable_id: str):
+def _get_parent_vizro_table(_underlying_table_id: str):
     from vizro.models import Table
 
     for _, table in model_manager._items_with_type(Table):
-        if table._datatable_id == dash_datatable_id:
+        if table._underlying_table_id == _underlying_table_id:
             return table
 
 
-def _apply_table_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_value: CallbackTriggerDict):
-    ctd_active_cell = ctd_value["active_cell"]
-    ctd_derived_viewport_data = ctd_value["derived_viewport_data"]
+def _apply_table_filter_interaction(
+    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+):
+    ctd_active_cell = ctd_filter_interaction["active_cell"]
+    ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
     if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
         return data_frame
 
@@ -120,22 +124,22 @@ def _apply_table_filter_interaction(data_frame: pd.DataFrame, target: str, ctd_v
 
 def _apply_filter_interaction(
     data_frame: pd.DataFrame,
-    ctds_filter_interaction: List[CallbackTriggerDict],
+    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     target: str,
 ) -> pd.DataFrame:
-    for ctd_key, ctd_value in ctds_filter_interaction.items():
-        if "clickData" in ctd_value:
+    for ctd_filter_interaction in ctds_filter_interaction:
+        if "clickData" in ctd_filter_interaction:
             data_frame = _apply_chart_filter_interaction(
                 data_frame=data_frame,
                 target=target,
-                ctd_value=ctd_value,
+                ctd_filter_interaction=ctd_filter_interaction,
             )
 
-        if "active_cell" in ctd_value and "derived_viewport_data" in ctd_value:
+        if "active_cell" in ctd_filter_interaction and "derived_viewport_data" in ctd_filter_interaction:
             data_frame = _apply_table_filter_interaction(
                 data_frame=data_frame,
                 target=target,
-                ctd_value=ctd_value,
+                ctd_filter_interaction=ctd_filter_interaction,
             )
 
     return data_frame
@@ -209,7 +213,7 @@ def _get_parametrized_config(
 def _get_filtered_data(
     targets: List[ModelID],
     ctds_filters: List[CallbackTriggerDict],
-    ctds_filter_interaction: List[CallbackTriggerDict],
+    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
 ) -> Dict[ModelID, pd.DataFrame]:
     filtered_data = {}
     for target in targets:
@@ -233,7 +237,7 @@ def _get_filtered_data(
 
 def _get_modified_page_charts(
     ctds_filter: List[CallbackTriggerDict],
-    ctds_filter_interaction: List[CallbackTriggerDict],
+    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
     ctd_theme: CallbackTriggerDict,
     targets: Optional[List[ModelID]] = None,

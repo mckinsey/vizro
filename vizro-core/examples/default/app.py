@@ -5,13 +5,11 @@ import dash_ag_grid as dag
 
 # import d3_bar_chart
 import pandas as pd
-from dash import dash_table
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.tables import dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
@@ -67,7 +65,9 @@ page_0 = vm.Page(
                 data_frame="table_data",
                 style_header={"border": "1px solid green"},
             ),
-            actions=[vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart"]))],
+            actions=[
+                vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart", "table_2_id"]))
+            ],
         ),
         vm.Graph(
             id="scatter_chart",
@@ -82,16 +82,18 @@ page_0 = vm.Page(
         ),
         vm.Table(
             id="table_2_id",
-            figure=dash_data_table(id="dash_datatable_id_2", data_frame=data, style_header={"border": "1px solid green"}),
-            actions=[vm.Action(id="filter_interaction_2", function=filter_interaction(targets=["scatter_chart"]))]
+            figure=dash_data_table(
+                id="dash_datatable_id_2", data_frame=data, style_header={"border": "1px solid green"}
+            ),
+            actions=[vm.Action(id="filter_interaction_2", function=filter_interaction(targets=["scatter_chart"]))],
         ),
+        # TODO: Enable AgGrid to work with actions as action's trigger.
+        #       Currently, AgGrid can be only used as action's output.
         # vm.Table(
         #     id="ag_grid",
-        #     table=AgGrid(data_frame="table_data"),
-        #     # TODO: Probably we need to enable filter_interactions out of the box only for AgGrid objects.
-        #     # actions=[vm.Action(id="filter_interaction_2", function=filter_interaction(targets=["scatter_chart"]))]
+        #     figure=AgGrid(data_frame="table_data"),
         # ),
-        vm.Button(id="export_data_button", actions=[vm.Action(function=export_data())]),
+        vm.Button(id="export_data_button", text="Export data", actions=[vm.Action(function=export_data())]),
     ],
     controls=[
         vm.Filter(column="State", selector=vm.Dropdown()),

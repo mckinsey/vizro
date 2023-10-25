@@ -9,6 +9,8 @@ from vizro.actions._action_loop._action_loop_utils import (
     _get_actions_on_registered_pages,
 )
 from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelID
+from vizro.models import Table
 
 logger = logging.getLogger(__name__)
 
@@ -25,10 +27,10 @@ def _build_action_loop_callbacks() -> None:
     for actions_chain in actions_chains:
         actions_chain_trigger_component_id = actions_chain.trigger.component_id
         try:
-            actions_chain_trigger_component = model_manager[actions_chain_trigger_component_id]
+            actions_chain_trigger_component = model_manager[ModelID(str(actions_chain_trigger_component_id))]
             # Use underlying 'Datatable' object as a trigger component.
-            if actions_chain_trigger_component.type in ["table", "react"]:
-                actions_chain_trigger_component_id = actions_chain_trigger_component._datatable_id
+            if isinstance(actions_chain_trigger_component, Table):
+                actions_chain_trigger_component_id = actions_chain_trigger_component._underlying_table_id
         # Not all action_chain_trigger_components are included in model_manager. eg on_page_load_action_trigger
         except KeyError:
             pass

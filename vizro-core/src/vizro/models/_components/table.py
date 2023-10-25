@@ -30,12 +30,13 @@ class Table(VizroBaseModel):
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
     actions: List[Action] = []
 
-    _datatable_id: str = PrivateAttr()
+    _underlying_table_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("children")
 
     # validator
+    # TODO: We need to take care of this argument once we support AgGrid and others.
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
@@ -52,7 +53,7 @@ class Table(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
-    def _build_datatable_object(self):
+    def _build_underlying_table_object(self):
         data = data_manager._get_component_data(self.id)  # type: ignore
         kwargs = self.figure._arguments.copy()
         kwargs.pop("data_frame", None)
@@ -61,19 +62,28 @@ class Table(VizroBaseModel):
     @_log_call
     def pre_build(self):
         if self.actions:
-            # The Datatable object is pre-built, so we can fetch its ID.
-            datatable_object = self._build_datatable_object()
+            # The underlying table object is pre-built, so we can fetch its ID.
+            underlying_table_object = self._build_underlying_table_object()
 
-            # Datatable object has to have "id" defined if it triggers actions chain.
-            if not hasattr(datatable_object, "id"):
+            # Underlying table object has to have "id" defined if it triggers actions chain.
+            if not hasattr(underlying_table_object, "id"):
                 raise ValueError(
-                    "'DataTable' object has no attribute 'id'. To perform specified actions, a valid 'id' to the"
-                    " 'Datatable' object has to be provided."
+                    "Underlying table object has no attribute 'id'. To perform specified actions, a valid 'id' to the"
+                    " Underlying table object has to be provided."
                 )
 
-            self._datatable_id = datatable_object.id
+            self._underlying_table_id = underlying_table_object.id
 
     @_log_call
     def build(self):
-        # return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id=self.id)
-        return html.Div(self._build_datatable_object(), id=self.id)
+        # TODO: We also need to take case what empty object we need to create here once we support AgGrid and others.
+        dash_datatable_object = (
+            dash_table.DataTable(id=self._underlying_table_id, data=pd.DataFrame().to_dict("records"), columns=[])
+            if self.actions
+            else dash_table.DataTable(data=pd.DataFrame().to_dict("records"), columns=[])
+        )
+
+        return html.Div(
+            dash_datatable_object,
+            id=self.id,
+        )

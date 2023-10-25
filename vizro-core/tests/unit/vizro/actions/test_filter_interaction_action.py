@@ -18,19 +18,21 @@ def callback_context_click_continent(request):
         "args_grouping": {
             "filters": [],
             "filter_interaction": [
-                CallbackTriggerDict(
-                    id="box_chart",
-                    property="clickData",
-                    value={
-                        "points": [
-                            {
-                                "customdata": [continent],
-                            }
-                        ]
-                    },
-                    str_id="box_chart",
-                    triggered=False,
-                )
+                {
+                    "clickData": CallbackTriggerDict(
+                        id="box_chart",
+                        property="clickData",
+                        value={
+                            "points": [
+                                {
+                                    "customdata": [continent],
+                                }
+                            ]
+                        },
+                        str_id="box_chart",
+                        triggered=False,
+                    )
+                }
             ],
             "parameters": [],
             "theme_selector": CallbackTriggerDict(

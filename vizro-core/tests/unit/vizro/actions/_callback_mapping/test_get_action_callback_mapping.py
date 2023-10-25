@@ -98,7 +98,9 @@ def action_callback_inputs_expected():
             dash.State("parameter_y_selector", "value"),
         ],
         "filter_interaction": [
-            dash.State("scatter_chart", "clickData"),
+            {
+                "clickData": dash.State("scatter_chart", "clickData"),
+            }
         ],
         "theme_selector": dash.State("theme_selector", "on"),
     }
@@ -121,7 +123,9 @@ def export_data_inputs_expected():
         ],
         "parameters": [],
         "filter_interaction": [
-            dash.State("scatter_chart", "clickData"),
+            {
+                "clickData": dash.State("scatter_chart", "clickData"),
+            }
         ],
         "theme_selector": [],
     }

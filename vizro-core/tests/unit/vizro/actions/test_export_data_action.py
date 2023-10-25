@@ -60,19 +60,21 @@ def callback_context_export_data(request):
             if pop_filter
             else [],
             "filter_interaction": [
-                CallbackTriggerDict(
-                    id="box_chart",
-                    property="clickData",
-                    value={
-                        "points": [
-                            {
-                                "customdata": [continent_filter_interaction],
-                            }
-                        ]
-                    },
-                    str_id="box_chart",
-                    triggered=False,
-                )
+                {
+                    "clickData": CallbackTriggerDict(
+                        id="box_chart",
+                        property="clickData",
+                        value={
+                            "points": [
+                                {
+                                    "customdata": [continent_filter_interaction],
+                                }
+                            ]
+                        },
+                        str_id="box_chart",
+                        triggered=False,
+                    )
+                }
             ]
             if continent_filter_interaction
             else [],
