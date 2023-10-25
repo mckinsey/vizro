@@ -10,7 +10,7 @@ import vizro.models as vm
 from vizro.models._navigation.accordion import Accordion
 
 
-@pytest.mark.usefixtures("dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestNavigationInstantiation:
     """Tests navigation model instantiation ."""
 
@@ -45,7 +45,7 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=["Test"], id="navigation")
 
 
-@pytest.mark.usefixtures("dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"SELECT PAGE": ["Page 1", "Page 2"]}])
 def test_navigation_pre_build(pages):
     navigation = vm.Navigation(pages=pages, id="navigation")
@@ -57,7 +57,7 @@ def test_navigation_pre_build(pages):
     assert navigation._selector.pages == {"SELECT PAGE": ["Page 1", "Page 2"]}
 
 
-@pytest.mark.usefixtures("dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}])
 def test_navigation_build(pages):
     navigation = vm.Navigation(pages=pages)
