@@ -7,11 +7,6 @@ In general, you can create a custom component based on any dash-compatible compo
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
 
 
-!!!warning
-    When creating your own custom components, you are responsible for the security of your component (e.g. prevent setting HTML from code which might expose users to cross-site scripting). Vizro cannot guarantee
-    the security of custom created components, so make sure you keep this in mind when publicly deploying your dashboard.
-
-
 Vizro's public API is deliberately kept small in order to facilitate quick and easy configuration of a dashboard. However,
 at the same time, Vizro is easily extensible, so that you can tweak any component to your liking or even create entirely new ones.
 
@@ -354,3 +349,11 @@ vm.Page.add_type("components", Jumbotron)
         [![CustomComponent2]][CustomComponent2]
 
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
+
+
+
+???+ warning
+
+    Please note that users of this package are responsible for the content of any custom-created component,
+    function or integration they write - especially with regard to leaking any sensitive information or exposing to
+    any security threat during implementation.
