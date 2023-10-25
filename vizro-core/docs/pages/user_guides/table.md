@@ -25,7 +25,7 @@ You can use the [Dash DataTable](https://dash.plotly.com/datatable) in Vizro by 
 ```py
 from vizro.tables import dash_data_table
 ```
-The Vizro version of the table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
+The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as kwargs.
 
@@ -33,18 +33,18 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
     === "app.py"
         ```py
         import vizro.models as vm
-        from vizro import Vizro
         import vizro.plotly.express as px
+        from vizro import Vizro
         from vizro.tables import dash_data_table
 
-        df = px.data.iris()
+        df = px.data.gapminder().query("year == 2007")
 
         page = vm.Page(
-            title="Dash DataTable",
+            title="Example of a Dash DataTable",
             components=[
-                vm.Table(id="table", figure=dash_data_table(data_frame=df)),
+                vm.Table(id="table", title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
-            controls=[vm.Filter(column="species")],
+            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -58,13 +58,14 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         - components:
           - figure:
               _target_: dash_data_table
-              data_frame: iris
+              data_frame: gapminder_2007
+            title: Dash DataTable
             id: table
             type: table
           controls:
-            - column: species
+            - column: continent
               type: filter
-          title: Dash DataTable
+          title: Example of a Dash DataTable
         ```
     === "Result"
         [![Table]][Table]
@@ -73,7 +74,139 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
 
 #### Styling/Modifying the Dash DataTable
 
-Lorem ipsum
+As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as kwargs. Below you can find
+an example of a styled table where some conditional formatting is applied. There are many more ways to alter table beyond this showcase.
+
+??? example "Styled Dash DataTable"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_data_table
+
+        df = px.data.gapminder().query("year == 2007")
+
+        column_definitions = [
+            {"name": "country", "id": "country", "type": "text", "editable": False},
+            {"name": "continent", "id": "continent", "type": "text"},
+            {"name": "year", "id": "year", "type": "datetime"},
+            {"name": "lifeExp", "id": "lifeExp", "type": "numeric"},
+            {"name": "pop", "id": "pop", "type": "numeric"},
+            {"name": "gdpPercap", "id": "gdpPercap", "type": "numeric"},
+        ]
+
+        style_data_conditional = [
+            {
+                "if": {
+                    "column_id": "year",
+                },
+                "backgroundColor": "dodgerblue",
+                "color": "white",
+            },
+            {"if": {"filter_query": "{lifeExp} < 55", "column_id": "lifeExp"}, "backgroundColor": "#85144b", "color": "white"},
+            {
+                "if": {"filter_query": "{gdpPercap} > 10000", "column_id": "gdpPercap"},
+                "backgroundColor": "green",
+                "color": "white",
+            },
+            {"if": {"column_type": "text"}, "textAlign": "left"},
+            {
+                "if": {"state": "active"},
+                "backgroundColor": "rgba(0, 116, 217, 0.3)",
+                "border": "1px solid rgb(0, 116, 217)",
+            },
+        ]
+
+        style_header_conditional = [{"if": {"column_type": "text"}, "textAlign": "left"}]
+
+        page = vm.Page(
+            title="Example of a styled Dash DataTable",
+            components=[
+                vm.Table(
+                    id="table",
+                    title="Styled table",
+                    figure=dash_data_table(
+                        data_frame=df,
+                        columns=column_definitions,
+                        sort_action="native",
+                        editable=True,
+                        style_data_conditional=style_data_conditional,
+                        style_header_conditional=style_header_conditional,
+                    ),
+                ),
+            ],
+            controls=[vm.Filter(column="continent")],
+        )
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+          - components:
+              - figure:
+                  _target_: dash_data_table
+                  data_frame: gapminder_2007
+                  sort_action: native
+                  editable: true
+                  columns:
+                    - name: country
+                      id: country
+                      type: text
+                      editable: false
+                    - name: continent
+                      id: continent
+                      type: text
+                    - name: year
+                      id: year
+                      type: datetime
+                    - name: lifeExp
+                      id: lifeExp
+                      type: numeric
+                    - name: pop
+                      id: pop
+                      type: numeric
+                    - name: gdpPercap
+                      id: gdpPercap
+                      type: numeric
+                  style_data_conditional:
+                    - if:
+                        column_id: year
+                      backgroundColor: dodgerblue
+                      color: white
+                    - if:
+                        filter_query: "{lifeExp} < 55"
+                        column_id: lifeExp
+                      backgroundColor: "#85144b"
+                      color: white
+                    - if:
+                        filter_query: "{gdpPercap} > 10000"
+                        column_id: gdpPercap
+                      backgroundColor: green
+                      color: white
+                    - if:
+                        column_type: text
+                      textAlign: left
+                    - if:
+                        state: active
+                      backgroundColor: rgba(0, 116, 217, 0.3)
+                      border: 1px solid rgb(0, 116, 217)
+                id: table
+                type: table
+            controls:
+              - column: continent
+                type: filter
+            title: Dash DataTable
+
+        ```
+    === "Result"
+        [![Table2]][Table2]
+
+    [Table2]: ../../assets/user_guides/table/styled_table.png
 
 #### Custom Table
 
