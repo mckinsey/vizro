@@ -30,10 +30,11 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the user guide on
-    [Charts/Graph][graph] or [Actions][pre-defined-actions] to see available choices.
+    [Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the user guide on
-    [custom charts](../user_guides/custom_charts.md) or [custom actions][custom-actions].
+    [custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
+    [custom actions][custom-actions].
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -152,10 +153,14 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically it should be used as a function decorator. There are two possible modes: `"graph"` and `"action"`.
+    Typically it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
+    `"action"`.
 
     Examples:
         >>> @capture("graph")
+        >>> def plot_function():
+        >>>     ...
+        >>> @capture("table")
         >>> def plot_function():
         >>>     ...
         >>> @capture("action")
@@ -167,14 +172,15 @@ class capture:
     """
 
     def __init__(self, mode: Literal["graph", "action", "table"]):
-        """Instantiates the decorator to capture a function call. Valid modes are "graph" and "action"."""
+        """Instantiates the decorator to capture a function call. Valid modes are "graph", "table" and "action"."""
         self._mode = mode
 
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
 
-        mode="action" gives a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that contains a
-        CapturedCallable. In both cases, the CapturedCallable is based on func and the provided *args and **kwargs.
+        mode="action" and mode="table" give a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that
+        contains a CapturedCallable. In both cases, the CapturedCallable is based on func and the provided
+        *args and **kwargs.
         """
         if self._mode == "graph":
             # The more difficult case, where we need to still have a valid plotly figure that renders in a notebook.
@@ -219,7 +225,6 @@ class capture:
 
             return wrapped
         elif self._mode == "table":
-            # The table component
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 if "data_frame" not in inspect.signature(func).parameters:
@@ -294,7 +299,8 @@ ComponentType = Annotated[
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card] or [`Graph`][vizro.models.Graph]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
+[`Graph`][vizro.models.Graph]."""
 
 # Types used for pages values in the Navigation model.
 NavigationPagesType = Annotated[

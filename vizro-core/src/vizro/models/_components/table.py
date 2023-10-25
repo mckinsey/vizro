@@ -1,7 +1,6 @@
 import logging
-from typing import List, Literal
+from typing import List, Literal, Optional
 
-import pandas as pd
 from dash import dash_table, html
 from pydantic import Field, PrivateAttr, validator
 
@@ -23,11 +22,13 @@ class Table(VizroBaseModel):
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Table like object to be displayed. Current choices include:
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
+        title (str): Title of the table. Defaults to `None`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
+    title: Optional[str] = Field(None, description="Title of the table")
     actions: List[Action] = []
 
     _underlying_table_id: str = PrivateAttr()
@@ -84,6 +85,9 @@ class Table(VizroBaseModel):
         )
 
         return html.Div(
-            dash_datatable_object,
-            id=self.id,
+            [
+                html.H3(self.title, className="table-title") if self.title else None,
+                html.Div(dash_datatable_object, id=self.id),
+            ],
+            className="table-container",
         )

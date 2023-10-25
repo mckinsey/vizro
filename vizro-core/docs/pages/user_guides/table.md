@@ -27,7 +27,7 @@ from vizro.tables import dash_data_table
 ```
 The Vizro version of the table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
-All other parameters of the [Dash DataTable](https://dash.plotly.com/datatable) can be entered as kwargs.
+All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as kwargs.
 
 !!! example "Dash DataTable"
     === "app.py"
@@ -70,3 +70,11 @@ All other parameters of the [Dash DataTable](https://dash.plotly.com/datatable) 
         [![Table]][Table]
 
     [Table]: ../../assets/user_guides/table/table.png
+
+#### Styling/Modifying the Dash DataTable
+
+Lorem ipsum
+
+#### Custom Table
+
+Lorem Ispum

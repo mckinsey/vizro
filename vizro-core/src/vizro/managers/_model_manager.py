@@ -12,9 +12,7 @@ if TYPE_CHECKING:
 
 rd = random.Random(0)
 
-# Type used for model_manager IDs
 ModelID = NewType("ModelID", str)
-
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 

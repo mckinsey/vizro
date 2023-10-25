@@ -15,11 +15,6 @@ from vizro.tables import dash_data_table
 
 
 @pytest.fixture
-def standard_dash_table():
-    return dash_data_table(data_frame=px.data.gapminder())
-
-
-@pytest.fixture
 def dash_table_with_arguments():
     return dash_data_table(data_frame=px.data.gapminder(), style_header={"border": "1px solid green"})
 
@@ -31,7 +26,13 @@ def dash_table_with_str_dataframe():
 
 @pytest.fixture
 def expected_table():
-    return html.Div(dash_table.DataTable(pd.DataFrame().to_dict("records"), []), id="text_table")
+    return html.Div(
+            [
+                None,
+                html.Div(dash_table.DataTable(), id="text_table"),
+            ],
+            className="table-container",
+        )
 
 
 class TestDunderMethodsTable:
@@ -109,7 +110,7 @@ class TestProcessTableDataFrame:
 
 
 class TestBuildTable:
-    def test_graph_build(self, standard_dash_table, expected_table):
+    def test_table_build(self, standard_dash_table, expected_table):
         table = vm.Table(
             id="text_table",
             figure=standard_dash_table,
