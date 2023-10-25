@@ -30,7 +30,7 @@ class NavItem(VizroBaseModel):
     pages: NavPagesType
     selector: Optional[Accordion] = None
     text: Optional[str] = ""
-    max_text_length: int = 12  # check if that looks good
+    max_text_length: int = 9
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
@@ -41,30 +41,47 @@ class NavItem(VizroBaseModel):
             return Accordion(pages=values.get("pages"))
         return selector
 
+    @validator("icon", always=True, pre=True)
+    def set_icon(cls, icon):
+        if icon is None:
+            return STATIC_URL_PREFIX + "/images/icon_1.svg"
+        return icon if icon else None
+
     @_log_call
-    def build(self):
-        return dbc.Button(  # add active argument for highlighting and check if needed , add active_page_id to build - similar to accordion
+    def pre_build(self):
+        if self.tooltip is None:
+            if self.text and len(self.text) > self.max_text_length:
+                self.tooltip = self.text
+                self.text = None
+
+    @_log_call
+    def build(self, active_page_id):
+        return dbc.Button(
             id=self.id,
             children=[
-                html.Img(
-                    src=self.icon if self.icon else STATIC_URL_PREFIX + "/images/icon_1.svg",
-                    className="nav-icon",
+                html.Div(
+                    children=[
+                        html.Img(
+                            src=self.icon,
+                            className="nav-icon",
+                        )
+                        if self.icon
+                        else html.Div(className="hidden"),
+                        html.Div(
+                            children=[self.text],
+                            className="icon-text",
+                        )
+                        if self.text
+                        else html.Div(className="hidden"),
+                    ],
+                    className="nav-icon-text",
                 ),
                 self._create_icon_tooltip(),
             ],
-            className="icon_button",
-            href=self._get_page_href(),
+            className="icon-button",
+            href=dash.page_registry[self._get_first_page()]["relative_path"],
+            active=self._get_first_page() == active_page_id,
         )
-
-    def _get_page_href(self):
-        if self.pages:
-            first_page = (
-                list(itertools.chain(*self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
-            )
-
-            for page in dash.page_registry.values():
-                if page["module"] == first_page:
-                    return page["relative_path"]
 
     def _create_icon_tooltip(self):
         if self.tooltip:
@@ -72,6 +89,9 @@ class NavItem(VizroBaseModel):
                 children=html.P(self.tooltip),
                 target=self.id,
                 placement="bottom",
-                className="custom_tooltip",
+                className="custom-tooltip",
             )
             return tooltip
+
+    def _get_first_page(self):
+        return list(itertools.chain(*self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]

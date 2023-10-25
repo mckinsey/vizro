@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 from typing import List, Optional
 
 from dash import html
@@ -39,18 +40,21 @@ class NavBar(VizroBaseModel):
     def build(self, active_page_id):
         return html.Div(
             children=[
-                html.Div(children=[item.build() for item in self.items], className="nav_bar", id="nav_bar_outer"),
+                html.Div(
+                    children=[item.build(active_page_id=active_page_id) for item in self.items],
+                    className="nav_bar",
+                    id="nav_bar_outer",
+                ),
                 self._nav_panel_build(active_page_id=active_page_id),
             ]
         )
 
     def _nav_panel_build(self, active_page_id):
-        if self.items:
-            for item in self.items:
-                if isinstance(item.pages, list):
-                    if active_page_id in item.pages:
-                        return item.selector.build(active_page_id=active_page_id)
-                if isinstance(item.pages, dict):
-                    pages = [page for row in item.pages.values() for page in row]
-                    if active_page_id in pages:
-                        return item.selector.build(active_page_id=active_page_id)
+        for item in self.items:
+            if isinstance(item.pages, list):
+                if active_page_id in item.pages:
+                    return item.selector.build(active_page_id=active_page_id)
+            if isinstance(item.pages, dict):
+                # pages = list(itertools.chain(*item.pages.values()))
+                if active_page_id in list(itertools.chain(*item.pages.values())):
+                    return item.selector.build(active_page_id=active_page_id)

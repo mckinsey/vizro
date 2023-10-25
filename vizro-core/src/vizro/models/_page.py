@@ -211,11 +211,7 @@ class Page(VizroBaseModel):
         nav_control_panel = html.Div(nav_control_elements, className="nav_control_panel")
 
         header = html.Div(children=header_elements, className="header", id="header_outer")
-        left_side = (
-            html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
-            if any(nav_control_elements)
-            else html.Div(className="hidden", id="nav_panel_outer")
-        )
+        left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
 
         right_side_elements = [header, component_container]
         right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
