@@ -4,8 +4,6 @@ from vizro.managers import data_manager
 
 logger = logging.getLogger(__name__)
 
-
-# Validator for reuse in other models to validate pages
 def _process_callable_data_frame(captured_callable, values):
     data_frame = captured_callable["data_frame"]
 

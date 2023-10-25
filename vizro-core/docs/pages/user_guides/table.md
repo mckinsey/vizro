@@ -70,3 +70,11 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         [![Table]][Table]
 
     [Table]: ../../assets/user_guides/table/table.png
+
+#### Styling/Modifying the Dash DataTable
+
+Lorem ipsum
+
+#### Custom Table
+
+Lorem Ispum
