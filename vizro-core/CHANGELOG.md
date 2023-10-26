@@ -66,6 +66,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Changed
 
 - Move creation of `dash.page_registry` to `Dashboard.pre_build` ([#74](https://github.com/mckinsey/vizro/pull/74))
+
 - Change the default collapsible behavior and highlighting color of the selected accordion group ([#74](https://github.com/mckinsey/vizro/pull/74))
 
 ## Fixed
@@ -107,7 +108,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Changed
 
 - Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
-
   - Eliminate most server side callbacks in favor of client-side callbacks
   - Add tests for client-side callbacks written in Node.js framework called `jest`.
   - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
@@ -144,10 +144,15 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Added
 
 - Add Vizro templates and enable choice of `light` and `dark` themes
+
 - Enable integration of plotly express charts within Graph
+
 - Enable data connections via Kedro data catalog
+
 - Add ModelManager and DataManager class
+
 - Add the Vizro class and enable parsing and running a dashboard
+
 - Add the following pydantic models:
   - Action
   - Button
@@ -165,4 +170,5 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
   - RangeSlider
   - Slider
   - VizroBaseModel
+
 - Enable the addition and usage of custom components and custom charts
