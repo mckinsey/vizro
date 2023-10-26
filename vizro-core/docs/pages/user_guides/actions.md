@@ -103,17 +103,17 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
     [Graph]: ../../assets/user_guides/actions/actions_export.png
 
-### Filter data by clicking on chart
+### Filter data by clicking on figure
 
-To enable filtering when clicking on data in a (source) chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+To enable filtering when clicking on data in a (source) figure, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
 
-To configure this chart interaction follow the steps below:
+To configure this figure interaction follow the steps below:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph] and a list of IDs of the target charts into `targets`
+1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
-2. Enter the filter columns in the `custom_data` argument of the underlying source chart `function`
+2. If the source figure is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function` if the source figure is [`Graph`][vizro.models.Graph].
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
