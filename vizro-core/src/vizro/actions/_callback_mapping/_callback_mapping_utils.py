@@ -107,7 +107,6 @@ def _get_inputs_of_chart_interactions(
     inputs = []
     for action in chart_interactions_on_page:
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
-        # TODO: Consider do we want to move the following logic into Model implementations.
         if isinstance(triggered_model, Table):
             inputs.append(
                 {

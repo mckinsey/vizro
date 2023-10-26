@@ -37,7 +37,6 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    # TODO: We need to take care of this argument once we support AgGrid and others.
     set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
@@ -77,7 +76,6 @@ class Table(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # TODO: We also need to take case what empty object we need to create here once we support AgGrid and others.
         return html.Div(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
