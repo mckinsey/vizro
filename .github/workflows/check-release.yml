@@ -87,9 +87,9 @@ jobs:
           if [ $local = $pypi ]; then; echo "md5 hash is the same"; else; echo "md5 hash is not the same" exit 1; fi;
 
   version-bump:
-    needs: [check-version, build-publish]
-    if: |
-      needs.check-version.outputs.new_release == 'True'
+    needs: [check-version]
+    # if: |
+    #   needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
