@@ -10,3 +10,4 @@ setuptools>=65.5.1
 MarkupSafe
 kedro>=0.17.3
 wheel>=0.38.0
+werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
