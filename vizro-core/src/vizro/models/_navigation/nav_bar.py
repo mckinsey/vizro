@@ -19,11 +19,11 @@ class NavBar(VizroBaseModel):
     Args:
         pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `None`.
-        items (List[NavItem]): List of NavItem models. Defaults to `None`.
+        items (List[NavItem]): List of NavItem models. Defaults to `[]`.
     """
 
     pages: Optional[NavPagesType] = None
-    items: Optional[List[NavItem]] = None
+    items: List[NavItem] = []
 
     @_log_call
     def pre_build(self):
@@ -40,12 +40,6 @@ class NavBar(VizroBaseModel):
             if isinstance(self.pages, dict):
                 self.items = [NavItem(pages=value) for page, value in self.pages.items()]
 
-    @validator("items", always=True)
-    def _validate_items(cls, items):
-        if items is not None and not items:
-            raise ValueError("Ensure this value has at least 1 item.")
-
-        return items
 
     @_log_call
     def build(self, active_page_id):
