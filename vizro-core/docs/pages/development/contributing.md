@@ -155,7 +155,7 @@ a changelog fragment has been created in the folder `changelog.d`. This fragment
 You can easily create such a fragment by running
 
 ```bash
-hatch run docs:changelog
+hatch run changelog:add
 ```
 
 Please begin by uncommenting the relevant section(s) you wish to describe. If your PR includes changes that are not relevant to `CHANGELOG.md`, please leave everything commented out. If you are uncertain about what to add or whether to add anything, please refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
