@@ -59,4 +59,5 @@ class Table(VizroBaseModel):
                 html.Div(dash_table.DataTable(), id=self.id),
             ],
             className="table-container",
+            id=f"{self.id}_outer",
         )
