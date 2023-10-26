@@ -22,9 +22,12 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Added
 
 - Add plotly layout template for waterfall chart type ([#106](https://github.com/mckinsey/vizro/pull/106))
+
 - Add CSS default styling for `textarea` ([#106](https://github.com/mckinsey/vizro/pull/106))
 
 - Provide ID to unique outer HTML divs on page ([#111](https://github.com/mckinsey/vizro/pull/111))
+
+- Enable turning off `marks` when `step` is defined in `Slider` and `RangeSlider` ([#115](https://github.com/mckinsey/vizro/pull/115))
 
 ## Changed
 
@@ -37,8 +40,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 - If the `targets` argument in the `export_data` action function is specified as `"falsy"` value (`None`, `[]`), triggering the action will result in the same outcome as if the argument were not set, exporting data from all charts on the current page. ([#93](https://github.com/mckinsey/vizro/pull/93))
 
 - Fix alignment between control panel, dashboard title and page title ([#106](https://github.com/mckinsey/vizro/pull/106))
-
-- Enable turning off `marks` when `step` is defined in `Slider` and `RangeSlider` ([#115](https://github.com/mckinsey/vizro/pull/115))
 
 - `CapturedCallable` now handles variadic keywords arguments (`**kwargs`) correctly ([#121](https://github.com/mckinsey/vizro/pull/121))
 
