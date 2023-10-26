@@ -89,7 +89,12 @@ class DataManager:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_original[component_id]
 
-        return self._get_original_data(dataset_name)
+        component_data = self._get_original_data(dataset_name)
+
+        # clean up original data if the cache type is not NullCache
+        self._clean_original_data()
+
+        return component_data
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
@@ -102,13 +107,17 @@ class DataManager:
         self.__init__()  # type: ignore[misc]
 
     # to clear original data if the cache type is not NullCache
-    def _drop_original_data(self):
-        logger.debug(f"__original_data: {self.__original_data}")
-        logger.debug(f"config: {self._cache.config}")
-        logger.debug("drop original data")
-        if self._cache.config["CACHE_TYPE"] != "NullCache":
-            self.__original_data = {}
-        logger.debug(f"__original_data: {self.__original_data}")
+    def _clean_original_data(self):
+        logger.debug(f"__original_data before cleaning: {self.__original_data.keys()}")
+        # logger.debug(f"config: {self._cache.config}")
+        logger.debug("clean original data")
+        if self._cache.config["CACHE_TYPE"] == "NullCache":
+            return
+        for dataset_name in list(self.__original_data.keys()):
+            if dataset_name in self.__lazy_data:
+                logger.debug(f"drop --> {dataset_name}")
+                del self.__original_data[dataset_name]
+        logger.debug(f"__original_data after cleaning: {self.__original_data.keys()}")
 
 
 data_manager = DataManager()

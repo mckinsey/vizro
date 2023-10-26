@@ -47,10 +47,10 @@ class Vizro:
         data_manager._cache.init_app(self.dash.server, config=data_manager._cache.config)
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
-        # to clear original data if the cache type is not NullCache
-        data_manager._drop_original_data()
 
         self.dash.layout = dashboard.build()
+        # to clear original data if the cache type is not NullCache
+        data_manager._clean_original_data()
 
         return self
 

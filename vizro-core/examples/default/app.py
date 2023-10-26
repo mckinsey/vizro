@@ -14,14 +14,24 @@ def retrieve_gapminder():
 
 
 data_manager["gapminder"] = retrieve_gapminder
+data_manager["gapminder2"] = retrieve_gapminder
+
+df_gapminder = px.data.gapminder()
+df_gapminder2 = px.data.gapminder()
 
 
 @capture("action")
 def delete_memoized_cache(delete_button_id_n_clicks):
-    """Delete memoized cache."""
+    """Delete one memoized cache."""
     if delete_button_id_n_clicks:
         data_manager._cache.delete_memoized(data_manager._get_original_data, data_manager, "gapminder")
-        return None
+
+
+@capture("action")
+def empty_cache(empty_button_id_n_clicks):
+    """Empty the entire cache."""
+    if empty_button_id_n_clicks:
+        data_manager._cache.cache.clear()
 
 
 page = vm.Page(
@@ -30,6 +40,7 @@ page = vm.Page(
         vm.Graph(
             figure=px.box(
                 "gapminder",
+                # df_gapminder,
                 x="continent",
                 y="lifeExp",
                 color="continent",
@@ -37,16 +48,33 @@ page = vm.Page(
             ),
             id="the_graph",
         ),
-        # vm.Graph(
-        #     figure=px.box(
-        #         "gapminder",
-        #         x="continent",
-        #         y="lifeExp",
-        #         color="continent",
-        #         title="Distribution per continent",
-        #     ),
-        #     id="the_graph2",
-        # ),
+        vm.Graph(
+            id="the_graph2",
+            figure=px.scatter(
+                "gapminder2",
+                # df_gapminder2,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+                hover_name="country",
+                facet_col="continent",
+                labels={
+                    "gdpPercap": "GDP per capita",
+                    "pop": "Population",
+                    "lifeExp": "Life expectancy",
+                    "continent": "Continent",
+                },
+                range_y=[25, 90],
+                color_discrete_map={
+                    "Africa": "#00b4ff",
+                    "Americas": "#ff9222",
+                    "Asia": "#3949ab",
+                    "Europe": "#ff5267",
+                    "Oceania": "#08bdba",
+                },
+            ),
+        ),
         vm.Button(
             id="delete_button_id",
             text="delete_memoized_cache",
@@ -54,7 +82,16 @@ page = vm.Page(
                 vm.Action(
                     function=delete_memoized_cache(),
                     inputs=["delete_button_id.n_clicks"],
-                    outputs=[],
+                )
+            ]
+        ),
+        vm.Button(
+            id="empty_button_id",
+            text="empty_cache",
+            actions=[
+                vm.Action(
+                    function=empty_cache(),
+                    inputs=["empty_button_id.n_clicks"],
                 )
             ]
         )
@@ -62,6 +99,7 @@ page = vm.Page(
     controls=[
         vm.Filter(
             column="year",
+            targets=["the_graph"],
             selector=vm.RangeSlider(
                 title="Select timeframe",
             ),
@@ -93,7 +131,7 @@ if __name__ == "__main__":
     #     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
     #     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
     # }
-    data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 3000,}
+    data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 60,}
     Vizro().build(dashboard).run()
     # Vizro().build(dashboard).run(
     #     threaded=False,
