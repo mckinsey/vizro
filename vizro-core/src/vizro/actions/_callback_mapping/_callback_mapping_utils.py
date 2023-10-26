@@ -152,7 +152,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
         "filter_interaction": (
             _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
-            else {}
+            else []
         ),
         "theme_selector": (State("theme_selector", "on") if "theme_selector" in include_inputs else []),
     }

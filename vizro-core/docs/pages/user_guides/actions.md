@@ -113,7 +113,7 @@ To configure this figure interaction follow the steps below:
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
-2. If the source figure is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function` if the source figure is [`Graph`][vizro.models.Graph].
+2. If the source figure is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```

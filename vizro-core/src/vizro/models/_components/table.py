@@ -78,14 +78,12 @@ class Table(VizroBaseModel):
     @_log_call
     def build(self):
         # TODO: We also need to take case what empty object we need to create here once we support AgGrid and others.
-        dash_datatable_object = (
-            dash_table.DataTable(id=self._underlying_table_id) if self.actions else dash_table.DataTable()
-        )
-
         return html.Div(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
-                html.Div(dash_datatable_object, id=self.id),
+                html.Div(
+                    dash_table.DataTable(**({"id": self._underlying_table_id} if self.actions else {})), id=self.id
+                ),
             ],
             className="table-container",
         )

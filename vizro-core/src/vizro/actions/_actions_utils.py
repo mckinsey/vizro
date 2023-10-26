@@ -70,7 +70,7 @@ def _apply_chart_filter_interaction(
     if not ctd_click_data["value"]:
         return data_frame
 
-    source_chart_id = ctd_click_data["id"]
+    source_chart_id: ModelID = ctd_click_data["id"]
     source_chart_actions = _get_component_actions(model_manager[source_chart_id])
     try:
         custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
@@ -108,7 +108,7 @@ def _apply_table_filter_interaction(
     try:
         source_table_actions = _get_component_actions(model_manager[source_table_id])
     except KeyError:
-        # source_table_id is dash.Datatable id and we need to fetch actions from parent Vizro.Table component
+        # source_table_id is underlying table id, so actions from parent Vizro.Table component should be considered.
         source_table_actions = _get_component_actions(_get_parent_vizro_table(source_table_id))
 
     for action in source_table_actions:
