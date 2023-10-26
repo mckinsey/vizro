@@ -41,9 +41,9 @@ if __name__ == "__main__":
     for package_name in AVAILABLE_PACKAGES:
         package_version = subprocess.check_output(["hatch", "version"], cwd=f"{package_name}").decode("utf-8").strip()
 
-        if _check_no_dev_version(package_name, package_version):# and _check_no_version_pypi(
+        if _check_no_dev_version(package_name, package_version):  # and _check_no_version_pypi(
             # package_name, package_version
-        # ):
+            # ):
             if new_release:
                 sys.exit("Cannot release two packages at the same time. Please modify your PR.")
             new_release = True
