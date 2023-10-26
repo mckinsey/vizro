@@ -79,9 +79,7 @@ class Table(VizroBaseModel):
     def build(self):
         # TODO: We also need to take case what empty object we need to create here once we support AgGrid and others.
         dash_datatable_object = (
-            dash_table.DataTable(id=self._underlying_table_id, data=pd.DataFrame().to_dict("records"), columns=[])
-            if self.actions
-            else dash_table.DataTable(data=pd.DataFrame().to_dict("records"), columns=[])
+            dash_table.DataTable(id=self._underlying_table_id) if self.actions else dash_table.DataTable()
         )
 
         return html.Div(
