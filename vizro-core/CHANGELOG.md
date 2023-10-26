@@ -11,6 +11,42 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.5'></a>
+
+# 0.1.5 — 2023-10-26
+
+## Removed
+
+- Remove warning message if not all registered pages are used in `Navigation` ([#117](https://github.com/mckinsey/vizro/pull/117))
+
+## Added
+
+- Add plotly layout template for waterfall chart type ([#106](https://github.com/mckinsey/vizro/pull/106))
+
+- Add CSS default styling for `textarea` ([#106](https://github.com/mckinsey/vizro/pull/106))
+
+- Provide ID to unique outer HTML divs on page ([#111](https://github.com/mckinsey/vizro/pull/111))
+
+- Enable turning off `marks` when `step` is defined in `Slider` and `RangeSlider` ([#115](https://github.com/mckinsey/vizro/pull/115))
+
+## Changed
+
+- Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if `navigation.pages = None` ([#117](https://github.com/mckinsey/vizro/pull/117))
+
+- Update warning for duplicated IDs in `data_manager` and `model_manager` to now recommend `Vizro._reset()` as a potential fix when working in a Jupyter notebook ([#120](https://github.com/mckinsey/vizro/pull/120))
+
+## Fixed
+
+- If the `targets` argument in the `export_data` action function is specified as `"falsy"` value (`None`, `[]`), triggering the action will result in the same outcome as if the argument were not set, exporting data from all charts on the current page. ([#93](https://github.com/mckinsey/vizro/pull/93))
+
+- Fix alignment between control panel, dashboard title and page title ([#106](https://github.com/mckinsey/vizro/pull/106))
+
+- `CapturedCallable` now handles variadic keywords arguments (`**kwargs`) correctly ([#121](https://github.com/mckinsey/vizro/pull/121))
+
+## Security
+
+- Bump @babel/traverse from 7.22.20 to 7.23.2 ([#118](https://github.com/mckinsey/vizro/pull/118))
+
 <a id='changelog-0.1.4'></a>
 
 # 0.1.4 — 2023-10-09
