@@ -8,7 +8,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import validator
 
-from vizro._constants import STATIC_URL_PREFIX
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
@@ -26,7 +25,7 @@ class NavItem(VizroBaseModel):
     """
 
     tooltip: Optional[str]
-    icon: Optional[str]
+    icon: str = "home"
     pages: NavPagesType
     selector: Optional[Accordion] = None
     text: Optional[str] = ""
@@ -40,12 +39,6 @@ class NavItem(VizroBaseModel):
         if selector is None:
             return Accordion(pages=values.get("pages"))
         return selector
-
-    @validator("icon", always=True, pre=True)
-    def set_icon(cls, icon):
-        if icon is None:
-            return STATIC_URL_PREFIX + "/images/icon_1.svg"
-        return icon if icon else None
 
     @_log_call
     def pre_build(self):
@@ -61,12 +54,7 @@ class NavItem(VizroBaseModel):
             children=[
                 html.Div(
                     children=[
-                        html.Img(
-                            src=self.icon,
-                            className="nav-icon",
-                        )
-                        if self.icon
-                        else html.Div(className="hidden"),
+                        html.Span(self.icon, className="material-symbols-outlined"),
                         html.Div(
                             children=[self.text],
                             className="icon-text",

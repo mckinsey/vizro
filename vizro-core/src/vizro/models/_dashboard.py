@@ -109,6 +109,7 @@ class Dashboard(VizroBaseModel):
                 html.Div(id=f"vizro_version_{vizro.__version__}"),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
+                html.Link(href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined", rel="stylesheet"),
             ],
             className=self.theme,
             fluid=True,

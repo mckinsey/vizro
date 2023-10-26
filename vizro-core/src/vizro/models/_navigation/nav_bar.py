@@ -4,7 +4,6 @@ import itertools
 from typing import List, Optional
 
 from dash import html
-from pydantic import validator
 
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
@@ -39,7 +38,6 @@ class NavBar(VizroBaseModel):
                 self.items = [NavItem(pages=[page]) for page in self.pages]
             if isinstance(self.pages, dict):
                 self.items = [NavItem(pages=value) for page, value in self.pages.items()]
-
 
     @_log_call
     def build(self, active_page_id):
