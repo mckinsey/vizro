@@ -138,7 +138,6 @@ div.nav_panel a {
 
 /** spacing for tag elements only when elements are present inside
 wrapper **/
-/* Padding allows elements not to jump but may be too large */
 .Select--multi.has-value .Select-multi-value-wrapper {
   display: flex;
   flex-wrap: wrap;
