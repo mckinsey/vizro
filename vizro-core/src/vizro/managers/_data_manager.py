@@ -69,18 +69,11 @@ class DataManager:
         self.__component_to_original[component_id] = dataset_name
 
     @_cache.memoize()
-    def _get_original_data(self, dataset_name: DatasetName) -> pd.DataFrame:
+    def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
         """Returns the original data for `dataset_name`."""
-        # Populate original data on first access only
-        logger.debug("get original data: %s", dataset_name)
-        logger.debug("loading...")
+        logger.debug("reloading lazy data: %s", dataset_name)
         time.sleep(2.0)
-        if dataset_name not in self.__original_data:
-            self.__original_data[dataset_name] = self.__lazy_data[dataset_name]()
-
-        # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
-        # to not do any inplace=True operations, but probably safest to leave it here.
-        return self.__original_data[dataset_name].copy()
+        return self.__lazy_data[dataset_name]()
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
@@ -89,12 +82,12 @@ class DataManager:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_original[component_id]
 
-        component_data = self._get_original_data(dataset_name)
-
-        # clean up original data if the cache type is not NullCache
-        self._clean_original_data()
-
-        return component_data
+        if dataset_name in self.__lazy_data:
+            return self._load_lazy_data(dataset_name)
+        else:  # dataset_name is in self.__original_data
+            # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
+            # to not do any inplace=True operations, but probably safest to leave it here.
+            return self.__original_data[dataset_name].copy()
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
@@ -105,23 +98,6 @@ class DataManager:
 
     def _clear(self):
         self.__init__()  # type: ignore[misc]
-
-    # to clear original data if the cache type is not NullCache
-    def _clean_original_data(self):
-        """Clean up original data if the cache type is not NullCache.
-
-        This only drops the original data if the same key is in the lazy data.
-        """
-        logger.debug(f"__original_data before cleaning: {self.__original_data.keys()}")
-        # logger.debug(f"config: {self._cache.config}")
-        logger.debug("clean original data")
-        if self._cache.config["CACHE_TYPE"] == "NullCache":
-            return
-        for dataset_name in list(self.__original_data.keys()):
-            if dataset_name in self.__lazy_data:
-                logger.debug(f"drop --> {dataset_name}")
-                del self.__original_data[dataset_name]
-        logger.debug(f"__original_data after cleaning: {self.__original_data.keys()}")
 
 
 data_manager = DataManager()
