@@ -108,6 +108,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Changed
 
 - Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
+
   - Eliminate most server side callbacks in favor of client-side callbacks
   - Add tests for client-side callbacks written in Node.js framework called `jest`.
   - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
@@ -154,6 +155,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 - Add the Vizro class and enable parsing and running a dashboard
 
 - Add the following pydantic models:
+
   - Action
   - Button
   - Card
