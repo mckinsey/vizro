@@ -45,7 +45,7 @@ class NavItem(VizroBaseModel):
         if self.tooltip is None:
             if self.text and len(self.text) > self.max_text_length:
                 self.tooltip = self.text
-                self.text = None
+                self.text = self.text[:self.max_text_length]
 
     @_log_call
     def build(self, active_page_id):
