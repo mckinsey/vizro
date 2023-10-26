@@ -36,7 +36,6 @@ div.page_container .Select-control {
   height: 32px;
 }
 
-/* Dropdown background color when focused */
 div.page_container .Select.is-focused > .Select-control {
   background-color: var(--field-enabled);
 }
