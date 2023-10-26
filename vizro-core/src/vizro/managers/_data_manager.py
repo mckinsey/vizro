@@ -108,6 +108,10 @@ class DataManager:
 
     # to clear original data if the cache type is not NullCache
     def _clean_original_data(self):
+        """Clean up original data if the cache type is not NullCache.
+
+        This only drops the original data if the same key is in the lazy data.
+        """
         logger.debug(f"__original_data before cleaning: {self.__original_data.keys()}")
         # logger.debug(f"config: {self._cache.config}")
         logger.debug("clean original data")

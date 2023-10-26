@@ -83,7 +83,7 @@ page = vm.Page(
                     function=delete_memoized_cache(),
                     inputs=["delete_button_id.n_clicks"],
                 )
-            ]
+            ],
         ),
         vm.Button(
             id="empty_button_id",
@@ -93,8 +93,8 @@ page = vm.Page(
                     function=empty_cache(),
                     inputs=["empty_button_id.n_clicks"],
                 )
-            ]
-        )
+            ],
+        ),
     ],
     controls=[
         vm.Filter(
@@ -116,7 +116,11 @@ dashboard = vm.Dashboard(pages=[page])
 #     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
 #     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
 # }
-# # data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 120}
+# data_manager._cache.config = {
+#     "CACHE_TYPE": "RedisCache",
+#     "CACHE_REDIS_URL": "redis://localhost:6379/0",
+#     "CACHE_DEFAULT_TIMEOUT": 120,
+# }
 # app = Vizro()
 # app.build(dashboard)
 # server = app.dash.server
@@ -131,7 +135,11 @@ if __name__ == "__main__":
     #     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
     #     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
     # }
-    data_manager._cache.config = {"CACHE_TYPE": "RedisCache", "CACHE_REDIS_URL": "redis://localhost:6379/0", "CACHE_DEFAULT_TIMEOUT": 60,}
+    data_manager._cache.config = {
+        "CACHE_TYPE": "RedisCache",
+        "CACHE_REDIS_URL": "redis://localhost:6379/0",
+        "CACHE_DEFAULT_TIMEOUT": 60,
+    }
     Vizro().build(dashboard).run()
     # Vizro().build(dashboard).run(
     #     threaded=False,
