@@ -14,7 +14,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action
+    from vizro.models import Action, Table
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
@@ -65,7 +65,7 @@ def _apply_filters(
 
 def _apply_chart_filter_interaction(
     data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-):
+) -> pd.DataFrame:
     ctd_click_data = ctd_filter_interaction["clickData"]
     if not ctd_click_data["value"]:
         return data_frame
@@ -88,17 +88,18 @@ def _apply_chart_filter_interaction(
     return data_frame
 
 
-def _get_parent_vizro_table(_underlying_table_id: str):
+def _get_parent_vizro_table(_underlying_table_id: str) -> Table:
     from vizro.models import Table
 
     for _, table in model_manager._items_with_type(Table):
         if table._underlying_table_id == _underlying_table_id:
             return table
+    raise KeyError(f"No parent Vizro.Table component found for underlying table with id {_underlying_table_id}.")
 
 
 def _apply_table_filter_interaction(
     data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-):
+) -> pd.DataFrame:
     ctd_active_cell = ctd_filter_interaction["active_cell"]
     ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
     if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
