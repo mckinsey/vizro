@@ -43,14 +43,10 @@ div.right_side
   font-size: 14px;
 }
 
-.table-title {
-  padding-bottom: 14px;
-}
-
 .table-container {
   height: 100%;
   width: 100%;
   overflow: auto;
   padding: 12px;
-  padding-left: 20px;
+  padding-left: 32px;
 }

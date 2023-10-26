@@ -36,7 +36,6 @@ div.page_container .Select-control {
   height: 32px;
 }
 
-/* Dropdown background color when focused */
 div.page_container .Select.is-focused > .Select-control {
   background-color: var(--field-enabled);
 }
@@ -138,7 +137,6 @@ div.nav_panel a {
 
 /** spacing for tag elements only when elements are present inside
 wrapper **/
-/* Padding allows elements not to jump but may be too large */
 .Select--multi.has-value .Select-multi-value-wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -147,5 +145,5 @@ wrapper **/
 }
 
 .Select-input > input {
-  padding: 0 !important;
+  padding: 0 !important;  /*Required so tags don't jump caused by adding table */
 }

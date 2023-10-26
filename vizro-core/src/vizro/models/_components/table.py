@@ -84,4 +84,5 @@ class Table(VizroBaseModel):
                 ),
             ],
             className="table-container",
+            id=f"{self.id}_outer",
         )
