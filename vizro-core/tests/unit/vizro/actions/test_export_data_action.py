@@ -12,7 +12,7 @@ from vizro.managers import model_manager
 
 
 @pytest.fixture
-def target_scatter_filtered_pop_filter_interaction_continent(request, gapminder_2007):
+def target_scatter_filter_and_filter_interaction(request, gapminder_2007):
     pop_filter, continent_filter_interaction, country_table_filter_interaction = request.param
     data = gapminder_2007
     if pop_filter:
@@ -220,7 +220,7 @@ class TestExportData:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "callback_context_export_data, "
-        "target_scatter_filtered_pop_filter_interaction_continent, "
+        "target_scatter_filter_and_filter_interaction, "
         "target_box_filtered_pop",
         [
             (
@@ -240,7 +240,7 @@ class TestExportData:
     def test_multiple_targets_with_filter_and_filter_interaction(
         self,
         callback_context_export_data,
-        target_scatter_filtered_pop_filter_interaction_continent,
+        target_scatter_filter_and_filter_interaction,
         target_box_filtered_pop,
     ):
         # Creating and adding a Filter object to the existing Page
@@ -265,7 +265,7 @@ class TestExportData:
         assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
         assert result["download-dataframe_scatter_chart"][
             "content"
-        ] == target_scatter_filtered_pop_filter_interaction_continent.to_csv(index=False)
+        ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
 
         assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
         assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
@@ -273,7 +273,7 @@ class TestExportData:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
         "callback_context_export_data, "
-        "target_scatter_filtered_pop_filter_interaction_continent, "
+        "target_scatter_filter_and_filter_interaction, "
         "target_box_filtered_pop",
         [
             (
@@ -297,7 +297,7 @@ class TestExportData:
     def test_multiple_targets_with_filter_and_filter_interaction_and_table(
         self,
         callback_context_export_data,
-        target_scatter_filtered_pop_filter_interaction_continent,
+        target_scatter_filter_and_filter_interaction,
         target_box_filtered_pop,
     ):
         # Creating and adding a Filter object to the existing Page
@@ -311,7 +311,7 @@ class TestExportData:
             vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart"]))
         ]
 
-        # Add filter_interaction Action to scatter_chart component
+        # Add table filter_interaction Action to scatter_chart component
         model_manager["vizro_table"].actions = [
             vm.Action(id="table_filter_interaction", function=filter_interaction(targets=["scatter_chart"]))
         ]
@@ -327,7 +327,7 @@ class TestExportData:
         assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
         assert result["download-dataframe_scatter_chart"][
             "content"
-        ] == target_scatter_filtered_pop_filter_interaction_continent.to_csv(index=False)
+        ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
 
         assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
         assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
