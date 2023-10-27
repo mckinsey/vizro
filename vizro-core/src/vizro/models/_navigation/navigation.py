@@ -27,9 +27,9 @@ class Navigation(VizroBaseModel):
     selector: Optional[NavSelectorType] = None
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True, pre=True, always=True)(_validate_pages)
 
-    @validator("selector", pre=True, always=True)
+    @validator("selector", always=True)
     def set_selector(cls, selector, values):
         if selector is None:
             return Accordion(pages=values.get("pages"))

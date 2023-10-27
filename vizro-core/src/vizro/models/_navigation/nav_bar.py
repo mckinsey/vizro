@@ -8,6 +8,7 @@ from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.nav_item import NavItem
 from vizro.models.types import NavPagesType
 
@@ -23,6 +24,9 @@ class NavBar(VizroBaseModel):
 
     pages: Optional[NavPagesType] = None
     items: List[NavItem] = []
+
+    # validators
+    _validate_pages = validator("pages", allow_reuse=True, pre=True, always=True)(_validate_pages)
 
     @validator("items", always=True)
     def validate_items(cls, items, values):

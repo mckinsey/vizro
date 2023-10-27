@@ -48,7 +48,7 @@ class NavItem(VizroBaseModel):
         if self.tooltip is None:
             if self.text and len(self.text) > self.max_text_length:
                 self.tooltip = self.text
-                self.text = self.text[:self.max_text_length]
+                self.text = self.text[: self.max_text_length]
 
     @validator("text", always=True)
     def set_text(cls, text, values):
@@ -69,9 +69,7 @@ class NavItem(VizroBaseModel):
             list(itertools.chain(*self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
         )
         icon_div = (
-            html.Span(self.icon, className="material-symbols-outlined")
-            if self.icon
-            else html.Div(className="hidden")
+            html.Span(self.icon, className="material-symbols-outlined") if self.icon else html.Div(className="hidden")
         )
         text_div = html.Div(children=[self.text], className="icon-text") if self.text else html.Div(className="hidden")
 
