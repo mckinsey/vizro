@@ -73,7 +73,7 @@ def callback_context_export_data(request):
                 "active_cell": CallbackTriggerDict(
                     id="vizro_table",
                     property="active_cell",
-                    value={'row': 0, 'column': 0, 'column_id': 'country'},
+                    value={"row": 0, "column": 0, "column_id": "country"},
                     str_id="vizro_table",
                     triggered=False,
                 ),
@@ -81,17 +81,20 @@ def callback_context_export_data(request):
                     id="vizro_table",
                     property="derived_viewport_data",
                     value=[
-                        {'country': 'Algeria', 'continent': 'Africa', 'year': 2007, 'lifeExp': 72.301, 'pop': 33333216,
-                         'gdpPercap': 6223.367465, 'iso_alpha': 'DZA', 'iso_num': 12},
-                        {'country': 'Egypt', 'continent': 'Africa', 'year': 2007, 'lifeExp': 71.33800000000002,
-                         'pop': 80264543, 'gdpPercap': 5581.180998, 'iso_alpha': 'EGY', 'iso_num': 818},
-                        {'country': 'South Africa', 'continent': 'Africa', 'year': 2007, 'lifeExp': 49.339,
-                         'pop': 43997828,
-                         'gdpPercap': 9269.657808, 'iso_alpha': 'ZAF', 'iso_num': 710}
+                        {
+                            "country": "Algeria",
+                            "continent": "Africa",
+                            "year": 2007,
+                        },
+                        {
+                            "country": "Egypt",
+                            "continent": "Africa",
+                            "year": 2007,
+                        },
                     ],
                     str_id="vizro_table",
                     triggered=False,
-                )
+                ),
             }
         )
     mock_callback_context = {
@@ -219,9 +222,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, "
-        "target_scatter_filter_and_filter_interaction, "
-        "target_box_filtered_pop",
+        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, None],
@@ -272,20 +273,14 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, "
-        "target_scatter_filter_and_filter_interaction, "
-        "target_box_filtered_pop",
+        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, "Algeria"],
                 [[10**6, 10**7], None, ["Algeria"]],
                 [10**6, 10**7],
             ),
-            (
-                [["scatter_chart", "box_chart"], None, "Africa", "Algeria"],
-                [None, ["Africa"], ["Algeria"]],
-                None
-            ),
+            ([["scatter_chart", "box_chart"], None, "Africa", "Algeria"], [None, ["Africa"], ["Algeria"]], None),
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], "Africa", "Algeria"],
                 [[10**6, 10**7], ["Africa"], ["Algeria"]],
