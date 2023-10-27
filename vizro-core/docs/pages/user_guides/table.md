@@ -27,7 +27,8 @@ from vizro.tables import dash_data_table
 ```
 The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
-All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as kwargs.
+All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are
+setting some defaults for some of the arguments to help with styling.
 
 !!! example "Dash DataTable"
     === "app.py"
@@ -74,7 +75,7 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
 
 #### Styling/Modifying the Dash DataTable
 
-As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as kwargs. Below you can find
+As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter table beyond this showcase.
 
 ??? example "Styled Dash DataTable"

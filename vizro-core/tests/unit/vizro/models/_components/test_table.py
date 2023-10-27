@@ -31,6 +31,7 @@ def expected_table():
             html.Div(dash_table.DataTable(), id="text_table"),
         ],
         className="table-container",
+        id="text_table_outer",
     )
 
 
