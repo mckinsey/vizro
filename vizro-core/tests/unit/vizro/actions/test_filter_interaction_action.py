@@ -39,14 +39,14 @@ def callback_context_filter_interaction(request):
         args_grouping_filter_interaction.append(
             {
                 "active_cell": CallbackTriggerDict(
-                    id="vizro_table",
+                    id="underlying_table_id",
                     property="active_cell",
                     value={"row": 0, "column": 0, "column_id": "country"},
                     str_id="vizro_table",
                     triggered=False,
                 ),
                 "derived_viewport_data": CallbackTriggerDict(
-                    id="vizro_table",
+                    id="underlying_table_id",
                     property="derived_viewport_data",
                     value=[
                         {
@@ -233,6 +233,7 @@ class TestFilterInteraction:
         ]
 
         model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+        model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
@@ -261,6 +262,7 @@ class TestFilterInteraction:
         model_manager["vizro_table"].actions = [
             vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
+        model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
@@ -290,6 +292,7 @@ class TestFilterInteraction:
         model_manager["vizro_table"].actions = [
             vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
+        model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()

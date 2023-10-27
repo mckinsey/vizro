@@ -9,9 +9,10 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import export_data, filter_interaction
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
 from vizro.managers import model_manager
+from vizro.tables import dash_data_table
 
 
 @pytest.fixture
@@ -68,7 +69,12 @@ def trigger_to_actions_chain_mapper_component(request):
 
 
 @pytest.fixture
-def managers_one_page_two_components_two_controls():
+def dash_data_table_fixture_with_id(gapminder_2007):
+    return dash_data_table(id="underlying_table_id", data_frame=gapminder_2007)
+
+
+@pytest.fixture
+def managers_one_page_two_components_two_controls(dash_data_table_fixture_with_id):
     """Instantiates managers with one page that contains two controls and two components."""
     vm.Dashboard(
         pages=[
@@ -76,6 +82,16 @@ def managers_one_page_two_components_two_controls():
                 id="test_page",
                 title="First page",
                 components=[
+                    vm.Table(
+                        id="vizro_table",
+                        figure=dash_data_table_fixture_with_id,
+                        actions=[
+                            vm.Action(
+                                id="table_filter_interaction_action",
+                                function=filter_interaction(targets=["scatter_chart"]),
+                            )
+                        ],
+                    ),
                     vm.Graph(
                         id="scatter_chart",
                         figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap"),
@@ -141,10 +157,10 @@ class TestGetActionLoopComponents:
         "trigger_to_actions_chain_mapper_component",
         [
             (
-                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
-                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
-                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
-                ["test_page", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "vizro_table", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "vizro_table", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "vizro_table", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
+                ["test_page", "vizro_table", "export_data_button", "filter_continent_selector", "parameter_x_selector"],
             )
         ],
         indirect=True,
