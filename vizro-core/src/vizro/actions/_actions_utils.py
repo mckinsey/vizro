@@ -63,23 +63,23 @@ def _apply_filters(
     return data_frame
 
 
-def _apply_chart_filter_interaction(
+def _apply_graph_filter_interaction(
     data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
 ) -> pd.DataFrame:
     ctd_click_data = ctd_filter_interaction["clickData"]
     if not ctd_click_data["value"]:
         return data_frame
 
-    source_chart_id: ModelID = ctd_click_data["id"]
-    source_chart_actions = _get_component_actions(model_manager[source_chart_id])
+    source_graph_id: ModelID = ctd_click_data["id"]
+    source_graph_actions = _get_component_actions(model_manager[source_graph_id])
     try:
-        custom_data_columns = model_manager[source_chart_id]["custom_data"]  # type: ignore[index]
+        custom_data_columns = model_manager[source_graph_id]["custom_data"]  # type: ignore[index]
     except KeyError as exc:
-        raise KeyError(f"No `custom_data` argument found for source chart with id {source_chart_id}.") from exc
+        raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
 
     customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
-    for action in source_chart_actions:
+    for action in source_graph_actions:
         if target not in action.function["targets"]:
             continue
         for custom_data_idx, column in enumerate(custom_data_columns):
@@ -130,7 +130,7 @@ def _apply_filter_interaction(
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
         if "clickData" in ctd_filter_interaction:
-            data_frame = _apply_chart_filter_interaction(
+            data_frame = _apply_graph_filter_interaction(
                 data_frame=data_frame,
                 target=target,
                 ctd_filter_interaction=ctd_filter_interaction,
@@ -236,7 +236,7 @@ def _get_filtered_data(
     return filtered_data
 
 
-def _get_modified_page_charts(
+def _get_modified_page_figures(
     ctds_filter: List[CallbackTriggerDict],
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],

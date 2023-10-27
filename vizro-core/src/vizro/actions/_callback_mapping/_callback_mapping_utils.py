@@ -96,16 +96,16 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     ]
 
 
-def _get_inputs_of_chart_interactions(
+def _get_inputs_of_figure_interactions(
     action_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
 ) -> List[Dict[str, State]]:
-    """Gets list of States for selected chart interaction `action_name` of triggered page."""
-    chart_interactions_on_page = _get_matching_actions_by_function(
+    """Gets list of States for selected figure interaction `action_name` of triggered page."""
+    figure_interactions_on_page = _get_matching_actions_by_function(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,
     )
     inputs = []
-    for action in chart_interactions_on_page:
+    for action in figure_interactions_on_page:
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
         if isinstance(triggered_model, Table):
             inputs.append(
@@ -149,7 +149,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
         ),
         # TODO: Probably need to adjust other inputs to follow the same structure List[Dict[str, State]]
         "filter_interaction": (
-            _get_inputs_of_chart_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
+            _get_inputs_of_figure_interactions(action_id=action_id, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
             else []
         ),

@@ -131,8 +131,8 @@ class Filter(VizroBaseModel):
                 max_values.append(data_frame[self.column].max())
             if not is_numeric_dtype(pd.Series(min_values)) or not is_numeric_dtype(pd.Series(max_values)):
                 raise ValueError(
-                    f"Non-numeric values detected in the shared data column '{self.column}' for targeted charts. "
-                    f"Please ensure that the data column contains the same data type across all targeted charts."
+                    f"Non-numeric values detected in the shared data column '{self.column}' for targeted figures. "
+                    f"Please ensure that the data column contains the same data type across all targeted figures."
                 )
             if self.selector.min is None:
                 self.selector.min = min(min_values)

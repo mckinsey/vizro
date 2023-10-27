@@ -19,7 +19,7 @@ def export_data(
     file_format: Literal["csv", "xlsx"] = "csv",
     **inputs: Dict[str, Any],
 ) -> Dict[str, Any]:
-    """Exports visible data of target charts/components on page after being triggered.
+    """Exports visible data of target figures/components on page after being triggered.
 
     Args:
         targets: List of target component ids to download data from. Defaults to None.
@@ -32,7 +32,7 @@ def export_data(
         ValueError: If target component does not exist on page.
 
     Returns:
-        Dict mapping target component id to modified charts/components e.g. {'my_scatter': Figure({})}
+        Dict mapping target component id to modified figures/components e.g. {'my_scatter': Figure({})}
     """
     if not targets:
         targets = [

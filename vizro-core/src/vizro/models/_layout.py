@@ -114,7 +114,7 @@ def _get_grid_lines(grid: List[List[int]]) -> Tuple[List[ColRowGridLines], List[
 
 
 class Layout(VizroBaseModel):
-    """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
+    """Grid specification to place figures/components on the [`Page`][vizro.models.Page].
 
     Args:
         grid (List[List[int]]): Grid specification to arrange components on screen.
