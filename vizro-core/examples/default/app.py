@@ -60,7 +60,10 @@ page_0 = vm.Page(
     components=[
         vm.Table(
             id="table_id",
-            figure=dash_data_table(id="dash_datatable_id", data_frame="table_data", style_cell={"border": "5px solid green"},
+            figure=dash_data_table(
+                id="dash_datatable_id",
+                data_frame="table_data",
+                style_cell={"border": "5px solid green"},
             ),
             actions=[
                 vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart", "table_2_id"]))

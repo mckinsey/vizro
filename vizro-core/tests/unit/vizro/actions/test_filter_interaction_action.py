@@ -1,8 +1,8 @@
+import plotly.express as px
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
-import plotly.express as px
 import vizro.models as vm
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import (
@@ -112,14 +112,7 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
 class TestFilterInteraction:
-    @pytest.mark.parametrize(
-        "callback_context_filter_interaction",
-        [
-            ("Africa", None),
-            ("Europe", None)
-        ],
-        indirect=True
-    )
+    @pytest.mark.parametrize("callback_context_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
         self,
         callback_context_filter_interaction,
@@ -134,14 +127,11 @@ class TestFilterInteraction:
 
     @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction,"
-        "target_scatter_filtered_continent,"
-        "target_box_filtered_continent",
+        "callback_context_filter_interaction," "target_scatter_filtered_continent," "target_box_filtered_continent",
         [
-
             (("Africa", None), ("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None), ("Europe", None)),
-            (("Americas", None), ("Americas", None), ("Americas", None))
+            (("Americas", None), ("Americas", None), ("Americas", None)),
         ],
         indirect=True,
     )
@@ -165,7 +155,7 @@ class TestFilterInteraction:
         [
             (("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None)),
-            (("Americas", None), ("Americas", None))
+            (("Americas", None), ("Americas", None)),
         ],
         indirect=True,
     )
@@ -229,7 +219,7 @@ class TestFilterInteraction:
         [
             ((None, "Algeria"), (None, "Algeria")),
             ((None, "Albania"), (None, "Albania")),
-            ((None, "Argentina"), (None, "Argentina"))
+            ((None, "Argentina"), (None, "Argentina")),
         ],
         indirect=True,
     )
@@ -242,9 +232,7 @@ class TestFilterInteraction:
             vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart"]))
         ]
 
-        model_manager["vizro_table"].actions = [
-            vm.Action(function=filter_interaction(targets=["scatter_chart"]))
-        ]
+        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
@@ -256,7 +244,7 @@ class TestFilterInteraction:
         [
             ((None, "Algeria"), (None, "Algeria"), (None, "Algeria")),
             ((None, "Albania"), (None, "Albania"), (None, "Albania")),
-            ((None, "Argentina"), (None, "Argentina"), (None, "Argentina"))
+            ((None, "Argentina"), (None, "Argentina"), (None, "Argentina")),
         ],
         indirect=True,
     )
@@ -285,7 +273,7 @@ class TestFilterInteraction:
         [
             (("Africa", "Algeria"), ("Africa", "Algeria"), ("Africa", "Algeria")),
             (("Europe", "Albania"), ("Europe", "Albania"), ("Europe", "Albania")),
-            (("Americas", "Argentina"), ("Americas", "Argentina"),  ("Americas", "Argentina"))
+            (("Americas", "Argentina"), ("Americas", "Argentina"), ("Americas", "Argentina")),
         ],
         indirect=True,
     )
