@@ -2,6 +2,7 @@ import logging
 from typing import List, Literal, Optional
 
 from dash import dash_table, html
+from pandas import DataFrame
 from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
@@ -53,17 +54,16 @@ class Table(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
-    def _build_underlying_table_object(self):
-        data = data_manager._get_component_data(self.id)  # type: ignore
-        kwargs = self.figure._arguments.copy()
-        kwargs.pop("data_frame", None)
-        return self.figure._function(data_frame=data, **kwargs)
-
     @_log_call
     def pre_build(self):
         if self.actions:
+            kwargs = self.figure._arguments.copy()
+
+            # This is a hack to get around the fact that the underlying table object requires a data_frame
+            kwargs["data_frame"] = DataFrame()
+
             # The underlying table object is pre-built, so we can fetch its ID.
-            underlying_table_object = self._build_underlying_table_object()
+            underlying_table_object = self.figure._function(**kwargs)
 
             # Underlying table object has to have "id" defined if it triggers actions chain.
             if not hasattr(underlying_table_object, "id"):

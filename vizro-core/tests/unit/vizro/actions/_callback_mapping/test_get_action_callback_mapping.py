@@ -12,7 +12,6 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 from vizro.models.types import capture
-from vizro.tables import dash_data_table
 
 
 @capture("action")
@@ -30,12 +29,7 @@ def get_custom_action_with_known_name():
 
 
 @pytest.fixture
-def dash_data_table_fixture_with_id(gapminder_2007):
-    return dash_data_table(id="underlying_table_id", data_frame=gapminder_2007)
-
-
-@pytest.fixture
-def managers_one_page_four_controls_two_figures_filter_interaction(request, dash_data_table_fixture_with_id):
+def managers_one_page_four_controls_two_figures_filter_interaction(request, dash_data_table_with_id):
     """Instantiates managers with one page that contains four controls, two graphs and filter interaction."""
     # If the fixture is parametrised set the targets. Otherwise, set export_data without targets.
     export_data_action_function = export_data(targets=request.param) if hasattr(request, "param") else export_data()
@@ -58,7 +52,7 @@ def managers_one_page_four_controls_two_figures_filter_interaction(request, dash
             ),
             vm.Table(
                 id="vizro_table",
-                figure=dash_data_table_fixture_with_id,
+                figure=dash_data_table_with_id,
                 actions=[
                     vm.Action(
                         id="table_filter_interaction_action",

@@ -3,7 +3,6 @@ import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table
 
 
 @pytest.fixture
@@ -29,11 +28,6 @@ def scatter_params():
 @pytest.fixture
 def scatter_chart(gapminder_2007, scatter_params):
     return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
-
-
-@pytest.fixture
-def dash_data_table_fixture_with_id(gapminder_2007):
-    return dash_data_table(id="underlying_table_id", data_frame=gapminder_2007)
 
 
 @pytest.fixture
@@ -66,7 +60,7 @@ def managers_one_page_two_graphs_one_button(box_chart, scatter_chart):
 
 
 @pytest.fixture
-def managers_one_page_two_graphs_one_table_one_button(box_chart, scatter_chart, dash_data_table_fixture_with_id):
+def managers_one_page_two_graphs_one_table_one_button(box_chart, scatter_chart, dash_data_table_with_id):
     """Instantiates a simple model_manager and data_manager with a page, two graph models and the button component."""
     vm.Page(
         id="test_page",
@@ -74,7 +68,7 @@ def managers_one_page_two_graphs_one_table_one_button(box_chart, scatter_chart, 
         components=[
             vm.Graph(id="box_chart", figure=box_chart),
             vm.Graph(id="scatter_chart", figure=scatter_chart),
-            vm.Table(id="vizro_table", figure=dash_data_table_fixture_with_id),
+            vm.Table(id="vizro_table", figure=dash_data_table_with_id),
             vm.Button(id="button"),
         ],
     )

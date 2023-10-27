@@ -15,11 +15,6 @@ from vizro.tables import dash_data_table
 
 
 @pytest.fixture
-def dash_table_with_id(gapminder):
-    return dash_data_table(id="underlying_table_id", data_frame=gapminder)
-
-
-@pytest.fixture
 def dash_table_with_arguments():
     return dash_data_table(data_frame=px.data.gapminder(), style_header={"border": "1px solid green"})
 
@@ -151,10 +146,10 @@ class TestPreBuildTable:
         with pytest.raises(ValueError, match="Underlying table object has no attribute 'id'."):
             table.pre_build()
 
-    def test_pre_build_actions_underlying_table_id(self, dash_table_with_id, filter_interaction_action):
+    def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(
             id="text_table",
-            figure=dash_table_with_id,
+            figure=dash_data_table_with_id,
             actions=[filter_interaction_action],
         )
         table.pre_build()
@@ -176,10 +171,10 @@ class TestBuildTable:
         expected = json.loads(json.dumps(expected_table, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
-    def test_table_build_with_id(self, dash_table_with_id, filter_interaction_action, expected_table_with_id):
+    def test_table_build_with_id(self, dash_data_table_with_id, filter_interaction_action, expected_table_with_id):
         table = vm.Table(
             id="text_table",
-            figure=dash_table_with_id,
+            figure=dash_data_table_with_id,
             actions=[filter_interaction_action],
         )
 
