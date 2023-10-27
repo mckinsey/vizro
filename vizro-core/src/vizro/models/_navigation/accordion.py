@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import Field, validator
 
-from vizro._constants import ACCORDION_DEFAULT_TITLE, MIN_NO_OF_PAGES
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages

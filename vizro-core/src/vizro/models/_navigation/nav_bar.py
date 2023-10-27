@@ -4,8 +4,8 @@ import itertools
 from typing import List, Optional
 
 from dash import html
+from pydantic import validator
 
-from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation.nav_item import NavItem
@@ -18,26 +18,21 @@ class NavBar(VizroBaseModel):
     Args:
         pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `None`.
-        items (List[NavItem]): List of NavItem models. Defaults to `[]`.
+        items (List[NavItem]): See [`NavItem`][vizro.models.NavItem]. Defaults to `[]`.
     """
 
     pages: Optional[NavPagesType] = None
     items: List[NavItem] = []
 
-    @_log_call
-    def pre_build(self):
-        from vizro.models._navigation import Navigation
+    @validator("items", always=True)
+    def validate_items(cls, items, values):
+        if not items:
+            if isinstance(values.get("pages"), list):
+                return [NavItem(pages=[page]) for page in values.get("pages")]
+            if isinstance(values.get("pages"), dict):
+                return [NavItem(pages=value) for page, value in values.get("pages").items()]
 
-        _, navigation = next(model_manager._items_with_type(Navigation))
-
-        if self.pages is None:
-            self.pages = navigation.pages
-
-        if not self.items:
-            if isinstance(self.pages, list):
-                self.items = [NavItem(pages=[page]) for page in self.pages]
-            if isinstance(self.pages, dict):
-                self.items = [NavItem(pages=value) for page, value in self.pages.items()]
+        return items
 
     @_log_call
     def build(self, active_page_id):

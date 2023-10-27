@@ -525,10 +525,6 @@ dashboard = vm.Dashboard(
         create_country_analysis(),
     ],
     navigation=vm.Navigation(
-        pages={
-            "Analysis": ["Homepage", "Variable Analysis"],
-            "Summary": ["Relationship Analysis", "Continent Summary", "Country Analysis"],
-        },
         selector=vm.NavBar(
             items=[
                 vm.NavItem(
@@ -541,7 +537,6 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavItem(
                     pages=["Country Analysis"],
-                    text="Country Analysis is the set text for this icon",
                 ),
             ]
         ),

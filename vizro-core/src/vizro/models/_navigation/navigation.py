@@ -33,6 +33,12 @@ class Navigation(VizroBaseModel):
     def set_selector(cls, selector, values):
         if selector is None:
             return Accordion(pages=values.get("pages"))
+
+        if isinstance(selector, NavBar):
+            if selector.pages is None and selector.items is None:
+                selector.pages = values.get("pages")
+                selector.items = []
+                return selector
         return selector
 
     @_log_call

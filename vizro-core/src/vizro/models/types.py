@@ -319,3 +319,5 @@ NavSelectorType = Annotated[
     Union["Accordion", "NavBar"],
     Field(discriminator="type", description="Component that makes up part of the navigation panel"),
 ]
+"""Discriminated union. Permissible value types for selector attribute:
+[`Accordion`][vizro.models.Accordion], [`NavBar`][vizro.models.NavBar]."""
