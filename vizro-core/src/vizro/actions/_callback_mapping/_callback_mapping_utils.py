@@ -89,7 +89,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",
+            component_property=control.selector._input_property,
         )
         for control in page.controls
         if isinstance(control, control_type)
@@ -107,7 +107,7 @@ def _get_inputs_of_chart_interactions(
     return [
         State(
             component_id=_get_triggered_model(action_id=ModelID(str(action.id))).id,
-            component_property="clickData",
+            component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
         )
         for action in chart_interactions_on_page
     ]
@@ -145,6 +145,10 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
+    # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
+    # Ideally model_manager.__getitem__ would handle this itself, possibly with suitable use of a cast.
+    # If not then we can do the cast to Action at the point of consumption here to avoid needing mypy ignores.
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
@@ -160,7 +164,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property="figure",
+            component_property=model_manager[target]._output_property,  # type: ignore[attr-defined]
             allow_duplicate=True,
         )
         for target in targets

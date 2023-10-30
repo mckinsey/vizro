@@ -21,7 +21,7 @@ ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]
 
 class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
     id: ModelID  # the component ID. If it`s a pattern matching ID, it will be a dict.
-    property: Literal["clickData", "value", "n_clicks"]  #  the component property used in the callback.
+    property: Literal["clickData", "value", "n_clicks", "active_cell"]  #  the component property used in the callback.
     value: Optional[Any]  # the value of the component property at the time the callback was fired.
     str_id: str  # for pattern matching IDs, it`s the stringified dict ID with no white spaces.
     triggered: bool  #  a boolean indicating whether this input triggered the callback.
@@ -113,17 +113,21 @@ def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_
     return graph_config
 
 
-def _get_parametrized_config(targets: List[str], parameters: List[CallbackTriggerDict]) -> Dict[str, Dict[str, Any]]:
+def _get_parametrized_config(
+    targets: List[ModelID], parameters: List[CallbackTriggerDict]
+) -> Dict[ModelID, Dict[str, Any]]:
     parameterized_config = {}
     for target in targets:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
-        graph_config = deepcopy(model_manager[target].figure._arguments)  # type: ignore[index, attr-defined]
+        graph_config = deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
         for ctd in parameters:
-            selector_value = ctd["value"]
+            selector_value = ctd[
+                "value"
+            ]  # TODO: needs to be refactored so that it is independent of implementation details
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
@@ -148,10 +152,10 @@ def _get_parametrized_config(targets: List[str], parameters: List[CallbackTrigge
 
 # Helper functions used in pre-defined actions ----
 def _get_filtered_data(
-    targets: List[str],
+    targets: List[ModelID],
     ctds_filters: List[CallbackTriggerDict],
     ctds_filter_interaction: List[CallbackTriggerDict],
-) -> Dict[str, pd.DataFrame]:
+) -> Dict[ModelID, pd.DataFrame]:
     filtered_data = {}
     for target in targets:
         data_frame = data_manager._get_component_data(target)
@@ -177,8 +181,8 @@ def _get_modified_page_charts(
     ctds_filter_interaction: List[CallbackTriggerDict],
     ctds_parameters: List[CallbackTriggerDict],
     ctd_theme: CallbackTriggerDict,
-    targets: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    targets: Optional[List[ModelID]] = None,
+) -> Dict[ModelID, Any]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -192,12 +196,12 @@ def _get_modified_page_charts(
         parameters=ctds_parameters,
     )
 
-    outputs = {
-        target: model_manager[target](  # type: ignore[index, operator]
-            data_frame=filtered_data[target],
-            **parameterized_config[target],
-        ).update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
-        for target in targets
-    }
+    outputs = {}
+    for target in targets:
+        outputs[target] = model_manager[target](  # type: ignore[operator]
+            data_frame=filtered_data[target], **parameterized_config[target]
+        )
+        if hasattr(outputs[target], "update_layout"):
+            outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
 
     return outputs
