@@ -1,7 +1,7 @@
 import logging
 from typing import List, Literal, Optional
 
-from dash import dash_table, html
+from dash import dash_table, dcc, html
 from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
@@ -53,11 +53,13 @@ class Table(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(
-            [
-                html.H3(self.title, className="table-title") if self.title else None,
-                html.Div(dash_table.DataTable(), id=self.id),
-            ],
-            className="table-container",
-            id=f"{self.id}_outer",
+        return dcc.Loading(
+            html.Div(
+                [
+                    html.H3(self.title, className="table-title") if self.title else None,
+                    html.Div(dash_table.DataTable(), id=self.id),
+                ],
+                className="table-container",
+                id=f"{self.id}_outer",
+            )
         )
