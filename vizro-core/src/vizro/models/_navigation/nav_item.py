@@ -37,19 +37,19 @@ class NavItem(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
-    @validator("selector", pre=True, always=True)
-    def set_selector(cls, selector, values):
-        if selector is None:
-            return Accordion(pages=values.get("pages"))
-        return selector
-
-    @root_validator()
+    @root_validator
     def set_text_and_tooltip(cls, values):
         if values["text"] and (len(values["text"]) > values["max_text_length"]):
             if values["tooltip"] is None:
                 values["tooltip"] = values["text"]
             values["text"] = values["text"][: values["max_text_length"]]
         return values
+
+    @validator("selector", pre=True, always=True)
+    def set_selector(cls, selector, values):
+        if selector is None:
+            return Accordion(pages=values.get("pages"))
+        return selector
 
     @_log_call
     def build(self, active_page_id):
