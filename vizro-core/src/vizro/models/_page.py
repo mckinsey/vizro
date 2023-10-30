@@ -98,7 +98,7 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        if any(isinstance(component, Graph) for component in self.components):
+        if any(hasattr(component, "figure") for component in self.components):
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",

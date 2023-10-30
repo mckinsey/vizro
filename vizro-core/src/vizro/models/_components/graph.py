@@ -3,12 +3,13 @@ from typing import List, Literal
 
 from dash import dcc
 from plotly import graph_objects as go
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -40,36 +41,12 @@ class Graph(VizroBaseModel):
     figure: CapturedCallable = Field(..., import_path=px)
     actions: List[Action] = []
 
+    # Component properties for actions and interactions
+    _output_property: str = PrivateAttr("figure")
+
     # Re-used validators
     _set_actions = _action_validator_factory("clickData")
-
-    @validator("figure")
-    def process_figure_data_frame(cls, figure, values):
-        data_frame = figure["data_frame"]
-
-        # Enable running px.scatter("iris") from the Python API and specification of "data_frame": "iris" through JSON.
-        # In these cases, data already exists in the data manager and just needs to be linked to the component.
-        if isinstance(data_frame, str):
-            data_manager._add_component(values["id"], data_frame)
-            return figure
-
-        # Standard case for px.scatter(df: pd.DataFrame).
-        # Extract dataframe from the captured function and put it into the data manager.
-        dataset_name = str(id(data_frame))
-
-        logger.debug("Adding data to data manager for Graph with id %s", values["id"])
-        # If the dataset already exists in the data manager then it's not a problem, it just means that we don't need
-        # to duplicate it. Just log the exception for debugging purposes.
-        try:
-            data_manager[dataset_name] = data_frame
-        except ValueError as exc:
-            logger.debug(exc)
-
-        data_manager._add_component(values["id"], dataset_name)
-
-        # No need to keep the data in the captured function any more so remove it to save memory.
-        del figure["data_frame"]
-        return figure
+    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

@@ -90,10 +90,15 @@ class TestPageInstantiation:
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
             vm.Page(title="Page 4", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
-    def test_valid_component_types(self, standard_px_chart):
+    def test_valid_component_types(self, standard_px_chart, standard_dash_table):
         vm.Page(
             title="Page Title",
-            components=[vm.Graph(figure=standard_px_chart), vm.Card(text="""# Header 1"""), vm.Button()],
+            components=[
+                vm.Graph(figure=standard_px_chart),
+                vm.Card(text="""# Header 1"""),
+                vm.Button(),
+                vm.Table(figure=standard_dash_table),
+            ],
         )
 
     @pytest.mark.parametrize(
@@ -101,7 +106,7 @@ class TestPageInstantiation:
         [vm.Checklist(), vm.Dropdown(), vm.RadioItems(), vm.RangeSlider(), vm.Slider()],
     )
     def test_invalid_component_types(self, test_component):
-        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'button', 'card', 'graph')")):
+        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'button', 'card', 'graph', 'table')")):
             vm.Page(title="Page Title", components=[test_component])
 
     def test_valid_control_types(self, standard_px_chart):

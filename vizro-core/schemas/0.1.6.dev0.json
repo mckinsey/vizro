@@ -159,6 +159,38 @@
       },
       "additionalProperties": false
     },
+    "Table": {
+      "title": "Table",
+      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "table",
+          "enum": ["table"],
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the table",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "Layout": {
       "title": "Layout",
       "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    grid (List[List[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Gap between rows in px. Defaults to `\"12px\"`.\n    col_gap (str): Gap between columns in px. Defaults to `\"12px\"`.\n    row_min_height (str): Minimum row height in px. Defaults to `\"0px\"`.\n    col_min_width (str): Minimum column width in px. Defaults to `\"0px\"`.",
@@ -628,7 +660,7 @@
     },
     "Filter": {
       "title": "Filter",
-      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[str]): Target component to be affected by filter. If none are given then target all components on\n        the page that use `column`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -796,7 +828,8 @@
               "mapping": {
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
-                "graph": "#/definitions/Graph"
+                "graph": "#/definitions/Graph",
+                "table": "#/definitions/Table"
               }
             },
             "oneOf": [
@@ -808,6 +841,9 @@
               },
               {
                 "$ref": "#/definitions/Graph"
+              },
+              {
+                "$ref": "#/definitions/Table"
               }
             ]
           }
