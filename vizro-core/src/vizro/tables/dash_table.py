@@ -1,7 +1,6 @@
 """Module containing the standard implementation of `dash_table.DataTable`."""
 from collections import defaultdict
-from collections.abc import Mapping
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
 import pandas as pd
 from dash import dash_table
