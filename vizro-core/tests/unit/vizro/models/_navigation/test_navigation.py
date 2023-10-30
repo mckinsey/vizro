@@ -15,12 +15,16 @@ from vizro.models._navigation.accordion import Accordion
 class TestNavigationInstantiation:
     """Tests navigation model instantiation ."""
 
-    @pytest.mark.parametrize("navigation", [None, vm.Navigation()])
-    def test_navigation_default(self, page1, page2, navigation):
-        # Navigation is optional inside Dashboard and navigation.pages will always be auto-populated if not provided
-        dashboard = vm.Dashboard(pages=[page1, page2], navigation=navigation)
-        assert hasattr(dashboard.navigation, "id")
-        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+    def test_navigation_mandatory_only(self):
+        navigation = vm.Navigation()
+        assert hasattr(navigation, "id")
+        assert navigation.pages == ["Page 1", "Page 2"]
+
+    # TODO: Extend this test with optional selectors
+    def test_navigation_mandatory_and_optional(self):
+        navigation = vm.Navigation(id="navigation")
+        assert navigation.id == "navigation"
+        assert navigation.pages == ["Page 1", "Page 2"]
 
     def test_navigation_valid_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, id="navigation")

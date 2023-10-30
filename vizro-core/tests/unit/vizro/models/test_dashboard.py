@@ -106,6 +106,8 @@ class TestDashboardInstantiation:
         assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title is None
+        assert isinstance(dashboard.navigation, vm.Navigation)
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
     def test_create_dashboard_mandatory_and_optional(self, page1, page2):
         dashboard = vm.Dashboard(pages=[page1, page2], theme="vizro_light", title="Vizro")
@@ -113,6 +115,8 @@ class TestDashboardInstantiation:
         assert dashboard.pages == [page1, page2]
         assert dashboard.theme == "vizro_light"
         assert dashboard.title == "Vizro"
+        assert isinstance(dashboard.navigation, vm.Navigation)
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="field required"):
