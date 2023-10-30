@@ -41,21 +41,18 @@ cov-report = [
   "coverage report"
 ]
 example = "cd examples/{args:default}; python app.py"
-lint = "SKIP=gitleaks pre-commit run {args}"
-# change checks to do --all-files
-# remove hatch run lint everywhere it's not needed
+lint = "SKIP=gitleaks pre-commit run {args:--all-files}"
 prep-release = [
   "hatch version release",
   "hatch run changelog:scriv collect --add",
   "rm -rf schemas/*json",
   "schema",
   "git add schemas",
-  "hatch run lint || hatch run lint",
   "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-schema = ["python schemas/generate.py {args}", "lint --files=schemas/$(hatch version).json > /dev/null"]
+schema = ["python schemas/generate.py {args}", "hatch run lint --files=schemas/$(hatch version).json > /dev/null"]
 secrets = "pre-commit run gitleaks --all-files"
 test = [
   "test-unit",
