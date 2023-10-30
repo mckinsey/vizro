@@ -119,11 +119,6 @@
   align-items: center;
   justify-content: center;
 }
-.nav-icon {
-  filter: var(--fill-accordion-button);
-  width: 24px;
-  height: 24px;
-}
 
 div.dashboard_container .tooltip-inner {
   color: var(--text-primary);
@@ -136,8 +131,7 @@ div.dashboard_container .custom-tooltip {
   font-size: var(--text-size-02);
   letter-spacing: var(--letter-spacing-body-edit-01);
   color: var(--text-secondary);
-  align-items: center;
-  justify-content: center;
+  padding: 4px;
 }
 
 .nav-icon-text {
