@@ -4,6 +4,7 @@ import re
 
 import plotly
 import pytest
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -49,22 +50,20 @@ class TestNavigationInstantiation:
 @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"SELECT PAGE": ["Page 1", "Page 2"]}])
 def test_navigation_pre_build(pages):
     navigation = vm.Navigation(pages=pages, id="navigation")
-    navigation.pre_build()
 
     assert navigation.id == "navigation"
     assert navigation.pages == pages
-    assert isinstance(navigation._selector, Accordion)
-    assert navigation._selector.pages == {"SELECT PAGE": ["Page 1", "Page 2"]}
+    assert isinstance(navigation.selector, Accordion)
+    assert navigation.selector.pages == {"SELECT PAGE": ["Page 1", "Page 2"]}
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}])
 def test_navigation_build(pages):
     navigation = vm.Navigation(pages=pages)
-    navigation.pre_build()  # Required such that an Accordion is assigned as selector
     accordion = Accordion(pages=pages)
-    navigation._selector.id = accordion.id
-
+    navigation.selector.id = accordion.id
+    expected_navigation = html.Div(children=[html.Div(className="hidden", id="nav_bar_outer"), accordion.build()])
     result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(accordion.build(), cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(expected_navigation, cls=plotly.utils.PlotlyJSONEncoder))
     assert result == expected

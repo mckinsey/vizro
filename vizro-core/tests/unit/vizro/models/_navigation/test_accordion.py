@@ -62,5 +62,7 @@ class TestAccordionBuild:
     def test_single_page_and_hidden_div(self):
         accordion = Accordion(pages=["Page 1"]).build()
         result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(html.Div(className="hidden"), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(
+            json.dumps(html.Div(className="hidden", id="nav_panel_outer"), cls=plotly.utils.PlotlyJSONEncoder)
+        )
         assert result == expected
