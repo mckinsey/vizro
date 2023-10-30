@@ -22,4 +22,3 @@ if args.check:
     print("JSON schema is up to date.")  # noqa: T201
 else:
     schema_path.write_text(schema_json)
-    subprocess.run(f"pre-commit run prettier --files {schema_path}", shell=True, stdout=subprocess.DEVNULL)  # nosec
