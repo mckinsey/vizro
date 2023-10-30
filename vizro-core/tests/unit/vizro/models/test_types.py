@@ -8,113 +8,111 @@ from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
 
 
-@pytest.fixture
-def varargs_function():
-    def function(*args, b=2):
-        return args[0] + b
-
-    return CapturedCallable(function, 1)
+def positional_only_function(a, /):
+    pass
 
 
-@pytest.mark.xfail
-# Known bug: *args doesn't work properly. Fix while keeping the more important test_varkwargs
-# passing due to https://bugs.python.org/issue41745.
-# Error raised is IndexError: tuple index out of range
-def test_varargs(varargs_function):
-    assert varargs_function(b=2) == 1 + 2
+def var_positional_function(*args):
+    pass
 
 
-@pytest.fixture
-def positional_only_function():
-    def function(a, /, b):
-        return a + b
+@pytest.mark.parametrize("function", [positional_only_function, var_positional_function])
+def test_invalid_parameter_kind(function):
+    with pytest.raises(
+        ValueError,
+        match="CapturedCallable does not accept functions with positional-only or variadic positional parameters",
+    ):
+        CapturedCallable(function)
 
-    return CapturedCallable(function, 1)
+
+def positional_or_keyword_function(a, b, c):
+    return a + b + c
 
 
-@pytest.mark.xfail
-# Known bug: position-only argument doesn't work properly. Fix while keeping the more important
-# test_varkwargs passing due to https://bugs.python.org/issue41745.
-# Error raised is TypeError: function got some positional-only arguments passed as keyword arguments: 'a'
-def test_positional_only(positional_only_function):
-    assert positional_only_function(b=2) == 1 + 2
+def keyword_only_function(a, *, b, c):
+    return a + b + c
+
+
+def var_keyword_function(a, **kwargs):
+    return a + kwargs["b"] + kwargs["c"]
 
 
 @pytest.fixture
-def keyword_only_function():
-    def function(a, *, b):
-        return a + b
-
-    return CapturedCallable(function, 1)
+def captured_callable(request):
+    return CapturedCallable(request.param, 1, b=2)
 
 
-def test_keyword_only(keyword_only_function):
-    assert keyword_only_function(b=2) == 1 + 2
-
-
-@pytest.fixture
-def varkwargs_function():
-    def function(a, b=2, **kwargs):
-        return a + b + kwargs["c"]
-
-    return CapturedCallable(function, 1)
-
-
-def test_varkwargs(varkwargs_function):
-    varkwargs_function(c=3, d=4) == 1 + 2 + 3
-
-
-@pytest.fixture
-def simple_function():
-    def function(a, b, c, d=4):
-        return a + b + c + d
-
-    return CapturedCallable(function, 1, b=2)
-
-
+@pytest.mark.parametrize(
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
+)
 class TestCall:
-    def test_call_missing_argument(self, simple_function):
-        with pytest.raises(TypeError, match="missing 1 required positional argument"):
-            simple_function()
-
-    def test_call_needs_keyword_arguments(self, simple_function):
+    def test_call_needs_keyword_arguments(self, captured_callable):
         with pytest.raises(TypeError, match="takes 1 positional argument but 2 were given"):
-            simple_function(2)
+            captured_callable(2)
 
-    def test_call_provide_required_argument(self, simple_function):
-        assert simple_function(c=3) == 1 + 2 + 3 + 4
+    def test_call_provide_required_argument(self, captured_callable):
+        assert captured_callable(c=3) == 1 + 2 + 3
 
-    def test_call_override_existing_arguments(self, simple_function):
-        assert simple_function(a=5, b=2, c=6) == 5 + 2 + 6 + 4
-
-    def test_call_is_memoryless(self, simple_function):
-        simple_function(c=3)
-
-        with pytest.raises(TypeError, match="missing 1 required positional argument"):
-            simple_function()
-
-    def test_call_unknown_argument(self, simple_function):
-        with pytest.raises(TypeError, match="got an unexpected keyword argument"):
-            simple_function(e=1)
+    def test_call_override_existing_arguments(self, captured_callable):
+        assert captured_callable(a=5, b=2, c=6) == 5 + 2 + 6
 
 
+@pytest.mark.parametrize(
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
+)
 class TestDunderMethods:
-    def test_getitem_known_args(self, simple_function):
-        assert simple_function["a"] == 1
-        assert simple_function["b"] == 2
+    def test_getitem_known_args(self, captured_callable):
+        assert captured_callable["a"] == 1
+        assert captured_callable["b"] == 2
 
-    def test_getitem_unknown_args(self, simple_function):
+    def test_getitem_unknown_args(self, captured_callable):
         with pytest.raises(KeyError):
-            simple_function["c"]
+            captured_callable["c"]
 
-        with pytest.raises(KeyError):
-            simple_function["d"]
-
-    def test_delitem(self, simple_function):
-        del simple_function["a"]
+    def test_delitem(self, captured_callable):
+        del captured_callable["a"]
 
         with pytest.raises(KeyError):
-            simple_function["a"]
+            captured_callable["a"]
+
+
+@pytest.mark.parametrize(
+    "captured_callable, expectation",
+    [
+        (positional_or_keyword_function, pytest.raises(TypeError, match="missing 1 required positional argument: 'c'")),
+        (keyword_only_function, pytest.raises(TypeError, match="missing 1 required keyword-only argument: 'c'")),
+        (var_keyword_function, pytest.raises(KeyError, match="'c'")),
+    ],
+    indirect=["captured_callable"],
+)
+class TestCallMissingArgument:
+    def test_call_missing_argument(self, captured_callable, expectation):
+        with expectation:
+            captured_callable()
+
+    def test_call_is_memoryless(self, captured_callable, expectation):
+        captured_callable(c=3)
+
+        with expectation:
+            captured_callable()
+
+
+@pytest.mark.parametrize(
+    "captured_callable, expectation",
+    [
+        (positional_or_keyword_function, pytest.raises(TypeError, match="got an unexpected keyword argument")),
+        (keyword_only_function, pytest.raises(TypeError, match="got an unexpected keyword argument")),
+        (var_keyword_function, pytest.raises(KeyError, match="'c'")),
+    ],
+    indirect=["captured_callable"],
+)
+def test_call_unknown_argument(captured_callable, expectation):
+    with expectation:
+        captured_callable(e=1)
 
 
 def undecorated_function(a, b, c, d=4):

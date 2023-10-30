@@ -81,7 +81,7 @@ jobs:
         run: |
           cd "${{ needs.check-version.outputs.package_name }}/dist"
           local=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
-          cd "${{ needs.check-version.outputs.package_name }}"
+          cd ..
           pip download vizro==${{needs.check-version.outputs.package_version}} -d . --no-deps --timeout 300
           pypi=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
           if [ $local = $pypi ]; then; echo "md5 hash is the same"; else; echo "md5 hash is not the same" exit 1; fi;
@@ -107,7 +107,7 @@ jobs:
           cd "${{ needs.check-version.outputs.package_name }}"
           git checkout -b "release/version_bump_next_minor/${formatted_date}"
           hatch version patch,dev
-          hatch run docs:changelog
+          hatch run changelog:add
           hatch run schema
           hatch run lint || hatch run lint
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
