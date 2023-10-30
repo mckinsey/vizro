@@ -1,6 +1,7 @@
 """Script to generate JSON schema. For more information, run `hatch run schema --help`."""
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -21,3 +22,4 @@ if args.check:
     print("JSON schema is up to date.")  # noqa: T201
 else:
     schema_path.write_text(schema_json)
+    subprocess.run("hatch run lint", shell=True, stdout=subprocess.DEVNULL)  # nosec

@@ -53,7 +53,7 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-schema = ["python schemas/generate.py {args}", "lint"]
+schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
   "test-unit",
