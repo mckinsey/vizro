@@ -12,7 +12,9 @@ from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
 
-Page.update_forward_refs(Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Accordion=Accordion)
+Page.update_forward_refs(
+    Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Accordion=Accordion
+)
 Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavItem=NavItem)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 NavBar.update_forward_refs(NavItem=NavItem)
