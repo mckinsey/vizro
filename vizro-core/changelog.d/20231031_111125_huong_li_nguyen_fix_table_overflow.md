@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix overflowing of `Table` ([#137](https://github.com/mckinsey/vizro/pull/137))
+- Prevent `Table` from overflowing its container ([#137](https://github.com/mckinsey/vizro/pull/137))
 
 <!--
 ### Security
