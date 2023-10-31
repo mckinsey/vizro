@@ -153,4 +153,4 @@ def test_page_build_left_side_removed(standard_px_chart):
     page = vm.Page(title="Single Page", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
     dashboard = vm.Dashboard(pages=[page])
     dashboard.pre_build()
-    assert "className='hidden'" in str(page.build())
+    assert "className='nav_control_panel'" not in str(page.build())

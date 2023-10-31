@@ -13,6 +13,7 @@ def _validate_pages(pages):
     # page[0] gives the page model ID.
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
 
+    # required to auto-populate the navigation.selector.pages with registered pages
     if pages is None:
         return registered_pages
 

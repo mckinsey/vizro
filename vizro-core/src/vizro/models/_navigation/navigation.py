@@ -37,7 +37,6 @@ class Navigation(VizroBaseModel):
         if isinstance(selector, NavBar):
             if selector.pages is None and selector.items is None:
                 selector.pages = values.get("pages")
-                selector.items = []
                 return selector
         return selector
 

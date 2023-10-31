@@ -134,6 +134,12 @@ div.dashboard_container .custom-tooltip {
   padding: 4px;
 }
 
+.nav-icon {
+  filter: var(--fill-accordion-button);
+  width: 24px;
+  height: 24px;
+}
+
 .nav-icon-text {
   display: flex;
   flex-direction: column;
@@ -144,3 +150,4 @@ div.dashboard_container .custom-tooltip {
 .icon-button.btn.btn-primary.active {
   background-color: var(--state-overlays-selected);
 }
+

@@ -31,10 +31,10 @@ class NavBar(VizroBaseModel):
     @validator("items", always=True)
     def validate_items(cls, items, values):
         if not items:
-            if isinstance(values.get("pages"), list):
-                return [NavItem(pages=[page]) for page in values.get("pages")]
-            if isinstance(values.get("pages"), dict):
-                return [NavItem(pages=value) for page, value in values.get("pages").items()]
+            if isinstance(values["pages"], list):
+                return [NavItem(pages=[page]) for page in values["pages"]]
+            if isinstance(values["pages"], dict):
+                return [NavItem(pages=value) for page, value in values["pages"].items()]
 
         return items
 

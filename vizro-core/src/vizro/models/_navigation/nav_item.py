@@ -3,6 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import Optional
 
+import os
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -20,15 +21,19 @@ class NavItem(VizroBaseModel):
 
     Args:
         pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
-        icon (str): URI (relative or absolute) of the embeddable content. Defaults to "home".
-        max_text_length (int): Character limit for `text` argument. Defaults to 8.
-        text (Optional[str]): Text to be displayed below the icon. Defaults to `None`.
-        tooltip (Optional[str]): Text to be displayed in the icon tooltip on hover.
+        icon (str): Name of the icon from the Google Material Icon library. Defaults to "home". For more available
+            icons visit [Google Material Icon library](https://fonts.google.com/icons). To turn off icon provide `""`.
+        max_text_length (int): Character limit for `text` argument. If the text exceeds the `max_text_length`,
+            it is automatically truncated and the full text is visible in the tooltip on hover. Defaults to 8.
+        text (Optional[str]): Text to be displayed below the icon. It automatically gets truncated to the
+            `max_text_length`. Defaults to `None`.
+        tooltip (Optional[str]): Text to be displayed in the icon tooltip on hover. It is automatically populated if
+            the `text` exceeds the `max_text_length`. Defaults to `None`.
         selector (Optional[Accordion]): See [`Accordion`][vizro.models.Accordion]. Defaults to `None`.
     """
 
     pages: NavPagesType
-    icon: str = Field("home", description="URI (relative or absolute) of the embeddable content.")
+    icon: str = Field("home", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library.")
     max_text_length: int = Field(8, description="Character limit for `text` argument.")
     text: Optional[str] = Field(None, description="Text to be displayed below the icon.")
     tooltip: Optional[str] = Field(None, description="Text to be displayed in the icon tooltip on hover.")
@@ -56,9 +61,6 @@ class NavItem(VizroBaseModel):
         icon_first_page = (
             list(itertools.chain(*self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
         )
-        icon_div = (
-            html.Span(self.icon, className="material-symbols-outlined") if self.icon else html.Div(className="hidden")
-        )
         text_div = html.Div(children=[self.text], className="icon-text") if self.text else html.Div(className="hidden")
 
         return dbc.Button(
@@ -66,7 +68,7 @@ class NavItem(VizroBaseModel):
             children=[
                 html.Div(
                     children=[
-                        icon_div,
+                        self._create_icon_div(),
                         text_div,
                     ],
                     className="nav-icon-text",
@@ -87,3 +89,15 @@ class NavItem(VizroBaseModel):
                 className="custom-tooltip",
             )
             return tooltip
+
+    def _create_icon_div(self):
+        if not self.icon:
+            return html.Div(className="hidden")
+
+        if os.path.isabs(self.icon):
+            return html.Img(
+                src=self.icon,
+                className="nav-icon"
+            )
+
+        return html.Span(self.icon, className="material-symbols-outlined")
