@@ -15,11 +15,6 @@ from vizro.models._components.graph import create_empty_fig
 
 
 @pytest.fixture
-def standard_go_chart(gapminder):
-    return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
-
-
-@pytest.fixture
 def standard_px_chart_with_str_dataframe():
     return px.scatter(
         data_frame="gapminder",
