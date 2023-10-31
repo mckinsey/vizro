@@ -105,6 +105,7 @@ def _apply_table_filter_interaction(
     if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
         return data_frame
 
+    # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
     source_table_actions = _get_component_actions(_get_parent_vizro_table(ctd_active_cell["id"]))
 
     for action in source_table_actions:
