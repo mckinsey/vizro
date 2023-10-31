@@ -1,5 +1,6 @@
 import json
 from collections import OrderedDict
+from functools import partial
 
 import dash
 import dash_bootstrap_components as dbc
@@ -29,7 +30,7 @@ def dashboard_container():
 
 
 @pytest.fixture()
-def mock_page_registry(page1, page2):
+def mock_page_registry(dashboard, page1, page2):
     return OrderedDict(
         {
             "Page 1": {
@@ -44,12 +45,12 @@ def mock_page_registry(page1, page2):
                 "description": "",
                 "order": 0,
                 "supplied_order": 0,
-                "supplied_layout": page1.build,
+                "supplied_layout": partial(dashboard._make_page_layout, page1),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": page1.build,
+                "layout": partial(dashboard._make_page_layout, page1),
                 "relative_path": "/",
             },
             "Page 2": {
@@ -64,12 +65,12 @@ def mock_page_registry(page1, page2):
                 "description": "",
                 "order": 1,
                 "supplied_order": 1,
-                "supplied_layout": page2.build,
+                "supplied_layout": partial(dashboard._make_page_layout, page2),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": page2.build,
+                "layout": partial(dashboard._make_page_layout, page2),
                 "relative_path": "/page-2",
             },
             "not_found_404": {
