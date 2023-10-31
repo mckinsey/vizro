@@ -114,6 +114,12 @@ class Page(VizroBaseModel):
     @_log_call
     def build(self):
         self._update_graph_theme()
+        controls_content = [control.build() for control in self.controls]
+        control_panel = (
+            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            if controls_content
+            else html.Div(className="hidden", id="control_panel_outer")
+        )
         components_content = [
             html.Div(
                 component.build(),
@@ -126,7 +132,8 @@ class Page(VizroBaseModel):
                 self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
             )
         ]
-        return self._create_component_container(components_content)
+        components_container = self._create_component_container(components_content)
+        return html.Div([control_panel, components_container])
 
     def _update_graph_theme(self):
         outputs = [

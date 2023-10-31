@@ -123,7 +123,7 @@ class Dashboard(VizroBaseModel):
         dashboard_title = (
             html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
             if self.title
-            else html.Div(className="hidden")
+            else html.Div(className="hidden", id="dashboard_title_outer")
         )
         theme_switch = daq.BooleanSwitch(
             id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
@@ -134,13 +134,9 @@ class Dashboard(VizroBaseModel):
         navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
 
         # Different across pages
-        controls_content = [control.build() for control in page.controls]
-        control_panel = (
-            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
-            if controls_content
-            else html.Div(className="hidden")
-        )
-        component_container = page.build()
+        page_content = page.build()
+        control_panel = page_content["control_panel_outer"]
+        component_container = page_content["component_container_outer"]
 
         # Arrangement
         header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
@@ -148,7 +144,7 @@ class Dashboard(VizroBaseModel):
         left_side = (
             html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
             if any(left_side_elements)
-            else html.Div(className="hidden")
+            else html.Div(className="hidden", id="left_side_outer")
         )
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
