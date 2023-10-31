@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 import plotly.io as pio
 from dash import ClientsideFunction, Input, Output, clientside_callback, html
 from pydantic import Field, validator
@@ -94,7 +95,7 @@ class Dashboard(VizroBaseModel):
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
-            dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=page.build)
+            dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=self._make_page_layout(page))
         self._create_error_page_404()
 
     @_log_call
@@ -113,6 +114,39 @@ class Dashboard(VizroBaseModel):
             className=self.theme,
             fluid=True,
         )
+
+    def _make_page_layout(self, page):
+        # Left-side
+        dashboard_title = (
+            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
+            if self.title
+            else None
+        )
+        nav_panel = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        controls_content = [control.build() for control in page.controls]
+        control_panel = (
+            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            if controls_content
+            else None
+        )
+
+        # Right-side
+        page_title = html.H2(children=page.title, id="page_title")
+        theme_switch = daq.BooleanSwitch(id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True)
+        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
+        component_container = page.build()
+
+        # Arrangement
+        left_side_elements = [dashboard_title, nav_panel, control_panel]
+        left_side = (
+            html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
+            if any(left_side_elements)
+            else None
+        )
+        right_side_elements = [header, component_container]
+        right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
+
+        return html.Div([left_side, right_side], id="page_container")
 
     @staticmethod
     def _update_theme():
