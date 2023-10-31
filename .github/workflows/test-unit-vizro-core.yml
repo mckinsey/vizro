@@ -11,8 +11,7 @@ on:
     branches:
       - "main"
     paths:
-      - 'vizro-core/src/**'
-
+      - "vizro-core/src/**"
 
 concurrency:
   group: test-unit-${{ github.head_ref }}
