@@ -14,13 +14,13 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, Table
+    from vizro.models import Action, VizroBaseModel
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
 
 class CallbackTriggerDict(TypedDict):
-    """ Represent dash.callback_context.args_grouping item. Shortened as 'ctd' in the code.
+    """Represent dash.callback_context.args_grouping item. Shortened as 'ctd' in the code.
 
     Args:
         id (ModelID): The component ID. If it`s a pattern matching ID, it will be a dict.
@@ -30,6 +30,7 @@ class CallbackTriggerDict(TypedDict):
         str_id (str): For pattern matching IDs, it`s the stringified dict ID with no white spaces.
         triggered (bool): A boolean indicating whether this input triggered the callback.
     """
+
     id: ModelID
     property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
     value: Optional[Any]
@@ -93,13 +94,18 @@ def _apply_graph_filter_interaction(
     return data_frame
 
 
-def _get_parent_vizro_table(_underlying_table_id: str) -> Table:
-    from vizro.models import Table
+def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseModel:
+    from vizro.models import VizroBaseModel
 
-    for _, table in model_manager._items_with_type(Table):
-        if table._callable_object_id == _underlying_table_id:
-            return table
-    raise KeyError(f"No parent Vizro.Table component found for underlying table with id {_underlying_table_id}.")
+    for _, vizro_base_model in model_manager._items_with_type(VizroBaseModel):
+        if (
+            hasattr(vizro_base_model, "_callable_object_id")
+            and vizro_base_model._callable_object_id == _underlying_callable_object_id
+        ):
+            return vizro_base_model
+    raise KeyError(
+        f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
+    )
 
 
 def _apply_table_filter_interaction(
@@ -111,7 +117,7 @@ def _apply_table_filter_interaction(
         return data_frame
 
     # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-    source_table_actions = _get_component_actions(_get_parent_vizro_table(ctd_active_cell["id"]))
+    source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
 
     for action in source_table_actions:
         if target not in action.function["targets"]:
