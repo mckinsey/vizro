@@ -33,7 +33,9 @@ def expected_table():
             ],
             className="table-container",
             id="text_table_outer",
-        )
+        ),
+        color="grey",
+        parent_className="loading-container",
     )
 
 
