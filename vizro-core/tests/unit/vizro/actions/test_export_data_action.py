@@ -46,7 +46,7 @@ def managers_one_page_without_graphs_one_button():
 
 @pytest.fixture
 def callback_context_export_data(request):
-    """Mock dash.callback_context that represents on page load."""
+    """Mock dash.callback_context that represents filters and filter interactions applied."""
     targets, pop_filter, continent_filter_interaction, country_table_filter_interaction = request.param
     args_grouping_filter_interaction = []
     if continent_filter_interaction:

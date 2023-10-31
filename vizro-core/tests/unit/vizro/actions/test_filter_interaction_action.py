@@ -13,7 +13,7 @@ from vizro.managers import model_manager
 
 @pytest.fixture
 def callback_context_filter_interaction(request):
-    """Mock dash.callback_context that represents a click on a continent data-point."""
+    """Mock dash.callback_context that represents a click on a continent data-point and table selected cell."""
     continent_filter_interaction, country_table_filter_interaction = request.param
 
     args_grouping_filter_interaction = []

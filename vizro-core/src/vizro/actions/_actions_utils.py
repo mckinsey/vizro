@@ -19,16 +19,21 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
 
 
-class CallbackTriggerDict(TypedDict):  # shortened as 'ctd'
-    # The component ID. If it`s a pattern matching ID, it will be a dict.
+class CallbackTriggerDict(TypedDict):
+    """ Represent dash.callback_context.args_grouping item. Shortened as 'ctd' in the code.
+
+    Args:
+        id (ModelID): The component ID. If it`s a pattern matching ID, it will be a dict.
+        property (Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]):
+            The component property used in the callback.
+        value (Optional[Any]): The value of the component property at the time the callback was fired.
+        str_id (str): For pattern matching IDs, it`s the stringified dict ID with no white spaces.
+        triggered (bool): A boolean indicating whether this input triggered the callback.
+    """
     id: ModelID
-    # The component property used in the callback.
     property: Literal["clickData", "value", "n_clicks", "active_cell", "derived_viewport_data"]
-    # The value of the component property at the time the callback was fired.
     value: Optional[Any]
-    # For pattern matching IDs, it`s the stringified dict ID with no white spaces.
     str_id: str
-    # A boolean indicating whether this input triggered the callback.
     triggered: bool
 
 
