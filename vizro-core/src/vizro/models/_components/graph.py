@@ -84,5 +84,5 @@ class Graph(VizroBaseModel):
                 className="chart_container",
             ),
             color="grey",
-            parent_className="chart_container",
+            parent_className="loading-container",
         )
