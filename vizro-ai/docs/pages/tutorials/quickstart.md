@@ -12,7 +12,7 @@ to do so inside a virtual environment.
 
 ### 2. Set up jupyter notebook
 A good way to initially explore Vizro-AI is from a Jupyter notebook.
-Activate your previously create virtual environment and install Jupyter using the following command:
+Activate your previously created virtual environment and install Jupyter using the following command:
 
 ```console
 pip install jupyter
@@ -37,9 +37,9 @@ print(vizro_ai.__version__)
 
 You should see a return output of the version.
 
-### 3. Large Language Model API KEY
+### 3. Large Language Model (LLM) API KEY
 
-A prerequisite to use Vizro-AI is access to one of the supported large language models. Refer to the [user guide](../user_guides/api_setup.md) on how to set up the API.
+A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user_guides/api_setup.md) on how to set up the API.
 
 After successful setup, your API key is loaded in Jupyter with the following two lines:
 

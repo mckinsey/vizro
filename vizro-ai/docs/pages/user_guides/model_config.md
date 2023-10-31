@@ -2,10 +2,10 @@
 
 !!! Warning
 
-    Users are recommended to exercise caution and to research and understand the selected LLM (Large Language Model) before using `vizro-ai`.
+    Users are recommended to exercise caution and to research and understand the selected Large Language Model (LLM) before using `vizro-ai`.
     Users should be cautious about sharing or inputting any personal or sensitive information.
 
-    **Data is sent to model vendors if you connect to LLMs (Large Language Models) via their APIs.**
+    **Data is sent to model vendors if you connect to LLMs via their APIs.**
     For example, if you specify model_name="gpt-3.5-turbo-0613", your data will be sent to OpenAI via their API.
 
     Users are also recommended to review the third party API key section of the [disclaimer](../explanation/disclaimer.md) documentation.
@@ -17,7 +17,7 @@ Currently, Vizro-AI supports the following parameters:
   default. We recommend setting it to 0 for Vizro-AI usage, as it's mostly
   deterministic.
 - `model_name`: The name of the model to use. Please refer to the section
-  [Models currently supported by Vizro-AI](#models-currently-supported-by-vizro-ai) for available
+  [Models currently supported by Vizro-AI](#supported-models) for available
   model options.
 
 !!! example "Config and construct Vizro-AI"

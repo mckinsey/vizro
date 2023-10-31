@@ -5,8 +5,8 @@ Vizro-AI is a tool for generating data visualizations.
     Please review this [disclaimer](pages/explanation/disclaimer.md)
     before using the `vizro-ai` package.
 
-    Since users must connect to LLMs (Large Language Models) in order to use Vizro-AI,
-    please also ensure that you review [usage of LLMs (Large Language Models)](pages/explanation/safety_in_vizro_ai.md)
+    Since users must connect to Large Language Models (LLMs) in order to use Vizro-AI,
+    please also ensure that you review [usage of LLMs](pages/explanation/safety_in_vizro_ai.md)
     and required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
 
 
@@ -29,7 +29,7 @@ Vizro-AI is a tool for generating data visualizations.
     <div class="card-content">
       <h5>User Guides</h5>
       <p>
-        Our user guides provide step-by-step instructions on how to leverage our core features.
+        Our user guides provide step-by-step instructions on how to install `vizro-ai` package and leverage our core features.
       </p>
     </div>
   </div>

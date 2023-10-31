@@ -1,6 +1,6 @@
 # How to setup the API
 This guide shows how to set up the API key and other environment variables (e.g.,
-base URL) so that you can seamlessly communicate with the LLM.
+base URL) so that you can seamlessly communicate with the Large Language Model (LLM).
 
 Users are recommended to review the third party API key section of the [disclaimer](../explanation/disclaimer.md) documentation.
 
@@ -33,7 +33,7 @@ __Method 2: Set up the API key as an environment variable for all projects__
 
 To make the API key available for all projects, you can set it as an environment
 variable. Please refer to the section ["Setup your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
-in the OpenAI documentation.(It is under the dropdown of Step 2: Setup your API key).
+in the OpenAI documentation. (It is under the dropdown of Step 2: Setup your API key).
 
 It provides step-by-step instructions for setting up the API key as an environment
 variable, on operating systems including Windows and MacOS.
