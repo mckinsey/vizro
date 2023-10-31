@@ -10,8 +10,8 @@ on:
   pull_request:
     branches:
       - "main"
-    paths-ignore:
-      - 'docs/**'
+    paths:
+      - 'vizro-core/src/**'
 
 
 concurrency:
