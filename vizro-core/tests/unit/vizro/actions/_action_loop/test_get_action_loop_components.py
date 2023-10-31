@@ -149,7 +149,7 @@ class TestGetActionLoopComponents:
         ],
         indirect=True,
     )
-    def test_all_action_loop_components(  # noqa: PLR0913  # pylint: disable=too-many-arguments
+    def test_all_action_loop_components(  # pylint: disable=too-many-arguments
         self,
         fundamental_components,
         gateway_components,
