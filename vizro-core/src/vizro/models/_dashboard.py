@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from functools import partial
 from typing import TYPE_CHECKING, List, Literal, Optional, cast
 
 import dash
@@ -95,8 +96,10 @@ class Dashboard(VizroBaseModel):
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
-            dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=self._make_page_layout(page))
-        self._create_error_page_404()
+            dash.register_page(
+                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+            )
+        dash.register_page(module=MODULE_PAGE_404, layout=create_layout_page_404())
 
     @_log_call
     def build(self):
@@ -132,21 +135,22 @@ class Dashboard(VizroBaseModel):
 
         # Right-side
         page_title = html.H2(children=page.title, id="page_title")
-        theme_switch = daq.BooleanSwitch(id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True)
+        theme_switch = daq.BooleanSwitch(
+            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
+        )
         header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
         component_container = page.build()
 
         # Arrangement
         left_side_elements = [dashboard_title, nav_panel, control_panel]
+        right_side_elements = [header, component_container]
         left_side = (
             html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
             if any(left_side_elements)
             else None
         )
-        right_side_elements = [header, component_container]
         right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
-
-        return html.Div([left_side, right_side], id="page_container")
+        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     @staticmethod
     def _update_theme():
@@ -155,7 +159,3 @@ class Dashboard(VizroBaseModel):
             Output("dashboard_container_outer", "className"),
             Input("theme_selector", "on"),
         )
-
-    @staticmethod
-    def _create_error_page_404():
-        return dash.register_page(module=MODULE_PAGE_404, layout=create_layout_page_404())
