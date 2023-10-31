@@ -71,14 +71,14 @@ def callback_context_export_data(request):
         args_grouping_filter_interaction.append(
             {
                 "active_cell": CallbackTriggerDict(
-                    id="vizro_table",
+                    id="underlying_table_id",
                     property="active_cell",
                     value={"row": 0, "column": 0, "column_id": "country"},
-                    str_id="vizro_table",
+                    str_id="underlying_table_id",
                     triggered=False,
                 ),
                 "derived_viewport_data": CallbackTriggerDict(
-                    id="vizro_table",
+                    id="underlying_table_id",
                     property="derived_viewport_data",
                     value=[
                         {
@@ -92,7 +92,7 @@ def callback_context_export_data(request):
                             "year": 2007,
                         },
                     ],
-                    str_id="vizro_table",
+                    str_id="underlying_table_id",
                     triggered=False,
                 ),
             }
@@ -307,9 +307,8 @@ class TestExportData:
         ]
 
         # Add table filter_interaction Action to scatter_chart component
-        model_manager["vizro_table"].actions = [
-            vm.Action(id="table_filter_interaction", function=filter_interaction(targets=["scatter_chart"]))
-        ]
+        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+        model_manager["vizro_table"].pre_build()
 
         # Add export_data action to relevant component
         model_manager["button"].actions = [

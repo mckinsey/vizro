@@ -30,7 +30,7 @@ def _build_action_loop_callbacks() -> None:
             actions_chain_trigger_component = model_manager[ModelID(str(actions_chain_trigger_component_id))]
             # Use underlying table object as a trigger component.
             if isinstance(actions_chain_trigger_component, Table):
-                actions_chain_trigger_component_id = actions_chain_trigger_component._underlying_table_id
+                actions_chain_trigger_component_id = actions_chain_trigger_component._callable_object_id
         # Not all action_chain_trigger_components are included in model_manager e.g. on_page_load_action_trigger
         except KeyError:
             pass

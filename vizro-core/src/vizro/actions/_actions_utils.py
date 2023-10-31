@@ -92,7 +92,7 @@ def _get_parent_vizro_table(_underlying_table_id: str) -> Table:
     from vizro.models import Table
 
     for _, table in model_manager._items_with_type(Table):
-        if table._underlying_table_id == _underlying_table_id:
+        if table._callable_object_id == _underlying_table_id:
             return table
     raise KeyError(f"No parent Vizro.Table component found for underlying table with id {_underlying_table_id}.")
 
@@ -105,12 +105,7 @@ def _apply_table_filter_interaction(
     if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
         return data_frame
 
-    source_table_id = ctd_active_cell["id"]
-    try:
-        source_table_actions = _get_component_actions(model_manager[source_table_id])
-    except KeyError:
-        # source_table_id is underlying table id, so actions from parent Vizro.Table component should be considered.
-        source_table_actions = _get_component_actions(_get_parent_vizro_table(source_table_id))
+    source_table_actions = _get_component_actions(_get_parent_vizro_table(ctd_active_cell["id"]))
 
     for action in source_table_actions:
         if target not in action.function["targets"]:

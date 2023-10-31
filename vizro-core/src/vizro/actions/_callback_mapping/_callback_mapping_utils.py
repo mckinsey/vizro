@@ -111,10 +111,10 @@ def _get_inputs_of_figure_interactions(
             inputs.append(
                 {
                     "active_cell": State(
-                        component_id=triggered_model._underlying_table_id, component_property="active_cell"
+                        component_id=triggered_model._callable_object_id, component_property="active_cell"
                     ),
                     "derived_viewport_data": State(
-                        component_id=triggered_model._underlying_table_id,
+                        component_id=triggered_model._callable_object_id,
                         component_property="derived_viewport_data",
                     ),
                 }

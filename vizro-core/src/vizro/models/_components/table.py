@@ -32,7 +32,7 @@ class Table(VizroBaseModel):
     title: Optional[str] = Field(None, description="Title of the table")
     actions: List[Action] = []
 
-    _underlying_table_id: str = PrivateAttr()
+    _callable_object_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("children")
@@ -72,7 +72,7 @@ class Table(VizroBaseModel):
                     " Underlying table object has to be provided."
                 )
 
-            self._underlying_table_id = underlying_table_object.id
+            self._callable_object_id = underlying_table_object.id
 
     def build(self):
         return dcc.Loading(
@@ -80,7 +80,7 @@ class Table(VizroBaseModel):
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
                     html.Div(
-                        dash_table.DataTable(**({"id": self._underlying_table_id} if self.actions else {})), id=self.id
+                        dash_table.DataTable(**({"id": self._callable_object_id} if self.actions else {})), id=self.id
                     ),
                 ],
                 className="table-container",

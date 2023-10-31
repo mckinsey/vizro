@@ -50,7 +50,9 @@ def expected_table_with_id():
             ],
             className="table-container",
             id="text_table_outer",
-        )
+        ),
+        color="grey",
+        parent_className="loading-container",
     )
 
 
@@ -141,7 +143,7 @@ class TestPreBuildTable:
         )
         table.pre_build()
 
-        assert hasattr(table, "_underlying_table_id") is False
+        assert hasattr(table, "_callable_object_id") is False
 
     def test_pre_build_actions_no_underlying_table_id_exception(self, standard_dash_table, filter_interaction_action):
         table = vm.Table(
@@ -160,8 +162,8 @@ class TestPreBuildTable:
         )
         table.pre_build()
 
-        assert hasattr(table, "_underlying_table_id") is True
-        assert table._underlying_table_id == "underlying_table_id"
+        assert hasattr(table, "_callable_object_id") is True
+        assert table._callable_object_id == "underlying_table_id"
 
 
 class TestBuildTable:

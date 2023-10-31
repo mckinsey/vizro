@@ -42,7 +42,7 @@ def callback_context_filter_interaction(request):
                     id="underlying_table_id",
                     property="active_cell",
                     value={"row": 0, "column": 0, "column_id": "country"},
-                    str_id="vizro_table",
+                    str_id="underlying_table_id",
                     triggered=False,
                 ),
                 "derived_viewport_data": CallbackTriggerDict(
@@ -60,7 +60,7 @@ def callback_context_filter_interaction(request):
                             "year": 2007,
                         },
                     ],
-                    str_id="vizro_table",
+                    str_id="underlying_table_id",
                     triggered=False,
                 ),
             }
