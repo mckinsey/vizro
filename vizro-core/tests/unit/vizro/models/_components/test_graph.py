@@ -53,7 +53,7 @@ def expected_graph():
             className="chart_container",
         ),
         color="grey",
-        parent_className="loading-container",
+        parent_className="chart_container",
     )
 
 
