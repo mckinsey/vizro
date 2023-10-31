@@ -119,37 +119,38 @@ class Dashboard(VizroBaseModel):
         )
 
     def _make_page_layout(self, page):
-        # Left-side
+        # Identical across pages
         dashboard_title = (
             html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
             if self.title
-            else None
+            else html.Div(className="hidden")
         )
-        nav_panel = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        theme_switch = daq.BooleanSwitch(
+            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
+        )
+
+        # Shared across pages but slightly differ in content
+        page_title = html.H2(children=page.title, id="page_title")
+        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
+
+        # Different across pages
         controls_content = [control.build() for control in page.controls]
         control_panel = (
             html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
             if controls_content
-            else None
+            else html.Div(className="hidden")
         )
-
-        # Right-side
-        page_title = html.H2(children=page.title, id="page_title")
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
-        )
-        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
         component_container = page.build()
 
         # Arrangement
-        left_side_elements = [dashboard_title, nav_panel, control_panel]
-        right_side_elements = [header, component_container]
+        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
+        left_side_elements = [dashboard_title, navigation, control_panel]
         left_side = (
             html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
             if any(left_side_elements)
-            else None
+            else html.Div(className="hidden")
         )
-        right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
+        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     @staticmethod
