@@ -139,8 +139,9 @@ class CapturedCallable:
         elif not isinstance(callable_config, dict):
             raise ValueError(
                 "You must provide a valid CapturedCallable object. If you are using a plotly express figure, ensure "
-                "that you are using `import vizro.plotly.express as px`. If you are using a custom figure or action, "
-                "that your function uses the @capture decorator."
+                "that you are using `import vizro.plotly.express as px`. If you are using a table figure, make "
+                "sure you are using `from vizro.tables import dash_data_table`. If you are using a custom figure or "
+                "action, that your function uses the @capture decorator."
             )
 
         # Try to import function given in _target_ from the import_path property of the pydantic field.
@@ -182,7 +183,10 @@ class capture:
 
     Examples:
         >>> @capture("graph")
-        >>> def plot_function():
+        >>> def graph_function():
+        >>>     ...
+        >>> @capture("table")
+        >>> def table_function():
         >>>     ...
         >>> @capture("table")
         >>> def plot_function():

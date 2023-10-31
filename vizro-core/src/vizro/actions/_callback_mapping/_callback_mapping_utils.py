@@ -162,7 +162,11 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
-    # TODO: here and above, could we fix mypy (and ideally have better code), by defining these attributes in the base?
+
+    # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
+    # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
+    # Ideally model_manager.__getitem__ would handle this itself, possibly with suitable use of a cast.
+    # If not then we can do the cast to Action at the point of consumption here to avoid needing mypy ignores.
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]

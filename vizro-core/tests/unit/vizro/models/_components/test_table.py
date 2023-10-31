@@ -3,7 +3,7 @@ import json
 
 import plotly
 import pytest
-from dash import dash_table, html
+from dash import dash_table, dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -26,25 +26,29 @@ def dash_table_with_str_dataframe():
 
 @pytest.fixture
 def expected_table():
-    return html.Div(
-        [
-            None,
-            html.Div(dash_table.DataTable(), id="text_table"),
-        ],
-        className="table-container",
-        id="text_table_outer",
+    return dcc.Loading(
+        html.Div(
+            [
+                None,
+                html.Div(dash_table.DataTable(), id="text_table"),
+            ],
+            className="table-container",
+            id="text_table_outer",
+        )
     )
 
 
 @pytest.fixture
 def expected_table_with_id():
-    return html.Div(
-        [
-            None,
-            html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
-        ],
-        className="table-container",
-        id="text_table_outer",
+    return dcc.Loading(
+        html.Div(
+            [
+                None,
+                html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
+            ],
+            className="table-container",
+            id="text_table_outer",
+        )
     )
 
 
