@@ -12,7 +12,7 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models._dashboard import create_layout_page_404, update_theme
+from vizro.models._dashboard import update_theme
 
 
 @pytest.fixture()
@@ -85,12 +85,12 @@ def mock_page_registry(dashboard, page1, page2):
                 "description": "",
                 "order": None,
                 "supplied_order": None,
-                "supplied_layout": create_layout_page_404(),
+                "supplied_layout": dashboard._make_page_404_layout(),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": create_layout_page_404(),
+                "layout": dashboard._make_page_404_layout(),
                 "relative_path": "/not-found-404",
             },
         }
@@ -142,8 +142,8 @@ class TestDashboardPreBuild:
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
 
-    def test_create_layout_page_404(self):
-        result = create_layout_page_404()
+    def test_create_layout_page_404(self, dashboard):
+        result = dashboard._make_page_404_layout()
         result_image = result.children[0]
         result_div = result.children[1]
 
