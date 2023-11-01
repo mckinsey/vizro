@@ -1,7 +1,7 @@
 """Example to show dashboard configuration specified as pydantic models."""
 import os
 
-import dash_ag_grid as dag
+# import dash_ag_grid as dag
 
 # import d3_bar_chart
 import pandas as pd
@@ -39,15 +39,15 @@ def retrieve_table_data():
     return pd.DataFrame(data)
 
 
-@capture("table")
-def AgGrid(data_frame=None):
-    """Custom AgGrid."""
-    return dag.AgGrid(
-        id="get-started-example-basic",
-        rowData=data_frame.to_dict("records"),
-        columnDefs=[{"field": col} for col in data_frame.columns],
-        # className="ag-theme-alpine-dark",
-    )
+# @capture("table")
+# def AgGrid(data_frame=None):
+#     """Custom AgGrid."""
+#     return dag.AgGrid(
+#         id="get-started-example-basic",
+#         rowData=data_frame.to_dict("records"),
+#         columnDefs=[{"field": col} for col in data_frame.columns],
+#         # className="ag-theme-alpine-dark",
+#     )
 
 
 data_manager["table_data"] = retrieve_table_data
