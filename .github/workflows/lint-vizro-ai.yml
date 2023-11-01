@@ -53,6 +53,7 @@ jobs:
       - name: Find added changelog fragments
         id: added-files
         run: |
+          pwd
           if ${{ github.event_name == 'pull_request' }}; then
               echo "added_files=$(git diff --name-only --diff-filter=A -r HEAD^1 HEAD -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
           else
@@ -63,9 +64,9 @@ jobs:
         run: |
           if [ -z "${{ steps.added-files.outputs.added_files }}" ];
           then
-            echo "No changelog fragment .md file within changelog.d was detected.  Run 'hatch run changelog:add' to create such a fragment.";
+            echo "No changelog fragment .md file within changelog.d was detected.  Run 'hatch run docs:changelog' to create such a fragment.";
             echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
-            echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
+            echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as."
             exit 1
           else
           echo "${{ steps.added-files.outputs.added_files }} was added - ready to go!";
