@@ -4,6 +4,7 @@
 #  run:
 #    working-directory: vizro-core
 #
+##### TODO: adjust below according to other scripts
 #on:
 #  # push:
 #  #   branches: [main]
