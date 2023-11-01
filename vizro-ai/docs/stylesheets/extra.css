@@ -1,0 +1,43 @@
+.card-section-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.responsive-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: auto;
+  gap: 1.5rem;
+}
+
+.card-section-wrapper .responsive-grid a {
+  text-decoration: none;
+  transition: none;
+  background: none;
+  padding: 0;
+  color: black;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  height: 100%;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card-content {
+  padding: 2px 16px;
+}
+
+:root > * {
+  --md-code-hl-color: #119bec3e;
+}
+
+.md-typeset th,
+td:not([class]):not(:last-child) {
+  border-right: 1px solid lightgrey;
+}
