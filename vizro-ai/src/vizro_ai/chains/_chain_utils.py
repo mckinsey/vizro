@@ -2,7 +2,6 @@
 import logging
 import time
 from functools import wraps
-import pandas as pd # Arbitrary change to be reverted
 
 logger = logging.getLogger(__name__)
 
