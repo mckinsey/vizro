@@ -147,8 +147,10 @@ div.dashboard_container .custom-tooltip {
   gap: 6px;
   justify-content: center;
 }
+
 .icon-button.btn.btn-primary.active {
   background-color: var(--state-overlays-selected);
+}
 
 .loading-container {
   height: 100%;
