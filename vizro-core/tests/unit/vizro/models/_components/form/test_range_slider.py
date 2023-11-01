@@ -21,7 +21,7 @@ def expected_range_slider_default():
                     "max": None,
                 },
             ),
-            None,
+            html.Div(hidden=True),
             html.Div(
                 [
                     dcc.RangeSlider(
