@@ -117,12 +117,13 @@ actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
-    Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
+Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
+Here is an example of how to configure a figure interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "`filter_interaction`"
     === "app.py"
@@ -199,15 +200,93 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
                 x: gdpPercap
                 y: lifeExp
                 size: pop
-              controls:
-                - column: continent
-                  type: filter
+            controls:
+              - column: continent
+                type: filter
             title: Filter interaction
         ```
     === "Result"
         [![Graph2]][Graph2]
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
+
+Here is an example of how to configure a figure interaction when the source is a [`Table`][vizro.models.Table] component.
+
+!!! example "`filter_interaction`"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.actions import filter_interaction
+        from vizro.tables import dash_data_table
+        
+        df_gapminder = px.data.gapminder().query("year == 2007")
+        
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Filter interaction",
+                    components=[
+                        vm.Table(
+                            figure=dash_data_table(id="dash_datatable_id", data_frame=df_gapminder),
+                            actions=[
+                                vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
+                            ],
+                        ),
+                        vm.Graph(
+                            id="scatter_relation_2007",
+                            figure=px.scatter(
+                                df_gapminder,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                    controls=[vm.Filter(column='continent')]
+                ),
+            ]
+        )
+        
+        if __name__ == "__main__":
+            Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+          - components:
+            - type: table
+              figure:
+                _target_: dash_data_table
+                data_frame: gapminder_2007
+                id: dash_datatable_id
+              actions:
+               - function:
+                    _target_: filter_interaction
+                    targets:
+                      - scatter_relation_2007
+            - type: graph
+              id: scatter_relation_2007
+              figure:
+                _target_: scatter
+                data_frame: gapminder_2007
+                color: continent
+                x: gdpPercap
+                y: lifeExp
+                size: pop
+            controls:
+              - column: continent
+                type: filter
+            title: Filter interaction
+        ```
+    === "Result"
+        [![Table]][Table]
+
+    [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
 ## Predefined actions customization
 Many predefined actions are customizable which helps to achieve more specific desired goal. For specific options, please
