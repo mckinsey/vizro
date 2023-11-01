@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional
 
 from dash import dcc, html
-from pydantic import Field, root_validator, validator
+from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -27,6 +27,9 @@ class RadioItems(VizroBaseModel):
     value: Optional[SingleValueType] = None
     title: Optional[str] = Field(None, description="Title to be displayed")
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
 
     # Re-used validators
     _set_actions = _action_validator_factory("value")

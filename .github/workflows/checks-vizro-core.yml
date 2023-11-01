@@ -1,0 +1,75 @@
+name: checks-vizro-core
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vizro-core/**"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "vizro-core/**"
+
+concurrency:
+  group: checks-core-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  run:
+    name: Python ${{ matrix.python-version }} on Linux
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: List dependencies
+        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+
+      - name: Check schema is up to date
+        run: hatch run all.py${{ matrix.python-version }}:schema --check
+
+      - name: Check requirements for Snyk are up to date
+        run: hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
+
+      - name: Find added changelog fragments
+        id: added-files
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then
+              echo "added_files=$(git diff --name-only --diff-filter=A -r HEAD^1 HEAD -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
+          else
+              echo "added_files=$(git diff --name-only --diff-filter=A ${{ github.event.before }} ${{ github.event.after }} -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fail if no fragment added in PR
+        run: |
+          if [ -z "${{ steps.added-files.outputs.added_files }}" ];
+          then
+            echo "No changelog fragment .md file within changelog.d was detected.  Run 'hatch run changelog:add' to create such a fragment.";
+            echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
+            echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
+            exit 1
+          else
+          echo "${{ steps.added-files.outputs.added_files }} was added - ready to go!";
+          fi

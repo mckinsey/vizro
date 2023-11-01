@@ -29,10 +29,11 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the user guide on
-    [Charts/Graph][graph] or [Actions][pre-defined-actions] to see available choices.
+    [Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the user guide on
-    [custom charts](../user_guides/custom_charts.md) or [custom actions][custom-actions].
+    [custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
+    [custom actions][custom-actions].
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -138,8 +139,9 @@ class CapturedCallable:
         elif not isinstance(callable_config, dict):
             raise ValueError(
                 "You must provide a valid CapturedCallable object. If you are using a plotly express figure, ensure "
-                "that you are using `import vizro.plotly.express as px`. If you are using a custom figure or action, "
-                "that your function uses the @capture decorator."
+                "that you are using `import vizro.plotly.express as px`. If you are using a table figure, make "
+                "sure you are using `from vizro.tables import dash_data_table`. If you are using a custom figure or "
+                "action, that your function uses the @capture decorator."
             )
 
         # Try to import function given in _target_ from the import_path property of the pydantic field.
@@ -176,11 +178,15 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically it should be used as a function decorator. There are two possible modes: `"graph"` and `"action"`.
+    Typically it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
+    `"action"`.
 
     Examples:
         >>> @capture("graph")
-        >>> def plot_function():
+        >>> def graph_function():
+        >>>     ...
+        >>> @capture("table")
+        >>> def table_function():
         >>>     ...
         >>> @capture("action")
         >>> def action_function():
@@ -190,15 +196,16 @@ class capture:
     [custom charts](../user_guides/custom_charts.md).
     """
 
-    def __init__(self, mode: Literal["graph", "action"]):
-        """Instantiates the decorator to capture a function call. Valid modes are "graph" and "action"."""
+    def __init__(self, mode: Literal["graph", "action", "table"]):
+        """Instantiates the decorator to capture a function call. Valid modes are "graph", "table" and "action"."""
         self._mode = mode
 
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
 
-        mode="action" gives a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that contains a
-        CapturedCallable. In both cases, the CapturedCallable is based on func and the provided *args and **kwargs.
+        mode="action" and mode="table" give a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that
+        contains a CapturedCallable. In both cases, the CapturedCallable is based on func and the provided
+        *args and **kwargs.
         """
         if self._mode == "graph":
             # The more difficult case, where we need to still have a valid plotly figure that renders in a notebook.
@@ -244,8 +251,25 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
+        elif self._mode == "table":
 
-        raise ValueError("Valid modes of the capture decorator are @capture('graph') and @capture('action').")
+            @functools.wraps(func)
+            def wrapped(*args, **kwargs):
+                if "data_frame" not in inspect.signature(func).parameters:
+                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
+
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+
+                try:
+                    captured_callable["data_frame"]
+                except KeyError as exc:
+                    raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
+                return captured_callable
+
+            return wrapped
+        raise ValueError(
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action') or @capture('table')."
+        )
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
@@ -296,14 +320,15 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Tabs"],
+    Union["Button", "Card", "Graph", "Tabs", "Table"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card] or [`Graph`][vizro.models.Graph]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
+[`Graph`][vizro.models.Graph]."""
 
 # Types used for pages values in the Navigation model.
 NavigationPagesType = Annotated[

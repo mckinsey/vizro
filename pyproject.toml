@@ -14,7 +14,7 @@ target-version = ["py38"]
 
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
-ignore-words-list = "grey,ned"
+ignore-words-list = "grey,ned,sav"
 
 [tool.mypy]
 # strict checks : strict = true
@@ -74,3 +74,6 @@ known-first-party = ["vizro"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
+
+[tool.ruff.pylint]
+max-args = 6

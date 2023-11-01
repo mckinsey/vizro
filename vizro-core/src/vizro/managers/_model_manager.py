@@ -19,8 +19,6 @@ Model = TypeVar("Model", bound="VizroBaseModel")
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
-    pass
-
 
 class ModelManager:
     def __init__(self):
