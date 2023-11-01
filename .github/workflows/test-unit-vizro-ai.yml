@@ -1,0 +1,48 @@
+name: test-unit-vizro-ai
+
+defaults:
+  run:
+    working-directory: vizro-ai
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - "main"
+
+concurrency:
+  group: test-unit-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  run:
+    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: List dependencies
+        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+
+      - name: Run unit tests
+        run: |
+          hatch run all.py${{ matrix.python-version }}:cov

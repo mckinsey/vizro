@@ -1,0 +1,89 @@
+site_name: Vizro-AI
+site_url: https://mckinsey.github.io/vizro-ai/
+nav:
+  - Vizro-AI: index.md
+  - Get started:
+      - Quickstart: pages/tutorials/quickstart.md
+  - User Guides:
+      - Fundamentals:
+          - Installation: pages/user_guides/install.md
+          - API Setup: pages/user_guides/api_setup.md
+          - Run Methods: pages/user_guides/run_vizro_ai.md
+          - Model Configuration: pages/user_guides/model_config.md
+  - Explanation:
+      - Disclaimer: pages/explanation/disclaimer.md
+      - Safeguard Code Execution: pages/explanation/safeguard.md
+      - Safety in Vizro AI: pages/explanation/safety_in_vizro_ai.md
+  - Contribute:
+      #      - Contributing: pages/contribute/contributing.md
+      - Authors: pages/contribute/authors.md
+
+#TODO: this infers the version number of the latest release of whole repo
+#repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
+#repo_name: mckinsey/vizro-ai
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+    - content.code.annotate
+
+watch:
+  - src
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.mark
+  - attr_list
+  - md_in_html
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false #currently doesn't show source at correct level, and not for pydantic models
+            docstring_style: google
+            merge_init_into_class: true
+            docstring_section_style: list
+            separate_signature: true
+            #   filters: ["!^_"]
+            show_root_heading: true
+            docstring_options:
+              ignore_init_summary: true
+          paths: [src]
+  - git-revision-date-localized:
+      enable_creation_date: false
+
+extra_css:
+  - stylesheets/extra.css
