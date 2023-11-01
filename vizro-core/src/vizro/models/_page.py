@@ -118,7 +118,7 @@ class Page(VizroBaseModel):
         control_panel = (
             html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
             if controls_content
-            else html.Div(className="hidden", id="control_panel_outer")
+            else html.Div(hidden=True, id="control_panel_outer")
         )
         components_content = [
             html.Div(

@@ -101,7 +101,7 @@ class Dashboard(VizroBaseModel):
         dashboard_title = (
             html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
             if self.title
-            else html.Div(className="hidden", id="dashboard_title_outer")
+            else html.Div(hidden=True, id="dashboard_title_outer")
         )
         theme_switch = daq.BooleanSwitch(
             id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
@@ -122,7 +122,7 @@ class Dashboard(VizroBaseModel):
         left_side = (
             html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
             if any(left_side_elements)
-            else html.Div(className="hidden", id="left_side_outer")
+            else html.Div(hidden=True, id="left_side_outer")
         )
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")

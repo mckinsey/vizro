@@ -56,7 +56,7 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             html.Div(
                 [
-                    html.H3(self.title, className="table-title") if self.title else None,
+                    html.H3(self.title, className="table-title") if self.title else html.Div(hidden=True),
                     html.Div(dash_table.DataTable(), id=self.id),
                 ],
                 className="table-container",

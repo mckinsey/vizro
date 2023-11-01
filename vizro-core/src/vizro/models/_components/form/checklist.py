@@ -41,7 +41,7 @@ class Checklist(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.P(self.title) if self.title else html.Div(hidden=True),
                 dcc.Checklist(
                     id=self.id,
                     options=full_options,
