@@ -109,7 +109,7 @@ To enable filtering when clicking on data in a (source) figure, you can add the 
 
 To configure this figure interaction follow the steps below:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
+1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target figures into `targets`.
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
@@ -121,7 +121,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
-    - You can create a "self-interaction" by providing the source chart id as its own `target`
+    - You can create a "self-interaction" by providing the source figure id as its own `target`
 
 Here is an example of how to configure a figure interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
