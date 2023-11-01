@@ -162,7 +162,6 @@ class TestPreBuildTable:
         )
         table.pre_build()
 
-        assert hasattr(table, "_callable_object_id") is True
         assert table._callable_object_id == "underlying_table_id"
 
 
