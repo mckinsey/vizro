@@ -18,7 +18,7 @@ logger.info(
 
 
 class _DashboardReadyFigure(go.Figure):
-    # Just for IDE completion and to define new attribute FOO
+    # Just for IDE completion and to define new attribute
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         data = args[0] if args else None
