@@ -20,8 +20,8 @@ def filter_interaction(
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
     parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
-    If filter interaction source is table e.g. `vm.Table(..., actions=[filter_interaction])`, then the table doesn't
-    need to have 'custom_data' parameter set up.
+    If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
+    then the table doesn't need to have a 'custom_data' parameter set up.
 
     Args:
         targets: List of target component ids to filter by figure interaction. If missing, will target all valid

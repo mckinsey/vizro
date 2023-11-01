@@ -106,6 +106,7 @@ def _get_inputs_of_figure_interactions(
     )
     inputs = []
     for action in figure_interactions_on_page:
+        # TODO: Consider do we want to move the following logic into Model implementation
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
         if isinstance(triggered_model, Table):
             inputs.append(

@@ -59,7 +59,7 @@ class Table(VizroBaseModel):
         if self.actions:
             kwargs = self.figure._arguments.copy()
 
-            # This is a hack to get around the fact that the underlying table object requires a data_frame
+            # This workaround is needed because the underlying table object requires a data_frame
             kwargs["data_frame"] = DataFrame()
 
             # The underlying table object is pre-built, so we can fetch its ID.

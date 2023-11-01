@@ -215,7 +215,7 @@ def create_relation_analysis():
             vm.Card(
                 text="""
                         #### Last updated
-                        July, 2023
+                        November, 2023
                     """
             ),
             vm.Graph(
