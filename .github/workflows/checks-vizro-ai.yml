@@ -1,18 +1,21 @@
-name: lint-vizro-core
-
+name: checks-vizro-ai
 defaults:
   run:
-    working-directory: vizro-core
+    working-directory: vizro-ai
 
 on:
   push:
     branches: [main]
+    paths:
+      - "vizro-ai/**"
   pull_request:
     branches:
       - "main"
+    paths:
+      - "vizro-ai/**"
 
 concurrency:
-  group: lint-${{ github.head_ref }}
+  group: checks-ai-${{ github.head_ref }}
   cancel-in-progress: true
 
 env:
@@ -25,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.9"]
 
     steps:
       - uses: actions/checkout@v4
@@ -42,12 +45,6 @@ jobs:
 
       - name: List dependencies
         run: hatch run all.py${{ matrix.python-version }}:pip freeze
-
-      - name: Lint
-        run: hatch run all.py${{ matrix.python-version }}:lint
-
-      - name: Check schema is up to date
-        run: hatch run all.py${{ matrix.python-version }}:schema --check
 
       - name: Check requirements for Snyk are up to date
         run: hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
