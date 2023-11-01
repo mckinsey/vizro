@@ -153,7 +153,7 @@ def _apply_filter_interaction(
     return data_frame
 
 
-def _validate_selector_value_NONE(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
+def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType]) -> ValidatedNoneValueType:
     if value == NONE_OPTION:
         return None
     elif isinstance(value, list):
@@ -198,7 +198,7 @@ def _get_parametrized_config(
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
-            selector_value = _validate_selector_value_NONE(selector_value)
+            selector_value = _validate_selector_value_none(selector_value)
             selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
             for action in selector_actions:

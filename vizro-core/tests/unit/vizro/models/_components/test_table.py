@@ -151,7 +151,7 @@ class TestPreBuildTable:
             figure=standard_dash_table,
             actions=[filter_interaction_action],
         )
-        with pytest.raises(ValueError, match="Underlying table object has no attribute 'id'."):
+        with pytest.raises(ValueError, match="Underlying `Table` callable has no attribute 'id'"):
             table.pre_build()
 
     def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
