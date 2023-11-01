@@ -11,7 +11,9 @@ from ._page import Page
 
 SubPage.update_forward_refs(Button=Button, Card=Card, Graph=Graph, Tabs=Tabs)
 Tabs.update_forward_refs(SubPage=SubPage)
-Page.update_forward_refs(Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs)
+Page.update_forward_refs(
+    Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs
+)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 
 # Please keep alphabetically ordered
