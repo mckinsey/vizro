@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from dash import html
 from pydantic import validator
@@ -53,9 +53,8 @@ class NavBar(VizroBaseModel):
 
     def _nav_panel_build(self, active_page_id):
         for item in self.items:
-            if isinstance(item.pages, list):
-                if active_page_id in item.pages:
-                    return item.selector.build(active_page_id=active_page_id)
-            if isinstance(item.pages, dict):
-                if active_page_id in list(itertools.chain(*item.pages.values())):
-                    return item.selector.build(active_page_id=active_page_id)
+            pages = list(itertools.chain(*item.pages.values())) if isinstance(item.pages, dict) else item.pages
+            if active_page_id in pages:
+                return cast(NavBar, item.selector).build(active_page_id=active_page_id)
+
+            return html.Div(className="hidden", id="nav_panel_outer")

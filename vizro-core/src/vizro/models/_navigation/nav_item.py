@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import itertools
+import os
 from typing import Optional
 
-import os
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
@@ -33,7 +33,9 @@ class NavItem(VizroBaseModel):
     """
 
     pages: NavPagesType
-    icon: str = Field("home", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library.")
+    icon: str = Field(
+        "home", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library."
+    )
     max_text_length: int = Field(8, description="Character limit for `text` argument.")
     text: Optional[str] = Field(None, description="Text to be displayed below the icon.")
     tooltip: Optional[str] = Field(None, description="Text to be displayed in the icon tooltip on hover.")
@@ -95,9 +97,6 @@ class NavItem(VizroBaseModel):
             return html.Div(className="hidden")
 
         if os.path.isabs(self.icon):
-            return html.Img(
-                src=self.icon,
-                className="nav-icon"
-            )
+            return html.Img(src=self.icon, className="nav-icon")
 
         return html.Span(self.icon, className="material-symbols-outlined")
