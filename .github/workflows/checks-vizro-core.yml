@@ -16,7 +16,7 @@ on:
       - "vizro-core/**"
 
 concurrency:
-  group: checks-${{ github.head_ref }}
+  group: checks-core-${{ github.head_ref }}
   cancel-in-progress: true
 
 env:

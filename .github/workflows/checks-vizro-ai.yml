@@ -15,7 +15,7 @@ on:
       - "vizro-ai/**"
 
 concurrency:
-  group: checks-${{ github.head_ref }}
+  group: checks-ai-${{ github.head_ref }}
   cancel-in-progress: true
 
 env:
