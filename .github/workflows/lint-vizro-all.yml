@@ -1,22 +1,18 @@
-name: test-unit-vizro-ai
+name: lint-vizro-all
 
 defaults:
   run:
-    working-directory: vizro-ai
+    working-directory: vizro-core # but could be any folder
 
 on:
   push:
     branches: [main]
-    paths:
-      - "vizro-core/src/**"
   pull_request:
     branches:
       - "main"
-    paths:
-      - "vizro-core/src/**"
 
 concurrency:
-  group: test-unit-${{ github.head_ref }}
+  group: lint-${{ github.head_ref }}
   cancel-in-progress: true
 
 env:
@@ -25,16 +21,16 @@ env:
 
 jobs:
   run:
-    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
-    runs-on: ${{ matrix.os }}
+    name: Python ${{ matrix.python-version }} on Linux
+    runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.8"]
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -47,6 +43,5 @@ jobs:
       - name: List dependencies
         run: hatch run all.py${{ matrix.python-version }}:pip freeze
 
-      - name: Run unit tests
-        run: |
-          hatch run all.py${{ matrix.python-version }}:cov
+      - name: Lint
+        run: hatch run all.py${{ matrix.python-version }}:lint
