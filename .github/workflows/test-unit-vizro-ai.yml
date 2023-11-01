@@ -7,13 +7,9 @@ defaults:
 on:
   push:
     branches: [main]
-    paths:
-      - "vizro-ai/src/**"
   pull_request:
     branches:
       - "main"
-    paths:
-      - "vizro-ai/src/**"
 
 concurrency:
   group: test-unit-${{ github.head_ref }}
