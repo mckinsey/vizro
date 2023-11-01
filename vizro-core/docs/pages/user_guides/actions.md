@@ -220,9 +220,9 @@ Here is an example of how to configure a figure interaction when the source is a
         from vizro import Vizro
         from vizro.actions import filter_interaction
         from vizro.tables import dash_data_table
-        
+
         df_gapminder = px.data.gapminder().query("year == 2007")
-        
+
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
@@ -249,7 +249,7 @@ Here is an example of how to configure a figure interaction when the source is a
                 ),
             ]
         )
-        
+
         if __name__ == "__main__":
             Vizro().build(dashboard).run()
         ```

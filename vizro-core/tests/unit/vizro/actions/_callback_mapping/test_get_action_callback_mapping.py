@@ -73,7 +73,7 @@ def managers_one_page_four_controls_two_figures_filter_interaction(request, dash
             vm.Filter(id="filter_country", column="country", selector=vm.Dropdown(id="filter_country_selector")),
             vm.Parameter(
                 id="parameter_x",
-                targets=["scatter_chart.x", "scatter_chart_2.x", "vizro_table.columns"],
+                targets=["scatter_chart.x", "scatter_chart_2.x"],
                 selector=vm.Dropdown(
                     id="parameter_x_selector",
                     options=["lifeExp", "gdpPercap", "pop"],
@@ -83,12 +83,22 @@ def managers_one_page_four_controls_two_figures_filter_interaction(request, dash
             ),
             vm.Parameter(
                 id="parameter_y",
-                targets=["scatter_chart.y", "scatter_chart_2.y", "vizro_table.values"],
+                targets=["scatter_chart.y", "scatter_chart_2.y"],
                 selector=vm.Dropdown(
                     id="parameter_y_selector",
                     options=["lifeExp", "gdpPercap", "pop"],
                     multi=False,
                     value="lifeExp",
+                ),
+            ),
+            vm.Parameter(
+                id="vizro_table_row_selectable",
+                targets=["vizro_table.row_selectable"],
+                selector=vm.Dropdown(
+                    id="parameter_table_row_selectable",
+                    options=["multi", "single"],
+                    multi=False,
+                    value="single",
                 ),
             ),
         ],
@@ -106,6 +116,7 @@ def action_callback_inputs_expected():
         "parameters": [
             dash.State("parameter_x_selector", "value"),
             dash.State("parameter_y_selector", "value"),
+            dash.State("parameter_table_row_selectable", "value"),
         ],
         "filter_interaction": [
             {
@@ -214,7 +225,6 @@ class TestCallbackMapping:
                 [
                     {"component_id": "scatter_chart", "component_property": "figure"},
                     {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    {"component_id": "vizro_table", "component_property": "children"},
                 ],
             ),
             (
@@ -222,7 +232,6 @@ class TestCallbackMapping:
                 [
                     {"component_id": "scatter_chart", "component_property": "figure"},
                     {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    {"component_id": "vizro_table", "component_property": "children"},
                 ],
             ),
             (
@@ -230,6 +239,12 @@ class TestCallbackMapping:
                 [
                     {"component_id": "scatter_chart", "component_property": "figure"},
                     {"component_id": "scatter_chart_2", "component_property": "figure"},
+                    {"component_id": "vizro_table", "component_property": "children"},
+                ],
+            ),
+            (
+                "parameter_action_vizro_table_row_selectable",
+                [
                     {"component_id": "vizro_table", "component_property": "children"},
                 ],
             ),
