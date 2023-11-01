@@ -65,11 +65,10 @@ class Table(VizroBaseModel):
             # The underlying table object is pre-built, so we can fetch its ID.
             underlying_table_object = self.figure._function(**kwargs)
 
-            # Underlying table object has to have "id" defined if it triggers actions chain.
             if not hasattr(underlying_table_object, "id"):
                 raise ValueError(
-                    "Underlying table object has no attribute 'id'. To perform specified actions, a valid 'id' to the"
-                    " Underlying table object has to be provided."
+                    "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
+                    " a valid 'id' has to be provided to the `Table` callable."
                 )
 
             self._callable_object_id = underlying_table_object.id
