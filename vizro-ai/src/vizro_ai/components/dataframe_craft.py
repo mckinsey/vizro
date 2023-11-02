@@ -25,14 +25,14 @@ class DataFrameCraft(BaseModel):
 
 
 # 2. Define prompt
-dataframe_prompt = (
-    "write pandas dataframe manipulation code for the given df, df info:{df_schema}, {df_head}, "
-    "and user question {input}?, DO NOT create a new dataframe"
-    "DO NOT include plot here, make sure each column exists and will have names and re-indexed "
-    "when there is aggregation"
-    "only write dataframe manipulation if required for visualization"
-    "DO NOT wrap into a function, use line by line code"
-)
+dataframe_prompt = """Context: You are working with a pandas DataFrame in Python named df.
+DataFrame Details Schema: {df_schema}, Sample Data: {df_head}, User Query: {input}
+Instructions: 1.Write code to manipulate the df DataFrame according to the user's query.
+2.Do not create any new DataFrames; work only with df.
+3.Ensure that any aggregated columns are named appropriately and re-indexed if necessary.
+4.If a visualization is implied by the user's query, only write the necessary DataFrame manipulation
+code for that visualization. 5.Do not include any plotting code.
+6. Produce the code in a line-by-line format, not wrapped inside a function."""
 
 
 # 3. Define Component
