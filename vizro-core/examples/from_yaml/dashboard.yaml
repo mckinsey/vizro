@@ -183,7 +183,7 @@ pages:
         type: card
       - text: |
           #### Last updated
-          July, 2023
+          November, 2023
         type: card
       - figure:
           _target_: box
@@ -387,25 +387,22 @@ pages:
     title: Continent Summary
   - components:
       - figure:
-          _target_: bar
-          color: data
-          data_frame: gapminder_country_analysis
-          x: year
-          y: pop
-          barmode: group
-          labels:
-            year: Year
-            data: Data
-            pop: Population
-          color_discrete_map:
-            Country: "#afe7f9"
-            Continent: "#003875"
-        id: bar_country
-        type: graph
+          _target_: dash_data_table
+          data_frame: gapminder
+          id: dash_data_table_country
+        id: table_country
+        title: Table Country
+        type: table
+        actions:
+          - function:
+              _target_: filter_interaction
+              targets:
+                - line_country
       - figure:
           _target_: line
           color: data
           data_frame: gapminder_country_analysis
+          title: Line Country
           x: year
           y: gdpPercap
           labels:
@@ -425,30 +422,20 @@ pages:
           - function:
               _target_: export_data
               targets:
-                - bar_country
+                - line_country
     controls:
-      - column: country
+      - column: continent
         selector:
           type: dropdown
-          value: India
+          value: Europe
           multi: False
-          title: Select country
+          title: Select continent
         type: filter
       - column: year
         selector:
           type: range_slider
           title: Select timeframe
         type: filter
-    layout:
-      grid:
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [0, 0, 0, 1, 1, 1]
-        - [2, 2, 2, 2, 2, 2]
     title: Country Analysis
 navigation:
   pages:

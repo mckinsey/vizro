@@ -8,6 +8,7 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.managers import data_manager
 from vizro.models import Dashboard
+from vizro.tables import dash_data_table
 
 
 def retrieve_gapminder():
@@ -254,7 +255,7 @@ page_relation = {
             "type": "card",
             "text": """
                     #### Last updated
-                    July, 2023
+                    November, 2023
              """,
         },
         {
@@ -464,26 +465,25 @@ page_continent = {
 
 page_country = {
     "title": "Country Analysis",
-    "layout": {"grid": [[0, 0, 0, 1, 1, 1]] * 7 + [[2, 2, 2, 2, 2, 2]]},
     "components": [
         {
-            "type": "graph",
-            "id": "bar_country",
-            "figure": px.bar(
-                "gapminder_country_analysis",
-                x="year",
-                y="pop",
-                color="data",
-                barmode="group",
-                labels={"year": "Year", "data": "Data", "pop": "Population"},
-                color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
+            "type": "table",
+            "id": "table_country",
+            "title": "Table Country",
+            "figure": dash_data_table(
+                id="dash_data_table_country",
+                data_frame="gapminder",
             ),
+            "actions": [
+                {"function": filter_interaction(targets=["line_country"])},
+            ],
         },
         {
             "type": "graph",
             "id": "line_country",
             "figure": px.line(
                 "gapminder_country_analysis",
+                title="Line Country",
                 x="year",
                 y="gdpPercap",
                 color="data",
@@ -497,15 +497,15 @@ page_country = {
             "id": "export_data_button",
             "text": "Export data",
             "actions": [
-                {"function": export_data(targets=["scatter_relation_2007"])},
+                {"function": export_data(targets=["line_country"])},
             ],
         },
     ],
     "controls": [
         {
             "type": "filter",
-            "column": "country",
-            "selector": {"type": "dropdown", "title": "Select country", "multi": False, "value": "India"},
+            "column": "continent",
+            "selector": {"type": "dropdown", "title": "Select continent", "multi": False, "value": "Europe"},
         },
         {
             "type": "filter",
