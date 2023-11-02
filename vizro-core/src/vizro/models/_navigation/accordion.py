@@ -1,6 +1,6 @@
 import itertools
 from collections.abc import Mapping
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
@@ -17,9 +17,11 @@ class Accordion(VizroBaseModel):
     """Accordion to be used as selector in [`Navigation`][vizro.models.Navigation].
 
     Args:
+        type (Literal["accordion"]): Defaults to `"accordion"`.
         pages (Dict[str, List[str]]): A dictionary with a page group title as key and a list of page IDs as values.
     """
 
+    type: Literal["accordion"] = "accordion"
     pages: Dict[str, List[str]] = Field(
         ..., description="A dictionary with a page group title as key and a list of page IDs as values."
     )

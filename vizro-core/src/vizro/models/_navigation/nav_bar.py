@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import List, Optional, cast
+from typing import List, Optional, cast, Literal
 
 from dash import html
 from pydantic import validator
@@ -17,11 +17,13 @@ class NavBar(VizroBaseModel):
     """Navigation bar to be used as a selector for `Navigation`.
 
     Args:
+        type (Literal["navbar"]): Defaults to `"navbar"`.
         pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `None`.
         items (List[NavItem]): See [`NavItem`][vizro.models.NavItem]. Defaults to `[]`.
     """
 
+    type: Literal["navbar"] = "navbar"
     pages: Optional[NavPagesType] = None
     items: List[NavItem] = []
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Optional
+from typing import Optional, Literal
 
 import dash
 import dash_bootstrap_components as dbc
@@ -20,8 +20,9 @@ class NavItem(VizroBaseModel):
     """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
+        type (Literal["navitem"]): Defaults to `"navitem"`.
         pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
-        icon (str): Name of the icon from the Google Material Icon library. Defaults to "home". For more available
+        icon (str): Name of the icon from the Google Material Icon library. Defaults to "dashboard". For more available
             icons visit [Google Material Icon library](https://fonts.google.com/icons). To turn off icon provide `""`.
         max_text_length (int): Character limit for `text` argument. If the text exceeds the `max_text_length`,
             it is automatically truncated and the full text is visible in the tooltip on hover. Defaults to 8.
@@ -32,9 +33,10 @@ class NavItem(VizroBaseModel):
         selector (Optional[Accordion]): See [`Accordion`][vizro.models.Accordion]. Defaults to `None`.
     """
 
+    type:  Literal["navitem"] = "navitem"
     pages: NavPagesType
     icon: str = Field(
-        "home", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library."
+        "dashboard", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library."
     )
     max_text_length: int = Field(8, description="Character limit for `text` argument.")
     text: Optional[str] = Field(None, description="Text to be displayed below the icon.")
