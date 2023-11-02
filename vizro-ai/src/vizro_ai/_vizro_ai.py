@@ -41,7 +41,8 @@ class VizroAI:
             f"You have selected {self.model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
-            f"and visit this page for detailed information:docs/pages/disclaimer.md(change to URL after docs is hosted)"
+            f"and visit this page for detailed information: "
+            "https://vizro-ai.readthedocs.io/en/latest/pages/explanation/disclaimer/"
         )
 
     @property

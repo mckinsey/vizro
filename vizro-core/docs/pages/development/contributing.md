@@ -114,7 +114,7 @@ line-length = 120
 Linting checks are enforced in CI. To run pre-commit hooks locally, there are two options:
 
 1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, please read below for an explanation and how to install `go`.
-2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run eg `hatch run lint mypy` to only run specific linters, here mypy.)
+2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run e.g. `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
 
 Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`.
 
