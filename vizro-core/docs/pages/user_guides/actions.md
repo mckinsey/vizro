@@ -113,7 +113,7 @@ To configure this chart interaction follow the steps below:
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
-2. If the source figure is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+2. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
@@ -123,7 +123,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
-Here is an example of how to configure a figure interaction when the source is a [`Graph`][vizro.models.Graph] component.
+Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "`filter_interaction`"
     === "app.py"
@@ -210,7 +210,7 @@ Here is an example of how to configure a figure interaction when the source is a
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
 
-Here is an example of how to configure a figure interaction when the source is a [`Table`][vizro.models.Table] component.
+Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
 
 !!! example "`filter_interaction`"
     === "app.py"

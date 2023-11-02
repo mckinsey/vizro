@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `filter_interaction` action when the source figure is a `vm.Table` component ([#119](https://github.com/mckinsey/vizro/pull/119))
+- Enable `filter_interaction` action when the source chart is a `vm.Table` component ([#119](https://github.com/mckinsey/vizro/pull/119))
 
 <!--
 ### Changed
