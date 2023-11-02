@@ -40,8 +40,5 @@ jobs:
       - name: Install Hatch
         run: pip install --upgrade hatch
 
-      - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
-
       - name: Lint
-        run: hatch run all.py${{ matrix.python-version }}:lint
+        run: hatch run lint:lint
