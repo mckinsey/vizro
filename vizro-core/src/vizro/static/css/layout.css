@@ -97,10 +97,6 @@
   width: 100%;
 }
 
-.hidden {
-  display: none;
-}
-
 .nav_bar {
   display: inline-flex;
   flex-direction: column;
