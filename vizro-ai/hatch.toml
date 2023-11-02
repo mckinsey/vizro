@@ -29,8 +29,7 @@ cov-report = [
   "- coverage combine",
   "coverage report"
 ]
-lint = "hatch run lint:lint"
-ll = "hatch run lint:SKIP=gitleaks pre-commit run {args}"
+lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
   "hatch run changelog:scriv collect --add",
