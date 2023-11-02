@@ -9,3 +9,7 @@ Please review the [Disclaimer](https://vizro-ai.readthedocs.io/en/latest/pages/e
 ## Documentation
 
 Here is the link to the [Documentation](https://vizro-ai.readthedocs.io/en/latest/).
+
+## Acknowledgement
+
+Vizro-AI is powered by [LangChain](https://github.com/langchain-ai/langchain).
