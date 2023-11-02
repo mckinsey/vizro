@@ -7,6 +7,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.tables import dash_data_table
 
 
 def retrieve_avg_continent_data():
@@ -420,30 +421,34 @@ def create_country_analysis():
 
     page_country = vm.Page(
         title="Country Analysis",
-        layout=vm.Layout(grid=[[0, 0, 0, 1, 1, 1]] * 7 + [[2, 2, 2, 2, 2, 2]]),
         components=[
-            vm.Graph(
-                id="bar_country",
-                figure=px.bar(
-                    df_gapminder,
-                    x="year",
-                    y="pop",
-                    color="data",
-                    barmode="group",
-                    labels={"year": "Year", "data": "Data", "pop": "Population"},
-                    color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
+            vm.Table(
+                id="table_country",
+                title="Table Country",
+                figure=dash_data_table(
+                    id="dash_data_table_country",
+                    data_frame=px.data.gapminder(),
                 ),
+                actions=[
+                    vm.Action(
+                        function=filter_interaction(
+                            targets=["line_country"]
+                        )
+                    )
+                ],
             ),
             vm.Graph(
                 id="line_country",
                 figure=px.line(
                     df_gapminder,
+                    title="Line Country",
                     x="year",
                     y="gdpPercap",
                     color="data",
                     labels={"year": "Year", "data": "Data", "gdpPercap": "GDP per capita"},
                     color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
                     markers=True,
+                    hover_name="country",
                 ),
             ),
             vm.Button(
@@ -451,14 +456,14 @@ def create_country_analysis():
                 actions=[
                     vm.Action(
                         function=export_data(
-                            targets=["bar_country"],
+                            targets=["table_country", "line_country"],
                         )
                     ),
                 ],
             ),
         ],
         controls=[
-            vm.Filter(column="country", selector=vm.Dropdown(value="India", multi=False, title="Select country")),
+            vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
             vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
         ],
     )
