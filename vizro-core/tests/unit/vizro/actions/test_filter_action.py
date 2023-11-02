@@ -61,7 +61,7 @@ def callback_context_filter_continent(request):
 
 @pytest.fixture
 def callback_context_filter_continent_and_pop(request):
-    """Mock dash.callback_context that represents continent Filter value selection."""
+    """Mock dash.callback_context that represents continent and pop Filter value selection."""
     continent, pop = request.param
     mock_callback_context = {
         "args_grouping": {

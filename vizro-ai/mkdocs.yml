@@ -18,9 +18,9 @@ nav:
       #      - Contributing: pages/contribute/contributing.md
       - Authors: pages/contribute/authors.md
 
-#TODO: this infers the version number of the latest release of whole repo
-#repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
-#repo_name: mckinsey/vizro-ai
+#  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
+repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
+repo_name: mckinsey/vizro-ai
 
 theme:
   name: material

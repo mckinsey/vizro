@@ -21,7 +21,10 @@ class VizroCode(BaseModel):
 
 # 2. Define prompt
 visual_code_prompt = (
-    "Give plotly code for {chart_types}, and user question {input}, using this as df result: {df_code}?"
+    "Context: You are working with a pandas dataframe in Python. The name of the dataframe is `df`."
+    "Instructions: Given the code snippet {df_code}, generate Plotly visualization code to produce a {chart_types} "
+    "chart that addresses user query: {input}. "
+    "Please ensure the Plotly code aligns with the provided DataFrame details."
 )
 
 
