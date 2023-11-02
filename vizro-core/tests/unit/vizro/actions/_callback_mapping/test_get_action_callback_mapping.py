@@ -29,7 +29,7 @@ def get_custom_action_with_known_name():
 
 
 @pytest.fixture
-def managers_one_page_four_controls_two_figures_filter_interaction(request, dash_data_table_with_id):
+def managers_one_page_four_controls_three_figures_filter_interaction(request, dash_data_table_with_id):
     """Instantiates managers with one page that contains four controls, two graphs and filter interaction."""
     # If the fixture is parametrised set the targets. Otherwise, set export_data without targets.
     export_data_action_function = export_data(targets=request.param) if hasattr(request, "param") else export_data()
@@ -178,7 +178,7 @@ def export_data_components_expected(request):
     ]
 
 
-@pytest.mark.usefixtures("managers_one_page_four_controls_two_figures_filter_interaction")
+@pytest.mark.usefixtures("managers_one_page_four_controls_three_figures_filter_interaction")
 class TestCallbackMapping:
     """Tests action callback mapping for predefined and custom actions."""
 
@@ -272,7 +272,7 @@ class TestCallbackMapping:
         assert result == export_data_outputs_expected
 
     @pytest.mark.parametrize(
-        "managers_one_page_four_controls_two_figures_filter_interaction, export_data_outputs_expected",
+        "managers_one_page_four_controls_three_figures_filter_interaction, export_data_outputs_expected",
         [
             (None, ["scatter_chart", "scatter_chart_2", "vizro_table"]),
             ([], ["scatter_chart", "scatter_chart_2", "vizro_table"]),
@@ -282,7 +282,7 @@ class TestCallbackMapping:
         indirect=True,
     )
     def test_export_data_targets_set_mapping_outputs(
-        self, managers_one_page_four_controls_two_figures_filter_interaction, export_data_outputs_expected
+        self, managers_one_page_four_controls_three_figures_filter_interaction, export_data_outputs_expected
     ):
         result = _get_action_callback_mapping(
             action_id="export_data_action",
@@ -307,7 +307,7 @@ class TestCallbackMapping:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "managers_one_page_four_controls_two_figures_filter_interaction, export_data_components_expected",
+        "managers_one_page_four_controls_three_figures_filter_interaction, export_data_components_expected",
         [
             (None, ["scatter_chart", "scatter_chart_2", "vizro_table"]),
             ([], ["scatter_chart", "scatter_chart_2", "vizro_table"]),
@@ -317,7 +317,7 @@ class TestCallbackMapping:
         indirect=True,
     )
     def test_export_data_targets_set_mapping_components(
-        self, managers_one_page_four_controls_two_figures_filter_interaction, export_data_components_expected
+        self, managers_one_page_four_controls_three_figures_filter_interaction, export_data_components_expected
     ):
         result_components = _get_action_callback_mapping(
             action_id="export_data_action",
