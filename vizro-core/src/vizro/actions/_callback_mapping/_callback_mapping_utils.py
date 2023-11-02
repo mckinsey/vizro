@@ -99,7 +99,7 @@ def _get_inputs_of_controls(action_id: ModelID, control_type: ControlType) -> Li
 def _get_inputs_of_figure_interactions(
     action_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
 ) -> List[Dict[str, State]]:
-    """Gets list of States for selected figure interaction `action_name` of triggered page."""
+    """Gets list of States for selected chart interaction `action_name` of triggered page."""
     figure_interactions_on_page = _get_matching_actions_by_function(
         page=_get_triggered_page(action_id=action_id),
         action_function=action_function,

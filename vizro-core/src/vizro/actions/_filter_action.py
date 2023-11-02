@@ -19,7 +19,7 @@ def _filter(
     filter_function: Callable[[pd.Series, Any], pd.Series],
     **inputs: Dict[str, Any],
 ) -> Dict[ModelID, Any]:
-    """Filters targeted figures/components on page by interaction with `Filter` control.
+    """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:
         filter_column: Data column to filter
@@ -29,7 +29,7 @@ def _filter(
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
     Returns:
-        Dict mapping target component ids to modified figures/components e.g. {'my_scatter': Figure({})}
+        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
     return _get_modified_page_figures(
         targets=targets,

@@ -13,7 +13,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
-    """Modifies parameters of targeted figures/components on page.
+    """Modifies parameters of targeted charts/components on page.
 
     Args:
         targets: List of target component ids to change parameters of.
@@ -21,7 +21,7 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, An
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
     Returns:
-        Dict mapping target component ids to modified figures/components e.g. {'my_scatter': Figure({})}
+        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
     target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 

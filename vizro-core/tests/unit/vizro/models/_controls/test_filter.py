@@ -128,8 +128,8 @@ class TestPreBuildMethod:
         model_manager["graphs_with_shared_column"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Non-numeric values detected in the shared data column '{filter.column}' for targeted figures. "
-            f"Please ensure that the data column contains the same data type across all targeted figures.",
+            match=f"Non-numeric values detected in the shared data column '{filter.column}' for targeted charts. "
+            f"Please ensure that the data column contains the same data type across all targeted charts.",
         ):
             filter.pre_build()
 

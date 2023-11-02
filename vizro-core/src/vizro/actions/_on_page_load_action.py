@@ -14,7 +14,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
-    """Applies controls to figures on page once the page is opened (or refreshed).
+    """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:
         page_id: Page ID of relevant page

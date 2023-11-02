@@ -429,13 +429,7 @@ def create_country_analysis():
                     id="dash_data_table_country",
                     data_frame=px.data.gapminder(),
                 ),
-                actions=[
-                    vm.Action(
-                        function=filter_interaction(
-                            targets=["line_country"]
-                        )
-                    )
-                ],
+                actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(
                 id="line_country",
