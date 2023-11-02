@@ -407,7 +407,8 @@
               "Country": "#afe7f9",
               "Continent": "#003875"
             },
-            "markers": "True"
+            "markers": "True",
+            "hover_name": "country"
           },
           "id": "line_country",
           "type": "graph"

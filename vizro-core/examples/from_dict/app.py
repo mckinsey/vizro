@@ -490,6 +490,7 @@ page_country = {
                 labels={"year": "Year", "data": "Data", "gdpPercap": "GDP per capita"},
                 color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
                 markers=True,
+                hover_name="country",
             ),
         },
         {
