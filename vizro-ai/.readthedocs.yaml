@@ -1,0 +1,16 @@
+# Read the Docs configuration file for MkDocs projects
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
+version: 2
+
+# Set the version of Python and other tools you might need
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  commands:
+    - pip install hatch
+    - cd vizro-ai/ && hatch run docs:mkdocs build
+    - mkdir --parents $READTHEDOCS_OUTPUT
+    - mv vizro-ai/site/ $READTHEDOCS_OUTPUT/html
