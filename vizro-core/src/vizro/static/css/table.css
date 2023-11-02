@@ -1,0 +1,52 @@
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  th {
+  background-color: var(--main-container-bg-color);
+}
+
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  td {
+  background-color: var(--main-container-bg-color);
+}
+
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  table {
+  --hover: var(--main-container-bg-color);
+}
+
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  td
+  .dash-cell-value.unfocused {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+div.right_side
+  .dash-table-container
+  .dash-spreadsheet-container
+  .dash-spreadsheet-inner
+  .column-header-name {
+  color: var(
+    --text-primary
+  ); /* Should be text-secondary when hover color is implemented */
+  font-size: 14px;
+}
+
+.table-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 12px;
+  padding-left: 32px;
+}

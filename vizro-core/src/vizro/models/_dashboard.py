@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, List, Literal, Optional
+from functools import partial
+from typing import TYPE_CHECKING, List, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 import plotly.io as pio
 from dash import ClientsideFunction, Input, Output, clientside_callback, html
 from pydantic import Field, validator
@@ -23,28 +25,6 @@ logger = logging.getLogger(__name__)
 
 def update_theme(on: bool):
     return "vizro_dark" if on else "vizro_light"
-
-
-def create_layout_page_404():
-    return html.Div(
-        [
-            html.Img(src=STATIC_URL_PREFIX + "/images/errors/error_404.svg"),
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.H3("This page could not be found.", className="heading-3-600"),
-                            html.P("Make sure the URL you entered is correct."),
-                        ],
-                        className="error_text_container",
-                    ),
-                    dbc.Button("Take me home", href="/", className="button_primary"),
-                ],
-                className="error_content_container",
-            ),
-        ],
-        className="page_error_container",
-    )
 
 
 class Dashboard(VizroBaseModel):
@@ -94,8 +74,10 @@ class Dashboard(VizroBaseModel):
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
-            dash.register_page(module=page.id, name=page.title, path=path, order=order, layout=page.build)
-        self._create_error_page_404()
+            dash.register_page(
+                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+            )
+        dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
     @_log_call
     def build(self):
@@ -114,6 +96,37 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
+    def _make_page_layout(self, page: Page):
+        # Identical across pages
+        dashboard_title = (
+            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
+            if self.title
+            else html.Div(hidden=True, id="dashboard_title_outer")
+        )
+        theme_switch = daq.BooleanSwitch(
+            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
+        )
+
+        # Shared across pages but slightly differ in content
+        page_title = html.H2(children=page.title, id="page_title")
+        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
+
+        # Different across pages
+        page_content = page.build()
+        control_panel = page_content["control_panel_outer"]
+        component_container = page_content["component_container_outer"]
+
+        # Arrangement
+        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
+        left_side_elements = [dashboard_title, navigation, control_panel]
+        left_side = (
+            html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
+            if any(left_side_elements)
+            else html.Div(hidden=True, id="left_side_outer")
+        )
+        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
+        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+
     @staticmethod
     def _update_theme():
         clientside_callback(
@@ -123,5 +136,23 @@ class Dashboard(VizroBaseModel):
         )
 
     @staticmethod
-    def _create_error_page_404():
-        return dash.register_page(module=MODULE_PAGE_404, layout=create_layout_page_404())
+    def _make_page_404_layout():
+        return html.Div(
+            [
+                html.Img(src=STATIC_URL_PREFIX + "/images/errors/error_404.svg"),
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                html.H3("This page could not be found.", className="heading-3-600"),
+                                html.P("Make sure the URL you entered is correct."),
+                            ],
+                            className="error_text_container",
+                        ),
+                        dbc.Button("Take me home", href="/", className="button_primary"),
+                    ],
+                    className="error_content_container",
+                ),
+            ],
+            className="page_error_container",
+        )

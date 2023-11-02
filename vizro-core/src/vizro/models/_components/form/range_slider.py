@@ -1,7 +1,7 @@
 from typing import Dict, List, Literal, Optional
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -42,6 +42,9 @@ class RangeSlider(VizroBaseModel):
     )
     title: Optional[str] = Field(None, description="Title to be displayed.")
     actions: List[Action] = []
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
 
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
@@ -84,7 +87,7 @@ class RangeSlider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else None,
+                html.P(self.title) if self.title else html.Div(hidden=True),
                 html.Div(
                     [
                         dcc.RangeSlider(
