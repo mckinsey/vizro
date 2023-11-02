@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro.actions import filter_interaction
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
@@ -37,6 +38,27 @@ def expected_table():
         color="grey",
         parent_className="loading-container",
     )
+
+
+@pytest.fixture
+def expected_table_with_id():
+    return dcc.Loading(
+        html.Div(
+            [
+                html.Div(hidden=True),
+                html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
+            ],
+            className="table-container",
+            id="text_table_outer",
+        ),
+        color="grey",
+        parent_className="loading-container",
+    )
+
+
+@pytest.fixture
+def filter_interaction_action():
+    return vm.Action(function=filter_interaction())
 
 
 class TestDunderMethodsTable:
@@ -113,13 +135,58 @@ class TestProcessTableDataFrame:
             table_with_str_df.figure["data_frame"]
 
 
+class TestPreBuildTable:
+    def test_pre_build_no_actions_no_underlying_table_id(self, standard_dash_table):
+        table = vm.Table(
+            id="text_table",
+            figure=standard_dash_table,
+        )
+        table.pre_build()
+
+        assert hasattr(table, "_callable_object_id") is False
+
+    def test_pre_build_actions_no_underlying_table_id_exception(self, standard_dash_table, filter_interaction_action):
+        table = vm.Table(
+            id="text_table",
+            figure=standard_dash_table,
+            actions=[filter_interaction_action],
+        )
+        with pytest.raises(ValueError, match="Underlying `Table` callable has no attribute 'id'"):
+            table.pre_build()
+
+    def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
+        table = vm.Table(
+            id="text_table",
+            figure=dash_data_table_with_id,
+            actions=[filter_interaction_action],
+        )
+        table.pre_build()
+
+        assert table._callable_object_id == "underlying_table_id"
+
+
 class TestBuildTable:
-    def test_table_build(self, standard_dash_table, expected_table):
+    def test_table_build_mandatory_only(self, standard_dash_table, expected_table):
         table = vm.Table(
             id="text_table",
             figure=standard_dash_table,
         )
 
+        table.pre_build()
+
         result = json.loads(json.dumps(table.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_table, cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
+
+    def test_table_build_with_id(self, dash_data_table_with_id, filter_interaction_action, expected_table_with_id):
+        table = vm.Table(
+            id="text_table",
+            figure=dash_data_table_with_id,
+            actions=[filter_interaction_action],
+        )
+
+        table.pre_build()
+
+        result = json.loads(json.dumps(table.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(expected_table_with_id, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
