@@ -44,4 +44,3 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Security
 
 - Bump werkzeug version suggested by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177 ([#128](https://github.com/mckinsey/vizro/pull/128))
-
