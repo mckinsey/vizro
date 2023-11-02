@@ -1,55 +1,57 @@
-#name: test-integration-vizro-ai
-#
-#defaults:
-#  run:
-#    working-directory: vizro-core
-#
-##### TODO: adjust below according to other scripts
-#on:
-#  # push:
-#  #   branches: [main]
-#  pull_request:
-#    # branches:
-#    #   - "main"
-#
-#concurrency:
-#  group: test-integration-${{ github.head_ref }}
-#  cancel-in-progress: true
-#
-#env:
-#  PYTHONUNBUFFERED: "1"
-#  FORCE_COLOR: "1"
-#
-#jobs:
-#  run:
-#    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ubuntu-latest, windows-latest]
-#        python-version: ["3.9", "3.10", "3.11"]
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Get branch name
-#        id: branch-name
-#        uses: tj-actions/branch-names@v7
-#
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#
-#      - uses: actions/cache@v3
-#        with:
-#          path: ${{ env.pythonLocation }}
-#          key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-${{ hashFiles('hatch.toml') }}-${{ hashFiles('pyproject.toml') }}
-#          restore-keys: |
-#            ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-
-#
-#      - name: Run ubuntu integration tests
-#        if: ${{ matrix.os == 'ubuntu-latest' }}
-#        run: |
-#          pip install --upgrade hatch
-#          hatch run all.py${{ matrix.python-version }}:test-integration
+name: test-integration-vizro-ai
+
+defaults:
+  run:
+    working-directory: vizro-ai
+
+on:
+  # push:
+  #   branches: [main]
+  pull_request:
+    # branches:
+    #   - "main"
+
+concurrency:
+  group: test-integration-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  run:
+    name: Python ${{ matrix.python-version }} on Linux
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: Run vizro-ai integration tests with pypi vizro
+        run: |
+          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          hatch run all.py${{ matrix.python-version }}:test-integration
+
+      - name: Run vizro-ai integration tests with local vizro
+        run: |
+          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          cd ../vizro-core
+          hatch build
+          cd ../vizro-ai
+          hatch run all.py${{ matrix.python-version }}:pip install ../vizro-core/dist/vizro*.tar.gz
+          hatch run all.py${{ matrix.python-version }}:test-integration
