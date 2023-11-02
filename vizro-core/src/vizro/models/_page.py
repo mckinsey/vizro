@@ -1,18 +1,15 @@
 from __future__ import annotations
 
-from typing import List, Optional, cast
+from typing import List, Optional
 
-import dash_bootstrap_components as dbc
-import dash_daq as daq
 from dash import Input, Output, Patch, callback, dcc, html
 from pydantic import Field, root_validator, validator
 
 import vizro._themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
-from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError
-from vizro.models import Action, Dashboard, Graph, Layout, Navigation, VizroBaseModel
+from vizro.models import Action, Graph, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
@@ -118,6 +115,11 @@ class Page(VizroBaseModel):
     def build(self):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
+        control_panel = (
+            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            if controls_content
+            else html.Div(hidden=True, id="control_panel_outer")
+        )
         components_content = [
             html.Div(
                 component.build(),
@@ -130,7 +132,8 @@ class Page(VizroBaseModel):
                 self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
             )
         ]
-        return self._make_page_layout(controls_content, components_content)
+        components_container = self._create_component_container(components_content)
+        return html.Div([control_panel, components_container])
 
     def _update_graph_theme(self):
         outputs = [
@@ -150,90 +153,24 @@ class Page(VizroBaseModel):
                 patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
                 return [patched_figure] * len(outputs)
 
-    @staticmethod
-    def _create_theme_switch():
-        _, dashboard = next(model_manager._items_with_type(Dashboard))
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=True if dashboard.theme == "vizro_dark" else False, persistence=True
-        )
-        return theme_switch
-
-    @staticmethod
-    def _create_control_panel(controls_content):
-        control_panel = html.Div(
-            children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer"
-        )
-        return control_panel if controls_content else None
-
-    def _create_nav_panel(self):
-        _, dashboard = next(model_manager._items_with_type(Dashboard))
-        return cast(Navigation, dashboard.navigation).build(active_page_id=self.id)
-
     def _create_component_container(self, components_content):
         component_container = html.Div(
-            children=html.Div(
-                components_content,
-                style={
-                    "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                    "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                    "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"  # type: ignore[union-attr]
-                    f"minmax({self.layout.col_min_width}, 1fr))",
-                    "gridTemplateRows": f"repeat({len(self.layout.grid)},"  # type: ignore[union-attr]
-                    f"minmax({self.layout.row_min_height}, 1fr))",
-                },
-                className="component_container_grid",
-            ),
+            children=[
+                html.Div(
+                    components_content,
+                    style={
+                        "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
+                        "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
+                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"  # type: ignore[union-attr]
+                        f"minmax({self.layout.col_min_width}, 1fr))",
+                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"  # type: ignore[union-attr]
+                        f"minmax({self.layout.row_min_height}, 1fr))",
+                    },
+                    className="component_container_grid",
+                ),
+                dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
+            ],
             className="component_container",
             id="component_container_outer",
         )
         return component_container
-
-    @staticmethod
-    def _arrange_containers(page_title, theme_switch, nav_panel, control_panel, component_container):
-        """Defines div container arrangement on page.
-
-        To change arrangement, one has to change the order in the header, left_side and/or right_side_elements.
-        """
-        _, dashboard = next(model_manager._items_with_type(Dashboard))
-        dashboard_title = (
-            html.Div(
-                children=[html.H2(dashboard.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer"
-            )
-            if dashboard.title
-            else None
-        )
-
-        header_elements = [page_title, theme_switch]
-        left_side_elements = [dashboard_title, nav_panel, control_panel]
-        header = html.Div(children=header_elements, className="header", id="header_outer")
-        left_side = (
-            html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
-            if any(left_side_elements)
-            else None
-        )
-        right_side_elements = [header, component_container]
-        right_side = html.Div(children=right_side_elements, className="right_side", id="right_side_outer")
-        return left_side, right_side
-
-    def _make_page_layout(self, controls_content, components_content):
-        # Create dashboard containers/elements
-        page_title = html.H2(children=self.title)
-        theme_switch = self._create_theme_switch()
-        nav_panel = self._create_nav_panel()
-        control_panel = self._create_control_panel(controls_content)
-        component_container = self._create_component_container(components_content)
-
-        # Arrange dashboard containers
-        left_side, right_side = self._arrange_containers(
-            page_title=page_title,
-            theme_switch=theme_switch,
-            nav_panel=nav_panel,
-            control_panel=control_panel,
-            component_container=component_container,
-        )
-
-        return dbc.Container(
-            id=self.id,
-            children=[dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"), left_side, right_side],
-            className="page_container",
-        )

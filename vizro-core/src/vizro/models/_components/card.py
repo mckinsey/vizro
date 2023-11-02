@@ -39,7 +39,7 @@ class Card(VizroBaseModel):
                 className="button_container",
             )
             if self.href
-            else None
+            else html.Div(hidden=True)
         )
         card_container = "nav_card_container" if self.href else "card_container"
 
