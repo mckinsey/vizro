@@ -1,0 +1,65 @@
+[envs.all]
+
+[[envs.all.matrix]]
+python = ["3.9", "3.10", "3.11"]
+
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+scripts = {add = "scriv create --add"}
+
+[envs.default]
+dependencies = [
+  "devtools[pygments]",
+  "pre-commit",
+  "coverage[toml]>=6.5",
+  "pytest",
+  "toml",
+  "nbformat>=4.2.0"
+]
+
+[envs.default.env-vars]
+VIZRO_AI_LOG_LEVEL = "DEBUG"
+
+[envs.default.scripts]
+cov = [
+  "test-cov",
+  "cov-report"
+]
+cov-report = [
+  "- coverage combine",
+  "coverage report"
+]
+lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+prep-release = [
+  "hatch version release",
+  "hatch run changelog:scriv collect --add",
+  "hatch run lint || hatch run lint",
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
+]
+pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+secrets = "pre-commit run gitleaks --all-files"
+test = [
+  "test-unit",
+  "test-integration"
+]
+test-cov = "coverage run -m pytest tests/unit {args}"
+test-integration = [
+  "pytest tests/integration {args}"
+]
+test-unit = "pytest tests/unit {args}"
+update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
+
+[envs.docs]
+dependencies = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocs-git-revision-date-localized-plugin",
+  "mkdocstrings[python]"
+]
+detached = true
+scripts = {serve = "mkdocs serve"}
+
+[version]
+path = "src/vizro_ai/__init__.py"

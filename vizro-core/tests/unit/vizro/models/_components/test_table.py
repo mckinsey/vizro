@@ -28,12 +28,14 @@ def expected_table():
     return dcc.Loading(
         html.Div(
             [
-                None,
+                html.Div(hidden=True),
                 html.Div(dash_table.DataTable(), id="text_table"),
             ],
             className="table-container",
             id="text_table_outer",
-        )
+        ),
+        color="grey",
+        parent_className="loading-container",
     )
 
 

@@ -1,0 +1,48 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+  "pandas",
+  "tabulate",
+  "openai>=0.27.8",
+  "langchain==0.0.317",
+  "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
+  "vizro>=0.1.4",  # TODO set upper bound later
+  "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
+  "urllib3>=2.0.7"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-6002459
+]
+description = "Vizro-AI is a tool for generating data visualizations"
+dynamic = ["version"]
+license-files = {paths = ["LICENSE.txt"]}
+name = "vizro_ai"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.coverage.paths]
+vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+fail_under = 45
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source_pkgs = ["vizro_ai"]

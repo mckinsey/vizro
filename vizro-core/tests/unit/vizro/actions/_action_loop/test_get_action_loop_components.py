@@ -19,7 +19,7 @@ def fundamental_components():
     return [
         dcc.Store(id="action_finished"),
         dcc.Store(id="remaining_actions", data=[]),
-        html.Div(id="cycle_breaker_div", style={"display": "hidden"}),
+        html.Div(id="cycle_breaker_div", hidden=True),
         dcc.Store(id="cycle_breaker_empty_output_store"),
     ]
 
@@ -149,7 +149,7 @@ class TestGetActionLoopComponents:
         ],
         indirect=True,
     )
-    def test_all_action_loop_components(  # noqa: PLR0913  # pylint: disable=too-many-arguments
+    def test_all_action_loop_components(  # pylint: disable=too-many-arguments
         self,
         fundamental_components,
         gateway_components,
