@@ -1,10 +1,14 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+import logging
+import time
 from typing import Callable, Dict, Union
 
 import pandas as pd
+from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
 
+logger = logging.getLogger(__name__)
 # Really ComponentID and DatasetName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 ComponentID = str
@@ -21,12 +25,15 @@ class DataManager:
 
     """
 
+    _cache = Cache(config={"CACHE_TYPE": "NullCache"})
+
     def __init__(self):
         self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
 
+    # happens before dashboard build
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
@@ -46,6 +53,7 @@ class DataManager:
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
             )
 
+    # happens before dashboard build
     @_state_modifier
     def _add_component(self, component_id: ComponentID, dataset_name: DatasetName):
         """Adds a mapping from `component_id` to `dataset_name`."""
@@ -60,19 +68,33 @@ class DataManager:
             )
         self.__component_to_original[component_id] = dataset_name
 
-    def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
-        """Returns the original data for `component_id`."""
-        if component_id not in self.__component_to_original:
-            raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-        dataset_name = self.__component_to_original[component_id]
-
+    @_cache.memoize()
+    def _get_original_data(self, dataset_name: DatasetName) -> pd.DataFrame:
+        """Returns the original data for `dataset_name`."""
         # Populate original data on first access only
+        logger.debug("get original data: %s", dataset_name)
+        logger.debug("loading...")
+        time.sleep(2.0)
         if dataset_name not in self.__original_data:
             self.__original_data[dataset_name] = self.__lazy_data[dataset_name]()
 
         # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
         # to not do any inplace=True operations, but probably safest to leave it here.
         return self.__original_data[dataset_name].copy()
+
+    def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
+        """Returns the original data for `component_id`."""
+        logger.debug("get_component_data: %s", component_id)
+        if component_id not in self.__component_to_original:
+            raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
+        dataset_name = self.__component_to_original[component_id]
+
+        component_data = self._get_original_data(dataset_name)
+
+        # clean up original data if the cache type is not NullCache
+        self._clean_original_data()
+
+        return component_data
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
@@ -83,6 +105,23 @@ class DataManager:
 
     def _clear(self):
         self.__init__()  # type: ignore[misc]
+
+    # to clear original data if the cache type is not NullCache
+    def _clean_original_data(self):
+        """Clean up original data if the cache type is not NullCache.
+
+        This only drops the original data if the same key is in the lazy data.
+        """
+        logger.debug(f"__original_data before cleaning: {self.__original_data.keys()}")
+        # logger.debug(f"config: {self._cache.config}")
+        logger.debug("clean original data")
+        if self._cache.config["CACHE_TYPE"] == "NullCache":
+            return
+        for dataset_name in list(self.__original_data.keys()):
+            if dataset_name in self.__lazy_data:
+                logger.debug(f"drop --> {dataset_name}")
+                del self.__original_data[dataset_name]
+        logger.debug(f"__original_data after cleaning: {self.__original_data.keys()}")
 
 
 data_manager = DataManager()
