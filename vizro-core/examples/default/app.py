@@ -450,7 +450,7 @@ def create_country_analysis():
                 actions=[
                     vm.Action(
                         function=export_data(
-                            targets=["table_country", "line_country"],
+                            targets=["line_country"],
                         )
                     ),
                 ],

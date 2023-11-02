@@ -67,7 +67,7 @@ div.page_container .Select--single .Select-value {
   > .Select-control
   .Select-value
   .Select-value-label {
-  color: var(--text-primary);
+  color: var(--text-primary) !important; /* Required so text color don't change caused by adding table */
 }
 
 /* Tags ---------------------------*/
@@ -145,5 +145,5 @@ wrapper **/
 }
 
 .Select-input > input {
-  padding: 0 !important; /*Required so tags don't jump caused by adding table */
+  padding: 0 !important; /* Required so tags don't jump caused by adding table */
 }
