@@ -39,6 +39,16 @@ These models can be exploited for various malicious activities. Users should be 
 
 It's crucial for users to remain informed, cautious, and ethical in their applications.
 
+## Dependencies, Code Scanners and Infosec
+
+It may occur that dependencies of `vizro-ai` get flagged by code scanners and other infosec tools. As a consequence it may happen that
+`vizro-ai` also get flagged.
+
+While we aim to resolve any flagged issues as soon as possible, there may not always be an immediate available fix, especially in a very dynamic environment such as generative AI. We encourage users to investigate if any flagged infosec issues are actually related
+to any functionality used in our code base or if they only concern functionality outside the scope of `vizro-ai`.
+
+In case those issues are related to code execution, note that `vizro-ai` has its own process of executing dynamic code (see [Safeguard Execution of Dynamic Code](safeguard.md)), and does not rely on its dependencies to do so.
+
 ## Execution of Dynamic Code in Vizro-AI
 
 The `exec()` statement is used in `vizro-ai`. It allows for dynamic execution of Python programs which can be powerful, but can also pose security risk

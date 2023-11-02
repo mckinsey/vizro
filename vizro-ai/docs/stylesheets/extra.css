@@ -41,3 +41,7 @@
 td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;
 }
+
+.md-source__fact--version {
+  display: none;
+}
