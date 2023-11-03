@@ -38,7 +38,7 @@ class Accordion(VizroBaseModel):
     def build(self, *, active_page_id=None):
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
-            return html.Div(hidden=True)
+            return html.Div(hidden=True, id="nav_panel_outer")
 
         accordion_items = []
         for page_group, page_members in self.pages.items():

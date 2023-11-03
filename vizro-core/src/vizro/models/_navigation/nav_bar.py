@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import List, Optional, cast, Literal
+from typing import List, Literal, Optional, cast
 
 from dash import html
 from pydantic import validator
@@ -33,9 +33,9 @@ class NavBar(VizroBaseModel):
     @validator("items", always=True)
     def validate_items(cls, items, values):
         if not items:
-            if isinstance(values["pages"], list):
+            if isinstance(values.get("pages"), list):
                 return [NavItem(pages=[page]) for page in values["pages"]]
-            if isinstance(values["pages"], dict):
+            if isinstance(values.get("pages"), dict):
                 return [NavItem(pages=value) for page, value in values["pages"].items()]
 
         return items
@@ -46,7 +46,7 @@ class NavBar(VizroBaseModel):
             children=[
                 html.Div(
                     children=[item.build(active_page_id=active_page_id) for item in self.items],
-                    className="nav_bar",
+                    className="nav-bar",
                     id="nav_bar_outer",
                 ),
                 self._nav_panel_build(active_page_id=active_page_id),
@@ -59,4 +59,4 @@ class NavBar(VizroBaseModel):
             if active_page_id in pages:
                 return cast(NavBar, item.selector).build(active_page_id=active_page_id)
 
-            return html.Div(className="hidden", id="nav_panel_outer")
+            return html.Div(hidden=True, id="nav_panel_outer")

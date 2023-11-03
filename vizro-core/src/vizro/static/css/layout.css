@@ -97,7 +97,7 @@
   width: 100%;
 }
 
-.nav_bar {
+.nav-bar {
   display: inline-flex;
   flex-direction: column;
   width: 64px;

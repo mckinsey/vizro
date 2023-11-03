@@ -159,7 +159,7 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
 ## Changing Selectors
 
 If you want to have a different selector for dashboard navigation you have to provide the `selector` argument of the [`Navigation`][vizro.models.Navigation] with a different selector.
-Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordion`][vizro.models.Accordion]. If `selector` is not defined it defaults to `Accordion`. 
+Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordion`][vizro.models.Accordion]. If `selector` is not defined it defaults to `Accordion`.
 
 If you want to add icons to your dashboard, you have to provide [`NavBar`][vizro.models.NavBar] model
 
@@ -234,9 +234,9 @@ If you want to add icons to your dashboard, you have to provide [`NavBar`][vizro
                 - My first page
              Second title:
                 - My second page
-            selector: 
+            selector:
                 type: navbar
-                
+
         ```
     === "Result"
         [![NavigationIcons]][NavigationIcons]
@@ -252,14 +252,14 @@ For further customizations of icons, you can always refer to the [`NavItem`][viz
 - provide additional text string to be displayed below the icon by using `text`argument of `NavItem` model
 - provide text to be displayed in the icon tooltip on hover by using `tooltip` argument of `NavItem` model
 
-If you want to customise icons in your dashboard, and do the following steps:
+If you want to customize icons in your dashboard, and do the following steps:
 
 1. To be able to perform any of the customizations mentioned above, we need to build a list of `NavItem` models and provide it to the `items` argument of the `NavBar`.
 
    ```
     NavBar(
         items=[
-            NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"), 
+            NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"),
             NavItem(pages=["My second page"], icon="summarize", tooltip="Summarization page"),
        ]
     )
@@ -271,7 +271,7 @@ If you want to customise icons in your dashboard, and do the following steps:
     Navigation(
         selector=NavBar(
             items=[
-                NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"), 
+                NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"),
                 NavItem(pages=["My second page"], icon="summarize", tooltip="Summarization page"),
             ]
         )
@@ -285,7 +285,7 @@ If you want to customise icons in your dashboard, and do the following steps:
         navigation=Navigation(
             selector=NavBar(
                 items=[
-                    NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"), 
+                    NavItem(pages=["My first page"], icon="dashboard", text="Dashboard"),
                     NavItem(pages=["My second page"], icon="summarize", tooltip="Summarization page"),
                ]
            )
@@ -361,7 +361,7 @@ If you want to customise icons in your dashboard, and do the following steps:
                 - My first page
              Second title:
                 - My second page
-            selector: 
+            selector:
                 type: navbar
                 items:
                     - type: navitem
@@ -379,7 +379,7 @@ If you want to customise icons in your dashboard, and do the following steps:
     [CustomIcons]: ../../assets/user_guides/navigation/icons_customized.png
 
 !!! tip
-    If you would like to turn off icon images you can specify the empty string `""` in the `icon` argument. 
+    If you would like to turn off icon images you can specify the empty string `""` in the `icon` argument.
 
 ## Navigation options
 
@@ -396,7 +396,7 @@ If you want to customise icons in your dashboard, and do the following steps:
 vm.Navigation(
     selector=vm.Accordion(
         pages=[
-            "My first page", 
+            "My first page",
             "My second page"
         ]
     )
@@ -423,7 +423,7 @@ vm.Navigation(
         items=[
             vm.NavItem(
                 pages=[
-                    "My first page", 
+                    "My first page",
                     "My third page"]),
             vm.NavItem(
                 pages=["My second page"])
@@ -454,12 +454,12 @@ vm.Navigation(
         items=[
             vm.NavItem(
                 pages=[
-                    "My first page", 
+                    "My first page",
                     "My third page"
-                ], 
+                ],
                 icon="dashboard"),
             vm.NavItem(
-                pages=["My second page"], 
+                pages=["My second page"],
                 icon="summarize"),
         ]
 )

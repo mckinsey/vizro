@@ -153,7 +153,6 @@ class Page(VizroBaseModel):
                 patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
                 return [patched_figure] * len(outputs)
 
-
     def _create_component_container(self, components_content):
         component_container = html.Div(
             children=[

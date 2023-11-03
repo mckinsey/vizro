@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Optional, Literal
+from typing import Literal, Optional
 
 import dash
 import dash_bootstrap_components as dbc
@@ -33,10 +33,11 @@ class NavItem(VizroBaseModel):
         selector (Optional[Accordion]): See [`Accordion`][vizro.models.Accordion]. Defaults to `None`.
     """
 
-    type:  Literal["navitem"] = "navitem"
+    type: Literal["navitem"] = "navitem"
     pages: NavPagesType
     icon: str = Field(
-        "dashboard", description="URI (absolute) of the embeddable content or icon name from Google Material Icon library."
+        "dashboard",
+        description="URI (absolute) of the embeddable content or icon name from Google Material Icon library.",
     )
     max_text_length: int = Field(8, description="Character limit for `text` argument.")
     text: Optional[str] = Field(None, description="Text to be displayed below the icon.")
@@ -96,7 +97,7 @@ class NavItem(VizroBaseModel):
 
     def _create_icon_div(self):
         if not self.icon:
-            return html.Div(className="hidden")
+            return html.Div(className="hidden", id="nav_bar_outer")
 
         if os.path.isabs(self.icon):
             return html.Img(src=self.icon, className="nav-icon")
