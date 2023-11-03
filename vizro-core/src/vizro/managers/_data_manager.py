@@ -25,7 +25,7 @@ class DataManager:
 
     """
 
-    _cache = Cache(config={"CACHE_TYPE": "NullCache"})
+    _cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     def __init__(self):
         self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
@@ -68,12 +68,20 @@ class DataManager:
             )
         self.__component_to_original[component_id] = dataset_name
 
-    @_cache.memoize()
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
+        self._cache_dataset_arguments = {"iris": {"timeout": 50}, "other_dataset": {"timeout": 100}}
+
+        @self._cache.memoize(**self._cache_dataset_arguments.get(dataset_name, {}))
+        # timeout (including 0 -> never expires), unless -> always executes function (like
+        # timeout=0.000001) and doesn't update cache.
+        # timeout and unless need to depend on dataset_name
+        def inner():
+            self.__lazy_data[dataset_name]()
+
         """Returns the original data for `dataset_name`."""
         logger.debug("reloading lazy data: %s", dataset_name)
         time.sleep(2.0)
-        return self.__lazy_data[dataset_name]()
+        return inner()
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""

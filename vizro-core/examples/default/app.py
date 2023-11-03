@@ -1,5 +1,6 @@
 """Example to show dashboard configuration."""
 import os
+import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -146,3 +147,18 @@ if __name__ == "__main__":
     #     processes=3,
     #     dev_tools_hot_reload=False
     # )
+
+# Options for configuring per-dataset arguments:
+# 1.
+data_manager["iris"] = lambda: pd.DataFrame()
+data_manager["iris"].set_cache(timeout=50)
+
+
+# 2.
+class VizroDataSet:
+    pass
+
+
+data_manager["iris"] = VizroDataSet(lambda: pd.DataFrame(), timeout=50)
+
+# 3.
