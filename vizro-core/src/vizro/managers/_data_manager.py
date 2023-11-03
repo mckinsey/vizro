@@ -29,7 +29,8 @@ class DataManager:
 
     def __init__(self):
         self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
-        self.__component_to_lazy: Dict[ComponentID, DatasetName] = {}
+        self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
+        self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
 
     # happens before dashboard build
@@ -40,13 +41,13 @@ class DataManager:
         This is the only user-facing function when configuring a simple dashboard. Others are only used internally
         in Vizro or advanced users who write their own actions.
         """
-        if dataset_name in self.__lazy_data:
+        if dataset_name in self.__original_data or dataset_name in self.__lazy_data:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
             self.__lazy_data[dataset_name] = data
         elif isinstance(data, pd.DataFrame):
-            self.__lazy_data[dataset_name] = lambda: data
+            self.__original_data[dataset_name] = data
         else:
             raise TypeError(
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
@@ -56,16 +57,16 @@ class DataManager:
     @_state_modifier
     def _add_component(self, component_id: ComponentID, dataset_name: DatasetName):
         """Adds a mapping from `component_id` to `dataset_name`."""
-        if dataset_name not in self.__lazy_data:
+        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
             raise KeyError(f"Dataset {dataset_name} does not exist.")
-        if component_id in self.__component_to_lazy:
+        if component_id in self.__component_to_original:
             raise ValueError(
                 f"Component with id={component_id} already exists and is mapped to dataset "
-                f"{self.__component_to_lazy[component_id]}. Components must uniquely map to a dataset across the "
+                f"{self.__component_to_original[component_id]}. Components must uniquely map to a dataset across the "
                 f"whole dashboard. If you are working from a Jupyter Notebook, please either restart the kernel, or "
                 f"use 'from vizro import Vizro; Vizro._reset()`."
             )
-        self.__component_to_lazy[component_id] = dataset_name
+        self.__component_to_original[component_id] = dataset_name
 
     @_cache.memoize()
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
@@ -77,15 +78,16 @@ class DataManager:
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
         logger.debug("get_component_data: %s", component_id)
-        if component_id not in self.__component_to_lazy:
+        if component_id not in self.__component_to_original:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-        dataset_name = self.__component_to_lazy[component_id]
+        dataset_name = self.__component_to_original[component_id]
 
-        return self._load_lazy_data(dataset_name)
-        # else:  # dataset_name is in self.__original_data
-        #     # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
-        #     # to not do any inplace=True operations, but probably safest to leave it here.
-        #     return self.__original_data[dataset_name].copy()
+        if dataset_name in self.__lazy_data:
+            return self._load_lazy_data(dataset_name)
+        else:  # dataset_name is in self.__original_data
+            # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
+            # to not do any inplace=True operations, but probably safest to leave it here.
+            return self.__original_data[dataset_name].copy()
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
