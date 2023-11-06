@@ -59,9 +59,17 @@ The dashboard application can be launched in jupyter environment in `inline`, `e
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
-## Launch it via Gunicorn
+## Deployment of Vizro app
 !!!warning "In production"
     In production, it is recommended **not** to use the default flask server. One of the options here is gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
+
+A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a Vizro app, similar guidance applies as for the underlying frameworks:
+
+- [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
+- [Dash deployment documentation](https://dash.plotly.com/deployment)
+
+In particular, `app = Vizro()` exposes the underyling Flask app through `app.dash.server`. This provides the application instance to a WSGI server such as [Gunicorn](https://gunicorn.org/).
+
 !!! example "Use gunicorn"
     === "app.py"
         ```py
@@ -82,22 +90,9 @@ The dashboard application can be launched in jupyter environment in `inline`, `e
         app = Vizro().build(dashboard)
         server = app.dash.server
         ```
-You need to expose the server via `app.dash.server` in order to use gunicorn as your wsgi here.
-Run it via
+To run using Gunicorn with four worker processes, execute
 ```bash
-gunicorn app:server --workers 3
+gunicorn app:server --workers 4
 ```
-in the cmd. For more gunicorn configuration, please refer to [gunicorn docs](https://docs.gunicorn.org/en/stable/configure.html)
+in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
-
-## Deployment of Vizro app
-In general, Vizro is returning a Dash app. So if you want to deploy a Vizro app, similar steps apply as if you were to deploy a Dash app.
-For more details, see the docs on [Dash for deployment](https://dash.plotly.com/deployment#heroku-for-sharing-public-dash-apps).
-
-For reference (where app is a Dash app):
-
-| Vizro                          | Dash                            |
-|:-------------------------------|:--------------------------------|
-| Vizro()                        | app                             |
-| Vizro().build(dashboard)       | app (after creating app.layout) |
-| Vizro().build(dashboard).run() | app.run()                       |
