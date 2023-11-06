@@ -7,6 +7,7 @@ import pytest
 from pydantic import ValidationError
 
 import vizro.models as vm
+from dash import html
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
@@ -46,6 +47,18 @@ class TestNavBarInstantiation:
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 def test_navbar_build_default(default_navigation_div):
+    navbar = vm.NavBar()
+
+    navbar.items[0].id = "nav_id_1"
+    navbar.items[1].id = "nav_id_2"
+    result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(default_navigation_div, cls=plotly.utils.PlotlyJSONEncoder))
+
+    assert result == expected
+
+
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
+def test_navbar_build_pages(default_navigation_div):
     navbar = vm.NavBar(pages=["Page 1", "Page 2"])
 
     navbar.items[0].id = "nav_id_1"
