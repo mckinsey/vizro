@@ -32,9 +32,9 @@ class TestNavBarInstantiation:
         assert nav_bar.pages == pages_as_dict
 
     def test_navbar_valid_pages_not_all_included(self):
-        navigation = vm.NavBar(pages=["Page 1"], id="nav_bar")
-        assert navigation.id == "nav_bar"
-        assert navigation.pages == ["Page 1"]
+        nav_bar = vm.NavBar(pages=["Page 1"], id="nav_bar")
+        assert nav_bar.id == "nav_bar"
+        assert nav_bar.pages == ["Page 1"]
 
     def test_navbar_invalid_pages_empty_list(self):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
@@ -46,44 +46,57 @@ class TestNavBarInstantiation:
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-def test_navbar_build_default(default_navigation_div):
+def test_navbar_build_default(navbar_div_default):
     navbar = vm.NavBar()
 
     navbar.items[0].id = "nav_id_1"
     navbar.items[1].id = "nav_id_2"
     result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(default_navigation_div, cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(navbar_div_default, cls=plotly.utils.PlotlyJSONEncoder))
 
     assert result == expected
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-def test_navbar_build_pages(default_navigation_div):
+def test_navbar_build_pages_as_list(navbar_div_default):
     navbar = vm.NavBar(pages=["Page 1", "Page 2"])
 
     navbar.items[0].id = "nav_id_1"
     navbar.items[1].id = "nav_id_2"
     result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(default_navigation_div, cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(navbar_div_default, cls=plotly.utils.PlotlyJSONEncoder))
 
     assert result == expected
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-def test_navigation_build_1(default_navigation_div):
+def test_navbar_build_pages_as_dict(navbar_div_from_dict):
+    navbar = vm.NavBar(pages={"Icon": ["Page 1", "Page 2"]})
+
+    navbar.items[0].id = "accordion_list"
+    result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
+
+    print("result>>>>", result)
+    expected = json.loads(json.dumps(navbar_div_from_dict, cls=plotly.utils.PlotlyJSONEncoder))
+
+    assert result == expected
+
+
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
+def test_navbar_build_items(navbar_div_default):
     navbar = vm.NavBar(items=[vm.NavItem(pages=["Page 1"]), vm.NavItem(pages=["Page 2"])])
     navbar.items[0].id = "nav_id_1"
     navbar.items[1].id = "nav_id_2"
 
     result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(default_navigation_div, cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(navbar_div_default, cls=plotly.utils.PlotlyJSONEncoder))
 
     assert result == expected
 
 
 @pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 @pytest.mark.parametrize("pages", [(["Page 1", "Page 2"]), ([["Page 1"], ["Page 2"]])])
-def test_navbar_and_navigation_build_default(default_navigation_div, pages):
+def test_navbar_and_navigation_build_default(navbar_div_default, pages):
     if isinstance(pages[0], str):
         navbar = vm.NavBar(pages=pages)
     else:
@@ -92,7 +105,7 @@ def test_navbar_and_navigation_build_default(default_navigation_div, pages):
     navbar.items[0].id = "nav_id_1"
     navbar.items[1].id = "nav_id_2"
     result = json.loads(json.dumps(navbar.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(default_navigation_div, cls=plotly.utils.PlotlyJSONEncoder))
+    expected = json.loads(json.dumps(navbar_div_default, cls=plotly.utils.PlotlyJSONEncoder))
 
     assert result == expected
 
@@ -117,6 +130,30 @@ def test_navbar_and_navigation_build_equality(nav_pages, item_pages, nav_id_1="n
 
     navbar_with_items.items[0].id, navbar_with_items.items[1].id = nav_id_1, nav_id_2
     navbar_with_items.items[0].selector.id, navbar_with_items.items[1].selector.id = "accordion_1", "accordion_2"
+
+    navbar_with_pages = json.loads(
+        json.dumps(navbar_with_pages.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder)
+    )
+    navbar_with_items = json.loads(
+        json.dumps(navbar_with_items.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder)
+    )
+
+    assert navbar_with_pages == navbar_with_items
+
+
+@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
+@pytest.mark.parametrize(
+    "nav_pages, item_pages",
+    [
+        (["Page 1"], ["Page 1"]),
+        ({"title_1": ["Page 1"]}, {"title_1": ["Page 1"]}),
+    ],
+)
+def test_navbar_build_equality(nav_pages, item_pages, nav_id="nav_id"):
+    navbar_with_pages = vm.NavBar(pages=nav_pages)
+    navbar_with_items = vm.NavBar(items=[vm.NavItem(pages=item_pages, id=nav_id)])
+
+    navbar_with_pages.items[0].id = nav_id
 
     navbar_with_pages = json.loads(
         json.dumps(navbar_with_pages.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder)

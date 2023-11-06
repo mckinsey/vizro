@@ -99,7 +99,7 @@ def accordion_from_pages_as_dict():
 
 
 @pytest.fixture
-def default_navigation_div():
+def navbar_div_default():
     return html.Div(
         children=[
             html.Div(
@@ -141,5 +141,37 @@ def default_navigation_div():
                 id="nav_bar_outer",
             ),
             html.Div(hidden=True, id="nav_panel_outer"),
+        ]
+    )
+
+
+@pytest.fixture
+def navbar_div_from_dict(accordion_from_page_as_list):
+    accordion = accordion_from_page_as_list
+    return html.Div(
+        children=[
+            html.Div(
+                children=[
+                    dbc.Button(
+                        id="nav_id_1",
+                        children=[
+                            html.Div(
+                                children=[
+                                    html.Span("dashboard", className="material-symbols-outlined"),
+                                    html.Div(className="hidden"),
+                                ],
+                                className="nav-icon-text",
+                            ),
+                            None,
+                        ],
+                        className="icon-button",
+                        href="/",
+                        active=True,
+                    ),
+                ],
+                className="nav-bar",
+                id="nav_bar_outer",
+            ),
+            accordion,
         ]
     )
