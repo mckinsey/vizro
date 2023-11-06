@@ -5,11 +5,11 @@ defaults:
     working-directory: vizro-ai
 
 on:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   pull_request:
-    # branches:
-    #   - "main"
+    branches:
+      - "main"
 
 concurrency:
   group: test-integration-${{ github.head_ref }}
