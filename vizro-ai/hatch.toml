@@ -14,7 +14,8 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "toml",
-  "nbformat>=4.2.0"
+  "nbformat>=4.2.0",
+  "pyhamcrest"
 ]
 
 [envs.default.env-vars]
@@ -44,7 +45,7 @@ test = [
 ]
 test-cov = "coverage run -m pytest tests/unit {args}"
 test-integration = [
-  "pytest tests/integration {args}"
+  "pytest -v tests/integration"
 ]
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
