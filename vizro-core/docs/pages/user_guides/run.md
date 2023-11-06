@@ -68,7 +68,7 @@ A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a 
 - [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
 - [Dash deployment documentation](https://dash.plotly.com/deployment)
 
-In particular, `app = Vizro()` exposes the underyling Flask app through `app.dash.server`. This provides the application instance to a WSGI server such as [Gunicorn](https://gunicorn.org/).
+In particular, `app = Vizro()` exposes the underlying Flask app through `app.dash.server`. This provides the application instance to a WSGI server such as [Gunicorn](https://gunicorn.org/).
 
 !!! example "Use gunicorn"
     === "app.py"
@@ -95,4 +95,3 @@ To run using Gunicorn with four worker processes, execute
 gunicorn app:server --workers 4
 ```
 in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
-
