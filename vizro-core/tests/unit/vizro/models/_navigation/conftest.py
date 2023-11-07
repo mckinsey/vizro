@@ -99,53 +99,6 @@ def accordion_from_pages_as_dict():
 
 
 @pytest.fixture
-def navbar_div_default():
-    return html.Div(
-        children=[
-            html.Div(
-                children=[
-                    dbc.Button(
-                        id="nav_id_1",
-                        children=[
-                            html.Div(
-                                children=[
-                                    html.Span("dashboard", className="material-symbols-outlined"),
-                                    html.Div(className="hidden"),
-                                ],
-                                className="nav-icon-text",
-                            ),
-                            None,
-                        ],
-                        className="icon-button",
-                        href="/",
-                        active=True,
-                    ),
-                    dbc.Button(
-                        id="nav_id_2",
-                        children=[
-                            html.Div(
-                                children=[
-                                    html.Span("dashboard", className="material-symbols-outlined"),
-                                    html.Div(className="hidden"),
-                                ],
-                                className="nav-icon-text",
-                            ),
-                            None,
-                        ],
-                        className="icon-button",
-                        href="/page-2",
-                        active=False,
-                    ),
-                ],
-                className="nav-bar",
-                id="nav_bar_outer",
-            ),
-            html.Div(hidden=True, id="nav_panel_outer"),
-        ]
-    )
-
-
-@pytest.fixture
 def navbar_div_from_dict(accordion_from_page_as_list):
     accordion = accordion_from_page_as_list
     return html.Div(
@@ -174,4 +127,46 @@ def navbar_div_from_dict(accordion_from_page_as_list):
             ),
             accordion,
         ]
+    )
+
+
+@pytest.fixture
+def nav_item_default():
+    return dbc.Button(
+        id="navitem",
+        children=[
+            html.Div(
+                children=[html.Span("dashboard", className="material-symbols-outlined"), html.Div(className="hidden")],
+                className="nav-icon-text",
+            ),
+            None,
+        ],
+        className="icon-button",
+        href="/",
+        active=True,
+    )
+
+
+@pytest.fixture
+def nav_item_with_optional():
+    return dbc.Button(
+        id="navitem",
+        children=[
+            html.Div(
+                children=[
+                    html.Span("home", className="material-symbols-outlined"),
+                    html.Div(children=["This is "], className="icon-text"),
+                ],
+                className="nav-icon-text",
+            ),
+            dbc.Tooltip(
+                children=html.P("This is a long text input"),
+                target="navitem",
+                placement="bottom",
+                className="custom-tooltip",
+            ),
+        ],
+        className="icon-button",
+        href="/",
+        active=True,
     )
