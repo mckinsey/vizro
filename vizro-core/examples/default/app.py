@@ -1,6 +1,8 @@
 """Example to show dashboard configuration."""
 import os
 
+import dash
+import flask
 import pandas as pd
 
 import vizro.models as vm
@@ -530,7 +532,20 @@ dashboard = vm.Dashboard(
         }
     ),
 )
+# Vizro._user_assets_folder = os.path.abspath("../assets")
+vizro_app = Vizro(assets_folder="../assets/").build(dashboard)
+# url_base_pathname="/dashboard/"
+
+app = vizro_app.dash.server
+# debug=False,
+# use_reloader=False)
 
 if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+    vizro_app.run()
+# server = flask.Flask(__name__)
+#
+# @server.route("/")
+# def home():
+#     return "Hello, Flask!"
+
+# app = dash.Dash(name=__name__, server=server, url_base_pathname="/dash/")

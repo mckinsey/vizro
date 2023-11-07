@@ -16,24 +16,50 @@ logger = logging.getLogger(__name__)
 class Vizro:
     """The main class of the `vizro` package."""
 
-    _user_assets_folder = Path.cwd() / "assets"
+    # _user_assets_folder = Path.cwd() / "assets"
     _lib_assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """Initializes Dash."""
-        _js, _css = _append_styles(self._lib_assets_folder, STATIC_URL_PREFIX)
+
+        # assets_url_path: The local urls for assets will be:
+        #     ``requests_pathname_prefix + assets_url_path + '/' + asset_path``
+        #     where ``asset_path`` is the path to a file inside ``assets_folder``.
+        # Both `requests_pathname_prefix` and
+        # `routes_pathname_prefix` default to `url_base_pathname`.
+        #  self.dash.config.requests_pathname_prefix
         self.dash = dash.Dash(
+            **kwargs,
             use_pages=True,
             pages_folder="",
-            external_scripts=_js,
-            external_stylesheets=_css,
-            assets_folder=self._user_assets_folder,
+            # external_scripts=_js,
+            # external_stylesheets=_css,
+            # assets_folder=self._user_assets_folder,
         )
 
-        @self.dash.server.route("/<url_prefix>/<path:filepath>")
-        def serve_static(filepath, url_prefix=STATIC_URL_PREFIX):
-            """Serve vizro static contents."""
-            return flask.send_from_directory(self._lib_assets_folder, filepath)
+        _js, _css = _append_styles(self._lib_assets_folder, self.dash.config.requests_pathname_prefix + "vizro")
+        self.dash.config.external_scripts.extend(_js)
+        self.dash.config.external_stylesheets.extend(_css)
+
+        config = self.dash.config
+        bp_prefix = config.routes_pathname_prefix.replace("/", "_").replace(".", "_")
+        assets_blueprint_name = f"{bp_prefix}vizro_assets"
+
+        self.dash.server.register_blueprint(
+            flask.Blueprint(
+                assets_blueprint_name,
+                config.name,
+                static_folder=self._lib_assets_folder,
+                static_url_path=config.routes_pathname_prefix + "vizro",
+            )
+        )
+
+        # @self.dash.server.route("/<url_prefix>/<path:filepath>")
+        # def serve_static(filepath, url_prefix=STATIC_URL_PREFIX):
+        #     """Serve vizro static contents."""
+        #     # Directs requests to /vizro/X to vizro/src/static/X
+        #     # But does not include url_base_pathname
+        #     return flask.send_from_directory(self._lib_assets_folder, filepath)
 
     def build(self, dashboard: Dashboard):
         """Builds the dashboard.
@@ -97,10 +123,10 @@ def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]]
     for current_dir, _, files in sorted(os.walk(walk_dir)):
         base = "" if current_dir == walk_dir else os.path.relpath(current_dir, walk_dir).replace("\\", "/")
         for f in sorted(files):
-            path = os.path.join("/" + url_prefix, base, f) if base else os.path.join("/" + url_prefix, f)
+            path = os.path.join(url_prefix, base, f) if base else os.path.join(url_prefix, f)
             extension = os.path.splitext(f)[1]
             if extension == ".js":
-                _vizro_js.append({"src": path, "type": "module"})
+                _vizro_js.append({"src": path, "type": "module"})  # what is this?
             elif extension == ".css":
                 _vizro_css.append(path)
     return _vizro_js, _vizro_css
