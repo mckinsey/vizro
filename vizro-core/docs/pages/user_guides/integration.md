@@ -34,7 +34,7 @@ The `catalog` variable may have been created in a number of different ways:
 2. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `catalog`.
 3. Data Catalog configuration file (e.g. `catalog.yaml`). This can create a `catalog` entirely independently of a Kedro project using [`kedro.io.DataCatalog.from_config`](https://docs.kedro.org/en/stable/kedro.io.DataCatalog.html#kedro.io.DataCatalog.from_config).
 
-The full code for these different cases is given below. 
+The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog to the Vizro Data Manager"
     === "app.py (Kedro project path)"
