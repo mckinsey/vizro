@@ -583,4 +583,4 @@ dashboard = {
 
 dashboard = Dashboard(**dashboard)
 
-app = Vizro(assets_folder="../assets").build(dashboard).run()
+Vizro(assets_folder="../assets").build(dashboard).run()
