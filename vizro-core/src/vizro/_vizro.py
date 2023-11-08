@@ -1,6 +1,6 @@
 import logging
 import os
-from pathlib import Path
+from pathlib import Path, PosixPath
 from typing import Dict, List, Tuple
 
 import dash
@@ -16,50 +16,34 @@ logger = logging.getLogger(__name__)
 class Vizro:
     """The main class of the `vizro` package."""
 
-    # _user_assets_folder = Path.cwd() / "assets"
-    _lib_assets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
-
     def __init__(self, **kwargs):
         """Initializes Dash."""
+        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="")
 
-        # assets_url_path: The local urls for assets will be:
-        #     ``requests_pathname_prefix + assets_url_path + '/' + asset_path``
-        #     where ``asset_path`` is the path to a file inside ``assets_folder``.
-        # Both `requests_pathname_prefix` and
-        # `routes_pathname_prefix` default to `url_base_pathname`.
-        #  self.dash.config.requests_pathname_prefix
-        self.dash = dash.Dash(
-            **kwargs,
-            use_pages=True,
-            pages_folder="",
-            # external_scripts=_js,
-            # external_stylesheets=_css,
-            # assets_folder=self._user_assets_folder,
-        )
+        # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
+        # objects so the user can specify additional external_scripts and externaL_stylesheets via kwargs.
+        vizro_assets_folder = Path(__file__).with_name("static")
+        static_url_path = self.dash.config.requests_pathname_prefix + STATIC_URL_PREFIX
+        vizro_css = self._get_external_assets(static_url_path, vizro_assets_folder, "css")
+        vizro_js = [
+            {"src": path, "type": "module"}
+            for path in self._get_external_assets(static_url_path, vizro_assets_folder, "js")
+        ]
+        self.dash.config.external_stylesheets.extend(vizro_css)
+        self.dash.config.external_scripts.extend(vizro_js)
 
-        _js, _css = _append_styles(self._lib_assets_folder, self.dash.config.requests_pathname_prefix + "vizro")
-        self.dash.config.external_scripts.extend(_js)
-        self.dash.config.external_stylesheets.extend(_css)
-
-        config = self.dash.config
-        bp_prefix = config.routes_pathname_prefix.replace("/", "_").replace(".", "_")
-        assets_blueprint_name = f"{bp_prefix}vizro_assets"
-
+        # Serve all assets (including files other than css and js) that live in vizro_assets_folder at the
+        # route /vizro. Based on code in Dash.init_app that serves assets_folder. This respects the case that the
+        # dashboard is not hosted at the root of the server, e.g. http://www.example.com/dashboard/vizro.
+        blueprint_prefix = self.dash.config.routes_pathname_prefix.replace("/", "_").replace(".", "_")
         self.dash.server.register_blueprint(
             flask.Blueprint(
-                assets_blueprint_name,
-                config.name,
-                static_folder=self._lib_assets_folder,
-                static_url_path=config.routes_pathname_prefix + "vizro",
+                f"{blueprint_prefix}vizro_assets",
+                self.dash.config.name,
+                static_folder=vizro_assets_folder,
+                static_url_path=static_url_path,
             )
         )
-
-        # @self.dash.server.route("/<url_prefix>/<path:filepath>")
-        # def serve_static(filepath, url_prefix=STATIC_URL_PREFIX):
-        #     """Serve vizro static contents."""
-        #     # Directs requests to /vizro/X to vizro/src/static/X
-        #     # But does not include url_base_pathname
-        #     return flask.send_from_directory(self._lib_assets_folder, filepath)
 
     def build(self, dashboard: Dashboard):
         """Builds the dashboard.
@@ -114,19 +98,10 @@ class Vizro:
         dash._pages.CONFIG.clear()
         dash._pages.CONFIG.__dict__.clear()
 
-
-def _append_styles(walk_dir: str, url_prefix: str) -> Tuple[List[Dict[str, str]], List[str]]:
-    """Append vizro css and js resources."""
-    _vizro_css = []
-    _vizro_js = []
-
-    for current_dir, _, files in sorted(os.walk(walk_dir)):
-        base = "" if current_dir == walk_dir else os.path.relpath(current_dir, walk_dir).replace("\\", "/")
-        for f in sorted(files):
-            path = os.path.join(url_prefix, base, f) if base else os.path.join(url_prefix, f)
-            extension = os.path.splitext(f)[1]
-            if extension == ".js":
-                _vizro_js.append({"src": path, "type": "module"})  # what is this?
-            elif extension == ".css":
-                _vizro_css.append(path)
-    return _vizro_js, _vizro_css
+    @staticmethod
+    def _get_external_assets(new_path: str, folder: Path, extension: str) -> List[str]:
+        """Returns a list of paths to assets with given extension in folder, prefixed with new_path.
+        e.g. with new_path="/vizro", extension="css", folder="/path/to/vizro/vizro-core/src/vizro/static",
+        we will get ["/vizro/css/accordion.css", "/vizro/css/button.css", ...]
+        """
+        return sorted((new_path / path.relative_to(folder)).as_posix() for path in folder.rglob(f"*.{extension}"))

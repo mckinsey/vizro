@@ -580,8 +580,7 @@ dashboard = {
         }
     },
 }
+
 dashboard = Dashboard(**dashboard)
 
-if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+app = Vizro(assets_folder="../assets").build(dashboard).run()

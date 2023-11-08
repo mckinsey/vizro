@@ -62,6 +62,4 @@ data_manager["gapminder_country_analysis"] = retrieve_gapminder_continent_compar
 dashboard = json.loads(Path("dashboard.json").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
 
-if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+app = Vizro(assets_folder="../assets").build(dashboard).run()
