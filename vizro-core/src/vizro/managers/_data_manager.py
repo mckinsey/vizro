@@ -22,27 +22,18 @@ class VizroDataSet:
     Examples:
         >>> import plotly.express as px
         >>> data_manager["iris"] = VizroDataSet(lambda: pd.DataFrame(), timeout=300)
-        >>> data_manager.__cache_dataset_arguments.get("iris") == {"timeout": 300}
+        >>> data_manager.__lazy_data["iris"]._cache_arguments == {"timeout": 300}
     """
-
-    # only lazy data can be cached?
     def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
         self.data = data
         self._cache_arguments: Dict[str, int] = {}
         self.set_cache_config(timeout, unless)
 
-    # unless is a callable with default be lambda: False
     def set_cache_config(self, timeout: int = None, unless: Callable = None):
         """Sets the cache configuration for the dataset."""
         self._cache_arguments["timeout"] = timeout
         self._cache_arguments["unless"] = unless
         print(f"set_cache_config: {self._cache_arguments}")
-        # return self._cache_arguments
-
-    def get_cache_config(self) -> Dict[str, int]:
-        """Returns the cache configuration for the dataset."""
-        print(f"get_cache_config: {self._cache_arguments}")
-        return self._cache_arguments
 
 
 class DataManager:
@@ -57,11 +48,10 @@ class DataManager:
     _cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     def __init__(self):
-        self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
+        self.__lazy_data: Dict[DatasetName, VizroDataSet] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
-        self.__cache_dataset_arguments: Dict[str, Dict[str, Union[int, bool]]] = {}
 
     # happens before dashboard build
     @_state_modifier
@@ -88,17 +78,18 @@ class DataManager:
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
             )
         if isinstance(data, VizroDataSet):
-            self.__lazy_data[dataset_name] = data.data
-            self.__cache_dataset_arguments[dataset_name] = data.get_cache_config()
+            self.__lazy_data[dataset_name] = data
+            # self.__cache_dataset_arguments[dataset_name] = data.get_cache_config()
 
-    # def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
-    #     """Returns the `VizroDataSet` object associated with `dataset_name`."""
-    #     if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
-    #         raise KeyError(f"Dataset {dataset_name} does not exist.")
-    #     # if dataset_name in self.__original_data:  # no cache available
-    #     #     raise ValueError(f"Dataset {dataset_name} is not lazy.")
-    #     if dataset_name in self.__lazy_data:
-    #         return VizroDataSet(self.__lazy_data[dataset_name], **self.__cache_dataset_arguments.get(dataset_name, {}))
+    def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
+        """Returns the `VizroDataSet` object associated with `dataset_name`."""
+        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
+            raise KeyError(f"Dataset {dataset_name} does not exist.")
+        if dataset_name in self.__original_data:
+            # no cache available
+            raise ValueError(f"Dataset {dataset_name} is not lazy.")
+        if dataset_name in self.__lazy_data:
+            return self.__lazy_data[dataset_name]
 
     # happens before dashboard build
     @_state_modifier
@@ -117,18 +108,14 @@ class DataManager:
 
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
         logger.debug("reloading lazy data: %s", dataset_name)
-        print(self.__cache_dataset_arguments.get(dataset_name, {}))
-        # self._cache_dataset_arguments = {"iris": {"timeout": 50}, "other_dataset": {"timeout": 100}}
 
-        # @self._cache.memoize()
-        @self._cache.memoize(**self.__cache_dataset_arguments.get(dataset_name, {}))
+        @self._cache.memoize(**self.__lazy_data[dataset_name]._cache_arguments)
         # timeout (including 0 -> never expires), unless -> always executes function (like
         # timeout=0.000001) and doesn't update cache.
         # timeout and unless need to depend on dataset_name
         def inner(dataset):
             time.sleep(2.0)
-            # logger.debug("reloading lazy data: %s", dataset_name)
-            return self.__lazy_data[dataset]()
+            return self.__lazy_data[dataset].data()
         return inner(dataset_name)
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
@@ -144,15 +131,6 @@ class DataManager:
             # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
             # to not do any inplace=True operations, but probably safest to leave it here.
             return self.__original_data[dataset_name].copy()
-
-    def _add_cache_config(self, dataset_name: DatasetName, **kwargs):
-        """Adds a cache configuration to a dataset.
-
-        This is only relevant if the dataset is lazy.
-        """
-        if dataset_name not in self.__lazy_data:
-            raise KeyError(f"Dataset {dataset_name} does not exist or is not lazy.")
-        self.__cache_dataset_arguments[dataset_name] = kwargs
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
