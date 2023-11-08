@@ -23,22 +23,37 @@ df_gapminder2 = px.data.gapminder()
 # 1.
 data_manager["gapminder"] = VizroDataSet(
     retrieve_gapminder,
-    # timeout=600,
-    unless=lambda: True
+    timeout=600,
+    # unless=lambda: True
 )
 data_manager["gapminder2"] = VizroDataSet(
     retrieve_gapminder,
-    timeout=0
+    timeout=600
 )
 
 # 2.
 # data_manager["gapminder"] = retrieve_gapminder
 # print("to set cache config")
-# data_manager["gapminder"].set_cache_config(timeout=6000)
+# data_manager._add_cache_config(
+#     "gapminder",
+#     timeout=60*3
+# )
 #
 # data_manager["gapminder2"] = retrieve_gapminder
 # print("to set cache config")
-# data_manager["gapminder2"].set_cache_config(unless=lambda: True)
+# data_manager._add_cache_config(
+#     "gapminder2",
+#     unless=lambda: True
+# )
+
+# 2.
+# data_manager["gapminder"] = retrieve_gapminder
+# print("to set cache config")
+# data_manager["gapminder"].add_cache_config(timeout=6000)
+#
+# data_manager["gapminder2"] = retrieve_gapminder
+# print("to set cache config")
+# data_manager["gapminder2"].add_cache_config(unless=lambda: True)
 
 
 @capture("action")

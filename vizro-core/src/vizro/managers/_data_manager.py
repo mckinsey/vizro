@@ -91,14 +91,14 @@ class DataManager:
             self.__lazy_data[dataset_name] = data.data
             self.__cache_dataset_arguments[dataset_name] = data.get_cache_config()
 
-    def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
-        """Returns the `VizroDataSet` object associated with `dataset_name`."""
-        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
-            raise KeyError(f"Dataset {dataset_name} does not exist.")
-        # if dataset_name in self.__original_data:  # no cache available
-        #     raise ValueError(f"Dataset {dataset_name} is not lazy.")
-        if dataset_name in self.__lazy_data:
-            return VizroDataSet(self.__lazy_data[dataset_name], **self.__cache_dataset_arguments.get(dataset_name, {}))
+    # def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
+    #     """Returns the `VizroDataSet` object associated with `dataset_name`."""
+    #     if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
+    #         raise KeyError(f"Dataset {dataset_name} does not exist.")
+    #     # if dataset_name in self.__original_data:  # no cache available
+    #     #     raise ValueError(f"Dataset {dataset_name} is not lazy.")
+    #     if dataset_name in self.__lazy_data:
+    #         return VizroDataSet(self.__lazy_data[dataset_name], **self.__cache_dataset_arguments.get(dataset_name, {}))
 
     # happens before dashboard build
     @_state_modifier
@@ -144,6 +144,15 @@ class DataManager:
             # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
             # to not do any inplace=True operations, but probably safest to leave it here.
             return self.__original_data[dataset_name].copy()
+
+    def _add_cache_config(self, dataset_name: DatasetName, **kwargs):
+        """Adds a cache configuration to a dataset.
+
+        This is only relevant if the dataset is lazy.
+        """
+        if dataset_name not in self.__lazy_data:
+            raise KeyError(f"Dataset {dataset_name} does not exist or is not lazy.")
+        self.__cache_dataset_arguments[dataset_name] = kwargs
 
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
