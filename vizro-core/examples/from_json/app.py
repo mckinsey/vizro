@@ -1,6 +1,5 @@
 """Example to show dashboard configuration specified as a JSON file."""
 import json
-import os
 from pathlib import Path
 
 import pandas as pd

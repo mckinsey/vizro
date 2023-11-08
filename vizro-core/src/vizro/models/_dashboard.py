@@ -8,7 +8,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 import plotly.io as pio
-from dash import ClientsideFunction, Input, Output, clientside_callback, html, get_relative_path
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
 from pydantic import Field, validator
 
 import vizro

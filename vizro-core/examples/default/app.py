@@ -1,8 +1,5 @@
 """Example to show dashboard configuration."""
-import os
 
-import dash
-import flask
 import pandas as pd
 
 import vizro.models as vm

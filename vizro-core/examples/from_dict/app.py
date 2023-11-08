@@ -1,5 +1,4 @@
 """Example to show dashboard configuration specified as a dictionary."""
-import os
 
 import pandas as pd
 

@@ -1,7 +1,6 @@
 import logging
-import os
-from pathlib import Path, PosixPath
-from typing import Dict, List, Tuple
+from pathlib import Path
+from typing import List
 
 import dash
 import flask
@@ -101,7 +100,8 @@ class Vizro:
     @staticmethod
     def _get_external_assets(new_path: str, folder: Path, extension: str) -> List[str]:
         """Returns a list of paths to assets with given extension in folder, prefixed with new_path.
+
         e.g. with new_path="/vizro", extension="css", folder="/path/to/vizro/vizro-core/src/vizro/static",
-        we will get ["/vizro/css/accordion.css", "/vizro/css/button.css", ...]
+        we will get ["/vizro/css/accordion.css", "/vizro/css/button.css", ...].
         """
         return sorted((new_path / path.relative_to(folder)).as_posix() for path in folder.rglob(f"*.{extension}"))
