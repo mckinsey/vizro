@@ -33,7 +33,7 @@ class VizroDataSet:
         """Sets the cache configuration for the dataset."""
         self._cache_arguments["timeout"] = timeout
         self._cache_arguments["unless"] = unless
-        print(f"set_cache_config: {self._cache_arguments}")
+        logger.debug(f"set_cache_config: {self._cache_arguments}")
 
 
 class DataManager:
@@ -65,21 +65,19 @@ class DataManager:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
-            # self.__lazy_data[dataset_name] = data
             data = VizroDataSet(data)
         elif isinstance(data, pd.DataFrame):
             self.__original_data[dataset_name] = data
         elif isinstance(data, VizroDataSet):
             pass
-        #     self.__lazy_data[dataset_name] = data.data
-        #     self.__cache_dataset_arguments[dataset_name] = data.get_cache_config()
         else:
             raise TypeError(
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
+                f"Additionally, it can be a VizroDataSet object."
             )
+
         if isinstance(data, VizroDataSet):
             self.__lazy_data[dataset_name] = data
-            # self.__cache_dataset_arguments[dataset_name] = data.get_cache_config()
 
     def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
         """Returns the `VizroDataSet` object associated with `dataset_name`."""
