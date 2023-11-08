@@ -199,8 +199,6 @@ REDLISTED_DATA_HANDLING = [
     ".mtx",
     ".arff",
     ".hb",
-    ".dat",
-    ".data",
     ".bin",
     ".uf",
     ".h5py",

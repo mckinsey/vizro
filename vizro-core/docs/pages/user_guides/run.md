@@ -2,9 +2,9 @@
 
 This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost.
 
-## Default built-in web server in flask
+## Default built-in Flask web server
 
-!!! example "Default flask server"
+!!! example "Default built-in Flask web server"
     === "app.py"
         ```py
         from vizro import Vizro
@@ -34,8 +34,8 @@ Dash is running on http://127.0.0.1:8050/
  * Debug mode: on
 ```
 
-## Launch it in jupyter environment
-The dashboard application can be launched in jupyter environment in `inline`, `external`, and `jupyterlab` mode.
+## Jupyter
+The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
 !!! example "Run in jupyter notebook in inline mode"
     === "app.ipynb"
         ```py linenums="1"
@@ -59,10 +59,11 @@ The dashboard application can be launched in jupyter environment in `inline`, `e
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
-## Launch it via Gunicorn
+## Gunicorn
 !!!warning "In production"
-    In production, it is recommended **not** to use the default flask server. One of the options here is gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
-!!! example "Use gunicorn"
+    In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
+
+!!! example "Use Gunicorn"
     === "app.py"
         ```py
         from vizro import Vizro
@@ -80,24 +81,22 @@ The dashboard application can be launched in jupyter environment in `inline`, `e
 
         dashboard = vm.Dashboard(pages=[page])
         app = Vizro().build(dashboard)
-        server = app.dash.server
+        server = app.dash.server # (1)!
         ```
-You need to expose the server via `app.dash.server` in order to use gunicorn as your wsgi here.
-Run it via
+
+        1.  Expose the underlying Flask app through `app.dash.server`.
+
+To run using Gunicorn with four worker processes, execute
 ```bash
-gunicorn app:server --workers 3
+gunicorn app:server --workers 4
 ```
-in the cmd. For more gunicorn configuration, please refer to [gunicorn docs](https://docs.gunicorn.org/en/stable/configure.html)
+in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
+## Deployment
 
-## Deployment of Vizro app
-In general, Vizro is returning a Dash app. So if you want to deploy a Vizro app, similar steps apply as if you were to deploy a Dash app.
-For more details, see the docs on [Dash for deployment](https://dash.plotly.com/deployment#heroku-for-sharing-public-dash-apps).
+A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a Vizro app, similar guidance applies as for the underlying frameworks:
 
-For reference (where app is a Dash app):
+- [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
+- [Dash deployment documentation](https://dash.plotly.com/deployment)
 
-| Vizro                          | Dash                            |
-|:-------------------------------|:--------------------------------|
-| Vizro()                        | app                             |
-| Vizro().build(dashboard)       | app (after creating app.layout) |
-| Vizro().build(dashboard).run() | app.run()                       |
+In particular, `app = Vizro()` exposes the Flask app through `app.dash.server`. As in the [above example with Gunicorn](#gunicorn), this provides the application instance to a WSGI server.

@@ -15,23 +15,48 @@ To install Vizro with Kedro support, run:
 pip install vizro[kedro]
 ```
 
-### Using datasets from the Kedro data catalog
-Given a Kedro data catalog (either from a kedro project or a `catalog.yml` style file), you can use the following code to
-register the datasets with [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) type to Vizro's data manager.
+### Using datasets from the Kedro Data Catalog
+`vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the [Vizro Data Manager][vizro.managers._data_manager] is:
+```python
+from vizro.integrations import kedro as kedro_integration
+from vizro.managers import data_manager
 
-!!! example "Kedro Data Catalog"
-    === "app.py (kedro project)"
+
+for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
+    data_manager[dataset_name] = dataset
+```
+
+This imports all datasets of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) from the Kedro `catalog` into the Vizro `data_manager`.
+
+The `catalog` variable may have been created in a number of different ways:
+
+1. Kedro project path. Vizro exposes a helper function `vizro.integrations.kedro.catalog_from_project` to generate a `catalog` given the path to a Kedro project.
+2. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `catalog`.
+3. Data Catalog configuration file (e.g. `catalog.yaml`). This can create a `catalog` entirely independently of a Kedro project using [`kedro.io.DataCatalog.from_config`](https://docs.kedro.org/en/stable/kedro.io.DataCatalog.html#kedro.io.DataCatalog.from_config).
+
+The full code for these different cases is given below.
+
+!!! example "Import a Kedro Data Catalog to the Vizro Data Manager"
+    === "app.py (Kedro project path)"
         ```py
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
 
 
-        catalog = kedro_integration.catalog_from_project("/path/to/projects/iris")
+        catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
 
         for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
             data_manager[dataset_name] = dataset
         ```
-    === "app.py (use data catalog file YAML syntax without a kedro project)"
+    === "app.ipynb (Kedro Jupyter session)"
+        ```py
+        from vizro.managers import data_manager
+
+
+        for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
+            data_manager[dataset_name] = dataset
+        ```
+    === "app.py (Data Catalog configuration file)"
         ```py
         from kedro.io import DataCatalog
         import yaml
@@ -45,7 +70,6 @@ register the datasets with [`kedro_datasets.pandas`](https://docs.kedro.org/en/s
         for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
             data_manager[dataset_name] = dataset
         ```
-
 
 
 ???+ warning

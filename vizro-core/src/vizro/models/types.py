@@ -188,6 +188,9 @@ class capture:
         >>> @capture("table")
         >>> def table_function():
         >>>     ...
+        >>> @capture("table")
+        >>> def plot_function():
+        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
