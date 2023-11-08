@@ -62,4 +62,5 @@ data_manager["gapminder_country_analysis"] = retrieve_gapminder_continent_compar
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
 
-Vizro(assets_folder="../assets").build(dashboard).run()
+if __name__ == "__main__":
+    Vizro(assets_folder="../assets").build(dashboard).run()

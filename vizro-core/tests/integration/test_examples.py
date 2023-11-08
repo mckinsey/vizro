@@ -23,6 +23,7 @@ def setup_integration_test_environment(monkeypatch_session):
     # We only need to install chromedriver outside CI.
     if not os.getenv("CI"):
         chromedriver_autoinstaller_fix.install()
+    print("Done setting up integration test environment.")
 
 
 @pytest.fixture
