@@ -28,7 +28,7 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 !!!note
 
-    The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
+    The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](https://github.com/mckinsey/vizro/blob/main/.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
 
     If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all of Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro-core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
 
