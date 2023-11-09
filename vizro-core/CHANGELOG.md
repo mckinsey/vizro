@@ -11,6 +11,29 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.6'></a>
+# 0.1.6 — 2023-11-09
+
+## Highlights ✨
+
+- Release of the Vizro Dash DataTable. Visit the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/) to learn more. ([#114](https://github.com/mckinsey/vizro/pull/114))
+
+## Added
+
+- `Vizro` takes `**kwargs` that are passed through to `Dash` ([#151](https://github.com/mckinsey/vizro/pull/151))
+
+## Changed
+
+- The path to a custom assets folder is now configurable using the `assets_folder` argument when instantiating `Vizro` ([#151](https://github.com/mckinsey/vizro/pull/151))
+
+## Fixed
+
+- Assets are now routed correctly when hosting the dashboard in a subdirectory ([#151](https://github.com/mckinsey/vizro/pull/151))
+
+## Security
+
+- Bump werkzeug version suggested by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177 ([#128](https://github.com/mckinsey/vizro/pull/128))
+
 <a id='changelog-0.1.5'></a>
 
 # 0.1.5 — 2023-10-26
