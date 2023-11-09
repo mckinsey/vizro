@@ -1,0 +1,932 @@
+{
+  "title": "Dashboard",
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (Optional[str]): Dashboard title to appear on every page on top left-side. Defaults to `None`.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+      "type": "string"
+    },
+    "pages": {
+      "title": "Pages",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Page"
+      }
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Layout theme to be applied across dashboard. Defaults to `vizro_dark`",
+      "default": "vizro_dark",
+      "enum": ["vizro_dark", "vizro_light"],
+      "type": "string"
+    },
+    "navigation": {
+      "$ref": "#/definitions/Navigation"
+    },
+    "title": {
+      "title": "Title",
+      "description": "Dashboard title to appear on every page on top left-side.",
+      "type": "string"
+    }
+  },
+  "required": ["pages"],
+  "additionalProperties": false,
+  "definitions": {
+    "Action": {
+      "title": "Action",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.\n        Defaults to `[]`.\n    outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.\n        Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "inputs": {
+          "title": "Inputs",
+          "description": "Inputs in the form `<component_id>.<property>` passed to the action function.",
+          "default": [],
+          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+          }
+        },
+        "outputs": {
+          "title": "Outputs",
+          "description": "Outputs in the form `<component_id>.<property>` changed by the action function.",
+          "default": [],
+          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Button": {
+      "title": "Button",
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "button",
+          "enum": ["button"],
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "description": "Text to be displayed on button.",
+          "default": "Click me!",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Card": {
+      "title": "Card",
+      "description": "Creates a card utilizing `dcc.Markdown` as title and text component.\n\nArgs:\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (Optional[str]): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to None.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "card",
+          "enum": ["card"],
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "description": "Markdown string to create card title/text that should adhere to the CommonMark Spec.",
+          "type": "string"
+        },
+        "href": {
+          "title": "Href",
+          "description": "URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
+          "type": "string"
+        }
+      },
+      "required": ["text"],
+      "additionalProperties": false
+    },
+    "Graph": {
+      "title": "Graph",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "graph",
+          "enum": ["graph"],
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Table": {
+      "title": "Table",
+      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "table",
+          "enum": ["table"],
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the table",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Layout": {
+      "title": "Layout",
+      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    grid (List[List[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Gap between rows in px. Defaults to `\"12px\"`.\n    col_gap (str): Gap between columns in px. Defaults to `\"12px\"`.\n    row_min_height (str): Minimum row height in px. Defaults to `\"0px\"`.\n    col_min_width (str): Minimum column width in px. Defaults to `\"0px\"`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "grid": {
+          "title": "Grid",
+          "description": "Grid specification to arrange components on screen.",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "row_gap": {
+          "title": "Row Gap",
+          "description": "Gap between rows in px. Defaults to 12px.",
+          "default": "12px",
+          "pattern": "[0-9]+px",
+          "type": "string"
+        },
+        "col_gap": {
+          "title": "Col Gap",
+          "description": "Gap between columns in px. Defaults to 12px.",
+          "default": "12px",
+          "pattern": "[0-9]+px",
+          "type": "string"
+        },
+        "row_min_height": {
+          "title": "Row Min Height",
+          "description": "Minimum row height in px. Defaults to 0px.",
+          "default": "0px",
+          "pattern": "[0-9]+px",
+          "type": "string"
+        },
+        "col_min_width": {
+          "title": "Col Min Width",
+          "description": "Minimum column width in px. Defaults to 0px.",
+          "default": "0px",
+          "pattern": "[0-9]+px",
+          "type": "string"
+        }
+      },
+      "required": ["grid"],
+      "additionalProperties": false
+    },
+    "OptionsDictType": {
+      "title": "OptionsDictType",
+      "type": "object",
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": ["label", "value"],
+      "additionalProperties": false
+    },
+    "Checklist": {
+      "title": "Checklist",
+      "description": "Categorical multi-selector `Checklist` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "checklist",
+          "enum": ["checklist"],
+          "type": "string"
+        },
+        "options": {
+          "title": "Options",
+          "default": [],
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OptionsDictType"
+              }
+            }
+          ]
+        },
+        "value": {
+          "title": "Value",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Dropdown": {
+      "title": "Dropdown",
+      "description": "Categorical multi-selector `Dropdown` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "dropdown",
+          "enum": ["dropdown"],
+          "type": "string"
+        },
+        "options": {
+          "title": "Options",
+          "default": [],
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OptionsDictType"
+              }
+            }
+          ]
+        },
+        "value": {
+          "title": "Value",
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "multi": {
+          "title": "Multi",
+          "description": "Whether to allow selection of multiple values",
+          "default": true,
+          "type": "boolean"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "RadioItems": {
+      "title": "RadioItems",
+      "description": "Categorical single-selector `RadioItems` to be provided to `Filter`.\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "radio_items",
+          "enum": ["radio_items"],
+          "type": "string"
+        },
+        "options": {
+          "title": "Options",
+          "default": [],
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OptionsDictType"
+              }
+            }
+          ]
+        },
+        "value": {
+          "title": "Value",
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "RangeSlider": {
+      "title": "RangeSlider",
+      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "range_slider",
+          "enum": ["range_slider"],
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "description": "Start value for slider.",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "description": "End value for slider.",
+          "type": "number"
+        },
+        "step": {
+          "title": "Step",
+          "description": "Step-size for marks on slider.",
+          "type": "number"
+        },
+        "marks": {
+          "title": "Marks",
+          "description": "Marks to be displayed on slider.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "value": {
+          "title": "Value",
+          "description": "Default start and end value for slider",
+          "minItems": 2,
+          "maxItems": 2,
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed.",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Slider": {
+      "title": "Slider",
+      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (Optional[str]): Title to be displayed. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "slider",
+          "enum": ["slider"],
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "description": "Start value for slider.",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "description": "End value for slider.",
+          "type": "number"
+        },
+        "step": {
+          "title": "Step",
+          "description": "Step-size for marks on slider.",
+          "type": "number"
+        },
+        "marks": {
+          "title": "Marks",
+          "description": "Marks to be displayed on slider.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "value": {
+          "title": "Value",
+          "description": "Default value for slider.",
+          "type": "number"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed.",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Filter": {
+      "title": "Filter",
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "filter",
+          "enum": ["filter"],
+          "type": "string"
+        },
+        "column": {
+          "title": "Column",
+          "description": "Column of DataFrame to filter.",
+          "type": "string"
+        },
+        "targets": {
+          "title": "Targets",
+          "description": "Target component to be affected by filter. If none are given then target all components on the page that use `column`.",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selector": {
+          "title": "Selector",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Checklist"
+            },
+            {
+              "$ref": "#/definitions/Dropdown"
+            },
+            {
+              "$ref": "#/definitions/RadioItems"
+            },
+            {
+              "$ref": "#/definitions/RangeSlider"
+            },
+            {
+              "$ref": "#/definitions/Slider"
+            }
+          ]
+        }
+      },
+      "required": ["column"],
+      "additionalProperties": false
+    },
+    "Parameter": {
+      "title": "Parameter",
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.\n\nRaises:\n    ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "parameter",
+          "enum": ["parameter"],
+          "type": "string"
+        },
+        "targets": {
+          "title": "Targets",
+          "description": "Targets in the form of `<target_component>.<target_argument>`.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selector": {
+          "title": "Selector",
+          "description": "Selectors to be used inside a control.",
+          "discriminator": {
+            "propertyName": "type",
+            "mapping": {
+              "checklist": "#/definitions/Checklist",
+              "dropdown": "#/definitions/Dropdown",
+              "radio_items": "#/definitions/RadioItems",
+              "range_slider": "#/definitions/RangeSlider",
+              "slider": "#/definitions/Slider"
+            }
+          },
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Checklist"
+            },
+            {
+              "$ref": "#/definitions/Dropdown"
+            },
+            {
+              "$ref": "#/definitions/RadioItems"
+            },
+            {
+              "$ref": "#/definitions/RangeSlider"
+            },
+            {
+              "$ref": "#/definitions/Slider"
+            }
+          ]
+        }
+      },
+      "required": ["targets", "selector"],
+      "additionalProperties": false
+    },
+    "ActionsChain": {
+      "title": "ActionsChain",
+      "description": "All models that are registered to the model manager should inherit from this class.\n\nArgs:\n    id (Optional[str]): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `None`.\n        When no ID is chosen, ID will be automatically generated.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "trigger": {
+          "title": "Trigger",
+          "type": "array",
+          "items": [
+            {
+              "title": "Component Id",
+              "type": "string"
+            },
+            {
+              "title": "Component Property",
+              "type": "string"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "required": ["trigger"],
+      "additionalProperties": false
+    },
+    "Page": {
+      "title": "Page",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (Optional[str]): Path to navigate to page. Defaults to `None`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "components": {
+          "title": "Components",
+          "type": "array",
+          "items": {
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "button": "#/definitions/Button",
+                "card": "#/definitions/Card",
+                "graph": "#/definitions/Graph",
+                "table": "#/definitions/Table"
+              }
+            },
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Button"
+              },
+              {
+                "$ref": "#/definitions/Card"
+              },
+              {
+                "$ref": "#/definitions/Graph"
+              },
+              {
+                "$ref": "#/definitions/Table"
+              }
+            ]
+          }
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed.",
+          "type": "string"
+        },
+        "layout": {
+          "$ref": "#/definitions/Layout"
+        },
+        "controls": {
+          "title": "Controls",
+          "default": [],
+          "type": "array",
+          "items": {
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "filter": "#/definitions/Filter",
+                "parameter": "#/definitions/Parameter"
+              }
+            },
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Filter"
+              },
+              {
+                "$ref": "#/definitions/Parameter"
+              }
+            ]
+          }
+        },
+        "path": {
+          "title": "Path",
+          "description": "Path to navigate to page.",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionsChain"
+          }
+        }
+      },
+      "required": ["components", "title"],
+      "additionalProperties": false
+    },
+    "Navigation": {
+      "title": "Navigation",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "pages": {
+          "title": "Pages",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
