@@ -1,7 +1,7 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
 import logging
 import time
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
 from flask_caching import Cache
@@ -16,6 +16,32 @@ DatasetName = str
 pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 
+class _Dataset:
+    """A dataset with flask-caching config attached.
+
+    Examples:
+        >>> import plotly.express as px
+        >>> data_manager["iris"] = pd.DataFrame()
+        >>> data_manager["iris"]._cache_arguments = {"timeout": 600}
+    """
+    _cache_arguments_default: Dict[str, int] = {}
+
+    def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
+        """Initializes a `_Dataset` object.
+
+        Args:
+            data (pd_LazyDataFrame): A callable that returns a pandas DataFrame.
+            timeout (Optional[int], optional): The timeout in seconds for the cache. Defaults to None.
+            unless (Optional[Callable], optional): A callable that returns True if the cache should not be used.
+                Defaults to None.
+
+        """
+        self.data = data
+        self._cache_arguments = dict(self._cache_arguments_default)
+        self._cache_arguments["timeout"] = timeout
+        self._cache_arguments["unless"] = unless
+
+
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
@@ -25,13 +51,13 @@ class DataManager:
 
     """
 
-    _cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-
     def __init__(self):
-        self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
+        """Initializes the `DataManager` object."""
+        self.__lazy_data: Dict[DatasetName, _Dataset] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
+        self._cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     # happens before dashboard build
     @_state_modifier
@@ -45,13 +71,23 @@ class DataManager:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
-            self.__lazy_data[dataset_name] = data
+            self.__lazy_data[dataset_name] = _Dataset(data)
         elif isinstance(data, pd.DataFrame):
             self.__original_data[dataset_name] = data
         else:
             raise TypeError(
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
             )
+
+    def __getitem__(self, dataset_name: DatasetName) -> _Dataset:
+        """Returns the `_Dataset` object associated with `dataset_name`."""
+        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
+            raise KeyError(f"Dataset {dataset_name} does not exist.")
+        if dataset_name in self.__original_data:
+            # no cache available
+            raise ValueError(f"Dataset {dataset_name} is not lazy.")
+        if dataset_name in self.__lazy_data:
+            return self.__lazy_data[dataset_name]
 
     # happens before dashboard build
     @_state_modifier
@@ -69,19 +105,19 @@ class DataManager:
         self.__component_to_original[component_id] = dataset_name
 
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
-        self._cache_dataset_arguments = {"iris": {"timeout": 50}, "other_dataset": {"timeout": 100}}
+        """Loads the data for `dataset_name` and returns it.
 
-        @self._cache.memoize(**self._cache_dataset_arguments.get(dataset_name, {}))
+        This function is memoized using flask-caching. If the data is already loaded, it will return the cached data.
+        """
+        @self._cache.memoize(**self[dataset_name]._cache_arguments)
         # timeout (including 0 -> never expires), unless -> always executes function (like
         # timeout=0.000001) and doesn't update cache.
         # timeout and unless need to depend on dataset_name
-        def inner():
-            self.__lazy_data[dataset_name]()
-
-        """Returns the original data for `dataset_name`."""
-        logger.debug("reloading lazy data: %s", dataset_name)
-        time.sleep(2.0)
-        return inner()
+        def inner(dataset):
+            logger.debug("Loading lazy data: %s", dataset)
+            time.sleep(2.0)
+            return self[dataset].data()
+        return inner(dataset_name)
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
