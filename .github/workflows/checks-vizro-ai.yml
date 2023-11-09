@@ -16,7 +16,6 @@ on:
 
 concurrency:
   group: checks-ai-${{ github.head_ref }}
-  cancel-in-progress: true
 
 env:
   PYTHONUNBUFFERED: "1"
