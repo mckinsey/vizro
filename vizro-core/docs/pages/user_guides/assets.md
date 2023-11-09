@@ -19,11 +19,7 @@ The user-provided `assets` folder thus always takes precedence.
 ```
 
 ## Adding static images
-We leverage Dash's underlying functionalities to embed images into the app.
-For more information, see [here](https://dash.plotly.com/dash-enterprise/static-assets?de-version=5.1#embedding-images-in-your-dash-apps).
-
-For example, you can leverage the `dash.get_asset_url()` function in your custom components, such that any provided path does not require `assets` as a prefix in the relative path anymore.
-
+We use [Dash's underlying functionalities](https://dash.plotly.com/dash-enterprise/static-assets#embedding-images-in-your-dash-apps) to embed images into the app). You should always use `dash.get_asset_url` to refer to files inside your assets folder to ensure that the correct URL is generated in both development and production environments. For example, the file `collections.svg` in the above example would be referenced as `dash.get_asset_url("images/icons/collections.csv")`.
 
 ## Changing the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
@@ -63,8 +59,6 @@ For reference, all Vizro CSS files can be found [here](https://github.com/mckins
 
         dashboard = vm.Dashboard(pages=[page])
 
-        # only required if assets folder is not located at the same directory of app.py
-        Vizro._user_assets_folder = os.path.abspath("../assets")
 
         Vizro().build(dashboard).run()
         ```
@@ -131,9 +125,6 @@ To achieve this, do the following:
 
         dashboard = vm.Dashboard(pages=[page])
 
-        # only required if assets folder is not located at the same directory of app.py
-        Vizro._user_assets_folder = os.path.abspath("../assets")
-
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
@@ -164,17 +155,14 @@ To achieve this, do the following:
 
     **Order of CSS being served to app**
 
-    1. Dash styling sheets
-    2. Vizro external styling sheets
-    3. User assets folder
-        - CSS/JS Files
-        - Folders
-           - CSS/JS Files
+    1. Dash built-in stylesheets
+    2. Vizro built-in stylesheets
+    3. User assets folder stylesheets
 
 
 ## Changing the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
-also change the reference to your `assets` folder. Note that the path provided needs to be an absolute path.
+specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
 
 ```python
 from vizro import Vizro
@@ -183,8 +171,7 @@ import vizro.models as vm
 page = <INSERT CONFIGURATION HERE>
 dashboard = vm.Dashboard(pages=[page])
 
-Vizro._user_assets_folder = "absolute/path/to/assets"
-app = Vizro().build(dashboard).run()
+app = Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
 
 ```
 

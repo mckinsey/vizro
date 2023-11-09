@@ -82,9 +82,13 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         dashboard = vm.Dashboard(pages=[page])
         app = Vizro().build(dashboard)
         server = app.dash.server # (1)!
+
+        if __name__ == "__main__":  # (2)!
+            app.run()
         ```
 
-        1.  Expose the underlying Flask app through `app.dash.server`.
+        1. Expose the underlying Flask app through `app.dash.server`; this will be used by Gunicorn.
+        2. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
 
 To run using Gunicorn with four worker processes, execute
 ```bash
@@ -100,3 +104,5 @@ A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a 
 - [Dash deployment documentation](https://dash.plotly.com/deployment)
 
 In particular, `app = Vizro()` exposes the Flask app through `app.dash.server`. As in the [above example with Gunicorn](#gunicorn), this provides the application instance to a WSGI server.
+
+[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This allows you to configure the underlying Dash app using the same [argumentst that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.

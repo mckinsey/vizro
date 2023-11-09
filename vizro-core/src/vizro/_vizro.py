@@ -16,11 +16,16 @@ class Vizro:
     """The main class of the `vizro` package."""
 
     def __init__(self, **kwargs):
-        """Initializes Dash."""
+        """Initializes Dash app, stored in `self.dash`.
+
+        Args:
+            kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
+             [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
+        """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="")
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
-        # objects so the user can specify additional external_scripts and externaL_stylesheets via kwargs.
+        # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
         vizro_assets_folder = Path(__file__).with_name("static")
         static_url_path = self.dash.config.requests_pathname_prefix + STATIC_URL_PREFIX
         vizro_css = self._get_external_assets(static_url_path, vizro_assets_folder, "css")
@@ -64,8 +69,8 @@ class Vizro:
         """Runs the dashboard.
 
         Args:
-            args: Any args to `dash.run_server`
-            kwargs: Any kwargs to `dash.run_server`
+            args: Passed through to `dash.run`.
+            kwargs: Passed through to `dash.run`.
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
