@@ -21,19 +21,25 @@ class _Dataset:
 
     Examples:
         >>> import plotly.express as px
-        >>> data_manager["iris"] = _Dataset(lambda: pd.DataFrame(), timeout=300)
-        >>> data_manager.__lazy_data["iris"]._cache_arguments == {"timeout": 300}
+        >>> data_manager["iris"] = pd.DataFrame()
+        >>> data_manager["iris"]._cache_arguments = {"timeout": 600}
     """
-    def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
-        self.data = data
-        self._cache_arguments: Dict[str, int] = {}
-        self.set_cache_config(timeout, unless)
+    _cache_arguments_default: Dict[str, int] = {}
 
-    def set_cache_config(self, timeout: int = None, unless: Callable = None):
-        """Sets the cache configuration for the dataset."""
+    def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
+        """Initializes a `_Dataset` object.
+
+        Args:
+            data (pd_LazyDataFrame): A callable that returns a pandas DataFrame.
+            timeout (Optional[int], optional): The timeout in seconds for the cache. Defaults to None.
+            unless (Optional[Callable], optional): A callable that returns True if the cache should not be used.
+                Defaults to None.
+
+        """
+        self.data = data
+        self._cache_arguments = dict(self._cache_arguments_default)
         self._cache_arguments["timeout"] = timeout
         self._cache_arguments["unless"] = unless
-        logger.debug(f"set_cache_config: {self._cache_arguments}")
 
 
 class DataManager:
@@ -45,13 +51,13 @@ class DataManager:
 
     """
 
-    _cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-
     def __init__(self):
+        """Initializes the `DataManager` object."""
         self.__lazy_data: Dict[DatasetName, _Dataset] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
+        self._cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     # happens before dashboard build
     @_state_modifier
@@ -99,13 +105,16 @@ class DataManager:
         self.__component_to_original[component_id] = dataset_name
 
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
-        logger.debug("reloading lazy data: %s", dataset_name)
+        """Loads the data for `dataset_name` and returns it.
 
+        This function is memoized using flask-caching. If the data is already loaded, it will return the cached data.
+        """
         @self._cache.memoize(**self[dataset_name]._cache_arguments)
         # timeout (including 0 -> never expires), unless -> always executes function (like
         # timeout=0.000001) and doesn't update cache.
         # timeout and unless need to depend on dataset_name
         def inner(dataset):
+            logger.debug("Loading lazy data: %s", dataset)
             time.sleep(2.0)
             return self[dataset].data()
         return inner(dataset_name)

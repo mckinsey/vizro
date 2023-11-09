@@ -20,16 +20,17 @@ df_gapminder2 = px.data.gapminder()
 
 # Options for configuring per-dataset arguments:
 data_manager["gapminder"] = retrieve_gapminder
-print("to update cache config")
-data_manager["gapminder"].set_cache_config(timeout=6000)
+print("to update per dataset cache config")
+data_manager["gapminder"]._cache_arguments = {"timeout": 600}
+print(f"_cache_arguments: {data_manager['gapminder']._cache_arguments}")
 
 data_manager["gapminder2"] = retrieve_gapminder
-print("to update cache config")
-data_manager["gapminder2"].set_cache_config(
-    timeout=0,
-    # unless=lambda: True
-)
-
+print("to update per dataset cache config")
+data_manager["gapminder2"]._cache_arguments = {
+    "timeout": 0,
+    # "unless": (lambda: True)
+}
+print(f"_cache_arguments: {data_manager['gapminder2']._cache_arguments}")
 
 @capture("action")
 def delete_memoized_cache(delete_button_id_n_clicks):
