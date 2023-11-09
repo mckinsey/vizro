@@ -16,12 +16,12 @@ DatasetName = str
 pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 
-class VizroDataSet:
+class _Dataset:
     """A dataset with flask-caching config attached.
 
     Examples:
         >>> import plotly.express as px
-        >>> data_manager["iris"] = VizroDataSet(lambda: pd.DataFrame(), timeout=300)
+        >>> data_manager["iris"] = _Dataset(lambda: pd.DataFrame(), timeout=300)
         >>> data_manager.__lazy_data["iris"]._cache_arguments == {"timeout": 300}
     """
     def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
@@ -48,14 +48,14 @@ class DataManager:
     _cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     def __init__(self):
-        self.__lazy_data: Dict[DatasetName, VizroDataSet] = {}
+        self.__lazy_data: Dict[DatasetName, _Dataset] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
 
     # happens before dashboard build
     @_state_modifier
-    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame, VizroDataSet]):
+    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
 
         This is the only user-facing function when configuring a simple dashboard. Others are only used internally
@@ -65,22 +65,16 @@ class DataManager:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
-            data = VizroDataSet(data)
+            self.__lazy_data[dataset_name] = _Dataset(data)
         elif isinstance(data, pd.DataFrame):
             self.__original_data[dataset_name] = data
-        elif isinstance(data, VizroDataSet):
-            pass
         else:
             raise TypeError(
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
-                f"Additionally, it can be a VizroDataSet object."
             )
 
-        if isinstance(data, VizroDataSet):
-            self.__lazy_data[dataset_name] = data
-
-    def __getitem__(self, dataset_name: DatasetName) -> VizroDataSet:
-        """Returns the `VizroDataSet` object associated with `dataset_name`."""
+    def __getitem__(self, dataset_name: DatasetName) -> _Dataset:
+        """Returns the `_Dataset` object associated with `dataset_name`."""
         if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
             raise KeyError(f"Dataset {dataset_name} does not exist.")
         if dataset_name in self.__original_data:
@@ -107,13 +101,13 @@ class DataManager:
     def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
         logger.debug("reloading lazy data: %s", dataset_name)
 
-        @self._cache.memoize(**self.__lazy_data[dataset_name]._cache_arguments)
+        @self._cache.memoize(**self[dataset_name]._cache_arguments)
         # timeout (including 0 -> never expires), unless -> always executes function (like
         # timeout=0.000001) and doesn't update cache.
         # timeout and unless need to depend on dataset_name
         def inner(dataset):
             time.sleep(2.0)
-            return self.__lazy_data[dataset].data()
+            return self[dataset].data()
         return inner(dataset_name)
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
