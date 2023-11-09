@@ -20,7 +20,7 @@ class Vizro:
 
         Args:
             kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
-             [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
+                [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="")
 

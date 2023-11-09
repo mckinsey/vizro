@@ -18,9 +18,6 @@ The user-provided `assets` folder thus always takes precedence.
 ├── favicon.ico
 ```
 
-## Adding static images
-We use [Dash's underlying functionalities](https://dash.plotly.com/dash-enterprise/static-assets#embedding-images-in-your-dash-apps) to embed images into the app). You should always use `dash.get_asset_url` to refer to files inside your assets folder to ensure that the correct URL is generated in both development and production environments. For example, the file `collections.svg` in the above example would be referenced as `dash.get_asset_url("images/icons/collections.csv")`.
-
 ## Changing the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see [here](https://dash.plotly.com/external-resources#changing-the-favicon).
@@ -148,17 +145,13 @@ To achieve this, do the following:
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
 
-???+ note
+CSS properties will be applied with the last served file taking precedence. The order of serving is:
 
-    CSS properties will be applied with the last served file taking precedence.
-    Files are served in alphanumerical order.
+1. Dash built-in stylesheets
+2. Vizro built-in stylesheets
+3. User assets folder stylesheets
 
-    **Order of CSS being served to app**
-
-    1. Dash built-in stylesheets
-    2. Vizro built-in stylesheets
-    3. User assets folder stylesheets
-
+Within each of these categories, individual files are served in alphanumerical order.
 
 ## Changing the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
