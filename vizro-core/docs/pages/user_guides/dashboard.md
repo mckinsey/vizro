@@ -168,8 +168,7 @@ To create a dashboard, do the following steps:
         dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
         dashboard = Dashboard(**dashboard)
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.py for json"
         ```py
@@ -185,8 +184,7 @@ To create a dashboard, do the following steps:
         dashboard = json.loads(Path("dashboard.json").read_text(encoding="utf-8"))
         dashboard = Dashboard(**dashboard)
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
 
 After running the dashboard, you can access the dashboard via `localhost:8050`.

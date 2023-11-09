@@ -70,8 +70,7 @@ Building on the above, there are several routes one can take. The following exam
         )
         dashboard = vm.Dashboard(pages=[page_0])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -142,8 +141,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
         )
         dashboard = vm.Dashboard(pages=[page_0])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml

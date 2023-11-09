@@ -1,5 +1,4 @@
 """Example to show dashboard configuration."""
-import os
 
 import pandas as pd
 
@@ -532,5 +531,4 @@ dashboard = vm.Dashboard(
 )
 
 if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+    Vizro(assets_folder="../assets").build(dashboard).run()

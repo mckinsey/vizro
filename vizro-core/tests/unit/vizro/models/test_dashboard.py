@@ -142,7 +142,8 @@ class TestDashboardPreBuild:
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
 
-    def test_create_layout_page_404(self, dashboard):
+    def test_create_layout_page_404(self, dashboard, mocker):
+        mocker.patch("vizro.models._dashboard.get_relative_path")
         result = dashboard._make_page_404_layout()
         result_image = result.children[0]
         result_div = result.children[1]

@@ -8,7 +8,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 import plotly.io as pio
-from dash import ClientsideFunction, Input, Output, clientside_callback, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
 from pydantic import Field, validator
 
 import vizro
@@ -139,7 +139,7 @@ class Dashboard(VizroBaseModel):
     def _make_page_404_layout():
         return html.Div(
             [
-                html.Img(src=STATIC_URL_PREFIX + "/images/errors/error_404.svg"),
+                html.Img(src=get_relative_path(f"/{STATIC_URL_PREFIX}/images/errors/error_404.svg")),
                 html.Div(
                     [
                         html.Div(
@@ -149,7 +149,7 @@ class Dashboard(VizroBaseModel):
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href="/", className="button_primary"),
+                        dbc.Button("Take me home", href=get_relative_path("/"), className="button_primary"),
                     ],
                     className="error_content_container",
                 ),
