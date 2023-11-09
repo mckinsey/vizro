@@ -13,7 +13,6 @@ on:
 
 concurrency:
   group: test-unit-${{ github.head_ref }}
-  cancel-in-progress: true
 
 env:
   PYTHONUNBUFFERED: "1"
