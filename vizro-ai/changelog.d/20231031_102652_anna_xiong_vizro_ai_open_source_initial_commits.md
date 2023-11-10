@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Initial release of vizro-ai package. Vizro-AI is a tool for generating data visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
+- Initial release of `vizro-ai` package. Vizro-AI is a tool for generating data visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
 
 <!--
 ### Removed
