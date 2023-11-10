@@ -35,6 +35,7 @@ prep-release = [
   "hatch version release",
   "hatch run changelog:scriv collect --add",
   "hatch run changelog:add",
+  "hatch run lint || hatch run lint",
   'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
