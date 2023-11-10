@@ -21,7 +21,7 @@ nav:
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
       - Navigation:
-          - Accordion: pages/user_guides/navigation.md
+          - Navigation: pages/user_guides/navigation.md
       - Visual Formatting:
           - Layouts: pages/user_guides/layouts.md
           - Themes: pages/user_guides/themes.md
