@@ -118,9 +118,8 @@ class VizroAI:
 
         if code_string.startswith("Failed to debug code"):
             raise DebugFailure(
-                "Chart creation failed. Retry debugging has reached maximum limit, fallout response is \
-                            provided. Try to rephrase the prompt, or try to select a different model. "
-                + code_string
+                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
+                "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
         if not explain:
             _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
