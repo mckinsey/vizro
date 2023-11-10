@@ -81,6 +81,7 @@ jobs:
       # - name: Publish distribution 📦 to PyPI
       #   uses: pypa/gh-action-pypi-publish@release/v1
       #   with:
+      #     repository-url: https://test.pypi.org/legacy/
       #     packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
       #     password: ${{ env.PYPI_TOKEN }}
       # - name: Check correct package uploaded to PyPI
