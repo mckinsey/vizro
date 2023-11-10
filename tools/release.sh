@@ -15,10 +15,10 @@ BODY=$(jq -Rs . < "$BODY_PATH")
 
 if [ "$PACKAGE" = "vizro-core" ]; then
   TAG_NAME="${VERSION}"
-  MAKE_LATEST=true
+  MAKE_LATEST="true"
 else
   TAG_NAME="${PACKAGE}-${VERSION}"
-  MAKE_LATEST=false
+  MAKE_LATEST="false"
 fi
 
 PAYLOAD=$(cat <<-END
