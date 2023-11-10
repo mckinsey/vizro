@@ -19,6 +19,10 @@ from vizro_ai.utils import _safeguard_check
 logger = logging.getLogger(__name__)
 
 
+class DebugFailure(Exception):
+    pass
+
+
 class VizroAI:
     """Vizro-AI main class."""
 
@@ -113,12 +117,11 @@ class VizroAI:
         code_explanation = output_dict.get("code_explanation")
 
         if code_string.startswith("Failed to debug code"):
-            logger.warning(
+            raise DebugFailure(
                 "Chart creation failed. Retry debugging has reached maximum limit, fallout response is \
-                            provided. "
+                            provided. Try to rephrase the prompt, or try to select a different model. "
                 + code_string
             )
-            return
         if not explain:
             _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
         if explain:
