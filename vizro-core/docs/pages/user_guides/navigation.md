@@ -111,7 +111,7 @@ If you want to have a different selector for dashboard navigation you have to pr
 Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordion`][vizro.models.Accordion]. If `selector` is not defined it defaults to `Accordion`.
 
 
-!!! example "Adding navigation icons"
+!!! example "Using `NavBar` selector"
     === "app.py"
         ```py
         from vizro import Vizro
@@ -201,9 +201,9 @@ To customize default accordion provide a `dict` mapping of the page group title 
         selector=Accordion(pages={"Title": ["My first page", "My second page"]})
     )
    ```
-Accordion compendium
+#### Accordion examples
 
-##### 1. Simple Accordion
+- Simple Accordion
 
 <table>
 <tr>
@@ -225,7 +225,7 @@ Accordion compendium
 </tr>
 </table>
 
-##### 2. Customized Accordion
+- Customized Accordion
 
 <table>
 <tr>
@@ -285,124 +285,12 @@ Navigation(
 )
 ```
 
-Below is an advanced navigation example where we further customized the `NavItem` model.
-
-!!! example "Advanced navigation"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-
-        iris = px.data.iris()
-
-        page_1 = vm.Page(
-                    title="My first page",
-                    components=[
-                        vm.Graph(
-                            id="scatter_chart", 
-                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-                    ],
-        )
-        page_2 = vm.Page(
-                    title="My second page",
-                    components=[
-                        vm.Graph(
-                            id="line_chart", 
-                            figure=px.line(iris, x="sepal_length", y="petal_width", color="species")),
-                    ],
-                )
-        page_3 = vm.Page(
-                    title="My third page",
-                    components=[
-                        vm.Graph(
-                            id="bar_chart", 
-                            figure=px.bar(iris, x="sepal_length", y="petal_width", color="species")),
-                    ],
-                )
-
-        dashboard = vm.Dashboard(
-            pages=[page_1, page_2, page_3],
-            navigation=vm.Navigation(
-                selector=vm.NavBar(
-                    items=[
-                        vm.NavItem(
-                            pages=["My first page", "My second page"], icon="dashboard", text="Pages",
-                        ),
-                        vm.NavItem(pages=["My third page"], icon="summarize", text="Summary"),
-                    ]
-                )
-            )
-        )
-
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-        ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
-        pages:
-          - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                id: scatter_chart
-                type: graph
-            title: My first page
-        - components:
-             - figure:
-                  _target_: line
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                id: line_chart
-                type: graph
-            title: My second page
-        - components:
-             - figure:
-                  _target_: bar
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                id: bar_chart
-                type: graph
-            title: My third page
-        navigation:
-            pages:
-             First title:
-                - My first page
-             Second title:
-                - My second page
-            selector:
-                type: navbar
-                items:
-                    - type: navitem
-                        icon: dashboard
-                        text: Dashboard
-                        pages:
-                            - My first page
-                    - type: navitem
-                        icon: summarize
-                        tooltip: Summarization page
-        ```
-    === "Result"
-        [![AdvancedNavigation]][AdvancedNavigation]
-
-    [AdvancedNavigation]: ../../assets/user_guides/navigation/icons_customized.png
-
 !!! tip
     If you would like to turn off icon images you can specify the empty string `""` in the `icon` argument.
 
-NavBar compendium
+#### NavBar examples
 
-##### 1. Navigation icons
-
+- Navigation icons
 <table>
 <tr>
 <td><h3 style="width:350px" align="center"><img align="center" height="450" width="350" src="../../../assets/user_guides/navigation/table_nav1.png"></h3></td>
@@ -430,7 +318,8 @@ NavBar compendium
 </tr>
 </table>
 
-##### 2. Customizing navigation icons
+- Customizing navigation icons
+
 <table>
 <tr>
 <td><h3 style="width:350px" align="center"><img align="center" height="450" width="350" src="../../../assets/user_guides/navigation/tb_nav_1.png"></h3></td>

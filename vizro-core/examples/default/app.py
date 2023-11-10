@@ -531,11 +531,10 @@ dashboard = vm.Dashboard(
                         "Analysis": ["Homepage", "Variable Analysis"],
                         "Summary": ["Relationship Analysis", "Continent Summary"],
                     },
-                    icon="",
-                    text="Features",
                 ),
                 vm.NavItem(
                     pages=["Country Analysis"],
+                    icon="summarize",
                 ),
             ]
         ),
