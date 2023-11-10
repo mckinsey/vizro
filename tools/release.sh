@@ -43,6 +43,3 @@ STATUS=$(curl -L \
   -d "${PAYLOAD}")
 
 echo "${STATUS}"
-
-REQUEST_NUMBER=$(echo "${RESPONSE}" | jq -r '.id')
-echo "Request number: ${REQUEST_NUMBER}"
