@@ -28,7 +28,7 @@ More details can be found in the [environment setup guide](../user_guides/api_se
 To install Vizro-AI from the Python Package Index (PyPI), utilize [`pip`](https://pip.pypa.io/en/stable/) in your terminal with the following command:
 
 ```bash
-pip install vizro-ai
+pip install vizro_ai
 ```
 
 While you can execute code from the tutorials and user guides using a Python script, using a Jupyter notebook is often considered more convenient. You can install `jupyter` with the following command:
@@ -50,9 +50,9 @@ pip install jupyter
 After successfully installing Vizro-AI, to verify the version or confirm the installation, you can run the following code from a Python script or a Jupyter notebook cell:
 
 ```py
-import vizro-ai
+import vizro_ai
 
-print(vizro-ai.__version__)
+print(vizro_ai.__version__)
 ```
 
 You should see a return output of the current version.
@@ -61,7 +61,7 @@ You should see a return output of the current version.
 
 If you want to upgrade Vizro-AI to a different version later on, you can do so by running the following command:
 ```
-pip install vizro-ai -U
+pip install vizro_ai -U
 ```
 
 The best way to safely upgrade is to check the [release notes]() for any notable breaking changes before migrating an
