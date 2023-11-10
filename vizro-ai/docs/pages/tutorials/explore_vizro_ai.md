@@ -1,62 +1,30 @@
-# Get started with Vizro-AI
-This tutorial serves as an introduction to Vizro-AI.
-It is a step-by-step guide to help you experiment and create your initial Vizro chart using Vizro-AI, our English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
+# Explore Vizro-AI
+This tutorial serves as an exploration of the extended applications offered by Vizro-AI beyond the initial [quickstart guide](../tutorials/quickstart.md).
+
+By the end of this tutorial, you will have gained an understanding of different language options and leveraging Vizro-AI to enhance the formatting your visualizations.
 
 ## Let's get started!
-### 1. Install vizro-ai and its dependencies
-If you haven't already installed `vizro_ai` package, follow the [installation guide](../user_guides/install.md)
-to do so inside a virtual environment.
+### 1. Install vizro-ai and get ready to run your code
+Before proceeding, ensure the installation of the `vizro_ai` package by following the steps outlined in the [installation guide](../user_guides/install.md). Once installed, you can execute your code either by pasting it into a Jupyter notebook cell or running it from a Python script.
+
 
 ??? tip "Beginners/Code novices"
-    If you consider yourself a beginner to python and/or virtual environments, there is also a section in the [installation guide](../user_guides/install.md) that avoids any use of terminals and relies only upon a graphical user interface.
+    For those new to Python or virtual environments, a user-friendly alternative is available in the [installation guide](../user_guides/install.md), offering a graphical user interface without the need for terminal commands.
 
-### 2. Set up jupyter notebook
-A good way to initially explore Vizro-AI is from a Jupyter notebook.
-Activate your previously created virtual environment and install Jupyter using the following command:
+A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user_guides/api_setup.md) for instructions on setting up the API.
 
-```console
-pip install jupyter
-```
-
-Next, you can start your jupyter notebook in your activated environment by:
-
-```console
-jupyter notebook
-```
-This opens a browser tab, and you can navigate to your preferred folder for this new project. Create a new notebook Python 3 (ipykernel) notebook from the "New" dropdown. Make sure that you select your environment as kernel.
-
-??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the [installation guide](../user_guides/install.md), you should already be set, and you can continue below.
-
-Confirm that vizro-ai is installed by typing the following into a jupyter cell in your notebook and running it.
-
-```py
-import vizro_ai
-print(vizro_ai.__version__)
-```
-
-You should see a return output of the version.
-
-### 3. Large Language Model (LLM) API KEY
-
-A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user_guides/api_setup.md) on how to set up the API.
-
-After successful setup, your API key is loaded in Jupyter with the following two lines:
+Upon successful setup, load your API key with the following two lines:
 
 ```py
 from dotenv import load_dotenv
 load_dotenv()
 ```
 
-### 4. Ask your first question using vizro-ai
+### 2. Create your visualization using different languages
 
-For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
+Vizro-AI is versatile, supporting prompts and chart visualizations in multiple languages. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time. 
 
-Let's go through the code step-by-step to understand how to use Vizro-AI. First, we create `pandas` DataFrame using the gapminder data from `plotly express`. Next, we instantiate `VizroAI` to call the `plot()` method to generate your visualization.
-
-By passing your prepared data and your written visualization request to this method, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and then it proceeds to render the chart by executing the generated code.
-
-!!! example "Vizro AI Syntax"
+!!! example "Vizro-AI Chinese"
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
@@ -67,33 +35,97 @@ By passing your prepared data and your written visualization request to this met
 
         df = px.data.gapminder()
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
+        vizro_ai.plot(df, "请画一个世界年均GDP的趋势图")
         ```
     === "Result"
-        [![BarChart]][BarChart]
+        [![ChineseChart]][ChineseChart]
 
-    [BarChart]: ../../assets/tutorials/chart/GDP_Composition_Bar.png
+    [ChineseChart]: ../../assets/tutorials/chart/ChineseExample.png
 
-The created chart is interactive, and you can hover over the data for additional information.
+Subsequently, we'll switch to German and prompt the visualization of life expectancy in the United States over time, comparing it to the global life expectancy trend. For this example, we'll include `explain=True` to obtain comprehensive insights into both the data and the generated code.
 
-### 5. Get an explanation with your chart
-
-By passing `explain=True` to the `plot()` method will provide additional insights in addition to the rendered chart.
-
-Let's create another example and read through the additional information.
-
-!!! example "Specify  `explain=True`"
+!!! example "Vizro-AI German"
     === "Code for the cell"
         ```py
-        vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
+        from vizro_ai import VizroAI
+        import vizro.plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.gapminder()
+        vizro_ai = VizroAI()
+        vizro_ai.plot(df, "Visualiere den Trend von der Lebenserwartung in USA über die Jahre im Vergleich zur Veränderung der weltweiten Lebenserwartung über die Jahre und kreiere eine deutsche Visualisierung", explain=True)
         ```
     === "Result"
-        [![GeoDistribution]][GeoDistribution]
+        [![GermanChart]][GermanChart]
 
-    [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
+    [GermanChart]: ../../assets/tutorials/chart/GermanExample.png
 
-### 6. Explore further
+### 3. Create advanced charts and formatting
+Now, let's explore more advanced visualizations and leverage Vizro-AI for enhanced formatting.
 
-Now, you have created your first charts with Vizro-AI and are ready to explore the documentation further.
+To begin, we'll create an animated bar chart illustrating the population development of each continent over time. Let's run the code below and look at the result.
 
-A good place to start would be to go through the [model configuration](../user_guides/model_config.md) or different [run options](../user_guides/run_vizro_ai.md) including application integration.
+!!! example "Vizro-AI animated chart"
+    === "Code for the cell"
+        ```py
+        from vizro_ai import VizroAI
+        import vizro.plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.gapminder()
+        vizro_ai = VizroAI()
+        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with popoluation on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years.")
+        ```
+    === "Result"
+        [![AnimatedChart1]][AnimatedChart1]
+
+    [AnimatedChart1]: ../../assets/tutorials/chart/animated_bar_chart_1.png
+
+Having unveiled our animated bar chart showcasing population development per country, it's apparent that crucial details are overshadowed by the legend. Next, we will try to tweak our prompt to group the countries into continents and improve the overall layout.
+
+!!! example "Vizro-AI animated chart"
+    === "Code for the cell"
+        ```py
+        from vizro_ai import VizroAI
+        import vizro.plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.gapminder()
+        vizro_ai = VizroAI()
+        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with popoluation on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Please improve layout.")
+        ```
+    === "Result"
+        [![AnimatedChart2]][AnimatedChart2]
+
+    [AnimatedChart2]: ../../assets/tutorials/chart/animated_bar_chart_2.png
+
+
+Great, by incorporating the directive `Please improve layout`, we've successfully refined our animation and are now able to better interpret our result. 
+
+Now, upon closer inspection, two challenges emerge. Firstly, the legend overlaps the x-axis. Secondly, the y-axis range is insufficient to capture the full spectrum of Asia's population development. Let's run the code below and see how we can improve and finalize our chart.
+
+!!! example "Vizro-AI animated chart"
+    === "Code for the cell"
+        ```py
+        from vizro_ai import VizroAI
+        import vizro.plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.gapminder()
+        vizro_ai = VizroAI()
+        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Make sure that y axis range fits entire data. Please improve layout and optimize layout of legend.")
+        ```
+    === "Result"
+        [![AnimatedChart3]][AnimatedChart3]
+
+    [AnimatedChart3]: ../../assets/tutorials/chart/animated_bar_chart_3.png
+
+Congratulations! You've now gained insights into harnessing the power of Vizro-AI for crafting advanced charts and elevating formatting. Don't forget, enabling `explain=True` is a good way of learning more about how a chart can be further improved and formatted.
