@@ -13,9 +13,15 @@ GITHUB_ENDPOINT="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/rele
 
 BODY=$(jq -Rs . < "$BODY_PATH")
 
+if [ "$PACKAGE" = "vizro-core" ]; then
+  TAG_NAME="${VERSION}"
+else
+  TAG_NAME="${PACKAGE}-${VERSION}"
+fi
+
 PAYLOAD=$(cat <<-END
 {
-    "tag_name": "${VERSION}",
+    "tag_name": "${TAG_NAME}",
     "target_commitish": "main",
     "name": "${PACKAGE}-${VERSION}",
     "body": ${BODY},

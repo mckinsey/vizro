@@ -5,7 +5,7 @@ import sys
 
 import requests
 
-AVAILABLE_PACKAGES = ["vizro-core"]
+AVAILABLE_PACKAGES = ["vizro-core","vizro-ai"]
 VERSION_MATCHSTR = r'\s*__version__\s*=\s*"(\d+\.\d+\.\d+)"'
 RESPONSE_ERROR = 404
 
