@@ -15,10 +15,10 @@ BODY=$(jq -Rs . < "$BODY_PATH")
 
 if [ "$PACKAGE" = "vizro-core" ]; then
   TAG_NAME="${VERSION}"
-  MAKE_LATEST="true"
+  MAKE_LATEST=true
 else
   TAG_NAME="${PACKAGE}-${VERSION}"
-  MAKE_LATEST="false"
+  MAKE_LATEST=false
 fi
 
 PAYLOAD=$(cat <<-END
@@ -29,7 +29,7 @@ PAYLOAD=$(cat <<-END
     "body": ${BODY},
     "draft": true,
     "prerelease": false,
-    "make_latest": ${MAKE_LATEST}
+    "make_latest": "${MAKE_LATEST}"
 }
 END
 )
@@ -43,3 +43,6 @@ STATUS=$(curl -L \
   -d "${PAYLOAD}")
 
 echo "${STATUS}"
+
+REQUEST_NUMBER=$(echo "${RESPONSE}" | jq -r '.id')
+echo "Request number: ${REQUEST_NUMBER}"
