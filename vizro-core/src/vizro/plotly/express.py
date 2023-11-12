@@ -10,7 +10,7 @@ import plotly.express as px
 from vizro.models.types import capture
 
 
-# TODO: is there a better way to see if the import is a chart? Don't want to check return type though. -> MS
+# TODO: is there a better way to see if the import is a graph? Don't want to check return type though. -> MS
 # Might also want to define __dir__ or __all__ in order to facilitate IDE completion etc.
 # TODO: type hints -> MS
 def __getattr__(name: str) -> Any:

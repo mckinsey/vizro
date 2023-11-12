@@ -28,7 +28,7 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 !!!note
 
-    The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
+    The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](https://github.com/mckinsey/vizro/blob/main/.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
 
     If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all of Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro-core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
 
@@ -114,7 +114,7 @@ line-length = 120
 Linting checks are enforced in CI. To run pre-commit hooks locally, there are two options:
 
 1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, please read below for an explanation and how to install `go`.
-2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run eg `hatch run lint mypy` to only run specific linters, here mypy.)
+2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run e.g. `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
 
 Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`.
 

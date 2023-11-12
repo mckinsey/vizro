@@ -1,6 +1,5 @@
 """Example to show dashboard configuration specified as a JSON file."""
 import json
-import os
 from pathlib import Path
 
 import pandas as pd
@@ -63,5 +62,4 @@ dashboard = json.loads(Path("dashboard.json").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
 
 if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+    Vizro(assets_folder="../assets").build(dashboard).run()

@@ -53,7 +53,7 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.P(self.title) if self.title else html.Div(hidden=True),
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,

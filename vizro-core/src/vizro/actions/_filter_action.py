@@ -6,7 +6,7 @@ import pandas as pd
 from dash import ctx
 
 from vizro.actions._actions_utils import (
-    _get_modified_page_charts,
+    _get_modified_page_figures,
 )
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
@@ -31,7 +31,7 @@ def _filter(
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
-    return _get_modified_page_charts(
+    return _get_modified_page_figures(
         targets=targets,
         ctds_filter=ctx.args_grouping["filters"],
         ctds_filter_interaction=ctx.args_grouping["filter_interaction"],

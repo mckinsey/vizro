@@ -13,7 +13,6 @@ on:
 
 concurrency:
   group: lint-${{ github.head_ref }}
-  cancel-in-progress: true
 
 env:
   PYTHONUNBUFFERED: "1"
@@ -40,8 +39,5 @@ jobs:
       - name: Install Hatch
         run: pip install --upgrade hatch
 
-      - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
-
       - name: Lint
-        run: hatch run all.py${{ matrix.python-version }}:lint
+        run: hatch run lint:lint

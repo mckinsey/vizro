@@ -87,7 +87,7 @@ class RangeSlider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else None,
+                html.P(self.title) if self.title else html.Div(hidden=True),
                 html.Div(
                     [
                         dcc.RangeSlider(

@@ -32,6 +32,11 @@ def standard_dash_table(gapminder):
 
 
 @pytest.fixture
+def dash_data_table_with_id(gapminder):
+    return dash_data_table(id="underlying_table_id", data_frame=gapminder)
+
+
+@pytest.fixture
 def standard_go_chart(gapminder):
     return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
 

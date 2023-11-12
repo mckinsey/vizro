@@ -1,11 +1,10 @@
 from typing import Callable, Dict, List, Union
 
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import OpenAI
 from pydantic import BaseModel, Field
 
 # TODO add new wrappers in if new model support is added
-LLM_MODELS = Union[ChatOpenAI, OpenAI]
+LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
 PREDEFINED_MODELS: List[Dict[str, any]] = [
@@ -18,11 +17,6 @@ PREDEFINED_MODELS: List[Dict[str, any]] = [
         "name": "gpt-4-0613",
         "max_tokens": 8192,
         "wrapper": ChatOpenAI,
-    },
-    {
-        "name": "text-davinci-003",
-        "max_tokens": 8192,
-        "wrapper": OpenAI,
     },
 ]
 

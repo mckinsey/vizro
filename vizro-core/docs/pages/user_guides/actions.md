@@ -63,8 +63,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -105,24 +104,25 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 ### Filter data by clicking on chart
 
-To enable filtering when clicking on data in a (source) chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+To enable filtering when clicking on data in a (source) chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
 
 To configure this chart interaction follow the steps below:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph] and a list of IDs of the target charts into `targets`
+1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
-2. Enter the filter columns in the `custom_data` argument of the underlying source chart `function`
+2. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
-    Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
+Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
+Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "`filter_interaction`"
     === "app.py"
@@ -166,8 +166,7 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
             ]
         )
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -199,15 +198,92 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
                 x: gdpPercap
                 y: lifeExp
                 size: pop
-              controls:
-                - column: continent
-                  type: filter
+            controls:
+              - column: continent
+                type: filter
             title: Filter interaction
         ```
     === "Result"
         [![Graph2]][Graph2]
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
+
+Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
+
+!!! example "`filter_interaction`"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.actions import filter_interaction
+        from vizro.tables import dash_data_table
+
+        df_gapminder = px.data.gapminder().query("year == 2007")
+
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Filter interaction",
+                    components=[
+                        vm.Table(
+                            figure=dash_data_table(id="dash_datatable_id", data_frame=df_gapminder),
+                            actions=[
+                                vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
+                            ],
+                        ),
+                        vm.Graph(
+                            id="scatter_relation_2007",
+                            figure=px.scatter(
+                                df_gapminder,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                    controls=[vm.Filter(column='continent')]
+                ),
+            ]
+        )
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+          - components:
+            - type: table
+              figure:
+                _target_: dash_data_table
+                data_frame: gapminder_2007
+                id: dash_datatable_id
+              actions:
+               - function:
+                    _target_: filter_interaction
+                    targets:
+                      - scatter_relation_2007
+            - type: graph
+              id: scatter_relation_2007
+              figure:
+                _target_: scatter
+                data_frame: gapminder_2007
+                color: continent
+                x: gdpPercap
+                y: lifeExp
+                size: pop
+            controls:
+              - column: continent
+                type: filter
+            title: Filter interaction
+        ```
+    === "Result"
+        [![Table]][Table]
+
+    [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
 ## Predefined actions customization
 Many predefined actions are customizable which helps to achieve more specific desired goal. For specific options, please
@@ -264,8 +340,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml

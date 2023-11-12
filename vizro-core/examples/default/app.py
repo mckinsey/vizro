@@ -1,27 +1,21 @@
 """Example to show dashboard configuration."""
-import os
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.tables import dash_data_table
 
 df_gapminder = px.data.gapminder()
 
 page = vm.Page(
     title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
     components=[
-        vm.Graph(
-            id="graph-0",
-            figure=px.line(
-                df_gapminder,
-                title="Graph-0",
-                x="year",
-                y="lifeExp",
-                color="continent",
-                line_group="country",
-                hover_name="country",
-                custom_data=["continent"],
+        vm.Table(
+            id="table-0",
+            figure=dash_data_table(
+                id="dash_datatable-0",
+                data_frame=df_gapminder,
             ),
             actions=[
                 vm.Action(
@@ -163,7 +157,6 @@ page = vm.Page(
         # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
             targets=[
-                "graph-0.y",
                 "graph-1.y",
                 "graph-2.y",
                 "graph-3.y",
@@ -182,5 +175,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro._user_assets_folder = os.path.abspath("../assets")
-    Vizro().build(dashboard).run()
+    Vizro(assets_folder="../assets").build(dashboard).run()

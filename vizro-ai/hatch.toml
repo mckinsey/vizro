@@ -11,11 +11,11 @@ scripts = {add = "scriv create --add"}
 [envs.default]
 dependencies = [
   "devtools[pygments]",
-  "pre-commit",
   "coverage[toml]>=6.5",
   "pytest",
   "toml",
-  "nbformat>=4.2.0"
+  "nbformat>=4.2.0",
+  "pyhamcrest"
 ]
 
 [envs.default.env-vars]
@@ -30,11 +30,10 @@ cov-report = [
   "- coverage combine",
   "coverage report"
 ]
-lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
   "hatch run changelog:scriv collect --add",
-  "hatch run lint || hatch run lint",
   "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
 ]
@@ -46,7 +45,7 @@ test = [
 ]
 test-cov = "coverage run -m pytest tests/unit {args}"
 test-integration = [
-  "pytest tests/integration {args}"
+  "pytest -v tests/integration"
 ]
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
@@ -60,6 +59,13 @@ dependencies = [
 ]
 detached = true
 scripts = {serve = "mkdocs serve"}
+
+[envs.lint]
+dependencies = [
+  "pre-commit"
+]
+detached = true
+scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
 [version]
 path = "src/vizro_ai/__init__.py"

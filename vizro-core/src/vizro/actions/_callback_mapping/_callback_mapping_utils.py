@@ -1,13 +1,13 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Union
 
 from dash import Output, State, dcc
 
 from vizro.actions import _parameter, export_data, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, Page
+from vizro.models import Action, Page, Table
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
 
@@ -35,23 +35,42 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State
     ]
 
 
-def _get_inputs_of_chart_interactions(page: Page, action_function: Callable[[Any], Dict[str, Any]]) -> List[State]:
+def _get_inputs_of_chart_interactions(
+    page: Page, action_function: Callable[[Any], Dict[str, Any]]
+) -> List[Union[State, Dict[str, State]]]:
     """Gets list of States for selected chart interaction `action_name` of triggered page."""
-    chart_interactions_on_page = _get_matching_actions_by_function(
+    figure_interactions_on_page = _get_matching_actions_by_function(
         page=page,
         action_function=action_function,
     )
-    return [
-        State(
-            component_id=model_manager._get_action_trigger(ModelID(str(action.id))).id,
-            component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
-        )
-        for action in chart_interactions_on_page
-    ]
+    inputs = []
+    for action in figure_interactions_on_page:
+        # TODO: Consider do we want to move the following logic into Model implementation
+        triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
+        if isinstance(triggered_model, Table):
+            inputs.append(
+                {
+                    "active_cell": State(
+                        component_id=triggered_model._callable_object_id, component_property="active_cell"
+                    ),
+                    "derived_viewport_data": State(
+                        component_id=triggered_model._callable_object_id,
+                        component_property="derived_viewport_data",
+                    ),
+                }
+            )
+        else:
+            inputs.append(
+                {
+                    "clickData": State(component_id=triggered_model.id, component_property="clickData"),
+                }
+            )
+
+    return inputs
 
 
 # TODO: Refactor this and util functions once we implement "_get_input_property" method in VizroBaseModel models
-def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
+def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[State, Dict[str, State]]]]:
     """Creates mapping of pre-defined action names and a list of States."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
     page: Page = model_manager._get_model_page(model_id=action_id)
@@ -66,6 +85,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
         "parameters": (
             _get_inputs_of_controls(page=page, control_type=Parameter) if "parameters" in include_inputs else []
         ),
+        # TODO: Probably need to adjust other inputs to follow the same structure List[Dict[str, State]]
         "filter_interaction": (
             _get_inputs_of_chart_interactions(page=page, action_function=filter_interaction.__wrapped__)
             if "filter_interaction" in include_inputs
@@ -80,6 +100,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+
     # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
     # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
     # Ideally model_manager.__getitem__ would handle this itself, possibly with suitable use of a cast.
