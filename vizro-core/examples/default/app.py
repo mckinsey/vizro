@@ -21,7 +21,7 @@ page = vm.Page(
                 color="continent",
                 line_group="country",
                 hover_name="country",
-                custom_data=["continent"]
+                custom_data=["continent"],
             ),
             actions=[
                 vm.Action(
@@ -29,7 +29,7 @@ page = vm.Page(
                         targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
                     )
                 ),
-            ]
+            ],
         ),
         vm.Tabs(
             subpages=[
@@ -175,7 +175,7 @@ page = vm.Page(
             ],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         ),
-        vm.Filter(column="continent")
+        vm.Filter(column="continent"),
     ],
 )
 

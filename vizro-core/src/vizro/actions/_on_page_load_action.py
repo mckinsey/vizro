@@ -7,17 +7,16 @@ from dash import ctx
 from vizro.actions._actions_utils import (
     _get_modified_page_charts,
 )
-from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 
 
 @capture("action")
-def _on_page_load(page_id: ModelID, targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
     """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:
-        page_id: Page ID of relevant page
+        targets: List of target component ids to apply on page load mechanism to
         inputs: Dict mapping action function names with their inputs e.g.
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 

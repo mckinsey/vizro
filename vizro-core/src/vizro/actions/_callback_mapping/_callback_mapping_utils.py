@@ -1,15 +1,13 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from itertools import chain
-from typing import Any, Callable, Dict, List, NamedTuple
+from typing import Any, Callable, Dict, List
 
 from dash import Output, State, dcc
 
-from vizro.actions import _on_page_load, _parameter, _filter, export_data, filter_interaction
-from vizro.managers import data_manager, model_manager
+from vizro.actions import _parameter, export_data, filter_interaction
+from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, Page, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain
+from vizro.models import Action, Page
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
 
@@ -30,16 +28,14 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State
     return [
         State(
             component_id=control.selector.id,
-            component_property="value",
+            component_property=control.selector._input_property,
         )
         for control in page.controls
         if isinstance(control, control_type)
     ]
 
 
-def _get_inputs_of_chart_interactions(
-    page: Page, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[State]:
+def _get_inputs_of_chart_interactions(page: Page, action_function: Callable[[Any], Dict[str, Any]]) -> List[State]:
     """Gets list of States for selected chart interaction `action_name` of triggered page."""
     chart_interactions_on_page = _get_matching_actions_by_function(
         page=page,
@@ -47,8 +43,8 @@ def _get_inputs_of_chart_interactions(
     )
     return [
         State(
-            component_id=model_manager._get_action_trigger(action.id).id,
-            component_property="clickData",
+            component_id=model_manager._get_action_trigger(ModelID(str(action.id))).id,
+            component_property="clickData",  # TODO: needs to be refactored to abstract implementation detail
         )
         for action in chart_interactions_on_page
     ]
@@ -66,13 +62,9 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
         include_inputs = ["filters", "parameters", "filter_interaction", "theme_selector"]
 
     action_input_mapping = {
-        "filters": (
-            _get_inputs_of_controls(page=page, control_type=Filter) if "filters" in include_inputs else []
-        ),
+        "filters": (_get_inputs_of_controls(page=page, control_type=Filter) if "filters" in include_inputs else []),
         "parameters": (
-            _get_inputs_of_controls(page=page, control_type=Parameter)
-            if "parameters" in include_inputs
-            else []
+            _get_inputs_of_controls(page=page, control_type=Parameter) if "parameters" in include_inputs else []
         ),
         "filter_interaction": (
             _get_inputs_of_chart_interactions(page=page, action_function=filter_interaction.__wrapped__)
@@ -88,6 +80,10 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[State]]:
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
     action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
+    # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
+    # Ideally model_manager.__getitem__ would handle this itself, possibly with suitable use of a cast.
+    # If not then we can do the cast to Action at the point of consumption here to avoid needing mypy ignores.
 
     try:
         targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
@@ -100,7 +96,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property="figure",
+            component_property=model_manager[target]._output_property,  # type: ignore[attr-defined]
             allow_duplicate=True,
         )
         for target in targets

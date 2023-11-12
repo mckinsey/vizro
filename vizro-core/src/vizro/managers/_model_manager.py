@@ -3,12 +3,12 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, NewType, Tuple, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Dict, Generator, List, NewType, Tuple, Type, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel, Page
+    from vizro.models import Page, VizroBaseModel
 
 rd = random.Random(0)
 
@@ -18,8 +18,6 @@ Model = TypeVar("Model", bound="VizroBaseModel")
 
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
-
-    pass
 
 
 class ModelManager:
@@ -58,20 +56,20 @@ class ModelManager:
                 yield model_id, cast(Model, self[model_id])
 
     # TODO: Consider moving this one to the _callback_mapping_utils.py since it's only used there
-    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:
+    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:  # type: ignore[return]
         from vizro.models._action._actions_chain import ActionsChain
 
         for _, actions_chain in model_manager._items_with_type(ActionsChain):
             if action_id in [action.id for action in actions_chain.actions]:
-                return self[actions_chain.trigger.component_id]
+                return self[ModelID(str(actions_chain.trigger.component_id))]
 
     # TODO: consider returning with yield
-    def _get_model_children(self, model_id: ModelID) -> Set[ModelID]:
+    def _get_model_children(self, model_id: ModelID) -> List[ModelID]:
         """Gets all components and subpages recursively of the model with the `model_id`."""
-        model_children = set()
+        model_children = []
 
         def __get_model_children_helper(model: VizroBaseModel) -> None:
-            model_children.add(model.id)
+            model_children.append(ModelID(str(model.id)))
             if hasattr(model, "components"):
                 for sub_model in model.components:
                     __get_model_children_helper(model=sub_model)
@@ -83,19 +81,19 @@ class ModelManager:
         return model_children
 
     # TODO: Consider moving this one into Dashboard or some util file
-    def _get_model_page(self, model_id: ModelID) -> Page:
+    def _get_model_page(self, model_id: ModelID) -> Page:  # type: ignore[return]
         """Gets the page id of the page that contains the model with the `model_id`."""
         from vizro.models import Page
 
         for page_id, _ in model_manager._items_with_type(Page):
             page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
-            page = self.__models[page_id]
+            page: Page = cast(Page, self.__models[page_id])
 
             if hasattr(page, "actions"):
                 for actions_chain in page._get_page_actions_chains():
-                    page_model_ids.append(actions_chain.id)
+                    page_model_ids.append(actions_chain.id)  # type: ignore[arg-type]
                     for action in actions_chain.actions:
-                        page_model_ids.append(action.id)
+                        page_model_ids.append(action.id)  # type: ignore[arg-type]
 
             for control in page.controls:
                 page_model_ids.append(control.id)

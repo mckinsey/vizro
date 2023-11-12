@@ -11,7 +11,7 @@ import vizro._themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import DuplicateIDError
+from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Dashboard, Graph, Layout, Navigation, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
@@ -99,9 +99,10 @@ class Page(VizroBaseModel):
         """Gets all ActionsChains present on the page."""
         page_actions_chains = []
 
-        for model_id in model_manager._get_model_children(model_id=self.id):
-            if hasattr(model_manager[model_id], "actions"):
-               page_actions_chains.extend(model_manager[model_id].actions)
+        for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id))):
+            model = model_manager[model_id]
+            if hasattr(model, "actions"):
+                page_actions_chains.extend(model.actions)
 
         for control in self.controls:
             if hasattr(control, "selector") and control.selector:
@@ -109,18 +110,18 @@ class Page(VizroBaseModel):
 
         return page_actions_chains
 
-    def _get_page_model_ids_with_figure(self) -> List[str]:
+    def _get_page_model_ids_with_figure(self) -> List[ModelID]:
         """Gets all components that have a registered dataframe on the page."""
         return [
             model_id
-            for model_id in model_manager._get_model_children(model_id=self.id)
+            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
             if hasattr(model_manager[model_id], "figure")
         ]
 
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        targets = [component for component in self._get_page_model_ids_with_figure()]
+        targets = list(self._get_page_model_ids_with_figure())
         if targets:
             self.actions = [
                 ActionsChain(
@@ -132,10 +133,7 @@ class Page(VizroBaseModel):
                     actions=[
                         Action(
                             id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            function=_on_page_load(
-                                page_id=self.id,
-                                targets=targets
-                            )
+                            function=_on_page_load(targets=targets),
                         )
                     ],
                 )
@@ -166,6 +164,7 @@ class Page(VizroBaseModel):
             if isinstance(model_manager[component], Graph)
         ]
         if outputs:
+
             @callback(
                 outputs,
                 Input("theme_selector", "on"),

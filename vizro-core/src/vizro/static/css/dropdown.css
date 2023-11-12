@@ -36,9 +36,15 @@ div.page_container .Select-control {
   height: 32px;
 }
 
+div.page_container .Select.is-focused > .Select-control {
+  background-color: var(--field-enabled);
+}
+
 /* User input */
-div.page_container .Select-input {
+div.page_container .dash-dropdown .Select-input {
+  display: block;
   height: var(--tag-height);
+  margin-left: unset;
 }
 
 div.page_container.Select-input > input {
@@ -139,5 +145,5 @@ wrapper **/
 }
 
 .Select-input > input {
-  padding: 0;
+  padding: 0 !important; /*Required so tags don't jump caused by adding table */
 }

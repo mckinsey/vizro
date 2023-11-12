@@ -8,6 +8,11 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10"]}
 ]
 
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+scripts = {add = "scriv create --add"}
+
 [envs.default]
 dependencies = [
   "devtools[pygments]",
@@ -37,20 +42,17 @@ cov-report = [
 ]
 example = "cd examples/{args:default}; python app.py"
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
-post-release = [
-  "hatch version patch,dev",
-  "echo 'Raise a PR to bump to the new development version'"
-]
 prep-release = [
   "hatch version release",
-  "hatch run docs:scriv collect",
+  "hatch run changelog:scriv collect --add",
   "rm -rf schemas/*json",
-  "hatch run schema",
+  "schema",
+  "git add schemas",
   "hatch run lint || hatch run lint",
-  "hatch run docs:changelog",
-  "echo 'Raise a PR to prepare main for release'"
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
 ]
-pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+pypath = "python -c 'import sys; print(sys.executable)'"
 schema = "python schemas/generate.py {args}"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
@@ -73,14 +75,10 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
-  "mkdocstrings[python]",
-  "scriv"
+  "mkdocstrings[python]"
 ]
 detached = true
-
-[envs.docs.scripts]
-changelog = "scriv create"
-serve = "mkdocs serve"
+scripts = {serve = "mkdocs serve"}
 
 [publish.index]
 disable = true

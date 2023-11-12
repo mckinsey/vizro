@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-from itertools import chain
 from typing import TYPE_CHECKING, List
 
 from dash import page_registry
 
 from vizro.managers import model_manager
-from vizro.models import VizroBaseModel
 
 if TYPE_CHECKING:
     from vizro.models import Action, Page

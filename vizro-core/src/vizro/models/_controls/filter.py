@@ -21,8 +21,9 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
 if TYPE_CHECKING:
-    from vizro.models import Page
+    pass
 
+from vizro.managers._model_manager import ModelID
 
 # TODO: Add temporal when relevant component is available
 SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown}
@@ -49,14 +50,14 @@ class Filter(VizroBaseModel):
     Args:
         type (Literal["filter"]): Defaults to `"filter"`.
         column (str): Column of `DataFrame` to filter.
-        targets (List[str]): Target component to be affected by filter. If none are given then target all components on
-            the page that use `column`.
+        targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components
+            on the page that use `column`.
         selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
     """
 
     type: Literal["filter"] = "filter"
     column: str = Field(..., description="Column of DataFrame to filter.")
-    targets: List[str] = Field(
+    targets: List[ModelID] = Field(
         [],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
@@ -85,7 +86,9 @@ class Filter(VizroBaseModel):
 
     def _set_targets(self):
         if not self.targets:
-            for component_id in model_manager._get_model_page(model_id=self.id)._get_page_model_ids_with_figure():
+            for component_id in model_manager._get_model_page(
+                model_id=ModelID(str(self.id))
+            )._get_page_model_ids_with_figure():
                 data_frame = data_manager._get_component_data(component_id)
                 if self.column in data_frame.columns:
                     self.targets.append(component_id)
