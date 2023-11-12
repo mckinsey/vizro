@@ -4,13 +4,33 @@ import os
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import export_data, filter_interaction
 
 df_gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Testing out tabs",
+    title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
     components=[
+        vm.Graph(
+            id="graph-0",
+            figure=px.line(
+                df_gapminder,
+                title="Graph-0",
+                x="year",
+                y="lifeExp",
+                color="continent",
+                line_group="country",
+                hover_name="country",
+                custom_data=["continent"]
+            ),
+            actions=[
+                vm.Action(
+                    function=filter_interaction(
+                        targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
+                    )
+                ),
+            ]
+        ),
         vm.Tabs(
             subpages=[
                 vm.SubPage(
@@ -21,6 +41,7 @@ page = vm.Page(
                             id="graph-1",
                             figure=px.line(
                                 df_gapminder,
+                                title="Graph-1",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -31,22 +52,22 @@ page = vm.Page(
                         vm.Graph(
                             id="graph-2",
                             figure=px.scatter(
-                                df_gapminder.query("year==2007"),
+                                df_gapminder,
+                                title="Graph-2",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
                                 color="continent",
-                                title="Comparison of gdpPercap and lifeExp",
                             ),
                         ),
                         vm.Graph(
                             id="graph-3",
                             figure=px.box(
                                 df_gapminder,
+                                title="Graph-3",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
-                                title="Distribution per continent",
                             ),
                         ),
                         vm.Button(
@@ -64,22 +85,22 @@ page = vm.Page(
                         vm.Graph(
                             id="graph-4",
                             figure=px.scatter(
-                                df_gapminder.query("year==2007"),
+                                df_gapminder,
+                                title="Graph-4",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
                                 color="continent",
-                                title="Comparison of gdpPercap and lifeExp",
                             ),
                         ),
                         vm.Graph(
                             id="graph-5",
                             figure=px.box(
                                 df_gapminder,
+                                title="Graph-5",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
-                                title="Distribution per continent",
                             ),
                         ),
                         vm.Tabs(
@@ -92,6 +113,7 @@ page = vm.Page(
                                             id="graph-6",
                                             figure=px.line(
                                                 df_gapminder,
+                                                title="Graph-6",
                                                 x="year",
                                                 y="lifeExp",
                                                 color="continent",
@@ -102,12 +124,12 @@ page = vm.Page(
                                         vm.Graph(
                                             id="graph-7",
                                             figure=px.scatter(
-                                                df_gapminder.query("year==2007"),
+                                                df_gapminder,
+                                                title="Graph-7",
                                                 x="gdpPercap",
                                                 y="lifeExp",
                                                 size="pop",
                                                 color="continent",
-                                                title="Comparison of gdpPercap and lifeExp",
                                             ),
                                         ),
                                     ],
@@ -120,10 +142,10 @@ page = vm.Page(
                                             id="graph-8",
                                             figure=px.box(
                                                 df_gapminder,
+                                                title="Graph-8",
                                                 x="continent",
                                                 y="lifeExp",
                                                 color="continent",
-                                                title="Distribution per continent",
                                             ),
                                         ),
                                     ],
@@ -141,6 +163,7 @@ page = vm.Page(
         # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
             targets=[
+                "graph-0.y",
                 "graph-1.y",
                 "graph-2.y",
                 "graph-3.y",
@@ -151,7 +174,8 @@ page = vm.Page(
                 "graph-8.y",
             ],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
-        )
+        ),
+        vm.Filter(column="continent")
     ],
 )
 

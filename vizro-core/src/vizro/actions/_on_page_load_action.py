@@ -1,6 +1,6 @@
 """Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from dash import ctx
 
@@ -13,7 +13,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def _on_page_load(page_id: ModelID, targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
     """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:
@@ -24,8 +24,6 @@ def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict mapping targeted chart ids to modified figures e.g. {'my_scatter': Figure({})}
     """
-    targets = [component.id for component in model_manager[page_id].components if data_manager._has_registered_data(component.id)]  # type: ignore[attr-defined]  # noqa: E501
-
     return _get_modified_page_charts(
         targets=targets,
         ctds_filter=ctx.args_grouping["filters"],

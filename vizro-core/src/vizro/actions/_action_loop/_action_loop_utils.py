@@ -15,24 +15,6 @@ if TYPE_CHECKING:
     from vizro.models._action._actions_chain import ActionsChain
 
 
-def _get_actions(model: VizroBaseModel) -> List[ActionsChain]:
-    """Gets the list of the ActionsChain models for any VizroBaseModel model."""
-    if hasattr(model, "selector"):
-        return model.selector.actions
-    elif hasattr(model, "actions"):
-        return model.actions
-    return []
-
-
-def _get_all_actions_chains_on_page(page: Page) -> List[ActionsChain]:
-    """Gets the list of the ActionsChain models for the Page model."""
-    return [
-        actions_chain
-        for page_item in chain([page], page.components, page.controls)
-        for actions_chain in _get_actions(model=page_item)
-    ]
-
-
 def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
     """Gets list of ActionsChain models for registered pages."""
     actions_chains: List[ActionsChain] = []
@@ -41,7 +23,7 @@ def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
             page: Page = model_manager[registered_page["module"]]  # type: ignore[assignment]
         except KeyError:
             continue
-        actions_chains.extend(_get_all_actions_chains_on_page(page=page))
+        actions_chains.extend(page._get_page_actions_chains())
     return actions_chains
 
 

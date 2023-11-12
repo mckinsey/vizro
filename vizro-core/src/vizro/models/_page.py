@@ -95,10 +95,33 @@ class Page(VizroBaseModel):
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
 
+    def _get_page_actions_chains(self) -> List[ActionsChain]:
+        """Gets all ActionsChains present on the page."""
+        page_actions_chains = []
+
+        for model_id in model_manager._get_model_children(model_id=self.id):
+            if hasattr(model_manager[model_id], "actions"):
+               page_actions_chains.extend(model_manager[model_id].actions)
+
+        for control in self.controls:
+            if hasattr(control, "selector") and control.selector:
+                page_actions_chains.extend(control.selector.actions)
+
+        return page_actions_chains
+
+    def _get_page_model_ids_with_figure(self) -> List[str]:
+        """Gets all components that have a registered dataframe on the page."""
+        return [
+            model_id
+            for model_id in model_manager._get_model_children(model_id=self.id)
+            if hasattr(model_manager[model_id], "figure")
+        ]
+
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        if any(isinstance(component, Graph) for component in self.components):
+        targets = [component for component in self._get_page_model_ids_with_figure()]
+        if targets:
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
@@ -108,7 +131,11 @@ class Page(VizroBaseModel):
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(page_id=self.id)
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                            function=_on_page_load(
+                                page_id=self.id,
+                                targets=targets
+                            )
                         )
                     ],
                 )
@@ -134,12 +161,11 @@ class Page(VizroBaseModel):
 
     def _update_graph_theme(self):
         outputs = [
-            Output(component.id, "figure", allow_duplicate=True)
-            for component in self.components
-            if isinstance(component, Graph)
+            Output(model_manager[component].id, "figure", allow_duplicate=True)
+            for component in self._get_page_model_ids_with_figure()
+            if isinstance(model_manager[component], Graph)
         ]
         if outputs:
-
             @callback(
                 outputs,
                 Input("theme_selector", "on"),

@@ -40,14 +40,6 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
-def _get_component_page(component_id: str) -> Page:  # type: ignore[return]
-    from vizro.models import Page
-
-    for page_id, page in model_manager._items_with_type(Page):
-        if any(control.id == component_id for control in page.controls):
-            return page
-
-
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -93,11 +85,10 @@ class Filter(VizroBaseModel):
 
     def _set_targets(self):
         if not self.targets:
-            for component in _get_component_page(str(self.id)).components:
-                if data_manager._has_registered_data(component.id):
-                    data_frame = data_manager._get_component_data(component.id)
-                    if self.column in data_frame.columns:
-                        self.targets.append(component.id)
+            for component_id in model_manager._get_model_page(model_id=self.id)._get_page_model_ids_with_figure():
+                data_frame = data_manager._get_component_data(component_id)
+                if self.column in data_frame.columns:
+                    self.targets.append(component_id)
             if not self.targets:
                 raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
 
