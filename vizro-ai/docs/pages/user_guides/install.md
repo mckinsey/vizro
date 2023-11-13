@@ -40,7 +40,7 @@ pip install jupyter
 ??? tip "Beginners/Code novices"
     If you're new to coding or consider yourself a beginner, you can follow these following steps to avoid using the terminal:
 
-    - Search `vizro-ai` and install it using the Anaconda Navigator package manager. You can find instructions [here](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/)
+    - Search `vizro_ai` and install it using the Anaconda Navigator package manager. You can find instructions [here](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/)
     - Similarly, search `jupyter` and install it through the same procedure
     - Once installed, launching a Jupyter notebook becomes straightforward; you can find guidance [here](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator)
     - With Jupyter, you can easily copy and paste any of the provided examples into a notebook cell, evaluate the cell, and examine the results

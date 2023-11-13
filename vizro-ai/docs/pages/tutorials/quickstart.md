@@ -3,7 +3,7 @@ This tutorial serves as an introduction to Vizro-AI.
 It is a step-by-step guide to help you experiment and create your initial Vizro chart using Vizro-AI, our English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
 
 ## Let's get started!
-### 1. Install vizro-ai and its dependencies
+### 1. Install Vizro-AI and its dependencies
 If you haven't already installed `vizro_ai` package, follow the [installation guide](../user_guides/install.md)
 to do so inside a virtual environment.
 
@@ -28,7 +28,7 @@ This opens a browser tab, and you can navigate to your preferred folder for this
 ??? tip "Beginners/Code novices"
     If you followed the beginners steps in the [installation guide](../user_guides/install.md), you should already be set, and you can continue below.
 
-Confirm that vizro-ai is installed by typing the following into a jupyter cell in your notebook and running it.
+Confirm that `vizro_ai` is installed by typing the following into a jupyter cell in your notebook and running it.
 
 ```py
 import vizro_ai
@@ -48,7 +48,7 @@ from dotenv import load_dotenv
 load_dotenv()
 ```
 
-### 4. Ask your first question using vizro-ai
+### 4. Ask your first question using Vizro-AI
 
 For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
 

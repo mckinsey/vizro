@@ -4,7 +4,7 @@ This tutorial serves as an exploration of the extended applications offered by V
 By the end of this tutorial, you will have gained an understanding of different language options and leveraging Vizro-AI to enhance the formatting your visualizations.
 
 ## Let's get started!
-### 1. Install vizro-ai and get ready to run your code
+### 1. Install Vizro-AI and get ready to run your code
 Before proceeding, ensure the installation of the `vizro_ai` package by following the steps outlined in the [installation guide](../user_guides/install.md). Once installed, you can execute your code either by pasting it into a Jupyter notebook cell or running it from a Python script.
 
 
