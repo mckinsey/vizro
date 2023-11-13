@@ -22,7 +22,7 @@ load_dotenv()
 
 ### 2. Create your visualization using different languages
 
-Vizro-AI is versatile, supporting prompts and chart visualizations in multiple languages. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time. 
+Vizro-AI is versatile, supporting prompts and chart visualizations in multiple languages. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
 
 !!! example "Vizro-AI Chinese"
     === "Code for the cell"
@@ -106,7 +106,7 @@ Having unveiled our animated bar chart showcasing population development per cou
     [AnimatedChart2]: ../../assets/tutorials/chart/animated_bar_chart_2.png
 
 
-Great, by incorporating the directive `Please improve layout`, we've successfully refined our animation and are now able to better interpret our result. 
+Great, by incorporating the directive `Please improve layout`, we've successfully refined our animation and are now able to better interpret our result.
 
 Now, upon closer inspection, two challenges emerge. Firstly, the legend overlaps the x-axis. Secondly, the y-axis range is insufficient to capture the full spectrum of Asia's population development. Let's run the code below and see how we can improve and finalize our chart.
 

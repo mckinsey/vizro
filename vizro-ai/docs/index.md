@@ -1,6 +1,6 @@
 # Vizro-AI
 
-Vizro-AI is a tool designed for generating data visualizations. It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly. 
+Vizro-AI is a tool designed for generating data visualizations. It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly.
 
 ## Why Vizro-AI?
 
