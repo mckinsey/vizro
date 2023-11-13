@@ -81,11 +81,15 @@ jobs:
           password: ${{ env.PYPI_TOKEN }}
       - name: Check correct package uploaded to PyPI
         run: |
+          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
+            export package_name=vizro_ai
+          else export package_name=${{ needs.check-version.outputs.package_name }}
+          fi
           cd "${{ needs.check-version.outputs.package_name }}/dist"
-          local=$(md5sum ${{ needs.check-version.outputs.package_name }}-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          local=$(md5sum "$package_name"-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
           cd ..
           pip download ${{ needs.check-version.outputs.package_name }}==${{needs.check-version.outputs.package_version}} -d . --no-deps --timeout 300
-          pypi=$(md5sum ${{ needs.check-version.outputs.package_name }}-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          pypi=$(md5sum "$package_name"-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
           if [[ $local = $pypi ]]; then echo "md5 hash is the same"; else echo "md5 hash is not the same"; exit 1; fi
 
   version-bump:
