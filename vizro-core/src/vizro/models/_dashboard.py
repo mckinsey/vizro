@@ -23,10 +23,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def update_theme(on: bool):
-    return "vizro_dark" if on else "vizro_light"
-
-
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
@@ -65,6 +61,7 @@ class Dashboard(VizroBaseModel):
         # pio is the backend global state and shouldn't be changed while
         # the app is running. This limitation leads to the case that Graphs blink
         # on page load if user previously has changed theme_selector.
+        # AM: Did I fix this? No need to set this any more?
         pio.templates.default = self.theme
 
     @_log_call
@@ -103,9 +100,7 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.Div(hidden=True, id="dashboard_title_outer")
         )
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
-        )
+        theme_switch = daq.BooleanSwitch(id="theme_selector", on=self.theme == "vizro_dark", persistence=True)
 
         # Shared across pages but slightly differ in content
         page_title = html.H2(children=page.title, id="page_title")
