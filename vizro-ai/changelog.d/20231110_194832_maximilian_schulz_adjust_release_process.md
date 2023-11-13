@@ -4,10 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
+<!--
 ### Highlights ✨
 
-- Initial release of `vizro-ai` package. Vizro-AI is a tool for generating data visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Removed
 
