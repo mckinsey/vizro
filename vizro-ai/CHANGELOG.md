@@ -17,5 +17,5 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Initial release of Vizro-AI package. Vizro-AI is a tool for generating data 
+- Initial release of Vizro-AI package. Vizro-AI is a tool for generating data
   visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
