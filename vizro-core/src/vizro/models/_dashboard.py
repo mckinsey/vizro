@@ -80,7 +80,12 @@ class Dashboard(VizroBaseModel):
     def build(self):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
-        self._update_theme()
+
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
+            Output("dashboard_container_outer", "className"),
+            Input("theme_selector", "on"),
+        )
 
         return dbc.Container(
             id="dashboard_container_outer",
@@ -121,14 +126,6 @@ class Dashboard(VizroBaseModel):
         )
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
-
-    @staticmethod
-    def _update_theme():
-        clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
-            Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
-        )
 
     @staticmethod
     def _make_page_404_layout():

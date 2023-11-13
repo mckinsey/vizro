@@ -56,6 +56,14 @@ class Graph(VizroBaseModel):
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
+
+        try:
+            fig.update_layout(template="vizro_dark" if ctx.states["theme_selector.on"] else "vizro_light")
+        except MissingCallbackContextException:
+            # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
+            # to just swallow up the error here as it doesn't cause any problems.
+            logger.info("fig.update_layout called outside of callback context.")
+
         return fig
 
     # Convenience wrapper/syntactic sugar.

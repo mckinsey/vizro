@@ -267,7 +267,4 @@ def _get_modified_page_figures(
         outputs[target] = model_manager[target](  # type: ignore[operator]
             data_frame=filtered_data[target], **parameterized_config[target]
         )
-        if hasattr(outputs[target], "update_layout"):
-            outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
-
     return outputs
