@@ -56,14 +56,6 @@ class Dashboard(VizroBaseModel):
             return Navigation(pages=[page.id for page in values["pages"]])
         return navigation
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # pio is the backend global state and shouldn't be changed while
-        # the app is running. This limitation leads to the case that Graphs blink
-        # on page load if user previously has changed theme_selector.
-        # AM: Did I fix this? No need to set this any more?
-        pio.templates.default = self.theme
-
     @_log_call
     def pre_build(self):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
