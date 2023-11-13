@@ -6,7 +6,7 @@ python = ["3.9", "3.10", "3.11"]
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-scripts = {add = "scriv create --add"}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
 dependencies = [
@@ -33,9 +33,8 @@ cov-report = [
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
-  "hatch run changelog:scriv collect --add",
+  "hatch run changelog:collect",
   "hatch run changelog:add",
-  "hatch run lint || hatch run lint",
   'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"

@@ -71,14 +71,12 @@ jobs:
         run: |
           if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
-          fi
-          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-ai" ]; then
+          elif [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-ai" ]; then
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
           fi
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          # repository-url: https://test.pypi.org/legacy/ # Activate for test.pypi.org
           packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
           password: ${{ env.PYPI_TOKEN }}
       - name: Check correct package uploaded to PyPI
