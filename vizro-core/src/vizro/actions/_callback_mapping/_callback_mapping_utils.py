@@ -137,7 +137,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
     if action_function == export_data.__wrapped__:
         include_inputs = ["filters", "filter_interaction"]
     else:
-        include_inputs = ["filters", "parameters", "filter_interaction"]
+        include_inputs = ["filters", "parameters", "filter_interaction", "theme_selector"]
 
     action_input_mapping = {
         "filters": (
@@ -154,6 +154,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
             if "filter_interaction" in include_inputs
             else []
         ),
+        "theme_selector": State("theme_selector", "on") if "theme_selector" in include_inputs else [],
     }
     return action_input_mapping
 

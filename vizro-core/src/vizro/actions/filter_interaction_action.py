@@ -27,7 +27,7 @@ def filter_interaction(
         targets: List of target component ids to filter by chart interaction. If missing, will target all valid
             components on page. Defaults to None.
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}

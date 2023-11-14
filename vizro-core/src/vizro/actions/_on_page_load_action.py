@@ -19,7 +19,7 @@ def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[ModelID, A
     Args:
         page_id: Page ID of relevant page
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
