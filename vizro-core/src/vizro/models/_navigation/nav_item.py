@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Literal, Optional
+from typing import Optional, Literal, Dict, List, Union
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, root_validator, validator
+from pydantic import Field, root_validator, validator, PrivateAttr
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -22,84 +22,59 @@ class NavItem(VizroBaseModel):
     Args:
         type (Literal["navitem"]): Defaults to `"navitem"`.
         pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
-        icon (str): Name of the icon from the Google Material Icon library. Defaults to "dashboard". For more available
-            icons visit [Google Material Icon library](https://fonts.google.com/icons). To turn off icon provide `""`.
-        max_text_length (int): Character limit for `text` argument. If the text exceeds the `max_text_length`,
-            it is automatically truncated and the full text is visible in the tooltip on hover. Defaults to 8.
+        icon (str): Name of the icon from the Google Material Icon library. For more available
+            icons visit [Google Material Icon library](https://fonts.google.com/icons).
         text (Optional[str]): Text to be displayed below the icon. It automatically gets truncated to the
             `max_text_length`. Defaults to `None`.
-        tooltip (Optional[str]): Text to be displayed in the icon tooltip on hover. It is automatically populated if
-            the `text` exceeds the `max_text_length`. Defaults to `None`.
-        selector (Optional[Accordion]): See [`Accordion`][vizro.models.Accordion]. Defaults to `None`.
     """
 
-    type: Literal["navitem"] = "navitem"
-    pages: NavPagesType
-    icon: str = Field(
-        "dashboard",
-        description="URI (absolute) of the embeddable content or icon name from Google Material Icon library.",
-    )
-    max_text_length: int = Field(8, description="Character limit for `text` argument.")
-    text: Optional[str] = Field(None, description="Text to be displayed below the icon.")
-    tooltip: Optional[str] = Field(None, description="Text to be displayed in the icon tooltip on hover.")
-    selector: Optional[Accordion] = None
+    type: Literal["navitem"] = "navitem"  # AM: nav_item?
+    pages: Optional[NavPagesType] = []
+    text: str = Field(
+        ..., description="Text to be displayed below the icon."
+    )  # Maybe call label. This just does tooltip for now.
+    icon: Optional[str] = Field(None, description="Icon name from Google Material Icon library.")
+
+    _selector: Accordion = PrivateAttr()
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
 
-    @root_validator
-    def set_text_and_tooltip(cls, values):
-        if values["text"] and (len(values["text"]) > values["max_text_length"]):
-            if values["tooltip"] is None:
-                values["tooltip"] = values["text"]
-            values["text"] = values["text"][: values["max_text_length"]]
-        return values
+    @_log_call  # can't do this in validator since it's private?
+    def pre_build(self):
+        from vizro.models._navigation.accordion import Accordion
 
-    @validator("selector", pre=True, always=True)
-    def set_selector(cls, selector, values):
-        if selector is None:
-            return Accordion(pages=values.get("pages"))
-        return selector
+        self._selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
     @_log_call
-    def build(self, active_page_id):
-        icon_first_page = (
-            list(itertools.chain(*self.pages.values()))[0] if isinstance(self.pages, dict) else self.pages[0]
-        )
-        text_div = html.Div(children=[self.text], className="icon-text") if self.text else html.Div(className="hidden")
+    def build(self, *, active_page_id=None):
+        # _selector is an Accordion, so _selector._pages is guaranteed to be Dict[str, List[str]].
+        # AM: refactor to make private property for this in Accordion etc.
+        all_page_ids = list(itertools.chain(*self._selector.pages.values()))
+        first_page_id = all_page_ids[0]
+        item_active = active_page_id in all_page_ids
 
-        return dbc.Button(
-            id=self.id,
-            children=[
-                html.Div(
-                    children=[
-                        self._create_icon_div(),
-                        text_div,
-                    ],
-                    className="nav-icon-text",
-                ),
-                self._create_icon_tooltip(),
+        try:
+            first_page = dash.page_registry[first_page_id]
+        except KeyError as exc:
+            raise KeyError(
+                f"Page with ID {first_page_id} cannot be found. Please add the page to `Dashboard.pages`"
+            ) from exc
+
+        # remove nesting nav-icon-text now no text?
+        button = dbc.Button(
+            [
+                html.Div(html.Span(self.icon, className="material-symbols-outlined"), className="nav-icon-text"),
+                dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
             ],
+            id=self.id,
             className="icon-button",
-            href=dash.page_registry[icon_first_page]["relative_path"],
-            active=icon_first_page == active_page_id,
+            href=first_page["relative_path"],
+            active=item_active,
         )
 
-    def _create_icon_tooltip(self):
-        if self.tooltip:
-            tooltip = dbc.Tooltip(
-                children=html.P(self.tooltip),
-                target=self.id,
-                placement="bottom",
-                className="custom-tooltip",
-            )
-            return tooltip
+        # Only build the selector (id="nav_panel_outer") if the item is active.
+        if item_active:
+            return html.Div([button, item._selector.build(active_page_id=active_page_id)])
 
-    def _create_icon_div(self):
-        if not self.icon:
-            return html.Div(className="hidden", id="nav_bar_outer")
-
-        if os.path.isabs(self.icon):
-            return html.Img(src=self.icon, className="nav-icon")
-
-        return html.Span(self.icon, className="material-symbols-outlined")
+        return button

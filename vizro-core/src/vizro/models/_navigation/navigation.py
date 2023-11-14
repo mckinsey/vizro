@@ -20,34 +20,32 @@ class Navigation(VizroBaseModel):
         pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `None`.
         selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
-            Defaults to `None`.)
+            Defaults to `None`.
     """
 
-    pages: Optional[NavPagesType] = None
-    selector: Optional[NavSelectorType] = None
+    pages: Optional[NavPagesType] = None  # AM: yes but NavPagesType: note breaking change, maybe put whole type hint in
+    selector: Optional[NavSelectorType] = None  # AM: yes
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True, pre=True, always=True)(_validate_pages)
 
     @validator("selector", always=True)
     def set_selector(cls, selector, values):
-        if selector is None:
-            return Accordion(pages=values.get("pages"))
+        # AM: Will this check work correctly when pages not set?
+        if "pages" not in values:
+            return values
 
-        if isinstance(selector, NavBar):
-            if selector.pages is None and selector.items is None:
-                selector.pages = values.get("pages")
-                return selector
+        selector = selector or Accordion()
+        selector.pages = selector.pages or values["pages"]
         return selector
 
     @_log_call
     def build(self, *, active_page_id=None):
-        if isinstance(self.selector, NavBar):
-            return self.selector.build(active_page_id=active_page_id)
-        if isinstance(self.selector, Accordion):
-            return html.Div(
-                children=[
-                    html.Div(className="hidden", id="nav_bar_outer"),
-                    self.selector.build(active_page_id=active_page_id),
-                ]
-            )
+        selector = self.selector.build(active_page_id=active_page_id)
+        if "nav_bar_outer" not in selector:
+            # e.g. selector is Accordion and selector.build returns single html.Div with id="nav_panel_outer". This will
+            # make it match the case e.g. selector is NavBar and selector.build returns html.Div containing children
+            # with id="nav_bar_outer" and id="nav_panel_outer"
+            selector = html.Div([html.Div(className="hidden", id="nav_bar_outer"), selector])
+
+        return selector

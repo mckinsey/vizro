@@ -14,8 +14,9 @@ def _validate_pages(pages):
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
 
     # required to auto-populate the navigation.selector.pages with registered pages
-    if pages is None:
-        return registered_pages
+    # if pages is None:
+    #     return registered_pages
+    # AM: shouldn't be needed here? Only want to autopopulate at top-level.
 
     if not pages_as_list:
         raise ValueError("Ensure this value has at least 1 item.")
