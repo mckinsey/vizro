@@ -11,7 +11,6 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
-from vizro.models._components.graph import create_empty_fig
 
 
 @pytest.fixture
@@ -44,7 +43,14 @@ def expected_graph():
     return dcc.Loading(
         dcc.Graph(
             id="text_graph",
-            figure=create_empty_fig(""),
+            figure=go.Figure(
+                layout={
+                    "paper_bgcolor": "rgba(0,0,0,0)",
+                    "plot_bgcolor": "rgba(0,0,0,0)",
+                    "xaxis": {"visible": False},
+                    "yaxis": {"visible": False},
+                }
+            ),
             config={
                 "autosizable": True,
                 "frameMargins": 0,
@@ -136,15 +142,8 @@ class TestProcessFigureDataFrame:
 
 
 class TestBuild:
-    def test_create_empty_fig(self, expected_empty_chart):
-        result = create_empty_fig("NO DATA")
-        assert result == expected_empty_chart
-
     def test_graph_build(self, standard_px_chart, expected_graph):
-        graph = vm.Graph(
-            id="text_graph",
-            figure=standard_px_chart,
-        )
+        graph = vm.Graph(id="text_graph", figure=standard_px_chart)
 
         result = json.loads(json.dumps(graph.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(expected_graph, cls=plotly.utils.PlotlyJSONEncoder))

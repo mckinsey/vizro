@@ -1,6 +1,3 @@
-# Redundant aliases here to prevent ruff from removing unused imports.
-from typing import Any, Callable, Dict
-
 from vizro.actions._filter_action import _filter
 from vizro.actions._on_page_load_action import _on_page_load
 from vizro.actions._parameter_action import _parameter

@@ -49,6 +49,7 @@ warn_untyped_fields = true
 ignore = [
   "D104"  # undocumented-public-package
 ]
+ignore-init-module-imports = true
 line-length = 120
 select = [
   "E",  # pycodestyle errors
@@ -70,7 +71,7 @@ known-first-party = ["vizro"]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings
 "**/tests/**/*" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103"]
 # Ignore import violations in all __init__.py files
-"__init__.py" = ["E402"]
+"__init__.py" = ["E402", "F401"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
