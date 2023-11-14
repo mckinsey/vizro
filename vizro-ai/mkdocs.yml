@@ -4,6 +4,7 @@ nav:
   - Vizro-AI: index.md
   - Get started:
       - Quickstart: pages/tutorials/quickstart.md
+      - Explore Vizro-AI: pages/tutorials/explore_vizro_ai.md
   - User Guides:
       - Fundamentals:
           - Installation: pages/user_guides/install.md
