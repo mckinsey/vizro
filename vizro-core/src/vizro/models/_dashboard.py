@@ -91,7 +91,6 @@ class Dashboard(VizroBaseModel):
                 html.Div(id=f"vizro_version_{vizro.__version__}"),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                html.Link(href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined", rel="stylesheet"),
             ],
             className=self.theme,
             fluid=True,
@@ -108,10 +107,13 @@ class Dashboard(VizroBaseModel):
             id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
         )
 
-        # Shared across pages but slightly differ in content
+        # Shared across pages but slightly differ in content. These could possibly be done by a clientside
+        # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
         navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
-        nav_bar, nav_panel = navigation["nav_bar_outer"], navigation["nav_panel_outer"]
+        nav_bar = navigation["nav_bar_outer"]
+        nav_panel = navigation["nav_panel_outer"]
+
         # Different across pages
         page_content = page.build()
         control_panel = page_content["control_panel_outer"]
@@ -120,11 +122,8 @@ class Dashboard(VizroBaseModel):
         # Arrangement
         header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
         nav_control_elements = [dashboard_title, nav_panel, control_panel]
-        nav_control_panel = (
-            html.Div(nav_control_elements, className="nav_control_panel")
-            if any(nav_control_elements)
-            else html.Div(className="hidden")
-        )
+        # TODO: check behaviour when all of nav_control_elements are hidden.
+        nav_control_panel = html.Div(nav_control_elements, className="nav_control_panel")
 
         left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
