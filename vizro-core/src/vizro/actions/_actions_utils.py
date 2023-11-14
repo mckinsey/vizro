@@ -246,7 +246,6 @@ def _get_modified_page_figures(
     ctds_filter: List[CallbackTriggerDict],
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
-    ctd_theme: CallbackTriggerDict,
     targets: Optional[List[ModelID]] = None,
 ) -> Dict[ModelID, Any]:
     if not targets:

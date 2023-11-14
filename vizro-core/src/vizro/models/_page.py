@@ -145,6 +145,10 @@ class Page(VizroBaseModel):
         #  Graph.__call__ without any flickering.
         # TODO: consider putting the Graph-specific logic here in the Graph model itself (whether clientside or
         #  serverside) to keep the code here abstract.
+        # AM: do this. Reuse same logic as in Graph.__call__?
+        # On the last TODO, my thinking was that the graph-specific logic like patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light should ideally live in the Graph model, and we might somehow try to change the ifinstance(component, Graph) to e.g. hasattr(component, "update_theme"). The callback itself would still live here like it does now.
+        #
+        # It would just be a bit of refactoring, not changing the number of callbacks or anything like that. I'll try it out in a separate PR and see what it looks like 🙂
         outputs = [
             Output(component.id, "figure", allow_duplicate=True)
             for component in self.components

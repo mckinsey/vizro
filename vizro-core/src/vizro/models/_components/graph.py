@@ -49,7 +49,7 @@ class Graph(VizroBaseModel):
         try:
             # if "theme_selector" in ctx.states # Probably want this here given code should work outside Dashboard
             # for now
-            fig.update_layout(template="vizro_dark" if ctx.states["theme_selector.on"] else "vizro_light")
+            fig.update_layout(template="vizro_dark" if ctx.args_grouping["theme_selector"]["value"] else "vizro_light")
         except MissingCallbackContextException:
             # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
             # to just swallow up the error here as it doesn't cause any problems.

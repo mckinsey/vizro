@@ -19,7 +19,7 @@ def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[ModelID, A
     Args:
         page_id: Page ID of relevant page
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
@@ -31,5 +31,4 @@ def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[ModelID, A
         ctds_filter=ctx.args_grouping["filters"],
         ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
         ctds_parameters=ctx.args_grouping["parameters"],
-        ctd_theme=ctx.args_grouping["theme_selector"],
     )
