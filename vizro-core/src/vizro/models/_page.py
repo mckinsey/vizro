@@ -143,8 +143,6 @@ class Page(VizroBaseModel):
         # flickering.
         # TODO: consider making this clientside callback and then possibly we can remove the update_layout in
         #  Graph.__call__ without any flickering.
-        # TODO: consider putting this as dashboard level like with _update_theme (though possibly pointless because you
-        #  don't see graphs on other pages and then when you change page it always redraws graphs anyway).
         # TODO: consider putting the Graph-specific logic here in the Graph model itself (whether clientside or
         #  serverside) to keep the code here abstract.
         outputs = [
