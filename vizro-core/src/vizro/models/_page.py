@@ -33,7 +33,7 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
-    layout: Optional[Layout]
+    layout: Optional[Layout] = None
     controls: List[ControlType] = []
     path: Optional[str] = Field(None, description="Path to navigate to page.")
 

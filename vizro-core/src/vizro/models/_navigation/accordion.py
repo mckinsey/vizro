@@ -18,16 +18,18 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (Dict[str, List[str]]): A dictionary with a page group title as key and a list of page IDs as values.
+        pages (Optional[Dict[str, List[str]])]: A dictionary with a page group title as key and a list of page IDs as
+            values.
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: Dict[str, List[str]] = Field(
-        ..., description="A dictionary with a page group title as key and a list of page IDs as values."
-    )  # AM: need to make this optional? Not sure. And add same sort of check as Filter
+    pages: Optional[Dict[str, List[str]]] = Field(
+        {}, description="A dictionary with a page group title as key and a list of page IDs as values."
+    )
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
+    # AM: test Navigation(pages=[1, 2], selector=Accordion() works
     @validator("pages", pre=True)
     def coerce_pages_type(cls, pages):
         if isinstance(pages, Mapping):
