@@ -30,10 +30,15 @@ jobs:
           echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
           echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
           echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
+          if [ "${{ env.PACKAGE_NAME }}" == "vizro-ai" ]; then
+            echo "dist_package_name=vizro_ai" >> $GITHUB_OUTPUT
+          else echo "dist_package_name=${{ needs.check-version.outputs.package_name }}" >> $GITHUB_OUTPUT
+          fi
     outputs:
       new_release: ${{ steps.version_check.outputs.new_release }}
       package_name: ${{ steps.version_check.outputs.package_name }}
       package_version: ${{ steps.version_check.outputs.package_version }}
+      dist_package_name: ${{ steps.version_check.outputs.dist_package_name }}
 
   build-publish:
     needs: [check-version]
@@ -81,15 +86,11 @@ jobs:
           password: ${{ env.PYPI_TOKEN }}
       - name: Check correct package uploaded to PyPI
         run: |
-          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
-            export package_name=vizro_ai
-          else export package_name=${{ needs.check-version.outputs.package_name }}
-          fi
           cd "${{ needs.check-version.outputs.package_name }}/dist"
-          local=$(md5sum "$package_name"-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          local=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
           cd ..
-          pip download ${{ needs.check-version.outputs.package_name }}==${{needs.check-version.outputs.package_version}} -d . --no-deps --timeout 300
-          pypi=$(md5sum "$package_name"-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          pip download ${{ needs.check-version.outputs.package_name }}==${{ needs.check-version.outputs.package_version }} -d . --no-deps --timeout 300
+          pypi=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
           if [[ $local = $pypi ]]; then echo "md5 hash is the same"; else echo "md5 hash is not the same"; exit 1; fi
 
   version-bump:
