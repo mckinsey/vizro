@@ -114,6 +114,7 @@ class Filter(VizroBaseModel):
             self.selector = SELECTOR_DEFAULTS[self._column_type](title=self.column.title())  # type: ignore[index]
         elif not self.selector.title:
             self.selector.title = self.column.title()
+        # AM: make this clearer?
 
     def _set_slider_values(self):
         self.selector: SelectorType

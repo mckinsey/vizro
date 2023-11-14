@@ -24,7 +24,7 @@ class Accordion(VizroBaseModel):
     type: Literal["accordion"] = "accordion"
     pages: Dict[str, List[str]] = Field(
         ..., description="A dictionary with a page group title as key and a list of page IDs as values."
-    )
+    )  # AM: need to make this optional? Not sure. And add same sort of check as Filter
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
