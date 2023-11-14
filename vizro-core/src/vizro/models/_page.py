@@ -116,7 +116,7 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
-            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            html.Div(children=[*controls_content], className="control_panel", id="control_panel_outer")
             if controls_content
             else html.Div(hidden=True, id="control_panel_outer")
         )
