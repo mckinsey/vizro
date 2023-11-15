@@ -2,7 +2,7 @@
 
 !!! Warning
 
-    Users are recommended to exercise caution and to research and understand the selected Large Language Model (LLM) before using `vizro-ai`.
+    Users are recommended to exercise caution and to research and understand the selected Large Language Model (LLM) before using `vizro_ai`.
     Users should be cautious about sharing or inputting any personal or sensitive information.
 
     **Data is sent to model vendors if you connect to LLMs via their APIs.**

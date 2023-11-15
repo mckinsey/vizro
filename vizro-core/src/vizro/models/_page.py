@@ -115,7 +115,7 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
-            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            html.Div(children=[*controls_content], className="control_panel", id="control_panel_outer")
             if controls_content
             else html.Div(hidden=True, id="control_panel_outer")
         )
@@ -138,6 +138,7 @@ class Page(VizroBaseModel):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
         # not good.
         # Putting graphs as inputs here would be a nice way to trigger the theme change automatically so that we don't
+
         # need the call to _update_theme inside Graph.__call__ also, but this results in an extra callback and the graph
         # flickering.
         # The code is written to be generic and extensible so that it runs _update_theme on any component with such a

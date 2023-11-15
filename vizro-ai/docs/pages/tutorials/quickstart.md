@@ -3,8 +3,8 @@ This tutorial serves as an introduction to Vizro-AI.
 It is a step-by-step guide to help you experiment and create your initial Vizro chart using Vizro-AI, our English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
 
 ## Let's get started!
-### 1. Install vizro-ai and its dependencies
-If you haven't already installed `vizro-ai` package, follow the [installation guide](../user_guides/install.md)
+### 1. Install Vizro-AI and its dependencies
+If you haven't already installed `vizro_ai` package, follow the [installation guide](../user_guides/install.md)
 to do so inside a virtual environment.
 
 ??? tip "Beginners/Code novices"
@@ -28,7 +28,7 @@ This opens a browser tab, and you can navigate to your preferred folder for this
 ??? tip "Beginners/Code novices"
     If you followed the beginners steps in the [installation guide](../user_guides/install.md), you should already be set, and you can continue below.
 
-Confirm that vizro-ai is installed by typing the following into a jupyter cell in your notebook and running it.
+Confirm that `vizro_ai` is installed by typing the following into a jupyter cell in your notebook and running it.
 
 ```py
 import vizro_ai
@@ -48,7 +48,7 @@ from dotenv import load_dotenv
 load_dotenv()
 ```
 
-### 4. Ask your first question using vizro-ai
+### 4. Ask your first question using Vizro-AI
 
 For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
 
@@ -60,22 +60,27 @@ By passing your prepared data and your written visualization request to this met
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
-        import plotly.express as px
+        import vizro.plotly.express as px
 
         from dotenv import load_dotenv
         load_dotenv()
 
         df = px.data.gapminder()
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "describe the composition of gdp in continent, and add horizontal line for avg gdp")
+        vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
         ```
     === "Result"
         [![BarChart]][BarChart]
 
     [BarChart]: ../../assets/tutorials/chart/GDP_Composition_Bar.png
 
-You can also pass `explain=True` to `plot()` method which will provide
-additional insights in addition to the rendered chart.
+The created chart is interactive, and you can hover over the data for additional information.
+
+### 5. Get an explanation with your chart
+
+By passing `explain=True` to the `plot()` method will provide additional insights in addition to the rendered chart.
+
+Let's create another example and read through the additional information.
 
 !!! example "Specify  `explain=True`"
     === "Code for the cell"
@@ -87,7 +92,7 @@ additional insights in addition to the rendered chart.
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
-### 5. Explore further
+### 6. Explore further
 
 Now, you have created your first charts with Vizro-AI and are ready to explore the documentation further.
 
