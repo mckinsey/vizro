@@ -116,7 +116,7 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
-            html.Div(children=[*controls_content, html.Hr()], className="control_panel", id="control_panel_outer")
+            html.Div(children=[*controls_content], className="control_panel", id="control_panel_outer")
             if controls_content
             else html.Div(hidden=True, id="control_panel_outer")
         )
@@ -136,6 +136,15 @@ class Page(VizroBaseModel):
         return html.Div([control_panel, components_container])
 
     def _update_graph_theme(self):
+        # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
+        # not good.
+        # Putting graphs as inputs here would be a nice way to trigger the theme change automatically so that we don't
+        # need the update_layout call in Graph.__call__, but this results in an extra callback and the graph
+        # flickering.
+        # TODO: consider making this clientside callback and then possibly we can remove the update_layout in
+        #  Graph.__call__ without any flickering.
+        # TODO: consider putting the Graph-specific logic here in the Graph model itself (whether clientside or
+        #  serverside) to keep the code here abstract.
         outputs = [
             Output(component.id, "figure", allow_duplicate=True)
             for component in self.components
@@ -143,11 +152,7 @@ class Page(VizroBaseModel):
         ]
         if outputs:
 
-            @callback(
-                outputs,
-                Input("theme_selector", "on"),
-                prevent_initial_call="initial_duplicate",
-            )
+            @callback(outputs, Input("theme_selector", "on"), prevent_initial_call="initial_duplicate")
             def update_graph_theme(theme_selector_on: bool):
                 patched_figure = Patch()
                 patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
