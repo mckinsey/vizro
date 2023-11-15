@@ -32,7 +32,7 @@ class NavItem(VizroBaseModel):
     pages: Optional[NavPagesType] = []
     text: str = Field(
         ..., description="Text to be displayed below the icon."
-    )  # Maybe call label. This just does tooltip for now.
+    )  # AM: Maybe call label. This just does tooltip for now.
     icon: Optional[str] = Field(None, description="Icon name from Google Material Icon library.")
 
     _selector: Accordion = PrivateAttr()
@@ -49,7 +49,6 @@ class NavItem(VizroBaseModel):
     @_log_call
     def build(self, *, active_page_id=None):
         # _selector is an Accordion, so _selector._pages is guaranteed to be Dict[str, List[str]].
-        # AM: refactor to make private property for this in Accordion etc.
         all_page_ids = list(itertools.chain(*self._selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
@@ -61,11 +60,12 @@ class NavItem(VizroBaseModel):
                 f"Page with ID {first_page_id} cannot be found. Please add the page to `Dashboard.pages`"
             ) from exc
 
-        # remove nesting nav-icon-text now no text?
         button = dbc.Button(
             [
                 html.Span(self.icon, className="material-symbols-outlined"),
-                dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
+                # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
+                # try Dash mantine components tooltip?).
+                # dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
             ],
             id=self.id,
             className="icon-button",

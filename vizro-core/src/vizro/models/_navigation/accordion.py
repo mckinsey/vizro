@@ -29,7 +29,6 @@ class Accordion(VizroBaseModel):
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    # AM: test Navigation(pages=[1, 2], selector=Accordion() works
     @validator("pages", pre=True)
     def coerce_pages_type(cls, pages):
         if isinstance(pages, Mapping):

@@ -24,10 +24,10 @@ class Navigation(VizroBaseModel):
     """
 
     pages: Optional[NavPagesType] = None  # AM: yes but NavPagesType: note breaking change, maybe put whole type hint in
-    selector: Optional[NavSelectorType] = None  # AM: yes
+    selector: Optional[NavSelectorType] = None
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True, pre=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):

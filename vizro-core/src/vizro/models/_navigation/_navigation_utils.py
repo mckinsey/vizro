@@ -3,8 +3,6 @@ import itertools
 from vizro.managers import model_manager
 
 
-# AM: handle different dict/list types better - build in _pages property that is list? Or provide argumenyt to
-# validator?
 def _validate_pages(pages):
     """Reusable validator to check if provided Page IDs exist as registered pages."""
     from vizro.models import Page
@@ -15,11 +13,6 @@ def _validate_pages(pages):
     # page[0] gives the page model ID.
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
 
-    # required to auto-populate the navigation.selector.pages with registered pages
-    # if pages is None:
-    #     return registered_pages
-    # AM: shouldn't be needed here? Only want to autopopulate at top-level.
-    #
     if not pages_as_list:
         raise ValueError("Ensure this value has at least 1 item.")
 

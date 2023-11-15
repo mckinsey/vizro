@@ -123,8 +123,11 @@ class Dashboard(VizroBaseModel):
         # Arrangement
         header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
         nav_control_elements = [dashboard_title, nav_panel, control_panel]
-        # TODO: check behaviour when all of nav_control_elements are hidden.
-        nav_control_panel = html.Div(nav_control_elements, className="nav_control_panel")
+        nav_control_panel = (
+            html.Div(nav_control_elements, className="nav_control_panel")
+            if any(not getattr(element, "hidden", False) for element in nav_control_elements)
+            else html.Div(hidden=True)
+        )
 
         left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")

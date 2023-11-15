@@ -24,14 +24,13 @@ class NavBar(VizroBaseModel):
     """
 
     type: Literal["navbar"] = "navbar"  # AM: nav_bar?
-    # pages: Optional[NavPagesType] = None
     pages: Optional[Dict[str, List[str]]] = Field(
         {}, description="A dictionary with a page group title as key and a list of page IDs as values."
     )
     items: Optional[List[NavItem]] = []  # AM: think about name
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True, pre=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @validator("pages", pre=True)
     def coerce_pages_type(cls, pages):
@@ -43,7 +42,6 @@ class NavBar(VizroBaseModel):
     def pre_build(self):
         self.items = self.items or [NavItem(text=group_title, pages=pages) for group_title, pages in self.pages.items()]
 
-        # AM: test works if set some icons but not others
         for position, item in enumerate(self.items, 1):
             item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"
 
