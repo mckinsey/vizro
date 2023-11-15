@@ -38,9 +38,9 @@ class NavItem(VizroBaseModel):
     _selector: Accordion = PrivateAttr()
 
     # Re-used validators
-    _validate_pages = validator("pages", allow_reuse=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @_log_call  # can't do this in validator since it's private?
+    @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
@@ -64,7 +64,7 @@ class NavItem(VizroBaseModel):
         # remove nesting nav-icon-text now no text?
         button = dbc.Button(
             [
-                html.Div(html.Span(self.icon, className="material-symbols-outlined"), className="nav-icon-text"),
+                html.Span(self.icon, className="material-symbols-outlined"),
                 dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
             ],
             id=self.id,
@@ -75,6 +75,6 @@ class NavItem(VizroBaseModel):
 
         # Only build the selector (id="nav_panel_outer") if the item is active.
         if item_active:
-            return html.Div([button, item._selector.build(active_page_id=active_page_id)])
+            return html.Div([button, self._selector.build(active_page_id=active_page_id)])
 
-        return button
+        return html.Div(button)

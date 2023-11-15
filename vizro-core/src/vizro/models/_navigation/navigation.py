@@ -27,17 +27,16 @@ class Navigation(VizroBaseModel):
     selector: Optional[NavSelectorType] = None  # AM: yes
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True, pre=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True, pre=True)(_validate_pages)
 
-    @validator("selector", always=True)
-    def set_selector(cls, selector, values):
-        # AM: Will this check work correctly when pages not set?
-        if "pages" not in values:
-            return values
-
-        selector = selector or Accordion()
-        selector.pages = selector.pages or values["pages"]
-        return selector
+    @_log_call
+    def pre_build(self):
+        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
+        # here. Note that not all selectors have pre_build (Accordion does not).
+        self.selector = self.selector or Accordion()
+        self.selector.pages = self.selector.pages or self.pages
+        if hasattr(self.selector, "pre_build"):
+            self.selector.pre_build()
 
     @_log_call
     def build(self, *, active_page_id=None):

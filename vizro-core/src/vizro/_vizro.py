@@ -22,7 +22,7 @@ class Vizro:
     def __init__(self):
         """Initializes Dash."""
         _js, _css = _append_styles(self._lib_assets_folder, STATIC_URL_PREFIX)
-        _css.append("https://fonts.googleapis.com/css2?family=Material+Icons+Outlined")
+        _css.append("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined")
 
         self.dash = dash.Dash(
             use_pages=True,

@@ -31,7 +31,7 @@ class NavBar(VizroBaseModel):
     items: Optional[List[NavItem]] = []  # AM: think about name
 
     # validators
-    _validate_pages = validator("pages", allow_reuse=True, pre=True, always=True)(_validate_pages)
+    _validate_pages = validator("pages", allow_reuse=True, pre=True)(_validate_pages)
 
     @validator("pages", pre=True)
     def coerce_pages_type(cls, pages):
@@ -39,20 +39,20 @@ class NavBar(VizroBaseModel):
             return pages
         return {page: [page] for page in pages}
 
-    @validator("items", always=True)
-    def set_items(cls, items, values):
-        # AM: Will this check work correctly when pages not set?
-        if "pages" not in values:
-            return values
-
-        items = items or [NavItem(text=group_title, pages=pages) for group_title, pages in values["pages"].items()]
+    @_log_call
+    def pre_build(self):
+        self.items = self.items or [NavItem(text=group_title, pages=pages) for group_title, pages in self.pages.items()]
 
         # AM: test works if set some icons but not others
-        for position, item in enumerate(items):
-            # There are only 6 looks icons. If there are more than 6 items, the icons will repeat.
-            item.icon = item.icon or f"looks_{position % 6 + 1}"
+        for position, item in enumerate(self.items, 1):
+            item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"
 
-        return items
+        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
+        # here.
+        for item in self.items:
+            item.pre_build()
+
+        return self.items
 
     @_log_call
     def build(self, *, active_page_id=None):
@@ -60,12 +60,14 @@ class NavBar(VizroBaseModel):
         # item.build only returns the nav_panel_outer Div when the item is active.
         # In future maybe we should do this by showing all navigation panels and then setting hidden=True for all but
         # one using a clientside callback?
-        built_items = [item.build() for item in self.items]
-        buttons = [item[item.id] for item in built_items]
+        # Wrapping built_items into html.Div here is not for rendering purposes but so that we can look up the
+        # components by id easily instead of needing to iterate through a nested list.
+        built_items = html.Div([item.build(active_page_id=active_page_id) for item in self.items])
+        buttons = [built_items[item.id] for item in self.items]
         if "nav_panel_outer" in built_items:
             nav_panel_outer = built_items["nav_panel_outer"]
         else:
-            # Active page is not in navigation, so hide navigation panel.
+            # Active page is not in navigation at all, so hide navigation panel.
             nav_panel_outer = html.Div(hidden=True, id="nav_panel_outer")
 
         return html.Div([html.Div(buttons, className="nav-bar", id="nav_bar_outer"), nav_panel_outer])
