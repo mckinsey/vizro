@@ -6,7 +6,7 @@ python = ["3.9", "3.10", "3.11"]
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md > /dev/null"]}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
 [envs.default]
 dependencies = [
