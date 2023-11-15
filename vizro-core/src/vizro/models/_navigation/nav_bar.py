@@ -24,10 +24,10 @@ class NavBar(VizroBaseModel):
     """
 
     type: Literal["navbar"] = "navbar"  # AM: nav_bar?
-    pages: Optional[Dict[str, List[str]]] = Field(
+    pages: Dict[str, List[str]] = Field(
         {}, description="A dictionary with a page group title as key and a list of page IDs as values."
     )
-    items: Optional[List[NavItem]] = []  # AM: think about name
+    items: List[NavItem] = []  # AM: think about name
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)

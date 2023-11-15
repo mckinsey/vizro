@@ -527,12 +527,14 @@ dashboard = vm.Dashboard(
         selector=vm.NavBar(
             items=[
                 vm.NavItem(
+                    text="asdf",
                     pages={
                         "Analysis": ["Homepage", "Variable Analysis"],
                         "Summary": ["Relationship Analysis", "Continent Summary"],
                     },
                 ),
                 vm.NavItem(
+                    text="ASDF",
                     pages=["Country Analysis"],
                     icon="summarize",
                 ),

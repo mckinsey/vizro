@@ -23,7 +23,7 @@ class Accordion(VizroBaseModel):
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: Optional[Dict[str, List[str]]] = Field(
+    pages: Dict[str, List[str]] = Field(
         {}, description="A dictionary with a page group title as key and a list of page IDs as values."
     )
 

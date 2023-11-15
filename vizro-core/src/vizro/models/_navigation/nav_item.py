@@ -29,7 +29,7 @@ class NavItem(VizroBaseModel):
     """
 
     type: Literal["navitem"] = "navitem"  # AM: nav_item?
-    pages: Optional[NavPagesType] = []
+    pages: NavPagesType = []
     text: str = Field(
         ..., description="Text to be displayed below the icon."
     )  # AM: Maybe call label. This just does tooltip for now.
