@@ -5,11 +5,10 @@ from typing import List, Optional
 from dash import Input, Output, Patch, callback, dcc, html
 from pydantic import Field, root_validator, validator
 
-import vizro._themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers._model_manager import DuplicateIDError
-from vizro.models import Action, Graph, Layout, VizroBaseModel
+from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
@@ -139,28 +138,25 @@ class Page(VizroBaseModel):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
         # not good.
         # Putting graphs as inputs here would be a nice way to trigger the theme change automatically so that we don't
-        # need the update_layout call in Graph.__call__, but this results in an extra callback and the graph
+        # need the call to _update_theme inside Graph.__call__ also, but this results in an extra callback and the graph
         # flickering.
-        # TODO: consider making this clientside callback and then possibly we can remove the update_layout in
+        # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
+        # method defined. But at the moment this just means Graphs.
+        # TODO: consider making this clientside callback and then possibly we can remove the call to _update_theme in
         #  Graph.__call__ without any flickering.
-        # TODO: consider putting the Graph-specific logic here in the Graph model itself (whether clientside or
-        #  serverside) to keep the code here abstract.
-        # AM: do this. Reuse same logic as in Graph.__call__?
-        # On the last TODO, my thinking was that the graph-specific logic like patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light should ideally live in the Graph model, and we might somehow try to change the ifinstance(component, Graph) to e.g. hasattr(component, "update_theme"). The callback itself would still live here like it does now.
-        #
-        # It would just be a bit of refactoring, not changing the number of callbacks or anything like that. I'll try it out in a separate PR and see what it looks like 🙂
-        outputs = [
-            Output(component.id, "figure", allow_duplicate=True)
-            for component in self.components
-            if isinstance(component, Graph)
-        ]
-        if outputs:
+        # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
+        #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
-            @callback(outputs, Input("theme_selector", "on"), prevent_initial_call="initial_duplicate")
-            def update_graph_theme(theme_selector_on: bool):
-                patched_figure = Patch()
-                patched_figure["layout"]["template"] = themes.dark if theme_selector_on else themes.light
-                return [patched_figure] * len(outputs)
+        themed_components = [component for component in self.components if hasattr(component, "_update_theme")]
+        if themed_components:
+
+            @callback(
+                [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
+                Input("theme_selector", "on"),
+                prevent_initial_call="initial_duplicate",
+            )
+            def update_graph_theme(theme_selector: bool):
+                return [component._update_theme(Patch(), theme_selector) for component in themed_components]
 
     def _create_component_container(self, components_content):
         component_container = html.Div(
