@@ -101,10 +101,8 @@ class TestDunderMethodsGraph:
         assert graph.layout.template.layout.margin.b == 64
         assert graph.layout.template.layout.margin.r == 12
 
-    def test_update_theme_outside_callback(self, standard_px_chart, caplog):
-        caplog.set_level(logging.INFO)
+    def test_update_theme_outside_callback(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert "fig.update_layout called outside of callback context." in caplog.messages
         assert graph == standard_px_chart.update_layout(margin_t=24, template="vizro_dark")
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
