@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Graph."""
 import json
-import logging
 
 import plotly
 import plotly.graph_objects as go
