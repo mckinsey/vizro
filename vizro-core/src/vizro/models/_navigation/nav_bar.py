@@ -13,7 +13,9 @@ from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.nav_item import NavItem
 
 
-class NavBar(VizroBaseModel):
+class NavBar(VizroBaseModel):  # AM: consider Bar - not sure it's good. And Navbar (as in dbc and dmc). Main Menu?
+    # MenuBar?
+    # But note don't have NavAccordion - but that is private anyway
     """Navigation bar to be used as a selector for `Navigation`.
 
     Args:
@@ -27,7 +29,7 @@ class NavBar(VizroBaseModel):
     pages: Dict[str, List[str]] = Field(
         {}, description="A dictionary with a page group title as key and a list of page IDs as values."
     )
-    items: List[NavItem] = []  # AM: think about name
+    items: List[NavItem] = []  # AM: think about name. Consider nav_selector or children
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)

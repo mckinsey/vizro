@@ -52,7 +52,7 @@ class Dashboard(VizroBaseModel):
         return pages
 
     @validator("navigation", always=True)
-    def validate_navigation(cls, navigation, values):
+    def set_navigation_pages(cls, navigation, values):
         if "pages" not in values:
             return navigation
 

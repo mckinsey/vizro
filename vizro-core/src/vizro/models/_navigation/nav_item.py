@@ -16,11 +16,10 @@ from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
 
 
-class NavItem(VizroBaseModel):
+class NavItem(VizroBaseModel):  # AM: consider Icon or NavIcon or NavLink or NavButton or navbar with the aforemnetioned
     """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
-        type (Literal["navitem"]): Defaults to `"navitem"`.
         pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
         icon (str): Name of the icon from the Google Material Icon library. For more available
             icons visit [Google Material Icon library](https://fonts.google.com/icons).
@@ -28,14 +27,13 @@ class NavItem(VizroBaseModel):
             `max_text_length`. Defaults to `None`.
     """
 
-    type: Literal["navitem"] = "navitem"  # AM: nav_item?
     pages: NavPagesType = []
     text: str = Field(
         ..., description="Text to be displayed below the icon."
-    )  # AM: Maybe call label. This just does tooltip for now.
+    )  # AM: Consider label. This just does tooltip for now.
     icon: Optional[str] = Field(None, description="Icon name from Google Material Icon library.")
 
-    _selector: Accordion = PrivateAttr()
+    _selector: Accordion = PrivateAttr()  # AM: Consider nav_selector or children - probably better
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
@@ -64,7 +62,7 @@ class NavItem(VizroBaseModel):
             [
                 html.Span(self.icon, className="material-symbols-outlined"),
                 # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
-                # try Dash mantine components tooltip?).
+                # try dbc.Popover or Dash mantine components tooltip?).
                 # dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
             ],
             id=self.id,

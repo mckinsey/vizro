@@ -24,7 +24,7 @@ class Navigation(VizroBaseModel):
     """
 
     pages: NavPagesType = []  # AM: yes but NavPagesType: note breaking change, maybe put whole type hint in
-    selector: NavSelectorType = Accordion()
+    selector: Optional[NavSelectorType] = None  # AM: Consider nav_selector or children - probably better
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
@@ -33,6 +33,7 @@ class Navigation(VizroBaseModel):
     def pre_build(self):
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
         # here. Note that not all selectors have pre_build (Accordion does not).
+        self.selector = self.selector or Accordion()
         self.selector.pages = self.selector.pages or self.pages
         if hasattr(self.selector, "pre_build"):
             self.selector.pre_build()
