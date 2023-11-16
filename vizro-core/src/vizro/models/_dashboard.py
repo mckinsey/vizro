@@ -51,7 +51,6 @@ class Dashboard(VizroBaseModel):
         if "pages" not in values:
             return navigation
 
-        # AM: test these cases well
         navigation = navigation or Navigation()
         navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation

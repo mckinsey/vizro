@@ -13,6 +13,7 @@ def reset_managers():
     Vizro._reset()
 
 
+# AM: simplify this and dashboard fixtures
 @pytest.fixture()
 def vizro_app():
     """Fixture to instantiate Vizro/Dash app. Required when needing to register pages."""

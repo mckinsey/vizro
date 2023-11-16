@@ -55,8 +55,3 @@ def page2():
 def dashboard(page1, page2):
     dashboard = vm.Dashboard(pages=[page1, page2])
     return dashboard
-
-
-@pytest.fixture()
-def dashboard_prebuild(dashboard):
-    dashboard.pre_build()

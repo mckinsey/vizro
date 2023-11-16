@@ -37,6 +37,7 @@ class Navigation(VizroBaseModel):
         self.selector.pages = self.selector.pages or self.pages
         if hasattr(self.selector, "pre_build"):
             self.selector.pre_build()
+        # AM: test if remove the above do tests break?
 
     @_log_call
     def build(self, *, active_page_id=None):

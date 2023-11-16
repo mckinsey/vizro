@@ -8,134 +8,98 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._navigation.accordion import Accordion
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
+# AM: move to dashboard tests
+@pytest.mark.parametrize("navigation", [None, vm.Navigation()])
+def test_navigation_default(page1, page2, navigation):
+    # Navigation is optional inside Dashboard and navigation.pages will always be auto-populated if not provided
+    dashboard = vm.Dashboard(pages=[page1, page2], navigation=navigation)
+    assert hasattr(dashboard.navigation, "id")
+    assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+
+
+@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationInstantiation:
-    """Tests navigation model instantiation ."""
-
     def test_navigation_mandatory_only(self):
         navigation = vm.Navigation()
+
         assert hasattr(navigation, "id")
-        assert navigation.pages == ["Page 1", "Page 2"]
+        assert navigation.pages == []
+        assert navigation.selector is None
 
-    # TODO: Extend this test with optional selectors
     def test_navigation_mandatory_and_optional(self):
-        navigation = vm.Navigation(id="navigation")
+        accordion = vm.Accordion()
+        navigation = vm.Navigation(id="navigation", pages=["Page 1", "Page 2"], selector=accordion)
+
         assert navigation.id == "navigation"
         assert navigation.pages == ["Page 1", "Page 2"]
+        assert navigation.selector == accordion
 
-    def test_navigation_valid_pages_as_list(self, pages_as_list):
-        navigation = vm.Navigation(pages=pages_as_list, id="navigation")
-        assert navigation.id == "navigation"
-        assert navigation.pages == pages_as_list
-
-    def test_navigation_valid_pages_as_dict(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, id="navigation")
-        assert navigation.id == "navigation"
-        assert navigation.pages == pages_as_dict
-
-    def test_navigation_valid_pages_not_all_included(self):
-        navigation = vm.Navigation(pages=["Page 1"], id="navigation")
-        assert navigation.id == "navigation"
-        assert navigation.pages == ["Page 1"]
-
-    def test_navigation_invalid_pages_empty_list(self):
+    @pytest.mark.parametrize("pages", [{"Group": []}, []])
+    def test_invalid_field_pages_no_ids_provided(self, pages):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
-            vm.Navigation(pages=[], id="navigation")
+            vm.Navigation(pages=pages)
 
-    def test_navigation_invalid_pages_unknown_page(self):
-        with pytest.raises(ValidationError, match=re.escape("Unknown page ID ['Test'] provided to argument 'pages'.")):
-            vm.Navigation(pages=["Test"], id="navigation")
+    def test_invalid_field_pages_wrong_input_type(self):
+        with pytest.raises(ValidationError, match="str type expected"):
+            vm.Navigation(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
-
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-@pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"SELECT PAGE": ["Page 1", "Page 2"]}])
-def test_navigation_pre_build(pages):
-    navigation = vm.Navigation(pages=pages, id="navigation")
-
-    assert navigation.id == "navigation"
-    assert navigation.pages == pages
-    assert isinstance(navigation.selector, Accordion)
-    assert navigation.selector.pages == {"SELECT PAGE": ["Page 1", "Page 2"]}
+    @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
+    def test_invalid_page(self, pages):
+        with pytest.raises(
+            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to " "argument 'pages'.")
+        ):
+            vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-@pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}])
-def test_navigation_build(pages):
-    navigation = vm.Navigation(pages=pages)
-    accordion = Accordion(pages=pages)
-    navigation.selector.id = accordion.id
-    expected_navigation = html.Div(children=[html.Div(className="hidden", id="nav_bar_outer"), accordion.build()])
-    result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(expected_navigation, cls=plotly.utils.PlotlyJSONEncoder))
-    assert result == expected
+@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
+class TestNavigationPreBuildMethod:
+    def test_default_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict)
+        navigation.pre_build()
+        assert isinstance(navigation.selector, vm.Accordion)
+        assert navigation.selector.pages == pages_as_dict
+
+    def test_default_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.Accordion(pages={"Group": ["Page 1"]}))
+        navigation.pre_build()
+        assert isinstance(navigation.selector, vm.Accordion)
+        assert navigation.selector.pages == {"Group": ["Page 1"]}
+
+    def test_non_default_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar())
+        navigation.pre_build()
+        assert isinstance(navigation.selector, vm.NavBar)
+        assert navigation.selector.pages == pages_as_dict
+
+    def test_non_default_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar(pages={"Group": ["Page 1"]}))
+        navigation.pre_build()
+        assert isinstance(navigation.selector, vm.NavBar)
+        assert navigation.selector.pages == {"Group": ["Page 1"]}
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
+@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationBuildMethod:
     """Tests navigation model build method."""
 
-    def test_navigation_build_default(self):
-        navigation = vm.Navigation()
-        accordion = Accordion(pages=["Page 1", "Page 2"])
-        navigation.selector.id = accordion.id
+    def test_default_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict)
+        navigation.pre_build()
+        built_navigation = navigation.build()
+        assert isinstance(built_navigation["nav_bar_outer"], html.Div)
+        assert isinstance(built_navigation["nav_panel_outer"], html.Div)
+        assert built_navigation["nav_bar_outer"].className == "hidden"
 
-        expected_navigation = html.Div(children=[html.Div(className="hidden", id="nav_bar_outer"), accordion.build()])
-        result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_navigation, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+    def test_non_default_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar())
+        navigation.pre_build()
+        built_navigation = navigation.build()
+        assert isinstance(built_navigation["nav_bar_outer"], html.Div)
+        assert isinstance(built_navigation["nav_panel_outer"], html.Div)
+        assert built_navigation["nav_bar_outer"].className != "hidden"
 
-    @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}])
-    def test_navigation_build_pages(self, pages):
-        navigation = vm.Navigation(pages=pages)
-        accordion = Accordion(pages=pages)
-        navigation.selector.id = accordion.id
 
-        expected_navigation = html.Div(children=[html.Div(className="hidden", id="nav_bar_outer"), accordion.build()])
-        result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_navigation, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
-
-    @pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Icon 1": ["Page 1"], "Icon 2": ["Page 2"]}])
-    def test_navigation_build_selector_accordion(self, pages):
-        nav_with_selector = vm.Navigation(selector=vm.Accordion(pages=pages))
-        nav_with_pages = vm.Navigation(pages=pages)
-        nav_with_selector.selector.id = nav_with_pages.selector.id
-
-        nav_with_selector = json.loads(
-            json.dumps(nav_with_selector.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder)
-        )
-        nav_with_pages = json.loads(
-            json.dumps(nav_with_pages.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder)
-        )
-
-        assert nav_with_selector == nav_with_pages
-
-    @pytest.mark.parametrize("pages", [None, ["Page 1", "Page 2"], {"Icon 1": ["Page 1"], "Icon 2": ["Page 2"]}])
-    def test_navigation_build_selector(self, navbar_div_default, pages):
-        navigation = vm.Navigation(pages=pages, selector=vm.NavBar())
-        navigation.selector.items[0].id, navigation.selector.items[1].id = "nav_id_1", "nav_id_2"
-
-        result = json.loads(json.dumps(navigation.build(active_page_id="Page 1"), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(navbar_div_default, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
-
-    def test_navigation_all_options(self):
-        navigation_configs = [
-            vm.Navigation(),
-            vm.Navigation(pages=["Page 1", "Page 2"]),
-            vm.Navigation(selector=vm.Accordion(pages=["Page 1", "Page 2"])),
-            vm.Navigation(selector=vm.Accordion(pages={"Accordion title": ["Page 1", "Page 2"]})),
-            vm.Navigation(pages=["Page 1", "Page 2"], selector=vm.NavBar()),
-            vm.Navigation(selector=vm.NavBar()),
-            vm.Navigation(selector=vm.NavBar(pages=["Page 1", "Page 2"])),
-            vm.Navigation(selector=vm.NavBar(items=[vm.NavItem(pages=["Page 1", "Page 2"])])),
-            vm.Navigation(selector=vm.NavBar(items=[vm.NavItem(pages={"Icon 1": ["Page 1", "Page 2"]})])),
-        ]
-
-        for config in navigation_configs:
-            navigation = config.build(active_page_id="Page 1")
-            assert isinstance(navigation, html.Div)
+# TODO: cleanuip unused fixture
