@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, List, Literal, Optional, cast
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-import plotly.io as pio
-from dash import ClientsideFunction, Input, Output, clientside_callback, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
 from pydantic import Field, validator
 
 import vizro
@@ -21,10 +20,6 @@ if TYPE_CHECKING:
     from vizro.models import Page
 
 logger = logging.getLogger(__name__)
-
-
-def update_theme(on: bool):
-    return "vizro_dark" if on else "vizro_light"
 
 
 class Dashboard(VizroBaseModel):
@@ -61,13 +56,6 @@ class Dashboard(VizroBaseModel):
         navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # pio is the backend global state and shouldn't be changed while
-        # the app is running. This limitation leads to the case that Graphs blink
-        # on page load if user previously has changed theme_selector.
-        pio.templates.default = self.theme
-
     @_log_call
     def pre_build(self):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
@@ -84,7 +72,12 @@ class Dashboard(VizroBaseModel):
     def build(self):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
-        self._update_theme()
+
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
+            Output("dashboard_container_outer", "className"),
+            Input("theme_selector", "on"),
+        )
 
         return dbc.Container(
             id="dashboard_container_outer",
@@ -104,9 +97,7 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.Div(hidden=True, id="dashboard_title_outer")
         )
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=True if self.theme == "vizro_dark" else False, persistence=True
-        )
+        theme_switch = daq.BooleanSwitch(id="theme_selector", on=self.theme == "vizro_dark", persistence=True)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -134,18 +125,10 @@ class Dashboard(VizroBaseModel):
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     @staticmethod
-    def _update_theme():
-        clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
-            Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
-        )
-
-    @staticmethod
     def _make_page_404_layout():
         return html.Div(
             [
-                html.Img(src=STATIC_URL_PREFIX + "/images/errors/error_404.svg"),
+                html.Img(src=get_relative_path(f"/{STATIC_URL_PREFIX}/images/errors/error_404.svg")),
                 html.Div(
                     [
                         html.Div(
@@ -155,7 +138,7 @@ class Dashboard(VizroBaseModel):
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href="/", className="button_primary"),
+                        dbc.Button("Take me home", href=get_relative_path("/"), className="button_primary"),
                     ],
                     className="error_content_container",
                 ),

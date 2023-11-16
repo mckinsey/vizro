@@ -34,13 +34,14 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fixed `vm.Slider` and `vm.RangeSlider` to work with incorrect text input. ([#173](https://github.com/mckinsey/vizro/pull/173))
 
--->
-
+<!--
 ### Security
 
-- Bump werkzeug version suggested by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177 ([#128](https://github.com/mckinsey/vizro/pull/128))
+- A bullet item for the Security category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+
+-->

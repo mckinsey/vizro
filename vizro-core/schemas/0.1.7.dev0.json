@@ -161,7 +161,7 @@
     },
     "Table": {
       "title": "Table",
-      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    table (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `None`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -173,6 +173,11 @@
           "title": "Type",
           "default": "table",
           "enum": ["table"],
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the table",
           "type": "string"
         },
         "actions": {

@@ -11,7 +11,7 @@ matrix.python.features = [
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-scripts = {add = "scriv create --add"}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
 [envs.default]
 dependencies = [
@@ -20,7 +20,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "dash[testing]",
-  "chromedriver-autoinstaller",
+  "chromedriver-autoinstaller-fix",
   "toml",
   "pyyaml",
   "openpyxl"
@@ -43,15 +43,15 @@ example = "cd examples/{args:default}; python app.py"
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
-  "hatch run changelog:scriv collect --add",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
   "rm -rf schemas/*json",
   "schema",
   "git add schemas",
-  "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-schema = ["python schemas/generate.py {args}", 'hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
+schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
 secrets = "pre-commit run gitleaks --all-files"
 test = [
   "test-unit",

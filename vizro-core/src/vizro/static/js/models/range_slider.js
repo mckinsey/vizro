@@ -21,6 +21,9 @@ export function _update_range_slider_values(
     trigger_id === `${self_data["id"]}_start_value` ||
     trigger_id === `${self_data["id"]}_end_value`
   ) {
+    if (isNaN(start) || isNaN(end)) {
+      return dash_clientside.no_update;
+    }
     [start_text_value, end_text_value] = [start, end];
   } else if (trigger_id === self_data["id"]) {
     [start_text_value, end_text_value] = [slider[0], slider[1]];

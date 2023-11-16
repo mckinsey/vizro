@@ -14,7 +14,7 @@
   padding: 40px 32px 0 32px;
   width: 352px;
   overflow: auto;
-  gap: var(--spacing-04);
+  gap: var(--spacing-08);
 }
 
 .left_side {
@@ -57,12 +57,20 @@
   flex-direction: column;
 }
 
+.nav_panel:not(:empty) {
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+}
+
 .control_panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
   padding: 4px 0 24px 0;
+}
+
+.control_panel:not(:empty) {
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
 .page_error_container {

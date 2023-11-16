@@ -207,8 +207,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
 
         1.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
@@ -330,8 +329,7 @@ vm.Page.add_type("components", Jumbotron)
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
 
         ```
 

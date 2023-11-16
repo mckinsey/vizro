@@ -63,8 +63,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -167,8 +166,7 @@ Here is an example of how to configure a chart interaction when the source is a 
             ]
         )
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -250,8 +248,7 @@ Here is an example of how to configure a chart interaction when the source is a 
             ]
         )
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml
@@ -343,8 +340,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 
         dashboard = vm.Dashboard(pages=[page])
 
-        if __name__ == "__main__":
-            Vizro().build(dashboard).run()
+        Vizro().build(dashboard).run()
         ```
     === "app.yaml"
         ```yaml

@@ -1,11 +1,13 @@
 import logging
 from typing import List, Literal
 
-from dash import dcc
+from dash import ctx, dcc
+from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 from pydantic import Field, PrivateAttr, validator
 
 import vizro.plotly.express as px
+from vizro import _themes as themes
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -14,18 +16,6 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
 logger = logging.getLogger(__name__)
-
-
-def create_empty_fig(message: str) -> go.Figure:
-    """Creates empty go.Figure object with a display message."""
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=[None], y=[None], showlegend=False, hoverinfo="none"))
-    fig.update_layout(
-        xaxis={"visible": False},
-        yaxis={"visible": False},
-        annotations=[{"text": message, "showarrow": False, "font": {"size": 16}}],
-    )
-    return fig
 
 
 class Graph(VizroBaseModel):
@@ -56,6 +46,16 @@ class Graph(VizroBaseModel):
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
+
+        # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
+        # to just swallow up the error here as it doesn't cause any problems.
+        try:
+            # At the moment theme_selector is always present so this if statement is redundant, but possibly in
+            # future we'll have callbacks that do Graph.__call__() without theme_selector set.
+            if "theme_selector" in ctx.args_grouping:
+                fig = self._update_theme(fig, ctx.args_grouping["theme_selector"]["value"])
+        except MissingCallbackContextException:
+            logger.info("fig.update_layout called outside of callback context.")
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -68,14 +68,21 @@ class Graph(VizroBaseModel):
 
     @_log_call
     def build(self):
+        # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
+        # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
+        # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
+        # graph callback is executed to make the dcc.Loading icon appear.
         return dcc.Loading(
             dcc.Graph(
                 id=self.id,
-                # We don't do self.__call__() until the Graph is actually built. This ensures that lazy data is not
-                # loaded until the graph is first shown on the screen. At the moment, we eagerly run page.build() for
-                # all pages in Dashboard.build in order to register all the callbacks in advance. In future this should
-                # no longer be the case so that we achieve true lazy loading.
-                figure=create_empty_fig(""),
+                figure=go.Figure(
+                    layout={
+                        "paper_bgcolor": "rgba(0,0,0,0)",
+                        "plot_bgcolor": "rgba(0,0,0,0)",
+                        "xaxis": {"visible": False},
+                        "yaxis": {"visible": False},
+                    }
+                ),
                 config={
                     "autosizable": True,
                     "frameMargins": 0,
@@ -86,3 +93,10 @@ class Graph(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
         )
+
+    @staticmethod
+    def _update_theme(fig: go.Figure, theme_selector: bool):
+        # Basically the same as doing fig.update_layout(template="vizro_light/dark") but works for both the call in
+        # self.__call__ and in the update_graph_theme callback.
+        fig["layout"]["template"] = themes.dark if theme_selector else themes.light
+        return fig

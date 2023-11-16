@@ -12,7 +12,6 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models._dashboard import update_theme
 
 
 @pytest.fixture()
@@ -146,7 +145,8 @@ class TestDashboardPreBuild:
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
 
-    def test_create_layout_page_404(self, dashboard):
+    def test_create_layout_page_404(self, dashboard, mocker):
+        mocker.patch("vizro.models._dashboard.get_relative_path")
         result = dashboard._make_page_404_layout()
         result_image = result.children[0]
         result_div = result.children[1]
@@ -165,9 +165,3 @@ class TestDashboardBuild:
         result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
-
-
-@pytest.mark.parametrize("on, expected", [(True, "vizro_dark"), (False, "vizro_light")])
-def test_update_theme(on, expected):
-    result = update_theme(on)
-    assert result == expected
