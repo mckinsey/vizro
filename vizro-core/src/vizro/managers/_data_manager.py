@@ -15,31 +15,54 @@ ComponentID = str
 DatasetName = str
 pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
+# _caches = {"simple": Cache(config={"CACHE_TYPE": "SimpleCache"}), "null": Cache(config={"CACHE_TYPE": "NullCache"})}
+# don't want this for now but might have in future.
+
 
 class _Dataset:
-    """A dataset with flask-caching config attached.
+    def __init__(self, data: pd_LazyDataFrame):
+        self.__data: pd_LazyDataFrame = data
+        self._timeout: int = None
+        self._cache: Cache = None
 
-    Examples:
-        >>> import plotly.express as px
-        >>> data_manager["iris"] = pd.DataFrame()
-        >>> data_manager["iris"]._cache_arguments = {"timeout": 600}
-    """
-    _cache_arguments_default: Dict[str, int] = {}
+    @property
+    def _cache_arguments(self):
+        return {"timeout": self._timeout}
 
-    def __init__(self, data: pd_LazyDataFrame, timeout: Optional[int] = None, unless: Optional[Callable] = None):
-        """Initializes a `_Dataset` object.
+    def __call__(self) -> pd.DataFrame:
+        return self.__data()
 
-        Args:
-            data (pd_LazyDataFrame): A callable that returns a pandas DataFrame.
-            timeout (Optional[int], optional): The timeout in seconds for the cache. Defaults to None.
-            unless (Optional[Callable], optional): A callable that returns True if the cache should not be used.
-                Defaults to None.
 
-        """
-        self.data = data
-        self._cache_arguments = dict(self._cache_arguments_default)
-        self._cache_arguments["timeout"] = timeout
-        self._cache_arguments["unless"] = unless
+# but how to set redis settings? Need to input actual cache object.
+
+# leave timeout as top level API for now rather than cache_arguments, since will need to figure out where to put
+# argments that can be changed at runtime
+
+# :param timeout: Default None. If set to an integer, will cache for that
+#                 amount of time. Unit of time is in seconds.
+# 0 means cache forever and never refresh -> never re-run function.
+
+# do cache = False for no cache in future
+# for now do as dataset._cache = Cache(config={"CACHE_TYPE": "NullCache"})
+
+# for now leave _cache private but in future expose
+
+# data_manager.cache = key in _caches -> set default for all datasets
+#
+# Cache(config={"CACHE_TYPE": "SimpleCache"}) # or cache_config only -> no, actual cache
+# object.
+# data_manager["iris"] = lambda: pd.DataFrame()
+#
+
+#
+# class _Dataset:
+#     """A dataset with flask-caching config attached.
+#
+#     Examples:
+#         >>> import plotly.express as px
+#         >>> data_manager["iris"] = pd.DataFrame()
+#         >>> data_manager["iris"]._cache_arguments = {"timeout": 600}
+#     """
 
 
 class DataManager:
@@ -59,7 +82,7 @@ class DataManager:
         self._frozen_state = False
         self._cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
-    # happens before dashboard build
+    # AM: consider if this should also call the lazy data to populate the cache? Probably doesn't matter.
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
@@ -73,7 +96,7 @@ class DataManager:
         if callable(data):
             self.__lazy_data[dataset_name] = _Dataset(data)
         elif isinstance(data, pd.DataFrame):
-            self.__original_data[dataset_name] = data
+            self.__original_data[dataset_name] = data  # AM: should also put into Dataset?
         else:
             raise TypeError(
                 f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
@@ -85,6 +108,7 @@ class DataManager:
             raise KeyError(f"Dataset {dataset_name} does not exist.")
         if dataset_name in self.__original_data:
             # no cache available
+            # AM: should always wrap into Dataset to make this consistent?
             raise ValueError(f"Dataset {dataset_name} is not lazy.")
         if dataset_name in self.__lazy_data:
             return self.__lazy_data[dataset_name]
@@ -104,21 +128,6 @@ class DataManager:
             )
         self.__component_to_original[component_id] = dataset_name
 
-    def _load_lazy_data(self, dataset_name: DatasetName) -> pd.DataFrame:
-        """Loads the data for `dataset_name` and returns it.
-
-        This function is memoized using flask-caching. If the data is already loaded, it will return the cached data.
-        """
-        @self._cache.memoize(**self[dataset_name]._cache_arguments)
-        # timeout (including 0 -> never expires), unless -> always executes function (like
-        # timeout=0.000001) and doesn't update cache.
-        # timeout and unless need to depend on dataset_name
-        def inner(dataset):
-            logger.debug("Loading lazy data: %s", dataset)
-            time.sleep(2.0)
-            return self[dataset].data()
-        return inner(dataset_name)
-
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
         logger.debug("get_component_data: %s", component_id)
@@ -127,12 +136,16 @@ class DataManager:
         dataset_name = self.__component_to_original[component_id]
 
         if dataset_name in self.__lazy_data:
-            return self._load_lazy_data(dataset_name)
+            dataset = self[dataset_name]
+            cache = dataset._cache or self._cache
+            load_lazy_data = cache.memoize(**dataset._cache_arguments)(dataset())
+            return load_lazy_data()
         else:  # dataset_name is in self.__original_data
             # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
             # to not do any inplace=True operations, but probably safest to leave it here.
             return self.__original_data[dataset_name].copy()
 
+    # TODO: we should be able to remove this soon. Try to avoid using it.
     def _has_registered_data(self, component_id: ComponentID) -> bool:
         try:
             self._get_component_data(component_id)
