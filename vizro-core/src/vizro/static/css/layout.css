@@ -44,6 +44,7 @@
 .component_container_grid {
   display: grid;
   width: 100%;
+  height: 100%;
 }
 
 .nav_panel {
@@ -99,6 +100,7 @@
 .subpage-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
 .loading-container {
