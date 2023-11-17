@@ -8,8 +8,8 @@ import pytest
 from dash import html
 from pydantic import ValidationError
 
-from vizro._constants import ACCORDION_DEFAULT_TITLE
 import vizro.models as vm
+from vizro._constants import ACCORDION_DEFAULT_TITLE
 
 
 @pytest.fixture

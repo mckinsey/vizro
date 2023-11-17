@@ -22,7 +22,7 @@ class TestNavBarInstantiation:
         assert nav_bar.items == []
 
     def test_nav_bar_mandatory_and_optional(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Text")
+        nav_link = vm.NavLink(label="Label")
         nav_bar = vm.NavBar(id="nav_bar", pages=pages_as_dict, items=[nav_link])
 
         assert nav_bar.id == "nav_bar"
@@ -60,8 +60,8 @@ class TestNavBarPreBuildMethod:
 
     def test_items_with_with_pages_icons(self, pages_as_dict):
         nav_links = [
-            vm.NavLink(label="Text", pages={"Group 1": ["Page 1"]}, icon="Home"),
-            vm.NavLink(label="Text", pages={"Group 2": ["Page 2"]}),
+            vm.NavLink(label="Label", pages={"Group 1": ["Page 1"]}, icon="Home"),
+            vm.NavLink(label="Label", pages={"Group 2": ["Page 2"]}),
         ]
         nav_bar = vm.NavBar(pages=pages_as_dict, items=nav_links)
         nav_bar.pre_build()

@@ -1,11 +1,10 @@
 from __future__ import annotations
-from collections.abc import Mapping
 
-import itertools
-from typing import List, Optional, cast, Literal, Dict
+from collections.abc import Mapping
+from typing import Dict, List, Literal
 
 from dash import html
-from pydantic import validator, Field
+from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -40,10 +39,14 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self.items = self.items or [NavLink(text=group_title, pages=pages) for group_title, pages in self.pages.items()]
+        self.items = self.items or [
+            NavLink(label=group_title, pages=pages) for group_title, pages in self.pages.items()
+        ]
 
         for position, item in enumerate(self.items, 1):
-            item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"
+            # The filter icons are named filter_1, filter_2, etc. up to filter_9. If there are more than 9 items, then
+            # the 10th and all subsequent items are named filter_9+.
+            item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
 
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
         # here.

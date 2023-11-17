@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import itertools
-import os
-from typing import Optional, Literal, Dict, List, Union
+from typing import Optional
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, root_validator, validator, PrivateAttr
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call

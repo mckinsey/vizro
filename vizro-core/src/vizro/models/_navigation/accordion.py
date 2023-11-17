@@ -1,6 +1,6 @@
 import itertools
 from collections.abc import Mapping
-from typing import Dict, List, Literal, Optional
+from typing import Dict, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc

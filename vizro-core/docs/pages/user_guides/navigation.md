@@ -35,7 +35,7 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
                     title="My first page",
                     components=[
                         vm.Graph(
-                            id="scatter_chart", 
+                            id="scatter_chart",
                             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
                         ),
                     ],
@@ -44,7 +44,7 @@ If you want to deviate from the default title `SELECT PAGE` and instead provide 
                     title="My second page",
                     components=[
                         vm.Graph(
-                            id="line_chart", 
+                            id="line_chart",
                             figure=px.line(iris, x="sepal_length", y="petal_width", color="species")
                         ),
                     ],
@@ -124,7 +124,7 @@ Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordio
                     title="My first page",
                     components=[
                         vm.Graph(
-                            id="scatter_chart", 
+                            id="scatter_chart",
                             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
                         ),
                     ],
@@ -133,7 +133,7 @@ Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordio
                     title="My second page",
                     components=[
                         vm.Graph(
-                            id="line_chart", 
+                            id="line_chart",
                             figure=px.line(iris, x="sepal_length", y="petal_width", color="species")
                         ),
                     ],
@@ -142,7 +142,7 @@ Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordio
         dashboard = vm.Dashboard(
                         pages=[page_1, page_2],
                         navigation=vm.Navigation(
-                            pages=["My first page", "My second page"], 
+                            pages=["My first page", "My second page"],
                             selector=vm.NavBar()
                         )
                     )
@@ -194,7 +194,7 @@ Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordio
 ## Customizing Selectors
 
 ### Accordion
-To customize default accordion provide a `dict` mapping of the page group title and a list of page IDs to the `pages` argument of the [`Accordion`][vizro.models.Accordion] model. 
+To customize default accordion provide a `dict` mapping of the page group title and a list of page IDs to the `pages` argument of the [`Accordion`][vizro.models.Accordion] model.
 
    ```
     Navigation(
@@ -248,13 +248,13 @@ To customize default accordion provide a `dict` mapping of the page group title 
 </table>
 
 ### NavBar
-To add navigation bar with icons to your dashboard provide [`NavBar`][vizro.models.NavBar] model to the `selector` argument of the `Navigation`. 
+To add navigation bar with icons to your dashboard provide [`NavBar`][vizro.models.NavBar] model to the `selector` argument of the `Navigation`.
 
-NavBar model has two arguments `pages` and `items`. 
+NavBar model has two arguments `pages` and `items`.
 
 - **`NavBar.pages`**
 
-Use `pages` for default icon image and configuration. 
+Use `pages` for default icon image and configuration.
    ```
     Navigation(
         selector=NavBar(pages=["My first page", "My second page"])
@@ -263,7 +263,7 @@ Use `pages` for default icon image and configuration.
 
 - **`NavBar.items`**
 
-Use `items` to add customization to the icons. `NavBar.items` is provided as list of `NavLink` models. `NavLink` model is responsible for building individual icons within navigation bar. 
+Use `items` to add customization to the icons. `NavBar.items` is provided as list of `NavLink` models. `NavLink` model is responsible for building individual icons within navigation bar.
 
 For further customizations of icons, you can refer to the [`NavLink`][vizro.models.NavLink] reference. Some popular choices are:
 
@@ -297,12 +297,12 @@ Navigation(
 <td style="width:360px">
 
     ```py
-    
+
     vm.Navigation(
         selector=vm.NavBar(
             pages={
                 "First icon": [
-                    "My first page", 
+                    "My first page",
                     "My second page"
                 ],
                 "Second icon": [
@@ -311,7 +311,7 @@ Navigation(
             }
         )
     )
-    
+
     ```
 
 </td>
@@ -326,7 +326,7 @@ Navigation(
 <td style="width:360px">
 
     ```py
-    
+
     vm.Navigation(
         selector=vm.NavBar(
             items=[
@@ -342,7 +342,7 @@ Navigation(
             ]
         )
     )
-    
+
     ```
  </td>
  </tr>

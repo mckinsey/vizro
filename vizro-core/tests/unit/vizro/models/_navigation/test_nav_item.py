@@ -16,10 +16,10 @@ class TestNavLinkInstantiation:
     """Tests NavLink model instantiation."""
 
     def test_nav_link_mandatory_only(self):
-        nav_link = vm.NavLink(label="Text")
+        nav_link = vm.NavLink(label="Label")
 
         assert hasattr(nav_link, "id")
-        assert nav_link.label == "Text"
+        assert nav_link.label == "Label"
         assert nav_link.icon is None
         assert nav_link.pages == []
 
@@ -32,7 +32,7 @@ class TestNavLinkInstantiation:
         assert nav_link.pages == pages_as_list
 
     def test_nav_link_valid_pages_as_dict(self, pages_as_dict):
-        nav_link = vm.NavLink(pages=pages_as_dict, label="Text")
+        nav_link = vm.NavLink(pages=pages_as_dict, label="Label")
         assert nav_link.pages == pages_as_dict
 
     def test_mandatory_label_missing(self):
@@ -59,7 +59,7 @@ class TestNavLinkInstantiation:
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavLinkPreBuildMethod:
     def test_nav_link(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Text", pages=pages_as_dict)
+        nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
         nav_link.pre_build()
         assert isinstance(nav_link._nav_selector, vm.Accordion)
         assert nav_link._nav_selector.pages == pages_as_dict
@@ -70,7 +70,7 @@ class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
     def test_nav_link_active(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Text", pages=pages_as_dict)
+        nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         assert isinstance(built_nav_link[nav_link.id], dbc.Button)
@@ -79,7 +79,7 @@ class TestNavLinkBuildMethod:
         assert isinstance(built_nav_link["nav_panel_outer"], html.Div)
 
     def test_nav_link_not_active(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Text", pages=pages_as_dict)
+        nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         assert isinstance(built_nav_link[nav_link.id], dbc.Button)

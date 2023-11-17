@@ -1,14 +1,11 @@
 """Unit tests for vizro.models.Navigation."""
-import json
 import re
 
-import plotly
 import pytest
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro._constants import ACCORDION_DEFAULT_TITLE
 
 
 # AM: move to dashboard tests
