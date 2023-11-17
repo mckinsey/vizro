@@ -117,6 +117,14 @@ class TestDashboardInstantiation:
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
+    def test_navigation_pages_automatically_populated(self, page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2])
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+
+    def test_navigation_with_pages(page1, page2):
+        dashboard = vm.Dashboard(pages=[page1, page2], navigation=vm.Navigation(pages=["Page 1"]))
+        assert dashboard.navigation.pages == ["Page 1"]
+
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="field required"):
             vm.Dashboard()

@@ -37,7 +37,7 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Optional[Navigation] = None
+    navigation: Navigation = Navigation()
     title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
@@ -51,7 +51,6 @@ class Dashboard(VizroBaseModel):
         if "pages" not in values:
             return navigation
 
-        navigation = navigation or Navigation()
         navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation
 

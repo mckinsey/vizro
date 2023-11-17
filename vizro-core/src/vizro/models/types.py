@@ -333,7 +333,6 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
 [`Graph`][vizro.models.Graph]."""
 
-# Types used for pages values in the Navigation model.
 NavPagesType = Annotated[
     Union[List[str], Dict[str, List[str]]],
     Field(
@@ -349,3 +348,4 @@ NavSelectorType = Annotated[
 ]
 """Discriminated union. Permissible value types for selector attribute:
 [`Accordion`][vizro.models.Accordion], [`NavBar`][vizro.models.NavBar]."""
+# AM: docstrings

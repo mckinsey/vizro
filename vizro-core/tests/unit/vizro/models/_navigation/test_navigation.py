@@ -8,15 +8,6 @@ from pydantic import ValidationError
 import vizro.models as vm
 
 
-# AM: move to dashboard tests
-@pytest.mark.parametrize("navigation", [None, vm.Navigation()])
-def test_navigation_default(page1, page2, navigation):
-    # Navigation is optional inside Dashboard and navigation.pages will always be auto-populated if not provided
-    dashboard = vm.Dashboard(pages=[page1, page2], navigation=navigation)
-    assert hasattr(dashboard.navigation, "id")
-    assert dashboard.navigation.pages == ["Page 1", "Page 2"]
-
-
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationInstantiation:
     def test_navigation_mandatory_only(self):
@@ -24,7 +15,7 @@ class TestNavigationInstantiation:
 
         assert hasattr(navigation, "id")
         assert navigation.pages == []
-        assert navigation.nav_selector is None
+        assert isinstance(navigation.nav_selector, vm.Accordion)
 
     def test_navigation_mandatory_and_optional(self):
         accordion = vm.Accordion()
