@@ -14,20 +14,20 @@ import vizro.models as vm
 class TestNavBarInstantiation:
     """Tests NavBar model instantiation."""
 
-    def test_navbar_mandatory_only(self):
+    def test_nav_bar_mandatory_only(self):
         nav_bar = vm.NavBar()
 
         assert hasattr(nav_bar, "id")
         assert nav_bar.pages == {}
         assert nav_bar.items == []
 
-    def test_navbar_mandatory_and_optional(self, pages_as_dict):
-        nav_item = vm.NavItem(text="Text")
-        nav_bar = vm.NavBar(id="nav_bar", pages=pages_as_dict, items=[nav_item])
+    def test_nav_bar_mandatory_and_optional(self, pages_as_dict):
+        nav_link = vm.NavLink(label="Text")
+        nav_bar = vm.NavBar(id="nav_bar", pages=pages_as_dict, items=[nav_link])
 
         assert nav_bar.id == "nav_bar"
         assert nav_bar.pages == pages_as_dict
-        assert nav_bar.items == [nav_item]
+        assert nav_bar.items == [nav_link]
 
     def test_valid_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -55,17 +55,17 @@ class TestNavBarPreBuildMethod:
     def test_default_items(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
-        assert all(isinstance(item, vm.NavItem) for item in nav_bar.items)
+        assert all(isinstance(item, vm.NavLink) for item in nav_bar.items)
         assert all(item.icon == f"filter_{position}" for position, item in enumerate(nav_bar.items, 1))
 
     def test_items_with_with_pages_icons(self, pages_as_dict):
-        nav_items = [
-            vm.NavItem(text="Text", pages={"Group 1": ["Page 1"]}, icon="Home"),
-            vm.NavItem(text="Text", pages={"Group 2": ["Page 2"]}),
+        nav_links = [
+            vm.NavLink(label="Text", pages={"Group 1": ["Page 1"]}, icon="Home"),
+            vm.NavLink(label="Text", pages={"Group 2": ["Page 2"]}),
         ]
-        nav_bar = vm.NavBar(pages=pages_as_dict, items=nav_items)
+        nav_bar = vm.NavBar(pages=pages_as_dict, items=nav_links)
         nav_bar.pre_build()
-        assert nav_bar.items == nav_items
+        assert nav_bar.items == nav_links
         assert nav_bar.items[0].icon == "Home"
         assert nav_bar.items[1].icon == "filter_2"
 

@@ -182,7 +182,7 @@ Currently available selectors are [`NavBar`][vizro.models.NavBar] and [`Accordio
              Second title:
                 - My second page
             selector:
-                type: navbar
+                type: nav_bar
 
         ```
     === "Result"
@@ -263,21 +263,21 @@ Use `pages` for default icon image and configuration.
 
 - **`NavBar.items`**
 
-Use `items` to add customization to the icons. `NavBar.items` is provided as list of `NavItem` models. `NavItem` model is responsible for building individual icons within navigation bar. 
+Use `items` to add customization to the icons. `NavBar.items` is provided as list of `NavLink` models. `NavLink` model is responsible for building individual icons within navigation bar. 
 
-For further customizations of icons, you can refer to the [`NavItem`][vizro.models.NavItem] reference. Some popular choices are:
+For further customizations of icons, you can refer to the [`NavLink`][vizro.models.NavLink] reference. Some popular choices are:
 
-- customize icon image by providing name of the icon from the [Google Material Icon library](https://fonts.google.com/icons) to `icon` argument of `NavItem` model
-- provide text string to be displayed in the icon tooltip on hover by using `text` argument of `NavItem` model
+- customize icon image by providing name of the icon from the [Google Material Icon library](https://fonts.google.com/icons) to `icon` argument of `NavLink` model
+- provide text string to be displayed in the icon tooltip on hover by using `text` argument of `NavLink` model
 
 ```
 Navigation(
     selector=NavBar(
         items=[
-            vm.NavItem(
+            vm.NavLink(
                 pages=["My first page"], icon="dashboard", text="Pages"
             ),
-            vm.NavItem(
+            vm.NavLink(
                 pages=["My second page"], icon="summarize", text="Summary"
             ),
         ]
@@ -330,13 +330,13 @@ Navigation(
     vm.Navigation(
         selector=vm.NavBar(
             items=[
-                vm.NavItem(
+                vm.NavLink(
                     pages=[
                         "My first page",
                         "My second page"
                     ],
                     icon="dashboard"),
-                vm.NavItem(
+                vm.NavLink(
                     pages=["My third page"],
                     icon="summarize"),
             ]

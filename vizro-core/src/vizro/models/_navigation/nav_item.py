@@ -16,24 +16,22 @@ from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
 
 
-class NavItem(VizroBaseModel):  # AM: consider Icon or NavIcon or NavLink or NavButton or navbar with the aforemnetioned
+class NavLink(VizroBaseModel):
     """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
         pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
         icon (str): Name of the icon from the Google Material Icon library. For more available
             icons visit [Google Material Icon library](https://fonts.google.com/icons).
-        text (Optional[str]): Text to be displayed below the icon. It automatically gets truncated to the
-            `max_text_length`. Defaults to `None`.
+        label (Optional[str]): Text to be displayed below the icon. It automatically gets truncated to the
+            `max_label_length`. Defaults to `None`.
     """
 
     pages: NavPagesType = []
-    text: str = Field(
-        ..., description="Text to be displayed below the icon."
-    )  # AM: Consider label. This just does tooltip for now.
+    label: str = Field(..., description="Text to be displayed below the icon.")
     icon: Optional[str] = Field(None, description="Icon name from Google Material Icon library.")
 
-    _selector: Accordion = PrivateAttr()  # AM: Consider nav_selector or children - probably better
+    _nav_selector: Accordion = PrivateAttr()
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
@@ -42,12 +40,12 @@ class NavItem(VizroBaseModel):  # AM: consider Icon or NavIcon or NavLink or Nav
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # _selector is an Accordion, so _selector._pages is guaranteed to be Dict[str, List[str]].
-        all_page_ids = list(itertools.chain(*self._selector.pages.values()))
+        # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be Dict[str, List[str]].
+        all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
 
@@ -63,7 +61,7 @@ class NavItem(VizroBaseModel):  # AM: consider Icon or NavIcon or NavLink or Nav
                 html.Span(self.icon, className="material-symbols-outlined"),
                 # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
                 # try dbc.Popover or Dash mantine components tooltip?).
-                # dbc.Tooltip(html.P(self.text), target=self.id, placement="bottom", className="custom-tooltip"),
+                # dbc.Tooltip(html.P(self.label), target=self.id, placement="bottom", className="custom-tooltip"),
             ],
             id=self.id,
             className="icon-button",
@@ -71,8 +69,8 @@ class NavItem(VizroBaseModel):  # AM: consider Icon or NavIcon or NavLink or Nav
             active=item_active,
         )
 
-        # Only build the selector (id="nav_panel_outer") if the item is active.
+        # Only build the nav_selector (id="nav_panel_outer") if the item is active.
         if item_active:
-            return html.Div([button, self._selector.build(active_page_id=active_page_id)])
+            return html.Div([button, self._nav_selector.build(active_page_id=active_page_id)])
 
         return html.Div(button)

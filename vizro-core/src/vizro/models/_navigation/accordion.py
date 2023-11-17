@@ -13,8 +13,10 @@ from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 
 
+# TODO: if and when made public, consider naming as NavAccordion to be consistent with other
+#  navigation models.
 class Accordion(VizroBaseModel):
-    """Accordion to be used as selector in [`Navigation`][vizro.models.Navigation].
+    """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.

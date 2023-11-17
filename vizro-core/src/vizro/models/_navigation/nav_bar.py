@@ -10,26 +10,24 @@ from pydantic import validator, Field
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
-from vizro.models._navigation.nav_item import NavItem
+from vizro.models._navigation.nav_link import NavLink
 
 
-class NavBar(VizroBaseModel):  # AM: consider Bar - not sure it's good. And Navbar (as in dbc and dmc). Main Menu?
-    # MenuBar?
-    # But note don't have NavAccordion - but that is private anyway
-    """Navigation bar to be used as a selector for `Navigation`.
+class NavBar(VizroBaseModel):
+    """Navigation bar to be used as a nav_selector for `Navigation`.
 
     Args:
-        type (Literal["navbar"]): Defaults to `"navbar"`.
+        type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
         pages (Optional[Dict[str, List[str]]]): A dictionary with a page group title as key and a list of page IDs as
             values.
-        items (Optional[List[NavItem]]): See [`NavItem`][vizro.models.NavItem]. Defaults to `[]`.
+        items (Optional[List[NavLink]]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
     """
 
-    type: Literal["navbar"] = "navbar"  # AM: nav_bar?
+    type: Literal["nav_bar"] = "nav_bar"
     pages: Dict[str, List[str]] = Field(
         {}, description="A dictionary with a page group title as key and a list of page IDs as values."
     )
-    items: List[NavItem] = []  # AM: think about name. Consider nav_selector or children
+    items: List[NavLink] = []
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
@@ -42,7 +40,7 @@ class NavBar(VizroBaseModel):  # AM: consider Bar - not sure it's good. And Navb
 
     @_log_call
     def pre_build(self):
-        self.items = self.items or [NavItem(text=group_title, pages=pages) for group_title, pages in self.pages.items()]
+        self.items = self.items or [NavLink(text=group_title, pages=pages) for group_title, pages in self.pages.items()]
 
         for position, item in enumerate(self.items, 1):
             item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"
@@ -56,7 +54,7 @@ class NavBar(VizroBaseModel):  # AM: consider Bar - not sure it's good. And Navb
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # We always show all the navitem buttons, but only show the accordion for the active page. This works because
+        # We always show all the nav_link buttons, but only show the accordion for the active page. This works because
         # item.build only returns the nav_panel_outer Div when the item is active.
         # In future maybe we should do this by showing all navigation panels and then setting hidden=True for all but
         # one using a clientside callback?

@@ -27,15 +27,15 @@ class TestNavigationInstantiation:
 
         assert hasattr(navigation, "id")
         assert navigation.pages == []
-        assert navigation.selector is None
+        assert navigation.nav_selector is None
 
     def test_navigation_mandatory_and_optional(self):
         accordion = vm.Accordion()
-        navigation = vm.Navigation(id="navigation", pages=["Page 1", "Page 2"], selector=accordion)
+        navigation = vm.Navigation(id="navigation", pages=["Page 1", "Page 2"], nav_selector=accordion)
 
         assert navigation.id == "navigation"
         assert navigation.pages == ["Page 1", "Page 2"]
-        assert navigation.selector == accordion
+        assert navigation.nav_selector == accordion
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
@@ -56,36 +56,36 @@ class TestNavigationInstantiation:
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationPreBuildMethod:
-    def test_default_selector(self, pages_as_dict):
+    def test_default_nav_selector(self, pages_as_dict):
         navigation = vm.Navigation(pages=pages_as_dict)
         navigation.pre_build()
-        assert isinstance(navigation.selector, vm.Accordion)
-        assert navigation.selector.pages == pages_as_dict
+        assert isinstance(navigation.nav_selector, vm.Accordion)
+        assert navigation.nav_selector.pages == pages_as_dict
 
-    def test_default_selector_with_pages(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.Accordion(pages={"Group": ["Page 1"]}))
+    def test_default_nav_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.Accordion(pages={"Group": ["Page 1"]}))
         navigation.pre_build()
-        assert isinstance(navigation.selector, vm.Accordion)
-        assert navigation.selector.pages == {"Group": ["Page 1"]}
+        assert isinstance(navigation.nav_selector, vm.Accordion)
+        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
 
-    def test_non_default_selector(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar())
+    def test_non_default_nav_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
-        assert isinstance(navigation.selector, vm.NavBar)
-        assert navigation.selector.pages == pages_as_dict
+        assert isinstance(navigation.nav_selector, vm.NavBar)
+        assert navigation.nav_selector.pages == pages_as_dict
 
-    def test_non_default_selector_with_pages(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar(pages={"Group": ["Page 1"]}))
+    def test_non_default_nav_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar(pages={"Group": ["Page 1"]}))
         navigation.pre_build()
-        assert isinstance(navigation.selector, vm.NavBar)
-        assert navigation.selector.pages == {"Group": ["Page 1"]}
+        assert isinstance(navigation.nav_selector, vm.NavBar)
+        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationBuildMethod:
     """Tests navigation model build method."""
 
-    def test_default_selector(self, pages_as_dict):
+    def test_default_nav_selector(self, pages_as_dict):
         navigation = vm.Navigation(pages=pages_as_dict)
         navigation.pre_build()
         built_navigation = navigation.build()
@@ -93,8 +93,8 @@ class TestNavigationBuildMethod:
         assert isinstance(built_navigation["nav_panel_outer"], html.Div)
         assert built_navigation["nav_bar_outer"].className == "hidden"
 
-    def test_non_default_selector(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, selector=vm.NavBar())
+    def test_non_default_nav_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build()
         assert isinstance(built_navigation["nav_bar_outer"], html.Div)

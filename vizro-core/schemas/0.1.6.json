@@ -920,8 +920,8 @@
       "required": ["pages"],
       "additionalProperties": false
     },
-    "NavItem": {
-      "title": "NavItem",
+    "NavLink": {
+      "title": "NavLink",
       "description": "Icon to be used in Navigation Panel of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].\n    icon (str): URI (relative or absolute) of the embeddable content. Defaults to \"home\".\n    max_text_length (int): Character limit for `text` argument. Defaults to 8.\n    text (Optional[str]): Text to be displayed below the icon. Defaults to `None`.\n    tooltip (Optional[str]): Text to be displayed in the icon tooltip on hover.\n    selector (Optional[Accordion]): See [`Accordion`][vizro.models.Accordion]. Defaults to `None`.",
       "type": "object",
       "properties": {
@@ -982,7 +982,7 @@
     },
     "NavBar": {
       "title": "NavBar",
-      "description": "Navigation bar to be used as a selector for `Navigation`.\n\nArgs:\n    pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to `None`.\n    items (List[NavItem]): See [`NavItem`][vizro.models.NavItem]. Defaults to `[]`.",
+      "description": "Navigation bar to be used as a selector for `Navigation`.\n\nArgs:\n    pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to `None`.\n    items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1015,7 +1015,7 @@
           "default": [],
           "type": "array",
           "items": {
-            "$ref": "#/definitions/NavItem"
+            "$ref": "#/definitions/NavLink"
           }
         }
       },
