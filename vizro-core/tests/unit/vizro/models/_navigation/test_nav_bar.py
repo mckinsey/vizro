@@ -1,8 +1,6 @@
 """Unit tests for vizro.models.NavBar."""
-import json
 import re
 
-import plotly
 import pytest
 from dash import html
 from pydantic import ValidationError

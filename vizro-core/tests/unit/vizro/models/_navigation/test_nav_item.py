@@ -1,9 +1,7 @@
 """Unit tests for vizro.models.NavLink."""
-import json
 import re
 
 import dash_bootstrap_components as dbc
-import plotly
 import pytest
 from dash import html
 from pydantic import ValidationError

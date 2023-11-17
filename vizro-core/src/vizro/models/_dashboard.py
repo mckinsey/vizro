@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, cast
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 import dash
 import dash_bootstrap_components as dbc
@@ -100,7 +100,7 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        navigation = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav_bar_outer"]
         nav_panel = navigation["nav_panel_outer"]
 
