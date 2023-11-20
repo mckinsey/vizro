@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from dash import html
 from pydantic import validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
-from vizro.models.types import ComponentType
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
     from vizro.models import Layout
+
 
 # LQ: What should the final naming be? SubPage, Container, ...
 class SubPage(VizroBaseModel):
     components: List[ComponentType]
     title: Optional[str]
     layout: Optional[Layout] = None
+    type: Literal["sub_page"] = "sub_page"
 
     @validator("layout", always=True)
     def set_layout(cls, layout, values):
@@ -35,7 +36,6 @@ class SubPage(VizroBaseModel):
             raise ValueError("Number of page and grid components need to be the same.")
 
         return layout
-
 
     @_log_call
     def build(self):
@@ -56,17 +56,14 @@ class SubPage(VizroBaseModel):
         return html.Div(children=[html.H3(self.title), components_container], className="subpage-container")
 
     def _create_component_container(self, components_content):
-
         component_container = html.Div(
-                    components_content,
-                    style={
-                        "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                        "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"  # type: ignore[union-attr]
-                        f"minmax({self.layout.col_min_width}, 1fr))",
-                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"  # type: ignore[union-attr]
-                        f"minmax({self.layout.row_min_height}, 1fr))",
-                    },
-                    className="component_container_grid",
-                )
+            components_content,
+            style={
+                "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
+                "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
+            },
+            className="component_container_grid",
+        )
         return component_container

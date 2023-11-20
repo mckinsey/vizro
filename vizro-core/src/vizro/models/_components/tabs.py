@@ -34,5 +34,8 @@ class Tabs(VizroBaseModel):
                     className="tabs-list",
                 ),
             ]
-            + [dmc.TabsPanel(html.Div(children=[subpage.build()]), value=subpage.id) for subpage in self.subpages],
+            + [
+                dmc.TabsPanel(html.Div(children=[subpage.build()], className="tabs_panel"), value=subpage.id)
+                for subpage in self.subpages
+            ],
         )

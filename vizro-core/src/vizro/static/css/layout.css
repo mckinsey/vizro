@@ -100,10 +100,14 @@
 .subpage-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
 .loading-container {
   height: 100%;
   width: 100%;
+}
+
+.tabs_panel {
+  height: 100vh;
 }

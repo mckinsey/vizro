@@ -9,7 +9,8 @@ from vizro.tables import dash_data_table
 df_gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
+    # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
+    title="Testing out tabs",
     components=[
         vm.Table(
             id="table-0",
@@ -171,8 +172,88 @@ page = vm.Page(
         vm.Filter(column="continent"),
     ],
 )
+page_2 = vm.Page(
+    title="Containers page",
+    components=[
+        vm.SubPage(
+            id="cont_1",
+            title="Container I",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Graph(
+                    id="graph_11",
+                    figure=px.line(
+                        df_gapminder,
+                        title="Graph-11",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                        line_group="country",
+                        hover_name="country",
+                    ),
+                ),
+                vm.Graph(
+                    id="graph_12",
+                    figure=px.scatter(
+                        df_gapminder,
+                        title="Graph-12",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+            ],
+        ),
+        vm.SubPage(
+            id="cont_2",
+            title="Container II",
+            layout=vm.Layout(grid=[[0, 1]], row_min_height="300px"),
+            components=[
+                vm.Graph(
+                    id="graph_13",
+                    figure=px.box(
+                        df_gapminder,
+                        title="Graph-13",
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=export_data()),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+page_3 = vm.Page(
+    title="Third page",
+    components=[
+        vm.Tabs(
+            subpages=[
+                vm.SubPage(
+                    id="subpage_table",
+                    title="Tab I Table",
+                    components=[
+                        vm.Table(
+                            id="table-1",
+                            figure=dash_data_table(
+                                id="dash_datatable-1",
+                                data_frame=df_gapminder,
+                            ),
+                        ),
+                    ],
+                )
+            ]
+        )
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro(assets_folder="../assets").build(dashboard).run()

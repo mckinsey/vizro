@@ -12,7 +12,7 @@ from ._page import Page
 SubPage.update_forward_refs(Button=Button, Card=Card, Graph=Graph, Tabs=Tabs, Table=Table, Layout=Layout)
 Tabs.update_forward_refs(SubPage=SubPage)
 Page.update_forward_refs(
-    Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs
+    Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs, SubPage=SubPage
 )
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 
@@ -33,6 +33,7 @@ __all__ = [
     "RadioItems",
     "RangeSlider",
     "Slider",
+    "SubPage",
     "Table",
     "VizroBaseModel",
     "Tab",

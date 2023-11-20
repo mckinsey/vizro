@@ -23,7 +23,7 @@ dependencies = [
   "chromedriver-autoinstaller-fix",
   "toml",
   "pyyaml",
-  "openpyxl",
+  "openpyxl"
 ]
 
 [envs.default.env-vars]
