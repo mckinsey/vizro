@@ -229,6 +229,9 @@ page_2 = vm.Page(
             ],
         ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+    ]
 )
 page_3 = vm.Page(
     title="Third page",
@@ -249,8 +252,17 @@ page_3 = vm.Page(
                     ],
                 )
             ]
-        )
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+            ],
+        ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+    ]
 )
 
 dashboard = vm.Dashboard(pages=[page, page_2, page_3])
