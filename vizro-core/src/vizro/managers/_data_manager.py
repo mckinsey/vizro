@@ -22,6 +22,10 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 # this. Implementation could be using unless or nullcache or if conditional.
 
 
+# TODO: test, idea 2 (see shelf), think about preload and automatically named datasets, whether we still need
+#  components to dataset mapping
+
+
 class _Dataset:
     def __init__(self, load_data: pd_LazyDataFrame, /):
         self.__load_data: pd_LazyDataFrame = load_data
