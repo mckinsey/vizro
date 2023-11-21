@@ -44,7 +44,7 @@ class Vizro:
         Returns:
             Vizro: App object
         """
-        data_manager._cache.init_app(self.dash.server)
+        data_manager._init_cache(self.dash.server)
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 

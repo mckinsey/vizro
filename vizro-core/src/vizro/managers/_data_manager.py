@@ -3,6 +3,7 @@ import logging
 import time
 from typing import Callable, Dict, Optional, Union
 
+import flask
 import pandas as pd
 from flask_caching import Cache
 
@@ -20,39 +21,49 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 
 class _Dataset:
-    def __init__(self, data: pd_LazyDataFrame):
-        self.__data: pd_LazyDataFrame = data
-        self._timeout: int = None
-        self._cache: Cache = None
+    def __init__(self, load_data: pd_LazyDataFrame, /):
+        self.__load_data: pd_LazyDataFrame = load_data
+        # timeout and cache will probably become public in future.
+        self._timeout: Optional[int] = None
+        self._cache: Optional[Cache] = None
+        # name should never become public since it's taken from the key in data_manager.
+        self._name: str = ""
 
     @property
     def _cache_arguments(self):
         return {"timeout": self._timeout}
 
     def __call__(self) -> pd.DataFrame:
-        return self.__data()
+        # In future this will probably take arguments that are passed through to _load_data in order to re-run the
+        # loading function with different arguments. We might want to use CapturedCallable for self.__load_data then.
+        logger.debug("Calling dataset %s", self._name)
 
+        # memoize is designed to apply the same timeout setting to every call of the function, but we want to
+        # have a dataset-dependent timeout in the same cache. The only way to do this is to alter the function qualname
+        # used in flask_caching.utils.function_namespace so that each _Dataset instance has a different cache for
+        # load_data.
+        # The following things *do not* work to achieve the same thing - there will still be interference between
+        # different load_data caches:
+        # * altering load_data.cache_timeout
+        # * using make_name argument (since this is only applied after function_namespace is called)
+        # * including self or self._name in the load_data arguments
+        # Since the function is labelled by the unique self._name, there's no need to include self in the arguments.
+        # Doing so would be ok but means also defining a __caching_id__ = self._name property for _Dataset so that
+        # Flask Caching does not fall back on __repr__ to identify the _Dataset instance, which is risky.
+        @self._cache.memoize(**self._cache_arguments)
+        def _load_data():
+            logger.debug("Cache for dataset %s not found; reloading data", self._name)
+            return self.__load_data()
 
-# but how to set redis settings? Need to input actual cache object.
+        _load_data.uncached.__qualname__ += f"__{self._name}"
+        return _load_data()
 
-# leave timeout as top level API for now rather than cache_arguments, since will need to figure out where to put
-# argments that can be changed at runtime
+    def _init_cache(self, app: flask.Flask):
+        # Initialising the same cache repeatedly doesn't cause any harm but is not necessary. Once initialised,
+        # flask caching puts the cache in the flask.extensions["cache"] dictionary.
+        if self._cache not in flask.extensions.get("cache", {}):
+            self._cache.init_app(app)
 
-# :param timeout: Default None. If set to an integer, will cache for that
-#                 amount of time. Unit of time is in seconds.
-# 0 means cache forever and never refresh -> never re-run function.
-
-# do cache = False for no cache in future
-# for now do as dataset._cache = Cache(config={"CACHE_TYPE": "NullCache"})
-
-# for now leave _cache private but in future expose
-
-# data_manager.cache = key in _caches -> set default for all datasets
-#
-# Cache(config={"CACHE_TYPE": "SimpleCache"}) # or cache_config only -> no, actual cache
-# object.
-# data_manager["iris"] = lambda: pd.DataFrame()
-#
 
 #
 # class _Dataset:
@@ -95,6 +106,7 @@ class DataManager:
 
         if callable(data):
             self.__lazy_data[dataset_name] = _Dataset(data)
+            self.__lazy_data[dataset_name]._name = dataset_name
         elif isinstance(data, pd.DataFrame):
             self.__original_data[dataset_name] = data  # AM: should also put into Dataset?
         else:
@@ -130,20 +142,25 @@ class DataManager:
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
-        logger.debug("get_component_data: %s", component_id)
         if component_id not in self.__component_to_original:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_original[component_id]
 
         if dataset_name in self.__lazy_data:
-            dataset = self[dataset_name]
-            cache = dataset._cache or self._cache
-            load_lazy_data = cache.memoize(**dataset._cache_arguments)(dataset())
-            return load_lazy_data()
+            return self[dataset_name]()
+
         else:  # dataset_name is in self.__original_data
             # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
             # to not do any inplace=True operations, but probably safest to leave it here.
             return self.__original_data[dataset_name].copy()
+
+    def _init_cache(self, app: flask.Flask):
+        """Sets the default cache for all datasets to be the same as the data_manager cache and initializes cache."""
+        for dataset in self.__lazy_data.values():
+            dataset._cache = dataset._cache or self._cache
+            dataset._init_cache(app)
+
+    # TODO: consider implementing __iter__ to make looping through datasets easier. Might not be worth doing though.
 
     # TODO: we should be able to remove this soon. Try to avoid using it.
     def _has_registered_data(self, component_id: ComponentID) -> bool:
