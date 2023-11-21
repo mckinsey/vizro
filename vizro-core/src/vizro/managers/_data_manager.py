@@ -18,6 +18,8 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 # _caches = {"simple": Cache(config={"CACHE_TYPE": "SimpleCache"}), "null": Cache(config={"CACHE_TYPE": "NullCache"})}
 # don't want this for now but might have in future.
+# how to turn cache off? For now just specify nullcache. Maybe in future have _dataset._cache = False as shortcut for
+# this. Implementation could be using unless or nullcache or if conditional.
 
 
 class _Dataset:
@@ -29,9 +31,8 @@ class _Dataset:
         # name should never become public since it's taken from the key in data_manager.
         self._name: str = ""
 
-    @property
-    def _cache_arguments(self):
-        return {"timeout": self._timeout}
+        # We might also want a _cache_arguments dictionary in future that allows user to customise more than just
+        # timeout, but no rush to do this.
 
     def __call__(self) -> pd.DataFrame:
         # In future this will probably take arguments that are passed through to _load_data in order to re-run the
@@ -50,7 +51,7 @@ class _Dataset:
         # Since the function is labelled by the unique self._name, there's no need to include self in the arguments.
         # Doing so would be ok but means also defining a __caching_id__ = self._name property for _Dataset so that
         # Flask Caching does not fall back on __repr__ to identify the _Dataset instance, which is risky.
-        @self._cache.memoize(**self._cache_arguments)
+        @self._cache.memoize(timeout=self._timeout)
         def _load_data():
             logger.debug("Cache for dataset %s not found; reloading data", self._name)
             return self.__load_data()
