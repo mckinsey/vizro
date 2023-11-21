@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -37,7 +37,7 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Navigation = Navigation()
+    navigation: Optional[Navigation] = None
     title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
@@ -51,6 +51,7 @@ class Dashboard(VizroBaseModel):
         if "pages" not in values:
             return navigation
 
+        navigation = navigation or Navigation()
         navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation
 
@@ -100,7 +101,7 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation = self.navigation.build(active_page_id=page.id)
+        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
         nav_bar = navigation["nav_bar_outer"]
         nav_panel = navigation["nav_panel_outer"]
 

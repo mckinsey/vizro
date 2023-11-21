@@ -121,7 +121,7 @@ class TestDashboardInstantiation:
         dashboard = vm.Dashboard(pages=[page1, page2])
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
-    def test_navigation_with_pages(page1, page2):
+    def test_navigation_with_pages(self, page1, page2):
         dashboard = vm.Dashboard(pages=[page1, page2], navigation=vm.Navigation(pages=["Page 1"]))
         assert dashboard.navigation.pages == ["Page 1"]
 
