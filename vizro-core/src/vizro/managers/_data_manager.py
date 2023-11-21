@@ -23,7 +23,7 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 
 # TODO: test, idea 2 (see shelf), think about preload and automatically named datasets, whether we still need
-#  components to dataset mapping
+#  components to dataset mapping, want _cache in DM and _Dataset and timeout also? Call _cache_timeout?
 
 
 class _Dataset:
@@ -55,6 +55,8 @@ class _Dataset:
         # Since the function is labelled by the unique self._name, there's no need to include self in the arguments.
         # Doing so would be ok but means also defining a __caching_id__ = self._name property for _Dataset so that
         # Flask Caching does not fall back on __repr__ to identify the _Dataset instance, which is risky.
+        # Another option would be to use cached rather than memoize, but that is generally intended only for use
+        # during a request, and we want to call _load_data during the build stage, not just at run time.
         @self._cache.memoize(timeout=self._timeout)
         def _load_data():
             logger.debug("Cache for dataset %s not found; reloading data", self._name)
