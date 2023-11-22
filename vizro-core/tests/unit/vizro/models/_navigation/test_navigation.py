@@ -15,7 +15,7 @@ class TestNavigationInstantiation:
 
         assert hasattr(navigation, "id")
         assert navigation.pages == []
-        assert isinstance(navigation.nav_selector, vm.Accordion)
+        assert navigation.nav_selector is None
 
     def test_navigation_mandatory_and_optional(self):
         accordion = vm.Accordion()

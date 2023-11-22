@@ -148,6 +148,4 @@ class TestAccordionBuild:
 
 # AM: Do as active/inactive?
 
-## AM: consider testing style and whether to put back integration style tets
-## Talk to Alexey about what his integration tests cover.
-# Also how carefully to do comparison to exact plotly object.
+## AM: def accordion_from_page_as_list unused
