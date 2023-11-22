@@ -36,3 +36,8 @@
 .tab-single[data-active] .mantine-Tabs-tabLabel {
   color: var(--text-active);
 }
+
+.mantine-1hfjdaf {
+  flex-direction: column;
+  display: flex;
+}
