@@ -2,7 +2,7 @@ import pytest
 
 import vizro.models as vm
 
-from tests_utils import component_to_dict
+from asserts import assert_components_equal
 from vizro import Vizro
 from vizro.managers import model_manager
 
@@ -152,4 +152,4 @@ navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
 def test_navigation_build(dashboard_result, dashboard_expected):
     result = dashboard_result.navigation.build()
     expected = dashboard_expected.navigation.build()
-    assert component_to_dict(result) == component_to_dict(expected)
+    assert_components_equal(result, expected)

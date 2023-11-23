@@ -3,13 +3,13 @@ import json
 import re
 
 import dash_bootstrap_components as dbc
-import plotly
 import pytest
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from tests_utils import assert_components_equal
+from asserts import assert_components_equal
+
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 
 
