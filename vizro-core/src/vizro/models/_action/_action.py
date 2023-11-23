@@ -101,13 +101,16 @@ class Action(VizroBaseModel):
         logger.debug(f"Action inputs: {inputs}")
 
         # Invoking the action's function
-        return_value = self.function(**inputs) or []
+        return_value = self.function(**inputs)
 
         # Action callback outputs
         outputs = list(ctx.outputs_grouping.keys())
         outputs.remove("action_finished")
 
-        if hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
+        if return_value is None and len(outputs) == 0:
+            # Action has no outputs and returns None.
+            return_dict = {}
+        elif hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
             # return_value is a namedtuple.
             if set(return_value._fields) != set(outputs):
                 raise ValueError(
@@ -116,7 +119,7 @@ class Action(VizroBaseModel):
                 )
             return_dict = return_value._asdict()
         else:
-            if isinstance(return_value, (str, dict)) or not isinstance(return_value, Collection):
+            if len(outputs) == 1 or not isinstance(return_value, Collection) or len(return_value) == 0:
                 return_value = [return_value]
 
             if len(return_value) != len(outputs):

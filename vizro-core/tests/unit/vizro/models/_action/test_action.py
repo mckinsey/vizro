@@ -225,47 +225,45 @@ class TestActionPrivateMethods:
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value",
         [
-            # custom action function return value - None
-            (None, [], {"action_finished": None}),
-            # custom action function return value - single value
-            ("new_value", ["component_1_property"], {"action_finished": None, "component_1_property": "new_value"}),
-            # custom action function return value - list of values
+            # no outputs
+            (None, [], {}),
+            # single output
+            (None, ["component_1_property"], {"component_1_property": None}),
+            (123, ["component_1_property"], {"component_1_property": 123}),
+            ("value", ["component_1_property"], {"component_1_property": "value"}),
+            ((), ["component_1_property"], {"component_1_property": ()}),
+            (("value"), ["component_1_property"], {"component_1_property": ("value")}),
+            (("value_1", "value_2"), ["component_1_property"], {"component_1_property": ("value_1", "value_2")}),
+            ([], ["component_1_property"], {"component_1_property": []}),
+            (["value"], ["component_1_property"], {"component_1_property": ["value"]}),
+            (["value_1", "value_2"], ["component_1_property"], {"component_1_property": ["value_1", "value_2"]}),
+            ({}, ["component_1_property"], {"component_1_property": {}}),
+            ({"key_1": "value_1"}, ["component_1_property"], {"component_1_property": {"key_1": "value_1"}}),
             (
-                ["new_value", "new_value_2"],
-                ["component_1_property", "component_2_property"],
-                {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
-            ),
-            # custom action function return value - tuple
-            (
-                ("new_value", "new_value_2"),
-                ["component_1_property", "component_2_property"],
-                {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
-            ),
-            # custom action function return value - dictionary
-            (
-                {"component_1_property": "new_value"},
+                {"key_1": "value_1", "key_2": "value_2"},
                 ["component_1_property"],
-                {"action_finished": None, "component_1_property": {"component_1_property": "new_value"}},
+                {"component_1_property": {"key_1": "value_1", "key_2": "value_2"}},
             ),
+            # multiple outputs
             (
-                ({"component_1_property": "new_value", "component_2_property": "new_value_2"}),
-                ["component_1_property"],
-                {
-                    "action_finished": None,
-                    "component_1_property": {
-                        "component_1_property": "new_value",
-                        "component_2_property": "new_value_2",
-                    },
-                },
-            ),
-            (
-                ({"component_1_property": "new_value"}, {"component_2_property": "new_value_2"}),
+                "ab",
                 ["component_1_property", "component_2_property"],
-                {
-                    "action_finished": None,
-                    "component_1_property": {"component_1_property": "new_value"},
-                    "component_2_property": {"component_2_property": "new_value_2"},
-                },
+                {"component_1_property": "a", "component_2_property": "b"},
+            ),
+            (
+                ("value_1", "value_2"),
+                ["component_1_property", "component_2_property"],
+                {"component_1_property": "value_1", "component_2_property": "value_2"},
+            ),
+            (
+                ["value_1", "value_2"],
+                ["component_1_property", "component_2_property"],
+                {"component_1_property": "value_1", "component_2_property": "value_2"},
+            ),
+            (
+                {"key_1": "value_1", "key_2": "value_2"},
+                ["component_1_property", "component_2_property"],
+                {"component_1_property": "key_1", "component_2_property": "key_2"},
             ),
         ],
         indirect=["custom_action_function_mock_return", "callback_context_set_outputs_grouping"],
@@ -275,21 +273,23 @@ class TestActionPrivateMethods:
     ):
         action = Action(function=custom_action_function_mock_return())
         result = action._action_callback_function()
-        assert result == expected_function_return_value
+        expected = {"action_finished": None, **expected_function_return_value}
+        assert result == expected
 
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value",
         [
-            # custom action function return value - namedtuple
+            # single outputs
             (
                 (namedtuple("outputs", ["component_1_property"])("new_value")),
                 ["component_1_property"],
-                {"action_finished": None, "component_1_property": "new_value"},
+                {"component_1_property": "new_value"},
             ),
+            # multiple outputs
             (
                 (namedtuple("outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
                 ["component_1_property", "component_2_property"],
-                {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
+                {"component_1_property": "new_value", "component_2_property": "new_value_2"},
             ),
         ],
         indirect=["custom_action_function_mock_return", "callback_context_set_outputs_grouping"],
@@ -299,22 +299,35 @@ class TestActionPrivateMethods:
     ):
         action = Action(function=custom_action_function_mock_return())
         result = action._action_callback_function()
-        assert result == expected_function_return_value
+        expected = {"action_finished": None, **expected_function_return_value}
+        assert result == expected
 
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_context_set_outputs_grouping",
         [
-            (None, ["component_1_property"]),
-            ("new_value", []),
-            ("new_value", ["component_1_property", "component_2_property"]),
+            (None, ["component_1_property", "component_2_property"]),
+            (123, []),
+            (123, ["component_1_property", "component_2_property"]),
+            ("", []),
+            ("ab", []),
+            ("ab", ["component_1_property", "component_2_property", "component_3_property"]),
+            ((), []),
+            (("new_value"), []),
+            (("new_value"), ["component_1_property", "component_2_property"]),
+            (("new_value", "new_value_2"), []),
+            (("new_value", "new_value_2"), ["component_1_property", "component_2_property", "component_3_property"]),
+            ([], []),
             (["new_value"], []),
             (["new_value"], ["component_1_property", "component_2_property"]),
-            (["new_value", "new_value_2"], ["component_1_property"]),
+            (["new_value", "new_value_2"], []),
+            (["new_value", "new_value_2"], ["component_1_property", "component_2_property", "component_3_property"]),
+            ({}, []),
             ({"component_1_property": "new_value"}, []),
             ({"component_1_property": "new_value"}, ["component_1_property", "component_2_property"]),
+            ({"component_1_property": "new_value", "component_2_property": "new_value_2"}, []),
             (
                 {"component_1_property": "new_value", "component_2_property": "new_value_2"},
-                ["component_1_property", "component_2_property"],
+                ["component_1_property", "component_2_property", "component_3_property"],
             ),
         ],
         indirect=True,
