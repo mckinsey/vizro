@@ -123,7 +123,7 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result == {}
+        assert len(result) == 0
 
     @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
@@ -147,8 +147,8 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction,target_scatter_filtered_continent",
@@ -172,7 +172,7 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -197,8 +197,8 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
@@ -238,7 +238,7 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -267,8 +267,8 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -297,8 +297,8 @@ class TestFilterInteraction:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     # TODO: Simplify parametrization, such that we have less repetitive code
     # TODO: Eliminate above xfails

@@ -2,6 +2,7 @@
 
 import json
 import sys
+from collections import namedtuple
 
 import dash
 import plotly
@@ -244,12 +245,56 @@ class TestActionPrivateMethods:
             (
                 {"component_1_property": "new_value"},
                 ["component_1_property"],
-                {"action_finished": None, "component_1_property": "new_value"},
+                {"action_finished": None, "component_1_property": {"component_1_property": "new_value"}},
+            ),
+            (
+                ({"component_1_property": "new_value", "component_2_property": "new_value_2"}),
+                ["component_1_property"],
+                {
+                    "action_finished": None,
+                    "component_1_property": {
+                        "component_1_property": "new_value",
+                        "component_2_property": "new_value_2",
+                    },
+                },
+            ),
+            (
+                ({"component_1_property": "new_value"}, {"component_2_property": "new_value_2"}),
+                ["component_1_property", "component_2_property"],
+                {
+                    "action_finished": None,
+                    "component_1_property": {"component_1_property": "new_value"},
+                    "component_2_property": {"component_2_property": "new_value_2"},
+                },
             ),
         ],
         indirect=["custom_action_function_mock_return", "callback_context_set_outputs_grouping"],
     )
     def test_action_callback_function_return_value_valid(
+        self, custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        result = action._action_callback_function()
+        assert result == expected_function_return_value
+
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value",
+        [
+            # custom action function return value - namedtuple
+            (
+                (namedtuple("outputs", ["component_1_property"])("new_value")),
+                ["component_1_property"],
+                {"action_finished": None, "component_1_property": "new_value"},
+            ),
+            (
+                (namedtuple("outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
+                ["component_1_property", "component_2_property"],
+                {"action_finished": None, "component_1_property": "new_value", "component_2_property": "new_value_2"},
+            ),
+        ],
+        indirect=["custom_action_function_mock_return", "callback_context_set_outputs_grouping"],
+    )
+    def test_action_callback_function_return_value_valid_namedtuple(
         self, custom_action_function_mock_return, callback_context_set_outputs_grouping, expected_function_return_value
     ):
         action = Action(function=custom_action_function_mock_return())
@@ -267,7 +312,10 @@ class TestActionPrivateMethods:
             (["new_value", "new_value_2"], ["component_1_property"]),
             ({"component_1_property": "new_value"}, []),
             ({"component_1_property": "new_value"}, ["component_1_property", "component_2_property"]),
-            ({"component_1_property": "new_value", "component_2_property": "new_value_2"}, ["component_1_property"]),
+            (
+                {"component_1_property": "new_value", "component_2_property": "new_value_2"},
+                ["component_1_property", "component_2_property"],
+            ),
         ],
         indirect=True,
     )
@@ -277,7 +325,31 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Number of action's returned elements .(.?.)"
-            " does not match the number of action's defined outputs .(.?.).",
+            match="Number of action's returned elements \\(.?\\)"
+            " does not match the number of action's defined outputs \\(.?\\).",
+        ):
+            action._action_callback_function()
+
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return, callback_context_set_outputs_grouping",
+        [
+            (
+                (namedtuple("outputs", ["component_1_property"])("new_value")),
+                [],
+            ),
+            (
+                (namedtuple("outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
+                ["component_1_property", "component_2_property", "component_3_property"],
+            ),
+        ],
+        indirect=True,
+    )
+    def test_action_callback_function_return_value_invalid_namedtuple(
+        self, custom_action_function_mock_return, callback_context_set_outputs_grouping
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Action's returned fields \\{.*\\}" " does not match the action's defined outputs \\{.*\\}.",
         ):
             action._action_callback_function()

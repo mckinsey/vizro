@@ -203,9 +203,9 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[Stat
         targets = _get_components_with_data(action_id=action_id)
 
     return {
-        f"download-dataframe_{target}": Output(
+        f"download_dataframe_{target}": Output(
             component_id={
-                "type": "download-dataframe",
+                "type": "download_dataframe",
                 "action_id": action_id,
                 "target_id": target,
             },
@@ -231,7 +231,7 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
     return [
         dcc.Download(
             id={
-                "type": "download-dataframe",
+                "type": "download_dataframe",
                 "action_id": action_id,
                 "target_id": target,
             },

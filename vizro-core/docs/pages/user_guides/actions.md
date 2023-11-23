@@ -285,8 +285,8 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
-## Predefined actions customization
-Many predefined actions are customizable which helps to achieve more specific desired goal. For specific options, please
+## Pre-defined actions customization
+Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
 refer to the [API reference][vizro.actions] on this topic.
 
 ## Actions chaining
@@ -384,9 +384,152 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
+
 ## Custom actions
 
-!!! success "Coming soon!"
+In case you want to create complex functionality with the [`Action`][vizro.models.Action] model, and if there is no already pre-defined `action function` available, you can create your own `custom action`.
+Like other actions, custom actions could also be added as element inside the actions chain, and it can be triggered with one of many dashboard components.
+
+### Simple custom action example (without UI inputs and outputs)
+
+Custom actions feature enables you to implement your own `action function`, and for this, simply do the following:
+
+- define a function
+- decorate it with the `@capture("action")` decorator
+- add it as a `function` argument inside the [`Action`][vizro.models.Action] model
+
+The following example shows how to create a custom action that postpone execution of the next action in the chain for `N` seconds.
+
+??? example "Custom Dash DataTable"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.actions import export_data
+        from vizro.models.types import capture
+        from time import sleep
+
+
+        @capture("action")
+        def my_custom_action(sleep_n_seconds: int = 0):
+            """Custom action."""
+            sleep(sleep_n_seconds)
+
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Example of a simple custom action",
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")
+                ),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=export_data()),
+                        vm.Action(
+                            function=my_custom_action(
+                                sleep_n_seconds=2
+                            )
+                        ),
+                        vm.Action(function=export_data(file_format="xlsx")),
+                    ]
+                )
+            ],
+            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Custom action are currently only possible via python configuration
+        ```
+
+
+### Custom action with UI inputs and outputs
+In case the custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
+
+- `inputs` represents dashboard components properties which values are passed to the custom action function as function arguments. It can be defined as a list of strings in the following format: `"<component_id>.<property>"`, which enables propagation of the visible values from the app into the function as its arguments in the following format: `"<component_id>_<property>"`.
+- `outputs` represents dashboard components properties that are affected with custom action function return value. Similar to `inputs`, it can be defined aa a list of strings in the following format: `"<component_id>.<property>"`.
+
+The following example shows how to create a custom action that prints the data of the clicked point in the graph to the console.
+
+??? example "Custom Dash DataTable"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.actions import filter_interaction
+        from vizro.models.types import capture
+
+
+        @capture("action")
+        def my_custom_action(scatter_chart_clickData: dict = None):
+            """Custom action."""
+            if scatter_chart_clickData:
+                return f'Scatter chart clicked data:\n### Species: "{scatter_chart_clickData["points"][0]["customdata"][0]}"'
+            return "### No data clicked."
+
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="Example of a custom action with UI inputs and outputs",
+            layout=vm.Layout(
+                grid=[
+                    [0, 0, 0, 1],
+                    [0, 0, 0, -1],
+                    [0, 0, 0, -1],
+                    [0, 0, 0, -1],
+                    [2, 2, 2, -1],
+                    [2, 2, 2, -1],
+                    [2, 2, 2, -1],
+                    [2, 2, 2, -1],
+                ],
+                row_gap="25px",
+            ),
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    actions=[
+                        vm.Action(function=filter_interaction(targets=["scatter_chart_2"])),
+                        vm.Action(
+                            function=my_custom_action(),
+                            inputs=["scatter_chart.clickData"],
+                            outputs=["card_id.children"]
+                        ),
+                    ],
+                ),
+                vm.Card(id="card_id", text="### No data clicked."),
+                vm.Graph(
+                    id="scatter_chart_2",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species"),
+                ),
+            ],
+            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Custom action are currently only possible via python configuration
+        ```
+
+#### Custom action return value
+TO BE ADDED!
+
+---
 
 !!! warning
 

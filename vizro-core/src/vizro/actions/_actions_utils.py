@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypedDict, Union
 
 import pandas as pd
 
@@ -84,8 +84,9 @@ def _apply_graph_filter_interaction(
 
     customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
+    # TODO: BUG: fix if there is filter_interaction and other actions assigned to the same 'vm.Graph.actions' .
     for action in source_graph_actions:
-        if target not in action.function["targets"]:
+        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
             continue
         for custom_data_idx, column in enumerate(custom_data_columns):
             data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
@@ -248,7 +249,7 @@ def _get_modified_page_figures(
     ctds_parameters: List[CallbackTriggerDict],
     ctd_theme: CallbackTriggerDict,
     targets: Optional[List[ModelID]] = None,
-) -> Dict[ModelID, Any]:
+) -> Tuple[Any, ...]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -262,7 +263,7 @@ def _get_modified_page_figures(
         parameters=ctds_parameters,
     )
 
-    outputs = {}
+    outputs: Dict[ModelID, Any] = {}
     for target in targets:
         outputs[target] = model_manager[target](  # type: ignore[operator]
             data_frame=filtered_data[target], **parameterized_config[target]
@@ -270,4 +271,4 @@ def _get_modified_page_figures(
         if hasattr(outputs[target], "update_layout"):
             outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
 
-    return outputs
+    return namedtuple("outputs", outputs.keys())(**outputs)

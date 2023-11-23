@@ -1,5 +1,6 @@
 import importlib.util
 import logging
+from collections.abc import Collection
 from typing import Any, Dict, List
 
 from dash import Input, Output, State, callback, ctx, html
@@ -55,19 +56,6 @@ class Action(VizroBaseModel):
                     )
         return function
 
-    @staticmethod
-    def _validate_output_number(outputs, return_value):
-        return_value_len = (
-            1 if not hasattr(return_value, "__len__") or isinstance(return_value, str) else len(return_value)
-        )
-
-        # Raising the custom exception if the callback return value length doesn't match the number of defined outputs.
-        if len(outputs) != return_value_len:
-            raise ValueError(
-                f"Number of action's returned elements ({return_value_len}) does not match the number"
-                f" of action's defined outputs ({len(outputs)})."
-            )
-
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -113,25 +101,32 @@ class Action(VizroBaseModel):
         logger.debug(f"Action inputs: {inputs}")
 
         # Invoking the action's function
-        return_value = self.function(**inputs) or {}
+        return_value = self.function(**inputs) or []
 
         # Action callback outputs
         outputs = list(ctx.outputs_grouping.keys())
         outputs.remove("action_finished")
 
-        # Validate number of outputs
-        self._validate_output_number(
-            outputs=outputs,
-            return_value=return_value,
-        )
+        if hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
+            # return_value is a namedtuple.
+            if set(return_value._fields) != set(outputs):
+                raise ValueError(
+                    f"Action's returned fields {set(return_value._fields)} does not match the action's defined "
+                    f"outputs {set(outputs) if outputs else {}}."
+                )
+            return_dict = return_value._asdict()
+        else:
+            if isinstance(return_value, (str, dict)) or not isinstance(return_value, Collection):
+                return_value = [return_value]
 
-        # If return_value is a single element, ensure return_value is a list
-        if not isinstance(return_value, (list, tuple, dict)):
-            return_value = [return_value]
-        if isinstance(return_value, dict):
-            return {"action_finished": None, **return_value}
+            if len(return_value) != len(outputs):
+                raise ValueError(
+                    f"Number of action's returned elements ({len(return_value)}) does not match the number"
+                    f" of action's defined outputs ({len(outputs)})."
+                )
+            return_dict = dict(zip(outputs, return_value))
 
-        return {"action_finished": None, **dict(zip(outputs, return_value))}
+        return {"action_finished": None, **return_dict}
 
     @_log_call
     def build(self):

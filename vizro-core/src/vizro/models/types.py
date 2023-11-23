@@ -188,15 +188,16 @@ class capture:
         >>> @capture("table")
         >>> def table_function():
         >>>     ...
-        >>> @capture("table")
-        >>> def plot_function():
-        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
-    [custom charts](../user_guides/custom_charts.md).
+    [custom graphs](../user_guides/custom_charts.md).
+    For further help on the use of `@capture("table")`, you can refer to the guide on
+    [custom tables](../user_guides/table#custom-table).
+    For further help on the use of `@capture("action")`, you can refer to the guide on
+    [custom actions](../user_guides/actions/#custom-actions).
     """
 
     def __init__(self, mode: Literal["graph", "action", "table"]):

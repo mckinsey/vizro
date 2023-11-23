@@ -1,6 +1,6 @@
 """Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from dash import ctx
 
@@ -13,7 +13,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
+def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Tuple[Any, ...]:
     """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:

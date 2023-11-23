@@ -119,8 +119,8 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent",
@@ -144,8 +144,8 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert "box_chart" not in result
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert not hasattr(result, "box_chart")
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -173,8 +173,8 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result.box_chart == target_box_filtered_continent
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -208,8 +208,8 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent_and_pop
-        assert result["box_chart"] == target_box_filtered_continent_and_pop
+        assert result.scatter_chart == target_scatter_filtered_continent_and_pop
+        assert result.box_chart == target_box_filtered_continent_and_pop
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
@@ -241,8 +241,8 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent_and_pop
-        assert "box_chart" not in result
+        assert result.scatter_chart == target_scatter_filtered_continent_and_pop
+        assert not hasattr(result, "box_chart")
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -284,5 +284,5 @@ class TestFilter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent_and_pop
-        assert result["box_chart"] == target_box_filtered_continent_and_pop
+        assert result.scatter_chart == target_scatter_filtered_continent_and_pop
+        assert result.box_chart == target_box_filtered_continent_and_pop

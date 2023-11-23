@@ -171,8 +171,8 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
 
-        assert result["scatter_chart"] == target_scatter_parameter_y
-        assert "box_chart" not in result
+        assert result.scatter_chart == target_scatter_parameter_y
+        assert not hasattr(result, "box_chart")
 
     @pytest.mark.parametrize(
         "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
@@ -207,8 +207,8 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
 
-        assert result["scatter_chart"] == target_scatter_parameter_hover_data
-        assert "box_chart" not in result
+        assert result.scatter_chart == target_scatter_parameter_hover_data
+        assert not hasattr(result, "box_chart")
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
@@ -235,8 +235,8 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
 
-        assert result["scatter_chart"] == target_scatter_parameter_y
-        assert result["box_chart"] == target_box_parameter_y
+        assert result.scatter_chart == target_scatter_parameter_y
+        assert result.box_chart == target_box_parameter_y
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x",
@@ -268,8 +268,8 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
 
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert "box_chart" not in result
+        assert result.scatter_chart == target_scatter_parameter_y_and_x
+        assert not hasattr(result, "box_chart")
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -305,8 +305,8 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
 
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert result["box_chart"] == target_box_parameter_y_and_x
+        assert result.scatter_chart == target_scatter_parameter_y_and_x
+        assert result.box_chart == target_box_parameter_y_and_x
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -341,9 +341,9 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert "box_chart" not in target_scatter_parameter_y_and_x
+        assert result.scatter_chart == target_scatter_parameter_y_and_x
+        assert not hasattr(target_scatter_parameter_y_and_x, "box_chart")
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
-        assert result["box_chart"] == target_box_parameter_y_and_x
-        assert "scatter_chart" not in target_scatter_parameter_y_and_x
+        assert result.box_chart == target_box_parameter_y_and_x
+        assert not hasattr(target_scatter_parameter_y_and_x, "scatter_chart")

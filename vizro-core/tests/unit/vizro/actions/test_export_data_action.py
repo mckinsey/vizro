@@ -113,7 +113,7 @@ def callback_context_export_data(request):
             "filter_interaction": args_grouping_filter_interaction,
         },
         "outputs_list": [
-            {"id": {"action_id": "test_action", "target_id": target, "type": "download-dataframe"}, "property": "data"}
+            {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets
         ],
     }
@@ -131,7 +131,7 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result == {}
+        assert len(result) == 0
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -144,11 +144,11 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart["content"] == gapminder_2007.to_csv(index=False)
 
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_box_chart["filename"] == "box_chart.csv"
+        assert result.download_dataframe_box_chart["content"] == gapminder_2007.to_csv(index=False)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -166,11 +166,11 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart["content"] == gapminder_2007.to_csv(index=False)
 
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_box_chart["filename"] == "box_chart.csv"
+        assert result.download_dataframe_box_chart["content"] == gapminder_2007.to_csv(index=False)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("callback_context_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
@@ -181,10 +181,10 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart["content"] == gapminder_2007.to_csv(index=False)
 
-        assert "download-dataframe_box_chart" not in result
+        assert not hasattr(result, "download_dataframe_box_chart")
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -199,11 +199,11 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart["content"] == gapminder_2007.to_csv(index=False)
 
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result.download_dataframe_box_chart["filename"] == "box_chart.csv"
+        assert result.download_dataframe_box_chart["content"] == gapminder_2007.to_csv(index=False)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("callback_context_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
@@ -263,13 +263,13 @@ class TestExportData:
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"][
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart[
             "content"
         ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
 
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
+        assert result.download_dataframe_box_chart["filename"] == "box_chart.csv"
+        assert result.download_dataframe_box_chart["content"] == target_box_filtered_pop.to_csv(index=False)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
@@ -318,10 +318,10 @@ class TestExportData:
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"][
+        assert result.download_dataframe_scatter_chart["filename"] == "scatter_chart.csv"
+        assert result.download_dataframe_scatter_chart[
             "content"
         ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
 
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
+        assert result.download_dataframe_box_chart["filename"] == "box_chart.csv"
+        assert result.download_dataframe_box_chart["content"] == target_box_filtered_pop.to_csv(index=False)
