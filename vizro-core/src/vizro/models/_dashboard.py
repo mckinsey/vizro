@@ -15,11 +15,13 @@ from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
+
 from vizro.models._navigation._navigation_utils import _NavBuildType
-from vizro.models._page import _PageBuildType
 
 if TYPE_CHECKING:
     from vizro.models import Page
+
+    from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
 

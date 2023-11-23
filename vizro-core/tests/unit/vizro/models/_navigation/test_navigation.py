@@ -37,7 +37,7 @@ class TestNavigationInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to " "argument 'pages'.")
+            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
         ):
             vm.Navigation(pages=pages)
 
@@ -88,6 +88,3 @@ class TestNavigationBuildMethod:
         assert isinstance(built_navigation["nav_bar_outer"], html.Div)
         assert isinstance(built_navigation["nav_panel_outer"], html.Div)
         assert built_navigation["nav_bar_outer"].className != "hidden"
-
-
-# AM: cleanuip unused fixture

@@ -1,34 +1,10 @@
-import json
-
-import dash.development.base_component
-import plotly
 import pytest
 
 import vizro.models as vm
+
+from tests_utils import component_to_dict
 from vizro import Vizro
 from vizro.managers import model_manager
-
-
-def strip_ids(object):
-    """Strips all entries with key "id" from a dictionary, regardless of how deeply it's nested.
-
-    This makes it easy to compare dictionaries generated from Dash components we've created that contain random IDs.
-    """
-    if isinstance(object, dict):
-        object = {key: strip_ids(value) for key, value in object.items() if key != "id"}
-    elif isinstance(object, list):
-        object = [strip_ids(item) for item in object]
-    return object
-
-
-# We could use this helper more generally but unit tests that currently do
-# json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder)) feel quite fragile so might be changed anyway.
-# If we do want to reuse it more generally, consider whether we should use pytest hooks to do a custom assert or
-# convert dictionary to a custom type (e.g. with a special __getitem__ that leaves out "id").
-def component_to_dict(component: dash.development.base_component.Component):
-    dictionary = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
-    dictionary = strip_ids(dictionary)
-    return dictionary
 
 
 @pytest.fixture

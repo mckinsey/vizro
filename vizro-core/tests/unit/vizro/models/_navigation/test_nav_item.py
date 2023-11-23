@@ -49,7 +49,7 @@ class TestNavLinkInstantiation:
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):
         with pytest.raises(
-            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to " "argument 'pages'.")
+            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
         ):
             vm.NavLink(pages=pages)
 

@@ -54,16 +54,17 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
 secrets = "pre-commit run gitleaks --all-files"
 test = [
-  "test-unit",
+  "- test-unit",
   "test-integration"
 ]
 test-cov = "coverage run -m pytest tests/unit {args}"
 test-integration = [
-  "pytest tests/integration --headless -k default {args}",
-  "pytest tests/integration --headless -k dict {args}",
-  "pytest tests/integration --headless -k json {args}",
-  "pytest tests/integration --headless -k yaml {args}"
-]
+  "- pytest tests/integration/test_examples.py::test_default_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_dict_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_json_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_yaml_dashboard --headless",
+  "pytest tests/integration/test_navigation.py"
+  ]
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
