@@ -400,7 +400,7 @@ Custom actions feature enables you to implement your own `action function`, and 
 
 The following example shows how to create a custom action that postpone execution of the next action in the chain for `N` seconds.
 
-??? example "Custom Dash DataTable"
+??? example "Simple custom action"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -460,7 +460,7 @@ In case the custom action needs to interact with the dashboard, it is possible t
 
 The following example shows how to create a custom action that prints the data of the clicked point in the graph to the console.
 
-??? example "Custom Dash DataTable"
+??? example "Custom action with UI inputs and outputs"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -527,7 +527,26 @@ The following example shows how to create a custom action that prints the data o
         ```
 
 #### Custom action return value
-TO BE ADDED!
+The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
+If there is a single `output` defined, the function return value is directly assigned to the component property.
+If there are multiple `outputs` defined, the return value is iterated and assigned to the respective component properties, in line with Python's flexibility in managing multiple return values.
+
+!!! tip
+    There is still a possibility to match return values to multiple `outputs` in a desired order by using [`collections.abc.namedtuple`][https://docs.python.org/3/library/collections.html#namedtuple-factory-function-for-tuples-with-named-fields].
+    Here is an example on how would look like the custom action function from the previous example if we would like to match the return value to multiple `outputs` in a desired order:
+    ```py
+    from collections import namedtuple
+    @capture("action")
+    def my_custom_action(scatter_chart_clickData: dict = None):
+        """Custom action."""
+        if scatter_chart_clickData:
+            return_value = {
+                "card_id_children": f'Scatter chart clicked data:\n### Species: "{scatter_chart_clickData["points"][0]["customdata"][0]}"'}
+            }
+            return namedtuple("x", return_value.keys())(*return_value.values())
+        return_value = {"card_id_children": "### No data clicked."}
+        return namedtuple("x", return_value.keys())(*return_value.values())
+    ```
 
 ---
 
