@@ -7,6 +7,7 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
+from asserts import assert_components_equal
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
@@ -64,23 +65,24 @@ class TestNavLinkPreBuildMethod:
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
+@pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    def test_nav_link_active(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
+    def test_nav_link_active(self, pages, request):
+        pages = request.getfixturevalue(pages)
+        nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
-        assert isinstance(built_nav_link[nav_link.id], dbc.Button)
-        assert built_nav_link[nav_link.id].href == "/"
-        assert built_nav_link[nav_link.id].active
-        assert isinstance(built_nav_link["nav_panel_outer"], html.Div)
+        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=True, href="/")
+        assert_components_equal(built_nav_link["nav_link"], expected_button)
+        assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
 
-    def test_nav_link_not_active(self, pages_as_dict):
-        nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
+    def test_nav_link_not_active(self, pages, request):
+        pages = request.getfixturevalue(pages)
+        nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
-        assert isinstance(built_nav_link[nav_link.id], dbc.Button)
-        assert built_nav_link[nav_link.id].href == "/"
-        assert not built_nav_link[nav_link.id].active
+        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=False, href="/")
+        assert_components_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link

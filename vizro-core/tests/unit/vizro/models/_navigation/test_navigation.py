@@ -6,6 +6,9 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
+from asserts import assert_components_equal
+
+import dash_bootstrap_components as dbc
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
@@ -73,18 +76,49 @@ class TestNavigationPreBuildMethod:
 class TestNavigationBuildMethod:
     """Tests navigation model build method."""
 
-    def test_default_nav_selector(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict)
+    @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
+    def test_default_nav_selector(self, pages, request):
+        pages = request.getfixturevalue(pages)
+        navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
-        built_navigation = navigation.build()
-        assert isinstance(built_navigation["nav_bar_outer"], html.Div)
-        assert isinstance(built_navigation["nav_panel_outer"], html.Div)
-        assert built_navigation["nav_bar_outer"].className == "hidden"
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_components_equal(
+            built_navigation["nav_bar_outer"],
+            html.Div(className="hidden", id="nav_bar_outer"),
+            keys_to_strip={"children"},
+        )
+        assert_components_equal(
+            built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+        )
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
 
-    def test_non_default_nav_selector(self, pages_as_dict):
+    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
-        built_navigation = navigation.build()
-        assert isinstance(built_navigation["nav_bar_outer"], html.Div)
-        assert isinstance(built_navigation["nav_panel_outer"], html.Div)
-        assert built_navigation["nav_bar_outer"].className != "hidden"
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_components_equal(
+            built_navigation["nav_bar_outer"],
+            html.Div(id="nav_bar_outer", className="nav-bar"),
+            keys_to_strip={"children"},
+        )
+        assert_components_equal(
+            built_navigation["nav_panel_outer"],
+            html.Div(id="nav_panel_outer"),
+            keys_to_strip={"children", "className"},
+        )
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+
+    def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
+        navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
+        navigation.pre_build()
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_components_equal(
+            built_navigation["nav_bar_outer"],
+            html.Div(id="nav_bar_outer", className="nav-bar"),
+            keys_to_strip={"children"},
+        )
+        assert_components_equal(
+            built_navigation["nav_panel_outer"],
+            html.Div(id="nav_panel_outer", hidden=True),
+            keys_to_strip={"children"},
+        )
