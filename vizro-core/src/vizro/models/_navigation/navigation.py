@@ -5,7 +5,7 @@ from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models._navigation._navigation_utils import _validate_pages, _NavBuildType
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType, NavSelectorType
 
@@ -37,7 +37,7 @@ class Navigation(VizroBaseModel):
         # AM: test if remove the above do tests break?
 
     @_log_call
-    def build(self, *, active_page_id=None):
+    def build(self, *, active_page_id=None) -> _NavBuildType:
         nav_selector = self.nav_selector.build(active_page_id=active_page_id)
         if "nav_bar_outer" not in nav_selector:
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav_panel_outer".

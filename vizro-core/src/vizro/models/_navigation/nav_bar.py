@@ -8,7 +8,7 @@ from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models._navigation._navigation_utils import _validate_pages, _NavBuildType
 from vizro.models._navigation.nav_link import NavLink
 
 
@@ -56,7 +56,7 @@ class NavBar(VizroBaseModel):
         return self.items
 
     @_log_call
-    def build(self, *, active_page_id=None):
+    def build(self, *, active_page_id=None) -> _NavBuildType:
         # We always show all the nav_link buttons, but only show the accordion for the active page. This works because
         # item.build only returns the nav_panel_outer Div when the item is active.
         # In future maybe we should do this by showing all navigation panels and then setting hidden=True for all but

@@ -38,17 +38,17 @@ warn_unused_ignores = true
 disable_error_code = "name-defined"
 module = "vizro.models.types"
 
-[tool.pytest.ini_options]
-addopts = [
-    # Allow test files to have the same name in different directories.
-    "--import-mode=importlib",
-]
-
 [tool.pydantic-mypy]
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+addopts = [
+  # Allow test files to have the same name in different directories.
+  "--import-mode=importlib"
+]
 
 [tool.ruff]
 # see: https://beta.ruff.rs/docs/rules/

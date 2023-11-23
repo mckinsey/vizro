@@ -1,4 +1,9 @@
+from __future__ import annotations
+
 import itertools
+from typing import TypedDict
+
+from dash import html
 
 from vizro.managers import model_manager
 
@@ -19,3 +24,12 @@ def _validate_pages(pages):
     if unknown_pages := [page for page in pages_as_list if page not in registered_pages]:
         raise ValueError(f"Unknown page ID {unknown_pages} provided to argument 'pages'.")
     return pages
+
+
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfils by making the expected keys explicit.
+class _NavBuildType(TypedDict):
+    nav_bar_outer: html.Div
+    nav_panel_outer: html.Div

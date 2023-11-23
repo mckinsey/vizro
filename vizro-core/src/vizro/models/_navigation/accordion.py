@@ -39,6 +39,7 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None):
+        # Note this does not return _NavBuildType but just a single html.Div with id="nav_panel_outer".
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
             return html.Div(hidden=True, id="nav_panel_outer")

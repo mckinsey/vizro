@@ -8,17 +8,12 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.managers import model_manager
 
-# Options:
-# subclass dict the right way, alter __getitem__, assert function (could be registered), just assert in test
-# AM: add more commment about what tests are doing and whether to reuse helper functions
-
 
 def strip_ids(object):
     """Strips all entries with key "id" from a dictionary, regardless of how deeply it's nested.
 
     This makes it easy to compare dictionaries generated from Dash components we've created that contain random IDs.
     """
-    ...
     if isinstance(object, dict):
         object = {key: strip_ids(value) for key, value in object.items() if key != "id"}
     elif isinstance(object, list):
@@ -26,6 +21,10 @@ def strip_ids(object):
     return object
 
 
+# We could use this helper more generally but unit tests that currently do
+# json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder)) feel quite fragile so might be changed anyway.
+# If we do want to reuse it more generally, consider whether we should use pytest hooks to do a custom assert or
+# convert dictionary to a custom type (e.g. with a special __getitem__ that leaves out "id").
 def component_to_dict(component: dash.development.base_component.Component):
     dictionary = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
     dictionary = strip_ids(dictionary)
@@ -56,6 +55,8 @@ dashboard_expected = dashboard_result
 
 # All the cases need to built lazily - instantiating them directly would not raise validation errors that the
 # specified page cannot be found in the page registry.
+# In all test cases, the first lambda should be thought of as the "input" configuration, and the second is the
+# configuration that results after we've filled in default values etc.
 # fmt: off
 accordion_cases = [
     (
@@ -165,8 +166,6 @@ def label_cases(cases, label):
 accordion_cases = label_cases(accordion_cases, "accordion")
 navbar_flat_cases = label_cases(navbar_flat_cases, "navbar_flat")
 navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
-
-print(accordion_cases + navbar_grouped_cases + navbar_flat_cases)
 
 
 @pytest.mark.parametrize(
