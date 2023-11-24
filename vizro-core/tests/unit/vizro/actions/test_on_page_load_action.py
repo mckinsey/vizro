@@ -80,7 +80,7 @@ def callback_context_on_page_load(request):
             "theme_selector": CallbackTriggerDict(
                 id="theme_selector",
                 property="on",
-                value=True if template == "vizro_dark" else False,
+                value=template == "vizro_dark",
                 str_id="theme_selector",
                 triggered=False,
             ),

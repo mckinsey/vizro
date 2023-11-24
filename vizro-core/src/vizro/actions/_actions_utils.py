@@ -246,7 +246,6 @@ def _get_modified_page_figures(
     ctds_filter: List[CallbackTriggerDict],
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
-    ctd_theme: CallbackTriggerDict,
     targets: Optional[List[ModelID]] = None,
 ) -> Tuple[Any, ...]:
     if not targets:
@@ -267,7 +266,5 @@ def _get_modified_page_figures(
         outputs[target] = model_manager[target](  # type: ignore[operator]
             data_frame=filtered_data[target], **parameterized_config[target]
         )
-        if hasattr(outputs[target], "update_layout"):
-            outputs[target].update_layout(template="vizro_dark" if ctd_theme["value"] else "vizro_light")
 
     return namedtuple("outputs", outputs.keys())(**outputs)

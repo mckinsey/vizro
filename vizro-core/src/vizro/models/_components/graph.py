@@ -1,11 +1,13 @@
 import logging
 from typing import List, Literal
 
-from dash import dcc
+from dash import ctx, dcc
+from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 from pydantic import Field, PrivateAttr, validator
 
 import vizro.plotly.express as px
+from vizro import _themes as themes
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -44,6 +46,16 @@ class Graph(VizroBaseModel):
         # Remove top margin if title is provided
         if fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
+
+        # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
+        # to just swallow up the error here as it doesn't cause any problems.
+        try:
+            # At the moment theme_selector is always present so this if statement is redundant, but possibly in
+            # future we'll have callbacks that do Graph.__call__() without theme_selector set.
+            if "theme_selector" in ctx.args_grouping:
+                fig = self._update_theme(fig, ctx.args_grouping["theme_selector"]["value"])
+        except MissingCallbackContextException:
+            logger.info("fig.update_layout called outside of callback context.")
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -81,3 +93,10 @@ class Graph(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
         )
+
+    @staticmethod
+    def _update_theme(fig: go.Figure, theme_selector: bool):
+        # Basically the same as doing fig.update_layout(template="vizro_light/dark") but works for both the call in
+        # self.__call__ and in the update_graph_theme callback.
+        fig["layout"]["template"] = themes.dark if theme_selector else themes.light
+        return fig
