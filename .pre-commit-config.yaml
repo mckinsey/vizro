@@ -86,3 +86,20 @@ repos:
         description: Detect hardcoded secrets using Gitleaks
         entry: gitleaks detect --verbose --redact --baseline-path .gitleaks-report.json
         language: golang
+
+ci:
+  autofix_prs: false
+  autoupdate_schedule: monthly
+  skip:
+      - check-added-large-files
+      - check-merge-conflict
+      - check-case-conflict
+      - check-yaml
+      - check-json
+      - check-datafiles
+      - check-forbidden-words
+      - check-branch-name
+      - codespell
+      - bandit
+      - mypy
+      - gitleaks
