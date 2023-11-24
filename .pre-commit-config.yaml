@@ -91,15 +91,15 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
   skip:
-      - check-added-large-files
-      - check-merge-conflict
-      - check-case-conflict
-      - check-yaml
-      - check-json
-      - check-datafiles
-      - check-forbidden-words
-      - check-branch-name
-      - codespell
-      - bandit
-      - mypy
-      - gitleaks
+    - check-added-large-files
+    - check-merge-conflict
+    - check-case-conflict
+    - check-yaml
+    - check-json
+    - check-datafiles
+    - check-forbidden-words
+    - check-branch-name
+    - codespell
+    - bandit
+    - mypy
+    - gitleaks

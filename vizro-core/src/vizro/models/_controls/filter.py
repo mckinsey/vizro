@@ -10,15 +10,7 @@ from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider
-
-
-)
+from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 

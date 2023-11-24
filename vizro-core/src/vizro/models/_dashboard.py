@@ -19,7 +19,6 @@ from vizro.models._models_utils import _log_call
 if TYPE_CHECKING:
     from vizro.models import Page
 
-   
 
 logger = logging.getLogger(__name__)
 
