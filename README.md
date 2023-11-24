@@ -15,7 +15,7 @@
 [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)sadf sdf 
 
 </div>
 
