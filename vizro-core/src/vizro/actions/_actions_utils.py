@@ -84,7 +84,6 @@ def _apply_graph_filter_interaction(
 
     customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
-    # TODO: BUG: fix if there is filter_interaction and other actions assigned to the same 'vm.Graph.actions' .
     for action in source_graph_actions:
         if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
             continue

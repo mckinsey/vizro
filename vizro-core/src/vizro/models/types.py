@@ -178,7 +178,7 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
+    Typically, it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
     `"action"`.
 
     Examples:
