@@ -15,7 +15,9 @@ from vizro.models._components.form import (
     Dropdown,
     RadioItems,
     RangeSlider,
-    Slider,
+    Slider
+
+
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
