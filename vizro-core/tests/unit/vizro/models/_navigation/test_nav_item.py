@@ -7,7 +7,7 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_components_equal
+from asserts import assert_component_equal
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
@@ -75,7 +75,7 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=True, href="/")
-        assert_components_equal(built_nav_link["nav_link"], expected_button)
+        assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
 
     def test_nav_link_not_active(self, pages, request):
@@ -84,5 +84,5 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=False, href="/")
-        assert_components_equal(built_nav_link["nav_link"], expected_button)
+        assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link

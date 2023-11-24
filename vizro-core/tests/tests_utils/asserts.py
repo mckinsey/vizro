@@ -23,7 +23,7 @@ def component_to_dict(component: dash.development.base_component.Component) -> d
 
 # TODO: implement some sort of depth limit to comparison so can use in high level tests, roll out more widely across
 # tests
-def assert_components_equal(left, right, keys_to_strip=None):
+def assert_component_equal(left, right, keys_to_strip=None):
     # Note we check for None explicitly because {} is a valid value for keys_to_strip.
     keys_to_strip = keys_to_strip if keys_to_strip is not None else {"id", "class_name", "className"}
     left = strip_keys(component_to_dict(left), keys_to_strip)

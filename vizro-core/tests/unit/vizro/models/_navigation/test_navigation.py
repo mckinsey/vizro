@@ -6,7 +6,7 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_components_equal
+from asserts import assert_component_equal
 
 import dash_bootstrap_components as dbc
 
@@ -82,12 +82,12 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(className="hidden", id="nav_bar_outer"),
             keys_to_strip={"children"},
         )
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
@@ -96,12 +96,12 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
             keys_to_strip={"children"},
         )
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_panel_outer"],
             html.Div(id="nav_panel_outer"),
             keys_to_strip={"children", "className"},
@@ -112,12 +112,12 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
             keys_to_strip={"children"},
         )
-        assert_components_equal(
+        assert_component_equal(
             built_navigation["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
             keys_to_strip={"children"},

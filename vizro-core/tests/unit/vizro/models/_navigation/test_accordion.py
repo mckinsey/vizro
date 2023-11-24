@@ -8,7 +8,7 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_components_equal
+from asserts import assert_component_equal
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 
@@ -111,9 +111,9 @@ class TestAccordionBuild:
     @pytest.mark.parametrize("pages, expected", test_cases)
     def test_accordion(self, pages, expected):
         accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
-        assert_components_equal(accordion, html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"})
-        assert_components_equal(accordion["accordion"], expected)
+        assert_component_equal(accordion, html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"})
+        assert_component_equal(accordion["accordion"], expected)
 
     def test_accordion_one_page(self):
         accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")
-        assert_components_equal(accordion, html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={})
+        assert_component_equal(accordion, html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={})

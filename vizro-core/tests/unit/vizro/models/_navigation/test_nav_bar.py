@@ -8,7 +8,7 @@ from pydantic import ValidationError
 import vizro.models as vm
 import dash_bootstrap_components as dbc
 
-from asserts import assert_components_equal
+from asserts import assert_component_equal
 
 
 @pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
@@ -80,8 +80,8 @@ class TestNavBarBuildMethod:
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
         expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=True, href="/")])
-        assert_components_equal(built_nav_bar["nav_bar_outer"], expected_button)
-        assert_components_equal(
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
+        assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
@@ -96,8 +96,8 @@ class TestNavBarBuildMethod:
                 dbc.Button(children=[html.Span(children="filter_2")], active=False, href="/page-2"),
             ]
         )
-        assert_components_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
-        assert_components_equal(
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
@@ -107,8 +107,8 @@ class TestNavBarBuildMethod:
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
         expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=False, href="/")])
-        assert_components_equal(built_nav_bar["nav_bar_outer"], expected_button)
-        assert_components_equal(
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
+        assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
         )
 
@@ -122,8 +122,8 @@ class TestNavBarBuildMethod:
                 dbc.Button(children=[html.Span(children="filter_2")], active=False, href="/page-2"),
             ]
         )
-        assert_components_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
-        assert_components_equal(
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
             keys_to_strip={"children", "className"},
