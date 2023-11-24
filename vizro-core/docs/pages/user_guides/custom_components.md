@@ -167,7 +167,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                             value=value[1],
                                             persistence=True, persistence_type="session",
                                         ),
-                                        dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
+                                        dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
                                     ],
                                     className="slider_input_container",
                                 ),

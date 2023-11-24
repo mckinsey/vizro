@@ -132,7 +132,7 @@ class RangeSlider(VizroBaseModel):
                                     if self.step
                                     else "slider_input_field_no_space_right",
                                 ),
-                                dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
+                                dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
                             ],
                             className="slider_input_container",
                         ),

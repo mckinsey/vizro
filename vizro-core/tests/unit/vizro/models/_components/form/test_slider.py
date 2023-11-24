@@ -48,7 +48,7 @@ def expected_slider():
                         persistence_type="session",
                         className="slider_input_field_right",
                     ),
-                    dcc.Store(id="slider_id_temp_store", storage_type="local"),
+                    dcc.Store(id="slider_id_temp_store", storage_type="session"),
                 ],
                 className="slider_inner_container",
             ),

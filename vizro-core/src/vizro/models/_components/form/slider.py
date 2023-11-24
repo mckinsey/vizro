@@ -108,7 +108,7 @@ class Slider(VizroBaseModel):
                             persistence_type="session",
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
+                        dcc.Store(id=f"{self.id}_temp_store", storage_type="session"),
                     ],
                     className="slider_inner_container",
                 ),
