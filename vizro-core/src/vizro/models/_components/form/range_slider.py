@@ -98,6 +98,7 @@ class RangeSlider(VizroBaseModel):
                             marks=self.marks,
                             value=value,
                             persistence=True,
+                            persistence_type="session",
                             className="range_slider_control" if self.step else "range_slider_control_no_space",
                         ),
                         html.Div(
@@ -112,6 +113,7 @@ class RangeSlider(VizroBaseModel):
                                     value=value[0],
                                     size="24px",
                                     persistence=True,
+                                    persistence_type="session",
                                     className="slider_input_field_left"
                                     if self.step
                                     else "slider_input_field_no_space_left",
@@ -125,6 +127,7 @@ class RangeSlider(VizroBaseModel):
                                     step=self.step,
                                     value=value[1],
                                     persistence=True,
+                                    persistence_type="session",
                                     className="slider_input_field_right"
                                     if self.step
                                     else "slider_input_field_no_space_right",

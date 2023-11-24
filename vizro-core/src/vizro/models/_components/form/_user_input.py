@@ -42,6 +42,7 @@ class UserInput(VizroBaseModel):
                     placeholder=self.placeholder,
                     type=self.input_type,
                     persistence=True,
+                    persistence_type="session",
                     debounce=True,
                     className="user_input",
                 ),

@@ -93,6 +93,7 @@ class Slider(VizroBaseModel):
                             value=self.value or self.min,
                             included=False,
                             persistence=True,
+                            persistence_type="session",
                             className="slider_control" if self.step else "slider_control_no_space",
                         ),
                         dcc.Input(
@@ -104,6 +105,7 @@ class Slider(VizroBaseModel):
                             step=self.step,
                             value=self.value or self.min,
                             persistence=True,
+                            persistence_type="session",
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
                         dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
