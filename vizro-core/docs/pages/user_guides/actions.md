@@ -124,7 +124,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
 
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
-!!! example "`filter_interaction`"
+!!! example "Graph `filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -210,7 +210,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 
 Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
 
-!!! example "`filter_interaction`"
+!!! example "Table `filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -387,10 +387,10 @@ The order of action execution is guaranteed, and the next action in the list wil
 
 ## Custom actions
 
-In case you want to create complex functionality with the [`Action`][vizro.models.Action] model, and if there is no already pre-defined `action function` available, you can create your own `custom action`.
-Like other actions, custom actions could also be added as element inside the actions chain, and it can be triggered with one of many dashboard components.
+In case you want to create complex functionality with the [`Action`][vizro.models.Action] model, and if there is no already [`pre-defined action function`][vizro.actions] available, you can create your own `custom action`.
+Like other actions, custom actions could also be added as an element inside the [actions chain](#actions-chaining), and it can be triggered with one of many dashboard components.
 
-### Simple custom action example (without UI inputs and outputs)
+### Simple custom actions
 
 Custom actions feature enables you to implement your own `action function`, and for this, simply do the following:
 
@@ -452,15 +452,15 @@ The following example shows how to create a custom action that postpone executio
         ```
 
 
-### Custom action with UI inputs and outputs
+### Custom actions with dashboard inputs and outputs
 In case the custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
 - `inputs` represents dashboard components properties which values are passed to the custom action function as function arguments. It can be defined as a list of strings in the following format: `"<component_id>.<property>"`, which enables propagation of the visible values from the app into the function as its arguments in the following format: `"<component_id>_<property>"`.
-- `outputs` represents dashboard components properties that are affected with custom action function return value. Similar to `inputs`, it can be defined aa a list of strings in the following format: `"<component_id>.<property>"`.
+- `outputs` represents dashboard components properties that are affected with custom action function return value. Similar to `inputs`, it can be defined as a list of strings in the following format: `"<component_id>.<property>"`.
 
-The following example shows how to create a custom action that prints the data of the clicked point in the graph to the console.
+The following example shows how to create a custom action that prints the clicked chart data in the [`Card`][vizro.models.Card] element.
 
-??? example "Custom action with UI inputs and outputs"
+??? example "Custom action with dashboard inputs and outputs"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -532,8 +532,9 @@ If there is a single `output` defined, the function return value is directly ass
 If there are multiple `outputs` defined, the return value is iterated and assigned to the respective component properties, in line with Python's flexibility in managing multiple return values.
 
 !!! tip
-    There is still a possibility to match return values to multiple `outputs` in a desired order by using [`collections.abc.namedtuple`][https://docs.python.org/3/library/collections.html#namedtuple-factory-function-for-tuples-with-named-fields].
-    Here is an example on how would look like the custom action function from the previous example if we would like to match the return value to multiple `outputs` in a desired order:
+    There is an option to match return values to multiple `outputs` in a desired order (which could be quite useful if the action has many outputs) by using [`collections.abc.namedtuple`](https://docs.python.org/3/library/collections.html#namedtuple-factory-function-for-tuples-with-named-fields).
+    The easies way to achieve it is to create a dictionary object where keys represent outputs in the following format: `"<component_id>_<property>"` and dictionary values represent the return value to be applied on the key output. Then, the dictionary can be easily converted to a namedtuple object and returned from the custom action function.
+    Here is an example of what the custom action function from the previous example would look like if we wanted to match the return value with multiple `outputs` in the desired order:
     ```py
     from collections import namedtuple
     @capture("action")
