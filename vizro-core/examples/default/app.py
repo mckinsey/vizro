@@ -10,23 +10,24 @@ df_gapminder = px.data.gapminder()
 
 page = vm.Page(
     # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
-    title="Testing out tabs",
+    title="Regular tabs - default layout",
     components=[
-        vm.Table(
-            id="table-0",
-            figure=dash_data_table(
-                id="dash_datatable-0",
-                data_frame=df_gapminder,
-            ),
-            actions=[
-                vm.Action(
-                    function=filter_interaction(
-                        targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
-                    )
-                ),
-            ],
-        ),
+        # vm.Table(
+        #     id="table-0",
+        #     figure=dash_data_table(
+        #         id="dash_datatable-0",
+        #         data_frame=df_gapminder,
+        #     ),
+        #     actions=[
+        #         vm.Action(
+        #             function=filter_interaction(
+        #                 targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
+        #             )
+        #         ),
+        #     ],
+        # ),
         vm.Tabs(
+            id="first-tab",
             subpages=[
                 vm.SubPage(
                     id="tab-1",
@@ -98,55 +99,18 @@ page = vm.Page(
                                 color="continent",
                             ),
                         ),
-                        vm.Tabs(
-                            subpages=[
-                                vm.SubPage(
-                                    id="subtab-1",
-                                    title="Subtab I Title",
-                                    components=[
-                                        vm.Graph(
-                                            id="graph-6",
-                                            figure=px.line(
-                                                df_gapminder,
-                                                title="Graph-6",
-                                                x="year",
-                                                y="lifeExp",
-                                                color="continent",
-                                                line_group="country",
-                                                hover_name="country",
-                                            ),
-                                        ),
-                                        vm.Graph(
-                                            id="graph-7",
-                                            figure=px.scatter(
-                                                df_gapminder,
-                                                title="Graph-7",
-                                                x="gdpPercap",
-                                                y="lifeExp",
-                                                size="pop",
-                                                color="continent",
-                                            ),
-                                        ),
-                                    ],
-                                ),
-                                vm.SubPage(
-                                    id="subtab-2",
-                                    title="Subtab II",
-                                    components=[
-                                        vm.Graph(
-                                            id="graph-8",
-                                            figure=px.box(
-                                                df_gapminder,
-                                                title="Graph-8",
-                                                x="continent",
-                                                y="lifeExp",
-                                                color="continent",
-                                            ),
-                                        ),
-                                    ],
-                                ),
-                            ],
-                        ),
+                        vm.Graph(
+                            id="graph-6",
+                            figure=px.line(
+                                df_gapminder,
+                                title="Graph-6",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        )
                     ],
                 ),
             ],
@@ -164,8 +128,6 @@ page = vm.Page(
                 "graph-4.y",
                 "graph-5.y",
                 "graph-6.y",
-                "graph-7.y",
-                "graph-8.y",
             ],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         ),
@@ -265,7 +227,312 @@ page_3 = vm.Page(
     ]
 )
 
-dashboard = vm.Dashboard(pages=[page, page_2, page_3])
+page_4 = vm.Page(
+    id="page_4",
+    title="Tabs",
+    components=[
+        vm.Tabs(
+            id="page-4-tab1",
+            subpages=[
+                vm.SubPage(
+                    title="Tab 1 subpage 1",
+                    components=[
+                        vm.Graph(
+                            id="graph-44",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-44",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ]
+                ),
+                vm.SubPage(
+                    title="Tab 1 subpage 2",
+                    components=[
+                        vm.Graph(
+                            id="graph-441",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-441",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ]
+                )
+            ]
+        ),
+        vm.Tabs(
+            id="page-4-tab2",
+            subpages=[
+                vm.SubPage(
+                    title="Tab 2 subpage",
+                    components=[
+                        vm.Graph(
+                            id="graph-45",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-45",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ]
+                ),
+                vm.SubPage(
+                    title="Tab 2 subpage 2",
+                    components=[
+                        vm.Graph(
+                            id="graph-451",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-451",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ]
+                )
+            ]
+        )
+    ]
+)
+page_5 = vm.Page(
+    # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
+    title="Regular tabs - with layout",
+    components=[
+        vm.Tabs(
+            id="first-tabr",
+            subpages=[
+                vm.SubPage(
+                    layout=vm.Layout(
+                        grid=[
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [1, 1, 2, 2],
+                            [1, 1, 2, 2],
+                            [3, -1, -1, -1]
+                        ]
+                    ),
+                    id="tab-1r",
+                    title="Tab I Title",
+                    components=[
+                        vm.Graph(
+                            id="graph-1r",
+                            figure=px.line(
+                                df_gapminder,
+                                title="Graph-1",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-2r",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-2",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-3r",
+                            figure=px.box(
+                                df_gapminder,
+                                title="Graph-3",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                vm.Action(function=export_data()),
+                            ],
+                        ),
+                    ],
+                ),
+                vm.SubPage(
+                    id="tab-2r",
+                    title="Tab II",
+                    layout=vm.Layout(
+                        grid=[
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [1, 1, 2, 2],
+                            [1, 1, 2, 2],
+                        ]
+                    ),
+                    components=[
+                        vm.Graph(
+                            id="graph-4r",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-4",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-5r",
+                            figure=px.box(
+                                df_gapminder,
+                                title="Graph-5",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-6r",
+                            figure=px.line(
+                                df_gapminder,
+                                title="Graph-6",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        )
+                    ],
+                ),
+            ],
+        ),
+    ]
+)
+
+page_6 = vm.Page(
+    id="page_6",
+    title="Nested subpages",
+    layout=vm.Layout(
+        grid=[
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ]
+    ),
+    components=[
+        vm.SubPage(
+            layout=vm.Layout(
+                grid=[
+                    [0, 1], [0, 1]
+                ]
+            ),
+            components=[
+                vm.SubPage(
+                    layout=vm.Layout(
+                        grid=[
+                            [0, 0, 1, 1],
+                            [0, 0, 1, 1],
+                            [2, 2, 3, 3],
+                            [2, 2, 3, 3],
+                        ]
+                    ),
+                    components=[
+                        vm.Graph(
+                            id="graph-1rn",
+                            figure=px.line(
+                                df_gapminder,
+                                title="Graph-1",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-2rn",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-2",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-3rn",
+                            figure=px.box(
+                                df_gapminder,
+                                title="Graph-3",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="graph-2rnn",
+                            figure=px.scatter(
+                                df_gapminder,
+                                title="Graph-2",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ]
+                ),
+                vm.SubPage(
+                    components=[vm.Graph(
+                            id="graph-6rn",
+                            figure=px.line(
+                                df_gapminder,
+                                title="Graph-6",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        )
+                    ]
+                )
+            ]
+        ),
+        vm.SubPage(
+            title="Second subpage",
+            components=[
+                vm.Graph(
+                    id="graph-6rnn",
+                    figure=px.line(
+                        df_gapminder,
+                        title="Graph-6",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                        line_group="country",
+                        hover_name="country",
+                    ),
+                )
+            ]
+        )
+    ]
+)
+
+dashboard = vm.Dashboard(pages=[page, page_5, page_2, page_3, page_4, page_6])
 
 if __name__ == "__main__":
     Vizro(assets_folder="../assets").build(dashboard).run()
