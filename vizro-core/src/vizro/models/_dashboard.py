@@ -63,7 +63,12 @@ class Dashboard(VizroBaseModel):
         for order, page in enumerate(self.pages):
             path = page.path if order else "/"
             dash.register_page(
-                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+                module=page.id,
+                name=page.title,
+                path=path,
+                order=order,
+                layout=partial(self._make_page_layout, page),
+                description=page.description,
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
