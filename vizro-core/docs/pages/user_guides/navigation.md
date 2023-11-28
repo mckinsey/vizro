@@ -56,7 +56,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
             title: My first page
           - components:
              - text: My text here
-               type: graph
+               type: card
             title: My second page
           - components:
               - figure:
@@ -166,7 +166,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
             Group B:
               - My third page
           nav_selector:
-            type: nav_bawr
+            type: nav_bar
         ```
     === "Result"
         [![NavBar]][NavBar]
@@ -211,7 +211,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
         # pages defined as in default example
         navigation:
           nav_selector:
-            type: nav_bawr
+            type: nav_bar
             items:
               - label: Section 1 
                 pages:
@@ -256,7 +256,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         # pages defined as in default example
         navigation:
           nav_selector:
-            type: nav_bawr
+            type: nav_bar
             items:
               - label: Section 1 
                 icon: bar_chart

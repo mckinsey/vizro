@@ -710,8 +710,8 @@ and how to bring them together.
 For future dashboard creations, you can explore more about the available dashboard `components` by going through the
 [user guide](../user_guides/components.md). To gain more in-depth knowledge about the usage and configuration
 details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user_guides/parameters.md)
-and [Selectors](../user_guides/selectors.md). This guide will provide you with valuable insights on utilizing and
-customizing controls for interactive functionality in your dashboards.
+and [Selectors](../user_guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head 
+to [Navigation](../user_guides/navigation.md).
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
