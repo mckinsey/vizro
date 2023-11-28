@@ -531,18 +531,15 @@ dashboard = vm.Dashboard(
             items=[
                 vm.NavLink(
                     label="Label 1",
-                    pages={
-                        "Analysis": ["Variable Analysis", "Homepage"],
-                        "Summary": ["Continent Summary"]
-                    }
+                    pages={"Analysis": ["Variable Analysis", "Homepage"], "Summary": ["Continent Summary"]},
                 ),
                 vm.NavLink(
                     pages=["Country Analysis", "Relationship Analysis"],
                     label="Label 2",
-                )
+                ),
             ]
         )
-    )
+    ),
 )
 
 if __name__ == "__main__":

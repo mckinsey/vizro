@@ -6,7 +6,7 @@ from typing import Optional
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import html, dcc
+from dash import html
 from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import VizroBaseModel
@@ -58,10 +58,14 @@ class NavLink(VizroBaseModel):
 
         button = dbc.Button(
             [
-                dmc.Tooltip(label=self.label, offset=6, withArrow=True, zIndex=1,
-                            children=[html.Span(self.icon, className="material-symbols-outlined")],
-                            position="bottom-start"
-                            )
+                dmc.Tooltip(
+                    label=self.label,
+                    offset=6,
+                    withArrow=True,
+                    zIndex=1,
+                    children=[html.Span(self.icon, className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
             ],
             id=self.id,
             className="icon-button",
