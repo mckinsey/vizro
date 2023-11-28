@@ -11,8 +11,8 @@ pages:
         type: graph
     title: My first page
   - components:
-     - text: My text here
-       type: card
+      - text: My text here
+        type: card
     title: My second page
   - components:
       - figure:
@@ -36,4 +36,3 @@ navigation:
         icon: pie_chart
         pages:
           - My third page
-

@@ -1,19 +1,18 @@
 """Unit tests for vizro.models.Accordion."""
-import json
 import re
 
 import dash_bootstrap_components as dbc
 import pytest
+from asserts import assert_component_equal
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_component_equal
-
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
+
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
 
@@ -49,7 +48,6 @@ class TestAccordionInstantiation:
             vm.Accordion(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestAccordionBuild:
     """Tests accordion build method."""
 

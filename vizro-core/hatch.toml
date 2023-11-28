@@ -64,7 +64,7 @@ test-integration = [
   "- pytest tests/integration/test_examples.py::test_json_dashboard --headless",
   "- pytest tests/integration/test_examples.py::test_yaml_dashboard --headless",
   "pytest tests/integration/test_navigation.py"
-  ]
+]
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"

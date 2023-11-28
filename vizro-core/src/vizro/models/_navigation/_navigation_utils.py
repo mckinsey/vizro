@@ -29,7 +29,7 @@ def _validate_pages(pages):
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
-# to see what contract the component fulfils by making the expected keys explicit.
+# to see what contract the component fulfills by making the expected keys explicit.
 class _NavBuildType(TypedDict):
     nav_bar_outer: html.Div
     nav_panel_outer: html.Div

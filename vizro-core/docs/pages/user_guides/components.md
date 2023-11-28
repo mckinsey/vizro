@@ -402,8 +402,8 @@ and provide an attribute selector to select images with that matching URL hash.
 
 !!! note
 
-    This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation 
-    card. To configure the navigation panel on the left hand side of the screen, refer to the 
+    This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation
+    card. To configure the navigation panel on the left hand side of the screen, refer to the
     [guide on navigation](navigation.md).
 
 

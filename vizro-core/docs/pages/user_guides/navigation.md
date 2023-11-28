@@ -2,7 +2,7 @@
 
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
-The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customise how they appear in your navigation.
+The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
 
 ## Using the default navigation
 
@@ -14,9 +14,9 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
-        
+
         iris = px.data.iris()
-        
+
         page_1 = vm.Page(
             title="My first page",
             components=[
@@ -35,7 +35,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
         Vizro().build(dashboard).run()
         ```
@@ -143,7 +143,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
 !!! example "Using `NavBar`"
     === "app.py"
         ```py
-         # page_1, page_2, page_3 defined as in default example        
+         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
@@ -178,7 +178,7 @@ Here, the first level of the navigation hierarchy ("Group A" and "Group B") is r
 
 ## Customizing the navigation bar
 
-Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customise the navigation further by providing the `NavLink`s yourself.
+Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink`s yourself.
 
 ### `NavLink` examples
 
@@ -187,7 +187,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
 !!! example "Accordions inside a `Navlink`"
     === "app.py"
         ```py
-         # page_1, page_2, page_3 defined as in default example        
+         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
@@ -213,7 +213,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
           nav_selector:
             type: nav_bar
             items:
-              - label: Section 1 
+              - label: Section 1
                 pages:
                   Group A:
                     - My first page
@@ -231,7 +231,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
 !!! example "Custom icon"
     === "app.py"
         ```py
-         # page_1, page_2, page_3 defined as in default example        
+         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
@@ -258,12 +258,12 @@ You can alter the icons used by specifying the name of the icon in the [Google M
           nav_selector:
             type: nav_bar
             items:
-              - label: Section 1 
+              - label: Section 1
                 icon: bar_chart
                 pages:
                   - My first page
                   - My second page
-              - label: Section 1 
+              - label: Section 1
                 icon: pie_chart
                 pages:
                   - My third page

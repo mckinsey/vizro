@@ -5,7 +5,7 @@ from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages, _NavBuildType
+from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType, NavSelectorType
 

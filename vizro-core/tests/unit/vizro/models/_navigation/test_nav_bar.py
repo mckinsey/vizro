@@ -1,17 +1,17 @@
 """Unit tests for vizro.models.NavBar."""
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
+from asserts import assert_component_equal
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-import dash_bootstrap_components as dbc
 
-from asserts import assert_component_equal
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavBarInstantiation:
     """Tests NavBar model instantiation."""
 
@@ -51,7 +51,6 @@ class TestNavBarInstantiation:
             vm.NavBar(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavBarPreBuildMethod:
     def test_default_items(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
@@ -71,7 +70,6 @@ class TestNavBarPreBuildMethod:
         assert nav_bar.items[1].icon == "filter_2"
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
@@ -112,7 +110,7 @@ class TestNavBarBuildMethod:
             built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
         )
 
-    def test_nav_bar_active_pages_as_list(self, pages_as_list):
+    def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
