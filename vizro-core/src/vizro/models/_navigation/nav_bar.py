@@ -17,15 +17,12 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (Optional[Dict[str, List[str]]]): A dictionary with a page group title as key and a list of page IDs as
-            values.
-        items (Optional[List[NavLink]]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
+        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
     """
 
     type: Literal["nav_bar"] = "nav_bar"
-    pages: Dict[str, List[str]] = Field(
-        {}, description="A dictionary with a page group title as key and a list of page IDs as values."
-    )
+    pages: Dict[str, List[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
     items: List[NavLink] = []
 
     # validators

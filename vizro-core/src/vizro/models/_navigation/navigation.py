@@ -15,7 +15,7 @@ class Navigation(VizroBaseModel):
 
     Args:
         pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
-            Defaults to `None`.
+            Defaults to [].
         nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
     """
