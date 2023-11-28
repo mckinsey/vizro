@@ -70,10 +70,3 @@ The full code for these different cases is given below.
         for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
             data_manager[dataset_name] = dataset
         ```
-
-
-???+ warning
-
-    Please note that users of this package are responsible for the content of any custom-created component,
-    function or integration they write - especially with regard to leaking any sensitive information or exposing to
-    any security threat during implementation.

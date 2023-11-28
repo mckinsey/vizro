@@ -355,3 +355,5 @@ vm.Page.add_type("components", Jumbotron)
     Please note that users of this package are responsible for the content of any custom-created component,
     function or integration they write - especially with regard to leaking any sensitive information or exposing to
     any security threat during implementation.
+
+    By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser. Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.
