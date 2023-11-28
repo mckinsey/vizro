@@ -136,7 +136,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                     marks=self.marks,
                                     className="range_slider_control" if self.step else "range_slider_control_no_space",
                                     value=value,
-                                    persistence=True, 
+                                    persistence=True,
                                     persistence_type="session",
                                     allowCross=False, # (3)!
                                     tooltip={"placement": "bottom", "always_visible": True}, # (4)!
