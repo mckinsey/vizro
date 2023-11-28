@@ -136,7 +136,8 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                     marks=self.marks,
                                     className="range_slider_control" if self.step else "range_slider_control_no_space",
                                     value=value,
-                                    persistence=True, persistence_type="session",
+                                    persistence=True, 
+                                    persistence_type="session",
                                     allowCross=False, # (3)!
                                     tooltip={"placement": "bottom", "always_visible": True}, # (4)!
                                 ),
@@ -153,7 +154,8 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                             else "slider_input_field_no_space_left",
                                             value=value[0],
                                             size="24px",
-                                            persistence=True, persistence_type="session",
+                                            persistence=True,
+                                            persistence_type="session",
                                         ),
                                         dcc.Input(
                                             id=f"{self.id}_end_value",
@@ -165,7 +167,8 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                             if self.step
                                             else "slider_input_field_no_space_right",
                                             value=value[1],
-                                            persistence=True, persistence_type="session",
+                                            persistence=True,
+                                            persistence_type="session",
                                         ),
                                         dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
                                     ],
