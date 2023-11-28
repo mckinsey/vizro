@@ -524,27 +524,10 @@ dashboard = vm.Dashboard(
     ],
     navigation=vm.Navigation(
         pages={
-            "Analysis": ["Homepage", "Variable Analysis"],
-            "Summary": ["Relationship Analysis", "Continent Summary"],
+            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+            "Summary": ["Continent Summary"],
         }
-    )
-    #     selector=vm.NavBar(
-    #         items=[
-    #             vm.NavLink(
-    #                 text="asdf",
-    #                 pages={
-    #                     "Analysis": ["Homepage", "Variable Analysis"],
-    #                     "Summary": ["Relationship Analysis", "Continent Summary"],
-    #                 },
-    #             ),
-    #             vm.NavLink(
-    #                 text="ASDF",
-    #                 pages=["Country Analysis"],
-    #                 icon="summarize",
-    #             ),
-    #         ]
-    #     ),
-    # ),
+    ),
 )
 
 if __name__ == "__main__":
