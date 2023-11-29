@@ -127,7 +127,7 @@ class TestFilterInteraction:
 
     @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction," "target_scatter_filtered_continent," "target_box_filtered_continent",
+        "callback_context_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
             (("Africa", None), ("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None), ("Europe", None)),

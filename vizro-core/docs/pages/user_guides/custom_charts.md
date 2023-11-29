@@ -151,10 +151,3 @@ The below examples shows a more involved use-case. We create and style a waterfa
         [![Graph3]][Graph3]
 
     [Graph3]: ../../assets/user_guides/custom_charts/custom_chart_waterfall.png
-
-
-???+ warning
-
-    Please note that users of this package are responsible for the content of any custom-created component,
-    function or integration they write - especially with regard to leaking any sensitive information or exposing to
-    any security threat during implementation.

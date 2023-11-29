@@ -309,7 +309,7 @@ _FormComponentType = Annotated[
     Union[SelectorType, "Button", "UserInput"],
     Field(
         discriminator="type",
-        description="Components that can be used to receive user input within a form'.",
+        description="Components that can be used to receive user input within a form.",
     ),
 ]
 
@@ -334,12 +334,12 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
 [`Graph`][vizro.models.Graph]."""
 
-# Types used for pages values in the Navigation model.
-NavigationPagesType = Annotated[
-    Union[List[str], Dict[str, List[str]]],
-    Field(
-        None,
-        description="List of Page IDs or dict mapping of Page IDs and titles (for hierarchical sub-navigation)",
-    ),
+NavPagesType = Union[List[str], Dict[str, List[str]]]
+"List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
+
+NavSelectorType = Annotated[
+    Union["Accordion", "NavBar"],
+    Field(discriminator="type", description="Component for rendering navigation."),
 ]
-"""Permissible value types for page attribute. Values are displayed as default."""
+"""Discriminated union. Type of component for rendering navigation:
+[`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""

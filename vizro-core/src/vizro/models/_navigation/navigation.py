@@ -1,38 +1,47 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import PrivateAttr, validator
+from dash import html
+from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models._navigation._navigation_utils import _validate_pages
-from vizro.models.types import NavigationPagesType
-
-if TYPE_CHECKING:
-    from vizro.models._navigation._accordion import Accordion
+from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
+from vizro.models._navigation.accordion import Accordion
+from vizro.models.types import NavPagesType, NavSelectorType
 
 
 class Navigation(VizroBaseModel):
     """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
     Args:
-        pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].
+        pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
+            Defaults to [].
+        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
     """
 
-    pages: Optional[NavigationPagesType] = None
-    _selector: Accordion = PrivateAttr()
+    pages: NavPagesType = []
+    nav_selector: NavSelectorType = None
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):
-        from vizro.models._navigation._accordion import Accordion
-
-        self._selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
+        # here. Note that not all nav_selectors have pre_build (Accordion does not).
+        self.nav_selector = self.nav_selector or Accordion()
+        self.nav_selector.pages = self.nav_selector.pages or self.pages
+        if hasattr(self.nav_selector, "pre_build"):
+            self.nav_selector.pre_build()
 
     @_log_call
-    def build(self, *, active_page_id=None):
-        return self._selector.build(active_page_id=active_page_id)
+    def build(self, *, active_page_id=None) -> _NavBuildType:
+        nav_selector = self.nav_selector.build(active_page_id=active_page_id)
+        if "nav_bar_outer" not in nav_selector:
+            # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav_panel_outer".
+            # This will make it match the case e.g. nav_selector is NavBar and nav_selector.build returns html.Div
+            # containing children with id="nav_bar_outer" and id="nav_panel_outer"
+            nav_selector = html.Div([html.Div(className="hidden", id="nav_bar_outer"), nav_selector])
+
+        return nav_selector

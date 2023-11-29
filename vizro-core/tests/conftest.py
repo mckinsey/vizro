@@ -2,6 +2,10 @@ import pytest
 
 from vizro import Vizro
 
+# Allow our custom assert functions in tests_utils/asserts.py to do introspection nicely still.
+# See https://pytest.org/en/7.4.x/how-to/assert.html#assertion-introspection-details
+pytest.register_assert_rewrite("asserts")
+
 
 @pytest.fixture(autouse=True)
 def reset_managers():
@@ -11,9 +15,3 @@ def reset_managers():
     Vizro._reset()
     yield
     Vizro._reset()
-
-
-@pytest.fixture()
-def vizro_app():
-    """Fixture to instantiate Vizro/Dash app. Required when needing to register pages."""
-    yield Vizro()

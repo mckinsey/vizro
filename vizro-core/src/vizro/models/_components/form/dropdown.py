@@ -60,6 +60,7 @@ class Dropdown(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
+                    persistence_type="session",
                     className="selector_body_dropdown",
                 ),
             ],

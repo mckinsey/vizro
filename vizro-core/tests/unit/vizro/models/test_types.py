@@ -1,3 +1,5 @@
+import importlib
+
 import plotly.express as plotly_express
 import plotly.graph_objects as go
 import pytest
@@ -145,7 +147,7 @@ def invalid_decorated_graph_function():
 
 class Model(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=__import__(__name__))
+    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__))
 
 
 class TestModelFieldPython:

@@ -222,7 +222,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
+        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, None],
@@ -273,7 +273,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
+        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, "Algeria"],
