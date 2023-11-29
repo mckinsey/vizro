@@ -526,7 +526,19 @@ dashboard = vm.Dashboard(
         pages={
             "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
             "Summary": ["Continent Summary"],
-        }
+        },
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(
+                    label="Label 1",
+                    pages={"Analysis": ["Variable Analysis", "Homepage"], "Summary": ["Continent Summary"]},
+                ),
+                vm.NavLink(
+                    pages=["Country Analysis", "Relationship Analysis"],
+                    label="Label 2",
+                ),
+            ]
+        ),
     ),
 )
 
