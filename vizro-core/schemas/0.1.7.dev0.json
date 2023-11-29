@@ -895,9 +895,40 @@
       "required": ["components", "title"],
       "additionalProperties": false
     },
-    "Navigation": {
-      "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavigationPagesType]): See [`NavigationPagesType`][vizro.models.types.NavigationPagesType].\n        Defaults to `None`.",
+    "Accordion": {
+      "title": "Accordion",
+      "description": "Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].\n\nArgs:\n    type (Literal[\"accordion\"]): Defaults to `\"accordion\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "accordion",
+          "enum": ["accordion"],
+          "type": "string"
+        },
+        "pages": {
+          "title": "Pages",
+          "description": "Mapping from name of a pages group to a list of page IDs.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "NavLink": {
+      "title": "NavLink",
+      "description": "Icon to be used in Navigation Panel of Dashboard.\n\nArgs:\n    ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (Optional[str]): Icon name from [Google Material icons library](https://fonts.google.com/icons).\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -907,6 +938,7 @@
         },
         "pages": {
           "title": "Pages",
+          "default": [],
           "anyOf": [
             {
               "type": "array",
@@ -922,6 +954,109 @@
                   "type": "string"
                 }
               }
+            }
+          ]
+        },
+        "label": {
+          "title": "Label",
+          "description": "Text description of the icon for use in tooltip.",
+          "type": "string"
+        },
+        "icon": {
+          "title": "Icon",
+          "description": "Icon name from Google Material icons library.",
+          "type": "string"
+        }
+      },
+      "required": ["label"],
+      "additionalProperties": false
+    },
+    "NavBar": {
+      "title": "NavBar",
+      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.\n    items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "nav_bar",
+          "enum": ["nav_bar"],
+          "type": "string"
+        },
+        "pages": {
+          "title": "Pages",
+          "description": "Mapping from name of a pages group to a list of page IDs.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "items": {
+          "title": "Items",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NavLink"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Navigation": {
+      "title": "Navigation",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to [].\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "type": "string"
+        },
+        "pages": {
+          "title": "Pages",
+          "default": [],
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "nav_selector": {
+          "title": "Nav Selector",
+          "description": "Component for rendering navigation.",
+          "discriminator": {
+            "propertyName": "type",
+            "mapping": {
+              "accordion": "#/definitions/Accordion",
+              "nav_bar": "#/definitions/NavBar"
+            }
+          },
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Accordion"
+            },
+            {
+              "$ref": "#/definitions/NavBar"
             }
           ]
         }

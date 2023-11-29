@@ -21,6 +21,7 @@ def expected_checklist():
                 value=["ALL"],
                 className="selector_body_checklist",
                 persistence=True,
+                persistence_type="session",
             ),
         ],
         className="selector_container",

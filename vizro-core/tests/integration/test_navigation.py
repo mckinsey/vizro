@@ -1,8 +1,7 @@
 import pytest
+from asserts import assert_component_equal
 
 import vizro.models as vm
-
-from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.managers import model_manager
 

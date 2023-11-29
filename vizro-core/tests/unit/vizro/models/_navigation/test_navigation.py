@@ -1,17 +1,17 @@
 """Unit tests for vizro.models.Navigation."""
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
+from asserts import assert_component_equal
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_component_equal
 
-import dash_bootstrap_components as dbc
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationInstantiation:
     def test_navigation_mandatory_only(self):
         navigation = vm.Navigation()
@@ -45,7 +45,6 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationPreBuildMethod:
     def test_default_nav_selector(self, pages_as_dict):
         navigation = vm.Navigation(pages=pages_as_dict)
@@ -72,7 +71,6 @@ class TestNavigationPreBuildMethod:
         assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavigationBuildMethod:
     """Tests navigation model build method."""
 

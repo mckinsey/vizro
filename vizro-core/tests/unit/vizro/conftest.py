@@ -5,6 +5,7 @@ import pytest
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.tables import dash_data_table
 
 
@@ -42,16 +43,28 @@ def standard_go_chart(gapminder):
 
 
 @pytest.fixture()
-def page1():
-    return vm.Page(title="Page 1", components=[vm.Button(), vm.Button()])
+def page_1():
+    return vm.Page(title="Page 1", components=[vm.Button()])
 
 
 @pytest.fixture()
-def page2():
-    return vm.Page(title="Page 2", components=[vm.Button(), vm.Button()])
+def page_2():
+    return vm.Page(title="Page 2", components=[vm.Button()])
 
 
 @pytest.fixture()
-def dashboard(page1, page2):
-    dashboard = vm.Dashboard(pages=[page1, page2])
+def vizro_app():
+    """Fixture to instantiate Vizro/Dash app.
+
+    Required if Vizro._pre_build or dashboard.pre_build is called since dash.register_page can only be called after
+    app instantiation.pages.
+    """
+    return Vizro()
+
+
+@pytest.fixture()
+def prebuilt_two_page_dashboard(vizro_app, page_1, page_2):
+    """Minimal two page dashboard, used mainly for testing navigation."""
+    dashboard = vm.Dashboard(pages=[page_1, page_2])
+    dashboard.pre_build()
     return dashboard

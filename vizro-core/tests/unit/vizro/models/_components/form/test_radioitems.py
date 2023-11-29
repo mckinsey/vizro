@@ -21,6 +21,7 @@ def expected_radio_items():
                 value="A",
                 className="selector_body_radio_items",
                 persistence=True,
+                persistence_type="session",
             ),
         ],
         className="selector_container",

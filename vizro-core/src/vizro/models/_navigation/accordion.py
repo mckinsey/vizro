@@ -20,14 +20,11 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (Optional[Dict[str, List[str]])]: A dictionary with a page group title as key and a list of page IDs as
-            values.
+        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: Dict[str, List[str]] = Field(
-        {}, description="A dictionary with a page group title as key and a list of page IDs as values."
-    )
+    pages: Dict[str, List[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 

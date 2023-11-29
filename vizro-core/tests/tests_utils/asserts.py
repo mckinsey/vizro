@@ -9,7 +9,6 @@ def strip_keys(object, keys):
 
     This makes it easy to compare dictionaries generated from Dash components we've created that contain random IDs.
     """
-
     if isinstance(object, dict):
         object = {key: strip_keys(value, keys) for key, value in object.items() if key not in keys}
     elif isinstance(object, list):

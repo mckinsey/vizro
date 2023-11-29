@@ -3,14 +3,15 @@ import re
 
 import dash_bootstrap_components as dbc
 import pytest
+from asserts import assert_component_equal
 from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from asserts import assert_component_equal
+
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavLinkInstantiation:
     """Tests NavLink model instantiation."""
 
@@ -55,7 +56,6 @@ class TestNavLinkInstantiation:
             vm.NavLink(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 class TestNavLinkPreBuildMethod:
     def test_nav_link(self, pages_as_dict):
         nav_link = vm.NavLink(label="Label", pages=pages_as_dict)
@@ -64,7 +64,6 @@ class TestNavLinkPreBuildMethod:
         assert nav_link._nav_selector.pages == pages_as_dict
 
 
-@pytest.mark.usefixtures("vizro_app", "prebuilt_dashboard")
 @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""

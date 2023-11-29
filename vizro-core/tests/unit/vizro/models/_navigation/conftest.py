@@ -4,11 +4,6 @@ import pytest
 
 
 @pytest.fixture()
-def prebuilt_dashboard(dashboard):
-    dashboard.pre_build()
-
-
-@pytest.fixture()
 def pages_as_list():
     return ["Page 1", "Page 2"]
 

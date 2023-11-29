@@ -20,16 +20,17 @@ class NavLink(VizroBaseModel):
     """Icon to be used in Navigation Panel of Dashboard.
 
     Args:
-        pages (NavPagesType): See [NavPagesType][vizro.models.types.NavPagesType].
-        icon (str): Name of the icon from the Google Material Icon library. For more available
-            icons visit [Google Material Icon library](https://fonts.google.com/icons).
-        label (Optional[str]): Text to be displayed below the icon. It automatically gets truncated to the
-            `max_label_length`. Defaults to `None`.
+        ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
+            Defaults to `[]`.
+        label (str): Text description of the icon for use in tooltip.
+        icon (Optional[str]): Icon name from [Google Material icons library](https://fonts.google.com/icons).
+            Defaults to `None`.
+
     """
 
     pages: NavPagesType = []
-    label: str = Field(..., description="Text to be displayed below the icon.")
-    icon: Optional[str] = Field(None, description="Icon name from Google Material Icon library.")
+    label: str = Field(..., description="Text description of the icon for use in tooltip.")
+    icon: Optional[str] = Field(None, description="Icon name from Google Material icons library.")
 
     _nav_selector: Accordion = PrivateAttr()
 

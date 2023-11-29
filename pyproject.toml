@@ -44,7 +44,6 @@ init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
 
-
 [tool.ruff]
 # see: https://beta.ruff.rs/docs/rules/
 ignore = [

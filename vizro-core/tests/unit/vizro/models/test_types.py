@@ -1,5 +1,4 @@
 import importlib
-from pathlib import Path
 
 import plotly.express as plotly_express
 import plotly.graph_objects as go
