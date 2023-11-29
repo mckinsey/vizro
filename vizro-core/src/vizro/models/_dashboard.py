@@ -96,7 +96,9 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.Div(hidden=True, id="dashboard_title_outer")
         )
-        theme_switch = daq.BooleanSwitch(id="theme_selector", on=self.theme == "vizro_dark", persistence=True)
+        theme_switch = daq.BooleanSwitch(
+            id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+        )
 
         # Shared across pages but slightly differ in content
         page_title = html.H2(children=page.title, id="page_title")
