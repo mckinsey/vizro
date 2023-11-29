@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, TypedDict
 
 from dash import Input, Output, Patch, callback, dcc, html
 from pydantic import Field, root_validator, validator
@@ -13,6 +13,15 @@ from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
 from .types import ComponentType, ControlType
+
+
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfills by making the expected keys explicit.
+class _PageBuildType(TypedDict):
+    control_panel_outer: html.Div
+    component_container_outer: html.Div
 
 
 class Page(VizroBaseModel):
@@ -32,7 +41,7 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
-    layout: Optional[Layout]
+    layout: Optional[Layout] = None
     controls: List[ControlType] = []
     path: Optional[str] = Field(None, description="Path to navigate to page.")
 
@@ -111,7 +120,7 @@ class Page(VizroBaseModel):
             ]
 
     @_log_call
-    def build(self):
+    def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (

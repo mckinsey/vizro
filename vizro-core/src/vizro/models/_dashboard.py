@@ -15,9 +15,11 @@ from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models._navigation._navigation_utils import _NavBuildType
 
 if TYPE_CHECKING:
     from vizro.models import Page
+    from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
 
@@ -47,12 +49,12 @@ class Dashboard(VizroBaseModel):
         return pages
 
     @validator("navigation", always=True)
-    def validate_navigation(cls, navigation, values):
+    def set_navigation_pages(cls, navigation, values):
         if "pages" not in values:
             return navigation
 
-        if navigation is None or not navigation.pages:
-            return Navigation(pages=[page.id for page in values["pages"]])
+        navigation = navigation or Navigation()
+        navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation
 
     @_log_call
@@ -100,23 +102,28 @@ class Dashboard(VizroBaseModel):
             id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
         )
 
-        # Shared across pages but slightly differ in content
+        # Shared across pages but slightly differ in content. These could possibly be done by a clientside
+        # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        nav_bar = navigation["nav_bar_outer"]
+        nav_panel = navigation["nav_panel_outer"]
 
         # Different across pages
-        page_content = page.build()
+        page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel_outer"]
         component_container = page_content["component_container_outer"]
 
         # Arrangement
         header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
-        left_side_elements = [dashboard_title, navigation, control_panel]
-        left_side = (
-            html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
-            if any(left_side_elements)
-            else html.Div(hidden=True, id="left_side_outer")
+        nav_control_elements = [dashboard_title, nav_panel, control_panel]
+        nav_control_panel = (
+            html.Div(nav_control_elements, className="nav_control_panel")
+            if any(not getattr(element, "hidden", False) for element in nav_control_elements)
+            else html.Div(hidden=True)
         )
+
+        left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
         right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 

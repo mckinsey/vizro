@@ -40,7 +40,7 @@ prep-release = [
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
 test = [
-  "test-unit",
+  "- test-unit",
   "test-integration"
 ]
 test-cov = "coverage run -m pytest tests/unit {args}"

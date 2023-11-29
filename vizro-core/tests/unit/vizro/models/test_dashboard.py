@@ -29,7 +29,7 @@ def dashboard_container():
 
 
 @pytest.fixture()
-def mock_page_registry(dashboard, page1, page2):
+def mock_page_registry(prebuilt_two_page_dashboard, page_1, page_2):
     return OrderedDict(
         {
             "Page 1": {
@@ -44,12 +44,12 @@ def mock_page_registry(dashboard, page1, page2):
                 "description": "",
                 "order": 0,
                 "supplied_order": 0,
-                "supplied_layout": partial(dashboard._make_page_layout, page1),
+                "supplied_layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_1),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": partial(dashboard._make_page_layout, page1),
+                "layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_1),
                 "relative_path": "/",
             },
             "Page 2": {
@@ -64,12 +64,12 @@ def mock_page_registry(dashboard, page1, page2):
                 "description": "",
                 "order": 1,
                 "supplied_order": 1,
-                "supplied_layout": partial(dashboard._make_page_layout, page2),
+                "supplied_layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_2),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": partial(dashboard._make_page_layout, page2),
+                "layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_2),
                 "relative_path": "/page-2",
             },
             "not_found_404": {
@@ -84,12 +84,12 @@ def mock_page_registry(dashboard, page1, page2):
                 "description": "",
                 "order": None,
                 "supplied_order": None,
-                "supplied_layout": dashboard._make_page_404_layout(),
+                "supplied_layout": prebuilt_two_page_dashboard._make_page_404_layout(),
                 "supplied_image": None,
                 "image": None,
                 "image_url": None,
                 "redirect_from": None,
-                "layout": dashboard._make_page_404_layout(),
+                "layout": prebuilt_two_page_dashboard._make_page_404_layout(),
                 "relative_path": "/not-found-404",
             },
         }
@@ -99,19 +99,31 @@ def mock_page_registry(dashboard, page1, page2):
 class TestDashboardInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
-    def test_create_dashboard_mandatory_only(self, page1, page2):
-        dashboard = vm.Dashboard(pages=[page1, page2])
+    def test_create_dashboard_mandatory_only(self, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == [page1, page2]
+        assert dashboard.pages == [page_1, page_2]
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title is None
+        assert isinstance(dashboard.navigation, vm.Navigation)
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
-    def test_create_dashboard_mandatory_and_optional(self, page1, page2):
-        dashboard = vm.Dashboard(pages=[page1, page2], theme="vizro_light", title="Vizro")
+    def test_create_dashboard_mandatory_and_optional(self, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2], theme="vizro_light", title="Vizro")
         assert hasattr(dashboard, "id")
-        assert dashboard.pages == [page1, page2]
+        assert dashboard.pages == [page_1, page_2]
         assert dashboard.theme == "vizro_light"
         assert dashboard.title == "Vizro"
+        assert isinstance(dashboard.navigation, vm.Navigation)
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+
+    def test_navigation_pages_automatically_populated(self, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
+        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+
+    def test_navigation_with_pages(self, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=vm.Navigation(pages=["Page 1"]))
+        assert dashboard.navigation.pages == ["Page 1"]
 
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="field required"):
@@ -125,25 +137,23 @@ class TestDashboardInstantiation:
         with pytest.raises(ValidationError, match="4 validation errors for Dashboard"):
             vm.Dashboard(pages=[vm.Button()])
 
-    def test_field_invalid_theme_input_type(self, page1):
+    def test_field_invalid_theme_input_type(self, page_1):
         with pytest.raises(ValidationError, match="unexpected value; permitted: 'vizro_dark', 'vizro_light'"):
-            vm.Dashboard(pages=[page1], theme="not_existing")
+            vm.Dashboard(pages=[page_1], theme="not_existing")
 
 
 class TestDashboardPreBuild:
     """Tests dashboard pre_build method."""
 
-    @pytest.mark.usefixtures("vizro_app")
-    def test_dashboard_page_registry(self, dashboard, mock_page_registry):
-        dashboard.pre_build()
+    def test_dashboard_page_registry(self, prebuilt_two_page_dashboard, mock_page_registry):
         result = dash.page_registry
         expected = mock_page_registry
         # Str conversion required as comparison of OrderedDict values result in False otherwise
         assert str(result.items()) == str(expected.items())
 
-    def test_create_layout_page_404(self, dashboard, mocker):
+    def test_create_layout_page_404(self, prebuilt_two_page_dashboard, mocker):
         mocker.patch("vizro.models._dashboard.get_relative_path")
-        result = dashboard._make_page_404_layout()
+        result = prebuilt_two_page_dashboard._make_page_404_layout()
         result_image = result.children[0]
         result_div = result.children[1]
 
@@ -152,13 +162,10 @@ class TestDashboardPreBuild:
         assert isinstance(result_div, html.Div)
 
 
-@pytest.mark.usefixtures("vizro_app")
 class TestDashboardBuild:
     """Tests dashboard build method."""
 
-    def test_dashboard_build(self, dashboard_container, dashboard):
-        dashboard.pre_build()
-        dashboard.navigation.pre_build()
-        result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
+    def test_dashboard_build(self, dashboard_container, prebuilt_two_page_dashboard):
+        result = json.loads(json.dumps(prebuilt_two_page_dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
