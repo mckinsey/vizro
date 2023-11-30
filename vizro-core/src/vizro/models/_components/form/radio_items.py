@@ -42,7 +42,7 @@ class RadioItems(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 dcc.RadioItems(
                     id=self.id,
                     options=full_options,

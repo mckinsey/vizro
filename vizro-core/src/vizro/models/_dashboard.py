@@ -120,7 +120,7 @@ class Dashboard(VizroBaseModel):
         nav_control_panel = (
             html.Div(nav_control_elements, className="nav_control_panel")
             if any(not getattr(element, "hidden", False) for element in nav_control_elements)
-            else html.Div(hidden=True)
+            else None
         )
 
         left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")

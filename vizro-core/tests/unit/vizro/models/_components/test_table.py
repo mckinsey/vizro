@@ -29,7 +29,6 @@ def expected_table():
     return dcc.Loading(
         html.Div(
             [
-                html.Div(hidden=True),
                 html.Div(dash_table.DataTable(), id="text_table"),
             ],
             className="table-container",
@@ -45,7 +44,6 @@ def expected_table_with_id():
     return dcc.Loading(
         html.Div(
             [
-                html.Div(hidden=True),
                 html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
             ],
             className="table-container",

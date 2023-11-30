@@ -81,7 +81,7 @@ class Slider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(
