@@ -1,5 +1,5 @@
 import logging
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 from dash import dash_table, dcc, html
 from pandas import DataFrame
@@ -43,7 +43,7 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
+        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
         return self.figure(**kwargs)
 
     # Convenience wrapper/syntactic sugar.

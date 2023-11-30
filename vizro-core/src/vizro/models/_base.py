@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Type, Union
+from typing import Any, List, Type, Union
 
 from pydantic import BaseModel, Field, validator
 from pydantic.fields import SHAPE_LIST, ModelField

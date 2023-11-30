@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html

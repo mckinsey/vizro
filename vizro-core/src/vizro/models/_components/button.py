@@ -38,26 +38,3 @@ class Button(VizroBaseModel):
             className="button_container",
             id=f"{self.id}_outer",
         )
-
-
-class LinkButton(Button):
-    href: str
-
-    @_log_call
-    def build(self):
-        button = super().build()
-        button[self.id].href = get_relative_path(self.href)
-        return button
-
-        # return html.Div(
-        #     [
-        #         dbc.Button(
-        #             id=self.id,
-        #             children=self.text,
-        #             className="button_primary",
-        #             href=get_relative_path(self.href)
-        #         ),
-        #     ],
-        #     className="button_container",
-        #     id=f"{self.id}_outer",
-        # )

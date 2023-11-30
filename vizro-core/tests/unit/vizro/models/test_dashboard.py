@@ -104,7 +104,7 @@ class TestDashboardInstantiation:
         assert hasattr(dashboard, "id")
         assert dashboard.pages == [page_1, page_2]
         assert dashboard.theme == "vizro_dark"
-        assert dashboard.title is None
+        assert dashboard.title == ""
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 

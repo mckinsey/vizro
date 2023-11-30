@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html

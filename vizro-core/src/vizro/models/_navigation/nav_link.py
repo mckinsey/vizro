@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import itertools
-from typing import Optional
 
 import dash
 import dash_bootstrap_components as dbc
