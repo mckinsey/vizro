@@ -125,5 +125,5 @@ class TestNavBarBuildMethod:
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
-            keys_to_strip={"children", "className"},
+            keys_to_strip={},
         )
