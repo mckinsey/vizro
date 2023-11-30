@@ -20,7 +20,7 @@ class Dropdown(VizroBaseModel):
             [`SingleValueType`][vizro.models.types.SingleValueType] and
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
@@ -28,7 +28,7 @@ class Dropdown(VizroBaseModel):
     options: OptionsType = []  # type: ignore[assignment]
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
-    title: Optional[str] = Field(None, description="Title to be displayed")
+    title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
 
     # Component properties for actions and interactions

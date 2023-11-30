@@ -23,13 +23,13 @@ class Table(VizroBaseModel):
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Table like object to be displayed. Current choices include:
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
-        title (str): Title of the table. Defaults to `None`.
+        title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
-    title: Optional[str] = Field(None, description="Title of the table")
+    title: str = Field("", description="Title of the table")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()

@@ -22,14 +22,14 @@ class NavLink(VizroBaseModel):
         ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `[]`.
         label (str): Text description of the icon for use in tooltip.
-        icon (Optional[str]): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-            Defaults to `None`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
+            Defaults to `""`.
 
     """
 
     pages: NavPagesType = []
     label: str = Field(..., description="Text description of the icon for use in tooltip.")
-    icon: Optional[str] = Field(None, description="Icon name from Google Material icons library.")
+    icon: str = Field("", description="Icon name from Google Material icons library.")
 
     _nav_selector: Accordion = PrivateAttr()
 

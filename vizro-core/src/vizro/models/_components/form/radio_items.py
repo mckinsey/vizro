@@ -18,14 +18,14 @@ class RadioItems(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["radio_items"] = "radio_items"
     options: OptionsType = []  # type: ignore[assignment]
     value: Optional[SingleValueType] = None
-    title: Optional[str] = Field(None, description="Title to be displayed")
+    title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
 
     # Component properties for actions and interactions

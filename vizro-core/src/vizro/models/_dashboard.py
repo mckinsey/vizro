@@ -32,7 +32,7 @@ class Dashboard(VizroBaseModel):
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (Optional[str]): Dashboard title to appear on every page on top left-side. Defaults to `None`.
+        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
     """
 
     pages: List[Page]
@@ -40,7 +40,7 @@ class Dashboard(VizroBaseModel):
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
     navigation: Optional[Navigation] = None
-    title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
+    title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
     def validate_pages(cls, pages):
