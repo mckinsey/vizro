@@ -456,10 +456,7 @@ def create_country_analysis():
             ),
         ],
         controls=[
-            vm.Filter(
-                column="continent",
-                selector=vm.Dropdown(value="Europe", multi=False, title=""),
-            ),
+            vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
             vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
         ],
     )
