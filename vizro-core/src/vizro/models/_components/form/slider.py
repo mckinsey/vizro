@@ -28,7 +28,7 @@ class Slider(VizroBaseModel):
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
         marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
@@ -38,7 +38,7 @@ class Slider(VizroBaseModel):
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
     marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
-    title: Optional[str] = Field(None, description="Title to be displayed.")
+    title: str = Field("", description="Title to be displayed.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -81,7 +81,7 @@ class Slider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(

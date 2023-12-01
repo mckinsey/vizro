@@ -71,7 +71,7 @@ class TestPageInstantiation:
             ("2147abc", "/2147abc"),
             ("this_path_works", "/this_path_works"),
             ("this/path/works", "/this/path/works"),
-            (None, "/page-12"),
+            ("", "/page-12"),
         ],
     )
     def test_set_path_valid(self, test_path, expected):
