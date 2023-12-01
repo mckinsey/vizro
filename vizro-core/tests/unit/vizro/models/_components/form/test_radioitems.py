@@ -39,7 +39,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.type == "radio_items"
         assert radio_items.options == []
         assert radio_items.value is None
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     def test_create_radio_items_mandatory_and_optional(self):
@@ -81,7 +81,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.type == "radio_items"
         assert radio_items.options == expected
         assert radio_items.value is None
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
@@ -113,7 +113,7 @@ class TestRadioItemsInstantiation:
         assert hasattr(radio_items, "id")
         assert radio_items.type == "radio_items"
         assert radio_items.value == test_value
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     @pytest.mark.parametrize(

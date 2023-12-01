@@ -125,7 +125,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
                 return html.Div(
                     [
-                        html.P(self.title, id="range_slider_title") if self.title else html.Div(hidden=True),
+                        html.P(self.title, id="range_slider_title") if self.title else None,
                         html.Div(
                             [
                                 dcc.RangeSlider(

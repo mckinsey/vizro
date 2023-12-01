@@ -28,7 +28,7 @@ class RangeSlider(VizroBaseModel):
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
         marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
@@ -40,7 +40,7 @@ class RangeSlider(VizroBaseModel):
     value: Optional[List[float]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
     )
-    title: Optional[str] = Field(None, description="Title to be displayed.")
+    title: str = Field("", description="Title to be displayed.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -87,7 +87,7 @@ class RangeSlider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.RangeSlider(
