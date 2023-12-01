@@ -7,7 +7,11 @@ import pytest
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:
+    from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px

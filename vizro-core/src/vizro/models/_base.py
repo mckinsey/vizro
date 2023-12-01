@@ -1,8 +1,14 @@
 from typing import Any, List, Type, Union
 
-from pydantic import BaseModel, Field, validator
-from pydantic.fields import SHAPE_LIST, ModelField
-from pydantic.typing import get_args
+try:
+    from pydantic.v1 import BaseModel, Field, validator
+    from pydantic.v1.fields import SHAPE_LIST, ModelField
+    from pydantic.v1.typing import get_args
+except ImportError:
+    from pydantic import BaseModel, Field, validator
+    from pydantic.fields import SHAPE_LIST, ModelField
+    from pydantic.typing import get_args
+
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager

@@ -4,7 +4,11 @@ from typing import List, Literal
 from dash import ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:
+    from pydantic import Field, PrivateAttr, validator
 
 import vizro.plotly.express as px
 from vizro import _themes as themes

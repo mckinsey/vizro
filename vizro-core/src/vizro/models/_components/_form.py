@@ -3,7 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Literal, Optional
 
 from dash import html
-from pydantic import validator
+
+try:
+    from pydantic.v1 import validator
+except ImportError:
+    from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import (

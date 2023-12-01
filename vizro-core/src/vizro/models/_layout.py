@@ -2,7 +2,11 @@ from typing import List, NamedTuple, Optional, Tuple
 
 import numpy as np
 from numpy import ma
-from pydantic import Field, PrivateAttr, ValidationError, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, ValidationError, validator
+except ImportError:
+    from pydantic import Field, PrivateAttr, ValidationError, validator
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel

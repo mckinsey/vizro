@@ -1,7 +1,11 @@
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
-from pydantic import Field, PrivateAttr, root_validator, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+except ImportError:
+    from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory

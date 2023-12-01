@@ -3,7 +3,11 @@ from typing import List, Literal
 
 from dash import dash_table, dcc, html
 from pandas import DataFrame
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:
+    from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
 from vizro.managers import data_manager

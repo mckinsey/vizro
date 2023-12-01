@@ -6,9 +6,15 @@ import functools
 import inspect
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
-from pydantic import Field, StrictBool
-from pydantic.fields import ModelField
-from pydantic.schema import SkipField
+try:
+    from pydantic.v1 import Field, StrictBool
+    from pydantic.v1.fields import ModelField
+    from pydantic.v1.schema import SkipField
+except ImportError:
+    from pydantic import Field, StrictBool
+    from pydantic.fields import ModelField
+    from pydantic.schema import SkipField
+
 from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure

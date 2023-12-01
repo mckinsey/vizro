@@ -2,7 +2,11 @@ import re
 
 import pandas as pd
 import pytest
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:
+    from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px

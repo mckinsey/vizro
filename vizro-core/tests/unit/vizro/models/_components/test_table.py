@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dash_table, dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:
+    from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px

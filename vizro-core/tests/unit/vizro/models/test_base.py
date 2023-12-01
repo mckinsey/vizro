@@ -1,7 +1,11 @@
 from typing import List, Literal, Optional, Union
 
 import pytest
-from pydantic import Field, ValidationError
+
+try:
+    from pydantic.v1 import Field, ValidationError
+except ImportError:
+    from pydantic import Field, ValidationError
 from typing_extensions import Annotated
 
 import vizro.models as vm

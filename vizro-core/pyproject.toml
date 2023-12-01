@@ -21,7 +21,7 @@ dependencies = [
   # 2.11 needed for https://dash.plotly.com/dash-in-jupyter
   "dash_bootstrap_components",
   "pandas",
-  "pydantic>=1.10.13, <2",  # must be synced with pre-commit mypy hook
+  "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook
   "dash_daq",
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
   "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970

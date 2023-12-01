@@ -1,7 +1,11 @@
 from typing import Dict, List, Literal, Optional
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory

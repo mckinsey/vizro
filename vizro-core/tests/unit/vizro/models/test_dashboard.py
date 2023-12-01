@@ -7,7 +7,11 @@ import dash_bootstrap_components as dbc
 import plotly
 import pytest
 from dash import html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:
+    from pydantic import ValidationError
 
 import vizro
 import vizro.models as vm
