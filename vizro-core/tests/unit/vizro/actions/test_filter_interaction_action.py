@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 import plotly.express as px
 import pytest
 from dash._callback_context import context_value
@@ -122,8 +124,9 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", [])()
 
-        assert len(result) == 0
+        assert result == expected
 
     @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
@@ -146,9 +149,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+                "box_chart": target_box_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
-        assert result.box_chart == target_box_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction,target_scatter_filtered_continent",
@@ -171,8 +179,13 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -196,9 +209,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+                "box_chart": target_box_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
-        assert result.box_chart == target_box_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
@@ -237,8 +255,13 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -266,9 +289,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+                "box_chart": target_box_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
-        assert result.box_chart == target_box_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -296,9 +324,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_filtered_continent,
+                "box_chart": target_box_filtered_continent,
+            }
+        )
 
-        assert result.scatter_chart == target_scatter_filtered_continent
-        assert result.box_chart == target_box_filtered_continent
+        assert result._asdict() == expected._asdict()
 
     # TODO: Simplify parametrization, such that we have less repetitive code
     # TODO: Eliminate above xfails

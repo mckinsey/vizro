@@ -3,7 +3,7 @@ import logging
 from collections.abc import Collection
 from typing import Any, Dict, List
 
-from dash import Input, Output, State, callback, ctx, html
+from dash import Input, Output, State, callback, html
 from pydantic import Field, validator
 
 import vizro.actions
@@ -94,7 +94,7 @@ class Action(VizroBaseModel):
 
         return callback_inputs, callback_outputs, action_components
 
-    def _action_callback_function(self, **inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def _action_callback_function(self, inputs: Dict[str, Any], callback_outputs: Dict[str, Any]) -> Dict[str, Any]:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
@@ -104,7 +104,7 @@ class Action(VizroBaseModel):
         return_value = self.function(**inputs)
 
         # Action callback outputs
-        outputs = list(ctx.outputs_grouping.keys())
+        outputs = list(callback_outputs.keys())
         outputs.remove("action_finished")
 
         if return_value is None and len(outputs) == 0:
@@ -115,7 +115,7 @@ class Action(VizroBaseModel):
             if set(return_value._fields) != set(outputs):
                 raise ValueError(
                     f"Action's returned fields {set(return_value._fields)} does not match the action's defined "
-                    f"outputs {set(outputs) if outputs else {}}."
+                    f"outputs {set(outputs) or {}}."
                 )
             return_dict = return_value._asdict()
         else:
@@ -154,7 +154,7 @@ class Action(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
-            return self._action_callback_function(**inputs)
+            return self._action_callback_function(inputs=inputs, callback_outputs=callback_outputs)
 
         return html.Div(
             children=action_components,

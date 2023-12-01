@@ -57,7 +57,11 @@ def _apply_filters(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if target not in action.function["targets"] or ALL_OPTION in selector_value:
+            if (
+                action.function._function.__name__ != "_filter"
+                or target not in action.function["targets"]
+                or ALL_OPTION in selector_value
+            ):
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -119,7 +123,7 @@ def _apply_table_filter_interaction(
     source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
 
     for action in source_table_actions:
-        if target not in action.function["targets"]:
+        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
             continue
         column = ctd_active_cell["value"]["column_id"]
         derived_viewport_data_row = ctd_active_cell["value"]["row"]
@@ -203,7 +207,7 @@ def _get_parametrized_config(
             for action in selector_actions:
                 action_targets = _create_target_arg_mapping(action.function["targets"])
 
-                if target not in action_targets:
+                if action.function._function.__name__ != "_parameter" or target not in action_targets:
                     continue
 
                 for action_targets_arg in action_targets[target]:
