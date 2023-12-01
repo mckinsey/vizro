@@ -20,7 +20,7 @@ class TestNavLinkInstantiation:
 
         assert hasattr(nav_link, "id")
         assert nav_link.label == "Label"
-        assert nav_link.icon is None
+        assert nav_link.icon == ""
         assert nav_link.pages == []
 
     def test_nav_link_mandatory_and_optional(self, pages_as_list):

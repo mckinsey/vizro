@@ -33,7 +33,7 @@ class Page(VizroBaseModel):
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (Optional[str]): Path to navigate to page. Defaults to `None`.
+        path (str): Path to navigate to page. Defaults to `""`.
 
     Raises:
         ValueError: If number of page and grid components is not the same
@@ -43,7 +43,7 @@ class Page(VizroBaseModel):
     title: str = Field(..., description="Title to be displayed.")
     layout: Optional[Layout] = None
     controls: List[ControlType] = []
-    path: Optional[str] = Field(None, description="Path to navigate to page.")
+    path: str = Field("", description="Path to navigate to page.")
 
     # TODO: Remove default on page load action if possible
     actions: List[ActionsChain] = []

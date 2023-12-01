@@ -71,7 +71,7 @@ class TestSliderInstantiation:
         assert slider.max is None
         assert slider.marks is None
         assert slider.value is None
-        assert slider.title is None
+        assert slider.title == ""
         assert slider.actions == []
 
     @pytest.mark.parametrize(

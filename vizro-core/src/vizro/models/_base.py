@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Type, Union
+from typing import Any, List, Type, Union
 
 from pydantic import BaseModel, Field, validator
 from pydantic.fields import SHAPE_LIST, ModelField
@@ -13,12 +13,12 @@ class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (Optional[str]): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `None`.
+        id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
             When no ID is chosen, ID will be automatically generated.
     """
 
-    id: Optional[str] = Field(
-        None,
+    id: str = Field(
+        "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
     )
