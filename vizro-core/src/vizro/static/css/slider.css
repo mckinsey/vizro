@@ -134,3 +134,7 @@
   justify-content: space-between;
   width: 100%;
 }
+
+.input.dash-input:invalid {
+    outline: none;
+}
