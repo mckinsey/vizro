@@ -69,23 +69,15 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
+    common_args = {"offset": 6, "withArrow": True, "zIndex": 1, "position": "bottom-start"}
+
     def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_button = dbc.Button(
-            id="nav_link",
-            children=[
-                dmc.Tooltip(
-                    label="Label",
-                    offset=6,
-                    withArrow=True,
-                    zIndex=1,
-                    children=[html.Span("icon", className="material-symbols-outlined")],
-                    position="bottom-start",
-                )
-            ],
+            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
             active=True,
             href="/",
         )
@@ -98,17 +90,7 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.Button(
-            id="nav_link",
-            children=[
-                dmc.Tooltip(
-                    label="Label",
-                    offset=6,
-                    withArrow=True,
-                    zIndex=1,
-                    children=[html.Span("icon", className="material-symbols-outlined")],
-                    position="bottom-start",
-                )
-            ],
+            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
             active=False,
             href="/",
         )

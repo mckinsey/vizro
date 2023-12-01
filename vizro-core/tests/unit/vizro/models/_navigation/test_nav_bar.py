@@ -74,6 +74,8 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
+    common_args = {"offset": 6, "withArrow": True, "zIndex": 1, "position": "bottom-start"}
+
     def test_nav_bar_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
@@ -81,16 +83,7 @@ class TestNavBarBuildMethod:
         expected_button = html.Div(
             [
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Group",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_1", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
                     active=True,
                     href="/",
                 )
@@ -109,30 +102,12 @@ class TestNavBarBuildMethod:
         expected_buttons = html.Div(
             [
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Page 1",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_1", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
                     active=True,
                     href="/",
                 ),
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Page 2",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_2", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
                     active=False,
                     href="/page-2",
                 ),
@@ -152,16 +127,7 @@ class TestNavBarBuildMethod:
         expected_button = html.Div(
             [
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Group",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_1", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
                     active=False,
                     href="/",
                 )
@@ -179,30 +145,12 @@ class TestNavBarBuildMethod:
         expected_buttons = html.Div(
             [
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Page 1",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_1", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
                     active=False,
                     href="/",
                 ),
                 dbc.Button(
-                    children=[
-                        dmc.Tooltip(
-                            label="Page 2",
-                            offset=6,
-                            withArrow=True,
-                            zIndex=1,
-                            children=[html.Span("filter_2", className="material-symbols-outlined")],
-                            position="bottom-start",
-                        )
-                    ],
+                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
                     active=False,
                     href="/page-2",
                 ),
