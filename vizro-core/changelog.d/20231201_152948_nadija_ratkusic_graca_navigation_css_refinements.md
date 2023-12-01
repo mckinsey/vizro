@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Enable tooltip functionality for `NavLink` icons. ([#186](https://github.com/mckinsey/vizro/pull/186))
 
- 
 <!--
 ### Changed
 
