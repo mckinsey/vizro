@@ -2,6 +2,7 @@
 import re
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -73,7 +74,21 @@ class TestNavLinkBuildMethod:
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
-        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=True, href="/")
+        expected_button = dbc.Button(
+            id="nav_link",
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    offset=6,
+                    withArrow=True,
+                    zIndex=1,
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
+            ],
+            active=True,
+            href="/",
+        )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
 
@@ -82,6 +97,20 @@ class TestNavLinkBuildMethod:
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
-        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=False, href="/")
+        expected_button = dbc.Button(
+            id="nav_link",
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    offset=6,
+                    withArrow=True,
+                    zIndex=1,
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
+            ],
+            active=False,
+            href="/",
+        )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link
