@@ -135,6 +135,6 @@
   width: 100%;
 }
 
-.input.dash-input:invalid {
-    outline: none;
+input.dash-input:invalid {
+  outline: none;
 }
