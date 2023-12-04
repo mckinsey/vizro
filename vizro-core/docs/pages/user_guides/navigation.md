@@ -174,11 +174,11 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
     [NavBar]: ../../assets/user_guides/navigation/nav_bar.png
 
 
-Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the icons are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter).
+Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the icons are from [the Google Material `filter` icons library](https://fonts.google.com/icons?icon.query=filter).
 
 ## Customizing the navigation bar
 
-Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink`s yourself.
+Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
 
 ### `NavLink` examples
 
@@ -227,6 +227,8 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
     [AccordionInsideNavBar]: ../../assets/user_guides/navigation/accordion_inside_nav_bar.png
 
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
+
+*Note: Spaces in the icon's name are replaced with underscores*
 
 !!! example "Custom icon"
     === "app.py"
