@@ -66,12 +66,12 @@ page = vm.Page(
                                 color="continent",
                             ),
                         ),
-                        # vm.Button(
-                        #     text="Export data",
-                        #     actions=[
-                        #         vm.Action(function=export_data()),
-                        #     ],
-                        # ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                vm.Action(function=export_data()),
+                            ],
+                        ),
                     ],
                 ),
                 vm.Container(
@@ -170,7 +170,7 @@ page_2 = vm.Page(
         vm.Container(
             id="cont_2",
             title="Container II",
-            layout=vm.Layout(grid=[[0]], row_min_height="300px"),
+            layout=vm.Layout(grid=[[0, 1]], row_min_height="300px"),
             components=[
                 vm.Graph(
                     id="graph_13",
@@ -182,12 +182,12 @@ page_2 = vm.Page(
                         color="continent",
                     )
                 ),
-                # vm.Button(
-                #     text="Export data",
-                #     actions=[
-                #         vm.Action(function=export_data()),
-                #     ],
-                # ),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=export_data()),
+                    ],
+                ),
             ],
         ),
     ],
@@ -215,12 +215,12 @@ page_3 = vm.Page(
                 )
             ]
         ),
-        # vm.Button(
-        #     text="Export data",
-        #     actions=[
-        #         vm.Action(function=export_data()),
-        #     ],
-        # ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+            ],
+        ),
     ],
     controls=[
         vm.Filter(column="continent"),
@@ -321,7 +321,7 @@ page_5 = vm.Page(
                             [0, 0, 0, 0],
                             [1, 1, 2, 2],
                             [1, 1, 2, 2],
-                            # [3, -1, -1, -1]
+                            [3, -1, -1, -1]
                         ]
                     ),
                     id="tab-1r",
@@ -360,12 +360,12 @@ page_5 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                        # vm.Button(
-                        #     text="Export data",
-                        #     actions=[
-                        #         vm.Action(function=export_data()),
-                        #     ],
-                        # ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                vm.Action(function=export_data()),
+                            ],
+                        ),
                     ],
                 ),
                 vm.Container(
