@@ -323,15 +323,15 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Table", "Tabs", "SubPage"],
+    Union["Button", "Card", "Graph", "Table", "Tabs", "Container"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
-[`Graph`][vizro.models.Graph], [`SubPage`][vizro.models.SubPage]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Container`][vizro.models.Container], 
+[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`Tabs`][vizro.models.Tabs]"""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."

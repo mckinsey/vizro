@@ -10,34 +10,34 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 if TYPE_CHECKING:
-    from vizro.models._components import SubPage
+    from vizro.models._components import Container
 
 
 class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
-    subpages: List[SubPage] = []  # LQ: Shall we rename to subpage, tabs, components, container?
+    tabs: List[Container] = []
 
-    @validator("subpages", always=True)
-    def validate_subpages(cls, subpages):
-        if not subpages:
+    @validator("tabs", always=True)
+    def validate_tabs(cls, tabs):
+        if not tabs:
             raise ValueError("Ensure this value has at least 1 item.")
-        return subpages
+        return tabs
 
     @_log_call
     def build(self):
         return dmc.Tabs(
             id=self.id,
-            value=self.subpages[0].id,
+            value=self.tabs[0].id,
             children=[
                 dmc.TabsList(
-                    [dmc.Tab(subpage.title, value=subpage.id, className="tab-single") for subpage in self.subpages],
+                    [dmc.Tab(tab.title, value=tab.id, className="tab-single") for tab in self.tabs],
                     className="tabs-list",
                 ),
             ]
             + [
-                dmc.TabsPanel(html.Div(children=[subpage.build()], className="tabs_panel", style={"height": "100%"}),
-                              value=subpage.id, style={"height": "100%"})
-                for subpage in self.subpages
+                dmc.TabsPanel(html.Div(children=[tab.build()], className="tabs_panel", style={"height": "100%"}),
+                              value=tab.id, style={"height": "100%"})
+                for tab in self.tabs
             ],
             persistence=True,
             style={"height": "100%"},

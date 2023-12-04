@@ -13,12 +13,11 @@ if TYPE_CHECKING:
     from vizro.models import Layout
 
 
-# LQ: What should the final naming be? SubPage, Container, ...
-class SubPage(VizroBaseModel):
+class Container(VizroBaseModel):
     components: List[ComponentType]
     title: Optional[str]
     layout: Optional[Layout] = None
-    type: Literal["sub_page"] = "sub_page"
+    type: Literal["container"] = "container"
 
     @validator("layout", always=True)
     def set_layout(cls, layout, values):
@@ -53,7 +52,8 @@ class SubPage(VizroBaseModel):
         ]
         components_container = self._create_component_container(components_content)
 
-        return html.Div(children=[html.H3(self.title), components_container], className="subpage-container")
+        # TODO: Perhaps there is a better name for: className="container-container"
+        return html.Div(children=[html.H3(self.title), components_container], className="container-container")
 
     def _create_component_container(self, components_content):
         component_container = html.Div(

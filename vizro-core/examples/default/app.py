@@ -28,8 +28,8 @@ page = vm.Page(
         # ),
         vm.Tabs(
             id="first-tab",
-            subpages=[
-                vm.SubPage(
+            tabs=[
+                vm.Container(
                     id="tab-1",
                     title="Tab I Title",
                     components=[
@@ -66,15 +66,15 @@ page = vm.Page(
                                 color="continent",
                             ),
                         ),
-                        vm.Button(
-                            text="Export data",
-                            actions=[
-                                vm.Action(function=export_data()),
-                            ],
-                        ),
+                        # vm.Button(
+                        #     text="Export data",
+                        #     actions=[
+                        #         vm.Action(function=export_data()),
+                        #     ],
+                        # ),
                     ],
                 ),
-                vm.SubPage(
+                vm.Container(
                     id="tab-2",
                     title="Tab II",
                     components=[
@@ -137,7 +137,7 @@ page = vm.Page(
 page_2 = vm.Page(
     title="Containers page",
     components=[
-        vm.SubPage(
+        vm.Container(
             id="cont_1",
             title="Container I",
             layout=vm.Layout(grid=[[0, 1]]),
@@ -167,10 +167,10 @@ page_2 = vm.Page(
                 ),
             ],
         ),
-        vm.SubPage(
+        vm.Container(
             id="cont_2",
             title="Container II",
-            layout=vm.Layout(grid=[[0, 1]], row_min_height="300px"),
+            layout=vm.Layout(grid=[[0]], row_min_height="300px"),
             components=[
                 vm.Graph(
                     id="graph_13",
@@ -180,14 +180,14 @@ page_2 = vm.Page(
                         x="continent",
                         y="lifeExp",
                         color="continent",
-                    ),
+                    )
                 ),
-                vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(function=export_data()),
-                    ],
-                ),
+                # vm.Button(
+                #     text="Export data",
+                #     actions=[
+                #         vm.Action(function=export_data()),
+                #     ],
+                # ),
             ],
         ),
     ],
@@ -199,9 +199,9 @@ page_3 = vm.Page(
     title="Third page",
     components=[
         vm.Tabs(
-            subpages=[
-                vm.SubPage(
-                    id="subpage_table",
+            tabs=[
+                vm.Container(
+                    id="container_table",
                     title="Tab I Table",
                     components=[
                         vm.Table(
@@ -215,12 +215,12 @@ page_3 = vm.Page(
                 )
             ]
         ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-            ],
-        ),
+        # vm.Button(
+        #     text="Export data",
+        #     actions=[
+        #         vm.Action(function=export_data()),
+        #     ],
+        # ),
     ],
     controls=[
         vm.Filter(column="continent"),
@@ -233,9 +233,9 @@ page_4 = vm.Page(
     components=[
         vm.Tabs(
             id="page-4-tab1",
-            subpages=[
-                vm.SubPage(
-                    title="Tab 1 subpage 1",
+            tabs=[
+                vm.Container(
+                    title="Tab 1 container 1",
                     components=[
                         vm.Graph(
                             id="graph-44",
@@ -250,8 +250,8 @@ page_4 = vm.Page(
                         ),
                     ]
                 ),
-                vm.SubPage(
-                    title="Tab 1 subpage 2",
+                vm.Container(
+                    title="Tab 1 container 2",
                     components=[
                         vm.Graph(
                             id="graph-441",
@@ -270,9 +270,9 @@ page_4 = vm.Page(
         ),
         vm.Tabs(
             id="page-4-tab2",
-            subpages=[
-                vm.SubPage(
-                    title="Tab 2 subpage",
+            tabs=[
+                vm.Container(
+                    title="Tab 2 container",
                     components=[
                         vm.Graph(
                             id="graph-45",
@@ -287,8 +287,8 @@ page_4 = vm.Page(
                         ),
                     ]
                 ),
-                vm.SubPage(
-                    title="Tab 2 subpage 2",
+                vm.Container(
+                    title="Tab 2 container 2",
                     components=[
                         vm.Graph(
                             id="graph-451",
@@ -313,15 +313,15 @@ page_5 = vm.Page(
     components=[
         vm.Tabs(
             id="first-tabr",
-            subpages=[
-                vm.SubPage(
+            tabs=[
+                vm.Container(
                     layout=vm.Layout(
                         grid=[
                             [0, 0, 0, 0],
                             [0, 0, 0, 0],
                             [1, 1, 2, 2],
                             [1, 1, 2, 2],
-                            [3, -1, -1, -1]
+                            # [3, -1, -1, -1]
                         ]
                     ),
                     id="tab-1r",
@@ -360,15 +360,15 @@ page_5 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                        vm.Button(
-                            text="Export data",
-                            actions=[
-                                vm.Action(function=export_data()),
-                            ],
-                        ),
+                        # vm.Button(
+                        #     text="Export data",
+                        #     actions=[
+                        #         vm.Action(function=export_data()),
+                        #     ],
+                        # ),
                     ],
                 ),
-                vm.SubPage(
+                vm.Container(
                     id="tab-2r",
                     title="Tab II",
                     layout=vm.Layout(
@@ -422,7 +422,7 @@ page_5 = vm.Page(
 
 page_6 = vm.Page(
     id="page_6",
-    title="Nested subpages",
+    title="Nested container",
     layout=vm.Layout(
         grid=[
             [0, 0, 0, 0],
@@ -432,14 +432,14 @@ page_6 = vm.Page(
         ]
     ),
     components=[
-        vm.SubPage(
+        vm.Container(
             layout=vm.Layout(
                 grid=[
                     [0, 1], [0, 1]
                 ]
             ),
             components=[
-                vm.SubPage(
+                vm.Container(
                     layout=vm.Layout(
                         grid=[
                             [0, 0, 1, 1],
@@ -495,7 +495,7 @@ page_6 = vm.Page(
                         ),
                     ]
                 ),
-                vm.SubPage(
+                vm.Container(
                     components=[vm.Graph(
                             id="graph-6rn",
                             figure=px.line(
@@ -512,8 +512,8 @@ page_6 = vm.Page(
                 )
             ]
         ),
-        vm.SubPage(
-            title="Second subpage",
+        vm.Container(
+            title="Second container",
             components=[
                 vm.Graph(
                     id="graph-6rnn",

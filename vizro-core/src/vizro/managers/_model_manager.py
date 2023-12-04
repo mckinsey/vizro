@@ -65,7 +65,7 @@ class ModelManager:
 
     # TODO: consider returning with yield
     def _get_model_children(self, model_id: ModelID) -> List[ModelID]:
-        """Gets all components and subpages recursively of the model with the `model_id`."""
+        """Gets all components and tabs recursively of the model with the `model_id`."""
         model_children = []
 
         def __get_model_children_helper(model: VizroBaseModel) -> None:
@@ -73,8 +73,8 @@ class ModelManager:
             if hasattr(model, "components"):
                 for sub_model in model.components:
                     __get_model_children_helper(model=sub_model)
-            if hasattr(model, "subpages"):
-                for sub_model in model.subpages:
+            if hasattr(model, "tabs"):
+                for sub_model in model.tabs:
                     __get_model_children_helper(model=sub_model)
 
         __get_model_children_helper(model=self.__models[model_id])
