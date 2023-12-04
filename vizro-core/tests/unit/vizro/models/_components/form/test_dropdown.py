@@ -21,6 +21,7 @@ def expected_dropdown_with_all():
                 value="ALL",
                 multi=True,
                 persistence=True,
+                persistence_type="session",
                 className="selector_body_dropdown",
             ),
         ],
@@ -40,6 +41,7 @@ def expected_dropdown_without_all():
                 value="A",
                 multi=False,
                 persistence=True,
+                persistence_type="session",
                 className="selector_body_dropdown",
             ),
         ],
@@ -59,7 +61,7 @@ class TestDropdownInstantiation:
         assert dropdown.options == []
         assert dropdown.value is None
         assert dropdown.multi is True
-        assert dropdown.title is None
+        assert dropdown.title == ""
         assert dropdown.actions == []
 
     def test_create_dropdown_mandatory_and_optional(self):
@@ -103,7 +105,7 @@ class TestDropdownInstantiation:
         assert dropdown.options == expected
         assert dropdown.value is None
         assert dropdown.multi is True
-        assert dropdown.title is None
+        assert dropdown.title == ""
         assert dropdown.actions == []
 
     @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
@@ -151,7 +153,7 @@ class TestDropdownInstantiation:
         assert dropdown.type == "dropdown"
         assert dropdown.value == test_value
         assert dropdown.multi == multi
-        assert dropdown.title is None
+        assert dropdown.title == ""
         assert dropdown.actions == []
 
     @pytest.mark.parametrize(

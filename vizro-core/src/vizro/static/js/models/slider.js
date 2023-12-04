@@ -7,6 +7,9 @@ export function _update_slider_values(start, slider, input_store, self_data) {
       dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
   }
   if (trigger_id === `${self_data["id"]}_text_value`) {
+    if (isNaN(start)) {
+      return dash_clientside.no_update;
+    }
     text_value = start;
   } else if (trigger_id === self_data["id"]) {
     text_value = slider;

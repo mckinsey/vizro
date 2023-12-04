@@ -30,10 +30,15 @@ jobs:
           echo "new_release=${{ env.NEW_RELEASE }}" >> $GITHUB_OUTPUT
           echo "package_name=${{ env.PACKAGE_NAME }}" >> $GITHUB_OUTPUT
           echo "package_version=${{ env.PACKAGE_VERSION }}" >> $GITHUB_OUTPUT
+          if [ "${{ env.PACKAGE_NAME }}" == "vizro-ai" ]; then
+            echo "dist_package_name=vizro_ai" >> $GITHUB_OUTPUT
+          else echo "dist_package_name=${{ needs.check-version.outputs.package_name }}" >> $GITHUB_OUTPUT
+          fi
     outputs:
       new_release: ${{ steps.version_check.outputs.new_release }}
       package_name: ${{ steps.version_check.outputs.package_name }}
       package_version: ${{ steps.version_check.outputs.package_version }}
+      dist_package_name: ${{ steps.version_check.outputs.dist_package_name }}
 
   build-publish:
     needs: [check-version]
@@ -69,8 +74,10 @@ jobs:
           hatch build
       - name: Set PyPI token
         run: |
-          if [ "${{ needs.check-version.outputs.PACKAGE_NAME }}" == "vizro-core" ]; then
-              echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
+          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
+          elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
           fi
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -80,10 +87,10 @@ jobs:
       - name: Check correct package uploaded to PyPI
         run: |
           cd "${{ needs.check-version.outputs.package_name }}/dist"
-          local=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          local=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
           cd ..
-          pip download vizro==${{needs.check-version.outputs.package_version}} -d . --no-deps --timeout 300
-          pypi=$(md5sum vizro-${{needs.check-version.outputs.package_version}}-py3-none-any.whl)
+          pip download ${{ needs.check-version.outputs.package_name }}==${{ needs.check-version.outputs.package_version }} -d . --no-deps --timeout 300
+          pypi=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
           if [[ $local = $pypi ]]; then echo "md5 hash is the same"; else echo "md5 hash is not the same"; exit 1; fi
 
   version-bump:

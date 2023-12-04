@@ -4,7 +4,10 @@ from ._action import Action
 from ._components import Card, Graph, Table, Tabs, SubPage
 from ._components.form import Button, Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
+from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
+from ._navigation.nav_bar import NavBar
+from ._navigation.nav_link import NavLink
 from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
@@ -15,6 +18,8 @@ Page.update_forward_refs(
     Button=Button, Card=Card, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs, SubPage=SubPage
 )
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
+NavBar.update_forward_refs(NavLink=NavLink)
+NavLink.update_forward_refs(Accordion=Accordion)
 
 # Please keep alphabetically ordered
 __all__ = [
@@ -27,6 +32,8 @@ __all__ = [
     "Filter",
     "Graph",
     "Layout",
+    "NavBar",
+    "NavLink",
     "Navigation",
     "Page",
     "Parameter",

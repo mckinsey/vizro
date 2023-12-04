@@ -1,6 +1,18 @@
 # Vizro-AI
 
-Vizro-AI is a tool for generating data visualizations.
+Vizro-AI is a tool designed for generating data visualizations. It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly.
+
+## Why Vizro-AI?
+
+### Easy-to-use
+One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts while offering detailed explanations about the data and the generated code.
+
+### Visually-optimized
+Vizro-AI also caters data scientist who often spend more time on formatting than creating a visualization. Vizro-AI enables the user to speed up the formatting process and create a visually appealing chart, also leveraging the design library of Vizro.
+
+### Dashboard-ready
+Vizro-AI focuses currently on plotly and is used to create interactive chart. Thus, it is primarily aimed at dashboards, ensuring that the generated charts are well-suited for dashboard applications.
+
 !!! notice "Notice"
     Please review this [disclaimer](pages/explanation/disclaimer.md)
     before using the `vizro-ai` package.

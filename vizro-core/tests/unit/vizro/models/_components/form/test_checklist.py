@@ -21,6 +21,7 @@ def expected_checklist():
                 value=["ALL"],
                 className="selector_body_checklist",
                 persistence=True,
+                persistence_type="session",
             ),
         ],
         className="selector_container",
@@ -38,7 +39,7 @@ class TestChecklistInstantiation:
         assert checklist.type == "checklist"
         assert checklist.options == []
         assert checklist.value is None
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     def test_create_checklist_mandatory_and_optional(self):
@@ -80,7 +81,7 @@ class TestChecklistInstantiation:
         assert checklist.type == "checklist"
         assert checklist.options == expected
         assert checklist.value is None
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
@@ -112,7 +113,7 @@ class TestChecklistInstantiation:
         assert hasattr(checklist, "id")
         assert checklist.type == "checklist"
         assert checklist.value == test_value
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     @pytest.mark.parametrize(

@@ -13,14 +13,23 @@ GITHUB_ENDPOINT="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/rele
 
 BODY=$(jq -Rs . < "$BODY_PATH")
 
+if [ "$PACKAGE" = "vizro-core" ]; then
+  TAG_NAME="${VERSION}"
+  MAKE_LATEST=true
+else
+  TAG_NAME="${PACKAGE}-${VERSION}"
+  MAKE_LATEST=false
+fi
+
 PAYLOAD=$(cat <<-END
 {
-    "tag_name": "${VERSION}",
+    "tag_name": "${TAG_NAME}",
     "target_commitish": "main",
     "name": "${PACKAGE}-${VERSION}",
     "body": ${BODY},
     "draft": false,
-    "prerelease": false
+    "prerelease": false,
+    "make_latest": "${MAKE_LATEST}"
 }
 END
 )
@@ -32,3 +41,5 @@ STATUS=$(curl -L \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   ${GITHUB_ENDPOINT} \
   -d "${PAYLOAD}")
+
+echo "${STATUS}"

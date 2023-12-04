@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -14,16 +14,16 @@ class UserInput(VizroBaseModel):
 
     Args:
         type (Literal["user_input"]): Defaults to `"user_input"`.
-        placeholder (Optional[str]): Default text to display in input field. Defaults to `None`.
+        placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (Optional[List[Action]]): Defaults to `[]`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         input_type (Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"]):
             Type of value to validate user input against. Defaults to 'text'.
     """
 
     type: Literal["user_input"] = "user_input"
-    title: Optional[str] = Field(None, description="Title to be displayed")
-    placeholder: Optional[str] = Field(None, description="Default text to display in input field")
+    title: str = Field("", description="Title to be displayed")
+    placeholder: str = Field("", description="Default text to display in input field")
     input_type: Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"] = Field(
         "text", description="Type of value to validate user input against. Defaults to 'text'."
     )
@@ -36,12 +36,13 @@ class UserInput(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,
                     type=self.input_type,
                     persistence=True,
+                    persistence_type="session",
                     debounce=True,
                     className="user_input",
                 ),

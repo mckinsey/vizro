@@ -33,6 +33,7 @@ def expected_slider():
                         value=5,
                         included=False,
                         persistence=True,
+                        persistence_type="session",
                         className="slider_control",
                     ),
                     dcc.Input(
@@ -44,9 +45,10 @@ def expected_slider():
                         max=10,
                         value=5,
                         persistence=True,
+                        persistence_type="session",
                         className="slider_input_field_right",
                     ),
-                    dcc.Store(id="slider_id_temp_store", storage_type="local"),
+                    dcc.Store(id="slider_id_temp_store", storage_type="session"),
                 ],
                 className="slider_inner_container",
             ),
@@ -69,7 +71,7 @@ class TestSliderInstantiation:
         assert slider.max is None
         assert slider.marks is None
         assert slider.value is None
-        assert slider.title is None
+        assert slider.title == ""
         assert slider.actions == []
 
     @pytest.mark.parametrize(

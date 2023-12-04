@@ -125,7 +125,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
                 return html.Div(
                     [
-                        html.P(self.title, id="range_slider_title") if self.title else html.Div(hidden=True),
+                        html.P(self.title, id="range_slider_title") if self.title else None,
                         html.Div(
                             [
                                 dcc.RangeSlider(
@@ -137,6 +137,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                     className="range_slider_control" if self.step else "range_slider_control_no_space",
                                     value=value,
                                     persistence=True,
+                                    persistence_type="session",
                                     allowCross=False, # (3)!
                                     tooltip={"placement": "bottom", "always_visible": True}, # (4)!
                                 ),
@@ -154,6 +155,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                             value=value[0],
                                             size="24px",
                                             persistence=True,
+                                            persistence_type="session",
                                         ),
                                         dcc.Input(
                                             id=f"{self.id}_end_value",
@@ -166,8 +168,9 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                                             else "slider_input_field_no_space_right",
                                             value=value[1],
                                             persistence=True,
+                                            persistence_type="session",
                                         ),
-                                        dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
+                                        dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
                                     ],
                                     className="slider_input_container",
                                 ),
@@ -355,3 +358,5 @@ vm.Page.add_type("components", Jumbotron)
     Please note that users of this package are responsible for the content of any custom-created component,
     function or integration they write - especially with regard to leaking any sensitive information or exposing to
     any security threat during implementation.
+
+    By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser. Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.

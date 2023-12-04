@@ -1,6 +1,6 @@
 import itertools
 from collections.abc import Mapping
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
@@ -13,16 +13,18 @@ from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 
 
+# TODO: if and when made public, consider naming as NavAccordion to be consistent with other
+#  navigation models.
 class Accordion(VizroBaseModel):
-    """Accordion to be used as selector in [`Navigation`][vizro.models.Navigation].
+    """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
 
     Args:
-        pages (Dict[str, List[str]]): A dictionary with a page group title as key and a list of page IDs as values.
+        type (Literal["accordion"]): Defaults to `"accordion"`.
+        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
     """
 
-    pages: Dict[str, List[str]] = Field(
-        ..., description="A dictionary with a page group title as key and a list of page IDs as values."
-    )
+    type: Literal["accordion"] = "accordion"
+    pages: Dict[str, List[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
@@ -34,9 +36,10 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None):
+        # Note build does not return _NavBuildType but just a single html.Div with id="nav_panel_outer".
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
-            return html.Div(hidden=True)
+            return html.Div(hidden=True, id="nav_panel_outer")
 
         accordion_items = []
         for page_group, page_members in self.pages.items():
@@ -59,7 +62,6 @@ class Accordion(VizroBaseModel):
                     persistence_type="session",
                     always_open=True,
                 ),
-                html.Hr(),
             ],
             className="nav_panel",
             id="nav_panel_outer",

@@ -28,5 +28,4 @@ def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[Mode
         ctds_filter=ctx.args_grouping["filters"],
         ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
         ctds_parameters=ctx.args_grouping["parameters"],
-        ctd_theme=ctx.args_grouping["theme_selector"],
     )

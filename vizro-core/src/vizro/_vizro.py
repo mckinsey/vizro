@@ -23,6 +23,9 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="")
+        self.dash.config.external_stylesheets.append(
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.

@@ -12,7 +12,7 @@ To run Vizro-AI in jupyter, create a new cell and execute the code below to rend
 !!! example "Bar chart"
     === "Code for the cell"
         ```py
-        import plotly.express as px
+        import vizro.plotly.express as px
         from vizro_ai import VizroAI
 
         from dotenv import load_dotenv
@@ -21,7 +21,7 @@ To run Vizro-AI in jupyter, create a new cell and execute the code below to rend
         vizro_ai = VizroAI()
 
         df = px.data.gapminder()
-        vizro_ai.plot(df, "visualize the life expectancy per continent")
+        vizro_ai.plot(df, "visualize the life expectancy per continent and color each continent")
         ```
     === "Result"
         [![BarChart]][BarChart]
@@ -43,7 +43,7 @@ You can utilize Vizro-AI in any standard development environment by creating a `
 !!! example "Line chart"
     === "example.py"
         ```py
-        import plotly.express as px
+        import vizro.plotly.express as px
         from vizro_ai import VizroAI
 
         vizro_ai = VizroAI()
@@ -65,7 +65,7 @@ Vizro-AI's `_get_chart_code` method returns the Python code string that can be u
 !!! example "Application integration"
     === "app.py"
         ```py
-        import plotly.express as px
+        import vizro.plotly.express as px
         from vizro_ai import VizroAI
 
         vizro_ai = VizroAI()
