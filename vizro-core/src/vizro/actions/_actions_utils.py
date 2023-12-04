@@ -271,4 +271,4 @@ def _get_modified_page_figures(
             data_frame=filtered_data[target], **parameterized_config[target]
         )
 
-    return namedtuple("outputs", outputs.keys())(**outputs)
+    return namedtuple("Outputs", outputs.keys())(**outputs)

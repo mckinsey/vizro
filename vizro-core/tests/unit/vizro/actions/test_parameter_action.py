@@ -172,7 +172,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_y,
             }
@@ -212,7 +212,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_hover_data,
             }
@@ -244,7 +244,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_y,
                 "box_chart": target_box_parameter_y,
@@ -282,7 +282,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_y_and_x,
             }
@@ -323,7 +323,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_y_and_x,
                 "box_chart": target_box_parameter_y_and_x,
@@ -365,7 +365,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_parameter_y_and_x,
             }
@@ -374,7 +374,7 @@ class TestParameter:
         assert result._asdict() == expected._asdict()
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
-        expected = namedtuple("outputs", ["box_chart"])(
+        expected = namedtuple("Outputs", ["box_chart"])(
             **{
                 "box_chart": target_box_parameter_y_and_x,
             }

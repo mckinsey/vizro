@@ -124,7 +124,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", [])()
+        expected = namedtuple("Outputs", [])()
 
         assert result == expected
 
@@ -149,7 +149,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
                 "box_chart": target_box_filtered_continent,
@@ -179,7 +179,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
             }
@@ -209,7 +209,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
                 "box_chart": target_box_filtered_continent,
@@ -255,7 +255,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["scatter_chart"])(
+        expected = namedtuple("Outputs", ["scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
             }
@@ -289,7 +289,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
                 "box_chart": target_box_filtered_continent,
@@ -324,7 +324,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["box_chart", "scatter_chart"])(
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
             **{
                 "scatter_chart": target_scatter_filtered_continent,
                 "box_chart": target_box_filtered_continent,

@@ -133,7 +133,7 @@ class TestExportData:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
         # TODO: DO WE NEED TO USED ELLIPSIS INSTEAD OF OUTPUTS HERE?
-        expected = namedtuple("outputs", [])()
+        expected = namedtuple("Outputs", [])()
 
         assert result == expected
 
@@ -147,7 +147,7 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",
@@ -181,7 +181,7 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",
@@ -208,7 +208,7 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",
@@ -233,7 +233,7 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",
@@ -309,7 +309,7 @@ class TestExportData:
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",
@@ -374,7 +374,7 @@ class TestExportData:
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = namedtuple("outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
+        expected = namedtuple("Outputs", ["download_dataframe_box_chart", "download_dataframe_scatter_chart"])(
             **{
                 "download_dataframe_scatter_chart": {
                     "filename": "scatter_chart.csv",

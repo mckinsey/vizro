@@ -256,13 +256,13 @@ class TestActionPrivateMethods:
             ),
             # single outputs
             (
-                (namedtuple("outputs", ["component_1_property"])("new_value")),
+                (namedtuple("Outputs", ["component_1_property"])("new_value")),
                 ["component_1_property"],
                 {"component_1_property": "new_value"},
             ),
             # multiple outputs
             (
-                (namedtuple("outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
+                (namedtuple("Outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
                 ["component_1_property", "component_2_property"],
                 {"component_1_property": "new_value", "component_2_property": "new_value_2"},
             ),
@@ -326,11 +326,11 @@ class TestActionPrivateMethods:
         "custom_action_function_mock_return, callback_outputs",
         [
             (
-                (namedtuple("outputs", ["component_1_property"])("new_value")),
+                (namedtuple("Outputs", ["component_1_property"])("new_value")),
                 [],
             ),
             (
-                (namedtuple("outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
+                (namedtuple("Outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
                 ["component_1_property", "component_2_property", "component_3_property"],
             ),
         ],
