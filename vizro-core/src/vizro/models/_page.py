@@ -183,7 +183,11 @@ class Page(VizroBaseModel):
         # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
-        themed_components = [component for component in self.components if hasattr(component, "_update_theme")]
+        themed_components = [
+            model_manager[model_id]
+            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
+            if hasattr(model_manager[model_id], "_update_theme")
+        ]
         if themed_components:
             @callback(
                 [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
