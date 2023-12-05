@@ -31,6 +31,14 @@ class TestNavLinkInstantiation:
         assert nav_link.icon == "home"
         assert nav_link.pages == pages_as_list
 
+    @pytest.mark.parametrize("icon", ["Bar Chart", "bar chart", "bar_chart", "Bar_Chart"])
+    def test_validate_icon(self, icon, pages_as_list):
+        nav_link = vm.NavLink(icon=icon, label="Icon", pages=pages_as_list)
+
+        assert nav_link.label == "Icon"
+        assert nav_link.icon == "bar_chart"
+        assert nav_link.pages == pages_as_list
+
     def test_nav_link_valid_pages_as_dict(self, pages_as_dict):
         nav_link = vm.NavLink(pages=pages_as_dict, label="Label")
         assert nav_link.pages == pages_as_dict

@@ -33,6 +33,10 @@ class NavLink(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
+    @validator("icon", always=True)
+    def validate_icon(cls, icon) -> str:
+        return icon.strip().lower().replace(" ", "_")
+
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
