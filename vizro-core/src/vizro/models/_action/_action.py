@@ -104,7 +104,8 @@ class Action(VizroBaseModel):
         return_value = self.function(**inputs)
 
         if return_value is None and len(outputs) == 0:
-            # Action has no outputs and returns None.
+            # Action has no outputs and the custom action function returns None.
+            # Special case results with no exception.
             return_dict = {}
         elif hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
             # return_value is a namedtuple.
@@ -114,8 +115,15 @@ class Action(VizroBaseModel):
                     f"outputs {set(outputs) or {}}."
                 )
             return_dict = return_value._asdict()
+        elif len(outputs) == 1:
+            # If the action has only one output, so assign the entire return_value to the output.
+            # This ensures consistent handling regardless of the type or structure of the return_value.
+            return_dict = {outputs[0]: return_value}
         else:
-            if len(outputs) == 1 or not isinstance(return_value, Collection) or len(return_value) == 0:
+            if not isinstance(return_value, Collection) or len(return_value) == 0:
+                # If return_value is not a collection or is an empty collection,
+                # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
+                # and treats an empty collection as a 1-length collection.
                 return_value = [return_value]
 
             if len(return_value) != len(outputs):

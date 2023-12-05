@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Release of the `custom actions`. Visit the [user guide on actions](https://vizro.readthedocs.io/en/stable/pages/user_guides/actions/) to learn more. ([#178](https://github.com/mckinsey/vizro/pull/178))
+- Release of custom actions. Visit the [user guide on custom actions](https://vizro.readthedocs.io/en/stable/pages/user_guides/custom_actions/) to learn more. ([#178](https://github.com/mckinsey/vizro/pull/178))
 
 <!--
 ### Removed
