@@ -274,10 +274,9 @@ class TestActionPrivateMethods:
     ):
         action = Action(function=custom_action_function_mock_return())
         result = action._action_callback_function(
-            inputs={}, callback_outputs=dict.fromkeys([*callback_outputs, "action_finished"])
+            inputs={}, outputs=callback_outputs
         )
-        expected = {"action_finished": None, **expected_function_return_value}
-        assert result == expected
+        assert result == expected_function_return_value
 
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_outputs",
@@ -319,7 +318,7 @@ class TestActionPrivateMethods:
             " does not match the number of action's defined outputs \\(.?\\).",
         ):
             action._action_callback_function(
-                inputs={}, callback_outputs=dict.fromkeys([*callback_outputs, "action_finished"])
+                inputs={}, outputs=callback_outputs
             )
 
     @pytest.mark.parametrize(
@@ -345,5 +344,5 @@ class TestActionPrivateMethods:
             match="Action's returned fields \\{.*\\}" " does not match the action's defined outputs \\{.*\\}.",
         ):
             action._action_callback_function(
-                inputs={}, callback_outputs=dict.fromkeys([*callback_outputs, "action_finished"])
+                inputs={}, outputs=callback_outputs
             )

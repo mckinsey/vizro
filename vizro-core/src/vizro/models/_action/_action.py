@@ -94,7 +94,7 @@ class Action(VizroBaseModel):
 
         return callback_inputs, callback_outputs, action_components
 
-    def _action_callback_function(self, inputs: Dict[str, Any], callback_outputs: Dict[str, Any]) -> Dict[str, Any]:
+    def _action_callback_function(self, inputs: Dict[str, Any], outputs: List[str]) -> Dict[str, Any]:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
@@ -102,10 +102,6 @@ class Action(VizroBaseModel):
 
         # Invoking the action's function
         return_value = self.function(**inputs)
-
-        # Action callback outputs
-        outputs = list(callback_outputs.keys())
-        outputs.remove("action_finished")
 
         if return_value is None and len(outputs) == 0:
             # Action has no outputs and returns None.
@@ -129,7 +125,7 @@ class Action(VizroBaseModel):
                 )
             return_dict = dict(zip(outputs, return_value))
 
-        return {"action_finished": None, **return_dict}
+        return return_dict
 
     @_log_call
     def build(self):
@@ -154,7 +150,10 @@ class Action(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
-            return self._action_callback_function(inputs=inputs, callback_outputs=callback_outputs)
+            outputs = list(callback_outputs.keys())
+            outputs.remove("action_finished")
+            return_dict = self._action_callback_function(inputs=inputs, outputs=outputs)
+            return {"action_finished": None, **return_dict}
 
         return html.Div(
             children=action_components,
