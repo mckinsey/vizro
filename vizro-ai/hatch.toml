@@ -22,14 +22,6 @@ dependencies = [
 VIZRO_AI_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
-cov = [
-  "test-cov",
-  "cov-report"
-]
-cov-report = [
-  "- coverage combine",
-  "coverage report"
-]
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
@@ -43,11 +35,15 @@ test = [
   "- test-unit",
   "test-integration"
 ]
-test-cov = "coverage run -m pytest tests/unit {args}"
 test-integration = [
   "pytest -v tests/integration"
 ]
 test-unit = "pytest tests/unit {args}"
+test-unit-coverage = [
+  "coverage run -m pytest tests/unit {args}",
+  "- coverage combine",
+  "coverage report"
+]
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
