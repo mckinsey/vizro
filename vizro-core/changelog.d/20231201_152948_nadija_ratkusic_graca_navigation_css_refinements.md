@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable tooltip functionality for `NavLink` icons. ([#186](https://github.com/mckinsey/vizro/pull/186))
+- Enable tooltips for `NavLink`. ([#186](https://github.com/mckinsey/vizro/pull/186))
 
 <!--
 ### Changed

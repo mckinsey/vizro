@@ -60,9 +60,8 @@ class NavLink(VizroBaseModel):
             [
                 dmc.Tooltip(
                     label=self.label,
-                    offset=6,
+                    offset=4,
                     withArrow=True,
-                    zIndex=1,
                     children=[html.Span(self.icon, className="material-symbols-outlined")],
                     position="bottom-start",
                 )
