@@ -174,7 +174,8 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
     [NavBar]: ../../assets/user_guides/navigation/nav_bar.png
 
 
-Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the icons are from [the Google Material `filter` icons library](https://fonts.google.com/icons?icon.query=filter).
+Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
+By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter).
 
 ## Customizing the navigation bar
 
@@ -228,8 +229,6 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
 
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
 
-*Note: Spaces in the icon's name are replaced with underscores*
-
 !!! example "Custom icon"
     === "app.py"
         ```py
@@ -241,7 +240,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                     items=[
                         vm.NavLink(
                             label="Section 1",
-                            icon="bar_chart",
+                            icon="Bar Chart",
                             pages=["My first page", "My second page"],
                         ),
                         vm.NavLink(label="Section 2", icon="pie_chart", pages=["My third page"]),
@@ -261,7 +260,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
             type: nav_bar
             items:
               - label: Section 1
-                icon: bar_chart
+                icon: Bar Chart
                 pages:
                   - My first page
                   - My second page
