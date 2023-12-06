@@ -41,3 +41,8 @@
   flex-direction: column;
   display: flex;
 }
+
+
+.tabs-panel {
+  height: 80%;
+}

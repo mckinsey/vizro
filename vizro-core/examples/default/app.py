@@ -8,30 +8,15 @@ from vizro.tables import dash_data_table
 
 df_gapminder = px.data.gapminder()
 
-page = vm.Page(
-    # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
-    title="Regular tabs - default layout",
+single_tabs = vm.Page(
+    title="Single Tabs",
     components=[
-        # vm.Table(
-        #     id="table-0",
-        #     figure=dash_data_table(
-        #         id="dash_datatable-0",
-        #         data_frame=df_gapminder,
-        #     ),
-        #     actions=[
-        #         vm.Action(
-        #             function=filter_interaction(
-        #                 targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
-        #             )
-        #         ),
-        #     ],
-        # ),
         vm.Tabs(
             id="first-tab",
             tabs=[
                 vm.Container(
                     id="tab-1",
-                    title="Tab I Title",
+                    title="Tab I",
                     components=[
                         vm.Graph(
                             id="graph-1",
@@ -117,9 +102,6 @@ page = vm.Page(
         ),
     ],
     controls=[
-        # TODO: Fix issue of graphs only being updated if they are target of controls
-        # e.g. if you don't add the parameter below, all of the charts will not get loaded
-        # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
             targets=[
                 "graph-1.y",
@@ -134,8 +116,8 @@ page = vm.Page(
         vm.Filter(column="continent"),
     ],
 )
-page_2 = vm.Page(
-    title="Containers page",
+multiple_containers_custom_layout = vm.Page(
+    title="Multiple Containers - custom layout",
     components=[
         vm.Container(
             id="cont_1",
@@ -195,8 +177,8 @@ page_2 = vm.Page(
         vm.Filter(column="continent"),
     ],
 )
-page_3 = vm.Page(
-    title="Third page",
+single_tabs_action = vm.Page(
+    title="Single Tabs - with action",
     components=[
         vm.Tabs(
             tabs=[
@@ -227,9 +209,9 @@ page_3 = vm.Page(
     ],
 )
 
-page_4 = vm.Page(
+multiple_tabs = vm.Page(
     id="page_4",
-    title="Tabs",
+    title="Multiple Tabs",
     components=[
         vm.Tabs(
             id="page-4-tab1",
@@ -307,9 +289,8 @@ page_4 = vm.Page(
         ),
     ],
 )
-page_5 = vm.Page(
-    # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
-    title="Regular tabs - with layout",
+single_tabs_custom_layout = vm.Page(
+    title="Single Tabs - custom layout",
     components=[
         vm.Tabs(
             id="first-tabr",
@@ -412,9 +393,9 @@ page_5 = vm.Page(
     ],
 )
 
-page_6 = vm.Page(
+multiple_containers_nested = vm.Page(
     id="page_6",
-    title="Nested container",
+    title="Multiple Containers - Nested",
     layout=vm.Layout(
         grid=[
             [0, 0, 0, 0],
@@ -521,7 +502,13 @@ page_6 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_5, page_2, page_3, page_4, page_6])
+dashboard = vm.Dashboard(pages=[single_tabs,
+                                single_tabs_custom_layout,
+                                single_tabs_action,
+                                multiple_tabs,
+                                multiple_containers_custom_layout,
+                                multiple_containers_nested
+                                ])
 
 if __name__ == "__main__":
     Vizro(assets_folder="../assets").build(dashboard).run()
