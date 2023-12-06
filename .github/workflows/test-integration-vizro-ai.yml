@@ -20,7 +20,7 @@ env:
 
 jobs:
   run:
-    name: Python ${{ matrix.python-version }} on Linux
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
