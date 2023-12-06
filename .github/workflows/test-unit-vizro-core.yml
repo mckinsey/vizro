@@ -1,4 +1,4 @@
-name: test-unit-vizro-core
+name: Unit tests for Vizro
 
 defaults:
   run:
@@ -19,8 +19,8 @@ env:
   FORCE_COLOR: "1"
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }}
+  test-unit-vizro-core:
+    name: test-unit-vizro-core on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

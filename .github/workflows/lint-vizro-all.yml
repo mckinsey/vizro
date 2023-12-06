@@ -1,4 +1,4 @@
-name: lint-vizro-all
+name: Lint
 
 defaults:
   run:
@@ -20,7 +20,7 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  run:
+  lint-vizro-all:
     runs-on: ubuntu-latest
 
     steps:

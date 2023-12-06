@@ -1,4 +1,4 @@
-name: checks-vizro-core
+name: Checks for Vizro
 
 defaults:
   run:
@@ -24,7 +24,7 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  run:
+  checks-vizro-core:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
