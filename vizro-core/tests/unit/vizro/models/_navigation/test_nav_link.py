@@ -69,7 +69,7 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    common_args = {"offset": 6, "withArrow": True, "zIndex": 1, "position": "bottom-start"}
+    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
 
     def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)

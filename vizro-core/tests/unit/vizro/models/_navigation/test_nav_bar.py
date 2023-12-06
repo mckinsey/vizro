@@ -74,7 +74,7 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
-    common_args = {"offset": 6, "withArrow": True, "zIndex": 1, "position": "bottom-start"}
+    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
 
     def test_nav_bar_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
