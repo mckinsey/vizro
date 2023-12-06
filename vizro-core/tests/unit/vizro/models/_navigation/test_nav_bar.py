@@ -80,7 +80,10 @@ class TestNavBarBuildMethod:
         expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=True, href="/")])
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+            built_nav_bar["nav_panel_outer"],
+            html.Div(id="nav_panel_outer"),
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
 
@@ -98,7 +101,8 @@ class TestNavBarBuildMethod:
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
-            keys_to_strip={"children", "className"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
 
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
@@ -108,7 +112,7 @@ class TestNavBarBuildMethod:
         expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=False, href="/")])
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
+            built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keep_keys={"id"}
         )
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
@@ -125,5 +129,5 @@ class TestNavBarBuildMethod:
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
-            keys_to_strip={},
+            keep_keys={"id"},
         )

@@ -83,10 +83,14 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(className="hidden", id="nav_bar_outer"),
-            keys_to_strip={"children"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert_component_equal(
-            built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+            built_navigation["nav_panel_outer"],
+            html.Div(id="nav_panel_outer"),
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
 
@@ -97,12 +101,14 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
-            keys_to_strip={"children"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"],
             html.Div(id="nav_panel_outer"),
-            keys_to_strip={"children", "className"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
 
@@ -113,10 +119,12 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
-            keys_to_strip={"children"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
-            keys_to_strip={"children"},
+            extra_strip_keys={"children"},
+            keep_keys={"id"},
         )

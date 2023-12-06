@@ -20,11 +20,11 @@ def component_to_dict(component: dash.development.base_component.Component) -> d
     return json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
 
 
-# TODO: implement some sort of depth limit to comparison so can use in high level tests, roll out more widely across
-# tests
-def assert_component_equal(left, right, keys_to_strip=None):
-    # Note we check for None explicitly because {} is a valid value for keys_to_strip.
-    keys_to_strip = keys_to_strip if keys_to_strip is not None else {"id", "class_name", "className"}
-    left = strip_keys(component_to_dict(left), keys_to_strip)
-    right = strip_keys(component_to_dict(right), keys_to_strip)
+def assert_component_equal(left, right, extra_strip_keys=None, keep_keys=None):
+    extra_strip_keys = extra_strip_keys or set()
+    keep_keys = keep_keys or set()
+    total_strip_keys = {"id", "class_name", "className"} | extra_strip_keys - keep_keys
+
+    left = strip_keys(component_to_dict(left), total_strip_keys)
+    right = strip_keys(component_to_dict(right), total_strip_keys)
     assert left == right
