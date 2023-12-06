@@ -43,7 +43,7 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self, *, active_page_id=None):

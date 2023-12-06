@@ -8,8 +8,7 @@ import dash
 import plotly
 import pytest
 from dash import html
-from dash._callback_context import context_value
-from dash._utils import AttributeDict
+
 try:
     from pydantic.v1 import ValidationError
 except ImportError:

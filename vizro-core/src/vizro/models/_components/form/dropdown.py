@@ -29,7 +29,7 @@ class Dropdown(VizroBaseModel):
     """
 
     type: Literal["dropdown"] = "dropdown"
-    options: OptionsType = []  # type: ignore[assignment]
+    options: OptionsType = []
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
     title: str = Field("", description="Title to be displayed")

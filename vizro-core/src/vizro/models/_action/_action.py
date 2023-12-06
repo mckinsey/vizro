@@ -4,6 +4,7 @@ from collections.abc import Collection
 from typing import Any, Dict, List
 
 from dash import Input, Output, State, callback, html
+
 try:
     from pydantic.v1 import Field, validator
 except ImportError:

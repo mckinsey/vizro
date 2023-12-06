@@ -64,7 +64,7 @@ class VizroBaseModel(BaseModel):
             return hasattr(field.outer_type_, "__metadata__") and get_args(field.outer_type_)[1].discriminator
 
         field = cls.__fields__[field_name]
-        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None  # type: ignore[index]
+        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None
 
         if _is_discriminated_union(field):
             # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].

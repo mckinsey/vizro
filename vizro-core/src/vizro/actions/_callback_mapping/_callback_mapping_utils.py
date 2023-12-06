@@ -132,7 +132,7 @@ def _get_inputs_of_figure_interactions(
 
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
     """Creates mapping of pre-defined action names and a list of States."""
-    action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    action_function = model_manager[action_id].function._function
 
     if action_function == export_data.__wrapped__:
         include_inputs = ["filters", "filter_interaction"]
@@ -162,7 +162,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, Any]:
 # CALLBACK OUTPUTS --------------
 def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Creates mapping of target names and their Output."""
-    action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
+    action_function = model_manager[action_id].function._function
 
     # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
     # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
@@ -170,7 +170,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     # If not then we can do the cast to Action at the point of consumption here to avoid needing mypy ignores.
 
     try:
-        targets = model_manager[action_id].function["targets"]  # type: ignore[attr-defined]
+        targets = model_manager[action_id].function["targets"]
     except KeyError:
         targets = []
 
@@ -183,7 +183,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property=model_manager[target]._output_property,  # type: ignore[attr-defined]
+            component_property=model_manager[target]._output_property,
             allow_duplicate=True,
         )
         for target in targets
@@ -195,7 +195,7 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[Stat
     action = model_manager[action_id]
 
     try:
-        targets = action.function["targets"]  # type: ignore[attr-defined]
+        targets = action.function["targets"]
     except KeyError:
         targets = None
 
@@ -221,7 +221,7 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
     action = model_manager[action_id]
 
     try:
-        targets = action.function["targets"]  # type: ignore[attr-defined]
+        targets = action.function["targets"]
     except KeyError:
         targets = None
 

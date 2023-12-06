@@ -42,7 +42,7 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
+    set_actions = _action_validator_factory("active_cell")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

@@ -26,7 +26,7 @@ class Checklist(VizroBaseModel):
     """
 
     type: Literal["checklist"] = "checklist"
-    options: OptionsType = []  # type: ignore[assignment]
+    options: OptionsType = []
     value: Optional[MultiValueType] = None
     title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
