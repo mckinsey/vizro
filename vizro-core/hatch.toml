@@ -9,7 +9,7 @@ matrix.python.features = [
 ]
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==2.5.0"]
+extra-dependencies = ["pydantic==1.10.13"]
 
 [envs.changelog]
 dependencies = ["scriv"]

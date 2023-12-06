@@ -8,6 +8,9 @@ dependencies = ["scriv"]
 detached = true
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
+[envs.lower-bounds]
+extra-dependencies = ["pydantic==1.10.13"]
+
 [envs.default]
 dependencies = [
   "devtools[pygments]",
