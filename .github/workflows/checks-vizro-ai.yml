@@ -1,4 +1,5 @@
-name: checks-vizro-ai
+name: Checks for VizroAI
+
 defaults:
   run:
     working-directory: vizro-ai
@@ -23,7 +24,7 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  run:
+  checks-vizro-ai:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

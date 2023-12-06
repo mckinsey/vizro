@@ -1,4 +1,4 @@
-name: Check versions and build-publish
+name: Release if needed
 
 on:
   push:
