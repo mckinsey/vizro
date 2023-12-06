@@ -1,3 +1,5 @@
+name: Checks for Vizro
+
 defaults:
   run:
     working-directory: vizro-core

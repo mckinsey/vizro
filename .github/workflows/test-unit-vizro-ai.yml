@@ -1,3 +1,5 @@
+name: Unit tests for VizroAI
+
 defaults:
   run:
     working-directory: vizro-ai
@@ -18,7 +20,7 @@ env:
 
 jobs:
   test-unit-vizro-ai:
-    name: test-unit-vizro-ai (Py${{ matrix.python-version }})
+    name: test-unit-vizro-ai on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

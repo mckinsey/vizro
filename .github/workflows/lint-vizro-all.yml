@@ -1,3 +1,5 @@
+name: Lint
+
 defaults:
   run:
     working-directory: vizro-core # but could be any folder

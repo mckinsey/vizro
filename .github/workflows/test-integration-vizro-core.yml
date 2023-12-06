@@ -1,3 +1,5 @@
+name: Integration tests for Vizro
+
 defaults:
   run:
     working-directory: vizro-core
@@ -18,7 +20,7 @@ env:
 
 jobs:
   test-integration-vizro-core:
-    name: test-integration-vizro-core (Py${{ matrix.python-version }})
+    name: test-integration-vizro-core on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

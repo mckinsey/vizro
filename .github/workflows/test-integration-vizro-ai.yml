@@ -1,3 +1,5 @@
+name: Integration tests for VizroAI
+
 defaults:
   run:
     working-directory: vizro-ai
@@ -18,7 +20,7 @@ env:
 
 jobs:
   test-integration-vizro-ai:
-    name: test-integration-vizro-ai (Py${{ matrix.python-version }})
+    name: test-integration-vizro-ai on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:

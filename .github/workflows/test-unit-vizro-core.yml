@@ -1,3 +1,5 @@
+name: Unit tests for Vizro
+
 defaults:
   run:
     working-directory: vizro-core
@@ -18,7 +20,7 @@ env:
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core (Py${{ matrix.python-version }})
+    name: test-unit-vizro-core on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

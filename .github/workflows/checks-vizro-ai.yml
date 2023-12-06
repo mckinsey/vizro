@@ -1,3 +1,5 @@
+name: Checks for VizroAI
+
 defaults:
   run:
     working-directory: vizro-ai
