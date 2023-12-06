@@ -26,7 +26,11 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
+        include:
+          - python-version: "3.11"
+            lower-bounds: true
 
+        # write matrix out manually with var for hatch env
     steps:
       - uses: actions/checkout@v4
 
@@ -37,6 +41,11 @@ jobs:
 
       - name: Install Hatch
         run: pip install --upgrade hatch
+
+      - if: matrix.lower-bounds
+        name: Activate hatch environment
+        run: hatch -e lower-bounds shell
+
 
       - name: List dependencies
         run: hatch run all.py${{ matrix.python-version }}:pip freeze

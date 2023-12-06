@@ -8,6 +8,9 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10"]}
 ]
 
+[envs.lower-bounds]
+extra-dependencies = ["pydantic==2.5.0"]
+
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
