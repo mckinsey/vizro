@@ -30,18 +30,16 @@ class Tabs(VizroBaseModel):
             value=self.tabs[0].id,
             children=[
                 dmc.TabsList(
-                    [dmc.Tab(tab.title, value=tab.id, className="tab-single") for tab in self.tabs],
+                    [dmc.Tab(tab.title, value=tab.id, className="tab-label") for tab in self.tabs],
                     className="tabs-list",
                 ),
             ]
             + [
                 dmc.TabsPanel(
-                    html.Div(children=[tab.build()], className="tabs-body"),
-                    value=tab.id,
-                    className="tabs-panel"
+                    html.Div(children=[tab.build()], className="tab-body"), value=tab.id, className="tabs-panel"
                 )
                 for tab in self.tabs
             ],
             persistence=True,
-            style={"height": "100%"},
+            className="tabs-root",
         )

@@ -7,7 +7,7 @@
   margin-bottom: 20px;
 }
 
-.tab-single {
+.tab-label {
   align-items: flex-start;
   border-bottom: 1px solid transparent;
   display: flex;
@@ -18,31 +18,36 @@
   padding: 0;
 }
 
-.tab-single:hover {
+.tab-label:hover {
   background-color: transparent;
   border-bottom: 1px solid var(--text-active);
 }
 
-.tab-single[data-active] {
+.tab-label[data-active] {
   border-bottom: 1px solid var(--text-active);
   color: var(--text-active);
 }
 
-.tab-single[data-active]:hover {
+.tab-label[data-active]:hover {
   background-color: transparent;
   border-color: 1px solid var(--text-active);
 }
 
-.tab-single[data-active] .mantine-Tabs-tabLabel {
+.tab-label[data-active] .mantine-Tabs-tabLabel {
   color: var(--text-active);
 }
 
-.mantine-1hfjdaf {
-  flex-direction: column;
-  display: flex;
+.tab-body {
+  height: 100%;
 }
 
-
 .tabs-panel {
-  height: 80%;
+  height: 80%; /*Need to find a clever way to calculate automatically*/
+}
+
+.tabs-root {
+  flex-direction: column;
+  display: flex;
+  height: 100%; /* Prevents overflowing but it's not really the behavior we want,
+  as we want charts to extend automatically */
 }

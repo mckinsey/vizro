@@ -47,7 +47,8 @@
 }
 
 .component_container_grid {
-  display: grid;
+  display: grid; /*This change activates automatic-scrolling, to be checked whether we want this in general or just for the containers*/
+  /* flex-direction: column;*/
   width: 100%;
   height: 100%;
 }
@@ -109,11 +110,6 @@
 .hidden {
   display: none;
 }
-
-.container-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 
 .nav-bar {
   display: inline-flex;

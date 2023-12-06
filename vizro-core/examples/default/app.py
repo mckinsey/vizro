@@ -502,13 +502,16 @@ multiple_containers_nested = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[single_tabs,
-                                single_tabs_custom_layout,
-                                single_tabs_action,
-                                multiple_tabs,
-                                multiple_containers_custom_layout,
-                                multiple_containers_nested
-                                ])
+dashboard = vm.Dashboard(
+    pages=[
+        single_tabs,
+        single_tabs_custom_layout,
+        single_tabs_action,
+        multiple_tabs,
+        multiple_containers_custom_layout,
+        multiple_containers_nested,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro(assets_folder="../assets").build(dashboard).run()

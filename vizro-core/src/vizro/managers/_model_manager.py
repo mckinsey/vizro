@@ -91,9 +91,9 @@ class ModelManager:
 
             if hasattr(page, "actions"):
                 for actions_chain in page._get_page_actions_chains():
-                    page_model_ids.append(actions_chain.id)  # type: ignore[arg-type]
+                    page_model_ids.append(actions_chain.id)
                     for action in actions_chain.actions:
-                        page_model_ids.append(action.id)  # type: ignore[arg-type]
+                        page_model_ids.append(action.id)
 
             for control in page.controls:
                 page_model_ids.append(control.id)
