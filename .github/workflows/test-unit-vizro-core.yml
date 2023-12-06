@@ -46,10 +46,6 @@ jobs:
       - name: Install Hatch
         run: pip install --upgrade hatch
 
-      - if: matrix.lower-bounds
-        name: Activate hatch environment
-        run: hatch -e lower-bounds shell
-
 
       - name: List dependencies
         run: hatch run all.py${{ matrix.hatch-env }}:pip freeze
