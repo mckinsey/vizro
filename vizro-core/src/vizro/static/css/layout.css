@@ -141,7 +141,6 @@ div.dashboard_container .custom-tooltip {
 }
 
 .mantine-Tooltip-tooltip {
-  font-family: Inter;
   font-size: var(--text-size-01);
   font-weight: var(--text-weight-light);
   line-height: 16px;
