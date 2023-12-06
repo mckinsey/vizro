@@ -1,6 +1,6 @@
 """Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from dash import ctx
 
