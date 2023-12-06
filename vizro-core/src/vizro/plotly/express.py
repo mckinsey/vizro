@@ -14,7 +14,8 @@ from vizro.models.types import capture
 # Might also want to define __dir__ or __all__ in order to facilitate IDE completion etc.
 # TODO: type hints -> MS
 def __getattr__(name: str) -> Any:
-    px_name = getattr(px, name)
+    px_name = getattr(px, name
+                      )
     try:
         return capture(mode="graph")(px_name) if px_name.__module__ == "plotly.express._chart_types" else px_name
     except AttributeError:
