@@ -11,7 +11,7 @@ Custom actions enable you to implement your own action function. Simply do the f
 2. decorate it with the `@capture("action")` decorator
 3. add it as a `function` argument inside the [`Action`][vizro.models.Action] model
 
-The following example shows how to create a custom action that postponeS execution of the next action in the chain for `t` seconds.
+The following example shows how to create a custom action that postpones execution of the next action in the chain for `t` seconds.
 
 !!! example "Simple custom action"
     === "app.py"
