@@ -163,7 +163,4 @@ class Action(VizroBaseModel):
             return_dict = self._action_callback_function(inputs=inputs, outputs=outputs)
             return {"action_finished": None, **return_dict}
 
-        return html.Div(
-            children=action_components,
-            id=f"{self.id}_action_model_components_div",
-        )
+        return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)

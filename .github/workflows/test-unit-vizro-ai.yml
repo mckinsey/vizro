@@ -1,4 +1,4 @@
-name: test-unit-vizro-ai
+name: Unit tests for VizroAI
 
 defaults:
   run:
@@ -19,13 +19,12 @@ env:
   FORCE_COLOR: "1"
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
-    runs-on: ${{ matrix.os }}
+  test-unit-vizro-ai:
+    name: test-unit-vizro-ai on Py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         python-version: ["3.9", "3.10", "3.11"]
 
     steps:
@@ -44,4 +43,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          hatch run all.py${{ matrix.python-version }}:cov
+          hatch run all.py${{ matrix.python-version }}:test-unit-coverage

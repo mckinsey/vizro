@@ -1,4 +1,4 @@
-name: test-integration-vizro-ai
+name: Integration tests for VizroAI
 
 defaults:
   run:
@@ -19,8 +19,8 @@ env:
   FORCE_COLOR: "1"
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on Linux
+  test-integration-vizro-ai:
+    name: test-integration-vizro-ai on Py${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
