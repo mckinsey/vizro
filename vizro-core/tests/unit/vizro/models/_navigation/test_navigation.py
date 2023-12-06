@@ -83,7 +83,7 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(hidden=True, id="nav_bar_outer"),
-            keys_to_strip={"children"},
+            keys_to_strip={}
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
