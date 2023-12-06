@@ -21,36 +21,32 @@ concurrency:
 env:
   PYTHONUNBUFFERED: "1"
   FORCE_COLOR: "1"
+  PYTHON_VERSION: "3.11"
 
 jobs:
   run:
-    name: Python ${{ matrix.python-version }} on Linux
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8"]
-
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
         run: pip install --upgrade hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
 
       - name: Check schema is up to date
-        run: hatch run all.py${{ matrix.python-version }}:schema --check
+        run: hatch run all.py${{ env.PYTHON_VERSION }}:schema --check
 
       - name: Check requirements for Snyk are up to date
-        run: hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
+        run: hatch run all.py${{ env.PYTHON_VERSION }}:update-snyk-requirements --check
 
       - name: Find added changelog fragments
         id: added-files
