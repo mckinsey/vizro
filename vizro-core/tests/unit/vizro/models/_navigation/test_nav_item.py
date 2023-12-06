@@ -73,7 +73,13 @@ class TestNavLinkBuildMethod:
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
-        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=True, href="/")
+        expected_button = dbc.Button(
+            id="nav_link",
+            children=[html.Span("icon", className="material-symbols-outlined")],
+            active=True,
+            href="/",
+            className="icon-button",
+        )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
 
@@ -82,6 +88,12 @@ class TestNavLinkBuildMethod:
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
-        expected_button = dbc.Button(id="nav_link", children=[html.Span("icon")], active=False, href="/")
+        expected_button = dbc.Button(
+            id="nav_link",
+            children=[html.Span("icon", className="material-symbols-outlined")],
+            active=False,
+            href="/",
+            className="icon-button",
+        )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link

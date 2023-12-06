@@ -83,14 +83,12 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(className="hidden", id="nav_bar_outer"),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            keys_to_strip={"children"},
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"],
-            html.Div(id="nav_panel_outer"),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            html.Div(id="nav_panel_outer", className="nav_panel"),
+            keys_to_strip={"children"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
 
@@ -101,14 +99,12 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            keys_to_strip={"children"},
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"],
-            html.Div(id="nav_panel_outer"),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            html.Div(id="nav_panel_outer", className="nav_panel"),
+            keys_to_strip={"children"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
 
@@ -119,12 +115,8 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav_bar_outer"],
             html.Div(id="nav_bar_outer", className="nav-bar"),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            keys_to_strip={"children"},
         )
         assert_component_equal(
-            built_navigation["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
-            extra_strip_keys={"children"},
-            keep_keys={"id"},
+            built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer", hidden=True), keys_to_strip={"children"}
         )

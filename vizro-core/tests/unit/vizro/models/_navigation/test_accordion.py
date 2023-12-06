@@ -110,10 +110,10 @@ class TestAccordionBuild:
     def test_accordion(self, pages, expected):
         accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
         assert_component_equal(
-            accordion, html.Div(id="nav_panel_outer"), extra_strip_keys={"children"}, keep_keys={"id"}
+            accordion, html.Div(id="nav_panel_outer", className="nav_panel"), keys_to_strip={"children"}
         )
-        assert_component_equal(accordion["accordion"], expected)
+        assert_component_equal(accordion["accordion"], expected, keys_to_strip={"id", "className", "class_name"})
 
     def test_accordion_one_page(self):
         accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")
-        assert_component_equal(accordion, html.Div(hidden=True, id="nav_panel_outer"), keep_keys={"id"})
+        assert_component_equal(accordion, html.Div(hidden=True, id="nav_panel_outer"))
