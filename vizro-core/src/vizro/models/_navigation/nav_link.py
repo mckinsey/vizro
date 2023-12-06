@@ -33,7 +33,7 @@ class NavLink(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("icon", always=True)
+    @validator("icon")
     def validate_icon(cls, icon) -> str:
         return icon.strip().lower().replace(" ", "_")
 
