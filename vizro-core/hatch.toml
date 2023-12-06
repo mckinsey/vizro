@@ -8,9 +8,6 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10"]}
 ]
 
-[envs.lower-bounds]
-extra-dependencies = ["pydantic==1.10.13"]
-
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -75,6 +72,9 @@ dependencies = [
 ]
 detached = true
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
+
+[envs.lower-bounds]
+extra-dependencies = ["pydantic==1.10.13"]
 
 [publish.index]
 disable = true
