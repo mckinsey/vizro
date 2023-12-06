@@ -31,13 +31,8 @@ prep-release = [
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
-test = [
-  "- test-unit",
-  "test-integration"
-]
-test-integration = [
-  "pytest -v tests/integration"
-]
+test = "pytest tests {args}"
+test-integration = "pytest -v tests/integration {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",
