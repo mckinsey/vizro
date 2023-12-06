@@ -3,7 +3,7 @@ from typing import List, Literal
 import dash_bootstrap_components as dbc
 from dash import html
 
-from pydantic.v1 import Field
+from pydantic import Field
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
