@@ -20,7 +20,7 @@ env:
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.python-version }}
+    name: test-unit-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,6 +29,7 @@ jobs:
         include:
           - python-version: "3.11"
             lower-bounds: true
+            label: lower
 
         # write matrix out manually with var for hatch env
     steps:
