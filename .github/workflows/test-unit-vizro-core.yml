@@ -29,7 +29,6 @@ jobs:
         include:
           - python-version: "3.11"
             hatch-env: all.py3.11
-            label: lower
           - python-version: "3.11"
             hatch-env: all.py3.11
             label: lower
