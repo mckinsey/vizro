@@ -87,19 +87,20 @@ repos:
         entry: gitleaks detect --verbose --redact --baseline-path .gitleaks-report.json
         language: golang
 
+# Configuration for https://pre-commit.ci/.
 ci:
-  autofix_prs: false
   autoupdate_schedule: monthly
+  # Skip all hooks that just do checks without actually fixing anything.
   skip:
-      - check-added-large-files
-      - check-merge-conflict
-      - check-case-conflict
-      - check-yaml
-      - check-json
-      - check-datafiles
-      - check-forbidden-words
-      - check-branch-name
-      - codespell
-      - bandit
-      - mypy
-      - gitleaks
+    - check-added-large-files
+    - check-merge-conflict
+    - check-case-conflict
+    - check-yaml
+    - check-json
+    - check-datafiles
+    - check-forbidden-words
+    - check-branch-name
+    - codespell
+    - bandit
+    - mypy
+    - gitleaks
