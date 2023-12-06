@@ -25,10 +25,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        #python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - python-version: "3.11"
-            lower-bounds: true
+            hatch-env: all.py3.11
+            label: lower
+          - python-version: "3.11"
+            hatch-env: all.py3.11
             label: lower
 
         # write matrix out manually with var for hatch env
@@ -49,7 +52,7 @@ jobs:
 
 
       - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+        run: hatch run all.py${{ matrix.hatch-env }}:pip freeze
 
       - name: Run unit tests
-        run: hatch run all.py${{ matrix.python-version }}:test-unit-coverage
+        run: hatch run all.py${{ matrix.hatch-env }}:test-unit-coverage
