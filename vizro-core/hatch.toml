@@ -71,6 +71,8 @@ update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}
 [envs.docs]
 dependencies = [
   "mkdocs",
+
+
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]"
@@ -90,3 +92,6 @@ disable = true
 
 [version]
 path = "src/vizro/__init__.py"
+
+
+

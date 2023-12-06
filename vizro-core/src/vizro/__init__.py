@@ -7,4 +7,6 @@ __all__ = ["Vizro"]
 
 __version__ = "0.1.7.dev0"
 
-logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
+logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING")
+
+                    )
