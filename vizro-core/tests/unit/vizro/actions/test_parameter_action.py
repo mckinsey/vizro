@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -170,9 +172,13 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        expected = namedtuple("Outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_y,
+            }
+        )
 
-        assert result["scatter_chart"] == target_scatter_parameter_y
-        assert "box_chart" not in result
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
@@ -206,9 +212,13 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        expected = namedtuple("Outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_hover_data,
+            }
+        )
 
-        assert result["scatter_chart"] == target_scatter_parameter_hover_data
-        assert "box_chart" not in result
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
@@ -234,9 +244,14 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_y,
+                "box_chart": target_box_parameter_y,
+            }
+        )
 
-        assert result["scatter_chart"] == target_scatter_parameter_y
-        assert result["box_chart"] == target_box_parameter_y
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x",
@@ -267,9 +282,13 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
+        expected = namedtuple("Outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_y_and_x,
+            }
+        )
 
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert "box_chart" not in result
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -304,9 +323,14 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
+        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_y_and_x,
+                "box_chart": target_box_parameter_y_and_x,
+            }
+        )
 
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert result["box_chart"] == target_box_parameter_y_and_x
+        assert result._asdict() == expected._asdict()
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -341,9 +365,19 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
-        assert result["scatter_chart"] == target_scatter_parameter_y_and_x
-        assert "box_chart" not in target_scatter_parameter_y_and_x
+        expected = namedtuple("Outputs", ["scatter_chart"])(
+            **{
+                "scatter_chart": target_scatter_parameter_y_and_x,
+            }
+        )
+
+        assert result._asdict() == expected._asdict()
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
-        assert result["box_chart"] == target_box_parameter_y_and_x
-        assert "scatter_chart" not in target_scatter_parameter_y_and_x
+        expected = namedtuple("Outputs", ["box_chart"])(
+            **{
+                "box_chart": target_box_parameter_y_and_x,
+            }
+        )
+
+        assert result._asdict() == expected._asdict()
