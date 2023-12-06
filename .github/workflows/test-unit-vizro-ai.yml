@@ -20,7 +20,7 @@ env:
 
 jobs:
   test-unit-vizro-ai:
-    name: test-unit-vizro-ai on Py${{ matrix.python-version }}
+    name: test-unit-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
 
     runs-on: ubuntu-latest
     strategy:

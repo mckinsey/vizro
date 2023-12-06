@@ -20,7 +20,7 @@ env:
 
 jobs:
   test-integration-vizro-core:
-    name: test-integration-vizro-core on Py${{ matrix.python-version }}
+    name: test-integration-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
 
     runs-on: ubuntu-latest
     strategy:
