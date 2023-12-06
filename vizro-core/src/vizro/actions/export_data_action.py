@@ -1,6 +1,7 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List, Optional
+from collections import namedtuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from dash import ctx, dcc
 from typing_extensions import Literal
@@ -18,7 +19,7 @@ def export_data(
     targets: Optional[List[ModelID]] = None,
     file_format: Literal["csv", "xlsx"] = "csv",
     **inputs: Dict[str, Any],
-) -> Dict[str, Any]:
+) -> Tuple[Any, ...]:
     """Exports visible data of target charts/components on page after being triggered.
 
     Args:
@@ -38,7 +39,7 @@ def export_data(
         targets = [
             output["id"]["target_id"]
             for output in ctx.outputs_list
-            if isinstance(output["id"], dict) and output["id"]["type"] == "download-dataframe"
+            if isinstance(output["id"], dict) and output["id"]["type"] == "download_dataframe"
         ]
     for target in targets:
         if target not in model_manager:
@@ -50,7 +51,7 @@ def export_data(
         ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
     )
 
-    callback_outputs = {}
+    outputs = {}
     for target_id in targets:
         if file_format == "csv":
             writer = data_frames[target_id].to_csv
@@ -58,8 +59,8 @@ def export_data(
             writer = data_frames[target_id].to_excel
         # Invalid file_format should be caught by Action validation
 
-        callback_outputs[f"download-dataframe_{target_id}"] = dcc.send_data_frame(
+        outputs[f"download_dataframe_{target_id}"] = dcc.send_data_frame(
             writer=writer, filename=f"{target_id}.{file_format}", index=False
         )
 
-    return callback_outputs
+    return namedtuple("Outputs", outputs.keys())(**outputs)
