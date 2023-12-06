@@ -10,7 +10,7 @@ try:
     from pydantic.v1 import Field, StrictBool
     from pydantic.v1.fields import ModelField
     from pydantic.v1.schema import SkipField
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, StrictBool
     from pydantic.fields import ModelField
     from pydantic.schema import SkipField

@@ -5,7 +5,7 @@ from numpy import ma
 
 try:
     from pydantic.v1 import Field, PrivateAttr, ValidationError, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, ValidationError, validator
 
 from vizro._constants import EMPTY_SPACE_CONST

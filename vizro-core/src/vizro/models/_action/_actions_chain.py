@@ -3,7 +3,7 @@ from typing import Any, Dict, List, NamedTuple
 
 try:
     from pydantic.v1 import validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import validator
 
 from vizro.models import Action, VizroBaseModel

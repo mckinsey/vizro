@@ -4,7 +4,7 @@ from typing import Callable, List, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, create_model
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, create_model
 
 

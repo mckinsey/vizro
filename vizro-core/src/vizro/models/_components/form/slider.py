@@ -4,7 +4,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel

@@ -11,7 +11,7 @@ from dash import html
 
 try:
     from pydantic.v1 import ValidationError
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 

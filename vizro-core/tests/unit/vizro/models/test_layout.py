@@ -3,7 +3,7 @@ import pytest
 
 try:
     from pydantic.v1 import ValidationError
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 import vizro.models as vm

@@ -6,7 +6,7 @@ import pytest
 
 try:
     from pydantic.v1 import Field, ValidationError
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, ValidationError
 
 from vizro.charts._charts_utils import _DashboardReadyFigure

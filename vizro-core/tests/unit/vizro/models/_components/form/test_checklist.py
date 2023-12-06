@@ -7,7 +7,7 @@ from dash import dcc, html
 
 try:
     from pydantic.v1 import ValidationError
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 from vizro.models._action._action import Action

@@ -5,7 +5,7 @@ from dash import html
 
 try:
     from pydantic.v1 import Field
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field
 
 from vizro.models import Action, VizroBaseModel

@@ -8,7 +8,7 @@ from dash import html
 
 try:
     from pydantic.v1 import Field, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE

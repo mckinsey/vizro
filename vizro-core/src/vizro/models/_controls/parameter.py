@@ -2,7 +2,7 @@ from typing import List, Literal
 
 try:
     from pydantic.v1 import Field, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX

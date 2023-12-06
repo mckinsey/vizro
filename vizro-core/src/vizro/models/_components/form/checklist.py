@@ -4,7 +4,7 @@ from dash import dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel

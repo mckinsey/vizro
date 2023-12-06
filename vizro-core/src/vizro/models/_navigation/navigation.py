@@ -4,7 +4,7 @@ from dash import html
 
 try:
     from pydantic.v1 import validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import validator
 
 from vizro.models import VizroBaseModel

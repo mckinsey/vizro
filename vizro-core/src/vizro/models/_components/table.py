@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt

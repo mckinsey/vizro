@@ -4,7 +4,7 @@ from langchain.chat_models import ChatOpenAI
 
 try:
     from pydantic.v1 import BaseModel, Field
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
 # TODO add new wrappers in if new model support is added

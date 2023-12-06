@@ -7,7 +7,7 @@ from pandas.api.types import is_numeric_dtype
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX

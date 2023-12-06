@@ -6,7 +6,7 @@ from dash import Input, Output, Patch, callback, dcc, html
 
 try:
     from pydantic.v1 import Field, root_validator, validator
-except ImportError:
+except ImportError:  # pragma: no cov
     from pydantic import Field, root_validator, validator
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
