@@ -7,7 +7,6 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.accordion import Accordion
-from vizro.models._navigation.nav_bar import NavBar
 from vizro.models.types import NavPagesType, NavSelectorType
 
 

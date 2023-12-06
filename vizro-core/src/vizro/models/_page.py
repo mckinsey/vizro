@@ -9,7 +9,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
-from vizro.models import Action, Graph, Layout, VizroBaseModel
+from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
@@ -189,6 +189,7 @@ class Page(VizroBaseModel):
             if hasattr(model_manager[model_id], "_update_theme")
         ]
         if themed_components:
+
             @callback(
                 [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
                 Input("theme_selector", "on"),

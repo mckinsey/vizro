@@ -14,10 +14,11 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
+    type: Literal["container"] = "container"
     components: List[ComponentType]
     title: Optional[str]
     layout: Optional[Layout] = None
-    type: Literal["container"] = "container"
+    # controls to be added later
 
     @validator("layout", always=True)
     def set_layout(cls, layout, values):

@@ -330,7 +330,7 @@ ComponentType = Annotated[
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Container`][vizro.models.Container], 
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Container`][vizro.models.Container],
 [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`Tabs`][vizro.models.Tabs]"""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]

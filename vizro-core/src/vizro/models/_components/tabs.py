@@ -35,8 +35,11 @@ class Tabs(VizroBaseModel):
                 ),
             ]
             + [
-                dmc.TabsPanel(html.Div(children=[tab.build()], className="tabs_panel", style={"height": "100%"}),
-                              value=tab.id, style={"height": "100%"})
+                dmc.TabsPanel(
+                    html.Div(children=[tab.build()], className="tabs_panel", style={"height": "100%"}),
+                    value=tab.id,
+                    style={"height": "100%"},
+                )
                 for tab in self.tabs
             ],
             persistence=True,

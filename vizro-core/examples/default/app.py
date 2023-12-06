@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data
 from vizro.tables import dash_data_table
 
 df_gapminder = px.data.gapminder()
@@ -110,7 +110,7 @@ page = vm.Page(
                                 line_group="country",
                                 hover_name="country",
                             ),
-                        )
+                        ),
                     ],
                 ),
             ],
@@ -180,7 +180,7 @@ page_2 = vm.Page(
                         x="continent",
                         y="lifeExp",
                         color="continent",
-                    )
+                    ),
                 ),
                 vm.Button(
                     text="Export data",
@@ -193,7 +193,7 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(column="continent"),
-    ]
+    ],
 )
 page_3 = vm.Page(
     title="Third page",
@@ -224,7 +224,7 @@ page_3 = vm.Page(
     ],
     controls=[
         vm.Filter(column="continent"),
-    ]
+    ],
 )
 
 page_4 = vm.Page(
@@ -248,7 +248,7 @@ page_4 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Tab 1 container 2",
@@ -264,9 +264,9 @@ page_4 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                    ]
-                )
-            ]
+                    ],
+                ),
+            ],
         ),
         vm.Tabs(
             id="page-4-tab2",
@@ -285,7 +285,7 @@ page_4 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="Tab 2 container 2",
@@ -301,11 +301,11 @@ page_4 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                    ]
-                )
-            ]
-        )
-    ]
+                    ],
+                ),
+            ],
+        ),
+    ],
 )
 page_5 = vm.Page(
     # title="Testing out tabs: [0, [1, 2 ,3, B], [4, 5, [6, 7], [8]]]",
@@ -315,15 +315,7 @@ page_5 = vm.Page(
             id="first-tabr",
             tabs=[
                 vm.Container(
-                    layout=vm.Layout(
-                        grid=[
-                            [0, 0, 0, 0],
-                            [0, 0, 0, 0],
-                            [1, 1, 2, 2],
-                            [1, 1, 2, 2],
-                            [3, -1, -1, -1]
-                        ]
-                    ),
+                    layout=vm.Layout(grid=[[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 2, 2], [1, 1, 2, 2], [3, -1, -1, -1]]),
                     id="tab-1r",
                     title="Tab I Title",
                     components=[
@@ -412,12 +404,12 @@ page_5 = vm.Page(
                                 line_group="country",
                                 hover_name="country",
                             ),
-                        )
+                        ),
                     ],
                 ),
             ],
         ),
-    ]
+    ],
 )
 
 page_6 = vm.Page(
@@ -433,11 +425,7 @@ page_6 = vm.Page(
     ),
     components=[
         vm.Container(
-            layout=vm.Layout(
-                grid=[
-                    [0, 1], [0, 1]
-                ]
-            ),
+            layout=vm.Layout(grid=[[0, 1], [0, 1]]),
             components=[
                 vm.Container(
                     layout=vm.Layout(
@@ -493,10 +481,11 @@ page_6 = vm.Page(
                                 color="continent",
                             ),
                         ),
-                    ]
+                    ],
                 ),
                 vm.Container(
-                    components=[vm.Graph(
+                    components=[
+                        vm.Graph(
                             id="graph-6rn",
                             figure=px.line(
                                 df_gapminder,
@@ -509,8 +498,8 @@ page_6 = vm.Page(
                             ),
                         )
                     ]
-                )
-            ]
+                ),
+            ],
         ),
         vm.Container(
             title="Second container",
@@ -527,9 +516,9 @@ page_6 = vm.Page(
                         hover_name="country",
                     ),
                 )
-            ]
-        )
-    ]
+            ],
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page, page_5, page_2, page_3, page_4, page_6])

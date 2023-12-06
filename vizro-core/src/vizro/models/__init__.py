@@ -15,8 +15,17 @@ from ._page import Page
 Container.update_forward_refs(Button=Button, Card=Card, Graph=Graph, Tabs=Tabs, Table=Table, Layout=Layout)
 Tabs.update_forward_refs(Container=Container)
 Page.update_forward_refs(
-    Button=Button, Card=Card, Container=Container, Filter=Filter, Graph=Graph, Parameter=Parameter, Table=Table, Tabs=Tabs
+    Accordion=Accordion,
+    Button=Button,
+    Card=Card,
+    Container=Container,
+    Filter=Filter,
+    Graph=Graph,
+    Parameter=Parameter,
+    Table=Table,
+    Tabs=Tabs,
 )
+Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLink)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 NavBar.update_forward_refs(NavLink=NavLink)
 NavLink.update_forward_refs(Accordion=Accordion)
