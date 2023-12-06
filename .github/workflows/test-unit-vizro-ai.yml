@@ -1,8 +1,8 @@
-name: Unit tests for Vizro
+name: Unit tests for VizroAI
 
 defaults:
   run:
-    working-directory: vizro-core
+    working-directory: vizro-ai
 
 on:
   push:
@@ -19,16 +19,14 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
+  test-unit-vizro-ai:
+    name: test-unit-vizro-ai on Py${{ matrix.python-version }}
 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - python-version: 3.8
-            hatch-env: all.py3.8
           - python-version: 3.9
             hatch-env: all.py3.9
           - python-version: 3.10

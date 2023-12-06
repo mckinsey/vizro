@@ -1,4 +1,4 @@
-name: Unit tests for Vizro
+name: Integration tests for Vizro
 
 defaults:
   run:
@@ -12,15 +12,15 @@ on:
       - main
 
 concurrency:
-  group: test-unit-${{ github.head_ref }}
+  group: test-integration-${{ github.head_ref }}
 
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
 
 jobs:
-  test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
+  test-integration-vizro-core:
+    name: test-integration-vizro-core on Py${{ matrix.python-version }}
 
     runs-on: ubuntu-latest
     strategy:
@@ -53,5 +53,5 @@ jobs:
       - name: List dependencies
         run: hatch run ${{ matrix.hatch-env }}:pip freeze
 
-      - name: Run unit tests
-        run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
+      - name: Run integration tests
+        run: hatch run ${{ matrix.hatch-env }}:test-integration

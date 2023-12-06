@@ -1,0 +1,67 @@
+name: Integration tests for VizroAI
+
+defaults:
+  run:
+    working-directory: vizro-ai
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: test-integration-${{ github.head_ref }}
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+
+jobs:
+  test-integration-vizro-ai:
+    name: test-integration-vizro-ai on Py${{ matrix.python-version }}
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: 3.9
+            hatch-env: all.py3.9
+          - python-version: 3.10
+            hatch-env: all.py3.10
+          - python-version: 3.11
+            hatch-env: all.py3.11
+          - python-version: 3.11
+            hatch-env: lower-bounds
+            label: lower bounds
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: Run vizro-ai integration tests with pypi vizro
+        run: |
+          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          hatch run ${{ matrix.hatch-env }}:test-integration
+
+      - name: Run vizro-ai integration tests with local vizro
+        run: |
+          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          cd ../vizro-core
+          hatch build
+          cd ../vizro-ai
+          hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
+          hatch run ${{ matrix.hatch-env }}:test-integration

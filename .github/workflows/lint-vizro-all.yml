@@ -9,15 +9,15 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: lint-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
-  PYTHON_VERSION: "3.11"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: 3.11
 
 jobs:
   lint-vizro-all:
