@@ -21,7 +21,7 @@ concurrency:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: 3.11
+  PYTHON_VERSION: "3.11"
 
 jobs:
   checks-vizro-ai:
