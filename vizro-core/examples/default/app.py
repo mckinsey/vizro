@@ -21,23 +21,23 @@ page = vm.Page(
         #     actions=[
         #         vm.Action(
         #             function=filter_interaction(
-        #                 targets=["graph-1", "graph-2", "graph-3", "graph-4", "graph-5", "graph-6", "graph-7", "graph-8"]
+        #                 targets=["graph_1", "graph_2", "graph_3", "graph_4", "graph_5", "graph_6", "graph_7", "graph_8"]
         #             )
         #         ),
         #     ],
         # ),
         vm.Tabs(
-            id="first-tab",
+            id="first_tab",
             tabs=[
                 vm.Container(
                     id="tab-1",
                     title="Tab I Title",
                     components=[
                         vm.Graph(
-                            id="graph-1",
+                            id="graph_1",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-1",
+                                title="Graph_1",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -46,10 +46,10 @@ page = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-2",
+                            id="graph_2",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-2",
+                                title="Graph_2",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -57,10 +57,10 @@ page = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-3",
+                            id="graph_3",
                             figure=px.box(
                                 df_gapminder,
-                                title="Graph-3",
+                                title="Graph_3",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
@@ -79,10 +79,10 @@ page = vm.Page(
                     title="Tab II",
                     components=[
                         vm.Graph(
-                            id="graph-4",
+                            id="graph_4",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-4",
+                                title="Graph_4",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -90,20 +90,20 @@ page = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-5",
+                            id="graph_5",
                             figure=px.box(
                                 df_gapminder,
-                                title="Graph-5",
+                                title="Graph_5",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
                             ),
                         ),
                         vm.Graph(
-                            id="graph-6",
+                            id="graph_6",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-6",
+                                title="Graph_6",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -122,12 +122,12 @@ page = vm.Page(
         # probably need to implement some logic for an on_tab_load action
         vm.Parameter(
             targets=[
-                "graph-1.y",
-                "graph-2.y",
-                "graph-3.y",
-                "graph-4.y",
-                "graph-5.y",
-                "graph-6.y",
+                "graph_1.y",
+                "graph_2.y",
+                "graph_3.y",
+                "graph_4.y",
+                "graph_5.y",
+                "graph_6.y",
             ],
             selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
         ),
@@ -146,7 +146,7 @@ page_2 = vm.Page(
                     id="graph_11",
                     figure=px.line(
                         df_gapminder,
-                        title="Graph-11",
+                        title="Graph_11",
                         x="year",
                         y="lifeExp",
                         color="continent",
@@ -158,7 +158,7 @@ page_2 = vm.Page(
                     id="graph_12",
                     figure=px.scatter(
                         df_gapminder,
-                        title="Graph-12",
+                        title="Graph_12",
                         x="gdpPercap",
                         y="lifeExp",
                         size="pop",
@@ -176,7 +176,7 @@ page_2 = vm.Page(
                     id="graph_13",
                     figure=px.box(
                         df_gapminder,
-                        title="Graph-13",
+                        title="Graph_13",
                         x="continent",
                         y="lifeExp",
                         color="continent",
@@ -238,10 +238,10 @@ page_4 = vm.Page(
                     title="Tab 1 container 1",
                     components=[
                         vm.Graph(
-                            id="graph-44",
+                            id="graph_44",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-44",
+                                title="Graph_44",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -254,10 +254,10 @@ page_4 = vm.Page(
                     title="Tab 1 container 2",
                     components=[
                         vm.Graph(
-                            id="graph-441",
+                            id="graph_441",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-441",
+                                title="Graph_441",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -275,10 +275,10 @@ page_4 = vm.Page(
                     title="Tab 2 container",
                     components=[
                         vm.Graph(
-                            id="graph-45",
+                            id="graph_45",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-45",
+                                title="Graph_45",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -291,10 +291,10 @@ page_4 = vm.Page(
                     title="Tab 2 container 2",
                     components=[
                         vm.Graph(
-                            id="graph-451",
+                            id="graph_451",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-451",
+                                title="Graph_451",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -320,10 +320,10 @@ page_5 = vm.Page(
                     title="Tab I Title",
                     components=[
                         vm.Graph(
-                            id="graph-1r",
+                            id="graph_1r",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-1",
+                                title="Graph_1",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -332,10 +332,10 @@ page_5 = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-2r",
+                            id="graph_2r",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-2",
+                                title="Graph_2",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -343,10 +343,10 @@ page_5 = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-3r",
+                            id="graph_3r",
                             figure=px.box(
                                 df_gapminder,
-                                title="Graph-3",
+                                title="Graph_3",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
@@ -373,10 +373,10 @@ page_5 = vm.Page(
                     ),
                     components=[
                         vm.Graph(
-                            id="graph-4r",
+                            id="graph_4r",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-4",
+                                title="Graph_4",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -384,20 +384,20 @@ page_5 = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-5r",
+                            id="graph_5r",
                             figure=px.box(
                                 df_gapminder,
-                                title="Graph-5",
+                                title="Graph_5",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
                             ),
                         ),
                         vm.Graph(
-                            id="graph-6r",
+                            id="graph_6r",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-6",
+                                title="Graph_6",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -438,10 +438,10 @@ page_6 = vm.Page(
                     ),
                     components=[
                         vm.Graph(
-                            id="graph-1rn",
+                            id="graph_1rn",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-1",
+                                title="Graph_1",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -450,10 +450,10 @@ page_6 = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-2rn",
+                            id="graph_2rn",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-2",
+                                title="Graph_2",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -461,20 +461,20 @@ page_6 = vm.Page(
                             ),
                         ),
                         vm.Graph(
-                            id="graph-3rn",
+                            id="graph_3rn",
                             figure=px.box(
                                 df_gapminder,
-                                title="Graph-3",
+                                title="Graph_3",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
                             ),
                         ),
                         vm.Graph(
-                            id="graph-2rnn",
+                            id="graph_2rnn",
                             figure=px.scatter(
                                 df_gapminder,
-                                title="Graph-2",
+                                title="Graph_2",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -486,10 +486,10 @@ page_6 = vm.Page(
                 vm.Container(
                     components=[
                         vm.Graph(
-                            id="graph-6rn",
+                            id="graph_6rn",
                             figure=px.line(
                                 df_gapminder,
-                                title="Graph-6",
+                                title="Graph_6",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
@@ -505,10 +505,10 @@ page_6 = vm.Page(
             title="Second container",
             components=[
                 vm.Graph(
-                    id="graph-6rnn",
+                    id="graph_6rnn",
                     figure=px.line(
                         df_gapminder,
-                        title="Graph-6",
+                        title="Graph_6",
                         x="year",
                         y="lifeExp",
                         color="continent",
