@@ -137,9 +137,9 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[Stat
         targets = model_manager._get_model_page(model_id=action_id)._get_page_model_ids_with_figure()
 
     return {
-        f"download_dataframe_{target}": Output(
+        f"download-dataframe_{target}": Output(
             component_id={
-                "type": "download_dataframe",
+                "type": "download-dataframe",
                 "action_id": action_id,
                 "target_id": target,
             },
@@ -165,7 +165,7 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
     return [
         dcc.Download(
             id={
-                "type": "download_dataframe",
+                "type": "download-dataframe",
                 "action_id": action_id,
                 "target_id": target,
             },

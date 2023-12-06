@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypedDict, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
 import pandas as pd
 
@@ -57,11 +57,7 @@ def _apply_filters(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
+            if target not in action.function["targets"] or ALL_OPTION in selector_value:
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -89,7 +85,7 @@ def _apply_graph_filter_interaction(
     customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
     for action in source_graph_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+        if target not in action.function["targets"]:
             continue
         for custom_data_idx, column in enumerate(custom_data_columns):
             data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
@@ -123,7 +119,7 @@ def _apply_table_filter_interaction(
     source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
 
     for action in source_table_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+        if target not in action.function["targets"]:
             continue
         column = ctd_active_cell["value"]["column_id"]
         derived_viewport_data_row = ctd_active_cell["value"]["row"]
@@ -207,7 +203,7 @@ def _get_parametrized_config(
             for action in selector_actions:
                 action_targets = _create_target_arg_mapping(action.function["targets"])
 
-                if action.function._function.__name__ != "_parameter" or target not in action_targets:
+                if target not in action_targets:
                     continue
 
                 for action_targets_arg in action_targets[target]:
@@ -251,7 +247,7 @@ def _get_modified_page_figures(
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
     targets: Optional[List[ModelID]] = None,
-) -> Tuple[Any, ...]:
+) -> Dict[ModelID, Any]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -265,10 +261,10 @@ def _get_modified_page_figures(
         parameters=ctds_parameters,
     )
 
-    outputs: Dict[ModelID, Any] = {}
+    outputs = {}
     for target in targets:
         outputs[target] = model_manager[target](  # type: ignore[operator]
             data_frame=filtered_data[target], **parameterized_config[target]
         )
 
-    return namedtuple("Outputs", outputs.keys())(**outputs)
+    return outputs

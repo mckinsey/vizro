@@ -1,13 +1,12 @@
 # How to use Actions
 
-This guide shows you how to use actions, a concept that is similar, but not identical, to [
-callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. Many components of a dashboard (e.g. [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional
+This guide shows you how to use `Actions`, a new concept in Vizro that is similar, but not identical to [`Callbacks`](https://dash.plotly.com/basic-callbacks) in `Dash`. Many components of a dashboard (eg. [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional
 `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
 
-In a nutshell, using the [`Action`][vizro.models.Action] model together with an action function allows you to create complex functionality on a variety of triggers in your dashboard.
-There is already a range of reusable action functions available.
+In a nutshell, using the [`Action`][vizro.models.Action] model together with an `action function` allows you to create complex functionality on a variety of triggers in your dashboard.
+There is already a range of reusable `action functions` available.
 
-???+ info "Overview of currently available pre-definedaction functions"
+???+ info "Overview of currently available pre-defined `action functions`"
 
     - [`export_data`][vizro.actions.export_data]
     - [`filter_interaction`][vizro.actions.filter_interaction]
@@ -15,12 +14,12 @@ There is already a range of reusable action functions available.
 ## Pre-defined actions
 
 To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then
-add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
+add a desired pre-defined `action function` into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
     Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (e.g. for the `Button` it is `n_click`).
 
-The below sections are guides on how to leverage pre-defined action functions.
+The below sections are guides on how to leverage pre-defined action functions
 
 ### Export data
 
@@ -105,7 +104,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 ### Filter data by clicking on chart
 
-To enable filtering when clicking on data in a source chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+To enable filtering when clicking on data in a (source) chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
 
 To configure this chart interaction follow the steps below:
 
@@ -125,7 +124,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
 
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
-!!! example "Graph `filter_interaction`"
+!!! example "`filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -211,7 +210,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 
 Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
 
-!!! example "Table `filter_interaction`"
+!!! example "`filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -286,8 +285,8 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
-## Pre-defined actions customization
-Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
+## Predefined actions customization
+Many predefined actions are customizable which helps to achieve more specific desired goal. For specific options, please
 refer to the [API reference][vizro.actions] on this topic.
 
 ## Actions chaining
@@ -385,4 +384,11 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
-To enhance existing actions, please see our How-to-guide on creating [custom actions](custom_actions.md).
+## Custom actions
+
+!!! success "Coming soon!"
+
+!!! warning
+
+    When creating your own custom action functions (as this is already possible without official support), you are responsible for the security of your creation. Vizro cannot guarantee
+    the security of custom created action functions, so make sure you keep this in mind when publicly deploying your dashboard.

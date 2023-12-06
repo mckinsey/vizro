@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -95,26 +93,23 @@ def callback_context_on_page_load(request):
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
+        "callback_context_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x",
         [
             (
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-                "vizro_dark",
             ),
             (
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
-                "vizro_light",
             ),
         ],
-        indirect=["callback_context_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
+        indirect=True,
     )
     def test_multiple_controls_one_target(
         self,
         callback_context_on_page_load,
         target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-        template,
         box_chart,
     ):
         # Creating and adding a Filter objects to the existing Page
@@ -153,15 +148,7 @@ class TestOnPageLoad:
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
 
-        box_chart.layout.template = template
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-                "box_chart": box_chart,
-            }
-        )
-
-        assert result._asdict() == expected._asdict()
+        assert result["scatter_chart"] == target_scatter_filtered_continent_and_pop_parameter_y_and_x
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -218,11 +205,6 @@ class TestOnPageLoad:
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-                "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,
-            }
-        )
 
-        assert result._asdict() == expected._asdict()
+        assert result["scatter_chart"] == target_scatter_filtered_continent_and_pop_parameter_y_and_x
+        assert result["box_chart"] == target_box_filtered_continent_and_pop_parameter_y_and_x

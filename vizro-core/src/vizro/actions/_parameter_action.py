@@ -1,6 +1,6 @@
 """Pre-defined action function "_parameter" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from dash import ctx
 
@@ -12,7 +12,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Tuple[Any, ...]:
+def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
     """Modifies parameters of targeted charts/components on page.
 
     Args:

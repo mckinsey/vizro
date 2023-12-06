@@ -1,9 +1,8 @@
 import importlib.util
 import logging
-from collections.abc import Collection
 from typing import Any, Dict, List
 
-from dash import Input, Output, State, callback, html
+from dash import Input, Output, State, callback, ctx, html
 from pydantic import Field, validator
 
 import vizro.actions
@@ -56,6 +55,19 @@ class Action(VizroBaseModel):
                     )
         return function
 
+    @staticmethod
+    def _validate_output_number(outputs, return_value):
+        return_value_len = (
+            1 if not hasattr(return_value, "__len__") or isinstance(return_value, str) else len(return_value)
+        )
+
+        # Raising the custom exception if the callback return value length doesn't match the number of defined outputs.
+        if len(outputs) != return_value_len:
+            raise ValueError(
+                f"Number of action's returned elements ({return_value_len}) does not match the number"
+                f" of action's defined outputs ({len(outputs)})."
+            )
+
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -94,46 +106,32 @@ class Action(VizroBaseModel):
 
         return callback_inputs, callback_outputs, action_components
 
-    def _action_callback_function(self, inputs: Dict[str, Any], outputs: List[str]) -> Dict[str, Any]:
+    def _action_callback_function(self, **inputs: Dict[str, Any]) -> Dict[str, Any]:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
         logger.debug(f"Action inputs: {inputs}")
 
         # Invoking the action's function
-        return_value = self.function(**inputs)
+        return_value = self.function(**inputs) or {}
 
-        if return_value is None and len(outputs) == 0:
-            # Action has no outputs and the custom action function returns None.
-            # Special case results with no exception.
-            return_dict = {}
-        elif hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
-            # return_value is a namedtuple.
-            if set(return_value._fields) != set(outputs):
-                raise ValueError(
-                    f"Action's returned fields {set(return_value._fields)} does not match the action's defined "
-                    f"outputs {set(outputs) or {}}."
-                )
-            return_dict = return_value._asdict()
-        elif len(outputs) == 1:
-            # If the action has only one output, so assign the entire return_value to the output.
-            # This ensures consistent handling regardless of the type or structure of the return_value.
-            return_dict = {outputs[0]: return_value}
-        else:
-            if not isinstance(return_value, Collection) or len(return_value) == 0:
-                # If return_value is not a collection or is an empty collection,
-                # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
-                # and treats an empty collection as a 1-length collection.
-                return_value = [return_value]
+        # Action callback outputs
+        outputs = list(ctx.outputs_grouping.keys())
+        outputs.remove("action_finished")
 
-            if len(return_value) != len(outputs):
-                raise ValueError(
-                    f"Number of action's returned elements ({len(return_value)}) does not match the number"
-                    f" of action's defined outputs ({len(outputs)})."
-                )
-            return_dict = dict(zip(outputs, return_value))
+        # Validate number of outputs
+        self._validate_output_number(
+            outputs=outputs,
+            return_value=return_value,
+        )
 
-        return return_dict
+        # If return_value is a single element, ensure return_value is a list
+        if not isinstance(return_value, (list, tuple, dict)):
+            return_value = [return_value]
+        if isinstance(return_value, dict):
+            return {"action_finished": None, **return_value}
+
+        return {"action_finished": None, **dict(zip(outputs, return_value))}
 
     @_log_call
     def build(self):
@@ -158,10 +156,7 @@ class Action(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
-            outputs = list(callback_outputs.keys())
-            outputs.remove("action_finished")
-            return_dict = self._action_callback_function(inputs=inputs, outputs=outputs)
-            return {"action_finished": None, **return_dict}
+            return self._action_callback_function(**inputs)
 
         return html.Div(
             children=action_components,
