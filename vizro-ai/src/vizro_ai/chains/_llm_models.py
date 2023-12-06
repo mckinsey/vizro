@@ -1,7 +1,11 @@
 from typing import Callable, Dict, List, Union
 
 from langchain.chat_models import ChatOpenAI
-from pydantic import BaseModel, Field
+
+try:
+    from pydantic.v1 import BaseModel, Field
+except ImportError:
+    from pydantic import BaseModel, Field
 
 # TODO add new wrappers in if new model support is added
 LLM_MODELS = Union[ChatOpenAI]
