@@ -175,7 +175,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
 
 
 Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
-By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter).
+By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
 
 ## Customizing the navigation bar
 

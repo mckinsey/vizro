@@ -4,6 +4,7 @@ import itertools
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 from dash import html
 from pydantic import Field, PrivateAttr, validator
 
@@ -59,10 +60,13 @@ class NavLink(VizroBaseModel):
 
         button = dbc.Button(
             [
-                html.Span(self.icon, className="material-symbols-outlined"),
-                # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
-                # try dbc.Popover or Dash mantine components tooltip?).
-                # dbc.Tooltip(html.P(self.label), target=self.id, placement="bottom", className="custom-tooltip"),
+                dmc.Tooltip(
+                    label=self.label,
+                    offset=4,
+                    withArrow=True,
+                    children=[html.Span(self.icon, className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
             ],
             id=self.id,
             className="icon-button",

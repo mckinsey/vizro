@@ -49,6 +49,7 @@ def custom_action_build_expected():
     return html.Div(
         children=[],
         id="action_test_action_model_components_div",
+        hidden=True,
     )
 
 
