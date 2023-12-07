@@ -19,8 +19,8 @@ concurrency:
   group: checks-ai-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
   PYTHON_VERSION: "3.11"
 
 jobs:

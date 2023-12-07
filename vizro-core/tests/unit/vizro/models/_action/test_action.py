@@ -8,7 +8,12 @@ import dash
 import plotly
 import pytest
 from dash import html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
+
 
 from vizro.actions import export_data
 from vizro.models._action._action import Action
