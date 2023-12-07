@@ -154,4 +154,5 @@ div.dashboard_container .custom-tooltip {
   filter: drop-shadow(0px 2px 2px #141721);
   border-radius: 0;
   box-shadow: var(--box-shadow-elevation-tooltip-hover);
+  white-space: pre-wrap;
 }
