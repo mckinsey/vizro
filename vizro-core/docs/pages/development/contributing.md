@@ -79,7 +79,7 @@ To run tests against a particular Python version, specify the particular Hatch e
 hatch run all.py3.10:test -vv
 ```
 
-The script executed by `hatch run cov` measures test coverage and generates a report.
+The script executed by `hatch run test-unit-coverage` measures test coverage and generates a report.
 
 To run jest unit tests for javascript functions, run `hatch run test-js`.
 Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.

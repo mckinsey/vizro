@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import itertools
-from typing import Optional
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 from dash import html
 from pydantic import Field, PrivateAttr, validator
 
@@ -22,14 +22,14 @@ class NavLink(VizroBaseModel):
         ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
             Defaults to `[]`.
         label (str): Text description of the icon for use in tooltip.
-        icon (Optional[str]): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-            Defaults to `None`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
+            Defaults to `""`.
 
     """
 
     pages: NavPagesType = []
     label: str = Field(..., description="Text description of the icon for use in tooltip.")
-    icon: Optional[str] = Field(None, description="Icon name from Google Material icons library.")
+    icon: str = Field("", description="Icon name from Google Material icons library.")
 
     _nav_selector: Accordion = PrivateAttr()
 
@@ -58,10 +58,13 @@ class NavLink(VizroBaseModel):
 
         button = dbc.Button(
             [
-                html.Span(self.icon, className="material-symbols-outlined"),
-                # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
-                # try dbc.Popover or Dash mantine components tooltip?).
-                # dbc.Tooltip(html.P(self.label), target=self.id, placement="bottom", className="custom-tooltip"),
+                dmc.Tooltip(
+                    label=self.label,
+                    offset=4,
+                    withArrow=True,
+                    children=[html.Span(self.icon, className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
             ],
             id=self.id,
             className="icon-button",

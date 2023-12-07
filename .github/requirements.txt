@@ -1,9 +1,0 @@
-devtools[pygments]
-pre-commit
-coverage[toml]>=6.5
-pytest
-dash[testing]
-chromedriver-autoinstaller-fix
-toml
-pyyaml
-openpyxl

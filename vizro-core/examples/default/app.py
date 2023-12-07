@@ -526,7 +526,8 @@ dashboard = vm.Dashboard(
         pages={
             "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
             "Summary": ["Continent Summary"],
-        }
+        },
+        nav_selector=vm.NavBar(),
     ),
 )
 

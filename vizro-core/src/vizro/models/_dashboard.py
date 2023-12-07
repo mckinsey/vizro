@@ -32,7 +32,7 @@ class Dashboard(VizroBaseModel):
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (Optional[str]): Dashboard title to appear on every page on top left-side. Defaults to `None`.
+        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
     """
 
     pages: List[Page]
@@ -40,7 +40,7 @@ class Dashboard(VizroBaseModel):
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
     navigation: Optional[Navigation] = None
-    title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
+    title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
     def validate_pages(cls, pages):
@@ -83,7 +83,7 @@ class Dashboard(VizroBaseModel):
         return dbc.Container(
             id="dashboard_container_outer",
             children=[
-                html.Div(id=f"vizro_version_{vizro.__version__}"),
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
@@ -120,7 +120,7 @@ class Dashboard(VizroBaseModel):
         nav_control_panel = (
             html.Div(nav_control_elements, className="nav_control_panel")
             if any(not getattr(element, "hidden", False) for element in nav_control_elements)
-            else html.Div(hidden=True)
+            else None
         )
 
         left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")

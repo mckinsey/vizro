@@ -19,7 +19,7 @@ def dashboard_container():
     return dbc.Container(
         id="dashboard_container_outer",
         children=[
-            html.Div(id=f"vizro_version_{vizro.__version__}"),
+            html.Div(vizro.__version__, id="vizro_version", hidden=True),
             ActionLoop._create_app_callbacks(),
             dash.page_container,
         ],
@@ -104,7 +104,7 @@ class TestDashboardInstantiation:
         assert hasattr(dashboard, "id")
         assert dashboard.pages == [page_1, page_2]
         assert dashboard.theme == "vizro_dark"
-        assert dashboard.title is None
+        assert dashboard.title == ""
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
 
