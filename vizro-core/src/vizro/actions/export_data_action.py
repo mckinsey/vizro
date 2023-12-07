@@ -63,4 +63,4 @@ def export_data(
             writer=writer, filename=f"{target_id}.{file_format}", index=False
         )
 
-    return namedtuple("Outputs", outputs.keys())(**outputs)
+    return outputs

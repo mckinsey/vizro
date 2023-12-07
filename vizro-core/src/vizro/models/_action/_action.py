@@ -1,6 +1,6 @@
 import importlib.util
 import logging
-from collections.abc import Collection
+from collections.abc import Collection, Mapping
 from typing import Any, Dict, List
 
 from dash import Input, Output, State, callback, html
@@ -119,6 +119,14 @@ class Action(VizroBaseModel):
             # If the action has only one output, so assign the entire return_value to the output.
             # This ensures consistent handling regardless of the type or structure of the return_value.
             return_dict = {outputs[0]: return_value}
+        elif isinstance(return_value, Mapping):
+            if set(outputs) != set(return_value):
+                raise ValueError(
+                    f"Keys of action's returned value ({set(return_value)}) do not match the names of "
+                    f" the action's defined outputs ({set(outputs)})."
+                )
+            return_dict = return_value
+
         else:
             if not isinstance(return_value, Collection) or len(return_value) == 0:
                 # If return_value is not a collection or is an empty collection,

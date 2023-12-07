@@ -219,7 +219,7 @@ def create_relation_analysis():
                     """
             ),
             vm.Graph(
-                id="bar_relation_2007",
+                id="1bar_relation_2007",
                 figure=px.box(
                     df_gapminder.query("year == 2007"),
                     x="continent",
@@ -242,10 +242,10 @@ def create_relation_analysis():
                     },
                     custom_data=["continent"],
                 ),
-                actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+                actions=[vm.Action(function=filter_interaction(targets=["1scatter_relation_2007"]))],
             ),
             vm.Graph(
-                id="scatter_relation_2007",
+                id="1scatter_relation_2007",
                 figure=px.scatter(
                     df_gapminder.query("year == 2007"),
                     x="gdpPercap",
@@ -300,19 +300,19 @@ def create_relation_analysis():
         ],
         controls=[
             vm.Parameter(
-                targets=["scatter_relation_2007.x", "scatter_relation.x"],
+                targets=["1scatter_relation_2007.x", "scatter_relation.x"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation_2007.y", "scatter_relation.y", "bar_relation_2007.y"],
+                targets=["1scatter_relation_2007.y", "scatter_relation.y", "1bar_relation_2007.y"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation_2007.size", "scatter_relation.size"],
+                targets=["1scatter_relation_2007.size", "scatter_relation.size"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
                 ),
