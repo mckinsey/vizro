@@ -2,6 +2,7 @@
 import re
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -77,11 +78,21 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
+    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
+
     def test_nav_bar_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=True, href="/")])
+        expected_button = html.Div(
+            [
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
+                    active=True,
+                    href="/",
+                )
+            ]
+        )
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
@@ -94,8 +105,16 @@ class TestNavBarBuildMethod:
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
         expected_buttons = html.Div(
             [
-                dbc.Button(children=[html.Span(children="filter_1")], active=True, href="/"),
-                dbc.Button(children=[html.Span(children="filter_2")], active=False, href="/page-2"),
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
+                    active=True,
+                    href="/",
+                ),
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
+                    active=False,
+                    href="/page-2",
+                ),
             ]
         )
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
@@ -109,7 +128,15 @@ class TestNavBarBuildMethod:
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_button = html.Div([dbc.Button(children=[html.Span(children="filter_1")], active=False, href="/")])
+        expected_button = html.Div(
+            [
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
+                    active=False,
+                    href="/",
+                )
+            ]
+        )
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
@@ -121,8 +148,16 @@ class TestNavBarBuildMethod:
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
         expected_buttons = html.Div(
             [
-                dbc.Button(children=[html.Span(children="filter_1")], active=False, href="/"),
-                dbc.Button(children=[html.Span(children="filter_2")], active=False, href="/page-2"),
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
+                    active=False,
+                    href="/",
+                ),
+                dbc.Button(
+                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
+                    active=False,
+                    href="/page-2",
+                ),
             ]
         )
         assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
