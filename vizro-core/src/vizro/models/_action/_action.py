@@ -107,31 +107,26 @@ class Action(VizroBaseModel):
             # Action has no outputs and the custom action function returns None.
             # Special case results with no exception.
             return_dict = {}
-        elif hasattr(return_value, "_asdict") and hasattr(return_value, "_fields"):
-            # return_value is a namedtuple.
-            if set(return_value._fields) != set(outputs):
-                raise ValueError(
-                    f"Action's returned fields {set(return_value._fields)} does not match the action's defined "
-                    f"outputs {set(outputs) or {}}."
-                )
-            return_dict = return_value._asdict()
         elif len(outputs) == 1:
             # If the action has only one output, so assign the entire return_value to the output.
             # This ensures consistent handling regardless of the type or structure of the return_value.
             return_dict = {outputs[0]: return_value}
-        elif isinstance(return_value, Mapping):
+        elif isinstance(return_value, Mapping) and return_value:
+            # We exclude the empty dictionary case here so that it raises the invalid number of elements error raised
+            # in the else clause.
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value ({set(return_value)}) do not match the names of "
-                    f" the action's defined outputs ({set(outputs)})."
+                    f"Keys of action's returned value ({set(return_value)}) do not match the action's defined outputs"
+                    f" ({set(outputs)})."
                 )
             return_dict = return_value
-
         else:
             if not isinstance(return_value, Collection) or len(return_value) == 0:
                 # If return_value is not a collection or is an empty collection,
                 # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
                 # and treats an empty collection as a 1-length collection.
+                # Note that if this clause runs then the below invalid number of elements error is always raised,
+                # because we already know that len(return_value) == 1 and len(outputs) != 1 (from above elif clause).
                 return_value = [return_value]
 
             if len(return_value) != len(outputs):

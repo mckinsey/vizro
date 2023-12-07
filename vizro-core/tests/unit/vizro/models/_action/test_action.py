@@ -251,21 +251,9 @@ class TestActionPrivateMethods:
                 {"component_1_property": "value_1", "component_2_property": "value_2"},
             ),
             (
-                {"key_1": "value_1", "key_2": "value_2"},
+                {"component_1_property": "value_1", "component_2_property": "value_2"},
                 ["component_1_property", "component_2_property"],
-                {"component_1_property": "key_1", "component_2_property": "key_2"},
-            ),
-            # single outputs
-            (
-                (namedtuple("Outputs", ["component_1_property"])("new_value")),
-                ["component_1_property"],
-                {"component_1_property": "new_value"},
-            ),
-            # multiple outputs
-            (
-                (namedtuple("Outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
-                ["component_1_property", "component_2_property"],
-                {"component_1_property": "new_value", "component_2_property": "new_value_2"},
+                {"component_1_property": "value_1", "component_2_property": "value_2"},
             ),
         ],
         indirect=["custom_action_function_mock_return"],
@@ -299,6 +287,22 @@ class TestActionPrivateMethods:
             (["new_value", "new_value_2"], []),
             (["new_value", "new_value_2"], ["component_1_property", "component_2_property", "component_3_property"]),
             ({}, []),
+        ],
+        indirect=["custom_action_function_mock_return"],
+    )
+    def test_action_callback_function_return_value_invalid_length(
+        self, custom_action_function_mock_return, callback_outputs
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Number of action's returned elements .+ does not match the number of action's defined outputs .+",
+        ):
+            action._action_callback_function(inputs={}, outputs=callback_outputs)
+
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return, callback_outputs",
+        [
             ({"component_1_property": "new_value"}, []),
             ({"component_1_property": "new_value"}, ["component_1_property", "component_2_property"]),
             ({"component_1_property": "new_value", "component_2_property": "new_value_2"}, []),
@@ -309,35 +313,12 @@ class TestActionPrivateMethods:
         ],
         indirect=["custom_action_function_mock_return"],
     )
-    def test_action_callback_function_return_value_invalid(self, custom_action_function_mock_return, callback_outputs):
-        action = Action(function=custom_action_function_mock_return())
-        with pytest.raises(
-            ValueError,
-            match="Number of action's returned elements \\(.?\\)"
-            " does not match the number of action's defined outputs \\(.?\\).",
-        ):
-            action._action_callback_function(inputs={}, outputs=callback_outputs)
-
-    @pytest.mark.parametrize(
-        "custom_action_function_mock_return, callback_outputs",
-        [
-            (
-                (namedtuple("Outputs", ["component_1_property"])("new_value")),
-                [],
-            ),
-            (
-                (namedtuple("Outputs", ["component_1_property", "component_2_property"])("new_value", "new_value_2")),
-                ["component_1_property", "component_2_property", "component_3_property"],
-            ),
-        ],
-        indirect=["custom_action_function_mock_return"],
-    )
-    def test_action_callback_function_return_value_invalid_namedtuple(
+    def test_action_callback_function_return_value_invalid_keys(
         self, custom_action_function_mock_return, callback_outputs
     ):
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Action's returned fields \\{.*\\}" " does not match the action's defined outputs \\{.*\\}.",
+            match="Keys of action's returned value .+ do not match the action's defined outputs .+",
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
