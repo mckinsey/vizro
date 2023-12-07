@@ -70,21 +70,21 @@ class Action(VizroBaseModel):
         """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
+        # call this callback_inputs_kwargs
         callback_inputs: Dict[str, Any] = {
             **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs"),
-            **{
-                f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
-                for input in self.inputs
-            },
             "trigger": Input({"type": "action_trigger", "action_name": self.id}, "data"),
         }
+
+        # something like this:
+        # callback_inputs_args = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
 
         callback_outputs: Dict[str, Any] = {
             **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs"),
             **{
                 f'{output.split(".")[0]}_{output.split(".")[1]}': Output(
                     output.split(".")[0], output.split(".")[1], allow_duplicate=True
-                )
+                )  # change to output: Output(...)
                 for output in self.outputs
             },
             "action_finished": Output("action_finished", "data", allow_duplicate=True),
