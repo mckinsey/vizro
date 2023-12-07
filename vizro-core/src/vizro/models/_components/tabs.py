@@ -14,6 +14,13 @@ if TYPE_CHECKING:
 
 
 class Tabs(VizroBaseModel):
+    """Tabs component. [`Tabs`][vizro.models.Tabs].
+
+    Args:
+        type (Literal["tabs"]): Defaults to `"tabs"`.
+        tabs (List[Container]): See [Container][vizro.models.Container]. At least one container needs to be provided.
+    """
+
     type: Literal["tabs"] = "tabs"
     tabs: List[Container] = []
 
