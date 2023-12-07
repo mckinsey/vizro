@@ -6,7 +6,11 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -40,7 +44,7 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self, *, active_page_id=None):

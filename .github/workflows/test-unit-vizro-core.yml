@@ -9,23 +9,35 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: test-unit-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.python-version }}
+    name: test-unit-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
+
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        include:
+          - python-version: "3.8"
+            hatch-env: all.py3.8
+          - python-version: "3.9"
+            hatch-env: all.py3.9
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+          - python-version: "3.11"
+            hatch-env: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +51,7 @@ jobs:
         run: pip install --upgrade hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+        run: hatch run ${{ matrix.hatch-env }}:pip freeze
 
       - name: Run unit tests
-        run: hatch run all.py${{ matrix.python-version }}:test-unit-coverage
+        run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage

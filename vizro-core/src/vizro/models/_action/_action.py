@@ -4,7 +4,11 @@ from collections.abc import Collection
 from typing import Any, Dict, List
 
 from dash import Input, Output, State, callback, html
-from pydantic import Field, validator
+
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
 
 import vizro.actions
 from vizro.managers._model_manager import ModelID
