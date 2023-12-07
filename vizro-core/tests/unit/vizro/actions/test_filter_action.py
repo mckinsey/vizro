@@ -120,14 +120,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-                "box_chart": target_box_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent",
@@ -150,13 +148,11 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -183,14 +179,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-                "box_chart": target_box_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -223,14 +217,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-                "box_chart": target_box_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+            "box_chart": target_box_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
@@ -261,13 +253,11 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -308,11 +298,9 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-                "box_chart": target_box_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+            "box_chart": target_box_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
