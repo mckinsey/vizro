@@ -48,7 +48,7 @@ class Accordion(VizroBaseModel):
                 dbc.AccordionItem(
                     children=accordion_buttons,
                     title=page_group.upper(),
-                    class_name="accordion_item",
+                    class_name="accordion-item-header",
                 )
             )
 

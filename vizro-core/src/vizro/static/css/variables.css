@@ -85,6 +85,9 @@
   --state-overlays-selected-hover: var(
     --state-overlays-dark-mode-selected-hover
   );
+  --tooltip-text-primary: rgba(20, 23, 33, 0.88);
+  --box-shadow-elevation-tooltip-hover: 0px 4px 8px 0px rgba(20, 23, 33, 0.38),
+    0px 2px 4px -1px rgba(20, 23, 33, 0.88);
 }
 
 .vizro_light {
@@ -143,4 +146,7 @@
   --state-overlays-selected-hover: var(
     --state-overlays-light-mode-selected-hover
   );
+  --tooltip-text-primary: rgba(255, 255, 255, 0.88);
+  --box-shadow-elevation-tooltip-hover: 0px 4px 8px 0px rgba(20, 23, 33, 0.12),
+    0px 2px 4px -1px rgba(20, 23, 33, 0.08);
 }
