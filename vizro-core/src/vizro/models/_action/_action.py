@@ -73,6 +73,10 @@ class Action(VizroBaseModel):
         # call this callback_inputs_kwargs
         callback_inputs: Dict[str, Any] = {
             **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs"),
+            **{
+                f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
+                for input in self.inputs
+            },
             "trigger": Input({"type": "action_trigger", "action_name": self.id}, "data"),
         }
 
