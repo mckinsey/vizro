@@ -73,14 +73,14 @@ class Action(VizroBaseModel):
         if self.inputs:
             callback_inputs: Dict[str, Any] = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
         else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
+            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs") or []
 
         if self.outputs:
             callback_outputs = [
                 Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs
             ]
         else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
+            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs") or []
 
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
@@ -183,11 +183,11 @@ class Action(VizroBaseModel):
             f"function name: {self.function._function.__name__}"
         )
         logger.debug("---------- INPUTS ----------")
-        for name, object in callback_inputs["external"].items():
-            logger.debug(f"--> {name}: {object}")
+        # for name, object in callback_inputs["external"].items():
+        #     logger.debug(f"--> {name}: {object}")
         logger.debug("---------- OUTPUTS ---------")
-        for name, object in callback_outputs["external"].items():
-            logger.debug(f"--> {name}: {object}")
+        # for name, object in callback_outputs["external"].items():
+        #     logger.debug(f"--> {name}: {object}")
         logger.debug("============================")
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
