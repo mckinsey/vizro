@@ -43,7 +43,4 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Security
 
-- Bump dependency versions suggested by snyk, i.e., langchain==0.0.329 and aiohttp>=3.
-  9.0 ([#204](https://github.com/mckinsey/vizro/pull/204))
-
-
+- Bump langchain version to 0.0.329, suggested by snyk ([#204](https://github.com/mckinsey/vizro/pull/204))
