@@ -70,17 +70,17 @@ class Action(VizroBaseModel):
         """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
-        callback_inputs: Dict[str, Any] = {}
-        callback_inputs["external"] = _get_action_callback_mapping(
-            action_id=ModelID(str(self.id)), argument="inputs"
-        ) or [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
-        callback_inputs["internal"] = {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")}
+        if self.inputs:
+            callback_inputs: Dict[str, Any] = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
+        else:
+            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
-        callback_outputs: Dict[str, Any] = {}
-        callback_outputs["external"] = _get_action_callback_mapping(
-            action_id=ModelID(str(self.id)), argument="outputs"
-        ) or [Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs]
-        callback_outputs["internal"] = {"action_finished": Output("action_finished", "data", allow_duplicate=True)}
+        if self.outputs:
+            callback_outputs = [
+                Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs
+            ]
+        else:
+            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
@@ -168,7 +168,15 @@ class Action(VizroBaseModel):
         Returns:
             List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
         """
-        callback_inputs, callback_outputs, action_components = self._get_callback_mapping()
+        external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
+        callback_inputs = {
+            "external": external_callback_inputs,
+            "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
+        }
+        callback_outputs = {
+            "external": external_callback_outputs,
+            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+        }
 
         logger.debug(
             f"Creating Callback mapping for Action ID {self.id} with "

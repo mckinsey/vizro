@@ -88,8 +88,14 @@ class CapturedCallable:
         """
         # need to label args with parameters
         x = {**self.__arguments, **kwargs}
-
-        unbound_params = [param for param in inspect.signature(self.__function).parameters if param not in x]
+        parameters = inspect.signature(self.__function).parameters
+        # AM TODO: this is tricky, think about it more.
+        unbound_params = [
+            param.name
+            for param in inspect.signature(self.__function).parameters.values()
+            if param.name not in x and param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+        ]
+        # should do zip_longets or similar?
         return self.__function(**dict(zip(unbound_params, args)), **x)
 
     def __getitem__(self, arg_name: str):
