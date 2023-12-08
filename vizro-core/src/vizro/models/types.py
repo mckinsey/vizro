@@ -86,17 +86,22 @@ class CapturedCallable:
 
         Note *args are not possible here, but you can still override positional arguments using argument name.
         """
+        if args and kwargs:
+            raise ValueError("blah blah")
         # need to label args with parameters
-        x = {**self.__arguments, **kwargs}
         parameters = inspect.signature(self.__function).parameters
         # AM TODO: this is tricky, think about it more.
         unbound_params = [
             param.name
             for param in inspect.signature(self.__function).parameters.values()
-            if param.name not in x and param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+            if param.name not in self.__arguments and param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
         ]
-        # should do zip_longets or similar?
-        return self.__function(**dict(zip(unbound_params, args)), **x)
+        if len(args) > len(unbound_params):
+            raise ValueError("something")
+            # TypeError: f() takes 1 positional argument but 2 were given
+        # Could still have too few args but that is ok
+
+        return self.__function(**dict(zip(unbound_params, args)), **{**self.__arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""

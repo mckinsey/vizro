@@ -100,6 +100,8 @@ class Action(VizroBaseModel):
         else:
             return_value = self.function(*inputs)
 
+        # Delegate all handling of the return_value and mapping it onto appropriate outputs to Dash - we don't modify
+        # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
         if not outputs and return_value is not None:
             raise ValueError("Action function has returned a value but the action has no defined outputs.")
         elif isinstance(outputs, Mapping):
