@@ -1,8 +1,9 @@
 pandas
 tabulate
 openai>=0.27.8,<1.0.0
-langchain==0.0.325
+langchain==0.0.329
 python-dotenv>=1.0.0
 vizro>=0.1.4
 ipython>=8.10.0
 urllib3>=2.0.7
+aiohttp>=3.9.0
