@@ -31,7 +31,7 @@ PREDEFINED_MODELS: List[Dict[str, any]] = [
         "name": "gpt-4-1106-preview",
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
-    }
+    },
 ]
 
 
