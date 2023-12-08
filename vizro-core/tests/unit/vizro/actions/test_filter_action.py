@@ -37,24 +37,26 @@ def callback_context_filter_continent(request):
     continent = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent,
+                        str_id="continent_filter",
+                        triggered=False,
+                    )
+                ],
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -67,31 +69,33 @@ def callback_context_filter_continent_and_pop(request):
     continent, pop = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent,
+                        str_id="continent_filter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop,
+                        str_id="pop_filter",
+                        triggered=False,
+                    ),
+                ],
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop,
-                    str_id="pop_filter",
-                    triggered=False,
-                ),
-            ],
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))

@@ -34,7 +34,7 @@ def filter_interaction(
     """
     return _get_modified_page_figures(
         targets=targets,
-        ctds_filter=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["parameters"],
+        ctds_filter=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )

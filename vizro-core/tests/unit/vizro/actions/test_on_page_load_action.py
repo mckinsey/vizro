@@ -46,46 +46,48 @@ def callback_context_on_page_load(request):
     continent_filter, pop, y, x, template = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent_filter,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent_filter,
+                        str_id="continent_filter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop,
+                        str_id="pop_filter",
+                        triggered=False,
+                    ),
+                ],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
+                    ),
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=template == "vizro_dark",
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop,
-                    str_id="pop_filter",
-                    triggered=False,
-                ),
-            ],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
-                    triggered=False,
-                ),
-                CallbackTriggerDict(
-                    id="x_parameter",
-                    property="value",
-                    value=x,
-                    str_id="x_parameter",
-                    triggered=False,
-                ),
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=template == "vizro_dark",
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))

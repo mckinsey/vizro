@@ -101,23 +101,28 @@ def callback_context_export_data(request):
         )
     mock_callback_context = {
         "args_grouping": {
-            "filters": [
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop_filter,
-                    str_id="pop_filter",
-                    triggered=False,
-                )
-            ]
-            if pop_filter
-            else [],
-            "filter_interaction": args_grouping_filter_interaction,
-        },
-        "outputs_list": [
-            {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
-            for target in targets
-        ],
+            "external": {
+                "filters": [
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop_filter,
+                        str_id="pop_filter",
+                        triggered=False,
+                    )
+                ]
+                if pop_filter
+                else [],
+                "filter_interaction": args_grouping_filter_interaction,
+            },
+            "outputs_list": [
+                {
+                    "id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"},
+                    "property": "data",
+                }
+                for target in targets
+            ],
+        }
     }
     context_value.set(AttributeDict(**mock_callback_context))
     return context_value

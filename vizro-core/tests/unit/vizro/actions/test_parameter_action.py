@@ -56,24 +56,26 @@ def callback_context_parameter_y(request):
     y = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    )
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -86,24 +88,26 @@ def callback_context_parameter_hover_data(request):
     hover_data = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="hover_data_parameter",
-                    property="value",
-                    value=hover_data,
-                    str_id="hover_data_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="hover_data_parameter",
+                        property="value",
+                        value=hover_data,
+                        str_id="hover_data_parameter",
+                        triggered=False,
+                    )
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -116,31 +120,33 @@ def callback_context_parameter_y_and_x(request):
     y, x = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
+                    ),
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="x_parameter",
-                    property="value",
-                    value=x,
-                    str_id="x_parameter",
-                    triggered=False,
-                ),
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))

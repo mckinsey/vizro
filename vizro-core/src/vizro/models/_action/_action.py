@@ -1,7 +1,7 @@
 import importlib.util
 import logging
 from collections.abc import Collection, Mapping
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union, Collection, Mapping
 
 from dash import Input, Output, State, callback, html
 from pydantic import Field, validator
@@ -70,77 +70,96 @@ class Action(VizroBaseModel):
         """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
-        # call this callback_inputs_kwargs
-        callback_inputs: Dict[str, Any] = {
-            **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs"),
-            **{
-                f'{input.split(".")[0]}_{input.split(".")[1]}': State(input.split(".")[0], input.split(".")[1])
-                for input in self.inputs
-            },
-            "trigger": Input({"type": "action_trigger", "action_name": self.id}, "data"),
-        }
+        callback_inputs: Dict[str, Any] = {}
+        callback_inputs["external"] = _get_action_callback_mapping(
+            action_id=ModelID(str(self.id)), argument="inputs"
+        ) or [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
+        callback_inputs["internal"] = {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")}
 
-        # something like this:
-        # callback_inputs_args = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
-
-        callback_outputs: Dict[str, Any] = {
-            **_get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs"),
-            **{
-                f'{output.split(".")[0]}_{output.split(".")[1]}': Output(
-                    output.split(".")[0], output.split(".")[1], allow_duplicate=True
-                )  # change to output: Output(...)
-                for output in self.outputs
-            },
-            "action_finished": Output("action_finished", "data", allow_duplicate=True),
-        }
+        callback_outputs: Dict[str, Any] = {}
+        callback_outputs["external"] = _get_action_callback_mapping(
+            action_id=ModelID(str(self.id)), argument="outputs"
+        ) or [Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs]
+        callback_outputs["internal"] = {"action_finished": Output("action_finished", "data", allow_duplicate=True)}
 
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
 
-    def _action_callback_function(self, inputs: Dict[str, Any], outputs: List[str]) -> Dict[str, Any]:
+    def _action_callback_function(
+        self, inputs: Union[Dict[str, Any], List[str]], outputs: Union[Dict[str, Any], List[str]]
+    ) -> Union[Collection, Mapping, None]:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
         logger.debug(f"Action inputs: {inputs}")
+        logger.debug(f"Action outputs: {outputs}")
 
-        # Invoking the action's function
-        return_value = self.function(**inputs)
+        if isinstance(inputs, Mapping):
+            return_value = self.function(**inputs)
+        else:
+            return_value = self.function(*inputs)
 
-        if return_value is None and len(outputs) == 0:
-            # Action has no outputs and the custom action function returns None.
-            # Special case results with no exception.
-            return_dict = {}
-        elif len(outputs) == 1:
-            # If the action has only one output, so assign the entire return_value to the output.
-            # This ensures consistent handling regardless of the type or structure of the return_value.
-            return_dict = {outputs[0]: return_value}
-        elif isinstance(return_value, Mapping) and return_value:
-            # We exclude the empty dictionary case here so that it raises the invalid number of elements error raised
-            # in the else clause.
+        if not outputs and return_value is not None:
+            raise ValueError("Action function has returned a value but the action has no defined outputs.")
+        elif isinstance(outputs, Mapping):
+            if not isinstance(return_value, Mapping):
+                raise ValueError(
+                    "Action function has not returned a dictionary or similar but the action's defined outputs are a dictionary."
+                )
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value ({set(return_value)}) do not match the action's defined outputs"
-                    f" ({set(outputs)})."
+                    f"Keys of action's returned value ({set(return_value) or {}}) do not match the action's defined outputs"
+                    f" ({set(outputs) or {}})."
                 )
-            return_dict = return_value
-        else:
-            if not isinstance(return_value, Collection) or len(return_value) == 0:
-                # If return_value is not a collection or is an empty collection,
-                # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
-                # and treats an empty collection as a 1-length collection.
-                # Note that if this clause runs then the below invalid number of elements error is always raised,
-                # because we already know that len(return_value) == 1 and len(outputs) != 1 (from above elif clause).
-                return_value = [return_value]
-
+        elif isinstance(outputs, Collection) and len(outputs) > 1:
+            # If len(outputs) == 1 then we just return the return_value with no need for further checks.
+            if not isinstance(return_value, Collection):
+                raise ValueError(
+                    "Action function has not returned a list or similar but the action's defined outputs are a list."
+                )
             if len(return_value) != len(outputs):
                 raise ValueError(
                     f"Number of action's returned elements ({len(return_value)}) does not match the number"
                     f" of action's defined outputs ({len(outputs)})."
                 )
-            return_dict = dict(zip(outputs, return_value))
 
-        return return_dict
+        # If no error has been raised then the return_value is good and is returned as it is - this could be a list, dictionary or None.
+        return return_value
+        # if return_value is None and len(outputs) == 0:
+        #     # Action has no outputs and the custom action function returns None.
+        #     # Special case results with no exception.
+        #     return_dict = {}
+        # elif len(outputs) == 1:
+        #     # If the action has only one output, so assign the entire return_value to the output.
+        #     # This ensures consistent handling regardless of the type or structure of the return_value.
+        #     return_dict = {outputs[0]: return_value}
+        # elif isinstance(return_value, Mapping) and return_value:
+        #     # We exclude the empty dictionary case here so that it raises the invalid number of elements error raised
+        #     # in the else clause.
+        #     if set(outputs) != set(return_value):
+        #         raise ValueError(
+        #             f"Keys of action's returned value ({set(return_value)}) do not match the action's defined outputs"
+        #             f" ({set(outputs)})."
+        #         )
+        #     return_dict = return_value
+        # else:
+        #     if not isinstance(return_value, Collection) or len(return_value) == 0:
+        #         # If return_value is not a collection or is an empty collection,
+        #         # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
+        #         # and treats an empty collection as a 1-length collection.
+        #         # Note that if this clause runs then the below invalid number of elements error is always raised,
+        #         # because we already know that len(return_value) == 1 and len(outputs) != 1 (from above elif clause).
+        #         return_value = [return_value]
+        #
+        #     if len(return_value) != len(outputs):
+        #         raise ValueError(
+        #             f"Number of action's returned elements ({len(return_value)}) does not match the number"
+        #             f" of action's defined outputs ({len(outputs)})."
+        #         )
+        #     return_dict = dict(zip(outputs, return_value))
+        #
+        # return return_dict
 
     @_log_call
     def build(self):
@@ -156,18 +175,16 @@ class Action(VizroBaseModel):
             f"function name: {self.function._function.__name__}"
         )
         logger.debug("---------- INPUTS ----------")
-        for name, object in callback_inputs.items():
+        for name, object in callback_inputs["external"].items():
             logger.debug(f"--> {name}: {object}")
         logger.debug("---------- OUTPUTS ---------")
-        for name, object in callback_outputs.items():
+        for name, object in callback_outputs["external"].items():
             logger.debug(f"--> {name}: {object}")
         logger.debug("============================")
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
-            outputs = list(callback_outputs.keys())
-            outputs.remove("action_finished")
-            return_dict = self._action_callback_function(inputs=inputs, outputs=outputs)
-            return {"action_finished": None, **return_dict}
+        def callback_wrapper(external: Union[List[str], Dict[str, Any]], internal: Dict[str, Any]) -> Dict[str, Any]:
+            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs["external"])
+            return {"internal": {"action_finished": None}, "external": return_value}
 
         return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)

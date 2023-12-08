@@ -70,16 +70,18 @@ def callback_context_filter_interaction(request):
 
     mock_callback_context = {
         "args_grouping": {
-            "filters": [],
-            "filter_interaction": args_grouping_filter_interaction,
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            "external": {
+                "filters": [],
+                "filter_interaction": args_grouping_filter_interaction,
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
+                    triggered=False,
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))

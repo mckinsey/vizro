@@ -51,8 +51,10 @@ def captured_callable(request):
 )
 class TestCall:
     def test_call_needs_keyword_arguments(self, captured_callable):
-        with pytest.raises(TypeError, match="takes 1 positional argument but 2 were given"):
-            captured_callable(2)
+        assert captured_callable(3) == 1 + 2 + 3
+        # AM TODO: this is tricky, think about it more.
+        # with pytest.raises(TypeError, match="takes 1 positional argument but 2 were given"):
+        #     captured_callable(2)
 
     def test_call_provide_required_argument(self, captured_callable):
         assert captured_callable(c=3) == 1 + 2 + 3

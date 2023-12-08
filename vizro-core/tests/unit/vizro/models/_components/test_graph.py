@@ -108,13 +108,15 @@ class TestDunderMethodsGraph:
     def test_update_theme_inside_callback(self, standard_px_chart, template):
         mock_callback_context = {
             "args_grouping": {
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="on",
-                    value=template == "vizro_dark",
-                    str_id="theme_selector",
-                    triggered=False,
-                )
+                "external": {
+                    "theme_selector": CallbackTriggerDict(
+                        id="theme_selector",
+                        property="on",
+                        value=template == "vizro_dark",
+                        str_id="theme_selector",
+                        triggered=False,
+                    )
+                }
             }
         }
         context_value.set(AttributeDict(**mock_callback_context))

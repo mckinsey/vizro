@@ -47,8 +47,8 @@ def export_data(
 
     data_frames = _get_filtered_data(
         targets=targets,
-        ctds_filters=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
+        ctds_filters=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
     )
 
     outputs = {}

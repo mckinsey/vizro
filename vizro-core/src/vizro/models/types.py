@@ -81,12 +81,16 @@ class CapturedCallable:
             self.__arguments.update(self.__arguments[var_keyword_param])
             del self.__arguments[var_keyword_param]
 
-    def __call__(self, **kwargs):
-        """Run the `function` with the initial arguments overridden by **kwargs.
+    def __call__(self, *args, **kwargs):
+        """Run the `function` with the initial arguments overridden by `**kwargs`.
 
         Note *args are not possible here, but you can still override positional arguments using argument name.
         """
-        return self.__function(**{**self.__arguments, **kwargs})
+        # need to label args with parameters
+        x = {**self.__arguments, **kwargs}
+
+        unbound_params = [param for param in inspect.signature(self.__function).parameters if param not in x]
+        return self.__function(**dict(zip(unbound_params, args)), **x)
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""
