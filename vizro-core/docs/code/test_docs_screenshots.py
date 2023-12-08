@@ -38,8 +38,10 @@ def test_generate_screenshots(chromedriver):
     from PIL import Image
     from io import BytesIO
     im = Image.open(BytesIO(full))
-    width, height = 692, 532
-    x, y = 24, 648
+    #  using https://chromewebstore.google.com/detail/pixel-measurement/jdkcdajnaldgjmkdkkkgenbgdajaaapa
+    #  using https://chromewebstore.google.com/detail/resolution-test/pggmjcdagmkafagmhhaickkjnfgnhjgg
+    width, height = 121*2, 129*2
+    x, y = 16*2, 435*2  # left, top
     # Select area to crop
     area = (x, y, x + width, y + height)
     im = im.crop(area)
