@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Literal, Optional, cast
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -97,10 +97,18 @@ class Dashboard(VizroBaseModel):
 
     def _make_page_layout(self, page: Page):
         # Identical across pages
+        # TODO: Implement proper way of automatically pulling file called logo in assets folder (should support svg, png and it shouldn't matter where it's placed in the assets folder)
+        # TODO: Implement condition check if image can be found/not found
+        # TODO: Update paddings/margins to fit all cross-combinations
+        dashboard_logo = (
+            html.Div([html.Img(src=get_asset_url("logo.svg"), className="logo-img")], className="logo", id="logo-outer")
+            if True
+            else html.Div(id="logo-outer", hidden=True)
+        )
         dashboard_title = (
-            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
+            html.Div(children=[html.H2(self.title)], id="dashboard-title")
             if self.title
-            else html.Div(hidden=True, id="dashboard_title_outer")
+            else html.Div(hidden=True, id="dashboard-title")
         )
         theme_switch = daq.BooleanSwitch(
             id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
@@ -119,16 +127,35 @@ class Dashboard(VizroBaseModel):
         component_container = page_content["component_container_outer"]
 
         # Arrangement
-        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
-        nav_control_elements = [dashboard_title, nav_panel, control_panel]
+        left_header_elements = [dashboard_title]
+        icon_logo_elements = [nav_bar]
+        if getattr(nav_bar, "hidden", False) is False:
+            icon_logo_elements.insert(0, dashboard_logo)
+        else:
+            left_header_elements.insert(0, dashboard_logo)
+
+        right_header = html.Div(children=[page_title, theme_switch], className="right-header")
+        left_header = (
+            html.Div(children=left_header_elements, className="left-header")
+            if any(not getattr(element, "hidden", False) for element in left_header_elements)
+            else None
+        )
+        nav_control_elements = [left_header, nav_panel, control_panel]
+
         nav_control_panel = (
             html.Div(nav_control_elements, className="nav_control_panel")
             if any(not getattr(element, "hidden", False) for element in nav_control_elements)
             else None
         )
-
-        left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
-        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
+        nav_logo_bar = (
+            html.Div(children=icon_logo_elements, className="nav-logo-bar")
+            if any(not getattr(element, "hidden", False) for element in icon_logo_elements)
+            else None
+        )
+        left_side = html.Div(children=[nav_logo_bar, nav_control_panel], className="left_side", id="left_side_outer")
+        right_side = html.Div(
+            children=[right_header, component_container], className="right_side", id="right_side_outer"
+        )
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     @staticmethod
