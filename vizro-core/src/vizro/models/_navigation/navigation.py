@@ -46,6 +46,6 @@ class Navigation(VizroBaseModel):
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav_panel_outer".
             # This will make it match the case e.g. nav_selector is NavBar and nav_selector.build returns html.Div
             # containing children with id="nav_bar_outer" and id="nav_panel_outer"
-            nav_selector = html.Div([html.Div(className="hidden", id="nav_bar_outer"), nav_selector])
+            nav_selector = html.Div([html.Div(hidden=True, id="nav_bar_outer"), nav_selector])
 
         return nav_selector

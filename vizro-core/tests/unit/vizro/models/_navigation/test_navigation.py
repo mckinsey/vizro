@@ -86,7 +86,7 @@ class TestNavigationBuildMethod:
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(
             built_navigation["nav_bar_outer"],
-            html.Div(className="hidden", id="nav_bar_outer"),
+            html.Div(hidden=True, id="nav_bar_outer"),
             keys_to_strip={"children"},
         )
         assert_component_equal(

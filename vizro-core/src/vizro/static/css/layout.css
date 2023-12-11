@@ -14,7 +14,7 @@
   padding: 40px 32px 0 32px;
   width: 352px;
   overflow: auto;
-  gap: var(--spacing-08);
+  gap: var(--spacing-06);
 }
 
 .left_side {
@@ -31,12 +31,23 @@
   width: 100%;
 }
 
-.header {
+.right-header {
   align-items: baseline;
   display: flex;
   flex-direction: row;
   height: 32px;
   justify-content: space-between;
+}
+
+.left-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 8px;
+}
+
+.left-header:not(:empty) {
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
 .component_container {
@@ -58,6 +69,7 @@
 }
 
 .nav_panel:not(:empty) {
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
@@ -108,17 +120,12 @@
 .nav-bar {
   display: inline-flex;
   flex-direction: column;
-  width: 64px;
-  padding-top: 26px;
   align-items: center;
-  background-color: var(--surfaces-bg-02);
-  border-right: 1px solid var(--border-subtle-alpha-01);
+  gap: 40px;
 }
 
 .icon-button {
-  background-color: var(--surfaces-bg-02);
   width: 100%;
-  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,4 +162,24 @@ div.dashboard_container .custom-tooltip {
   border-radius: 0;
   box-shadow: var(--box-shadow-elevation-tooltip-hover);
   white-space: pre-wrap;
+}
+
+.nav-logo-bar {
+  display: flex;
+  flex-direction: column;
+  width: 64px;
+  padding-top: 40px;
+  background-color: var(--surfaces-bg-02);
+  border-right: 1px solid var(--border-subtle-alpha-01);
+  gap: 40px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
 }

@@ -42,8 +42,7 @@
   overflow-anchor: none;
   background-color: inherit;
   letter-spacing: -0.014px;
-  padding: 16px 8px;
-  height: 56px;
+  padding: var(--spacing-02);
 }
 
 .accordion-button:not(.collapsed) {
@@ -79,7 +78,6 @@
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  margin-top: -10px;
 }
 
 .accordion-item-header {
