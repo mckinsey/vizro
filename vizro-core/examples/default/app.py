@@ -7,6 +7,61 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
+import dash_mantine_components as dmc
+from typing import Literal
+import dash
+import dash_bootstrap_components as dbc
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+import vizro
+from vizro.actions._action_loop._action_loop import ActionLoop
+
+class Affix(vm.VizroBaseModel):
+    type: Literal["affix"] = "affix"
+    text: str
+    href: str
+
+    def build(self):
+        return dmc.Affix(
+            dbc.Button(
+                id=self.id,
+                children=self.text,
+                href=self.href,
+                className="button_primary",
+            ), position={"bottom": 20, "right": 20}
+        )
+
+vm.Page.add_type("components", Affix)
+
+class DashboardAffix(vm.Dashboard):
+    type: Literal["dashboard_affix"] = "dashboard_affix"
+
+    def build(self):
+        for page in self.pages:
+            page.build()  # TODO: ideally remove, but necessary to register slider callbacks
+
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
+            Output("dashboard_container_outer", "className"),
+            Input("theme_selector", "on"),
+        )
+
+        return dbc.Container(
+            id="dashboard_container_outer",
+            children=[
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
+                ActionLoop._create_app_callbacks(),
+                dash.page_container,
+                dmc.Affix(
+                    dbc.Button(
+                        children="Contact Us",
+                        href="https://mailto:vizro@mckinsey.com",
+                        className="affix-button",
+                    ), position={"bottom": 40, "right": 40}
+                )
+            ],
+            className=self.theme,
+            fluid=True,
+        )
 
 
 def retrieve_avg_continent_data():
@@ -514,7 +569,7 @@ def create_home_page():
     return page_home
 
 
-dashboard = vm.Dashboard(
+dashboard = DashboardAffix(
     pages=[
         create_home_page(),
         create_variable_analysis(),

@@ -4,3 +4,12 @@ img[src*="#my-image"] {
   float: left;
   margin: 10px 25px;
 }
+
+.affix-button {
+  background: blue;
+  color: white;
+  font-size: 20px;
+  font-weight: var(--text-weight-semibold);
+  height: 32px;
+  padding: var(--spacing-01) var(--spacing-03);
+}
