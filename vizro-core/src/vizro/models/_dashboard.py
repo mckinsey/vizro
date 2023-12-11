@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, cast
+from typing import TYPE_CHECKING, List, Literal, Optional, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -26,6 +26,19 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+
+class PageDivs(TypedDict):
+    """Stores all relevant containers for simplified access when re-arranging containers on page."""
+
+    logo: html.Div
+    dashboard_title: html.Div
+    theme_switch: daq.BooleanSwitch
+    page_title: html.H2
+    nav_bar: html.Div
+    nav_panel: html.Div
+    control_panel: html.Div
+    components: html.Div
 
 
 class Dashboard(VizroBaseModel):
@@ -95,20 +108,19 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
-    def _make_page_layout(self, page: Page):
+    def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         # TODO: Implement proper way of automatically pulling file called logo in assets folder (should support svg, png and it shouldn't matter where it's placed in the assets folder)
-        # TODO: Implement condition check if image can be found/not found
-        # TODO: Update paddings/margins to fit all cross-combinations
-        dashboard_logo = (
-            html.Div([html.Img(src=get_asset_url("logo.svg"), className="logo-img")], className="logo", id="logo-outer")
+        logo = (
+            html.Div([html.Img(src=get_asset_url("logo.svg"), className="logo-img")], className="logo", id="logo")
+            # TODO: Implement condition check if image can be found/not found
             if True
-            else html.Div(id="logo-outer", hidden=True)
+            else html.Div(id="logo", hidden=True)
         )
         dashboard_title = (
             html.Div(children=[html.H2(self.title)], id="dashboard-title")
             if self.title
-            else html.Div(hidden=True, id="dashboard-title")
+            else html.Div(id="dashboard-title", hidden=True)
         )
         theme_switch = daq.BooleanSwitch(
             id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
@@ -117,44 +129,62 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
-        nav_bar = navigation["nav_bar_outer"]
-        nav_panel = navigation["nav_panel_outer"]
+        nav_content: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        nav_bar = nav_content["nav_bar_outer"]
+        nav_panel = nav_content["nav_panel_outer"]
 
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel_outer"]
-        component_container = page_content["component_container_outer"]
+        components = page_content["component_container_outer"]
+        return {
+            "logo": logo,
+            "dashboard_title": dashboard_title,
+            "theme_switch": theme_switch,
+            "page_title": page_title,
+            "nav_bar": nav_bar,
+            "nav_panel": nav_panel,
+            "control_panel": control_panel,
+            "components": components,
+        }
 
+    def _arrange_left_side(self, page_divs: PageDivs):
         # Arrangement
-        left_header_elements = [dashboard_title]
-        icon_logo_elements = [nav_bar]
-        if getattr(nav_bar, "hidden", False) is False:
-            icon_logo_elements.insert(0, dashboard_logo)
-        else:
-            left_header_elements.insert(0, dashboard_logo)
+        left_header_divs = [page_divs["dashboard_title"]]
+        left_sidebar_divs = [page_divs["nav_bar"]]
 
-        right_header = html.Div(children=[page_title, theme_switch], className="right-header")
+        if getattr(page_divs["nav_bar"], "hidden", False) is False:
+            left_sidebar_divs.insert(0, page_divs["logo"])
+        else:
+            left_header_divs.insert(0, page_divs["logo"])
+
         left_header = (
-            html.Div(children=left_header_elements, className="left-header", id="left-header")
-            if any(not getattr(element, "hidden", False) for element in left_header_elements)
+            html.Div(children=left_header_divs, className="left-header", id="left-header")
+            if any(not getattr(element, "hidden", False) for element in left_header_divs)
             else html.Div(hidden=True, id="left-header")
         )
-        nav_control_elements = [left_header, nav_panel, control_panel]
-        nav_control_panel = (
-            html.Div(nav_control_elements, className="nav_control_panel")
-            if any(not getattr(element, "hidden", False) for element in nav_control_elements)
+        left_main_divs = [left_header, page_divs["nav_panel"], page_divs["control_panel"]]
+        left_sidebar = (
+            html.Div(children=left_sidebar_divs, className="nav-logo-bar")
+            if any(not getattr(element, "hidden", False) for element in left_sidebar_divs)
             else None
         )
-        nav_logo_bar = (
-            html.Div(children=icon_logo_elements, className="nav-logo-bar")
-            if any(not getattr(element, "hidden", False) for element in icon_logo_elements)
+        left_main = (
+            html.Div(left_main_divs, className="nav_control_panel")
+            if any(not getattr(element, "hidden", False) for element in left_main_divs)
             else None
         )
-        left_side = html.Div(children=[nav_logo_bar, nav_control_panel], className="left_side", id="left_side_outer")
-        right_side = html.Div(
-            children=[right_header, component_container], className="right_side", id="right_side_outer"
-        )
+        return html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
+
+    def _arrange_right_side(self, page_divs: PageDivs):
+        right_header = html.Div(children=[page_divs["page_title"], page_divs["theme_switch"]], className="right-header")
+        right_main = page_divs["components"]
+        return html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
+
+    def _make_page_layout(self, page: Page):
+        page_divs = self._get_page_divs(page=page)
+        left_side = self._arrange_left_side(page_divs=page_divs)
+        right_side = self._arrange_right_side(page_divs=page_divs)
         return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     @staticmethod

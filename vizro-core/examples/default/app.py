@@ -515,6 +515,7 @@ def create_home_page():
 
 
 dashboard = vm.Dashboard(
+    title="My Dashboard",
     pages=[
         create_home_page(),
         create_variable_analysis(),
@@ -527,7 +528,7 @@ dashboard = vm.Dashboard(
             "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
             "Summary": ["Continent Summary"],
         },
-        nav_selector=vm.NavBar(),
+        #    nav_selector=vm.NavBar(),
     ),
 )
 
