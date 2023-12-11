@@ -136,12 +136,11 @@ class Dashboard(VizroBaseModel):
 
         right_header = html.Div(children=[page_title, theme_switch], className="right-header")
         left_header = (
-            html.Div(children=left_header_elements, className="left-header")
+            html.Div(children=left_header_elements, className="left-header", id="left-header")
             if any(not getattr(element, "hidden", False) for element in left_header_elements)
-            else None
+            else html.Div(hidden=True, id="left-header")
         )
         nav_control_elements = [left_header, nav_panel, control_panel]
-
         nav_control_panel = (
             html.Div(nav_control_elements, className="nav_control_panel")
             if any(not getattr(element, "hidden", False) for element in nav_control_elements)
