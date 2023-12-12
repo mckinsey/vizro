@@ -535,12 +535,7 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     app = Vizro(assets_folder="../assets").build(dashboard)
-
     app.dash.layout.children.append(
-        dmc.Affix(
-            dmc.Anchor("Any questions? Contact us.", href="mailto:vizro@mckinsey.com", className="anchor-text"),
-            className="affix-button",
-            position={"bottom": 20, "right": 20},
-        )
+        dmc.Anchor("Any questions? Contact us.", href="mailto:vizro@mckinsey.com", className="anchor button_primary")
     )
     app.run()

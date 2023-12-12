@@ -5,14 +5,9 @@ img[src*="#my-image"] {
   margin: 10px 25px;
 }
 
-.affix-button {
-  background: var(--field-dark-mode-enabled);
-  border-left: 4px solid dodgerblue;
-  font-size: 14px;
-  font-weight: var(--text-weight-semibold);
-  padding: var(--spacing-01) var(--spacing-03);
-}
-
-.anchor-text {
-  color: white;
+.anchor {
+  border-left: 2px solid dodgerblue;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
 }
