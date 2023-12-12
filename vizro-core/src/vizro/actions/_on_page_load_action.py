@@ -23,6 +23,12 @@ def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[Mode
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
     """
+    targets = [
+        component.id
+        for component in model_manager[page_id].components
+        if data_manager._has_registered_data(component.id)
+    ]
+
     return _get_modified_page_figures(
         targets=targets,
         ctds_filter=ctx.args_grouping["filters"],

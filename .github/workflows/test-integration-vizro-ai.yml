@@ -1,4 +1,4 @@
-name: test-integration-vizro-ai
+name: Integration tests for VizroAI
 
 defaults:
   run:
@@ -9,22 +9,33 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: test-integration-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on Linux
+  test-integration-vizro-ai:
+    name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
+
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        include:
+          - python-version: "3.9"
+            hatch-env: all.py3.9
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+          - python-version: "3.11"
+            hatch-env: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
@@ -39,11 +50,14 @@ jobs:
       - name: Install Hatch
         run: pip install --upgrade hatch
 
+      - name: List dependencies
+        run: hatch run ${{ matrix.hatch-env }}:pip freeze
+
       - name: Run vizro-ai integration tests with pypi vizro
         run: |
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
-          hatch run all.py${{ matrix.python-version }}:test-integration
+          hatch run ${{ matrix.hatch-env }}:test-integration
 
       - name: Run vizro-ai integration tests with local vizro
         run: |
@@ -52,5 +66,5 @@ jobs:
           cd ../vizro-core
           hatch build
           cd ../vizro-ai
-          hatch run all.py${{ matrix.python-version }}:pip install ../vizro-core/dist/vizro*.tar.gz
-          hatch run all.py${{ matrix.python-version }}:test-integration
+          hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
+          hatch run ${{ matrix.hatch-env }}:test-integration

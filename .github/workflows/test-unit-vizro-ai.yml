@@ -1,4 +1,4 @@
-name: test-unit-vizro-ai
+name: Unit tests for VizroAI
 
 defaults:
   run:
@@ -9,24 +9,33 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: test-unit-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
-    runs-on: ${{ matrix.os }}
+  test-unit-vizro-ai:
+    name: test-unit-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
+
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        include:
+          - python-version: "3.9"
+            hatch-env: all.py3.9
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+          - python-version: "3.11"
+            hatch-env: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
@@ -40,8 +49,7 @@ jobs:
         run: pip install --upgrade hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ matrix.python-version }}:pip freeze
+        run: hatch run ${{ matrix.hatch-env }}:pip freeze
 
       - name: Run unit tests
-        run: |
-          hatch run all.py${{ matrix.python-version }}:cov
+        run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage

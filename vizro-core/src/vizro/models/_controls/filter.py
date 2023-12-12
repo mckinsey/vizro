@@ -4,7 +4,11 @@ from typing import TYPE_CHECKING, List, Literal, Optional
 
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter

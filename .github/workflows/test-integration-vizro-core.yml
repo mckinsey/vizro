@@ -1,4 +1,4 @@
-name: test-integration-vizro-core
+name: Integration tests for Vizro
 
 defaults:
   run:
@@ -9,56 +9,49 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: test-integration-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  test-integration-vizro-core:
+    name: test-integration-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
+
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        include:
+          - python-version: "3.8"
+            hatch-env: all.py3.8
+          - python-version: "3.9"
+            hatch-env: all.py3.9
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+          - python-version: "3.11"
+            hatch-env: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v7
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/cache@v3
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-${{ hashFiles('hatch.toml') }}-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            ${{ matrix.os }}-${{ matrix.python-version }}-${{ steps.branch-name.outputs.current_branch }}-pip-
+      - name: Install Hatch
+        run: pip install --upgrade hatch
 
-      - name: Run ubuntu integration tests
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: |
-          pip install --upgrade hatch
-          hatch run all.py${{ matrix.python-version }}:test-integration
+      - name: List dependencies
+        run: hatch run ${{ matrix.hatch-env }}:pip freeze
 
-      - name: Run windows integration tests
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          $env:PYTHONPATH=".;D:\a\vizro\vizro\vizro-core\src"
-          pip install -r ../.github/requirements.txt
-          pip install .
-          pytest tests/integration --headless -k default
-          pytest tests/integration --headless -k dict
-          pytest tests/integration --headless -k json
-          pytest tests/integration --headless -k yaml
+      - name: Run integration tests
+        run: hatch run ${{ matrix.hatch-env }}:test-integration

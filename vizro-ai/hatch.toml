@@ -22,14 +22,6 @@ dependencies = [
 VIZRO_AI_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
-cov = [
-  "test-cov",
-  "cov-report"
-]
-cov-report = [
-  "- coverage combine",
-  "coverage report"
-]
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
@@ -39,15 +31,14 @@ prep-release = [
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
-test = [
-  "- test-unit",
-  "test-integration"
-]
-test-cov = "coverage run -m pytest tests/unit {args}"
-test-integration = [
-  "pytest -v tests/integration"
-]
+test = "pytest tests {args}"
+test-integration = "pytest -v tests/integration {args}"
 test-unit = "pytest tests/unit {args}"
+test-unit-coverage = [
+  "coverage run -m pytest tests/unit {args}",
+  "- coverage combine",
+  "coverage report"
+]
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
@@ -66,6 +57,9 @@ dependencies = [
 ]
 detached = true
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
+
+[envs.lower-bounds]
+extra-dependencies = ["pydantic==1.10.13"]
 
 [version]
 path = "src/vizro_ai/__init__.py"

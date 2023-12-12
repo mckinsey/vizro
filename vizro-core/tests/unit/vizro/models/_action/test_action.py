@@ -9,7 +9,12 @@ import pytest
 from dash import html
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
+
 
 from vizro.actions import export_data
 from vizro.models._action._action import Action
@@ -61,6 +66,7 @@ def custom_action_build_expected():
     return html.Div(
         children=[],
         id="action_test_action_model_components_div",
+        hidden=True,
     )
 
 

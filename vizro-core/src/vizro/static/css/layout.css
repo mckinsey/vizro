@@ -123,7 +123,7 @@
 
 .icon-button {
   background-color: var(--surfaces-bg-02);
-  width: 64px;
+  width: 100%;
   height: 64px;
   display: flex;
   align-items: center;
@@ -137,32 +137,28 @@ div.dashboard_container .tooltip-inner {
 div.dashboard_container .custom-tooltip {
   color: var(--text-primary);
 }
-.icon-text {
-  font-size: var(--text-size-02);
-  letter-spacing: var(--letter-spacing-body-edit-01);
-  color: var(--text-secondary);
-  padding: 4px;
-}
 
-.nav-icon {
-  filter: var(--fill-accordion-button);
-  width: 24px;
-  height: 24px;
+.icon-button.btn.btn-primary.active .material-symbols-outlined {
+  color: var(--text-active);
 }
-
-.nav-icon-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  justify-content: center;
-}
-
-.icon-button.btn.btn-primary.active {
-  background-color: var(--state-overlays-selected);
-}
-
 .loading-container {
   height: 100%;
   width: 100%;
+}
+
+.mantine-Tooltip-tooltip {
+  font-size: var(--text-size-01);
+  font-weight: var(--text-weight-light);
+  line-height: 16px;
+  letter-spacing: var(--letter-spacing-help-text);
+  padding: var(--spacing-01) var(--spacing-02);
+  color: var(--tooltip-text-primary);
+  background-color: var(--border-selected);
+  max-width: 180px;
+  overflow-wrap: break-word;
+  text-wrap: wrap;
+  filter: drop-shadow(0px 2px 2px #141721);
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-tooltip-hover);
+  white-space: pre-wrap;
 }

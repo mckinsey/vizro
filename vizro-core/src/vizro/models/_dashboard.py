@@ -8,7 +8,11 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
-from pydantic import Field, validator
+
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
@@ -83,7 +87,7 @@ class Dashboard(VizroBaseModel):
         return dbc.Container(
             id="dashboard_container_outer",
             children=[
-                html.Div(id=f"vizro_version_{vizro.__version__}"),
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
