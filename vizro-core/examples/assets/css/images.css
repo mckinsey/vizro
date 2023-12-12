@@ -5,9 +5,16 @@ img[src*="#my-image"] {
   margin: 10px 25px;
 }
 
-.anchor {
-  border-left: 2px solid dodgerblue;
+.anchor-1, .anchor-2, .anchor-3 {
   position: absolute;
   bottom: 12px;
-  right: 12px;
+  left: 12px;
+}
+
+.anchor-2 {
+  left: 124px;
+}
+
+.anchor-3 {
+  left: 204px;
 }

@@ -3,6 +3,7 @@
 
 import dash_mantine_components as dmc
 import pandas as pd
+from dash import html
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -536,6 +537,14 @@ dashboard = vm.Dashboard(
 if __name__ == "__main__":
     app = Vizro(assets_folder="../assets").build(dashboard)
     app.dash.layout.children.append(
-        dmc.Anchor("Any questions? Contact us.", href="mailto:vizro@mckinsey.com", className="anchor button_primary")
+        html.Div(
+            [
+                dmc.Anchor("Contact us.", href="mailto:vizro@mckinsey.com", className="anchor-1 button_tertiary"),
+                dmc.Anchor("Github", href="https://github.com/mckinsey/vizro", className="anchor-2 button_tertiary"),
+                dmc.Anchor(
+                    "Docs", href="https://vizro.readthedocs.io/en/stable/", className="anchor-3 button_tertiary"
+                ),
+            ]
+        )
     )
     app.run()
