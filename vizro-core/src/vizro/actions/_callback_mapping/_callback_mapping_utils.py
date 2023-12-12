@@ -73,6 +73,7 @@ def _get_inputs_of_chart_interactions(
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[State, Dict[str, State]]]]:
     """Creates mapping of pre-defined action names and a list of States."""
     action_function = model_manager[action_id].function._function
+    page: Page = model_manager._get_model_page(model_id=action_id)
 
     if action_function == export_data.__wrapped__:
         include_inputs = ["filters", "filter_interaction"]
