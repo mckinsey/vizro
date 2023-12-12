@@ -1,0 +1,53 @@
+.tabs-list {
+  align-items: flex-start;
+  align-self: stretch;
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  height: 32px;
+}
+
+.tab-label {
+  align-items: flex-start;
+  border-bottom: 1px solid transparent;
+  display: flex;
+  font-size: 16px;
+  height: 32px;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.tab-label:hover {
+  background-color: transparent;
+  border-bottom: 1px solid var(--text-active);
+}
+
+.tab-label[data-active] {
+  border-bottom: 1px solid var(--text-active);
+  color: var(--text-active);
+}
+
+.tab-label[data-active]:hover {
+  background-color: transparent;
+  border-color: 1px solid var(--text-active);
+}
+
+.tab-label[data-active] .mantine-Tabs-tabLabel {
+  color: var(--text-active);
+}
+
+.tab-body {
+  height: 100%;
+}
+
+.tabs-panel {
+  height: calc(100% - 32px);
+}
+
+.tabs-root {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}

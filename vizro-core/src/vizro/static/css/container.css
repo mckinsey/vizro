@@ -1,0 +1,5 @@
+.container-container {
+  height: 100%; /*Need to find a clever way to calculate automatically*/
+  display: flex;
+  flex-direction: column;
+}
