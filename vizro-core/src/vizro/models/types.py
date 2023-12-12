@@ -330,7 +330,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Table"],
+    Union["Button", "Card", "Graph", "Table", "Tabs", "Container"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
