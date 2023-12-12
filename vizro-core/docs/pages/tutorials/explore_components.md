@@ -45,7 +45,7 @@ plotly express standard.
     === "Result"
         [![FirstPage1]][FirstPage1]
 
-    [FirstPage1]: ../../code/F1-info.png
+    [FirstPage1]: ../../docs_generaton_code/F1-info.png
 
 Let's give it a try and see your dashboard in action! Either paste the above code into a Jupyter notebook cell and evaluate it, or create a new Python script called `app.py` and copy the code from
 above into the script. Next, navigate to the directory where the `app.py` file is located using your terminal or command

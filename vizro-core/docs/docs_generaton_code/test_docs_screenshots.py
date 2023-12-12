@@ -23,7 +23,7 @@ def chromedriver(request):
 
 
 @pytest.mark.parametrize(
-    "chromedriver", [({"port": 5004})], indirect=["chromedriver"]
+    "chromedriver", [({"port": 8050})], indirect=["chromedriver"]
 )
 def test_generate_screenshots(chromedriver):
     WebDriverWait(
@@ -41,9 +41,9 @@ def test_generate_screenshots(chromedriver):
     #  using https://chromewebstore.google.com/detail/pixel-measurement/jdkcdajnaldgjmkdkkkgenbgdajaaapa
     #  using https://chromewebstore.google.com/detail/resolution-test/pggmjcdagmkafagmhhaickkjnfgnhjgg
     width, height = 121*2, 129*2
-    x, y = 16*2, 435*2  # left, top
+    left, top = 16*2, 435*2  # left, top
     # Select area to crop
-    area = (x, y, x + width, y + height)
+    area = (left, top, left + width, top + height)
     im = im.crop(area)
     im.save('F1-info.png')
     # elem = chromedriver.find_element(By.XPATH, '//*[@class="selector_container"]')
