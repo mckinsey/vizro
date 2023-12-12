@@ -15,24 +15,7 @@ from dash import ClientsideFunction, Input, Output, clientside_callback, get_rel
 import vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
 
-class Affix(vm.VizroBaseModel):
-    type: Literal["affix"] = "affix"
-    text: str
-    href: str
-
-    def build(self):
-        return dmc.Affix(
-            dbc.Button(
-                id=self.id,
-                children=self.text,
-                href=self.href,
-                className="button_primary",
-            ), position={"bottom": 20, "right": 20}
-        )
-
-vm.Page.add_type("components", Affix)
-
-class DashboardAffix(vm.Dashboard):
+class DashboardWithAffix(vm.Dashboard):
     type: Literal["dashboard_affix"] = "dashboard_affix"
 
     def build(self):
@@ -51,13 +34,12 @@ class DashboardAffix(vm.Dashboard):
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                dmc.Affix(
-                    dbc.Button(
-                        children="Contact Us",
-                        href="https://mailto:vizro@mckinsey.com",
-                        className="affix-button",
-                    ), position={"bottom": 40, "right": 40}
-                )
+                dmc.Affix(dmc.Anchor("Any questions? Contact us.",
+                                     href="mailto:vizro@mckinsey.com",
+                                     className="anchor-text"),
+                          className="affix-button",
+                          position={"bottom": 20, "right": 20}
+                          )
             ],
             className=self.theme,
             fluid=True,
@@ -569,7 +551,7 @@ def create_home_page():
     return page_home
 
 
-dashboard = DashboardAffix(
+dashboard = DashboardWithAffix(
     pages=[
         create_home_page(),
         create_variable_analysis(),

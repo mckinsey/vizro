@@ -6,10 +6,13 @@ img[src*="#my-image"] {
 }
 
 .affix-button {
-  background: blue;
-  color: white;
-  font-size: 20px;
+  background: var(--field-dark-mode-enabled);
+  border-left: 4px solid dodgerblue;
+  font-size: 14px;
   font-weight: var(--text-weight-semibold);
-  height: 32px;
   padding: var(--spacing-01) var(--spacing-03);
+}
+
+.anchor-text {
+  color: white;
 }
