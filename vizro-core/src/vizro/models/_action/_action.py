@@ -3,6 +3,7 @@ import logging
 from collections.abc import Collection, Mapping
 from typing import Any, Dict, List, Union, Collection, Mapping
 
+import dash
 from dash import Input, Output, State, callback, html
 from pydantic import Field, validator
 
@@ -71,24 +72,32 @@ class Action(VizroBaseModel):
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         if self.inputs:
-            callback_inputs: Dict[str, Any] = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
+            callback_inputs = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
         else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs") or []
+            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
         if self.outputs:
             callback_outputs = [
                 Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs
             ]
+
+            # Need to use a single Output in the @callback decorator rather than a single element list for the case
+            # of a single output. This means the action function can return a single value (e.g. "text") rather than a
+            # single element list (e.g. ["text"]).
+            if len(callback_outputs) == 1:
+                callback_outputs = callback_outputs[0]
         else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs") or []
+            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
 
     def _action_callback_function(
-        self, inputs: Union[Dict[str, Any], List[str]], outputs: Union[Dict[str, Any], List[str]]
-    ) -> Union[Collection, Mapping, None]:
+        self,
+        inputs: Union[Dict[str, Any], List[Any]],
+        outputs: Union[Dict[str, Output], List[Output], Output, None],  # check type hints
+    ) -> Any:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
@@ -102,8 +111,9 @@ class Action(VizroBaseModel):
 
         # Delegate all handling of the return_value and mapping it onto appropriate outputs to Dash - we don't modify
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
-        if not outputs and return_value is not None:
-            raise ValueError("Action function has returned a value but the action has no defined outputs.")
+        if not outputs:
+            if return_value is not None:
+                raise ValueError("Action function has returned a value but the action has no defined outputs.")
         elif isinstance(outputs, Mapping):
             if not isinstance(return_value, Mapping):
                 raise ValueError(
@@ -114,8 +124,7 @@ class Action(VizroBaseModel):
                     f"Keys of action's returned value ({set(return_value) or {}}) do not match the action's defined outputs"
                     f" ({set(outputs) or {}})."
                 )
-        elif isinstance(outputs, Collection) and len(outputs) > 1:
-            # If len(outputs) == 1 then we just return the return_value with no need for further checks.
+        elif isinstance(outputs, Collection):
             if not isinstance(return_value, Collection):
                 raise ValueError(
                     "Action function has not returned a list or similar but the action's defined outputs are a list."
@@ -126,7 +135,8 @@ class Action(VizroBaseModel):
                     f" of action's defined outputs ({len(outputs)})."
                 )
 
-        # If no error has been raised then the return_value is good and is returned as it is - this could be a list, dictionary or None.
+        # If no error has been raised then the return_value is good and is returned as it is - this could be a list of outputs,
+        # dictionary of outputs or any single value including None.
         return return_value
         # if return_value is None and len(outputs) == 0:
         #     # Action has no outputs and the custom action function returns None.
@@ -176,9 +186,16 @@ class Action(VizroBaseModel):
             "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
         }
         callback_outputs = {
-            "external": external_callback_outputs,
             "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
         }
+
+        # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
+        # This allows the action function to return None and match correctly on to the callback_outputs
+        # dictionary. The (probably better) alternative to this would be just to define a dummy output for all such functions
+        # so that the external key always exists.
+        # Note that it's still possible to explicitly return None as a value when an output is specified.
+        if external_callback_outputs:
+            callback_outputs["external"] = external_callback_outputs
 
         logger.debug(
             f"Creating Callback mapping for Action ID {self.id} with "
@@ -193,8 +210,10 @@ class Action(VizroBaseModel):
         logger.debug("============================")
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def callback_wrapper(external: Union[List[str], Dict[str, Any]], internal: Dict[str, Any]) -> Dict[str, Any]:
-            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs["external"])
-            return {"internal": {"action_finished": None}, "external": return_value}
+        def callback_wrapper(external: Union[List[Any], Dict[str, Any]], internal: Dict[str, Any]) -> Dict[str, Any]:
+            return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
+            if "external" in callback_outputs:
+                return {"internal": {"action_finished": None}, "external": return_value}
+            return {"internal": {"action_finished": None}}
 
         return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)
