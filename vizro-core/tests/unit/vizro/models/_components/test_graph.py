@@ -7,11 +7,7 @@ import pytest
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px

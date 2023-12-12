@@ -2,12 +2,8 @@ import importlib.util
 import logging
 from typing import Any, Dict, List
 
-from dash import Input, Output, State, callback, html, ctx
-
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+from dash import Input, Output, State, callback, ctx, html
+from pydantic import Field, validator
 
 import vizro.actions
 from vizro.managers._model_manager import ModelID
@@ -162,4 +158,7 @@ class Action(VizroBaseModel):
         def callback_wrapper(trigger: None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
             return self._action_callback_function(**inputs)
 
-        return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)
+        return html.Div(
+            children=action_components,
+            id=f"{self.id}_action_model_components_div",
+        )

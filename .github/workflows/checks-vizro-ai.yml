@@ -1,5 +1,4 @@
-name: Checks for VizroAI
-
+name: checks-vizro-ai
 defaults:
   run:
     working-directory: vizro-ai
@@ -19,31 +18,35 @@ concurrency:
   group: checks-ai-${{ github.head_ref }}
 
 env:
-  PYTHONUNBUFFERED: 1
-  FORCE_COLOR: 1
-  PYTHON_VERSION: "3.11"
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
 
 jobs:
-  checks-vizro-ai:
+  run:
+    name: Python ${{ matrix.python-version }} on Linux
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
         run: pip install --upgrade hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
+        run: hatch run all.py${{ matrix.python-version }}:pip freeze
 
       - name: Check requirements for Snyk are up to date
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:update-snyk-requirements --check
+        run: hatch run all.py${{ matrix.python-version }}:update-snyk-requirements --check
 
       - name: Find added changelog fragments
         id: added-files

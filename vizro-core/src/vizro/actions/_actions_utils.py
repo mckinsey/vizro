@@ -78,7 +78,7 @@ def _apply_graph_filter_interaction(
     source_graph_id: ModelID = ctd_click_data["id"]
     source_graph_actions = _get_component_actions(model_manager[source_graph_id])
     try:
-        custom_data_columns = model_manager[source_graph_id]["custom_data"]
+        custom_data_columns = model_manager[source_graph_id]["custom_data"]  # type: ignore[index]
     except KeyError as exc:
         raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
 
@@ -156,7 +156,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None]
+        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
     return value
 
 
@@ -186,7 +186,7 @@ def _get_parametrized_config(
     for target in targets:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
-        graph_config = deepcopy(model_manager[target].figure._arguments)
+        graph_config = deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
@@ -263,6 +263,8 @@ def _get_modified_page_figures(
 
     outputs = {}
     for target in targets:
-        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
+        outputs[target] = model_manager[target](  # type: ignore[operator]
+            data_frame=filtered_data[target], **parameterized_config[target]
+        )
 
     return outputs

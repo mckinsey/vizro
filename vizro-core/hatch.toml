@@ -31,6 +31,14 @@ DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
+cov = [
+  "test-cov",
+  "cov-report"
+]
+cov-report = [
+  "- coverage combine",
+  "coverage report"
+]
 example = "cd examples/{args:default}; python app.py"
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
@@ -45,15 +53,20 @@ prep-release = [
 pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
 secrets = "pre-commit run gitleaks --all-files"
-test = "pytest tests --headless {args}"
-test-integration = "pytest tests/integration --headless {args}"
+test = [
+  "- test-unit",
+  "test-integration"
+]
+test-cov = "coverage run -m pytest tests/unit {args}"
+test-integration = [
+  "- pytest tests/integration/test_examples.py::test_default_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_dict_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_json_dashboard --headless",
+  "- pytest tests/integration/test_examples.py::test_yaml_dashboard --headless",
+  "pytest tests/integration/test_navigation.py"
+]
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
-test-unit-coverage = [
-  "coverage run -m pytest tests/unit {args}",
-  "- coverage combine",
-  "coverage report"
-]
 update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
@@ -72,9 +85,6 @@ dependencies = [
 ]
 detached = true
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
-
-[envs.lower-bounds]
-extra-dependencies = ["pydantic==1.10.13"]
 
 [publish.index]
 disable = true

@@ -1,10 +1,7 @@
 """Visual Code Component."""
 from typing import Dict, Tuple
 
-try:
-    from pydantic.v1 import BaseModel, Field
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field
 
 from vizro_ai.chains._chain_utils import _log_time
 from vizro_ai.chains._llm_models import LLM_MODELS

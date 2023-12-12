@@ -7,11 +7,7 @@ import dash_bootstrap_components as dbc
 import plotly
 import pytest
 from dash import html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro
 import vizro.models as vm
@@ -23,7 +19,7 @@ def dashboard_container():
     return dbc.Container(
         id="dashboard_container_outer",
         children=[
-            html.Div(vizro.__version__, id="vizro_version", hidden=True),
+            html.Div(id=f"vizro_version_{vizro.__version__}"),
             ActionLoop._create_app_callbacks(),
             dash.page_container,
         ],

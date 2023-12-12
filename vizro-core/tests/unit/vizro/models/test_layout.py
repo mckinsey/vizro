@@ -1,10 +1,6 @@
 import numpy as np
 import pytest
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines

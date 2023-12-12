@@ -32,7 +32,6 @@ NavLink.update_forward_refs(Accordion=Accordion)
 
 # Please keep alphabetically ordered
 __all__ = [
-    "Accordion",
     "Action",
     "Button",
     "Card",

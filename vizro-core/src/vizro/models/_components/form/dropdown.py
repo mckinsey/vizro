@@ -1,11 +1,7 @@
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, root_validator, validator
+from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -29,7 +25,7 @@ class Dropdown(VizroBaseModel):
     """
 
     type: Literal["dropdown"] = "dropdown"
-    options: OptionsType = []
+    options: OptionsType = []  # type: ignore[assignment]
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
     title: str = Field("", description="Title to be displayed")

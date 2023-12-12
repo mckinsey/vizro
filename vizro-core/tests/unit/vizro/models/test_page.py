@@ -2,11 +2,7 @@ import re
 
 import pandas as pd
 import pytest
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px

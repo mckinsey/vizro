@@ -2,11 +2,7 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
-
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call

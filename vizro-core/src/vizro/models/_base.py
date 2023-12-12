@@ -1,14 +1,8 @@
 from typing import Any, List, Type, Union
 
-try:
-    from pydantic.v1 import BaseModel, Field, validator
-    from pydantic.v1.fields import SHAPE_LIST, ModelField
-    from pydantic.v1.typing import get_args
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator
-    from pydantic.fields import SHAPE_LIST, ModelField
-    from pydantic.typing import get_args
-
+from pydantic import BaseModel, Field, validator
+from pydantic.fields import SHAPE_LIST, ModelField
+from pydantic.typing import get_args
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
@@ -64,7 +58,7 @@ class VizroBaseModel(BaseModel):
             return hasattr(field.outer_type_, "__metadata__") and get_args(field.outer_type_)[1].discriminator
 
         field = cls.__fields__[field_name]
-        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None
+        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None  # type: ignore[index]
 
         if _is_discriminated_union(field):
             # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].

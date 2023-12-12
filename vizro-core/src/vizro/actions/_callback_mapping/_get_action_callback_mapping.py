@@ -23,7 +23,7 @@ def _get_action_callback_mapping(
     action_id: ModelID, argument: str
 ) -> Union[List[dcc.Download], Dict[str, DashDependency]]:
     """Creates mapping of action name and required callback input/output."""
-    action_function = model_manager[action_id].function._function
+    action_function = model_manager[action_id].function._function  # type: ignore[attr-defined]
 
     action_callback_mapping: Dict[str, Any] = {
         export_data.__wrapped__: {
