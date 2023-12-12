@@ -108,6 +108,7 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
+    # LN: Better to split up? So it's easier for people to re-arrange and just get the relevant containers
     def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         # TODO: Implement proper way of automatically pulling file called logo in assets folder (should support svg, png and it shouldn't matter where it's placed in the assets folder)
@@ -148,8 +149,8 @@ class Dashboard(VizroBaseModel):
             "components": components,
         }
 
+    # LN: Shall we split up into _arrange_left_side and _arrange_right_side or just one function for arrangement?
     def _arrange_left_side(self, page_divs: PageDivs):
-        # Arrangement
         left_header_divs = [page_divs["dashboard_title"]]
         left_sidebar_divs = [page_divs["nav_bar"]]
 
@@ -158,21 +159,22 @@ class Dashboard(VizroBaseModel):
         else:
             left_header_divs.insert(0, page_divs["logo"])
 
+        # LN: Shall we actually just provide the same className and id to the divs to simplify things?
         left_header = (
             html.Div(children=left_header_divs, className="left-header", id="left-header")
-            if any(not getattr(element, "hidden", False) for element in left_header_divs)
+            if any(not getattr(div, "hidden", False) for div in left_header_divs)
             else html.Div(hidden=True, id="left-header")
         )
         left_main_divs = [left_header, page_divs["nav_panel"], page_divs["control_panel"]]
         left_sidebar = (
-            html.Div(children=left_sidebar_divs, className="nav-logo-bar")
-            if any(not getattr(element, "hidden", False) for element in left_sidebar_divs)
-            else None
+            html.Div(children=left_sidebar_divs, className="left-sidebar", id="left-sidebar")
+            if any(not getattr(div, "hidden", False) for div in left_sidebar_divs)
+            else html.Div(hidden=True, id="left-sidebar")
         )
         left_main = (
-            html.Div(left_main_divs, className="nav_control_panel")
-            if any(not getattr(element, "hidden", False) for element in left_main_divs)
-            else None
+            html.Div(left_main_divs, className="left-main", id="left-main")
+            if any(not getattr(div, "hidden", False) for div in left_main_divs)
+            else html.Div(hidden=True, id="left-main")
         )
         return html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
 

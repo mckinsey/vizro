@@ -5,7 +5,7 @@
   width: 100vw;
 }
 
-.nav_control_panel {
+.left-main {
   align-items: flex-start;
   background: var(--surfaces-bg-02);
   display: flex;
@@ -164,7 +164,7 @@ div.dashboard_container .custom-tooltip {
   white-space: pre-wrap;
 }
 
-.nav-logo-bar {
+.left-sidebar {
   display: flex;
   flex-direction: column;
   width: 64px;
