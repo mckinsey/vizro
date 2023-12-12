@@ -5,6 +5,7 @@
   display: flex;
   gap: 16px;
   margin-bottom: 20px;
+  height: 32px;
 }
 
 .tab-label {
@@ -42,12 +43,11 @@
 }
 
 .tabs-panel {
-  height: 80%; /*Need to find a clever way to calculate automatically*/
+  height: calc(100% - 32px);
 }
 
 .tabs-root {
   flex-direction: column;
   display: flex;
-  height: 100%; /* Prevents overflowing but it's not really the behavior we want,
-  as we want charts to extend automatically */
+  height: 100%;
 }

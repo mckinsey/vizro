@@ -193,15 +193,15 @@ single_tabs_action = vm.Page(
                                 data_frame=df_gapminder,
                             ),
                         ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                vm.Action(function=export_data()),
+                            ],
+                        ),
                     ],
                 )
             ]
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-            ],
         ),
     ],
     controls=[
