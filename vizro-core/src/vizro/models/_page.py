@@ -143,7 +143,7 @@ class Page(VizroBaseModel):
                     actions=[
                         Action(
                             id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            function=_on_page_load(page_id=self.id),
+                            function=_on_page_load(targets=targets),
                         )
                     ],
                 )
