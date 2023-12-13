@@ -4,6 +4,7 @@ from collections.abc import Collection, Mapping
 from typing import Any, Dict, List, Union
 
 from dash import Input, Output, State, callback, html
+from dash.dependencies import DashDependency
 
 try:
     from pydantic.v1 import Field, validator
@@ -74,15 +75,15 @@ class Action(VizroBaseModel):
         """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
+        callback_inputs: Union[List[State], Dict[str, State]]
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         else:
-            callback_inputs = _get_action_callback_mapping(
-                action_id=ModelID(str(self.id)), argument="inputs"
-            )  # type: ignore[assignment]
+            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
+        callback_outputs: Union[List[Output], Dict[str, Output]]
         if self.outputs:
-            callback_outputs: List[Any] = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -90,10 +91,8 @@ class Action(VizroBaseModel):
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
         else:
-            callback_outputs = _get_action_callback_mapping(
-                action_id=ModelID(str(self.id)), argument="outputs"
-            )  # type: ignore[assignment]
-        # AM: mypy
+            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
+
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
