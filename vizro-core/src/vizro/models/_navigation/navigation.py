@@ -18,9 +18,8 @@ class Navigation(VizroBaseModel):
     """Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].
 
     Args:
-        pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
-            Defaults to [].
-        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
+        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
+        nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
     """
 
@@ -42,10 +41,11 @@ class Navigation(VizroBaseModel):
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
         nav_selector = self.nav_selector.build(active_page_id=active_page_id)
+
         if "nav_bar_outer" not in nav_selector:
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav_panel_outer".
             # This will make it match the case e.g. nav_selector is NavBar and nav_selector.build returns html.Div
             # containing children with id="nav_bar_outer" and id="nav_panel_outer"
-            nav_selector = html.Div([html.Div(className="hidden", id="nav_bar_outer"), nav_selector])
+            nav_selector = html.Div([html.Div(hidden=True, id="nav_bar_outer"), nav_selector])
 
         return nav_selector

@@ -954,7 +954,7 @@
     },
     "NavLink": {
       "title": "NavLink",
-      "description": "Icon to be used in Navigation Panel of Dashboard.\n\nArgs:\n    ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).\n        Defaults to `\"\"`.",
+      "description": "Icon to be used in Navigation Bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1041,7 +1041,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to [].\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
