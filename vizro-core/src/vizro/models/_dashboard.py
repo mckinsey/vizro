@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, cast
+from typing import TYPE_CHECKING, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
