@@ -75,16 +75,14 @@ class Action(VizroBaseModel):
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         if self.inputs:
-            callback_inputs = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
+            callback_inputs = [State(*input.split(".")) for input in self.inputs]
         else:
             callback_inputs = _get_action_callback_mapping(
                 action_id=ModelID(str(self.id)), argument="inputs"
             )  # type: ignore[assignment]
 
         if self.outputs:
-            callback_outputs: List[Any] = [
-                Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs
-            ]
+            callback_outputs: List[Any] = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -95,7 +93,7 @@ class Action(VizroBaseModel):
             callback_outputs = _get_action_callback_mapping(
                 action_id=ModelID(str(self.id)), argument="outputs"
             )  # type: ignore[assignment]
-
+        # AM: mypy
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
@@ -103,7 +101,7 @@ class Action(VizroBaseModel):
     def _action_callback_function(
         self,
         inputs: Union[Dict[str, Any], List[Any]],
-        outputs: Union[Dict[str, Output], List[Output], Output, None],  # AM: check type hints
+        outputs: Union[Dict[str, Output], List[Output], Output, None],
     ) -> Any:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
@@ -122,7 +120,7 @@ class Action(VizroBaseModel):
         if not outputs:
             if return_value is not None:
                 raise ValueError("Action function has returned a value but the action has no defined outputs.")
-        elif isinstance(outputs, Mapping):
+        elif isinstance(outputs, dict):
             if not isinstance(return_value, Mapping):
                 raise ValueError(
                     "Action function has not returned a dictionary or similar "
