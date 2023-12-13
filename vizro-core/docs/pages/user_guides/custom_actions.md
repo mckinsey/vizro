@@ -66,7 +66,7 @@ The following example shows how to create a custom action that postpones executi
 ### Interacting with dashboard inputs and outputs
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
-- `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`"). These correspond to function arguments in the format `<component_id>_<property>` (e.g. `scatter_chart_clickData`).
+- `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`"). 
 - `outputs` represents dashboard component properties corresponding to the custom action function return value(s). Similar to `inputs`, it is a list of strings in the format `"<component_id>.<property>"` (e.g. `"my_card.children"`).
 
 The following example shows how to create a custom action that shows the clicked chart data in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
@@ -82,9 +82,9 @@ The following example shows how to create a custom action that shows the clicked
 
 
         @capture("action")
-        def my_custom_action(show_species: bool, scatter_chart_clickData: dict):
+        def my_custom_action(show_species: bool, points_data: dict): # (1)!
             """Custom action."""
-            clicked_point = scatter_chart_clickData["points"][0]
+            clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             text = f"Clicked point has sepal length {x}, petal width {y}"
 
@@ -114,8 +114,8 @@ The following example shows how to create a custom action that shows the clicked
                     actions=[
                         vm.Action(function=filter_interaction(targets=["scatter_chart_2"])),
                         vm.Action(
-                            function=my_custom_action(show_species=True),
-                            inputs=["scatter_chart.clickData"],
+                            function=my_custom_action(show_species=True), # (2)!
+                            inputs=["scatter_chart.clickData"], # (3)!
                             outputs=["my_card.children"],
                         ),
                     ],
@@ -133,6 +133,10 @@ The following example shows how to create a custom action that shows the clicked
 
         Vizro().build(dashboard).run()
         ```
+
+        1. Just as for a normal Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way. 
+        2. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
+        3. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
     === "app.yaml"
         ```yaml
         # Custom action are currently only possible via python configuration
@@ -144,8 +148,8 @@ The following example shows how to create a custom action that shows the clicked
 
 ### Multiple return values
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
-If there is a single `output` defined, the function return value is directly assigned to the component property.
-If there are multiple `outputs` defined, the return value is iterated and assigned to the respective component properties, in line with Python's flexibility in managing multiple return values.
+If there is a single `output` defined then the function return value is directly assigned to the component property.
+If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behaviour is identical to Python's normal flexibility in managing multiple return values.
 
 !!! example "Custom action with multiple return values"
     === "app.py"
@@ -157,9 +161,9 @@ If there are multiple `outputs` defined, the return value is iterated and assign
 
 
         @capture("action")
-        def my_custom_action(scatter_chart_clickData: dict):
+        def my_custom_action(points_data: dict):
             """Custom action."""
-            clicked_point = scatter_chart_clickData["points"][0]
+            clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             species = clicked_point["customdata"][0]
             card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
@@ -213,23 +217,6 @@ If there are multiple `outputs` defined, the return value is iterated and assign
         [![CustomAction2]][CustomAction2]
 
     [CustomAction2]: ../../assets/user_guides/custom_actions/custom_action_multiple_return_values.png
-
-If your action has many outputs, it can be fragile to rely on their ordering. To refer to outputs by name instead, you can return a [`collections.abc.namedtuple`](https://docs.python.org/3/library/collections.html#namedtuple-factory-function-for-tuples-with-named-fields) in which the fields are named in the format `<component_id>_<property>`. Here is what the custom action function from the previous example would look like:
-```py hl_lines="11-13"
-from collections import namedtuple
-
-@capture("action")
-def my_custom_action(scatter_chart_clickData: dict):
-    """Custom action."""
-    clicked_point = scatter_chart_clickData["points"][0]
-    x, y = clicked_point["x"], clicked_point["y"]
-    species = clicked_point["customdata"][0]
-    card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
-    card_2_text = f"Clicked point has species {species}"
-    return namedtuple("CardsText", "my_card_1_children, my_card_2_children")(
-        my_card_1_children=card_1_text, my_card_2_children=card_2_text
-    )
-```
 
 !!! warning
 

@@ -65,7 +65,10 @@ class CapturedCallable:
             )
 
         self.__function = function
-        self.__arguments = inspect.signature(function).bind_partial(*args, **kwargs).arguments
+        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs).arguments
+        self.__unbound_arguments = [
+            param for param in parameters.values() if param.name not in self.__bound_arguments
+        ]  # Maintaining the same order here is important.
 
         # A function can only ever have one variadic keyword parameter. {""} is just here so that var_keyword_param
         # is always unpacking a one element set.
@@ -75,47 +78,60 @@ class CapturedCallable:
 
         # Since we do __call__ as self.__function(**bound_arguments.arguments), we need to restructure the arguments
         # a bit to put the kwargs in the right place.
-        # For a function with parameter **kwargs this converts self.__arguments = {"kwargs": {"a": 1}} into
-        # self.__arguments = {"a": 1}.
-        if var_keyword_param in self.__arguments:
-            self.__arguments.update(self.__arguments[var_keyword_param])
-            del self.__arguments[var_keyword_param]
+        # For a function with parameter **kwargs this converts self.__bound_arguments = {"kwargs": {"a": 1}} into
+        # self.__bound_arguments = {"a": 1}.
+        if var_keyword_param in self.__bound_arguments:
+            self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
+            del self.__bound_arguments[var_keyword_param]
 
     def __call__(self, *args, **kwargs):
-        """Run the `function` with the initial arguments overridden by `**kwargs`.
+        """Run the `function` with the initially bound arguments overridden by `**kwargs`.
 
-        Note *args are not possible here, but you can still override positional arguments using argument name.
+        *args are possible here, but cannot be used to override arguments bound in `__init__` - just to
+        provide additional arguments. You can still override arguments that were originally given
+        as positional using their argument name.
         """
         if args and kwargs:
-            raise ValueError("blah blah")
-        # need to label args with parameters
-        parameters = inspect.signature(self.__function).parameters
-        # AM TODO: this is tricky, think about it more.
-        unbound_params = [
-            param.name
-            for param in inspect.signature(self.__function).parameters.values()
-            if param.name not in self.__arguments and param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
-        ]
-        if len(args) > len(unbound_params):
-            raise ValueError("something")
-            # TypeError: f() takes 1 positional argument but 2 were given
-        # Could still have too few args but that is ok
+            # In theory we could probably lift this restriction, but currently we don't need to and we'd need
+            # to give careful thought on the right way to handle cases where there's ambiguity in the self.__function call
+            # as the same argument is potentially being provided through both *args and **kwargs.
+            raise ValueError("CapturedCallable does not support calling with both positional and keyword arguments.")
 
-        return self.__function(**dict(zip(unbound_params, args)), **{**self.__arguments, **kwargs})
+        # In order to avoid any ambiguity in the call to self.__function, we cannot provide use the *args directly.
+        # Instead they must converted to keyword arguments and so we need to match them up with the right keywords.
+        # Since positional-only or variadic positional parameters are not possible (they raise ValueError in __init__)
+        # the only possible type of argument *args could be address is positional-or-keyword.
+        if args:
+            unbound_positional_arguments = [
+                param.name
+                for param in self.__unbound_arguments
+                if param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+            ]
+            if len(args) > len(unbound_positional_arguments):
+                # TypeError to match the standard Python exception raised in this case.
+                raise TypeError(
+                    f"CapturedCallable takes {len(unbound_positional_arguments)} positional arguments but {len(args)} were given."
+                )
+
+            # No need to handle case that len(args) < len(unbound_positional_arguments), since this will already raise error
+            # in the following function call.
+            return self.__function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
+
+        return self.__function(**{**self.__bound_arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""
-        return self.__arguments[arg_name]
+        return self.__bound_arguments[arg_name]
 
     def __delitem__(self, arg_name: str):
         """Deletes a bound argument."""
-        del self.__arguments[arg_name]
+        del self.__bound_arguments[arg_name]
 
     @property
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
-        return self.__arguments
+        return self.__bound_arguments
 
     # TODO-actions: Find a way how to compare CapturedCallable and function
     @property
