@@ -8,14 +8,14 @@ img[src*="floating-left"] {
 
 img[src*="floating-center"] {
   display: block;
-  max-width: 100%;
+  float: none;
   height: auto;
   margin: auto;
-  float: none;
+  max-width: 100%;
 }
 
 img[src*="icon-top"] {
-  width: 36px;
-  height: 36px;
   filter: var(--fill-icon-image-card);
+  height: 36px;
+  width: 36px;
 }

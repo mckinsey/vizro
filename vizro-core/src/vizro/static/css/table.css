@@ -3,8 +3,8 @@ div.right_side
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   th {
-  color: var(--text-primary);
   background-color: var(--main-container-bg-color);
+  color: var(--text-primary);
 }
 
 div.right_side
@@ -12,8 +12,8 @@ div.right_side
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   td {
-  color: var(--text-primary);
   background-color: var(--main-container-bg-color);
+  color: var(--text-primary);
 }
 
 div.right_side
@@ -43,8 +43,8 @@ div.right_side
 
 .table-container {
   height: 100%;
-  width: 100%;
   overflow: auto;
   padding: 12px;
   padding-left: 32px;
+  width: 100%;
 }
