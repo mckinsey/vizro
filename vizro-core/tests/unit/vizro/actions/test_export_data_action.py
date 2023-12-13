@@ -115,15 +115,16 @@ def callback_context_export_data(request):
                 else [],
                 "filter_interaction": args_grouping_filter_interaction,
             },
-            "outputs_list": [
-                {
-                    "id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"},
-                    "property": "data",
-                }
-                for target in targets
-            ],
-        }
+        },
+        "outputs_list": [
+            {
+                "id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"},
+                "property": "data",
+            }
+            for target in targets
+        ],
     }
+
     context_value.set(AttributeDict(**mock_callback_context))
     return context_value
 

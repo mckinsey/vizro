@@ -101,6 +101,7 @@ class Action(VizroBaseModel):
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
+        # PP: Trim logs when longer than N characters
         logger.debug(f"Action inputs: {inputs}")
         logger.debug(f"Action outputs: {outputs}")  # AM: check what these look like
 
