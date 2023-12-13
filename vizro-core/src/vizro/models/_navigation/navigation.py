@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional, cast
-
 from dash import html
 
 try:
@@ -26,7 +24,7 @@ class Navigation(VizroBaseModel):
     """
 
     pages: NavPagesType = []
-    nav_selector: Optional[NavSelectorType] = None
+    nav_selector: NavSelectorType = None
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
@@ -42,7 +40,7 @@ class Navigation(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
-        nav_selector = cast(NavSelectorType, self.nav_selector).build(active_page_id=active_page_id)
+        nav_selector = self.nav_selector.build(active_page_id=active_page_id)
 
         if "nav_bar_outer" not in nav_selector:
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav_panel_outer".
