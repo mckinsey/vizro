@@ -711,7 +711,18 @@
         },
         "selector": {
           "title": "Selector",
-          "anyOf": [
+          "description": "Selectors to be used inside a control.",
+          "discriminator": {
+            "propertyName": "type",
+            "mapping": {
+              "checklist": "#/definitions/Checklist",
+              "dropdown": "#/definitions/Dropdown",
+              "radio_items": "#/definitions/RadioItems",
+              "range_slider": "#/definitions/RangeSlider",
+              "slider": "#/definitions/Slider"
+            }
+          },
+          "oneOf": [
             {
               "$ref": "#/definitions/Checklist"
             },
