@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal
 
 from dash import html
 
@@ -31,12 +31,12 @@ class Form(VizroBaseModel):
     Args:
         type (Literal["form"]): Defaults to `"form"`.
         components (List[FormComponentType]): List of components used in the form.
-        layout (Optional[Layout]): Defaults to `None`.
+        layout (Layout): Defaults to `None`.
     """
 
     type: Literal["form"] = "form"
     components: List[_FormComponentType]
-    layout: Optional[Layout] = None
+    layout: Layout = None  # type: ignore[assignment]
 
     @validator("layout", always=True)
     def set_layout(cls, layout, values):
@@ -74,9 +74,7 @@ class Form(VizroBaseModel):
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for component, grid_coord in zip(
-                self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
-            )
+            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
         return self._make_form_layout(component_container)
 
@@ -84,10 +82,10 @@ class Form(VizroBaseModel):
         return html.Div(
             component_container,
             style={
-                "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
+                "gridRowGap": self.layout.row_gap,
+                "gridColumnGap": self.layout.col_gap,
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # noqa: E501
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # noqa: E501
             },
             className="component_container_grid",
             id=self.id,
