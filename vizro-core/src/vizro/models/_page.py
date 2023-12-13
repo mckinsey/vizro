@@ -35,7 +35,7 @@ class Page(VizroBaseModel):
         components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
-        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 

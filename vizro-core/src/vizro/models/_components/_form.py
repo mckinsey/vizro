@@ -31,7 +31,7 @@ class Form(VizroBaseModel):
     Args:
         type (Literal["form"]): Defaults to `"form"`.
         components (List[FormComponentType]): List of components used in the form.
-        layout (Optional[Layout]): Defaults to `None`.
+        layout (Layout): Defaults to `None`.
     """
 
     type: Literal["form"] = "form"
