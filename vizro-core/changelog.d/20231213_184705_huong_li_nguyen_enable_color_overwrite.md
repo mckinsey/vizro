@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Remove default font color from global CSS to enable overwrites ([#213](https://github.com/mckinsey/vizro/pull/213))
 
-
 <!--
 ### Security
 
