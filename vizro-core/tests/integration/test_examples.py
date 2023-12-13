@@ -1,6 +1,7 @@
 # ruff: noqa: F403, F405
 import os
 import runpy
+import time
 from pathlib import Path
 
 import chromedriver_autoinstaller_fix
@@ -36,4 +37,5 @@ def dashboard(request, monkeypatch):
 def test_dashboard(dash_duo, dashboard):
     app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/assets").build(dashboard).dash
     dash_duo.start_server(app)
+    time.sleep(1)
     assert dash_duo.get_logs() == []
