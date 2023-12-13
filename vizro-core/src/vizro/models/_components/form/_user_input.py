@@ -22,14 +22,14 @@ class UserInput(VizroBaseModel):
         actions (Optional[List[Action]]): Defaults to `[]`.
         title (str): Title to be displayed. Defaults to `""`.
         input_type (Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"]):
-            Type of value to validate user input against. Defaults to 'text'.
+            Type of value to validate user input against. Defaults to `"text"`.
     """
 
     type: Literal["user_input"] = "user_input"
     title: str = Field("", description="Title to be displayed")
     placeholder: str = Field("", description="Default text to display in input field")
     input_type: Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"] = Field(
-        "text", description="Type of value to validate user input against. Defaults to 'text'."
+        "text", description="Type of value to validate user input against."
     )
     actions: List[Action] = []
 

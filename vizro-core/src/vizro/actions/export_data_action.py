@@ -23,7 +23,7 @@ def export_data(
     """Exports visible data of target charts/components on page after being triggered.
 
     Args:
-        targets: List of target component ids to download data from. Defaults to None.
+        targets: List of target component ids to download data from. Defaults to `None`.
         file_format: Format of downloaded files. Defaults to `csv`.
         inputs: Dict mapping action function names with their inputs e.g.
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}

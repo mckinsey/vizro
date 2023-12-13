@@ -20,14 +20,12 @@ from vizro.models.types import NavPagesType
 
 
 class NavLink(VizroBaseModel):
-    """Icon to be used in Navigation Panel of Dashboard.
+    """Icon to be used in Navigation Bar of Dashboard.
 
     Args:
-        ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
-            Defaults to `[]`.
+        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
         label (str): Text description of the icon for use in tooltip.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-            Defaults to `""`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
 
     """
 
@@ -39,6 +37,10 @@ class NavLink(VizroBaseModel):
 
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
+
+    @validator("icon")
+    def validate_icon(cls, icon) -> str:
+        return icon.strip().lower().replace(" ", "_")
 
     @_log_call
     def pre_build(self):
