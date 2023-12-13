@@ -418,7 +418,7 @@ def create_benchmark_analysis():
         components=[
             vm.Table(
                 id="table_country",
-                title="Click on cell in country column:",
+                title="Click on a cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",
                     columns=columns,
