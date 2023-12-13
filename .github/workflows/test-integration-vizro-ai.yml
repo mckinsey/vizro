@@ -12,7 +12,7 @@ on:
       - main
 
 concurrency:
-  group: test-integration-${{ github.head_ref }}
+  group: test-integration-vizro-ai-${{ github.head_ref }}
 
 env:
   PYTHONUNBUFFERED: 1
