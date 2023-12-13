@@ -20,10 +20,6 @@ df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].
 df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
-df_table = df.drop(columns=["iso_alpha", "iso_num"])
-df_table["lifeExp"] = df_table["lifeExp"].map('{:.1f}'.format)
-df_table["gdpPercap"] = df_table["gdpPercap"].map('{:.1f}'.format)
-df_table["pop"] = df_table["pop"].map('{:,d}'.format)
 
 # CONFIGURATIONS -----
 def create_variable_analysis():
@@ -407,17 +403,29 @@ def create_continent_summary():
     return page_summary
 
 
-def create_country_analysis():
+def create_benchmark_analysis():
     """Function returns a page to perform analysis on country level."""
+    # Apply formatting to table columns
+    columns = [
+        {"id": "country", "name": "country"},
+        {"id": "continent", "name": "continent"},
+        {"id": "lifeExp", "name": "lifeExp", "type": "numeric", "format": {"specifier": ",.1f"}},
+        {"id": "gdpPercap", "name": "gdpPercap", "type": "numeric", "format": {"specifier": "$,.2f"}},
+        {"id": "pop", "name": "pop", "type": "numeric", "format": {"specifier": ",d"}},
+    ]
+
     page_country = vm.Page(
-        title="Country Analysis",
+        title="Benchmark Analysis",
+        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
             vm.Table(
                 id="table_country",
-                title="Table Country",
+                title="Click on cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",
-                    data_frame=df_table,
+                    columns=columns,
+                    data_frame=df,
+                    style_cell={"textAlign": "left"},
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
@@ -425,7 +433,7 @@ def create_country_analysis():
                 id="line_country",
                 figure=px.line(
                     df_concat,
-                    title="Line Country",
+                    title="Country vs. Continent",
                     x="year",
                     y="gdpPercap",
                     color="color",
@@ -447,6 +455,12 @@ def create_country_analysis():
             ),
         ],
         controls=[
+            vm.Parameter(
+                targets=["line_country.y"],
+                selector=vm.Dropdown(
+                    options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose y-axis"
+                ),
+            ),
             vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
             vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
         ],
@@ -494,11 +508,12 @@ def create_home_page():
                 text="""
                     ![](assets/images/icons/content/features.svg#icon-top)
 
-                    ### Country Analysis
+                    ### Benchmark Analysis
 
-                    Discovering how the metrics differ for each country and export data for further investigation.
+                    Discovering how the metrics differ for each country compared to the continent average
+                    and export data for further investigation.
                 """,
-                href="/country-analysis",
+                href="/benchmark-analysis",
             ),
         ],
     )
@@ -511,11 +526,12 @@ dashboard = vm.Dashboard(
         create_variable_analysis(),
         create_relation_analysis(),
         create_continent_summary(),
-        create_country_analysis(),
+        create_benchmark_analysis(),
     ],
     navigation=vm.Navigation(
         pages={
-            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
+            "Homepage": ["Homepage"],
+            "Analysis": ["Variable Analysis", "Relationship Analysis", "Benchmark Analysis"],
             "Summary": ["Continent Summary"],
         },
         nav_selector=vm.NavBar(),
