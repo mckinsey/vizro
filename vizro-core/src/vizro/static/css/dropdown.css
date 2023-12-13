@@ -89,12 +89,14 @@ div.page_container .Select--multi .Select-value {
 
 /* Tag: Label */
 div.page_container .Select--multi .Select-value-label {
+  color: var(--text-secondary);
   line-height: var(--text-size-05);
   padding: 0 4px;
 }
 
 /* Tag: Cross */
 div.page_container .Select--multi .Select-value-icon {
+  color: var(--text-secondary);
   background: inherit;
   border: none;
   line-height: inherit;

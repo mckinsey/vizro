@@ -113,3 +113,10 @@ code,
   padding: 0 4px;
   width: max-content;
 }
+
+.hljs-section,
+.hljs-quote,
+.hljs-bullet,
+.hljs-name {
+  color: var(--text-secondary);
+}
