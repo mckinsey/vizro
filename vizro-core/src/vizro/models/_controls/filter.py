@@ -75,7 +75,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: SelectorType = None
-    _column_type: Optional[Literal["numerical", "categorical"]] = PrivateAttr()
+    _column_type: Literal["numerical", "categorical"] = PrivateAttr()
 
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
@@ -114,7 +114,7 @@ class Filter(VizroBaseModel):
             self._column_type = "categorical"
 
     def _set_selector(self):
-        self.selector = self.selector or SELECTOR_DEFAULTS[self._column_type]()  # type: ignore[index]
+        self.selector = self.selector or SELECTOR_DEFAULTS[self._column_type]()
         self.selector.title = self.selector.title or self.column.title()
 
     def _set_slider_values(self):

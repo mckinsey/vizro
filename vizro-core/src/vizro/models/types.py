@@ -296,7 +296,7 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictType]]
+OptionsType = Union[List[StrictBool], List[float], List[str], List[OionsDictType]]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).

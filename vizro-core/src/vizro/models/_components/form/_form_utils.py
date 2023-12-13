@@ -1,8 +1,10 @@
 """Helper functions for models inside form folder."""
-from typing import Union
+from typing import Union, List
+
+from typing_extensions import reveal_type
 
 from vizro._constants import ALL_OPTION
-from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType, OptionsDictType
 
 
 def get_options_and_default(options: OptionsType, multi: bool = False):
@@ -14,6 +16,7 @@ def get_options_and_default(options: OptionsType, multi: bool = False):
             options = [ALL_OPTION, *options]
 
     if all(isinstance(option, dict) for option in options):
+        # Each option is a OptionsDictTypo.
         default_value = options[0]["value"]  # type: ignore[index]
     else:
         default_value = options[0]

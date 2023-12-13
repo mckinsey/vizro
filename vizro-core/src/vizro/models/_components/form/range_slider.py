@@ -41,7 +41,7 @@ class RangeSlider(VizroBaseModel):
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
     marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
-    value: Optional[List[float]] = Field(
+    value: Optional[List[Optional[float]]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
     )
     title: str = Field("", description="Title to be displayed.")
@@ -59,7 +59,7 @@ class RangeSlider(VizroBaseModel):
 
     @_log_call
     def build(self):
-        value = self.value or [self.min, self.max]  # type: ignore[list-item]
+        value = self.value or [self.min, self.max]
 
         output = [
             Output(f"{self.id}_start_value", "value"),
