@@ -3,6 +3,7 @@ div.right_side
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   th {
+  color: var(--text-primary);
   background-color: var(--main-container-bg-color);
 }
 
@@ -11,6 +12,7 @@ div.right_side
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   td {
+  color: var(--text-primary);
   background-color: var(--main-container-bg-color);
 }
 
@@ -28,7 +30,6 @@ div.right_side
   .dash-spreadsheet-inner
   td
   .dash-cell-value.unfocused {
-  color: var(--text-primary);
   font-size: 14px;
 }
 
@@ -37,9 +38,6 @@ div.right_side
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   .column-header-name {
-  color: var(
-    --text-primary
-  ); /* Should be text-secondary when hover color is implemented */
   font-size: 14px;
 }
 

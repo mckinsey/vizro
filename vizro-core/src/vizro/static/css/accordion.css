@@ -104,6 +104,7 @@
 }
 
 div.page_container .accordion-item-button {
+  color: var(--text-secondary);
   background-color: inherit;
   width: 100%;
   display: flex;
@@ -143,4 +144,8 @@ div.page_container .accordion-item-button:hover {
 
 div.page_container .accordion-button:hover {
   color: var(--text-primary);
+}
+
+.material-symbols-outlined {
+  color: var(--text-secondary);
 }

@@ -97,6 +97,7 @@
 .slider_input_field_right,
 .slider_input_field_no_space_left,
 .slider_input_field_no_space_right {
+  color: var(--text-secondary);
   background-color: inherit;
   font-size: var(--text-size-02);
   margin-right: 4px;
