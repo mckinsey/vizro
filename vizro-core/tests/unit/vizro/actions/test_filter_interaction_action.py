@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import plotly.express as px
 import pytest
 from dash._callback_context import context_value

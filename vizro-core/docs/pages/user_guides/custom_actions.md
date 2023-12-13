@@ -66,7 +66,7 @@ The following example shows how to create a custom action that postpones executi
 ### Interacting with dashboard inputs and outputs
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
-- `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`"). 
+- `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`").
 - `outputs` represents dashboard component properties corresponding to the custom action function return value(s). Similar to `inputs`, it is a list of strings in the format `"<component_id>.<property>"` (e.g. `"my_card.children"`).
 
 The following example shows how to create a custom action that shows the clicked chart data in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
@@ -134,7 +134,7 @@ The following example shows how to create a custom action that shows the clicked
         Vizro().build(dashboard).run()
         ```
 
-        1. Just as for a normal Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way. 
+        1. Just as for a normal Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
         2. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
         3. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
     === "app.yaml"
@@ -149,7 +149,7 @@ The following example shows how to create a custom action that shows the clicked
 ### Multiple return values
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
 If there is a single `output` defined then the function return value is directly assigned to the component property.
-If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behaviour is identical to Python's normal flexibility in managing multiple return values.
+If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's normal flexibility in managing multiple return values.
 
 !!! example "Custom action with multiple return values"
     === "app.py"

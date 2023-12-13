@@ -1,6 +1,6 @@
 """Pre-defined action function "_filter" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List
 
 import pandas as pd
 from dash import ctx
@@ -18,7 +18,7 @@ def _filter(
     targets: List[ModelID],
     filter_function: Callable[[pd.Series, Any], pd.Series],
     **inputs: Dict[str, Any],
-) -> Tuple[Any, ...]:
+) -> Dict[str, Any]:
     """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:

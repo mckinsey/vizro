@@ -2,7 +2,6 @@
 
 import json
 import sys
-from collections import namedtuple
 
 import dash
 import plotly
@@ -26,15 +25,13 @@ def custom_action_function_mock_return(request):
 
 @pytest.fixture
 def expected_get_callback_mapping_inputs(request):
-    return [
-        dash.State(input["component_id"], input["component_property"])
-        for input in request.param
-    ]
+    return [dash.State(input["component_id"], input["component_property"]) for input in request.param]
 
 
 @pytest.fixture
 def expected_get_callback_mapping_outputs(request):
-    outputs = [dash.Output(output["component_id"], output["component_property"], allow_duplicate=True)
+    outputs = [
+        dash.Output(output["component_id"], output["component_property"], allow_duplicate=True)
         for output in request.param
     ]
     if len(outputs) == 1:
@@ -227,11 +224,7 @@ class TestActionPrivateMethods:
                 {"key_1": "value_1", "key_2": "value_2"},
             ),
             # multiple list outputs
-            (
-                "ab",
-                ["component_1_property", "component_2_property"],
-                "ab"
-            ),
+            ("ab", ["component_1_property", "component_2_property"], "ab"),
             (
                 ("value_1", "value_2"),
                 ["component_1_property", "component_2_property"],
@@ -328,7 +321,8 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a dictionary or similar but the action's defined outputs are a dictionary.",
+            match="Action function has not returned a dictionary or similar "
+            "but the action's defined outputs are a dictionary.",
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
@@ -373,6 +367,3 @@ class TestActionPrivateMethods:
             match="Keys of action's returned value .+ do not match the action's defined outputs .+",
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
-
-
-

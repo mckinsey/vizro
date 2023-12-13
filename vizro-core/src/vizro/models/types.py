@@ -93,8 +93,8 @@ class CapturedCallable:
         """
         if args and kwargs:
             # In theory we could probably lift this restriction, but currently we don't need to and we'd need
-            # to give careful thought on the right way to handle cases where there's ambiguity in the self.__function call
-            # as the same argument is potentially being provided through both *args and **kwargs.
+            # to give careful thought on the right way to handle cases where there's ambiguity in the
+            # self.__function call as the same argument is potentially being provided through both *args and **kwargs.
             raise ValueError("CapturedCallable does not support calling with both positional and keyword arguments.")
 
         # In order to avoid any ambiguity in the call to self.__function, we cannot provide use the *args directly.
@@ -110,11 +110,12 @@ class CapturedCallable:
             if len(args) > len(unbound_positional_arguments):
                 # TypeError to match the standard Python exception raised in this case.
                 raise TypeError(
-                    f"CapturedCallable takes {len(unbound_positional_arguments)} positional arguments but {len(args)} were given."
+                    f"CapturedCallable takes {len(unbound_positional_arguments)} "
+                    f"positional arguments but {len(args)} were given."
                 )
 
-            # No need to handle case that len(args) < len(unbound_positional_arguments), since this will already raise error
-            # in the following function call.
+            # No need to handle case that len(args) < len(unbound_positional_arguments),
+            # since this will already raise error in the following function call.
             return self.__function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
 
         return self.__function(**{**self.__bound_arguments, **kwargs})

@@ -1,9 +1,8 @@
 import importlib.util
 import logging
 from collections.abc import Collection, Mapping
-from typing import Any, Dict, List, Union, Collection, Mapping
+from typing import Any, Dict, List, Union
 
-import dash
 from dash import Input, Output, State, callback, html
 from pydantic import Field, validator
 
@@ -74,10 +73,12 @@ class Action(VizroBaseModel):
         if self.inputs:
             callback_inputs = [State(input.split(".")[0], input.split(".")[1]) for input in self.inputs]
         else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
+            callback_inputs = _get_action_callback_mapping(
+                action_id=ModelID(str(self.id)), argument="inputs"
+            )  # type: ignore[assignment]
 
         if self.outputs:
-            callback_outputs = [
+            callback_outputs: List[Any] = [
                 Output(output.split(".")[0], output.split(".")[1], allow_duplicate=True) for output in self.outputs
             ]
 
@@ -87,7 +88,9 @@ class Action(VizroBaseModel):
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
         else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
+            callback_outputs = _get_action_callback_mapping(
+                action_id=ModelID(str(self.id)), argument="outputs"
+            )  # type: ignore[assignment]
 
         action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
@@ -118,12 +121,13 @@ class Action(VizroBaseModel):
         elif isinstance(outputs, Mapping):
             if not isinstance(return_value, Mapping):
                 raise ValueError(
-                    "Action function has not returned a dictionary or similar but the action's defined outputs are a dictionary."
+                    "Action function has not returned a dictionary or similar "
+                    "but the action's defined outputs are a dictionary."
                 )
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value ({set(return_value) or {}}) do not match the action's defined outputs"
-                    f" ({set(outputs) or {}})."
+                    f"Keys of action's returned value ({set(return_value) or {}}) "
+                    f"do not match the action's defined outputs ({set(outputs) or {}})."
                 )
         elif isinstance(outputs, list):
             if not isinstance(return_value, Collection):
@@ -136,8 +140,8 @@ class Action(VizroBaseModel):
                     f" of action's defined outputs ({len(outputs)})."
                 )
 
-        # If no error has been raised then the return_value is good and is returned as it is - this could be a list of outputs,
-        # dictionary of outputs or any single value including None.
+        # If no error has been raised then the return_value is good and is returned as it is.
+        # This could be a list of outputs, dictionary of outputs or any single value including None.
         return return_value
 
     @_log_call
