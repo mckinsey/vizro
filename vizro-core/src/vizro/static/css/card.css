@@ -37,3 +37,7 @@ h6,
 p {
   margin-bottom: var(--spacing-02);
 }
+
+.card_text ul {
+  color: var(--text-secondary);
+}

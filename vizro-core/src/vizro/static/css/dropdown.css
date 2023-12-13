@@ -139,6 +139,11 @@ div.nav_panel a {
   line-height: var(--text-size-07);
 }
 
+div.page_container .Select--multi .Select-clear-zone {
+  width: 16px;
+  color: var(--text-secondary);
+}
+
 /** spacing for tag elements only when elements are present inside
 wrapper **/
 .Select--multi.has-value .Select-multi-value-wrapper {

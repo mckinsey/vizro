@@ -120,3 +120,8 @@ code,
 .hljs-name {
   color: var(--text-secondary);
 }
+
+h5,
+h6 {
+  color: var(--text-secondary);
+}
