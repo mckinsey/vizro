@@ -138,40 +138,6 @@ class Action(VizroBaseModel):
         # If no error has been raised then the return_value is good and is returned as it is - this could be a list of outputs,
         # dictionary of outputs or any single value including None.
         return return_value
-        # if return_value is None and len(outputs) == 0:
-        #     # Action has no outputs and the custom action function returns None.
-        #     # Special case results with no exception.
-        #     return_dict = {}
-        # elif len(outputs) == 1:
-        #     # If the action has only one output, so assign the entire return_value to the output.
-        #     # This ensures consistent handling regardless of the type or structure of the return_value.
-        #     return_dict = {outputs[0]: return_value}
-        # elif isinstance(return_value, Mapping) and return_value:
-        #     # We exclude the empty dictionary case here so that it raises the invalid number of elements error raised
-        #     # in the else clause.
-        #     if set(outputs) != set(return_value):
-        #         raise ValueError(
-        #             f"Keys of action's returned value ({set(return_value)}) do not match the action's defined outputs"
-        #             f" ({set(outputs)})."
-        #         )
-        #     return_dict = return_value
-        # else:
-        #     if not isinstance(return_value, Collection) or len(return_value) == 0:
-        #         # If return_value is not a collection or is an empty collection,
-        #         # create a new collection from it. This ensures handling of return values like None, True, 1 etc.
-        #         # and treats an empty collection as a 1-length collection.
-        #         # Note that if this clause runs then the below invalid number of elements error is always raised,
-        #         # because we already know that len(return_value) == 1 and len(outputs) != 1 (from above elif clause).
-        #         return_value = [return_value]
-        #
-        #     if len(return_value) != len(outputs):
-        #         raise ValueError(
-        #             f"Number of action's returned elements ({len(return_value)}) does not match the number"
-        #             f" of action's defined outputs ({len(outputs)})."
-        #         )
-        #     return_dict = dict(zip(outputs, return_value))
-        #
-        # return return_dict
 
     @_log_call
     def build(self):
