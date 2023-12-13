@@ -114,7 +114,7 @@ class Dashboard(VizroBaseModel):
     def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         # TODO: Implement proper way of automatically pulling file called logo in assets folder (should support svg, png and it shouldn't matter where it's placed in the assets folder)
-        logo_image = self._infer_logo_image()
+        logo_image = self._infer_logo_image() # images/icons/content/logo.svg
         logo = (
             html.Div([html.Img(src=get_asset_url(logo_image), className="logo-img")], className="logo", id="logo")
             # TODO: Implement condition check if image can be found/not found
@@ -216,18 +216,11 @@ class Dashboard(VizroBaseModel):
         )
 
     def _infer_logo_image(self):
-        valid_extensions = [".jpg", ".png", ".svg"]
-        files_in_assets = []
-        assets_folder = "../assets"
-        if os.path.exists(assets_folder):
-            files_in_assets = [
-                path.name for path in Path(assets_folder).glob("**/*") if path.suffix in valid_extensions
-            ]
+        valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
+        assets_folder = Path("../assets")  # CONFIG.assets_folder?
 
-        logo_file = None
-        for fn in files_in_assets:
-            fn_without_extension, _, _ = fn.partition(".")
-            if fn_without_extension == "logo":
-                logo_file = fn
-
-        return logo_file
+        if assets_folder.is_dir()
+            for path in Path(assets_folder).rglob("logo.*"):
+                if path.suffix in valid_extensions:
+                    return path.relative_to(assets_folder)
+        # return None
