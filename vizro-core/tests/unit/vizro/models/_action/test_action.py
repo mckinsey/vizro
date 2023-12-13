@@ -26,22 +26,20 @@ def custom_action_function_mock_return(request):
 
 @pytest.fixture
 def expected_get_callback_mapping_inputs(request):
-    return {
-        f'{input["component_id"]}_{input["component_property"]}': dash.State(
-            input["component_id"], input["component_property"]
-        )
+    return [
+        dash.State(input["component_id"], input["component_property"])
         for input in request.param
-    }
+    ]
 
 
 @pytest.fixture
 def expected_get_callback_mapping_outputs(request):
-    return {
-        f'{output["component_id"]}_{output["component_property"]}': dash.Output(
-            output["component_id"], output["component_property"], allow_duplicate=True
-        )
+    outputs = [dash.Output(output["component_id"], output["component_property"], allow_duplicate=True)
         for output in request.param
-    }
+    ]
+    if len(outputs) == 1:
+        outputs = outputs[0]
+    return outputs
 
 
 @pytest.fixture
@@ -96,27 +94,27 @@ class TestActionInstantiation:
     @pytest.mark.parametrize(
         "inputs",
         [
-            "string",
-            "component_property",
-            "compo-nent.property",
-            "component.property_1",
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
         ],
     )
     def test_inputs_invalid(self, inputs, test_action_function):
-        with pytest.raises(ValidationError, match="value is not a valid list"):
+        with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=test_action_function, inputs=inputs, outputs=[])
 
     @pytest.mark.parametrize(
         "outputs",
         [
-            "string",
-            "component_property",
-            "compo-nent.property",
-            "component.property_1",
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
         ],
     )
     def test_outputs_invalid(self, outputs, test_action_function):
-        with pytest.raises(ValidationError, match="value is not a valid list"):
+        with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=test_action_function, inputs=[], outputs=outputs)
 
     @pytest.mark.parametrize("file_format", [None, "csv", "xlsx"])
@@ -158,10 +156,8 @@ class TestActionPrivateMethods:
     def test_get_callback_mapping_no_inputs_no_outputs(self, test_action_function):
         action = Action(id="action_test", function=test_action_function)
         callback_inputs, callback_outputs, action_components = action._get_callback_mapping()
-        assert callback_inputs == {
-            "trigger": dash.Input({"action_name": "action_test", "type": "action_trigger"}, "data")
-        }
-        assert callback_outputs == {"action_finished": dash.Output("action_finished", "data")}
+        assert callback_inputs == {}
+        assert callback_outputs == {}
         assert action_components == []
 
     @pytest.mark.parametrize(
@@ -200,60 +196,72 @@ class TestActionPrivateMethods:
             outputs=inputs_and_outputs,
         )
         callback_inputs, callback_outputs, action_components = action._get_callback_mapping()
-        assert callback_inputs == {
-            **expected_get_callback_mapping_inputs,
-            "trigger": dash.Input({"action_name": "action_test", "type": "action_trigger"}, "data"),
-        }
-        assert callback_outputs == {
-            **expected_get_callback_mapping_outputs,
-            "action_finished": dash.Output("action_finished", "data"),
-        }
+        assert callback_inputs == expected_get_callback_mapping_inputs
+        assert callback_outputs == expected_get_callback_mapping_outputs
         assert action_components == []
 
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_outputs, expected_function_return_value",
         [
             # no outputs
-            (None, [], {}),
+            (None, [], None),
+            (None, {}, None),
+            (None, None, None),
             # single output
-            (None, ["component_1_property"], {"component_1_property": None}),
-            (False, ["component_1_property"], {"component_1_property": False}),
-            (0, ["component_1_property"], {"component_1_property": 0}),
-            (123, ["component_1_property"], {"component_1_property": 123}),
-            ("value", ["component_1_property"], {"component_1_property": "value"}),
-            ((), ["component_1_property"], {"component_1_property": ()}),
-            (("value"), ["component_1_property"], {"component_1_property": ("value")}),
-            (("value_1", "value_2"), ["component_1_property"], {"component_1_property": ("value_1", "value_2")}),
-            ([], ["component_1_property"], {"component_1_property": []}),
-            (["value"], ["component_1_property"], {"component_1_property": ["value"]}),
-            (["value_1", "value_2"], ["component_1_property"], {"component_1_property": ["value_1", "value_2"]}),
-            ({}, ["component_1_property"], {"component_1_property": {}}),
-            ({"key_1": "value_1"}, ["component_1_property"], {"component_1_property": {"key_1": "value_1"}}),
+            (None, "component_1_property", None),
+            (False, "component_1_property", False),
+            (0, "component_1_property", 0),
+            (123, "component_1_property", 123),
+            ("value", "component_1_property", "value"),
+            ((), "component_1_property", ()),
+            (("value"), "component_1_property", ("value")),
+            (("value_1", "value_2"), "component_1_property", ("value_1", "value_2")),
+            ([], "component_1_property", []),
+            (["value"], "component_1_property", ["value"]),
+            (["value_1", "value_2"], "component_1_property", ["value_1", "value_2"]),
+            ({}, "component_1_property", {}),
+            ({"key_1": "value_1"}, "component_1_property", {"key_1": "value_1"}),
             (
                 {"key_1": "value_1", "key_2": "value_2"},
-                ["component_1_property"],
-                {"component_1_property": {"key_1": "value_1", "key_2": "value_2"}},
+                "component_1_property",
+                {"key_1": "value_1", "key_2": "value_2"},
             ),
-            # multiple outputs
+            # multiple list outputs
             (
                 "ab",
                 ["component_1_property", "component_2_property"],
-                {"component_1_property": "a", "component_2_property": "b"},
+                "ab"
             ),
             (
                 ("value_1", "value_2"),
                 ["component_1_property", "component_2_property"],
-                {"component_1_property": "value_1", "component_2_property": "value_2"},
+                ("value_1", "value_2"),
             ),
             (
                 ["value_1", "value_2"],
                 ["component_1_property", "component_2_property"],
-                {"component_1_property": "value_1", "component_2_property": "value_2"},
+                ["value_1", "value_2"],
             ),
             (
                 {"component_1_property": "value_1", "component_2_property": "value_2"},
                 ["component_1_property", "component_2_property"],
                 {"component_1_property": "value_1", "component_2_property": "value_2"},
+            ),
+            # multiple mapping outputs
+            (
+                {"component_1": "value_1"},
+                {"component_1": "value"},
+                {"component_1": "value_1"},
+            ),
+            (
+                {"component_1": "value_1", "component_2": "value_2"},
+                {"component_1": "value", "component_2": "value"},
+                {"component_1": "value_1", "component_2": "value_2"},
+            ),
+            (
+                {"component_1": "value_1", "component_2": "value_2"},
+                {"component_2": "value", "component_1": "value"},
+                {"component_1": "value_1", "component_2": "value_2"},
             ),
         ],
         indirect=["custom_action_function_mock_return"],
@@ -265,32 +273,80 @@ class TestActionPrivateMethods:
         result = action._action_callback_function(inputs={}, outputs=callback_outputs)
         assert result == expected_function_return_value
 
+    @pytest.mark.parametrize("callback_outputs", [[], {}, None])
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return",
+        [False, 0, "", [], (), {}],
+        indirect=True,
+    )
+    def test_action_callback_function_no_outputs_return_value_exists(
+        self, custom_action_function_mock_return, callback_outputs
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Action function has returned a value but the action has no defined outputs.",
+        ):
+            action._action_callback_function(inputs={}, outputs=callback_outputs)
+
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_outputs",
         [
-            (None, ["component_1_property", "component_2_property"]),
-            (False, []),
-            (0, []),
-            (123, []),
-            (123, ["component_1_property", "component_2_property"]),
-            ("", []),
-            ("ab", []),
-            ("ab", ["component_1_property", "component_2_property", "component_3_property"]),
-            ((), []),
-            (("new_value"), []),
-            (("new_value"), ["component_1_property", "component_2_property"]),
-            (("new_value", "new_value_2"), []),
-            (("new_value", "new_value_2"), ["component_1_property", "component_2_property", "component_3_property"]),
-            ([], []),
-            (["new_value"], []),
-            (["new_value"], ["component_1_property", "component_2_property"]),
-            (["new_value", "new_value_2"], []),
-            (["new_value", "new_value_2"], ["component_1_property", "component_2_property", "component_3_property"]),
-            ({}, []),
+            (None, ["component_1_property"]),
+            (False, ["component_1_property"]),
+            (0, ["component_1_property"]),
+            (123, ["component_1_property"]),
         ],
         indirect=["custom_action_function_mock_return"],
     )
-    def test_action_callback_function_return_value_invalid_length(
+    def test_action_callback_function_outputs_list_return_value_not_collection(
+        self, custom_action_function_mock_return, callback_outputs
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Action function has not returned a list or similar but the action's defined outputs are a list.",
+        ):
+            action._action_callback_function(inputs={}, outputs=callback_outputs)
+
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return, callback_outputs",
+        [
+            (None, {"component_1_property": "value"}),
+            (False, {"component_1_property": "value"}),
+            (0, {"component_1_property": "value"}),
+            (123, {"component_1_property": "value"}),
+            ("", {"component_1_property": "value"}),
+            ([], {"component_1_property": "value"}),
+            ((), {"component_1_property": "value"}),
+        ],
+        indirect=["custom_action_function_mock_return"],
+    )
+    def test_action_callback_function_outputs_mapping_return_value_not_mapping(
+        self, custom_action_function_mock_return, callback_outputs
+    ):
+        action = Action(function=custom_action_function_mock_return())
+        with pytest.raises(
+            ValueError,
+            match="Action function has not returned a dictionary or similar but the action's defined outputs are a dictionary.",
+        ):
+            action._action_callback_function(inputs={}, outputs=callback_outputs)
+
+    @pytest.mark.parametrize(
+        "custom_action_function_mock_return, callback_outputs",
+        [
+            ("", ["component_1_property"]),
+            ([], ["component_1_property"]),
+            ((), ["component_1_property"]),
+            ({}, ["component_1_property"]),
+            ("12", ["component_1_property"]),
+            ([1, 2], ["component_1_property"]),
+            ((1, 2), ["component_1_property"]),
+            ({"a": 1, "b": 2}, ["component_1_property"]),
+        ],
+        indirect=["custom_action_function_mock_return"],
+    )
+    def test_action_callback_function_outputs_list_return_value_length_not_match(
         self, custom_action_function_mock_return, callback_outputs
     ):
         action = Action(function=custom_action_function_mock_return())
@@ -303,17 +359,12 @@ class TestActionPrivateMethods:
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_outputs",
         [
-            ({"component_1_property": "new_value"}, []),
-            ({"component_1_property": "new_value"}, ["component_1_property", "component_2_property"]),
-            ({"component_1_property": "new_value", "component_2_property": "new_value_2"}, []),
-            (
-                {"component_1_property": "new_value", "component_2_property": "new_value_2"},
-                ["component_1_property", "component_2_property", "component_3_property"],
-            ),
+            ({}, {"component_1_property": "value"}),
+            ({"a": 1, "b": 2}, {"component_1_property": "value"}),
         ],
         indirect=["custom_action_function_mock_return"],
     )
-    def test_action_callback_function_return_value_invalid_keys(
+    def test_action_callback_function_outputs_mapping_return_value_keys_not_match(
         self, custom_action_function_mock_return, callback_outputs
     ):
         action = Action(function=custom_action_function_mock_return())
@@ -322,3 +373,6 @@ class TestActionPrivateMethods:
             match="Keys of action's returned value .+ do not match the action's defined outputs .+",
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
+
+
+

@@ -31,12 +31,12 @@ class Action(VizroBaseModel):
     inputs: List[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
-        regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+        regex="^[^.]+[.][^.]+$",
     )
     outputs: List[str] = Field(
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
-        regex="^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+        regex="^[^.]+[.][^.]+$",
     )
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
@@ -125,7 +125,7 @@ class Action(VizroBaseModel):
                     f"Keys of action's returned value ({set(return_value) or {}}) do not match the action's defined outputs"
                     f" ({set(outputs) or {}})."
                 )
-        elif isinstance(outputs, Collection):
+        elif isinstance(outputs, list):
             if not isinstance(return_value, Collection):
                 raise ValueError(
                     "Action function has not returned a list or similar but the action's defined outputs are a list."
@@ -157,8 +157,8 @@ class Action(VizroBaseModel):
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
-        # This allows the action function to return None and match correctly on to the callback_outputs
-        # dictionary. The (probably better) alternative to this would be just to define a dummy output for all such functions
+        # This allows the action function to return None and match correctly on to the callback_outputs dictionary
+        # The (probably better) alternative to this would be just to define a dummy output for all such functions
         # so that the external key always exists.
         # Note that it's still possible to explicitly return None as a value when an output is specified.
         if external_callback_outputs:
