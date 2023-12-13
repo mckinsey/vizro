@@ -36,5 +36,6 @@ def dashboard(request, monkeypatch):
 def test_dashboard(dash_duo, dashboard):
     app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/assets").build(dashboard).dash
     dash_duo.start_server(app)
+    print("CI: ", os.getenv("CI"))
     print("BROWSER:", dash_duo.driver.name)
     assert dash_duo.get_logs() == []
