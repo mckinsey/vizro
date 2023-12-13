@@ -74,7 +74,7 @@ class Filter(VizroBaseModel):
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )
-    selector: Optional[SelectorType] = None
+    selector: SelectorType = None
     _column_type: Optional[Literal["numerical", "categorical"]] = PrivateAttr()
 
     @validator("targets", each_item=True)
@@ -94,7 +94,7 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self.selector.build()  # type: ignore[union-attr]
+        return self.selector.build()
 
     def _set_targets(self):
         if not self.targets:
@@ -118,7 +118,6 @@ class Filter(VizroBaseModel):
         self.selector.title = self.selector.title or self.column.title()
 
     def _set_slider_values(self):
-        self.selector: SelectorType
         if isinstance(self.selector, SELECTORS["numerical"]):
             if self._column_type != "numerical":
                 raise ValueError(
@@ -142,7 +141,6 @@ class Filter(VizroBaseModel):
                 self.selector.max = max(max_values)
 
     def _set_categorical_selectors_options(self):
-        self.selector: SelectorType
         if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
             options = set()
             for target_id in self.targets:
@@ -152,7 +150,6 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_actions(self):
-        self.selector: SelectorType
         if not self.selector.actions:
             filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
             self.selector.actions = [

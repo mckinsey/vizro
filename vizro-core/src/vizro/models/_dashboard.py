@@ -43,7 +43,7 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Optional[Navigation] = None
+    navigation: Navigation = None  # type: ignore[assignment]
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
@@ -109,7 +109,7 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav_bar_outer"]
         nav_panel = navigation["nav_panel_outer"]
 
