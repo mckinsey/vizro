@@ -8,7 +8,6 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
-# DATA -----
 df = px.data.gapminder()
 df_mean = (
     df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
@@ -21,7 +20,6 @@ df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("s
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
 
-# CONFIGURATIONS -----
 def create_variable_analysis():
     """Function returns a page with gapminder data to do variable analysis."""
     page_variable = vm.Page(
