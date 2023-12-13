@@ -174,11 +174,12 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
     [NavBar]: ../../assets/user_guides/navigation/nav_bar.png
 
 
-Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the icons are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
+Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
+By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
 
 ## Customizing the navigation bar
 
-Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink`s yourself.
+Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
 
 ### `NavLink` examples
 
@@ -239,7 +240,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                     items=[
                         vm.NavLink(
                             label="Section 1",
-                            icon="bar_chart",
+                            icon="Bar Chart",
                             pages=["My first page", "My second page"],
                         ),
                         vm.NavLink(label="Section 2", icon="pie_chart", pages=["My third page"]),
@@ -259,7 +260,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
             type: nav_bar
             items:
               - label: Section 1
-                icon: bar_chart
+                icon: Bar Chart
                 pages:
                   - My first page
                   - My second page
