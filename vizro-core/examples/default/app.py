@@ -527,12 +527,17 @@ dashboard = vm.Dashboard(
         create_benchmark_analysis(),
     ],
     navigation=vm.Navigation(
-        pages={
-            "Homepage": ["Homepage"],
-            "Analysis": ["Variable Analysis", "Relationship Analysis", "Benchmark Analysis"],
-            "Summary": ["Continent Summary"],
-        },
-        nav_selector=vm.NavBar(),
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Homepage", pages=["Homepage"], icon="Home"),
+                vm.NavLink(
+                    label="Analysis",
+                    pages=["Variable Analysis", "Relationship Analysis", "Benchmark Analysis"],
+                    icon="Stacked Bar Chart",
+                ),
+                vm.NavLink(label="Summary", pages=["Continent Summary"], icon="Globe"),
+            ]
+        ),
     ),
 )
 
