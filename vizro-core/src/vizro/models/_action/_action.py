@@ -96,13 +96,13 @@ class Action(VizroBaseModel):
     def _action_callback_function(
         self,
         inputs: Union[Dict[str, Any], List[Any]],
-        outputs: Union[Dict[str, Output], List[Output], Output, None],  # check type hints
+        outputs: Union[Dict[str, Output], List[Output], Output, None],  # AM: check type hints
     ) -> Any:
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
         logger.debug(f"Action inputs: {inputs}")
-        logger.debug(f"Action outputs: {outputs}")
+        logger.debug(f"Action outputs: {outputs}")  # AM: check what these look like
 
         if isinstance(inputs, Mapping):
             return_value = self.function(**inputs)
@@ -167,7 +167,7 @@ class Action(VizroBaseModel):
             f"Creating Callback mapping for Action ID {self.id} with "
             f"function name: {self.function._function.__name__}"
         )
-        logger.debug("---------- INPUTS ----------")
+        logger.debug("---------- INPUTS ----------")  # AM: fix this
         # for name, object in callback_inputs["external"].items():
         #     logger.debug(f"--> {name}: {object}")
         logger.debug("---------- OUTPUTS ---------")
