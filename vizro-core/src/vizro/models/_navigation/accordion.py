@@ -5,7 +5,11 @@ from typing import Dict, List, Literal
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, validator
+
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
@@ -48,7 +52,7 @@ class Accordion(VizroBaseModel):
                 dbc.AccordionItem(
                     children=accordion_buttons,
                     title=page_group.upper(),
-                    class_name="accordion_item",
+                    class_name="accordion-item-header",
                 )
             )
 

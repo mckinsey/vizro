@@ -24,7 +24,11 @@ def _on_page_load(page_id: ModelID, **inputs: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
     """
-    targets = [component.id for component in model_manager[page_id].components if data_manager._has_registered_data(component.id)]  # type: ignore[attr-defined]  # noqa: E501
+    targets = [
+        component.id
+        for component in model_manager[page_id].components
+        if data_manager._has_registered_data(component.id)
+    ]
 
     return _get_modified_page_figures(
         targets=targets,

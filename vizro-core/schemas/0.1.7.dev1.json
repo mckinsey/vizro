@@ -1041,7 +1041,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {

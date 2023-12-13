@@ -4,8 +4,13 @@ import itertools
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 from dash import html
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -15,14 +20,12 @@ from vizro.models.types import NavPagesType
 
 
 class NavLink(VizroBaseModel):
-    """Icon to be used in Navigation Panel of Dashboard.
+    """Icon to be used in Navigation Bar of Dashboard.
 
     Args:
-        ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].
-            Defaults to `[]`.
+        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
         label (str): Text description of the icon for use in tooltip.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-            Defaults to `""`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
 
     """
 
@@ -35,11 +38,15 @@ class NavLink(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
+    @validator("icon")
+    def validate_icon(cls, icon) -> str:
+        return icon.strip().lower().replace(" ", "_")
+
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+        self._nav_selector = Accordion(pages=self.pages)
 
     @_log_call
     def build(self, *, active_page_id=None):
@@ -57,10 +64,13 @@ class NavLink(VizroBaseModel):
 
         button = dbc.Button(
             [
-                html.Span(self.icon, className="material-symbols-outlined"),
-                # TODO: commented out until we insert styling for the tooltip or find a better way to display it (e.g.
-                # try dbc.Popover or Dash mantine components tooltip?).
-                # dbc.Tooltip(html.P(self.label), target=self.id, placement="bottom", className="custom-tooltip"),
+                dmc.Tooltip(
+                    label=self.label,
+                    offset=4,
+                    withArrow=True,
+                    children=[html.Span(self.icon, className="material-symbols-outlined")],
+                    position="bottom-start",
+                )
             ],
             id=self.id,
             className="icon-button",

@@ -38,7 +38,7 @@ def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
     actions_chains: List[ActionsChain] = []
     for registered_page in page_registry.values():
         try:
-            page: Page = model_manager[registered_page["module"]]  # type: ignore[assignment]
+            page: Page = model_manager[registered_page["module"]]
         except KeyError:
             continue
         actions_chains.extend(_get_all_actions_chains_on_page(page=page))

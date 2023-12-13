@@ -1,7 +1,11 @@
 from typing import Callable, Dict, List, Union
 
 from langchain.chat_models import ChatOpenAI
-from pydantic import BaseModel, Field
+
+try:
+    from pydantic.v1 import BaseModel, Field
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, Field
 
 # TODO add new wrappers in if new model support is added
 LLM_MODELS = Union[ChatOpenAI]
@@ -16,6 +20,16 @@ PREDEFINED_MODELS: List[Dict[str, any]] = [
     {
         "name": "gpt-4-0613",
         "max_tokens": 8192,
+        "wrapper": ChatOpenAI,
+    },
+    {
+        "name": "gpt-3.5-turbo-1106",
+        "max_tokens": 16385,
+        "wrapper": ChatOpenAI,
+    },
+    {
+        "name": "gpt-4-1106-preview",
+        "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
 ]

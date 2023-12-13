@@ -73,6 +73,12 @@ dependencies = [
 detached = true
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
+[envs.lower-bounds]
+extra-dependencies = [
+  "pydantic==1.10.13",
+  "dash==2.14.1"
+]
+
 [publish.index]
 disable = true
 

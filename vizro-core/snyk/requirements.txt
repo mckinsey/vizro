@@ -1,8 +1,9 @@
-dash>=2.11
+dash>=2.14.1
 dash_bootstrap_components
 pandas
-pydantic>=1.10.13, <2
+pydantic>=1.10.13
 dash_daq
+dash_mantine_components
 ipython>=8.10.0
 numpy>=1.22.2
 tornado>=6.3.2
