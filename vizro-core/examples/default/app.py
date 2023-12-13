@@ -427,6 +427,7 @@ def create_country_analysis():
                 figure=dash_data_table(
                     id="dash_data_table_country",
                     data_frame=px.data.gapminder(),
+                    style_cell_conditional=[{"if": {"column_id": "pop"}, "color": "orange"}],
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
