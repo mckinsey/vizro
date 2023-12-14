@@ -518,8 +518,109 @@ def create_home_page():
     return page_home
 
 
+def added_page():
+    page = vm.Page(
+        title="added_page",
+        components=[
+            vm.Graph(
+                id="123",
+                figure=px.line(
+                    px.data.gapminder(),
+                    x="year",
+                    y="gdpPercap",
+                    color="country",
+                ),
+            ),
+            vm.Button(
+                text="Download data",
+                actions=[vm.Action(function=export_data())],
+            ),
+        ],
+        controls=[
+            vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
+            vm.Parameter(
+                targets=["123.y"], selector=vm.RadioItems(value="year", options=["year", "lifeExp", "pop", "gdpPercap"])
+            ),
+        ],
+    )
+    return page
+
+
+def added_page_2():
+    from vizro.models.types import capture
+
+    @capture("action")
+    def my_custom_action(show_species: bool, click_data: dict):
+        """Custom action."""
+        clicked_point = click_data["points"][0]
+        x, y = clicked_point["x"], clicked_point["y"]
+        text = f"Clicked point has sepal length {x}, petal width {y}"
+
+        if show_species:
+            species = clicked_point["customdata"][0]
+            text += f" and species {species}"
+        return text
+
+    df = px.data.iris()
+
+    page = vm.Page(
+        title="added_page_2",
+        layout=vm.Layout(
+            grid=[
+                [0, 2],
+                [0, 2],
+                [0, 2],
+                [1, -1],
+                [3, -1],
+            ],
+            row_gap="25px",
+        ),
+        components=[
+            vm.Graph(
+                id="1scatter #- chart",
+                figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                actions=[
+                    vm.Action(function=filter_interaction(targets=["scatter_chart-2"])),
+                    vm.Action(
+                        function=my_custom_action(True),
+                        inputs=["1scatter #- chart.clickData"],
+                        outputs=["my_card.children"],
+                    ),
+                ],
+            ),
+            vm.Card(id="my_card", text="Click on a point on the above graph."),
+            vm.Graph(
+                id="scatter_chart-2",
+                figure=px.scatter(df, x="sepal_length", y="petal_width", color="species"),
+            ),
+            vm.Button(
+                id="1-export_data",
+                text="Export data",
+                actions=[
+                    vm.Action(
+                        function=export_data(file_format="xlsx"),
+                    )
+                ],
+            ),
+        ],
+        controls=[
+            vm.Filter(column="species", selector=vm.Dropdown(title="Species")),
+            vm.Parameter(
+                targets=["1scatter #- chart.x"],
+                selector=vm.RadioItems(
+                    value="sepal_length", options=["sepal_length", "petal_length", "sepal_width", "petal_width"]
+                ),
+            ),
+        ],
+    )
+
+    return page
+
+
 dashboard = vm.Dashboard(
     pages=[
+        added_page(),
+        added_page_2(),
         create_home_page(),
         create_variable_analysis(),
         create_relation_analysis(),
@@ -535,7 +636,11 @@ dashboard = vm.Dashboard(
                     pages=["Variable Analysis", "Relationship Analysis", "Benchmark Analysis"],
                     icon="Stacked Bar Chart",
                 ),
-                vm.NavLink(label="Summary", pages=["Continent Summary"], icon="Globe"),
+                vm.NavLink(
+                    label="Summary",
+                    pages=["Continent Summary", "added_page", "added_page_2"],
+                    icon="Globe",
+                ),
             ]
         ),
     ),

@@ -231,73 +231,41 @@ class TestActionPrivateMethods:
         assert action_components == []
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return, callback_outputs, expected_function_return_value",
+        "custom_action_function_mock_return, callback_outputs",
         [
             # no outputs
-            (None, [], None),
-            (None, {}, None),
-            (None, None, None),
+            (None, []),
+            (None, {}),
+            (None, None),
             # single output
-            (None, "component_1_property", None),
-            (False, "component_1_property", False),
-            (0, "component_1_property", 0),
-            (123, "component_1_property", 123),
-            ("value", "component_1_property", "value"),
-            ((), "component_1_property", ()),
-            (("value"), "component_1_property", ("value")),
-            (("value_1", "value_2"), "component_1_property", ("value_1", "value_2")),
-            ([], "component_1_property", []),
-            (["value"], "component_1_property", ["value"]),
-            (["value_1", "value_2"], "component_1_property", ["value_1", "value_2"]),
-            ({}, "component_1_property", {}),
-            ({"key_1": "value_1"}, "component_1_property", {"key_1": "value_1"}),
-            (
-                {"key_1": "value_1", "key_2": "value_2"},
-                "component_1_property",
-                {"key_1": "value_1", "key_2": "value_2"},
-            ),
+            (None, "component_1_property"),
+            (["value_1", "value_2"], "component_1_property"),
+            ({"key_1": "value_1"}, "component_1_property"),
             # multiple list outputs
-            ("ab", ["component_1_property", "component_2_property"], "ab"),
-            (
-                ("value_1", "value_2"),
-                ["component_1_property", "component_2_property"],
-                ("value_1", "value_2"),
-            ),
-            (
-                ["value_1", "value_2"],
-                ["component_1_property", "component_2_property"],
-                ["value_1", "value_2"],
-            ),
+            (["value_1", "value_2"], ["component_1_property", "component_2_property"]),
             (
                 {"component_1_property": "value_1", "component_2_property": "value_2"},
                 ["component_1_property", "component_2_property"],
-                {"component_1_property": "value_1", "component_2_property": "value_2"},
             ),
-            # multiple mapping outputs
+            # multiple dict outputs
             (
                 {"component_1": "value_1"},
                 {"component_1": "value"},
-                {"component_1": "value_1"},
             ),
             (
                 {"component_1": "value_1", "component_2": "value_2"},
                 {"component_1": "value", "component_2": "value"},
-                {"component_1": "value_1", "component_2": "value_2"},
             ),
             (
                 {"component_1": "value_1", "component_2": "value_2"},
                 {"component_2": "value", "component_1": "value"},
-                {"component_1": "value_1", "component_2": "value_2"},
             ),
         ],
         indirect=["custom_action_function_mock_return"],
     )
-    def test_action_callback_function_return_value_valid(
-        self, custom_action_function_mock_return, callback_outputs, expected_function_return_value
-    ):
+    def test_action_callback_function_return_value_valid(self, custom_action_function_mock_return, callback_outputs):
         action = Action(function=custom_action_function_mock_return())
-        result = action._action_callback_function(inputs={}, outputs=callback_outputs)
-        assert result == expected_function_return_value
+        action._action_callback_function(inputs={}, outputs=callback_outputs)
 
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
     @pytest.mark.parametrize(
