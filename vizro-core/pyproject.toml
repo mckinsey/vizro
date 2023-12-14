@@ -74,6 +74,8 @@ addopts = [
 ]
 filterwarnings = [
     "error",
+    # Ignore this warning here as it comes from pandas until pandas is made compatible with Python 3.12
+    'ignore:.*utcfromtimestamp.*:DeprecationWarning',
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
