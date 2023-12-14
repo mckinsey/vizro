@@ -33,6 +33,8 @@ def dashboard(request, monkeypatch):
     return app["dashboard"]
 
 
+# Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
+@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
 def test_dashboard(dash_duo, dashboard):
     app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/assets").build(dashboard).dash
     dash_duo.start_server(app)
