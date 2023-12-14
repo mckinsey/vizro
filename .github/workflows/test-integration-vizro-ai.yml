@@ -11,9 +11,6 @@ on:
     branches:
       - main
 
-concurrency:
-  group: test-integration-vizro-ai-${{ github.head_ref }}
-
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
