@@ -104,7 +104,7 @@ class Action(VizroBaseModel):
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
-        # TODO: solving custom logging format using logging Handler and custom Filter objects
+        # TODO: solve custom logging format using logging.Handler and custom logging.Filter objects
         logger.debug(f"Action inputs: {str(inputs)[:1000]}")
         logger.debug(f"Action outputs: {str(outputs)[:1000]}")
 
@@ -172,7 +172,7 @@ class Action(VizroBaseModel):
             f"Creating Callback mapping for Action ID {self.id} with "
             f"function name: {self.function._function.__name__}"
         )
-        # TODO: solving custom logging format using logging Handler and custom Filter objects
+        # TODO: solve custom logging format using logging.Handler and custom logging.Filter objects
         logger.debug("---------- INPUTS ----------")
         if isinstance(callback_inputs["external"], dict):
             for name, object in callback_inputs["external"].items():
