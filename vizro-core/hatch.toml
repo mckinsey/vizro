@@ -1,11 +1,11 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11"]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
 [envs.all.overrides]
 matrix.python.features = [
-  {value = "kedro", if = ["3.8", "3.9", "3.10"]}
+  {value = "kedro", if = ["3.8", "3.9", "3.10", "3.11"]}
 ]
 
 [envs.changelog]
