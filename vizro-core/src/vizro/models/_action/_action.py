@@ -1,6 +1,7 @@
 import importlib.util
 import logging
 from collections.abc import Collection, Mapping
+from pprint import pformat
 from typing import Any, Dict, List, Union
 
 from dash import Input, Output, State, callback, html
@@ -101,12 +102,14 @@ class Action(VizroBaseModel):
         inputs: Union[Dict[str, Any], List[Any]],
         outputs: Union[Dict[str, Output], List[Output], Output, None],
     ) -> Any:
-        logger.debug("=============== ACTION ===============")
-        logger.debug(f'Action ID: "{self.id}"')
-        logger.debug(f'Action name: "{self.function._function.__name__}"')
-        # TODO: solve custom logging format using logging.Handler and custom logging.Filter objects
-        logger.debug(f"Action inputs: {str(inputs)[:1000]}")
-        logger.debug(f"Action outputs: {str(outputs)[:1000]}")
+        logger.debug(
+            "===== Running action with id %s, function %s =====",
+            self.id,
+            self.function._function.__name__,
+        )
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Action inputs:\n%s", pformat(inputs, depth=2, width=200))
+            logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
 
         if isinstance(inputs, Mapping):
             return_value = self.function(**inputs)
@@ -169,23 +172,13 @@ class Action(VizroBaseModel):
             callback_outputs["external"] = external_callback_outputs
 
         logger.debug(
-            f"Creating Callback mapping for Action ID {self.id} with "
-            f"function name: {self.function._function.__name__}"
+            "===== Building callback for Action with id %s, function %s =====",
+            self.id,
+            self.function._function.__name__,
         )
-        # TODO: solve custom logging format using logging.Handler and custom logging.Filter objects
-        logger.debug("---------- INPUTS ----------")
-        if isinstance(callback_inputs["external"], dict):
-            for name, object in callback_inputs["external"].items():
-                logger.debug(f"--> {name}: {object}")
-        else:
-            logger.debug(f"--> {callback_inputs['external']}")
-        logger.debug("---------- OUTPUTS ---------")
-        if isinstance(callback_outputs.get("external"), dict):
-            for name, object in callback_outputs["external"].items():
-                logger.debug(f"--> {name}: {object}")
-        else:
-            logger.debug(f"--> {callback_outputs.get('external', 'No outputs')}")
-        logger.debug("============================")
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
+            logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(external: Union[List[Any], Dict[str, Any]], internal: Dict[str, Any]) -> Dict[str, Any]:
