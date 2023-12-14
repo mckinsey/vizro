@@ -281,7 +281,7 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a list or similar but the action's defined outputs are a list.",
+            match="Action function has not returned a list-like object but the action's defined outputs are a list.",
         ):
             action._action_callback_function(
                 inputs={}, outputs=[Output("component_1", "property"), Output("component_2", "property")]
@@ -298,7 +298,7 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a dictionary or similar "
+            match="Action function has not returned a dictionary-like object"
             "but the action's defined outputs are a dictionary.",
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})

@@ -124,7 +124,7 @@ class Action(VizroBaseModel):
         elif isinstance(outputs, dict):
             if not isinstance(return_value, Mapping):
                 raise ValueError(
-                    "Action function has not returned a dictionary or similar "
+                    "Action function has not returned a dictionary-like object "
                     "but the action's defined outputs are a dictionary."
                 )
             if set(outputs) != set(return_value):
@@ -135,7 +135,7 @@ class Action(VizroBaseModel):
         elif isinstance(outputs, list):
             if not isinstance(return_value, Collection):
                 raise ValueError(
-                    "Action function has not returned a list or similar but the action's defined outputs are a list."
+                    "Action function has not returned a list-like object but the action's defined outputs are a list."
                 )
             if len(return_value) != len(outputs):
                 raise ValueError(
