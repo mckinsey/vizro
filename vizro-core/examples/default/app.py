@@ -8,21 +8,20 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
+df = px.data.gapminder()
+df_mean = (
+    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
+)
 
-def retrieve_avg_continent_data():
-    """This is function returns gapminder data grouped by continent."""
-    df = px.data.gapminder()
-    mean = (
-        df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
-    )
-    return mean
+df_transformed = df.copy()
+df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
+df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
+df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
+df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
 
 def create_variable_analysis():
     """Function returns a page with gapminder data to do variable analysis."""
-    df_gapminder = px.data.gapminder()
-    df_avg_gapminder = retrieve_avg_continent_data()
-
     page_variable = vm.Page(
         title="Variable Analysis",
         layout=vm.Layout(
@@ -55,7 +54,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_map",
                 figure=px.choropleth(
-                    df_gapminder,
+                    df,
                     locations="iso_alpha",
                     color="lifeExp",
                     hover_name="country",
@@ -84,7 +83,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_boxplot",
                 figure=px.box(
-                    df_gapminder,
+                    df,
                     x="continent",
                     y="lifeExp",
                     color="continent",
@@ -122,7 +121,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_line",
                 figure=px.line(
-                    df_avg_gapminder,
+                    df_mean,
                     y="lifeExp",
                     x="year",
                     color="continent",
@@ -158,7 +157,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_bar",
                 figure=px.bar(
-                    df_avg_gapminder.query("year == 2007"),
+                    df_mean.query("year == 2007"),
                     x="lifeExp",
                     y="continent",
                     orientation="h",
@@ -193,8 +192,6 @@ def create_variable_analysis():
 
 def create_relation_analysis():
     """Function returns a page to perform relation analysis."""
-    df_gapminder = px.data.gapminder()
-
     page_relation_analysis = vm.Page(
         title="Relationship Analysis",
         layout=vm.Layout(
@@ -221,7 +218,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="bar_relation_2007",
                 figure=px.box(
-                    df_gapminder.query("year == 2007"),
+                    df.query("year == 2007"),
                     x="continent",
                     y="lifeExp",
                     color="continent",
@@ -247,7 +244,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="scatter_relation_2007",
                 figure=px.scatter(
-                    df_gapminder.query("year == 2007"),
+                    df.query("year == 2007"),
                     x="gdpPercap",
                     y="lifeExp",
                     size="pop",
@@ -272,7 +269,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="scatter_relation",
                 figure=px.scatter(
-                    df_gapminder,
+                    df,
                     x="gdpPercap",
                     y="lifeExp",
                     animation_frame="year",
@@ -404,40 +401,40 @@ def create_continent_summary():
     return page_summary
 
 
-def create_country_analysis():
+def create_benchmark_analysis():
     """Function returns a page to perform analysis on country level."""
-    df_gapminder = px.data.gapminder()
-
-    df_gapminder_agg = px.data.gapminder()
-    df_gapminder_agg["lifeExp"] = df_gapminder_agg.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-    df_gapminder_agg["gdpPercap"] = df_gapminder_agg.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-    df_gapminder_agg["pop"] = df_gapminder_agg.groupby(by=["continent", "year"])["pop"].transform("sum")
-
-    df_gapminder["data"] = "Country"
-    df_gapminder_agg["data"] = "Continent"
-
-    df_gapminder = pd.concat([df_gapminder_agg, df_gapminder], ignore_index=True)
+    # Apply formatting to table columns
+    columns = [
+        {"id": "country", "name": "country"},
+        {"id": "continent", "name": "continent"},
+        {"id": "lifeExp", "name": "lifeExp", "type": "numeric", "format": {"specifier": ",.1f"}},
+        {"id": "gdpPercap", "name": "gdpPercap", "type": "numeric", "format": {"specifier": "$,.2f"}},
+        {"id": "pop", "name": "pop", "type": "numeric", "format": {"specifier": ",d"}},
+    ]
 
     page_country = vm.Page(
-        title="Country Analysis",
+        title="Benchmark Analysis",
+        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
             vm.Table(
                 id="table_country",
-                title="Table Country",
+                title="Click on a cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",
-                    data_frame=px.data.gapminder(),
+                    columns=columns,
+                    data_frame=df,
+                    style_cell={"textAlign": "left"},
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(
                 id="line_country",
                 figure=px.line(
-                    df_gapminder,
-                    title="Line Country",
+                    df_concat,
+                    title="Country vs. Continent",
                     x="year",
                     y="gdpPercap",
-                    color="data",
+                    color="color",
                     labels={"year": "Year", "data": "Data", "gdpPercap": "GDP per capita"},
                     color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
                     markers=True,
@@ -458,6 +455,12 @@ def create_country_analysis():
         controls=[
             vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
             vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
+            vm.Parameter(
+                targets=["line_country.y"],
+                selector=vm.Dropdown(
+                    options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose y-axis"
+                ),
+            ),
         ],
     )
     return page_country
@@ -503,11 +506,12 @@ def create_home_page():
                 text="""
                     ![](assets/images/icons/content/features.svg#icon-top)
 
-                    ### Country Analysis
+                    ### Benchmark Analysis
 
-                    Discovering how the metrics differ for each country and export data for further investigation.
+                    Discovering how the metrics differ for each country compared to the continent average
+                    and export data for further investigation.
                 """,
-                href="/country-analysis",
+                href="/benchmark-analysis",
             ),
         ],
     )
@@ -520,14 +524,20 @@ dashboard = vm.Dashboard(
         create_variable_analysis(),
         create_relation_analysis(),
         create_continent_summary(),
-        create_country_analysis(),
+        create_benchmark_analysis(),
     ],
     navigation=vm.Navigation(
-        pages={
-            "Analysis": ["Homepage", "Variable Analysis", "Relationship Analysis", "Country Analysis"],
-            "Summary": ["Continent Summary"],
-        },
-        nav_selector=vm.NavBar(),
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Homepage", pages=["Homepage"], icon="Home"),
+                vm.NavLink(
+                    label="Analysis",
+                    pages=["Variable Analysis", "Relationship Analysis", "Benchmark Analysis"],
+                    icon="Stacked Bar Chart",
+                ),
+                vm.NavLink(label="Summary", pages=["Continent Summary"], icon="Globe"),
+            ]
+        ),
     ),
 )
 
