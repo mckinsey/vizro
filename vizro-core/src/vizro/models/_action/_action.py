@@ -129,8 +129,8 @@ class Action(VizroBaseModel):
                 )
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value ({set(return_value) or {}}) "
-                    f"do not match the action's defined outputs ({set(outputs) or {}})."
+                    f"Keys of action's returned value {set(return_value) or {}} "
+                    f"do not match the action's defined outputs {set(outputs) or {}})."
                 )
         elif isinstance(outputs, list):
             if not isinstance(return_value, Collection):
@@ -139,8 +139,8 @@ class Action(VizroBaseModel):
                 )
             if len(return_value) != len(outputs):
                 raise ValueError(
-                    f"Number of action's returned elements ({len(return_value)}) does not match the number"
-                    f" of action's defined outputs ({len(outputs)})."
+                    f"Number of action's returned elements {len(return_value)} does not match the number"
+                    f" of action's defined outputs {len(outputs)}."
                 )
 
         # If no error has been raised then the return_value is good and is returned as it is.

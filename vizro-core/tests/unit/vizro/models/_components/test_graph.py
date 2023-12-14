@@ -127,8 +127,8 @@ class TestDunderMethodsGraph:
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
 
-    def test_set_action_via_validator(self, standard_px_chart, test_action_function):
-        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
+        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
         actions_chain = graph.actions[0]
         assert actions_chain.trigger.component_property == "clickData"
 
