@@ -4,6 +4,7 @@ import json
 import sys
 
 import dash
+import pandas as pd
 import plotly
 import pytest
 from dash import html
@@ -13,8 +14,11 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
-
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.actions import export_data
+from vizro.managers import model_manager
 from vizro.models._action._action import Action
 from vizro.models.types import capture
 
@@ -51,6 +55,11 @@ def custom_action_build_expected():
         id="action_test_action_model_components_div",
         hidden=True,
     )
+
+
+@pytest.fixture
+def predefined_action_build_expected():
+    return html.Div(children=[], id="filter_action_test_filter_action_model_components_div", hidden=True)
 
 
 class TestActionInstantiation:
@@ -142,6 +151,18 @@ class TestActionInstantiation:
             Action(function=export_data(file_format="xlsx"))
 
 
+@pytest.fixture
+def managers_one_page_without_graphs_one_button():
+    """Instantiates a simple model_manager and data_manager with a page, and no graphs."""
+    vm.Page(
+        id="test_page",
+        title="Test page",
+        components=[vm.Graph(figure=px.scatter(data_frame=pd.DataFrame(columns=["A"]), x="A", y="A"))],
+        controls=[vm.Filter(id="test_filter", column="A")],
+    )
+    Vizro._pre_build()
+
+
 class TestActionBuild:
     """Tests action build method."""
 
@@ -149,6 +170,13 @@ class TestActionBuild:
         action = Action(id="action_test", function=test_action_function)
         result = json.loads(json.dumps(action.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(custom_action_build_expected, cls=plotly.utils.PlotlyJSONEncoder))
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
+    def test_predefined_export_data_action_build(self, predefined_action_build_expected):
+        predefined_filter_action = model_manager["test_page"].controls[0].selector.actions[0].actions[0]
+        result = json.loads(json.dumps(predefined_filter_action.build(), cls=plotly.utils.PlotlyJSONEncoder))
+        expected = json.loads(json.dumps(predefined_action_build_expected, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
 
 

@@ -16,7 +16,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
-logger = logging.getLogger(__name__, )
+logger = logging.getLogger(__name__)
 
 
 class Action(VizroBaseModel):
@@ -180,11 +180,11 @@ class Action(VizroBaseModel):
         else:
             logger.debug(f"--> {callback_inputs['external']}")
         logger.debug("---------- OUTPUTS ---------")
-        if isinstance(callback_outputs["external"], dict):
+        if isinstance(callback_outputs.get("external"), dict):
             for name, object in callback_outputs["external"].items():
                 logger.debug(f"--> {name}: {object}")
         else:
-            logger.debug(f"--> {callback_outputs['external']}")
+            logger.debug(f"--> {callback_outputs.get('external', 'No outputs')}")
         logger.debug("============================")
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
