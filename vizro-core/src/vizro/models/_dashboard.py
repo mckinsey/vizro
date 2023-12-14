@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, List, Literal
 
 import dash
@@ -75,6 +76,7 @@ class Dashboard(VizroBaseModel):
                 order=order,
                 layout=partial(self._make_page_layout, page),
                 description=page.description,
+                image=page.image if page.image else self._infer_image("app") or self._infer_image("logo"),
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
@@ -157,3 +159,11 @@ class Dashboard(VizroBaseModel):
             ],
             className="page_error_container",
         )
+
+    def _infer_image(self, basename: str):
+        valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
+        assets_folder = Path(dash.get_app().config.assets_folder)
+        if assets_folder.is_dir():
+            for path in Path(assets_folder).rglob(f"{basename}.*"):
+                if path.suffix in valid_extensions:
+                    return str(path.relative_to(assets_folder))
