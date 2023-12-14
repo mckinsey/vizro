@@ -4,7 +4,6 @@ from collections.abc import Collection, Mapping
 from typing import Any, Dict, List, Union
 
 from dash import Input, Output, State, callback, html
-from dash.dependencies import DashDependency
 
 try:
     from pydantic.v1 import Field, validator
@@ -17,7 +16,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__, )
 
 
 class Action(VizroBaseModel):
@@ -105,9 +104,9 @@ class Action(VizroBaseModel):
         logger.debug("=============== ACTION ===============")
         logger.debug(f'Action ID: "{self.id}"')
         logger.debug(f'Action name: "{self.function._function.__name__}"')
-        # PP: Trim logs when longer than N characters
-        logger.debug(f"Action inputs: {inputs}")
-        logger.debug(f"Action outputs: {outputs}")  # AM: check what these look like
+        # TODO: solving custom logging format using logging Handler and custom Filter objects
+        logger.debug(f"Action inputs: {str(inputs)[:1000]}")
+        logger.debug(f"Action outputs: {str(outputs)[:1000]}")
 
         if isinstance(inputs, Mapping):
             return_value = self.function(**inputs)
@@ -173,12 +172,19 @@ class Action(VizroBaseModel):
             f"Creating Callback mapping for Action ID {self.id} with "
             f"function name: {self.function._function.__name__}"
         )
-        logger.debug("---------- INPUTS ----------")  # AM: fix this
-        # for name, object in callback_inputs["external"].items():
-        #     logger.debug(f"--> {name}: {object}")
+        # TODO: solving custom logging format using logging Handler and custom Filter objects
+        logger.debug("---------- INPUTS ----------")
+        if isinstance(callback_inputs["external"], dict):
+            for name, object in callback_inputs["external"].items():
+                logger.debug(f"--> {name}: {object}")
+        else:
+            logger.debug(f"--> {callback_inputs['external']}")
         logger.debug("---------- OUTPUTS ---------")
-        # for name, object in callback_outputs["external"].items():
-        #     logger.debug(f"--> {name}: {object}")
+        if isinstance(callback_outputs["external"], dict):
+            for name, object in callback_outputs["external"].items():
+                logger.debug(f"--> {name}: {object}")
+        else:
+            logger.debug(f"--> {callback_outputs['external']}")
         logger.debug("============================")
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
