@@ -298,7 +298,7 @@ class TestActionPrivateMethods:
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
             ValueError,
-            match="Action function has not returned a dictionary-like object"
+            match="Action function has not returned a dictionary-like object "
             "but the action's defined outputs are a dictionary.",
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
