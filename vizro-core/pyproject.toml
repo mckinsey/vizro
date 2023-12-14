@@ -71,5 +71,6 @@ addopts = [
   # Allow test files to have the same name in different directories.
   "--import-mode=importlib"
 ]
+filterwarnings = "error"
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
