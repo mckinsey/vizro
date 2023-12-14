@@ -407,6 +407,7 @@ def create_benchmark_analysis():
     columns = [
         {"id": "country", "name": "country"},
         {"id": "continent", "name": "continent"},
+        {"id": "year", "name": "year"},
         {"id": "lifeExp", "name": "lifeExp", "type": "numeric", "format": {"specifier": ",.1f"}},
         {"id": "gdpPercap", "name": "gdpPercap", "type": "numeric", "format": {"specifier": "$,.2f"}},
         {"id": "pop", "name": "pop", "type": "numeric", "format": {"specifier": ",d"}},
@@ -421,9 +422,33 @@ def create_benchmark_analysis():
                 title="Click on a cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",
-                    style_cell_conditional=[{"if": {"column_id": "pop"}, "color": "orange"}],
-                    columns=columns,
                     data_frame=df,
+                    columns=columns,
+                    style_data_conditional=[
+                        {
+                            "if": {"filter_query": "{gdpPercap} < 1045", "column_id": "gdpPercap"},
+                            "backgroundColor": "#ff9222",
+                        },
+                        {
+                            "if": {
+                                "filter_query": "{gdpPercap} >= 1045 && {gdpPercap} <= 4095",
+                                "column_id": "gdpPercap",
+                            },
+                            "backgroundColor": "#de9e75",
+                        },
+                        {
+                            "if": {
+                                "filter_query": "{gdpPercap} > 4095 && {gdpPercap} <= 12695",
+                                "column_id": "gdpPercap",
+                            },
+                            "backgroundColor": "#aaa9ba",
+                        },
+                        {
+                            "if": {"filter_query": "{gdpPercap} > 12695", "column_id": "gdpPercap"},
+                            "backgroundColor": "#00b4ff",
+                        },
+                    ],
+                    sort_action="native",
                     style_cell={"textAlign": "left"},
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
