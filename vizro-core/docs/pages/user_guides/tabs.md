@@ -3,16 +3,18 @@
 This guide show how to effectively utilize tabs to organize and present content within your dashboard.
 
 In the [`Page`][vizro.models.Page] model, you can utilize the `components` argument to incorporate [`Tabs`][vizro.models.Tabs] model.
+The [`Page`][vizro.models.Page] model accepts a `components` argument, where you can enter the [`Tabs`][vizro.models.Tabs] model. This functionality enables you to group various page components (such as `Graphs`, `Buttons`, `Cards` etc.) under different tabs.
 
 ## Creating a Tabs model
 
-`Tabs` model has `tabs` argument that accepts a list of `Container` models. Each `Container` visually corresponds to an individual tab within the tabbed interface.
+The [`Tabs`][vizro.models.Tabs] model has `tabs` argument that accepts a list of [`Container`][vizro.models.Container] models. Each [`Container`][vizro.models.Container] visually corresponds to an individual tab within the tabbed interface.
 
 
 To create and add tabs to your page, do the following steps:
 
-1. Configure your `components`, see our guide on [Containers](containers.md).
-2. Assign the previously configured `components` to the `tabs` argument of the [`Tabs`][vizro.models.Tabs] model. This creates the connection between your page and the organized tab structure.
+1. Add the [`Tabs`][vizro.models.Tabs] model to the `components` argument of the page you are working
+2. Add a list of [`Container`][vizro.models.Container] model to the `tabs` argument of the [`Tabs`][vizro.models.Tabs] model - the length of the list will be the number of tabs
+3. Configure the `components` argument for every [`Container`][vizro.models.Container] model, see also our guide on [Containers](containers.md) - the title of the `Container` models will appear as title of individual tab components
 
 !!! example "Simple tabs"
     === "app.py"
@@ -91,7 +93,3 @@ To create and add tabs to your page, do the following steps:
         [![Page]][Page]
 
     [Page]: ../../assets/user_guides/pages/page_sunburst.png
-
-!!! note
-
-    `title` of the `Container` models will appear as title of individual tab components

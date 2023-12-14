@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Tabs(VizroBaseModel):
-    """Tabs component. [`Tabs`][vizro.models.Tabs].
+    """Component to separate content on a [`Page`][vizro.models.Page].
 
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.

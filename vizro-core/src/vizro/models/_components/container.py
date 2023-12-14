@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
-    """Container component. [`Container`][vizro.models.Container].
+    """Component to organize content on [`Page`][vizro.models.Page] or in [`Tabs`][vizro.models.Tabs].
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.

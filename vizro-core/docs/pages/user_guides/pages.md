@@ -22,7 +22,7 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 To create and add a page to your dashboard, do the following steps:
 
 1. Provide a `title` to your [`Page`][vizro.models.Page]
-2. Configure your `components`, see our guide on [Charts/Components](components.md)
+2. Configure your `components`, see our guides on the various options here (e.g. [Graphs](graph.md), [Tables](table.md), [Cards & Buttons](components.md)).
 3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
 
