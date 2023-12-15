@@ -11,7 +11,7 @@ matrix.python.features = ["kedro"]
 # exception, so it can't be filtered out by pytest's filterwarnings. Instead we need
 # to modify sys.warnoptions upfront so that Kedro does not convert the warning to an
 # exception.
-PYTHONWARNINGS = "ignore::KedroPythonVersionWarning"
+PYTHONWARNINGS = "ignore::Kedro is not yet fully compatible"
 
 [envs.changelog]
 dependencies = ["scriv"]
