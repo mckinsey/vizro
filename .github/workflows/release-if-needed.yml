@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - "main"
 
 env:
   PYTHON_VERSION: "3.11"
@@ -69,64 +66,64 @@ jobs:
           python tools/extract_release_notes.py \
           "${{needs.check-version.outputs.package_name}}" \
           "${{needs.check-version.outputs.package_version}} — $formatted_date"
-  #     - name: Tag main and create release on github
-  #       run: |
-  #         ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
-  #         ${{needs.check-version.outputs.package_name}} \
-  #         ${{needs.check-version.outputs.package_version}} release_body.txt
-  #     - name: Build package
-  #       run: |
-  #         cd "${{ needs.check-version.outputs.package_name }}"
-  #         hatch build
-  #     - name: Set PyPI token
-  #       run: |
-  #         if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
-  #           echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
-  #         elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
-  #           echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
-  #         fi
-  #     - name: Publish distribution 📦 to PyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
-  #       with:
-  #         packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
-  #         password: ${{ env.PYPI_TOKEN }}
-  #     - name: Check correct package uploaded to PyPI
-  #       run: |
-  #         cd "${{ needs.check-version.outputs.package_name }}/dist"
-  #         local=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
-  #         cd ..
-  #         pip download ${{ needs.check-version.outputs.package_name }}==${{ needs.check-version.outputs.package_version }} -d . --no-deps --timeout 300
-  #         pypi=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
-  #         if [[ $local = $pypi ]]; then echo "md5 hash is the same"; else echo "md5 hash is not the same"; exit 1; fi
+      - name: Tag main and create release on github
+        run: |
+          ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release_body.txt
+      - name: Build package
+        run: |
+          cd "${{ needs.check-version.outputs.package_name }}"
+          hatch build
+      - name: Set PyPI token
+        run: |
+          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
+          elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
+          fi
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ needs.check-version.outputs.package_name }}/dist
+          password: ${{ env.PYPI_TOKEN }}
+      - name: Check correct package uploaded to PyPI
+        run: |
+          cd "${{ needs.check-version.outputs.package_name }}/dist"
+          local=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
+          cd ..
+          pip download ${{ needs.check-version.outputs.package_name }}==${{ needs.check-version.outputs.package_version }} -d . --no-deps --timeout 300
+          pypi=$(md5sum ${{ needs.check-version.outputs.dist_package_name }}-${{ needs.check-version.outputs.package_version }}-py3-none-any.whl)
+          if [[ $local = $pypi ]]; then echo "md5 hash is the same"; else echo "md5 hash is not the same"; exit 1; fi
 
-  # version-bump:
-  #   needs: [check-version, build-publish]
-  #   if: |
-  #     needs.check-version.outputs.new_release == 'True'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ env.PYTHON_VERSION }}
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install hatch
-  #     - name: Bump version to next patch
-  #       run: |
-  #         formatted_date=$(date +"%Y-%m-%d/%H-%M-%S")
-  #         cd "${{ needs.check-version.outputs.package_name }}"
-  #         git checkout -b "release/version_bump_next_minor/${formatted_date}"
-  #         hatch version patch,dev
-  #         hatch run changelog:add
-  #         hatch run schema
-  #         git config user.email "145135826+vizro-svc@users.noreply.github.com"
-  #         git config user.name "Vizro Team"
-  #         git add -A
-  #         git commit -m "version bump"
-  #         git push --set-upstream origin release/version_bump_next_minor/${formatted_date}
-  #         ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
-  #         ${{needs.check-version.outputs.package_name}} \
-  #         ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor/${formatted_date}
+  version-bump:
+    needs: [check-version, build-publish]
+    if: |
+      needs.check-version.outputs.new_release == 'True'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Bump version to next patch
+        run: |
+          formatted_date=$(date +"%Y-%m-%d/%H-%M-%S")
+          cd "${{ needs.check-version.outputs.package_name }}"
+          git checkout -b "release/version_bump_next_minor/${formatted_date}"
+          hatch version patch,dev
+          hatch run changelog:add
+          hatch run schema
+          git config user.email "145135826+vizro-svc@users.noreply.github.com"
+          git config user.name "Vizro Team"
+          git add -A
+          git commit -m "version bump"
+          git push --set-upstream origin release/version_bump_next_minor/${formatted_date}
+          ./../tools/version-bump.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
+          ${{needs.check-version.outputs.package_name}} \
+          ${{needs.check-version.outputs.package_version}} release/version_bump_next_minor/${formatted_date}
