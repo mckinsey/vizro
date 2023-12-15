@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -46,46 +44,48 @@ def callback_context_on_page_load(request):
     continent_filter, pop, y, x, template = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent_filter,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent_filter,
+                        str_id="continent_filter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop,
+                        str_id="pop_filter",
+                        triggered=False,
+                    ),
+                ],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
+                    ),
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=template == "vizro_dark",
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop,
-                    str_id="pop_filter",
-                    triggered=False,
-                ),
-            ],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
-                    triggered=False,
-                ),
-                CallbackTriggerDict(
-                    id="x_parameter",
-                    property="value",
-                    value=x,
-                    str_id="x_parameter",
-                    triggered=False,
-                ),
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=template == "vizro_dark",
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -154,14 +154,12 @@ class TestOnPageLoad:
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
 
         box_chart.layout.template = template
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-                "box_chart": box_chart,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
+            "box_chart": box_chart,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -218,11 +216,9 @@ class TestOnPageLoad:
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-                "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
+            "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
