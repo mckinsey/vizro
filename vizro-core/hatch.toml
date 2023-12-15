@@ -9,7 +9,7 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 # exception, so it can't be filtered out by pytest's filterwarnings. Instead we need
 # to modify sys.warnoptions upfront so that Kedro does not convert the warning to an
 # exception.
-PYTHONWARNINGS = "ignore:Kedro is not yet fully compatible"
+PYTHONWARNINGS = 'ignore:Kedro is not yet fully compatible with this Python version'
 
 [envs.changelog]
 dependencies = ["scriv"]
