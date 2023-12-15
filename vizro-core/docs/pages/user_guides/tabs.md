@@ -2,8 +2,7 @@
 
 This guide show how to effectively utilize tabs to organize and present content within your dashboard.
 
-In the [`Page`][vizro.models.Page] model, you can utilize the `components` argument to incorporate [`Tabs`][vizro.models.Tabs] model.
-The [`Page`][vizro.models.Page] model accepts a `components` argument, where you can enter the [`Tabs`][vizro.models.Tabs] model. This functionality enables you to group various page components (such as `Graphs`, `Buttons`, `Cards` etc.) under different tabs.
+The [`Page`][vizro.models.Page] model accepts a `components` argument, where you can enter the [`Tabs`][vizro.models.Tabs] model. This functionality enables you to group various page components (such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button]) under different tabs.
 
 ## Creating a Tabs model
 

@@ -27,6 +27,7 @@ class Container(VizroBaseModel):
     type: Literal["container"] = "container"
     components: List[ComponentType]
     title: Optional[str]
+    # title: Optional[str] = Field(..., description="Title to be displayed.")
     layout: Optional[Layout] = None
     # controls to be added later
 
