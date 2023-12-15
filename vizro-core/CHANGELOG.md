@@ -11,6 +11,34 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.7'></a>
+
+# 0.1.7 — 2023-12-15
+
+## Highlights ✨
+
+- Release of custom actions. Visit the [user guide on custom actions](https://vizro.readthedocs.io/en/stable/pages/user_guides/custom_actions/) to learn more. ([#178](https://github.com/mckinsey/vizro/pull/178))
+
+- Add `NavBar` and `NavLink` models to enable a hierarchical navigation bar with icons. Visit the [user guide on navigation](https://vizro.readthedocs.io/en/stable/pages/user_guides/navigation/) to learn more. ([#70](https://github.com/mckinsey/vizro/pull/70))
+
+## Added
+
+- Enable tooltips for `NavLink`. ([#186](https://github.com/mckinsey/vizro/pull/186))
+
+## Changed
+
+- Change the persistence of client-side data to `session` rather than `local` ([#182](https://github.com/mckinsey/vizro/pull/182))
+
+- Bump dash lower bound to 2.14.1 ([#203](https://github.com/mckinsey/vizro/pull/203))
+
+## Fixed
+
+- Remove graph flickering on page load with Vizro light theme ([#166](https://github.com/mckinsey/vizro/pull/166))
+
+- Fixed `vm.Slider` and `vm.RangeSlider` to work with incorrect text input. ([#173](https://github.com/mckinsey/vizro/pull/173))
+
+- Remove default font color from global CSS to enable overwrites ([#213](https://github.com/mckinsey/vizro/pull/213))
+
 <a id='changelog-0.1.6'></a>
 
 # 0.1.6 — 2023-11-09
