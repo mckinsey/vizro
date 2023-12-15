@@ -4,10 +4,9 @@ from pathlib import Path
 
 import pytest
 import yaml
+from kedro.io import DataCatalog
 
-from kedro.io import DataCatalog  # noqa: E402
-
-from vizro.integrations.kedro import datasets_from_catalog  # noqa: E402
+from vizro.integrations.kedro import datasets_from_catalog
 
 
 @pytest.fixture
