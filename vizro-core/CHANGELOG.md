@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Enable tooltips for `NavLink`. ([#186](https://github.com/mckinsey/vizro/pull/186))
+- Enable tooltips for `NavLink` ([#186](https://github.com/mckinsey/vizro/pull/186))
 
 ## Changed
 
@@ -35,7 +35,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Remove graph flickering on page load with Vizro light theme ([#166](https://github.com/mckinsey/vizro/pull/166))
 
-- Fixed `vm.Slider` and `vm.RangeSlider` to work with incorrect text input. ([#173](https://github.com/mckinsey/vizro/pull/173))
+- Fix `vm.Slider` and `vm.RangeSlider` to work with incorrect text input ([#173](https://github.com/mckinsey/vizro/pull/173))
 
 - Remove default font color from global CSS to enable overwrites ([#213](https://github.com/mckinsey/vizro/pull/213))
 
