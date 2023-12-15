@@ -204,8 +204,8 @@ class TestSliderInstantiation:
 
         assert slider.title == str(title)
 
-    def test_set_action_via_validator(self, test_action_function):
-        slider = vm.Slider(actions=[vm.Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        slider = vm.Slider(actions=[vm.Action(function=identity_action_function())])
         actions_chain = slider.actions[0]
 
         assert actions_chain.trigger.component_property == "value"

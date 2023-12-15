@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -56,24 +54,26 @@ def callback_context_parameter_y(request):
     y = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    )
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -86,24 +86,26 @@ def callback_context_parameter_hover_data(request):
     hover_data = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="hover_data_parameter",
-                    property="value",
-                    value=hover_data,
-                    str_id="hover_data_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="hover_data_parameter",
+                        property="value",
+                        value=hover_data,
+                        str_id="hover_data_parameter",
+                        triggered=False,
+                    )
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -116,31 +118,33 @@ def callback_context_parameter_y_and_x(request):
     y, x = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [],
-            "parameters": [
-                CallbackTriggerDict(
-                    id="y_parameter",
-                    property="value",
-                    value=y,
-                    str_id="y_parameter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
+                    ),
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="x_parameter",
-                    property="value",
-                    value=x,
-                    str_id="x_parameter",
-                    triggered=False,
-                ),
-            ],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -172,13 +176,11 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_y,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_y,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
@@ -212,13 +214,11 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_hover_data,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_hover_data,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
@@ -244,14 +244,12 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_y,
-                "box_chart": target_box_parameter_y,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_y,
+            "box_chart": target_box_parameter_y,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x",
@@ -282,13 +280,11 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_y_and_x,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_y_and_x,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -323,14 +319,12 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_y_and_x,
-                "box_chart": target_box_parameter_y_and_x,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_y_and_x,
+            "box_chart": target_box_parameter_y_and_x,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
@@ -365,19 +359,15 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_parameter_y_and_x,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_parameter_y_and_x,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
-        expected = namedtuple("Outputs", ["box_chart"])(
-            **{
-                "box_chart": target_box_parameter_y_and_x,
-            }
-        )
+        expected = {
+            "box_chart": target_box_parameter_y_and_x,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
