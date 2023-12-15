@@ -14,9 +14,20 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
+    """Component to organize content on [`Page`][vizro.models.Page] or in [`Tabs`][vizro.models.Tabs].
+
+    Args:
+        type (Literal["container"]): Defaults to `"container"`.
+        components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
+            has to be provided.
+        title (str): Title to be displayed.
+        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+    """
+
     type: Literal["container"] = "container"
     components: List[ComponentType]
     title: Optional[str]
+    # title: Optional[str] = Field(..., description="Title to be displayed.")
     layout: Optional[Layout] = None
     # controls to be added later
 
