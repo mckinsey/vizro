@@ -46,3 +46,6 @@ skip_covered = true
 branch = true
 parallel = true
 source_pkgs = ["vizro_ai"]
+
+[tool.pytest.ini_options]
+filterwarnings = "error"
