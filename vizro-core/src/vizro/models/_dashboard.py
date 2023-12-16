@@ -76,7 +76,9 @@ class Dashboard(VizroBaseModel):
                 order=order,
                 layout=partial(self._make_page_layout, page),
                 description=page.description,
-                image=page.image if page.image else self._infer_image("app") or self._infer_image("logo"),
+                image=self._infer_image("app")
+                or self._infer_image("logo")
+                or get_relative_path(f"/{STATIC_URL_PREFIX}/images/app.svg"),
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
