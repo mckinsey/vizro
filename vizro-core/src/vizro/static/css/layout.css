@@ -179,13 +179,3 @@ div.dashboard_container .custom-tooltip {
   border-right: 1px solid var(--border-subtle-alpha-01);
   gap: 40px;
 }
-
-.logo {
-  display: flex;
-  justify-content: center;
-}
-
-.logo-img {
-  width: 32px;
-  height: 32px;
-}

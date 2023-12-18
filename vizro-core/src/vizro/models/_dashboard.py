@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, TypedDict, cast
+from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 class PageDivs(TypedDict):
     """Stores all relevant containers for simplified access when re-arranging containers on page."""
 
-    logo: html.Div
     dashboard_title: html.Div
     theme_switch: daq.BooleanSwitch
     page_title: html.H2
@@ -111,13 +110,6 @@ class Dashboard(VizroBaseModel):
     # LN: Better to split up? So it's easier for people to re-arrange and just get the relevant containers
     def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
-        # TODO: Implement proper way of automatically pulling file called logo in assets folder (should support svg, png and it shouldn't matter where it's placed in the assets folder)
-        logo = (
-            html.Div([html.Img(src=get_asset_url("logo.svg"), className="logo-img")], className="logo", id="logo")
-            # TODO: Implement condition check if image can be found/not found
-            if True
-            else html.Div(id="logo", hidden=True)
-        )
         dashboard_title = (
             html.Div(children=[html.H2(self.title)], id="dashboard-title")
             if self.title
@@ -139,7 +131,6 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control_panel_outer"]
         components = page_content["component_container_outer"]
         return {
-            "logo": logo,
             "dashboard_title": dashboard_title,
             "theme_switch": theme_switch,
             "page_title": page_title,
@@ -153,11 +144,6 @@ class Dashboard(VizroBaseModel):
     def _arrange_left_side(self, page_divs: PageDivs):
         left_header_divs = [page_divs["dashboard_title"]]
         left_sidebar_divs = [page_divs["nav_bar"]]
-
-        if getattr(page_divs["nav_bar"], "hidden", False) is False:
-            left_sidebar_divs.insert(0, page_divs["logo"])
-        else:
-            left_header_divs.insert(0, page_divs["logo"])
 
         # LN: Shall we actually just provide the same className and id to the divs to simplify things?
         left_header = (
