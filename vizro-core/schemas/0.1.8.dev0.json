@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.",
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.",
   "type": "object",
   "properties": {
     "id": {
@@ -51,22 +51,22 @@
           "title": "Inputs",
           "description": "Inputs in the form `<component_id>.<property>` passed to the action function.",
           "default": [],
-          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "pattern": "^[^.]+[.][^.]+$",
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+            "pattern": "^[^.]+[.][^.]+$"
           }
         },
         "outputs": {
           "title": "Outputs",
           "description": "Outputs in the form `<component_id>.<property>` changed by the action function.",
           "default": [],
-          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "pattern": "^[^.]+[.][^.]+$",
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+            "pattern": "^[^.]+[.][^.]+$"
           }
         }
       },
@@ -680,7 +680,7 @@
     },
     "Filter": {
       "title": "Filter",
-      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -711,7 +711,18 @@
         },
         "selector": {
           "title": "Selector",
-          "anyOf": [
+          "description": "Selectors to be used inside a control.",
+          "discriminator": {
+            "propertyName": "type",
+            "mapping": {
+              "checklist": "#/definitions/Checklist",
+              "dropdown": "#/definitions/Dropdown",
+              "radio_items": "#/definitions/RadioItems",
+              "range_slider": "#/definitions/RangeSlider",
+              "slider": "#/definitions/Slider"
+            }
+          },
+          "oneOf": [
             {
               "$ref": "#/definitions/Checklist"
             },
@@ -834,7 +845,7 @@
     },
     "Page": {
       "title": "Page",
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
       "type": "object",
       "properties": {
         "id": {
@@ -954,7 +965,7 @@
     },
     "NavLink": {
       "title": "NavLink",
-      "description": "Icon to be used in Navigation Panel of Dashboard.\n\nArgs:\n    ages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).\n        Defaults to `\"\"`.",
+      "description": "Icon to be used in Navigation Bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1041,7 +1052,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (Optional[NavPagesType]): See [`NavPagesType`][vizro.models.types.NavPagesType].\n        Defaults to [].\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {

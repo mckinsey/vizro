@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypedDict, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
 
 import pandas as pd
 
@@ -251,7 +251,7 @@ def _get_modified_page_figures(
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
     targets: Optional[List[ModelID]] = None,
-) -> Tuple[Any, ...]:
+) -> Dict[str, Any]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -265,8 +265,8 @@ def _get_modified_page_figures(
         parameters=ctds_parameters,
     )
 
-    outputs: Dict[ModelID, Any] = {}
+    outputs: Dict[str, Any] = {}
     for target in targets:
         outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
 
-    return namedtuple("Outputs", outputs.keys())(**outputs)
+    return outputs

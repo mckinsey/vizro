@@ -4,10 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
+<!--
 ### Highlights ✨
 
-- Add `NavBar` and `NavLink` models to enable a hierarchical navigation bar with icons. Visit the [user guide on navigation](https://vizro.readthedocs.io/en/stable/pages/user_guides/navigation/) to learn more. ([#70](https://github.com/mckinsey/vizro/pull/70))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Removed
 
@@ -38,9 +40,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Security
 
-- A bullet item for the Security category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
-
--->
+- Bump langchain version to 0.0.329, suggested by snyk ([#204](https://github.com/mckinsey/vizro/pull/204))

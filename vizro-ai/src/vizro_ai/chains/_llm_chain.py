@@ -4,7 +4,7 @@ import re
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
-from langchain import LLMChain
+from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.schema import ChatGeneration, Generation
 from langchain.schema.messages import AIMessage

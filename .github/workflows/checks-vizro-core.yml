@@ -15,9 +15,6 @@ on:
     paths:
       - "vizro-core/**"
 
-concurrency:
-  group: checks-core-${{ github.head_ref }}
-
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1

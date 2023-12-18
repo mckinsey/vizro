@@ -53,16 +53,21 @@ def captured_callable(request):
     [positional_or_keyword_function, keyword_only_function, var_keyword_function],
     indirect=True,
 )
-class TestCall:
-    def test_call_needs_keyword_arguments(self, captured_callable):
-        with pytest.raises(TypeError, match="takes 1 positional argument but 2 were given"):
-            captured_callable(2)
-
+class TestCallKeywordArguments:
     def test_call_provide_required_argument(self, captured_callable):
         assert captured_callable(c=3) == 1 + 2 + 3
 
     def test_call_override_existing_arguments(self, captured_callable):
         assert captured_callable(a=5, b=2, c=6) == 5 + 2 + 6
+
+
+@pytest.mark.parametrize(
+    "captured_callable",
+    [positional_or_keyword_function],
+    indirect=True,
+)
+def test_call_positional_arguments(captured_callable):
+    assert captured_callable(3) == 1 + 2 + 3
 
 
 @pytest.mark.parametrize(
@@ -87,6 +92,16 @@ class TestDunderMethods:
 
 
 @pytest.mark.parametrize(
+    "captured_callable",
+    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
+    indirect=True,
+)
+def test_call_positional_and_keyword_supplied(captured_callable):
+    with pytest.raises(ValueError, match="does not support calling with both positional and keyword arguments"):
+        captured_callable(3, c=4)
+
+
+@pytest.mark.parametrize(
     "captured_callable, expectation",
     [
         (positional_or_keyword_function, pytest.raises(TypeError, match="missing 1 required positional argument: 'c'")),
@@ -105,6 +120,24 @@ class TestCallMissingArgument:
 
         with expectation:
             captured_callable()
+
+
+@pytest.mark.parametrize(
+    "captured_callable, expectation",
+    [
+        (
+            positional_or_keyword_function,
+            pytest.raises(TypeError, match="takes 1 positional arguments but 2 were given"),
+        ),
+        (keyword_only_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
+        (var_keyword_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
+    ],
+    indirect=["captured_callable"],
+)
+class TestCallPositionalArguments:
+    def test_call_positional_arguments_invalid(self, captured_callable, expectation):
+        with expectation:
+            captured_callable(3, 4)
 
 
 @pytest.mark.parametrize(

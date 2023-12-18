@@ -4,8 +4,8 @@ textarea {
 }
 
 textarea:focus {
-  outline: none;
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  outline: none;
 }
 
 hr {

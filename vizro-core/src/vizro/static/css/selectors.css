@@ -1,5 +1,6 @@
 .selector_body_checklist,
 .selector_body_radio_items {
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   font-size: var(--text-size-02);

@@ -71,7 +71,7 @@ class TestNavBarPreBuildMethod:
         nav_bar = vm.NavBar(pages=pages_as_dict, items=nav_links)
         nav_bar.pre_build()
         assert nav_bar.items == nav_links
-        assert nav_bar.items[0].icon == "Home"
+        assert nav_bar.items[0].icon == "home"
         assert nav_bar.items[1].icon == "filter_2"
 
 

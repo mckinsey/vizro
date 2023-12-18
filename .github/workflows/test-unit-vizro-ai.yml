@@ -11,9 +11,6 @@ on:
     branches:
       - main
 
-concurrency:
-  group: test-unit-${{ github.head_ref }}
-
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
@@ -33,6 +30,8 @@ jobs:
             hatch-env: all.py3.10
           - python-version: "3.11"
             hatch-env: all.py3.11
+          - python-version: "3.12"
+            hatch-env: all.py3.12
           - python-version: "3.11"
             hatch-env: lower-bounds
             label: lower bounds
