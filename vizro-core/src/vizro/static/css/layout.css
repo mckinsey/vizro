@@ -5,7 +5,7 @@
   width: 100vw;
 }
 
-.left-main {
+#left-main {
   align-items: flex-start;
   background: var(--surfaces-bg-02);
   display: flex;
@@ -41,14 +41,14 @@
   justify-content: space-between;
 }
 
-.left-header {
+#left-header {
   display: flex;
   flex-direction: row;
   width: 100%;
   gap: 8px;
 }
 
-.left-header:not(:empty) {
+#left-header:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
@@ -167,7 +167,7 @@ div.dashboard_container .custom-tooltip {
   white-space: pre-wrap;
 }
 
-.left-sidebar {
+#left-sidebar {
   display: flex;
   flex-direction: column;
   width: 64px;
