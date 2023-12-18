@@ -28,16 +28,14 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # TODO: Check outputs of these and consolidate
-# TODO: Check if we can fix "if any hidden" check with None
 # TODO: Use IDs instead of className and remove className
-# TODO: Create helper function for getattr(element, "hidden", False)
 
 
 def _get_parent_container(children: List[html.Div], parent_id: str):
     """Hides the parent container if all the children containers are either hidden or None."""
     return (
         html.Div(children=children, id=parent_id)
-        if any(not getattr(div, "hidden", False) for div in children)
+        if all(getattr(div, "hidden", False) or None for div in children)
         else html.Div(id=parent_id, hidden=True)
     )
 
