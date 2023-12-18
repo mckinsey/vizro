@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -117,6 +118,12 @@ class Dashboard(VizroBaseModel):
             Output("dashboard_container_outer", "className"),
             Input("theme_selector", "checked"),
         )
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+            [Output("collapse", "is_open"), Output("collapse_icon", "style"), Output("collapse_tooltip", "label")],
+            Input("collapse_icon", "n_clicks"),
+            State("collapse", "is_open"),
+        )
 
         return html.Div(
             id="dashboard_container_outer",
@@ -159,6 +166,29 @@ class Dashboard(VizroBaseModel):
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
+        collapsable_icon = html.Div(
+            children=[
+                dmc.Tooltip(
+                    id="collapse_tooltip",
+                    label="Hide Menu",
+                    offset=20,
+                    withArrow=True,
+                    children=[
+                        html.Span(
+                            "keyboard_double_arrow_right",
+                            className="material-symbols-outlined",
+                            id="collapse_icon",
+                        )
+                    ],
+                    position="right-end",
+                    arrowOffset=10,
+                    style={"marginTop": "12px", "marginLeft": "8px"}
+
+                )
+            ],
+            className="collapsable-div",
+        )
+
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
@@ -175,7 +205,14 @@ class Dashboard(VizroBaseModel):
         right_main = page_divs["components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page-container")
+        collapsable_left_side = dbc.Collapse(
+            children=[left_side],
+            id="collapse",
+            is_open=True,
+            dimension="width",
+            navbar=True,
+        )
+        return html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)

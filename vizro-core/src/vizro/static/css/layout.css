@@ -20,6 +20,7 @@
   background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
+  height: 100%;
 }
 
 #right-side {
@@ -174,4 +175,26 @@ div.dashboard_container .custom-tooltip {
 
 #page-container div[hidden] {
   display: none;
+}
+
+.collapsable-div {
+  background-color: var(--surfaces-bg-02);
+  height: 100%;
+  padding-top: 44px;
+  width: 12px;
+  padding-right: 12px;
+}
+
+
+#collapse_icon.material-symbols-outlined {
+  z-index: 1;
+  position: absolute;
+  background-color: var(--surfaces-bg-card);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+#collapse_icon.material-symbols-outlined:hover {
+  color: var(--text-active);
 }
