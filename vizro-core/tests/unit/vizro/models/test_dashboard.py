@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro.models._dashboard import _get_hideable_parent_div
 
 
 @pytest.fixture()
@@ -173,3 +174,26 @@ class TestDashboardBuild:
         result = json.loads(json.dumps(prebuilt_two_page_dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
+
+
+@pytest.mark.parametrize(
+    "children",
+    [
+        [html.Div(hidden=False)],
+        [html.Div(id="children-id")],
+        [html.Div(hidden=True), None, html.Div(hidden=False)],
+        [html.Div(hidden=True), None, html.Div(id="children-id")],
+    ],
+)
+def test_get_hideable_parent_div_visible(children):
+    parent = _get_hideable_parent_div(children=children, parent_id="parent-id")
+    assert parent.id == "parent-id"
+    assert parent.children == children
+    assert getattr(parent, "hidden", False) is False
+
+
+@pytest.mark.parametrize("children", [[html.Div(hidden=True)], [None], [html.Div(hidden=True), None]])
+def test_get_hideable_parent_div_hidden(children):
+    parent = _get_hideable_parent_div(children=children, parent_id="parent-id")
+    assert parent.id == "parent-id"
+    assert getattr(parent, "hidden", False) is True

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 import dash
 import dash_bootstrap_components as dbc
@@ -31,12 +31,12 @@ logger = logging.getLogger(__name__)
 # TODO: Use IDs instead of className and remove className
 
 
-def _get_parent_container(children: List[html.Div], parent_id: str):
+def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] = None):
     """Hides the parent container if all the children containers are either hidden or None."""
     return (
-        html.Div(children=children, id=parent_id)
-        if all(getattr(div, "hidden", False) or None for div in children)
-        else html.Div(id=parent_id, hidden=True)
+        html.Div(id=parent_id, hidden=True)
+        if all(div is None or getattr(div, "hidden", False) for div in children)
+        else html.Div(children=children, id=parent_id)
     )
 
 
@@ -147,13 +147,13 @@ class Dashboard(VizroBaseModel):
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav_bar_outer"]]
         left_main_divs = [
-            _get_parent_container(children=left_header_divs, parent_id="left-header"),
+            _get_hideable_parent_div(children=left_header_divs, parent_id="left-header"),
             page_divs["nav_panel_outer"],
             page_divs["control_panel_outer"],
         ]
 
-        left_sidebar = _get_parent_container(children=left_sidebar_divs, parent_id="left-sidebar")
-        left_main = _get_parent_container(children=left_main_divs, parent_id="left-main")
+        left_sidebar = _get_hideable_parent_div(children=left_sidebar_divs, parent_id="left-sidebar")
+        left_main = _get_hideable_parent_div(children=left_main_divs, parent_id="left-main")
         left_side = html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
 
         right_header = html.Div(
