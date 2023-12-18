@@ -1,7 +1,6 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
-from collections import namedtuple
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from dash import ctx, dcc
 from typing_extensions import Literal
@@ -19,7 +18,7 @@ def export_data(
     targets: Optional[List[ModelID]] = None,
     file_format: Literal["csv", "xlsx"] = "csv",
     **inputs: Dict[str, Any],
-) -> Tuple[Any, ...]:
+) -> Dict[str, Any]:
     """Exports visible data of target charts/components on page after being triggered.
 
     Args:
@@ -47,8 +46,8 @@ def export_data(
 
     data_frames = _get_filtered_data(
         targets=targets,
-        ctds_filters=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
+        ctds_filters=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
     )
 
     outputs = {}
@@ -63,4 +62,4 @@ def export_data(
             writer=writer, filename=f"{target_id}.{file_format}", index=False
         )
 
-    return namedtuple("Outputs", outputs.keys())(**outputs)
+    return outputs

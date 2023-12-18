@@ -12,8 +12,8 @@ def test_trigger():
 
 
 @pytest.fixture
-def test_action(test_action_function):
-    return Action(function=test_action_function)
+def test_action(identity_action_function):
+    return Action(function=identity_action_function())
 
 
 class TestActionsChainInstantiation:
