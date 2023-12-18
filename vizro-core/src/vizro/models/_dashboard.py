@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Literal
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -101,6 +101,13 @@ class Dashboard(VizroBaseModel):
             Input("theme_selector", "on"),
         )
 
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+            Output("collapse", "is_open"),
+            Input("collapse_icon", "n_clicks"),
+            State("collapse", "is_open"),
+        )
+
         return dbc.Container(
             id="dashboard_container_outer",
             children=[
@@ -137,6 +144,10 @@ class Dashboard(VizroBaseModel):
         return html.Div([dashboard_title, theme_switch, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: html.Div):
+        collapsable_icon = html.Div(
+            children=[html.Span("chevron_right", className="material-symbols-outlined", id="collapse_icon")],
+            className="collapsable-div",
+        )
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav_bar_outer"]]
 
@@ -162,8 +173,17 @@ class Dashboard(VizroBaseModel):
         )
         right_main = page_divs["component_container_outer"]
         left_side = html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
+        collapsable_left_side = dbc.Collapse(
+            children=[left_side],
+            id="collapse",
+            is_open=True,
+            dimension="width",
+            navbar=True,
+        )
         right_side = html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+        return html.Div(
+            [collapsable_left_side, collapsable_icon, right_side], className="page_container", id="page_container_outer"
+        )
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
