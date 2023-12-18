@@ -10,7 +10,8 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11"
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
   "pandas",
@@ -48,4 +49,8 @@ parallel = true
 source_pkgs = ["vizro_ai"]
 
 [tool.pytest.ini_options]
-filterwarnings = "error"
+filterwarnings = [
+  "error",
+  # Ignore this warning here as it comes from pandas until pandas is made compatible with Python 3.12
+  'ignore:.*utcfromtimestamp.*:DeprecationWarning'
+]
