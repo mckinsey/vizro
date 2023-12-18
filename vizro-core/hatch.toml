@@ -4,7 +4,7 @@ features = ["kedro"]
 [[envs.all.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
-[envs."all.py3.12".env-vars]
+[envs.all.py3.12.env-vars]
 # Kedro converts warning "not yet fully compatible with this Python version" into an
 # exception, so it can't be filtered out by pytest's filterwarnings. Instead we need
 # to modify sys.warnoptions upfront so that Kedro does not convert the warning to an
