@@ -131,10 +131,7 @@
   display: flex;
   align-items: center;
   background-color: var(--surfaces-bg-02);
-  display: flex;
-  height: 64px;
   justify-content: center;
-  width: 100%;
 }
 
 div.dashboard_container .tooltip-inner {

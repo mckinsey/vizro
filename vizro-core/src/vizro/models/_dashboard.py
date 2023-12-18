@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, TypedDict
+from typing import TYPE_CHECKING, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
@@ -27,8 +27,13 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# TODO: Check outputs of these and consolidate
+# TODO: Check if we can fix "if any hidden" check with None
+# TODO: Use IDs instead of className and remove className
+# TODO: Create helper function for getattr(element, "hidden", False)
 
-class PageDivs(TypedDict):
+
+class PageDivs(html.Div):
     """Stores all relevant containers for simplified access when re-arranging containers on page."""
 
     dashboard_title: html.Div
@@ -107,7 +112,6 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
-    # LN: Better to split up? So it's easier for people to re-arrange and just get the relevant containers
     def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         dashboard_title = (
@@ -130,28 +134,18 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel_outer"]
         components = page_content["component_container_outer"]
-        return {
-            "dashboard_title": dashboard_title,
-            "theme_switch": theme_switch,
-            "page_title": page_title,
-            "nav_bar": nav_bar,
-            "nav_panel": nav_panel,
-            "control_panel": control_panel,
-            "components": components,
-        }
+        return html.Div([dashboard_title, theme_switch, page_title, nav_bar, nav_panel, control_panel, components])
 
-    # LN: Shall we split up into _arrange_left_side and _arrange_right_side or just one function for arrangement?
-    def _arrange_left_side(self, page_divs: PageDivs):
-        left_header_divs = [page_divs["dashboard_title"]]
-        left_sidebar_divs = [page_divs["nav_bar"]]
+    def _arrange_page_divs(self, page_divs: html.Div):
+        left_header_divs = [page_divs["dashboard-title"]]
+        left_sidebar_divs = [page_divs["nav_bar_outer"]]
 
-        # LN: Shall we actually just provide the same className and id to the divs to simplify things?
         left_header = (
             html.Div(children=left_header_divs, className="left-header", id="left-header")
             if any(not getattr(div, "hidden", False) for div in left_header_divs)
             else html.Div(hidden=True, id="left-header")
         )
-        left_main_divs = [left_header, page_divs["nav_panel"], page_divs["control_panel"]]
+        left_main_divs = [left_header, page_divs["nav_panel_outer"], page_divs["control_panel_outer"]]
         left_sidebar = (
             html.Div(children=left_sidebar_divs, className="left-sidebar", id="left-sidebar")
             if any(not getattr(div, "hidden", False) for div in left_sidebar_divs)
@@ -162,18 +156,18 @@ class Dashboard(VizroBaseModel):
             if any(not getattr(div, "hidden", False) for div in left_main_divs)
             else html.Div(hidden=True, id="left-main")
         )
-        return html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
 
-    def _arrange_right_side(self, page_divs: PageDivs):
-        right_header = html.Div(children=[page_divs["page_title"], page_divs["theme_switch"]], className="right-header")
-        right_main = page_divs["components"]
-        return html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
+        right_header = html.Div(
+            children=[page_divs["page_title"], page_divs["theme_selector"]], className="right-header"
+        )
+        right_main = page_divs["component_container_outer"]
+        left_side = html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
+        right_side = html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
+        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
-        left_side = self._arrange_left_side(page_divs=page_divs)
-        right_side = self._arrange_right_side(page_divs=page_divs)
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+        return self._arrange_page_divs(page_divs=page_divs)
 
     @staticmethod
     def _make_page_404_layout():
