@@ -52,7 +52,7 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-.component_container {
+#components {
   display: flex;
   height: 100%;
   overflow: auto;

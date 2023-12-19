@@ -25,7 +25,7 @@ from .types import ComponentType, ControlType
 # to see what contract the component fulfills by making the expected keys explicit.
 class _PageBuildType(TypedDict):
     control_panel: html.Div
-    component_container_outer: html.Div
+    components: html.Div
 
 
 class Page(VizroBaseModel):
@@ -187,7 +187,6 @@ class Page(VizroBaseModel):
                 ),
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
             ],
-            className="component_container",
-            id="component_container_outer",
+            id="components",
         )
         return component_container

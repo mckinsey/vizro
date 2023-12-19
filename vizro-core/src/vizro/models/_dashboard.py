@@ -145,7 +145,7 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel"]
-        components = page_content["component_container_outer"]
+        components = page_content["components"]
         return html.Div([dashboard_title, theme_switch, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: html.Div):
@@ -162,7 +162,7 @@ class Dashboard(VizroBaseModel):
         left_side = html.Div(children=[left_sidebar, left_main], id="left-side")
 
         right_header = html.Div(children=[page_divs["page_title"], page_divs["theme_selector"]], id="right-header")
-        right_main = page_divs["component_container_outer"]
+        right_main = page_divs["components"]
         right_side = html.Div(children=[right_header, right_main], id="right_side")
 
         return html.Div([left_side, right_side], id="page_container")
