@@ -545,6 +545,7 @@ def create_home_page():
 
 
 dashboard = vm.Dashboard(
+    title="Blah blah blah",
     pages=[
         create_home_page(),
         create_variable_analysis(),
