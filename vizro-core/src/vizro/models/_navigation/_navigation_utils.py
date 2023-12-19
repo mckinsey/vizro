@@ -31,5 +31,5 @@ def _validate_pages(pages):
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
 class _NavBuildType(TypedDict):
-    nav_bar_outer: html.Div
+    nav_bar: html.Div
     nav_panel_outer: html.Div

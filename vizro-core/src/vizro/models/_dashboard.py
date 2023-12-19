@@ -138,7 +138,7 @@ class Dashboard(VizroBaseModel):
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
-        nav_bar = navigation["nav_bar_outer"]
+        nav_bar = navigation["nav_bar"]
         nav_panel = navigation["nav_panel_outer"]
 
         # Different across pages
@@ -149,7 +149,7 @@ class Dashboard(VizroBaseModel):
 
     def _arrange_page_divs(self, page_divs: html.Div):
         left_header_divs = [page_divs["dashboard-title"]]
-        left_sidebar_divs = [page_divs["nav_bar_outer"]]
+        left_sidebar_divs = [page_divs["nav_bar"]]
         left_main_divs = [
             _get_hideable_parent_div(children=left_header_divs, parent_id="left-header"),
             page_divs["nav_panel_outer"],

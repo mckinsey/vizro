@@ -176,3 +176,9 @@ div.dashboard_container .custom-tooltip {
   border-right: 1px solid var(--border-subtle-alpha-01);
   gap: 40px;
 }
+
+#nav_bar {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}

@@ -72,4 +72,4 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel_outer = html.Div(hidden=True, id="nav_panel_outer")
 
-        return html.Div([html.Div(buttons, className="nav-bar", id="nav_bar_outer"), nav_panel_outer])
+        return html.Div([html.Div(buttons, id="nav_bar"), nav_panel_outer])

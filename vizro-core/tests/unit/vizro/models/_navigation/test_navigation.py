@@ -84,9 +84,7 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(
-            built_navigation["nav_bar_outer"], html.Div(hidden=True, id="nav_bar_outer"), keys_to_strip={}
-        )
+        assert_component_equal(built_navigation["nav_bar"], html.Div(hidden=True, id="nav_bar"), keys_to_strip={})
         assert_component_equal(
             built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
         )
@@ -97,8 +95,8 @@ class TestNavigationBuildMethod:
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(
-            built_navigation["nav_bar_outer"],
-            html.Div(id="nav_bar_outer", className="nav-bar"),
+            built_navigation["nav_bar"],
+            html.Div(id="nav_bar"),
             keys_to_strip={"children"},
         )
         assert_component_equal(
@@ -113,8 +111,8 @@ class TestNavigationBuildMethod:
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(
-            built_navigation["nav_bar_outer"],
-            html.Div(id="nav_bar_outer", className="nav-bar"),
+            built_navigation["nav_bar"],
+            html.Div(id="nav_bar"),
             keys_to_strip={"children"},
         )
         assert_component_equal(

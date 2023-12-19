@@ -93,7 +93,7 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
+        assert_component_equal(built_nav_bar["nav_bar"], expected_button)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
         )
@@ -117,7 +117,7 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(built_nav_bar["nav_bar"], expected_buttons)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
@@ -137,7 +137,7 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
+        assert_component_equal(built_nav_bar["nav_bar"], expected_button)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
         )
@@ -160,7 +160,7 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(built_nav_bar["nav_bar"], expected_buttons)
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
