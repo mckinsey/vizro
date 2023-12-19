@@ -126,22 +126,20 @@ class Dashboard(VizroBaseModel):
     def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         dashboard_title = (
-            html.Div(children=[html.H2(self.title)], id="dashboard-title")
+            html.Div([html.H2(self.title)], id="dashboard-title")
             if self.title
             else html.Div(id="dashboard-title", hidden=True)
         )
         settings = html.Div(
+            daq.BooleanSwitch(
+                id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+            ),
             id="settings",
-            children=[
-                daq.BooleanSwitch(
-                    id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
-                )
-            ],
         )
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_title = html.H2(children=page.title, id="page_title")
+        page_title = html.H2(page.title, id="page_title")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav_bar"]
         nav_panel = navigation["nav_panel"]
@@ -156,18 +154,18 @@ class Dashboard(VizroBaseModel):
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav_bar"]]
         left_main_divs = [
-            _get_hideable_parent_div(children=left_header_divs, parent_id="left-header"),
+            _get_hideable_parent_div(left_header_divs, parent_id="left-header"),
             page_divs["nav_panel"],
             page_divs["control_panel"],
         ]
 
-        left_sidebar = _get_hideable_parent_div(children=left_sidebar_divs, parent_id="left-sidebar")
-        left_main = _get_hideable_parent_div(children=left_main_divs, parent_id="left-main")
-        left_side = html.Div(children=[left_sidebar, left_main], id="left-side")
+        left_sidebar = _get_hideable_parent_div(left_sidebar_divs, parent_id="left-sidebar")
+        left_main = _get_hideable_parent_div(left_main_divs, parent_id="left-main")
+        left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div(children=[page_divs["page_title"], page_divs["settings"]], id="right-header")
+        right_header = html.Div([page_divs["page_title"], page_divs["settings"]], id="right-header")
         right_main = page_divs["components"]
-        right_side = html.Div(children=[right_header, right_main], id="right_side")
+        right_side = html.Div([right_header, right_main], id="right_side")
 
         return html.Div([left_side, right_side], id="page_container")
 
