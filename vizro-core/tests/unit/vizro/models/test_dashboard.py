@@ -1,11 +1,10 @@
 import json
-from collections import OrderedDict
-from functools import partial
 
 import dash
 import dash_bootstrap_components as dbc
 import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import html
 
 try:
@@ -16,89 +15,6 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
-
-
-@pytest.fixture()
-def dashboard_container():
-    return dbc.Container(
-        id="dashboard_container_outer",
-        children=[
-            html.Div(vizro.__version__, id="vizro_version", hidden=True),
-            ActionLoop._create_app_callbacks(),
-            dash.page_container,
-        ],
-        className="vizro_dark",
-        fluid=True,
-    )
-
-
-@pytest.fixture()
-def mock_page_registry(prebuilt_two_page_dashboard, page_1, page_2):
-    return OrderedDict(
-        {
-            "Page 1": {
-                "module": "Page 1",
-                "supplied_path": "/",
-                "path_template": None,
-                "path": "/",
-                "supplied_name": "Page 1",
-                "name": "Page 1",
-                "supplied_title": None,
-                "title": "Page 1",
-                "description": "",
-                "order": 0,
-                "supplied_order": 0,
-                "supplied_layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_1),
-                "supplied_image": '/vizro/images/app.svg',
-                "image": '/vizro/images/app.svg',
-                "image_url": None,
-                "redirect_from": None,
-                "layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_1),
-                "relative_path": "/",
-            },
-            "Page 2": {
-                "module": "Page 2",
-                "supplied_path": "/page-2",
-                "path_template": None,
-                "path": "/page-2",
-                "supplied_name": "Page 2",
-                "name": "Page 2",
-                "supplied_title": None,
-                "title": "Page 2",
-                "description": "",
-                "order": 1,
-                "supplied_order": 1,
-                "supplied_layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_2),
-                "supplied_image": '/vizro/images/app.svg',
-                "image": '/vizro/images/app.svg',
-                "image_url": None,
-                "redirect_from": None,
-                "layout": partial(prebuilt_two_page_dashboard._make_page_layout, page_2),
-                "relative_path": "/page-2",
-            },
-            "not_found_404": {
-                "module": "not_found_404",
-                "supplied_path": None,
-                "path_template": None,
-                "path": "/not-found-404",
-                "supplied_name": None,
-                "name": "Not found 404",
-                "supplied_title": None,
-                "title": "Not found 404",
-                "description": "",
-                "order": None,
-                "supplied_order": None,
-                "supplied_layout": prebuilt_two_page_dashboard._make_page_404_layout(),
-                "supplied_image": None,
-                "image": None,
-                "image_url": None,
-                "redirect_from": None,
-                "layout": prebuilt_two_page_dashboard._make_page_404_layout(),
-                "relative_path": "/not-found-404",
-            },
-        }
-    )
-
 
 class TestDashboardInstantiation:
     """Tests model instantiation and the validators run at that time."""
@@ -149,27 +65,90 @@ class TestDashboardInstantiation:
 class TestDashboardPreBuild:
     """Tests dashboard pre_build method."""
 
-    def test_dashboard_page_registry(self, prebuilt_two_page_dashboard, mock_page_registry):
-        result = dash.page_registry
-        expected = mock_page_registry
-        # Str conversion required as comparison of OrderedDict values result in False otherwise
-        assert str(result.items()) == str(expected.items())
+    def test_page_registry(self, vizro_app, page_1, page_2, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        mock_make_page_404_layout = mocker.patch(
+            "vizro.models._dashboard.Dashboard._make_page_404_layout"
+        )  # Checking the actual dash components is done in test_make_page_404_layout.
+        vm.Dashboard(pages=[page_1, page_2]).pre_build()
 
-    def test_create_layout_page_404(self, prebuilt_two_page_dashboard, mocker):
-        mocker.patch("vizro.models._dashboard.get_relative_path")
-        result = prebuilt_two_page_dashboard._make_page_404_layout()
-        result_image = result.children[0]
-        result_div = result.children[1]
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+        mock_register_page.assert_any_call(
+            module=page_2.id,
+            name="Page 2",
+            title="Page 2",
+            path="/page-2",
+            order=1,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+        mock_register_page.assert_any_call(
+            module="not_found_404",
+            layout=mock_make_page_404_layout(),
+        )
+        assert mock_register_page.call_count == 3
 
-        assert isinstance(result, html.Div)
-        assert isinstance(result_image, html.Img)
-        assert isinstance(result_div, html.Div)
+    def test_page_registry_with_title(self, vizro_app, page_1, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1], title="My dashboard").pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            title="My dashboard: Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    def test_make_page_404_layout(self, vizro_app):
+        # vizro_app fixture is needed to avoid mocking out get_relative_path.
+        expected = html.Div(
+            [
+                html.Img(src="/vizro/images/errors/error_404.svg"),
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                html.H3("This page could not be found.", className="heading-3-600"),
+                                html.P("Make sure the URL you entered is correct."),
+                            ],
+                            className="error_text_container",
+                        ),
+                        dbc.Button("Take me home", href="/", className="button_primary"),
+                    ],
+                    className="error_content_container",
+                ),
+            ],
+            className="page_error_container",
+        )
+
+        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected, {})
 
 
 class TestDashboardBuild:
     """Tests dashboard build method."""
 
-    def test_dashboard_build(self, dashboard_container, prebuilt_two_page_dashboard):
-        result = json.loads(json.dumps(prebuilt_two_page_dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
+    def test_dashboard_build(self, vizro_app, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
+        dashboard.pre_build()
+
+        dashboard_container = dbc.Container(
+            id="dashboard_container_outer",
+            children=[
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
+                ActionLoop._create_app_callbacks(),
+                dash.page_container,
+            ],
+            className="vizro_dark",
+            fluid=True,
+        )
+        result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
