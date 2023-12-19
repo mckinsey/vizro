@@ -545,6 +545,7 @@ def create_home_page():
 
 
 dashboard = vm.Dashboard(
+    title="Vizro demo",
     pages=[
         create_home_page(),
         create_variable_analysis(),
