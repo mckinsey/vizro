@@ -400,6 +400,13 @@ and provide an attribute selector to select images with that matching URL hash.
 
 ### Creating navigation
 
+!!! note
+
+    This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation
+    card. To configure the navigation panel on the left hand side of the screen, refer to the
+    [guide on navigation](navigation.md).
+
+
 A navigation card allows you to navigate to a different page via a click on the card area.
 To create a navigation card, do the following:
 

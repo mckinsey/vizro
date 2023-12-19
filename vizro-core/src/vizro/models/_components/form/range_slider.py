@@ -1,7 +1,11 @@
 from typing import Dict, List, Literal, Optional
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -28,7 +32,7 @@ class RangeSlider(VizroBaseModel):
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
         marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
@@ -40,7 +44,7 @@ class RangeSlider(VizroBaseModel):
     value: Optional[List[float]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
     )
-    title: Optional[str] = Field(None, description="Title to be displayed.")
+    title: str = Field("", description="Title to be displayed.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -87,7 +91,7 @@ class RangeSlider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.RangeSlider(
@@ -98,6 +102,7 @@ class RangeSlider(VizroBaseModel):
                             marks=self.marks,
                             value=value,
                             persistence=True,
+                            persistence_type="session",
                             className="range_slider_control" if self.step else "range_slider_control_no_space",
                         ),
                         html.Div(
@@ -112,6 +117,7 @@ class RangeSlider(VizroBaseModel):
                                     value=value[0],
                                     size="24px",
                                     persistence=True,
+                                    persistence_type="session",
                                     className="slider_input_field_left"
                                     if self.step
                                     else "slider_input_field_no_space_left",
@@ -125,11 +131,12 @@ class RangeSlider(VizroBaseModel):
                                     step=self.step,
                                     value=value[1],
                                     persistence=True,
+                                    persistence_type="session",
                                     className="slider_input_field_right"
                                     if self.step
                                     else "slider_input_field_no_space_right",
                                 ),
-                                dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="local"),
+                                dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
                             ],
                             className="slider_input_container",
                         ),

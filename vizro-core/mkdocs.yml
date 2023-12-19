@@ -21,7 +21,7 @@ nav:
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
       - Navigation:
-          - Accordion: pages/user_guides/navigation.md
+          - Navigation: pages/user_guides/navigation.md
       - Visual Formatting:
           - Layouts: pages/user_guides/layouts.md
           - Themes: pages/user_guides/themes.md
@@ -33,7 +33,9 @@ nav:
           - Integrations: pages/user_guides/integration.md
       - Extensions:
           - Custom Charts: pages/user_guides/custom_charts.md
+          - Custom Tables: pages/user_guides/custom_tables.md
           - Custom Components: pages/user_guides/custom_components.md
+          - Custom Actions: pages/user_guides/custom_actions.md
   - API reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md

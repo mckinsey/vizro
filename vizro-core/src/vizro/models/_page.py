@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, TypedDict
 
 from dash import Input, Output, Patch, callback, dcc, html
-from pydantic import Field, root_validator, validator
+
+try:
+    from pydantic.v1 import Field, root_validator, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, root_validator, validator
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
@@ -15,6 +19,15 @@ from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 from .types import ComponentType, ControlType
 
 
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfills by making the expected keys explicit.
+class _PageBuildType(TypedDict):
+    control_panel_outer: html.Div
+    component_container_outer: html.Div
+
+
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
@@ -22,9 +35,9 @@ class Page(VizroBaseModel):
         components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
-        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (Optional[str]): Path to navigate to page. Defaults to `None`.
+        path (str): Path to navigate to page. Defaults to `""`.
 
     Raises:
         ValueError: If number of page and grid components is not the same
@@ -32,9 +45,9 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
-    layout: Optional[Layout]
+    layout: Layout = None  # type: ignore[assignment]
     controls: List[ControlType] = []
-    path: Optional[str] = Field(None, description="Path to navigate to page.")
+    path: str = Field("", description="Path to navigate to page.")
 
     # TODO: Remove default on page load action if possible
     actions: List[ActionsChain] = []
@@ -111,7 +124,7 @@ class Page(VizroBaseModel):
             ]
 
     @_log_call
-    def build(self):
+    def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
@@ -127,9 +140,7 @@ class Page(VizroBaseModel):
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for component, grid_coord in zip(
-                self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
-            )
+            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
         components_container = self._create_component_container(components_content)
         return html.Div([control_panel, components_container])
@@ -165,11 +176,11 @@ class Page(VizroBaseModel):
                 html.Div(
                     components_content,
                     style={
-                        "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                        "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"  # type: ignore[union-attr]
+                        "gridRowGap": self.layout.row_gap,
+                        "gridColumnGap": self.layout.col_gap,
+                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
                         f"minmax({self.layout.col_min_width}, 1fr))",
-                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"  # type: ignore[union-attr]
+                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"
                         f"minmax({self.layout.row_min_height}, 1fr))",
                     },
                     className="component_container_grid",

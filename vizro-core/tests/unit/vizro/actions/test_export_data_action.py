@@ -99,24 +99,30 @@ def callback_context_export_data(request):
         )
     mock_callback_context = {
         "args_grouping": {
-            "filters": [
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop_filter,
-                    str_id="pop_filter",
-                    triggered=False,
-                )
-            ]
-            if pop_filter
-            else [],
-            "filter_interaction": args_grouping_filter_interaction,
+            "external": {
+                "filters": [
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop_filter,
+                        str_id="pop_filter",
+                        triggered=False,
+                    )
+                ]
+                if pop_filter
+                else [],
+                "filter_interaction": args_grouping_filter_interaction,
+            },
         },
         "outputs_list": [
-            {"id": {"action_id": "test_action", "target_id": target, "type": "download-dataframe"}, "property": "data"}
+            {
+                "id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"},
+                "property": "data",
+            }
             for target in targets
         ],
     }
+
     context_value.set(AttributeDict(**mock_callback_context))
     return context_value
 
@@ -130,8 +136,9 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {}
 
-        assert result == {}
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -143,12 +150,22 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
-
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -165,12 +182,22 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
-
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("callback_context_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
@@ -180,11 +207,16 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
-
-        assert "download-dataframe_box_chart" not in result
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -198,12 +230,22 @@ class TestExportData:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"]["content"] == gapminder_2007.to_csv(index=False)
-
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == gapminder_2007.to_csv(index=False)
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("callback_context_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
@@ -222,7 +264,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
+        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, None],
@@ -262,18 +304,26 @@ class TestExportData:
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": target_scatter_filter_and_filter_interaction.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": target_box_filtered_pop.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"][
-            "content"
-        ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
-
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
+        assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, " "target_scatter_filter_and_filter_interaction, " "target_box_filtered_pop",
+        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, "Algeria"],
@@ -317,11 +367,19 @@ class TestExportData:
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": target_scatter_filter_and_filter_interaction.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": target_box_filtered_pop.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
 
-        assert result["download-dataframe_scatter_chart"]["filename"] == "scatter_chart.csv"
-        assert result["download-dataframe_scatter_chart"][
-            "content"
-        ] == target_scatter_filter_and_filter_interaction.to_csv(index=False)
-
-        assert result["download-dataframe_box_chart"]["filename"] == "box_chart.csv"
-        assert result["download-dataframe_box_chart"]["content"] == target_box_filtered_pop.to_csv(index=False)
+        assert result == expected

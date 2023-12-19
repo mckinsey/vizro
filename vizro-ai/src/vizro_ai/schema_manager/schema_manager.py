@@ -2,7 +2,10 @@
 import inspect
 from typing import Callable, List, Union
 
-from pydantic import BaseModel, Field, create_model
+try:
+    from pydantic.v1 import BaseModel, Field, create_model
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, Field, create_model
 
 
 class SchemaManager:

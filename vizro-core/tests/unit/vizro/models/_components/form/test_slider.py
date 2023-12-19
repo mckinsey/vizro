@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -33,6 +37,7 @@ def expected_slider():
                         value=5,
                         included=False,
                         persistence=True,
+                        persistence_type="session",
                         className="slider_control",
                     ),
                     dcc.Input(
@@ -44,9 +49,10 @@ def expected_slider():
                         max=10,
                         value=5,
                         persistence=True,
+                        persistence_type="session",
                         className="slider_input_field_right",
                     ),
-                    dcc.Store(id="slider_id_temp_store", storage_type="local"),
+                    dcc.Store(id="slider_id_temp_store", storage_type="session"),
                 ],
                 className="slider_inner_container",
             ),
@@ -69,7 +75,7 @@ class TestSliderInstantiation:
         assert slider.max is None
         assert slider.marks is None
         assert slider.value is None
-        assert slider.title is None
+        assert slider.title == ""
         assert slider.actions == []
 
     @pytest.mark.parametrize(
@@ -198,8 +204,8 @@ class TestSliderInstantiation:
 
         assert slider.title == str(title)
 
-    def test_set_action_via_validator(self, test_action_function):
-        slider = vm.Slider(actions=[vm.Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        slider = vm.Slider(actions=[vm.Action(function=identity_action_function())])
         actions_chain = slider.actions[0]
 
         assert actions_chain.trigger.component_property == "value"

@@ -4,7 +4,11 @@ from typing import List, Literal
 from dash import ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 import vizro.plotly.express as px
 from vizro import _themes as themes
@@ -52,8 +56,8 @@ class Graph(VizroBaseModel):
         try:
             # At the moment theme_selector is always present so this if statement is redundant, but possibly in
             # future we'll have callbacks that do Graph.__call__() without theme_selector set.
-            if "theme_selector" in ctx.args_grouping:
-                fig = self._update_theme(fig, ctx.args_grouping["theme_selector"]["value"])
+            if "theme_selector" in ctx.args_grouping.get("external", {}):
+                fig = self._update_theme(fig, ctx.args_grouping["external"]["theme_selector"]["value"])
         except MissingCallbackContextException:
             logger.info("fig.update_layout called outside of callback context.")
         return fig

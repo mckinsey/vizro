@@ -14,6 +14,7 @@ def get_options_and_default(options: OptionsType, multi: bool = False):
             options = [ALL_OPTION, *options]
 
     if all(isinstance(option, dict) for option in options):
+        # Each option is a OptionsDictType
         default_value = options[0]["value"]  # type: ignore[index]
     else:
         default_value = options[0]

@@ -12,7 +12,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, Any]:
+def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
     """Modifies parameters of targeted charts/components on page.
 
     Args:
@@ -27,7 +27,7 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[ModelID, An
 
     return _get_modified_page_figures(
         targets=target_ids,
-        ctds_filter=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["parameters"],
+        ctds_filter=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )

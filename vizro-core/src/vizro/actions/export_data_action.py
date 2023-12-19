@@ -22,7 +22,7 @@ def export_data(
     """Exports visible data of target charts/components on page after being triggered.
 
     Args:
-        targets: List of target component ids to download data from. Defaults to None.
+        targets: List of target component ids to download data from. Defaults to `None`.
         file_format: Format of downloaded files. Defaults to `csv`.
         inputs: Dict mapping action function names with their inputs e.g.
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
@@ -38,7 +38,7 @@ def export_data(
         targets = [
             output["id"]["target_id"]
             for output in ctx.outputs_list
-            if isinstance(output["id"], dict) and output["id"]["type"] == "download-dataframe"
+            if isinstance(output["id"], dict) and output["id"]["type"] == "download_dataframe"
         ]
     for target in targets:
         if target not in model_manager:
@@ -46,11 +46,11 @@ def export_data(
 
     data_frames = _get_filtered_data(
         targets=targets,
-        ctds_filters=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
+        ctds_filters=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
     )
 
-    callback_outputs = {}
+    outputs = {}
     for target_id in targets:
         if file_format == "csv":
             writer = data_frames[target_id].to_csv
@@ -58,8 +58,8 @@ def export_data(
             writer = data_frames[target_id].to_excel
         # Invalid file_format should be caught by Action validation
 
-        callback_outputs[f"download-dataframe_{target_id}"] = dcc.send_data_frame(
+        outputs[f"download_dataframe_{target_id}"] = dcc.send_data_frame(
             writer=writer, filename=f"{target_id}.{file_format}", index=False
         )
 
-    return callback_outputs
+    return outputs

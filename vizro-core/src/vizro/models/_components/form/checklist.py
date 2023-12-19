@@ -1,7 +1,11 @@
 from typing import List, Literal, Optional
 
 from dash import dcc, html
-from pydantic import Field, PrivateAttr, root_validator, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -17,14 +21,14 @@ class Checklist(VizroBaseModel):
         type (Literal["checklist"]): Defaults to `"checklist"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["checklist"] = "checklist"
-    options: OptionsType = []  # type: ignore[assignment]
+    options: OptionsType = []
     value: Optional[MultiValueType] = None
-    title: Optional[str] = Field(None, description="Title to be displayed")
+    title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -41,12 +45,13 @@ class Checklist(VizroBaseModel):
 
         return html.Div(
             [
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 dcc.Checklist(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
+                    persistence_type="session",
                     className="selector_body_checklist",
                 ),
             ],

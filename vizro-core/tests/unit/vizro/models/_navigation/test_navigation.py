@@ -1,70 +1,124 @@
 """Unit tests for vizro.models.Navigation."""
-import json
 import re
 
-import plotly
+import dash_bootstrap_components as dbc
 import pytest
-from pydantic import ValidationError
+from asserts import assert_component_equal
+from dash import html
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._navigation._accordion import Accordion
+
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestNavigationInstantiation:
-    """Tests navigation model instantiation ."""
+    def test_navigation_mandatory_only(self):
+        navigation = vm.Navigation()
 
-    @pytest.mark.parametrize("navigation", [None, vm.Navigation()])
-    def test_navigation_default(self, page1, page2, navigation):
-        # Navigation is optional inside Dashboard and navigation.pages will always be auto-populated if not provided
-        dashboard = vm.Dashboard(pages=[page1, page2], navigation=navigation)
-        assert hasattr(dashboard.navigation, "id")
-        assert dashboard.navigation.pages == ["Page 1", "Page 2"]
+        assert hasattr(navigation, "id")
+        assert navigation.pages == []
+        assert navigation.nav_selector is None
 
-    def test_navigation_valid_pages_as_list(self, pages_as_list):
-        navigation = vm.Navigation(pages=pages_as_list, id="navigation")
+    def test_navigation_mandatory_and_optional(self):
+        accordion = vm.Accordion()
+        navigation = vm.Navigation(id="navigation", pages=["Page 1", "Page 2"], nav_selector=accordion)
+
         assert navigation.id == "navigation"
-        assert navigation.pages == pages_as_list
+        assert navigation.pages == ["Page 1", "Page 2"]
+        assert navigation.nav_selector == accordion
 
-    def test_navigation_valid_pages_as_dict(self, pages_as_dict):
-        navigation = vm.Navigation(pages=pages_as_dict, id="navigation")
-        assert navigation.id == "navigation"
-        assert navigation.pages == pages_as_dict
-
-    def test_navigation_valid_pages_not_all_included(self):
-        navigation = vm.Navigation(pages=["Page 1"], id="navigation")
-        assert navigation.id == "navigation"
-        assert navigation.pages == ["Page 1"]
-
-    def test_navigation_invalid_pages_empty_list(self):
+    @pytest.mark.parametrize("pages", [{"Group": []}, []])
+    def test_invalid_field_pages_no_ids_provided(self, pages):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
-            vm.Navigation(pages=[], id="navigation")
+            vm.Navigation(pages=pages)
 
-    def test_navigation_invalid_pages_unknown_page(self):
-        with pytest.raises(ValidationError, match=re.escape("Unknown page ID ['Test'] provided to argument 'pages'.")):
-            vm.Navigation(pages=["Test"], id="navigation")
+    def test_invalid_field_pages_wrong_input_type(self):
+        with pytest.raises(ValidationError, match="str type expected"):
+            vm.Navigation(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
-
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-@pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"SELECT PAGE": ["Page 1", "Page 2"]}])
-def test_navigation_pre_build(pages):
-    navigation = vm.Navigation(pages=pages, id="navigation")
-    navigation.pre_build()
-
-    assert navigation.id == "navigation"
-    assert navigation.pages == pages
-    assert isinstance(navigation._selector, Accordion)
-    assert navigation._selector.pages == {"SELECT PAGE": ["Page 1", "Page 2"]}
+    @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
+    def test_invalid_page(self, pages):
+        with pytest.raises(
+            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+        ):
+            vm.Navigation(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
-@pytest.mark.parametrize("pages", [["Page 1", "Page 2"], {"Page 1": ["Page 1"], "Page 2": ["Page 2"]}])
-def test_navigation_build(pages):
-    navigation = vm.Navigation(pages=pages)
-    navigation.pre_build()  # Required such that an Accordion is assigned as selector
-    accordion = Accordion(pages=pages)
-    navigation._selector.id = accordion.id
+class TestNavigationPreBuildMethod:
+    def test_default_nav_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict)
+        navigation.pre_build()
+        assert isinstance(navigation.nav_selector, vm.Accordion)
+        assert navigation.nav_selector.pages == pages_as_dict
 
-    result = json.loads(json.dumps(navigation.build(), cls=plotly.utils.PlotlyJSONEncoder))
-    expected = json.loads(json.dumps(accordion.build(), cls=plotly.utils.PlotlyJSONEncoder))
-    assert result == expected
+    def test_default_nav_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.Accordion(pages={"Group": ["Page 1"]}))
+        navigation.pre_build()
+        assert isinstance(navigation.nav_selector, vm.Accordion)
+        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
+
+    def test_non_default_nav_selector(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
+        navigation.pre_build()
+        assert isinstance(navigation.nav_selector, vm.NavBar)
+        assert navigation.nav_selector.pages == pages_as_dict
+
+    def test_non_default_nav_selector_with_pages(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar(pages={"Group": ["Page 1"]}))
+        navigation.pre_build()
+        assert isinstance(navigation.nav_selector, vm.NavBar)
+        assert navigation.nav_selector.pages == {"Group": ["Page 1"]}
+
+
+class TestNavigationBuildMethod:
+    """Tests navigation model build method."""
+
+    @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
+    def test_default_nav_selector(self, pages, request):
+        pages = request.getfixturevalue(pages)
+        navigation = vm.Navigation(pages=pages)
+        navigation.pre_build()
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_component_equal(
+            built_navigation["nav_bar_outer"], html.Div(hidden=True, id="nav_bar_outer"), keys_to_strip={}
+        )
+        assert_component_equal(
+            built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+        )
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+
+    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict):
+        navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
+        navigation.pre_build()
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_component_equal(
+            built_navigation["nav_bar_outer"],
+            html.Div(id="nav_bar_outer", className="nav-bar"),
+            keys_to_strip={"children"},
+        )
+        assert_component_equal(
+            built_navigation["nav_panel_outer"],
+            html.Div(id="nav_panel_outer"),
+            keys_to_strip={"children", "className"},
+        )
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+
+    def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
+        navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
+        navigation.pre_build()
+        built_navigation = navigation.build(active_page_id="Page 1")
+        assert_component_equal(
+            built_navigation["nav_bar_outer"],
+            html.Div(id="nav_bar_outer", className="nav-bar"),
+            keys_to_strip={"children"},
+        )
+        assert_component_equal(
+            built_navigation["nav_panel_outer"],
+            html.Div(id="nav_panel_outer", hidden=True),
+            keys_to_strip={"children"},
+        )

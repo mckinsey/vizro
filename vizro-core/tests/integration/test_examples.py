@@ -1,5 +1,6 @@
 # ruff: noqa: F403, F405
 import os
+import runpy
 from pathlib import Path
 
 import chromedriver_autoinstaller_fix
@@ -25,65 +26,16 @@ def setup_integration_test_environment(monkeypatch_session):
         chromedriver_autoinstaller_fix.install()
 
 
-@pytest.fixture
-def default_dashboard(monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / "examples/default")
-    monkeypatch.syspath_prepend(Path.cwd())
-    from app import dashboard
-
-    return dashboard
+@pytest.fixture(params=["default", "from_dict", "from_json", "from_yaml"])
+def dashboard(request, monkeypatch):
+    monkeypatch.chdir(Path(__file__).parents[2] / f"examples/{request.param}")
+    app = runpy.run_path("app.py")
+    return app["dashboard"]
 
 
-@pytest.fixture
-def dict_dashboard(monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / "examples/from_dict")
-    monkeypatch.syspath_prepend(Path.cwd())
-    from app import dashboard
-
-    return dashboard
-
-
-@pytest.fixture
-def json_dashboard(monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / "examples/from_json")
-    monkeypatch.syspath_prepend(Path.cwd())
-    from app import dashboard
-
-    return dashboard
-
-
-@pytest.fixture
-def yaml_dashboard(monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / "examples/from_yaml")
-    monkeypatch.syspath_prepend(Path.cwd())
-    from app import dashboard
-
-    return dashboard
-
-
-def test_default_dashboard(dash_duo, default_dashboard):
-    """Test if default example dashboard starts and has no errors in logs."""
-    app = Vizro().build(default_dashboard).dash
-    dash_duo.start_server(app)
-    assert dash_duo.get_logs() == []
-
-
-def test_dict_dashboard(dash_duo, dict_dashboard):
-    """Test if dictionary example dashboard starts and has no errors in logs."""
-    app = Vizro().build(dict_dashboard).dash
-    dash_duo.start_server(app)
-    assert dash_duo.get_logs() == []
-
-
-def test_json_dashboard(dash_duo, json_dashboard):
-    """Test if json example dashboard starts and has no errors in logs."""
-    app = Vizro().build(json_dashboard).dash
-    dash_duo.start_server(app)
-    assert dash_duo.get_logs() == []
-
-
-def test_yaml_dashboard(dash_duo, yaml_dashboard):
-    """Test if yaml example dashboard starts and has no errors in logs."""
-    app = Vizro().build(yaml_dashboard).dash
+# Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
+@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+def test_dashboard(dash_duo, dashboard):
+    app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/assets").build(dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []

@@ -1,8 +1,14 @@
-from typing import Any, List, Optional, Type, Union
+from typing import Any, List, Type, Union
 
-from pydantic import BaseModel, Field, validator
-from pydantic.fields import SHAPE_LIST, ModelField
-from pydantic.typing import get_args
+try:
+    from pydantic.v1 import BaseModel, Field, validator
+    from pydantic.v1.fields import SHAPE_LIST, ModelField
+    from pydantic.v1.typing import get_args
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, Field, validator
+    from pydantic.fields import SHAPE_LIST, ModelField
+    from pydantic.typing import get_args
+
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
@@ -13,12 +19,12 @@ class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (Optional[str]): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `None`.
+        id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
             When no ID is chosen, ID will be automatically generated.
     """
 
-    id: Optional[str] = Field(
-        None,
+    id: str = Field(
+        "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
     )
@@ -58,7 +64,7 @@ class VizroBaseModel(BaseModel):
             return hasattr(field.outer_type_, "__metadata__") and get_args(field.outer_type_)[1].discriminator
 
         field = cls.__fields__[field_name]
-        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None  # type: ignore[index]
+        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None
 
         if _is_discriminated_union(field):
             # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].

@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -21,13 +25,14 @@ def expected_range_slider_default():
                     "max": None,
                 },
             ),
-            html.Div(hidden=True),
+            None,
             html.Div(
                 [
                     dcc.RangeSlider(
                         id="range_slider",
                         className="range_slider_control_no_space",
                         persistence=True,
+                        persistence_type="session",
                         min=None,
                         max=None,
                         marks=None,
@@ -44,6 +49,7 @@ def expected_range_slider_default():
                                 size="24px",
                                 step=None,
                                 persistence=True,
+                                persistence_type="session",
                                 min=None,
                                 max=None,
                                 value=None,
@@ -54,12 +60,13 @@ def expected_range_slider_default():
                                 placeholder="end",
                                 className="slider_input_field_no_space_right",
                                 persistence=True,
+                                persistence_type="session",
                                 step=None,
                                 min=None,
                                 max=None,
                                 value=None,
                             ),
-                            dcc.Store(id="temp-store-range_slider-range_slider", storage_type="local"),
+                            dcc.Store(id="temp-store-range_slider-range_slider", storage_type="session"),
                         ],
                         className="slider_input_container",
                     ),
@@ -96,6 +103,7 @@ def expected_range_slider_with_optional():
                         className="range_slider_control",
                         value=[0, 10],
                         persistence=True,
+                        persistence_type="session",
                     ),
                     html.Div(
                         [
@@ -110,6 +118,7 @@ def expected_range_slider_with_optional():
                                 value=0,
                                 size="24px",
                                 persistence=True,
+                                persistence_type="session",
                             ),
                             dcc.Input(
                                 id="range_slider_with_all_end_value",
@@ -121,8 +130,9 @@ def expected_range_slider_with_optional():
                                 className="slider_input_field_right",
                                 value=10,
                                 persistence=True,
+                                persistence_type="session",
                             ),
-                            dcc.Store(id="temp-store-range_slider-range_slider_with_all", storage_type="local"),
+                            dcc.Store(id="temp-store-range_slider-range_slider_with_all", storage_type="session"),
                         ],
                         className="slider_input_container",
                     ),
@@ -148,7 +158,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.step is None
         assert range_slider.marks is None
         assert range_slider.value is None
-        assert range_slider.title is None
+        assert range_slider.title == ""
         assert range_slider.actions == []
 
     def test_create_range_slider_mandatory_and_optional(self):
@@ -290,8 +300,8 @@ class TestRangeSliderInstantiation:
 
         assert slider.title == str(title)
 
-    def test_set_action_via_validator(self, test_action_function):
-        range_slider = vm.RangeSlider(actions=[vm.Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        range_slider = vm.RangeSlider(actions=[vm.Action(function=identity_action_function())])
         actions_chain = range_slider.actions[0]
 
         assert actions_chain.trigger.component_property == "value"

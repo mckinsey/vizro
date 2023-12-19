@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import RadioItems
@@ -21,6 +25,7 @@ def expected_radio_items():
                 value="A",
                 className="selector_body_radio_items",
                 persistence=True,
+                persistence_type="session",
             ),
         ],
         className="selector_container",
@@ -38,7 +43,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.type == "radio_items"
         assert radio_items.options == []
         assert radio_items.value is None
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     def test_create_radio_items_mandatory_and_optional(self):
@@ -80,7 +85,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.type == "radio_items"
         assert radio_items.options == expected
         assert radio_items.value is None
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
@@ -112,7 +117,7 @@ class TestRadioItemsInstantiation:
         assert hasattr(radio_items, "id")
         assert radio_items.type == "radio_items"
         assert radio_items.value == test_value
-        assert radio_items.title is None
+        assert radio_items.title == ""
         assert radio_items.actions == []
 
     @pytest.mark.parametrize(
@@ -134,8 +139,8 @@ class TestRadioItemsInstantiation:
         with pytest.raises(ValidationError, match="3 validation errors for RadioItems"):
             RadioItems(value=[1], options=[1, 2, 3, 4, 5])
 
-    def test_set_action_via_validator(self, test_action_function):
-        radio_items = RadioItems(actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        radio_items = RadioItems(actions=[Action(function=identity_action_function())])
         actions_chain = radio_items.actions[0]
         assert actions_chain.trigger.component_property == "value"
 
