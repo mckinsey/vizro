@@ -2,8 +2,9 @@
 from typing import List
 
 from asserts import assert_component_equal
-from vizro.models import VizroBaseModel
 from dash import html
+
+from vizro.models import VizroBaseModel
 
 
 class X(VizroBaseModel):
