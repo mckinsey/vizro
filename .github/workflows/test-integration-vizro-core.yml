@@ -20,7 +20,7 @@ jobs:
     name: test-integration-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
 
     # Pinned because chromedriver v120 recognised as chrome-headless-shell instead of chrome
-    runs-on: ubuntu:20231205.1.0
+    runs-on: ubuntu-22.04:20231205.1.0
     strategy:
       fail-fast: false
       matrix:
