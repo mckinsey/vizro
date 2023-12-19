@@ -93,7 +93,7 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav-panel"], expected_button)
+        assert_component_equal(built_nav_bar["nav-bar"], expected_button)
         assert_component_equal(
             built_nav_bar["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children", "className"}
         )
