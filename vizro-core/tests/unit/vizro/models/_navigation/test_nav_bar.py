@@ -93,9 +93,11 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button, keys_to_strip={"id", "className"})
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+            built_nav_bar["nav_panel_outer"],
+            html.Div(id="nav_panel_outer", className="nav_panel"),
+            keys_to_strip={"children"},
         )
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
 
@@ -117,11 +119,10 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons, keys_to_strip={"id", "className"})
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),
-            keys_to_strip={"children", "className"},
         )
 
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
@@ -137,10 +138,8 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button)
-        assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer")
-        )
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"))
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -160,7 +159,7 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons)
+        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons, keys_to_strip={"id", "className"})
         assert_component_equal(
             built_nav_bar["nav_panel_outer"],
             html.Div(id="nav_panel_outer", hidden=True),

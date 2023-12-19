@@ -55,7 +55,7 @@ class TestAccordionInstantiation:
 class TestAccordionBuild:
     """Tests accordion build method."""
 
-    common_args = {"always_open": True, "persistence": True, "persistence_type": "session"}
+    common_args = {"always_open": True, "persistence": True, "persistence_type": "session", "id": "accordion"}
 
     test_cases = [
         (
@@ -116,7 +116,7 @@ class TestAccordionBuild:
         assert_component_equal(
             accordion, html.Div(id="nav_panel_outer", className="nav_panel"), keys_to_strip={"children"}
         )
-        assert_component_equal(accordion["accordion"], expected, keys_to_strip={"id", "className", "class_name"})
+        assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
 
     def test_accordion_one_page(self):
         accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")

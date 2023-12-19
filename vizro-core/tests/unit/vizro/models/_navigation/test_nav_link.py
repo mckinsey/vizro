@@ -86,9 +86,17 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_button = dbc.Button(
-            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    **self.common_args,
+                )
+            ],
             active=True,
             href="/",
+            className="icon-button",
+            id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
@@ -99,9 +107,17 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.Button(
-            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    **self.common_args,
+                )
+            ],
             active=False,
             href="/",
+            className="icon-button",
+            id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link
