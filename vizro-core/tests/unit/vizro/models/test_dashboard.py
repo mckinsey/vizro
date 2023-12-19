@@ -1,15 +1,11 @@
-import functools
 import json
-from collections import OrderedDict
-from functools import partial
 
 import dash
 import dash_bootstrap_components as dbc
 import plotly
 import pytest
-from dash import html
-
 from asserts import assert_component_equal
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -116,7 +112,7 @@ class TestDashboardPreBuild:
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
             [
-                html.Img(src=f"/vizro/images/errors/error_404.svg"),
+                html.Img(src="/vizro/images/errors/error_404.svg"),
                 html.Div(
                     [
                         html.Div(
