@@ -20,7 +20,7 @@ jobs:
     name: test-integration-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
 
     # Pinned because chromedriver v120 recognised as chrome-headless-shell instead of chrome
-    runs-on: ubuntu-20231205.1.0
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +39,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Chrome and chromedriver
+        id: chrome_install
+        run: |
+          echo "chrome_version=119.0.6045.105" >> $GITHUB_OUTPUT
+          sudo apt-get update
+          sudo apt-get install libu2f-udev -y
+          wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb"
+          sudo apt-get install -y --allow-downgrades ~/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb
+          rm ~/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb
+          
+          wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${{ steps.chrome_install.outputs.chrome_version }}/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver 
+          sudo chown root:root /usr/bin/chromedriver 
+          sudo chmod +x /usr/bin/chromedriver 
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
