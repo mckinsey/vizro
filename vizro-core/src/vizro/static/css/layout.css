@@ -64,13 +64,13 @@
   width: 100%;
 }
 
-.nav_panel {
+#nav_panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 
-.nav_panel:not(:empty) {
+#nav_panel:not(:empty) {
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
