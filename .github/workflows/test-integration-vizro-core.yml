@@ -19,7 +19,6 @@ jobs:
   test-integration-vizro-core:
     name: test-integration-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
 
-    # Pinned because chromedriver v120 recognised as chrome-headless-shell instead of chrome
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -40,6 +39,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pinned Chrome version because chromedriver v120 recognised as chrome-headless-shell instead of chrome
+      # https://github.com/plotly/dash/issues/2712
+      # https://bugs.chromium.org/p/chromedriver/issues/detail?id=4665
       - name: Install Chrome and chromedriver
         id: chrome_install
         run: |
