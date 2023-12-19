@@ -46,11 +46,11 @@ jobs:
           echo "chrome_version=119.0.6045.105" >> $GITHUB_OUTPUT
           sudo apt-get update
           sudo apt-get install libu2f-udev -y
-          wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb"
-          sudo apt-get install -y --allow-downgrades ~/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb
-          rm ~/google-chrome-stable_${{ steps.chrome_install.outputs.chrome_version }}-1_amd64.deb
+          wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_$chrome_version-1_amd64.deb"
+          sudo apt-get install -y --allow-downgrades ~/google-chrome-stable_$chrome_version-1_amd64.deb
+          rm ~/google-chrome-stable_$chrome_version-1_amd64.deb
           
-          wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${{ steps.chrome_install.outputs.chrome_version }}/linux64/chromedriver-linux64.zip
+          wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$chrome_version/linux64/chromedriver-linux64.zip
           unzip chromedriver-linux64.zip
           sudo mv chromedriver /usr/bin/chromedriver 
           sudo chown root:root /usr/bin/chromedriver 
