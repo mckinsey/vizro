@@ -51,22 +51,22 @@
           "title": "Inputs",
           "description": "Inputs in the form `<component_id>.<property>` passed to the action function.",
           "default": [],
-          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "pattern": "^[^.]+[.][^.]+$",
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+            "pattern": "^[^.]+[.][^.]+$"
           }
         },
         "outputs": {
           "title": "Outputs",
           "description": "Outputs in the form `<component_id>.<property>` changed by the action function.",
           "default": [],
-          "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$",
+          "pattern": "^[^.]+[.][^.]+$",
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9_]+[.][a-zA-Z_]+$"
+            "pattern": "^[^.]+[.][^.]+$"
           }
         }
       },
