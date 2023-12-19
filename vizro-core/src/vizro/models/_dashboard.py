@@ -27,10 +27,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# TODO: Check outputs of these and consolidate
-# TODO: Use IDs instead of className and remove className
 
-
+# LN: Hesitant to convert it to a private method as I can imagine this function could be re-used
+# in other models as well. Would leave in here for now?
 def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] = None):
     """Hides the parent container if all the children containers are either hidden or None."""
     return (
@@ -45,7 +44,7 @@ class PageDivs(html.Div):
     """Stores all relevant containers for simplified access when re-arranging containers on page."""
 
     dashboard_title: html.Div
-    theme_switch: daq.BooleanSwitch
+    settings: html.Div
     page_title: html.H2
     nav_bar: html.Div
     nav_panel: html.Div
@@ -131,8 +130,13 @@ class Dashboard(VizroBaseModel):
             if self.title
             else html.Div(id="dashboard-title", hidden=True)
         )
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+        settings = html.Div(
+            id="settings",
+            children=[
+                daq.BooleanSwitch(
+                    id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+                )
+            ],
         )
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
@@ -146,7 +150,7 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel"]
         components = page_content["components"]
-        return html.Div([dashboard_title, theme_switch, page_title, nav_bar, nav_panel, control_panel, components])
+        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: html.Div):
         left_header_divs = [page_divs["dashboard-title"]]
@@ -161,7 +165,7 @@ class Dashboard(VizroBaseModel):
         left_main = _get_hideable_parent_div(children=left_main_divs, parent_id="left-main")
         left_side = html.Div(children=[left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div(children=[page_divs["page_title"], page_divs["theme_selector"]], id="right-header")
+        right_header = html.Div(children=[page_divs["page_title"], page_divs["settings"]], id="right-header")
         right_main = page_divs["components"]
         right_side = html.Div(children=[right_header, right_main], id="right_side")
 

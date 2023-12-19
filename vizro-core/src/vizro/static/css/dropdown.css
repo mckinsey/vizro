@@ -125,11 +125,7 @@
   pointer-events: none;
 }
 
-#page_container
-  .dash-dropdown
-  .Select-menu-outer
-  .VirtualizedSelectOption
-  > a {
+#page_container .dash-dropdown .Select-menu-outer .VirtualizedSelectOption > a {
   height: 100%;
   width: 100%;
 }
