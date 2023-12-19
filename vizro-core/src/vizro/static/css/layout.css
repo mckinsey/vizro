@@ -15,8 +15,6 @@
   overflow: auto;
   padding: 40px 32px 0 32px;
   width: 352px;
-  overflow: auto;
-  gap: var(--spacing-06);
 }
 
 #left-side {
@@ -71,7 +69,6 @@
 }
 
 #nav_panel:not(:empty) {
-  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
@@ -119,19 +116,23 @@
   width: 100%;
 }
 
-.nav-bar {
+#nav-bar {
+  align-items: center;
+  background-color: var(--surfaces-bg-02);
+  border-right: 1px solid var(--border-subtle-alpha-01);
   display: inline-flex;
   flex-direction: column;
-  align-items: center;
-  gap: 40px;
+  padding-top: 26px;
+  width: 64px;
 }
 
 .icon-button {
-  width: 100%;
-  display: flex;
   align-items: center;
   background-color: var(--surfaces-bg-02);
+  display: flex;
+  height: 64px;
   justify-content: center;
+  width: 100%;
 }
 
 div.dashboard_container .tooltip-inner {
@@ -163,7 +164,6 @@ div.dashboard_container .custom-tooltip {
   max-width: 180px;
   overflow-wrap: break-word;
   padding: var(--spacing-01) var(--spacing-02);
-  text-wrap: wrap;
   white-space: pre-wrap;
 }
 
@@ -174,11 +174,5 @@ div.dashboard_container .custom-tooltip {
   padding-top: 40px;
   background-color: var(--surfaces-bg-02);
   border-right: 1px solid var(--border-subtle-alpha-01);
-  gap: 40px;
-}
-
-#nav_bar {
-  display: flex;
-  flex-direction: column;
   gap: 40px;
 }
