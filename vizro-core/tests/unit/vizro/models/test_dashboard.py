@@ -15,7 +15,7 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models._dashboard import _get_hideable_parent_div
+from vizro.models._dashboard import _is_hidden
 
 
 class TestDashboardInstantiation:
@@ -157,23 +157,16 @@ class TestDashboardBuild:
 
 
 @pytest.mark.parametrize(
-    "children",
+    "components, expected",
     [
-        [html.Div(hidden=False)],
-        [html.Div(id="children-id")],
-        [html.Div(hidden=True), None, html.Div(hidden=False)],
-        [html.Div(hidden=True), None, html.Div(id="children-id")],
+        ([html.Div(hidden=False)], False),
+        ([html.Div(id="children-id")], False),
+        ([html.Div(hidden=True), None, html.Div(hidden=False)], False),
+        ([html.Div(hidden=True), None, html.Div(id="children-id")], False),
+        ([html.Div(hidden=True)], True),
+        ([None], True),
+        ([html.Div(hidden=True), None], True),
     ],
 )
-def test_get_hideable_parent_div_visible(children):
-    parent = _get_hideable_parent_div(children=children, parent_id="parent-id")
-    assert parent.id == "parent-id"
-    assert parent.children == children
-    assert getattr(parent, "hidden", False) is False
-
-
-@pytest.mark.parametrize("children", [[html.Div(hidden=True)], [None], [html.Div(hidden=True), None]])
-def test_get_hideable_parent_div_hidden(children):
-    parent = _get_hideable_parent_div(children=children, parent_id="parent-id")
-    assert parent.id == "parent-id"
-    assert getattr(parent, "hidden", False) is True
+def test_get_hideable_parent_div_visible(components, expected):
+    assert _is_hidden(components) == expected

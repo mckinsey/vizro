@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -28,14 +28,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-# TODO: Check whether to add only check ishidden
-def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] = None):
-    """Hides the parent container if all the children containers are either hidden or None."""
-    return (
-        html.Div(id=parent_id, hidden=True)
-        if all(div is None or getattr(div, "hidden", False) for div in children)
-        else html.Div(children=children, id=parent_id)
-    )
+def _is_hidden(components: List[html.Div]):
+    """Returns True if all components are either None and/or have hidden=True."""
+    return all(div is None or getattr(div, "hidden", False) for div in components)
 
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
@@ -158,13 +153,13 @@ class Dashboard(VizroBaseModel):
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
-            _get_hideable_parent_div(left_header_divs, parent_id="left-header"),
+            html.Div(left_header_divs, id="left-header", hidden=_is_hidden(left_header_divs)),
             page_divs["nav-panel"],
             page_divs["control-panel"],
         ]
 
-        left_sidebar = _get_hideable_parent_div(left_sidebar_divs, parent_id="left-sidebar")
-        left_main = _get_hideable_parent_div(left_main_divs, parent_id="left-main")
+        left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_is_hidden(left_sidebar_divs))
+        left_main = html.Div(left_main_divs, id="left-main", hidden=_is_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
         right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
