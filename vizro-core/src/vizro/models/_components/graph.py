@@ -1,7 +1,7 @@
 import logging
 from typing import List, Literal
 
-from dash import ctx, dcc
+from dash import ctx, dcc, html
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -34,6 +34,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(..., import_path=px)
     actions: List[Action] = []
+    _title: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("figure")
@@ -70,14 +71,25 @@ class Graph(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
+
+    def _set_title(self):
+        if "title" in self.figure._CapturedCallable__bound_arguments:
+            graph_title = self.figure._CapturedCallable__bound_arguments["title"]
+            self._title = graph_title
+        else:
+            self._title = None
+    @_log_call
+    def pre_build(self):
+        self._set_title()
+        self.figure._CapturedCallable__bound_arguments["title"] = ""
+
     @_log_call
     def build(self):
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
-        return dcc.Loading(
-            dcc.Graph(
+        graph = dcc.Graph(
                 id=self.id,
                 figure=go.Figure(
                     layout={
@@ -93,10 +105,20 @@ class Graph(VizroBaseModel):
                     "responsive": True,
                 },
                 className="chart_container",
-            ),
-            color="grey",
-            parent_className="loading-container",
+            )
+
+        graph_div = html.Div(
+            children=[
+                html.P(self._title) if self._title else html.P(hidden=True),
+                dcc.Loading(
+                    graph,
+                    color="grey",
+                    parent_className="loading-container",
+                )
+            ],
+            style={"height": "96%"}
         )
+        return graph_div
 
     @staticmethod
     def _update_theme(fig: go.Figure, theme_selector: bool):
