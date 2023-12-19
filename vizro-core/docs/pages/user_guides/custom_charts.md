@@ -37,7 +37,7 @@ Building on the above, there are several routes one can take. The following exam
 
 ## Enhanced `plotly.express` chart with reference line
 
-!!! example "Custom waterfall chart"
+!!! example "Custom `plotly.express` scatter chart"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -95,7 +95,7 @@ Building on the above, there are several routes one can take. The following exam
 
 The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [this](https://plotly.com/python/waterfall-charts/) tutorial.
 
-!!! example "Custom waterfall chart"
+!!! example "Custom `go.Figure()` waterfall chart"
     === "app.py"
         ```py
         import pandas as pd
