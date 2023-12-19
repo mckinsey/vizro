@@ -91,9 +91,13 @@ class Dashboard(VizroBaseModel):
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
-            path = page.path if order else "/"
             dash.register_page(
-                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+                module=page.id,
+                name=page.title,
+                title=f"{self.title}: {page.title}" if self.title else page.title,
+                path=page.path if order else "/",
+                order=order,
+                layout=partial(self._make_page_layout, page),
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
