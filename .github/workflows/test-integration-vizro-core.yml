@@ -43,7 +43,7 @@ jobs:
       - name: Install Chrome and chromedriver
         id: chrome_install
         run: |
-          echo "chrome_version=119.0.6045.105" >> $GITHUB_OUTPUT
+          export chrome_version=119.0.6045.105
           sudo apt-get update
           sudo apt-get install libu2f-udev -y
           wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_$chrome_version-1_amd64.deb"
