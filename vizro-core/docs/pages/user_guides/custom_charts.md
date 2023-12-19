@@ -29,7 +29,11 @@ def minimal_example(data_frame:pd.DataFrame=None):
     return go.Figure()
 ```
 
-Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles:
+Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
+
+!!! tip
+
+    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md). We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be extremely versatile in achieving custom functionality.
 
 ## Enhanced `plotly.express` chart with reference line
 
@@ -65,13 +69,18 @@ Building on the above, there are several routes one can take. The following exam
                 ),
             ],
             controls=[
-                vm.Filter(column="petal_width"),
+                vm.Parameter( # (1)!
+                    targets=["enhanced_scatter.hline"],
+                    selector=vm.Slider(min=2, max=5, step=1, value=3, title="Horizontal line"),
+                ),
             ],
         )
         dashboard = vm.Dashboard(pages=[page_0])
 
         Vizro().build(dashboard).run()
         ```
+
+        1.  Note how we are able to target *any custom argument* of our custom chart. Since there is complete flexibility in terms of what can be derived from such custom arguments this allows for a wide range of customization options by the dashboard user.
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration
@@ -136,13 +145,15 @@ The below examples shows a more involved use-case. We create and style a waterfa
                 ),
             ],
             controls=[
-                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
+                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),# (1)!
             ],
         )
         dashboard = vm.Dashboard(pages=[page_0])
 
         Vizro().build(dashboard).run()
         ```
+
+        1.  Note how we are able to apply a filter even to a custom chart
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration
