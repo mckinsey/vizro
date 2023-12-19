@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -37,24 +35,26 @@ def callback_context_filter_continent(request):
     continent = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent,
+                        str_id="continent_filter",
+                        triggered=False,
+                    )
+                ],
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
-                )
-            ],
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+                ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -67,31 +67,33 @@ def callback_context_filter_continent_and_pop(request):
     continent, pop = request.param
     mock_callback_context = {
         "args_grouping": {
-            "filter_interaction": [],
-            "filters": [
-                CallbackTriggerDict(
-                    id="continent_filter",
-                    property="value",
-                    value=continent,
-                    str_id="continent_filter",
+            "external": {
+                "filter_interaction": [],
+                "filters": [
+                    CallbackTriggerDict(
+                        id="continent_filter",
+                        property="value",
+                        value=continent,
+                        str_id="continent_filter",
+                        triggered=False,
+                    ),
+                    CallbackTriggerDict(
+                        id="pop_filter",
+                        property="value",
+                        value=pop,
+                        str_id="pop_filter",
+                        triggered=False,
+                    ),
+                ],
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="on",
+                    value=True,
+                    str_id="theme_selector",
                     triggered=False,
                 ),
-                CallbackTriggerDict(
-                    id="pop_filter",
-                    property="value",
-                    value=pop,
-                    str_id="pop_filter",
-                    triggered=False,
-                ),
-            ],
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            }
         }
     }
     context_value.set(AttributeDict(**mock_callback_context))
@@ -120,14 +122,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-                "box_chart": target_box_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent",
@@ -150,13 +150,11 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -183,14 +181,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent,
-                "box_chart": target_box_filtered_continent,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -223,14 +219,12 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-                "box_chart": target_box_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+            "box_chart": target_box_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
@@ -261,13 +255,11 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected
 
     @pytest.mark.parametrize(
         "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
@@ -308,11 +300,9 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = namedtuple("Outputs", ["box_chart", "scatter_chart"])(
-            **{
-                "scatter_chart": target_scatter_filtered_continent_and_pop,
-                "box_chart": target_box_filtered_continent_and_pop,
-            }
-        )
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent_and_pop,
+            "box_chart": target_box_filtered_continent_and_pop,
+        }
 
-        assert result._asdict() == expected._asdict()
+        assert result == expected

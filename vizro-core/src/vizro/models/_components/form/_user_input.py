@@ -2,7 +2,11 @@ from typing import List, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field
+
+try:
+    from pydantic.v1 import Field
+except ImportError:  # pragma: no cov
+    from pydantic import Field
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -18,14 +22,14 @@ class UserInput(VizroBaseModel):
         actions (Optional[List[Action]]): Defaults to `[]`.
         title (str): Title to be displayed. Defaults to `""`.
         input_type (Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"]):
-            Type of value to validate user input against. Defaults to 'text'.
+            Type of value to validate user input against. Defaults to `"text"`.
     """
 
     type: Literal["user_input"] = "user_input"
     title: str = Field("", description="Title to be displayed")
     placeholder: str = Field("", description="Default text to display in input field")
     input_type: Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"] = Field(
-        "text", description="Type of value to validate user input against. Defaults to 'text'."
+        "text", description="Type of value to validate user input against."
     )
     actions: List[Action] = []
 

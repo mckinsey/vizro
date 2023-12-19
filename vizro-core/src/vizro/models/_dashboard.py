@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, cast
+from typing import TYPE_CHECKING, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
-from pydantic import Field, validator
+
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
@@ -31,7 +35,7 @@ class Dashboard(VizroBaseModel):
         pages (List[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
-        navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
+        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
     """
 
@@ -39,7 +43,7 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Optional[Navigation] = None
+    navigation: Navigation = None  # type: ignore[assignment]
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
@@ -63,9 +67,13 @@ class Dashboard(VizroBaseModel):
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
-            path = page.path if order else "/"
             dash.register_page(
-                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+                module=page.id,
+                name=page.title,
+                title=f"{self.title}: {page.title}" if self.title else page.title,
+                path=page.path if order else "/",
+                order=order,
+                layout=partial(self._make_page_layout, page),
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
@@ -83,7 +91,7 @@ class Dashboard(VizroBaseModel):
         return dbc.Container(
             id="dashboard_container_outer",
             children=[
-                html.Div(id=f"vizro_version_{vizro.__version__}"),
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
@@ -105,7 +113,7 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(children=page.title, id="page_title")
-        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav_bar_outer"]
         nav_panel = navigation["nav_panel_outer"]
 

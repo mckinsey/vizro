@@ -2,7 +2,7 @@
 This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either
 pydantic models, python dictionaries, yaml or json.
 
-To create a dashboard, do the following steps:
+To create a dashboard:
 
 1. Choose one of the possible configuration syntaxes
 2. Create your `pages`, see our guide on [Pages](pages.md)
@@ -191,4 +191,7 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Adding a dashboard title
 
-When providing a `title` to the [`Dashboard`][vizro.models.Dashboard], it will automatically be added as a header for each [`Page`][vizro.models.Page].
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top left of every page. It is also combined with the `title` specified in [`Page`][vizro.models.Page] to set:
+
+- `<title>` HTML element that controls the text labeling a browser window;
+- `<meta>` elements that control how a preview is generated when sharing a link to your dashboard (e.g. on social media).

@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
@@ -135,8 +139,8 @@ class TestChecklistInstantiation:
         with pytest.raises(ValidationError, match="value is not a valid list"):
             Checklist(value="A", options=["A", "B", "C"])
 
-    def test_set_action_via_validator(self, test_action_function):
-        checklist = Checklist(actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        checklist = Checklist(actions=[Action(function=identity_action_function())])
         actions_chain = checklist.actions[0]
         assert actions_chain.trigger.component_property == "value"
 

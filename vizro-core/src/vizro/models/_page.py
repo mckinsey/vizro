@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Optional, TypedDict
+from typing import List, TypedDict
 
 from dash import Input, Output, Patch, callback, dcc, html
-from pydantic import Field, root_validator, validator
+
+try:
+    from pydantic.v1 import Field, root_validator, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, root_validator, validator
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
@@ -31,7 +35,7 @@ class Page(VizroBaseModel):
         components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
-        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
@@ -41,7 +45,7 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
-    layout: Optional[Layout] = None
+    layout: Layout = None  # type: ignore[assignment]
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
@@ -136,9 +140,7 @@ class Page(VizroBaseModel):
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for component, grid_coord in zip(
-                self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
-            )
+            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
         components_container = self._create_component_container(components_content)
         return html.Div([control_panel, components_container])
@@ -174,11 +176,11 @@ class Page(VizroBaseModel):
                 html.Div(
                     components_content,
                     style={
-                        "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                        "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"  # type: ignore[union-attr]
+                        "gridRowGap": self.layout.row_gap,
+                        "gridColumnGap": self.layout.col_gap,
+                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
                         f"minmax({self.layout.col_min_width}, 1fr))",
-                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"  # type: ignore[union-attr]
+                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"
                         f"minmax({self.layout.row_min_height}, 1fr))",
                     },
                     className="component_container_grid",

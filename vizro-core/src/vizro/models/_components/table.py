@@ -3,7 +3,11 @@ from typing import List, Literal
 
 from dash import dash_table, dcc, html
 from pandas import DataFrame
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
 from vizro.managers import data_manager
@@ -38,7 +42,7 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
+    set_actions = _action_validator_factory("active_cell")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

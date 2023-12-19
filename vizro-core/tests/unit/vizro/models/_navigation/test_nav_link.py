@@ -2,10 +2,15 @@
 import re
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
 from dash import html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -30,6 +35,11 @@ class TestNavLinkInstantiation:
         assert nav_link.label == "Homepage"
         assert nav_link.icon == "home"
         assert nav_link.pages == pages_as_list
+
+    @pytest.mark.parametrize("icon", ["Bar Chart", "bar chart", "bar_chart", "Bar_Chart", " bar_chart "])
+    def test_validate_icon(self, icon):
+        nav_link = vm.NavLink(icon=icon, label="Label")
+        assert nav_link.icon == "bar_chart"
 
     def test_nav_link_valid_pages_as_dict(self, pages_as_dict):
         nav_link = vm.NavLink(pages=pages_as_dict, label="Label")
@@ -68,17 +78,17 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
+    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
+
     def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_button = dbc.Button(
-            id="nav_link",
-            children=[html.Span("icon", className="material-symbols-outlined")],
+            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
             active=True,
             href="/",
-            className="icon-button",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
@@ -89,11 +99,9 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.Button(
-            id="nav_link",
-            children=[html.Span("icon", className="material-symbols-outlined")],
+            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
             active=False,
             href="/",
-            className="icon-button",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav_panel_outer" not in built_nav_link

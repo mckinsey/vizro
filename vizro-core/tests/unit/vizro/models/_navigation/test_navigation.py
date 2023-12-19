@@ -5,7 +5,11 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -81,9 +85,7 @@ class TestNavigationBuildMethod:
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(
-            built_navigation["nav_bar_outer"],
-            html.Div(className="hidden", id="nav_bar_outer"),
-            keys_to_strip={"children"},
+            built_navigation["nav_bar_outer"], html.Div(hidden=True, id="nav_bar_outer"), keys_to_strip={}
         )
         assert_component_equal(
             built_navigation["nav_panel_outer"],
