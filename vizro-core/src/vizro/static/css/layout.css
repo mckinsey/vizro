@@ -75,7 +75,7 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-.control_panel {
+#control_panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -83,7 +83,7 @@
   padding: 4px 0 24px 0;
 }
 
-.control_panel:not(:empty) {
+#control_panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 

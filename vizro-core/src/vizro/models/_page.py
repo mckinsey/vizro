@@ -24,7 +24,7 @@ from .types import ComponentType, ControlType
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
 class _PageBuildType(TypedDict):
-    control_panel_outer: html.Div
+    control_panel: html.Div
     component_container_outer: html.Div
 
 
@@ -128,9 +128,9 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
-            html.Div(children=[*controls_content], className="control_panel", id="control_panel_outer")
+            html.Div(children=[*controls_content], id="control_panel")
             if controls_content
-            else html.Div(hidden=True, id="control_panel_outer")
+            else html.Div(hidden=True, id="control_panel")
         )
         components_content = [
             html.Div(
