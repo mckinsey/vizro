@@ -113,8 +113,8 @@ class TestDunderMethodsTable:
         with pytest.raises(KeyError):
             table["unknown_args"]
 
-    def test_set_action_via_validator(self, standard_dash_table, test_action_function):
-        table = vm.Table(figure=standard_dash_table, actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
+        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
         actions_chain = table.actions[0]
         assert actions_chain.trigger.component_property == "active_cell"
 

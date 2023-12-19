@@ -1,4 +1,6 @@
-# Vizro-AI README
+# Vizro-AI
+
+[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://pypi.org/project/vizro/)
 
 Vizro-AI is a tool for generating visualizations.
 
