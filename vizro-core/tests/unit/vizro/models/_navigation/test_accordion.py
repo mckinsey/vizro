@@ -110,8 +110,6 @@ class TestAccordionBuild:
         ),
     ]
 
-
-
     @pytest.mark.parametrize("pages, expected", test_cases)
     def test_accordion(self, pages, expected):
         accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
