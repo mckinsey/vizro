@@ -103,7 +103,7 @@
   width: 100%;
 }
 
-div.page_container .accordion-item-button {
+#page_container .accordion-item-button {
   align-items: center;
   background-color: inherit;
   color: var(--text-secondary);
@@ -132,17 +132,17 @@ div.page_container .accordion-item-button {
   width: 100%;
 }
 
-div.page_container .accordion-item-button:focus {
+#page_container .accordion-item-button:focus {
   background-color: var(--background-selected);
   color: var(--text-primary);
 }
 
-div.page_container .accordion-item-button:hover {
+#page_container .accordion-item-button:hover {
   background-color: var(--state-overlays-selected-hover);
   color: var(--text-primary);
 }
 
-div.page_container .accordion-button:hover {
+#page_container .accordion-button:hover {
   color: var(--text-primary);
 }
 

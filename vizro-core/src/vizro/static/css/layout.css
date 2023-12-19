@@ -1,4 +1,4 @@
-.page_container {
+#page_container {
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -19,12 +19,12 @@
   gap: var(--spacing-06);
 }
 
-.left_side {
+#left-side {
   display: flex;
   flex-direction: row;
 }
 
-.right_side {
+#right_side {
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-.right-header {
+#right-header {
   align-items: baseline;
   display: flex;
   flex-direction: row;

@@ -40,6 +40,7 @@ def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] 
     )
 
 
+# LN: Does this make sense? Can I use dash notation?
 class PageDivs(html.Div):
     """Stores all relevant containers for simplified access when re-arranging containers on page."""
 
@@ -158,15 +159,13 @@ class Dashboard(VizroBaseModel):
 
         left_sidebar = _get_hideable_parent_div(children=left_sidebar_divs, parent_id="left-sidebar")
         left_main = _get_hideable_parent_div(children=left_main_divs, parent_id="left-main")
-        left_side = html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
+        left_side = html.Div(children=[left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div(
-            children=[page_divs["page_title"], page_divs["theme_selector"]], className="right-header"
-        )
+        right_header = html.Div(children=[page_divs["page_title"], page_divs["theme_selector"]], id="right-header")
         right_main = page_divs["component_container_outer"]
-        right_side = html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
+        right_side = html.Div(children=[right_header, right_main], id="right_side")
 
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+        return html.Div([left_side, right_side], id="page_container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
