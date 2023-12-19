@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -28,8 +28,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-# LN: Hesitant to convert it to a private method as I can imagine this function could be re-used
-# in other models as well. Would leave in here for now?
+# TODO: Check whether to add only check ishidden
 def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] = None):
     """Hides the parent container if all the children containers are either hidden or None."""
     return (
@@ -39,17 +38,22 @@ def _get_hideable_parent_div(children: List[html.Div], parent_id: Optional[str] 
     )
 
 
-# LN: Does this make sense? Can I use dash notation?
-class PageDivs(html.Div):
-    """Stores all relevant containers for simplified access when re-arranging containers on page."""
-
-    dashboard_title: html.Div
-    settings: html.Div
-    page_title: html.H2
-    nav_bar: html.Div
-    nav_panel: html.Div
-    control_panel: html.Div
-    components: html.Div
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfills by making the expected keys explicit.
+_PageDivsType = TypedDict(
+    "_PageDivsType",
+    {
+        "dashboard-title": html.Div,
+        "settings": html.Div,
+        "page-title": html.H2,
+        "nav-bar": html.Div,
+        "nav-panel": html.Div,
+        "control-panel": html.Div,
+        "components": html.Div,
+    },
+)
 
 
 class Dashboard(VizroBaseModel):
@@ -123,7 +127,7 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
-    def _get_page_divs(self, page: Page) -> PageDivs:
+    def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
             html.Div([html.H2(self.title)], id="dashboard-title")
@@ -139,35 +143,35 @@ class Dashboard(VizroBaseModel):
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_title = html.H2(page.title, id="page_title")
+        page_title = html.H2(page.title, id="page-title")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
-        nav_bar = navigation["nav_bar"]
-        nav_panel = navigation["nav_panel"]
+        nav_bar = navigation["nav-bar"]
+        nav_panel = navigation["nav-panel"]
 
         # Different across pages
         page_content: _PageBuildType = page.build()
-        control_panel = page_content["control_panel"]
+        control_panel = page_content["control-panel"]
         components = page_content["components"]
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: html.Div):
         left_header_divs = [page_divs["dashboard-title"]]
-        left_sidebar_divs = [page_divs["nav_bar"]]
+        left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
             _get_hideable_parent_div(left_header_divs, parent_id="left-header"),
-            page_divs["nav_panel"],
-            page_divs["control_panel"],
+            page_divs["nav-panel"],
+            page_divs["control-panel"],
         ]
 
         left_sidebar = _get_hideable_parent_div(left_sidebar_divs, parent_id="left-sidebar")
         left_main = _get_hideable_parent_div(left_main_divs, parent_id="left-main")
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div([page_divs["page_title"], page_divs["settings"]], id="right-header")
+        right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
         right_main = page_divs["components"]
-        right_side = html.Div([right_header, right_main], id="right_side")
+        right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page_container")
+        return html.Div([left_side, right_side], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)

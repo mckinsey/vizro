@@ -30,6 +30,4 @@ def _validate_pages(pages):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-class _NavBuildType(TypedDict):
-    nav_bar: html.Div
-    nav_panel: html.Div
+_NavBuildType = TypedDict("_NavBuildType", {"nav-bar": html.Div, "nav-panel": html.Div})

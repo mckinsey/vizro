@@ -66,10 +66,10 @@ class NavBar(VizroBaseModel):
         # components by id easily instead of needing to iterate through a nested list.
         built_items = html.Div([item.build(active_page_id=active_page_id) for item in self.items])
         buttons = [built_items[item.id] for item in self.items]
-        if "nav_panel" in built_items:
-            nav_panel = built_items["nav_panel"]
+        if "nav-panel" in built_items:
+            nav_panel = built_items["nav-panel"]
         else:
             # Active page is not in navigation at all, so hide navigation panel.
-            nav_panel = html.Div(hidden=True, id="nav_panel")
+            nav_panel = html.Div(hidden=True, id="nav-panel")
 
-        return html.Div([html.Div(buttons, id="nav_bar"), nav_panel])
+        return html.Div([html.Div(buttons, id="nav-bar"), nav_panel])

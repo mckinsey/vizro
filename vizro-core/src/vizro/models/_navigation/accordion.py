@@ -40,10 +40,10 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # Note build does not return _NavBuildType but just a single html.Div with id="nav_panel".
+        # Note build does not return _NavBuildType but just a single html.Div with id="nav-panel".
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
-            return html.Div(hidden=True, id="nav_panel")
+            return html.Div(hidden=True, id="nav-panel")
 
         accordion_items = []
         for page_group, page_members in self.pages.items():
@@ -67,7 +67,7 @@ class Accordion(VizroBaseModel):
                     always_open=True,
                 ),
             ],
-            id="nav_panel",
+            id="nav-panel",
         )
 
     def _create_accordion_buttons(self, pages, active_page_id):

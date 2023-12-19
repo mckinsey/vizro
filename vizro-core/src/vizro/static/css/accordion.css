@@ -104,7 +104,7 @@
   width: 100%;
 }
 
-#page_container .accordion-item-button {
+#page-container .accordion-item-button {
   align-items: center;
   background-color: inherit;
   color: var(--text-secondary);
@@ -133,17 +133,17 @@
   width: 100%;
 }
 
-#page_container .accordion-item-button:focus {
+#page-container .accordion-item-button:focus {
   background-color: var(--background-selected);
   color: var(--text-primary);
 }
 
-#page_container .accordion-item-button:hover {
+#page-container .accordion-item-button:hover {
   background-color: var(--state-overlays-selected-hover);
   color: var(--text-primary);
 }
 
-#page_container .accordion-button:hover {
+#page-container .accordion-button:hover {
   color: var(--text-primary);
 }
 

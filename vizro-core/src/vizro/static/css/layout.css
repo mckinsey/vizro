@@ -1,4 +1,4 @@
-#page_container {
+#page-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -22,7 +22,7 @@
   flex-direction: row;
 }
 
-#right_side {
+#right-side {
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
@@ -62,17 +62,17 @@
   width: 100%;
 }
 
-#nav_panel {
+#nav-panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 
-#nav_panel:not(:empty) {
+#nav-panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-#control_panel {
+#control-panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -80,7 +80,7 @@
   padding: 4px 0 24px 0;
 }
 
-#control_panel:not(:empty) {
+#control-panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 

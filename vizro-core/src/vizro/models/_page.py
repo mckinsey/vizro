@@ -18,14 +18,11 @@ from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
 
 from .types import ComponentType, ControlType
 
-
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-class _PageBuildType(TypedDict):
-    control_panel: html.Div
-    components: html.Div
+_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "components": html.Div})
 
 
 class Page(VizroBaseModel):
@@ -128,9 +125,9 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = (
-            html.Div(children=[*controls_content], id="control_panel")
+            html.Div(children=[*controls_content], id="control-panel")
             if controls_content
-            else html.Div(hidden=True, id="control_panel")
+            else html.Div(hidden=True, id="control-panel")
         )
         components_content = [
             html.Div(
