@@ -76,7 +76,7 @@ class Dashboard(VizroBaseModel):
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
-                name=page.title,  
+                name=page.title,
                 description=page.description,
                 image=meta_image,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
