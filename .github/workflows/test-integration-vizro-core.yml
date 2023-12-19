@@ -45,7 +45,6 @@ jobs:
       # https://github.com/plotly/dash/issues/2712
       # https://bugs.chromium.org/p/chromedriver/issues/detail?id=4665
       - name: Install Chrome and chromedriver
-        id: chrome_install
         run: |
           export chrome_version=119.0.6045.105
           sudo apt-get update
