@@ -78,7 +78,7 @@ class NavLink(VizroBaseModel):
             active=item_active,
         )
 
-        # Only build the nav_selector (id="nav_panel_outer") if the item is active.
+        # Only build the nav_selector (id="nav_panel") if the item is active.
         if item_active:
             return html.Div([button, self._nav_selector.build(active_page_id=active_page_id)])
 

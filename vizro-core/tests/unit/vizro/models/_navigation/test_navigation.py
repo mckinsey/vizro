@@ -86,9 +86,9 @@ class TestNavigationBuildMethod:
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(built_navigation["nav_bar"], html.Div(hidden=True, id="nav_bar"), keys_to_strip={})
         assert_component_equal(
-            built_navigation["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+            built_navigation["nav_panel"], html.Div(id="nav_panel"), keys_to_strip={"children", "className"}
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel"].children)
 
     def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
@@ -100,11 +100,11 @@ class TestNavigationBuildMethod:
             keys_to_strip={"children"},
         )
         assert_component_equal(
-            built_navigation["nav_panel_outer"],
-            html.Div(id="nav_panel_outer"),
+            built_navigation["nav_panel"],
+            html.Div(id="nav_panel"),
             keys_to_strip={"children", "className"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel"].children)
 
     def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
@@ -116,7 +116,7 @@ class TestNavigationBuildMethod:
             keys_to_strip={"children"},
         )
         assert_component_equal(
-            built_navigation["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
+            built_navigation["nav_panel"],
+            html.Div(id="nav_panel", hidden=True),
             keys_to_strip={"children"},
         )

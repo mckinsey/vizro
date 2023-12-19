@@ -91,7 +91,7 @@ class TestNavLinkBuildMethod:
             href="/",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
+        assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel"].children)
 
     def test_nav_link_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
@@ -104,4 +104,4 @@ class TestNavLinkBuildMethod:
             href="/",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert "nav_panel_outer" not in built_nav_link
+        assert "nav_panel" not in built_nav_link

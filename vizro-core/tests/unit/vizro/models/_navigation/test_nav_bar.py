@@ -95,9 +95,9 @@ class TestNavBarBuildMethod:
         )
         assert_component_equal(built_nav_bar["nav_bar"], expected_button)
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(id="nav_panel_outer"), keys_to_strip={"children", "className"}
+            built_nav_bar["nav_panel"], html.Div(id="nav_panel"), keys_to_strip={"children", "className"}
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
+        assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel"].children)
 
     def test_nav_bar_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -119,8 +119,8 @@ class TestNavBarBuildMethod:
         )
         assert_component_equal(built_nav_bar["nav_bar"], expected_buttons)
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
+            built_nav_bar["nav_panel"],
+            html.Div(id="nav_panel", hidden=True),
             keys_to_strip={"children", "className"},
         )
 
@@ -138,9 +138,7 @@ class TestNavBarBuildMethod:
             ]
         )
         assert_component_equal(built_nav_bar["nav_bar"], expected_button)
-        assert_component_equal(
-            built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"), keys_to_strip={}
-        )
+        assert_component_equal(built_nav_bar["nav_panel"], html.Div(hidden=True, id="nav_panel"), keys_to_strip={})
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -162,7 +160,7 @@ class TestNavBarBuildMethod:
         )
         assert_component_equal(built_nav_bar["nav_bar"], expected_buttons)
         assert_component_equal(
-            built_nav_bar["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
+            built_nav_bar["nav_panel"],
+            html.Div(id="nav_panel", hidden=True),
             keys_to_strip={},
         )

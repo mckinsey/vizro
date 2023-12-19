@@ -32,4 +32,4 @@ def _validate_pages(pages):
 # to see what contract the component fulfills by making the expected keys explicit.
 class _NavBuildType(TypedDict):
     nav_bar: html.Div
-    nav_panel_outer: html.Div
+    nav_panel: html.Div
