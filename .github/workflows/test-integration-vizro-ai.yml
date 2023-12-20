@@ -8,7 +8,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "30 10 * * 1"
+    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
 env:
   PYTHONUNBUFFERED: 1
