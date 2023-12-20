@@ -4,7 +4,7 @@ import re
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
-from asserts import assert_component_equal, STRIP_ALL
+from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 
 try:
