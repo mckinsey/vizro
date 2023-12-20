@@ -60,11 +60,3 @@ def vizro_app():
     app instantiation.pages.
     """
     return Vizro()
-
-
-@pytest.fixture()
-def prebuilt_two_page_dashboard(vizro_app, page_1, page_2):
-    """Minimal two page dashboard, used mainly for testing navigation."""
-    dashboard = vm.Dashboard(pages=[page_1, page_2])
-    dashboard.pre_build()
-    return dashboard

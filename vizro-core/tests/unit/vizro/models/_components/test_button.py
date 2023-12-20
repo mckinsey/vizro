@@ -1,28 +1,12 @@
 """Unit tests for vizro.models.Button."""
-import json
 
 import dash_bootstrap_components as dbc
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import html
 
 import vizro.models as vm
 from vizro.actions import export_data
-
-
-@pytest.fixture
-def expected_button():
-    return html.Div(
-        [
-            dbc.Button(
-                id="button_id",
-                children="Click me!",
-                className="button_primary",
-            ),
-        ],
-        className="button_container",
-        id="button_id_outer",
-    )
 
 
 class TestButtonInstantiation:
@@ -53,9 +37,11 @@ class TestButtonInstantiation:
 
 
 class TestBuildMethod:
-    def test_button_build(self, expected_button):
-        button = vm.Button(id="button_id", text="Click me!").build()
-        result = json.loads(json.dumps(button, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_button, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
+    def test_button_build(self):
+        button = vm.Button(id="button_id", text="My text").build()
+        expected = html.Div(
+            dbc.Button(id="button_id", children="My text", className="button_primary"),
+            className="button_container",
+            id="button_id_outer",
+        )
+        assert_component_equal(button, expected)
