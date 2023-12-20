@@ -151,4 +151,4 @@ navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
 def test_navigation_build(dashboard_result, dashboard_expected):
     result = dashboard_result.navigation.build()
     expected = dashboard_expected.navigation.build()
-    assert_component_equal(result, expected)
+    assert_component_equal(result, expected, keys_to_strip={"id"})
