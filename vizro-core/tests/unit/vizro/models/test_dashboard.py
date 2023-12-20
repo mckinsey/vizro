@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
@@ -126,6 +127,27 @@ class TestDashboardPreBuild:
             description="My description",
             image=None,
             title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    @pytest.mark.parametrize(
+        "image_filename", ["app.png", "app.svg", "folder/app.png", "folder/app.svg", "logo.png", "logo.svg"]
+    )
+    def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_filename):
+        Path(tmp_path / "folder").mkdir()
+        Path(tmp_path / image_filename).touch()
+        vizro_app = vizro.Vizro(assets_folder=tmp_path)
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1], title="My dashboard").pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            description="",
+            image=image_filename,
+            title="My dashboard: Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
