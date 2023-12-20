@@ -33,11 +33,12 @@ Building on the above, there are several routes one can take. The following exam
 
 !!! tip
 
-    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md). We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be extremely versatile in achieving custom functionality.
+    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.  
+
 
 ## Enhanced `plotly.express` chart with reference line
 
-!!! example "Custom `plotly.express` scatter chart"
+!!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -47,7 +48,7 @@ Building on the above, there are several routes one can take. The following exam
 
 
         @capture("graph")
-        def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
+        def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None): # (1)!
             fig = px.scatter(data_frame=data_frame, x=x, y=y, color=color, size=size)
             fig.add_hline(y=hline, line_color="gray")
             return fig
@@ -69,7 +70,7 @@ Building on the above, there are several routes one can take. The following exam
                 ),
             ],
             controls=[
-                vm.Parameter( # (1)!
+                vm.Parameter( # (2)!
                     targets=["enhanced_scatter.hline"],
                     selector=vm.Slider(min=2, max=5, step=1, value=3, title="Horizontal line"),
                 ),
@@ -80,7 +81,8 @@ Building on the above, there are several routes one can take. The following exam
         Vizro().build(dashboard).run()
         ```
 
-        1.  Note how we are able to target *any custom argument* of our custom chart. Since there is complete flexibility in terms of what can be derived from such custom arguments this allows for a wide range of customization options by the dashboard user.
+        1.  Note that arguments of the custom chart can be parametrized. Here we choose to parametrize the `hline` argument (see below).
+        2.  Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options. 
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration
@@ -95,7 +97,7 @@ Building on the above, there are several routes one can take. The following exam
 
 The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [this](https://plotly.com/python/waterfall-charts/) tutorial.
 
-!!! example "Custom `go.Figure()` waterfall chart"
+!!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
     === "app.py"
         ```py
         import pandas as pd
