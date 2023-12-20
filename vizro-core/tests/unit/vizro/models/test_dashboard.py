@@ -133,7 +133,7 @@ class TestDashboardPreBuild:
         )
 
     @pytest.mark.parametrize(
-        "image_filename", ["app.png", "app.svg", "folder/app.png", "folder/app.svg", "logo.png", "logo.svg"]
+        "image_path", ["app.png", "app.svg", "images/app.png", "images/app.svg", "logo.png", "logo.svg"]
     )
     def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_filename):
         Path(tmp_path / "folder").mkdir()
