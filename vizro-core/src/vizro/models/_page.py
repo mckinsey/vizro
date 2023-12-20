@@ -46,7 +46,7 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
-    description: str = Field("", description="Page description for meta tags.")
+    description: str = Field("", description="Description for meta tags.")
     layout: Layout = None  # type: ignore[assignment]
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
