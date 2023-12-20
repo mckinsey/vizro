@@ -33,7 +33,7 @@ Building on the above, there are several routes one can take. The following exam
 
 !!! tip
 
-    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.  
+    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.
 
 
 ## Enhanced `plotly.express` chart with reference line
@@ -82,7 +82,7 @@ Building on the above, there are several routes one can take. The following exam
         ```
 
         1.  Note that arguments of the custom chart can be parametrized. Here we choose to parametrize the `hline` argument (see below).
-        2.  Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options. 
+        2.  Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options.
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration
