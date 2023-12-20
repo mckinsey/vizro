@@ -138,7 +138,7 @@ class TestDashboardPreBuild:
     def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_filename):
         Path(tmp_path / "folder").mkdir()
         Path(tmp_path / image_filename).touch()
-        vizro_app = vizro.Vizro(assets_folder=tmp_path)
+        vizro.Vizro(assets_folder=tmp_path)
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(pages=[page_1], title="My dashboard").pre_build()
 
