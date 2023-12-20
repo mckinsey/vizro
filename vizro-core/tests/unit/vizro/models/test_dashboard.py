@@ -130,7 +130,7 @@ class TestDashboardPreBuild:
             className="page_error_container",
         )
 
-        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected, {})
+        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected)
 
 
 class TestDashboardBuild:
