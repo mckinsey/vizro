@@ -110,7 +110,10 @@ class TestPageInstantiation:
         [vm.Checklist(), vm.Dropdown(), vm.RadioItems(), vm.RangeSlider(), vm.Slider()],
     )
     def test_invalid_component_types(self, test_component):
-        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'tabs', 'container')")):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'tabs', 'container')"),
+        ):
             vm.Page(title="Page Title", components=[test_component])
 
     def test_valid_control_types(self, standard_px_chart):
