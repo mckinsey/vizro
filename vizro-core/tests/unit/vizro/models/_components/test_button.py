@@ -39,11 +39,9 @@ class TestButtonInstantiation:
 class TestBuildMethod:
     def test_button_build(self):
         button = vm.Button(id="button_id", text="My text").build()
-        assert_component_equal(
-            button,
-            html.Div(
-                dbc.Button(id="button_id", children="My text", className="button_primary"),
-                className="button_container",
-                id="button_id_outer",
-            ),
+        expected = html.Div(
+            dbc.Button(id="button_id", children="My text", className="button_primary"),
+            className="button_container",
+            id="button_id_outer",
         )
+        assert_component_equal(button, expected)
