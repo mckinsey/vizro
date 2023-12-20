@@ -131,7 +131,6 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
-
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
