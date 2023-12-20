@@ -3,12 +3,12 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, NewType, Tuple, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Dict, Generator, List, NewType, Tuple, Type, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel
+    from vizro.models import Page, VizroBaseModel
 
 rd = random.Random(0)
 
@@ -25,6 +25,8 @@ class ModelManager:
         self.__models: Dict[ModelID, VizroBaseModel] = {}
         self._frozen_state = False
 
+    # TODO: Consider do we need to save "page_id=None, parent_model_id=None" eagerly to the model itself
+    #       and make all searching helper methods much easier?
     @_state_modifier
     def __setitem__(self, model_id: ModelID, model: Model):
         if model_id in self.__models:
@@ -46,11 +48,62 @@ class ModelManager:
         """
         yield from self.__models
 
+    # TODO: Consider do we need to add additional argument "model_page_id=None"
     def _items_with_type(self, model_type: Type[Model]) -> Generator[Tuple[ModelID, Model], None, None]:
         """Iterates through all models of type `model_type` (including subclasses)."""
         for model_id in self:
             if isinstance(self[model_id], model_type):
                 yield model_id, cast(Model, self[model_id])
+
+    # TODO: Consider moving this one to the _callback_mapping_utils.py since it's only used there
+    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:  # type: ignore[return]
+        from vizro.models._action._actions_chain import ActionsChain
+
+        for _, actions_chain in model_manager._items_with_type(ActionsChain):
+            if action_id in [action.id for action in actions_chain.actions]:
+                return self[ModelID(str(actions_chain.trigger.component_id))]
+
+    # TODO: consider returning with yield
+    def _get_model_children(self, model_id: ModelID) -> List[ModelID]:
+        """Gets all components and tabs recursively of the model with the `model_id`."""
+        model_children = []
+
+        def __get_model_children_helper(model: VizroBaseModel) -> None:
+            model_children.append(ModelID(str(model.id)))
+            if hasattr(model, "components"):
+                for sub_model in model.components:
+                    __get_model_children_helper(model=sub_model)
+            if hasattr(model, "tabs"):
+                for sub_model in model.tabs:
+                    __get_model_children_helper(model=sub_model)
+
+        __get_model_children_helper(model=self.__models[model_id])
+        return model_children
+
+    # TODO: Consider moving this one into Dashboard or some util file
+    def _get_model_page(self, model_id: ModelID) -> Page:  # type: ignore[return]
+        """Gets the page id of the page that contains the model with the `model_id`."""
+        from vizro.models import Page
+
+        for page_id, _ in model_manager._items_with_type(Page):
+            page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
+            page: Page = cast(Page, self.__models[page_id])
+
+            if hasattr(page, "actions"):
+                for actions_chain in page._get_page_actions_chains():
+                    page_model_ids.append(actions_chain.id)
+                    for action in actions_chain.actions:
+                        page_model_ids.append(action.id)
+
+            for control in page.controls:
+                page_model_ids.append(control.id)
+                if hasattr(control, "selector") and control.selector:
+                    page_model_ids.append(control.selector.id)
+
+            # TODO: Add navigation, accordions and other page objects
+
+            if model_id in page_model_ids:
+                return page
 
     @staticmethod
     def _generate_id() -> ModelID:

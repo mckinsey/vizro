@@ -11,7 +11,8 @@ except ImportError:  # pragma: no cov
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
-from vizro.managers._model_manager import DuplicateIDError
+from vizro.managers import model_manager
+from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
@@ -104,10 +105,34 @@ class Page(VizroBaseModel):
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
 
+    def _get_page_actions_chains(self) -> List[ActionsChain]:
+        """Gets all ActionsChains present on the page."""
+        page_actions_chains = []
+
+        for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id))):
+            model = model_manager[model_id]
+            if hasattr(model, "actions"):
+                page_actions_chains.extend(model.actions)
+
+        for control in self.controls:
+            if hasattr(control, "selector") and control.selector:
+                page_actions_chains.extend(control.selector.actions)
+
+        return page_actions_chains
+
+    def _get_page_model_ids_with_figure(self) -> List[ModelID]:
+        """Gets all components that have a registered dataframe on the page."""
+        return [
+            model_id
+            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
+            if hasattr(model_manager[model_id], "figure")
+        ]
+
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        if any(hasattr(component, "figure") for component in self.components):
+        targets = list(self._get_page_model_ids_with_figure())
+        if targets:
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
@@ -117,7 +142,8 @@ class Page(VizroBaseModel):
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(page_id=self.id)
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                            function=_on_page_load(targets=targets),
                         )
                     ],
                 )
@@ -159,7 +185,11 @@ class Page(VizroBaseModel):
         # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
-        themed_components = [component for component in self.components if hasattr(component, "_update_theme")]
+        themed_components = [
+            model_manager[model_id]
+            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
+            if hasattr(model_manager[model_id], "_update_theme")
+        ]
         if themed_components:
 
             @callback(
