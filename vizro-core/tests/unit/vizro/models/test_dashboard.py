@@ -15,8 +15,8 @@ except ImportError:  # pragma: no cov
 
 import vizro
 import vizro.models as vm
-from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro import Vizro
+from vizro.actions._action_loop._action_loop import ActionLoop
 
 
 class TestDashboardInstantiation:
