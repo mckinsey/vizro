@@ -4,7 +4,7 @@ import re
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
-from asserts import assert_component_equal
+from asserts import assert_component_equal, STRIP_ALL
 from dash import html
 
 try:
@@ -99,7 +99,7 @@ class TestNavBarBuildMethod:
             html.Div(id="nav_panel_outer", className="nav_panel"),
             keys_to_strip={"children"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_nav_bar["nav_panel_outer"].children)
+        assert_component_equal(built_nav_bar["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_bar_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)

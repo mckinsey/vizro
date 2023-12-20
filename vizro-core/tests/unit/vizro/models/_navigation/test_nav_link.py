@@ -4,7 +4,7 @@ import re
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
-from asserts import assert_component_equal
+from asserts import assert_component_equal, STRIP_ALL
 from dash import html
 
 try:
@@ -99,7 +99,7 @@ class TestNavLinkBuildMethod:
             id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav_panel_outer"].children)
+        assert_component_equal(built_nav_link["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_link_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)

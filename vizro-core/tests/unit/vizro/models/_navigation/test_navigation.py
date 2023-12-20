@@ -3,7 +3,7 @@ import re
 
 import dash_bootstrap_components as dbc
 import pytest
-from asserts import assert_component_equal
+from asserts import assert_component_equal, STRIP_ALL
 from dash import html
 
 try:
@@ -90,9 +90,9 @@ class TestNavigationBuildMethod:
             html.Div(id="nav_panel_outer", className="nav_panel"),
             keys_to_strip={"children"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+        assert_component_equal(built_navigation["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict):
+    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict, built_nav_link=None):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
@@ -106,7 +106,7 @@ class TestNavigationBuildMethod:
             html.Div(id="nav_panel_outer", className="nav_panel"),
             keys_to_strip={"children"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav_panel_outer"].children)
+        assert_component_equal(built_navigation["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())

@@ -1,7 +1,7 @@
 """Demo to show how to use asserts. These are not real tests that are run as part of testing, just a teaching aid."""
 from typing import List
 
-from asserts import assert_component_equal
+from asserts import assert_component_equal, STRIP_ALL
 from dash import html
 
 from vizro.models import VizroBaseModel
@@ -42,5 +42,7 @@ def test_Y_build():
     # We don't want to compare the whole component tree here. Instead compare the bit that's specifically in Y and
     # ignore the children:
     assert_component_equal(result, html.Div(id="y", className="container"), keys_to_strip={"children"})
-    # And also compare the "interface" between X and Y:
-    assert all(isinstance(child, html.Div) for child in result.children)
+    # And also compare the "interface" between X and Y. Use STRIP_ALL to not look at any properties of the html.Div.
+    # This is basically the same as doing:
+    # assert all(isinstance(child, html.Div) for child in result.children) and len(result.children) == 4
+    assert_component_equal(result.children, [html.Div()] * 4, keys_to_strip=STRIP_ALL)
