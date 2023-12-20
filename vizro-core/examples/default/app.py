@@ -500,7 +500,7 @@ def create_home_page():
     """Function returns the homepage."""
     page_home = vm.Page(
         title="Homepage",
-        description="Welcome to the Vizro demo app",
+        description="Vizro demo app for studying gapminder data",
         layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
         components=[
             vm.Card(
