@@ -3,7 +3,7 @@ import re
 
 import dash_bootstrap_components as dbc
 import pytest
-from asserts import assert_component_equal
+from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 
 try:
@@ -84,13 +84,15 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(built_navigation["nav-bar"], html.Div(hidden=True, id="nav-bar"), keys_to_strip={})
+        assert_component_equal(built_navigation["nav-bar"], html.Div(hidden=True, id="nav-bar"))
         assert_component_equal(
-            built_navigation["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children", "className"}
+            built_navigation["nav-panel"],
+            html.Div(id="nav-panel"),
+            keys_to_strip={"children"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav-panel"].children)
+        assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict):
+    def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict, built_nav_link=None):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
@@ -102,9 +104,9 @@ class TestNavigationBuildMethod:
         assert_component_equal(
             built_navigation["nav-panel"],
             html.Div(id="nav-panel"),
-            keys_to_strip={"children", "className"},
+            keys_to_strip={"children"},
         )
-        assert all(isinstance(child, dbc.Accordion) for child in built_navigation["nav-panel"].children)
+        assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
@@ -116,7 +118,5 @@ class TestNavigationBuildMethod:
             keys_to_strip={"children"},
         )
         assert_component_equal(
-            built_navigation["nav-panel"],
-            html.Div(id="nav-panel", hidden=True),
-            keys_to_strip={"children"},
+            built_navigation["nav-panel"], html.Div(id="nav-panel", hidden=True), keys_to_strip={"children"}
         )

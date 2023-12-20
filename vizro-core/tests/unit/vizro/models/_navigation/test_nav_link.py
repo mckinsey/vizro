@@ -4,7 +4,7 @@ import re
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
-from asserts import assert_component_equal
+from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 
 try:
@@ -86,12 +86,20 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_button = dbc.Button(
-            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    **self.common_args,
+                )
+            ],
             active=True,
             href="/",
+            className="icon-button",
+            id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert all(isinstance(child, dbc.Accordion) for child in built_nav_link["nav-panel"].children)
+        assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_link_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
@@ -99,9 +107,17 @@ class TestNavLinkBuildMethod:
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.Button(
-            children=[dmc.Tooltip(label="Label", children=[html.Span("icon")], **self.common_args)],
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    **self.common_args,
+                )
+            ],
             active=False,
             href="/",
+            className="icon-button",
+            id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
         assert "nav-panel" not in built_nav_link
