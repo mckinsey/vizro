@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro import Vizro
 
 
 class TestDashboardInstantiation:
@@ -135,12 +136,11 @@ class TestDashboardPreBuild:
     @pytest.mark.parametrize(
         "image_path", ["app.png", "app.svg", "images/app.png", "images/app.svg", "logo.png", "logo.svg"]
     )
-    def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_filename):
-        if image_path.parent != Path("."):
-            Path(tmp_path / image_path.parent).mkdir()
-        Path(tmp_path / image_filename).touch()
-    # at top of file: from vizro import Vizro
-    Vizro(assets_folder=tmp_path)
+    def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_path):
+        if Path(image_path).parent != Path("."):
+            Path(tmp_path / image_path).parent.mkdir()
+        Path(tmp_path / image_path).touch()
+        Vizro(assets_folder=tmp_path)
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(pages=[page_1]).pre_build()
 
@@ -148,7 +148,7 @@ class TestDashboardPreBuild:
             module=page_1.id,
             name="Page 1",
             description="",
-            image=image_filename,
+            image=image_path,
             title="Page 1",
             path="/",
             order=0,
@@ -158,7 +158,7 @@ class TestDashboardPreBuild:
     def test_page_registry_with_images(self, page_1, mocker, tmp_path):
         Path(tmp_path / "app.svg").touch()
         Path(tmp_path / "logo.svg").touch()
-        vizro.Vizro(assets_folder=tmp_path)
+        Vizro(assets_folder=tmp_path)
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(pages=[page_1]).pre_build()
 
@@ -167,7 +167,7 @@ class TestDashboardPreBuild:
             name="Page 1",
             description="",
             image="app.svg",
-            title="My dashboard: Page 1",
+            title="Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
