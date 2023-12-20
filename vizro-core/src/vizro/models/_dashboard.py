@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Literal
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -26,6 +26,23 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+# TODO: Check outputs of these and consolidate
+# TODO: Check if we can fix "if any hidden" check with None
+# TODO: Use IDs instead of className and remove className
+# TODO: Create helper function for getattr(element, "hidden", False)
+
+
+class PageDivs(html.Div):
+    """Stores all relevant containers for simplified access when re-arranging containers on page."""
+
+    dashboard_title: html.Div
+    theme_switch: daq.BooleanSwitch
+    page_title: html.H2
+    nav_bar: html.Div
+    nav_panel: html.Div
+    control_panel: html.Div
+    components: html.Div
 
 
 class Dashboard(VizroBaseModel):
@@ -88,6 +105,13 @@ class Dashboard(VizroBaseModel):
             Input("theme_selector", "on"),
         )
 
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+            Output("collapse", "is_open"),
+            Input("collapse_icon", "n_clicks"),
+            State("collapse", "is_open"),
+        )
+
         return dbc.Container(
             id="dashboard_container_outer",
             children=[
@@ -99,12 +123,12 @@ class Dashboard(VizroBaseModel):
             fluid=True,
         )
 
-    def _make_page_layout(self, page: Page):
+    def _get_page_divs(self, page: Page) -> PageDivs:
         # Identical across pages
         dashboard_title = (
-            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
+            html.Div(children=[html.H2(self.title)], id="dashboard-title")
             if self.title
-            else html.Div(hidden=True, id="dashboard_title_outer")
+            else html.Div(id="dashboard-title", hidden=True)
         )
         theme_switch = daq.BooleanSwitch(
             id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
@@ -120,20 +144,54 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control_panel_outer"]
-        component_container = page_content["component_container_outer"]
+        components = page_content["component_container_outer"]
+        return html.Div([dashboard_title, theme_switch, page_title, nav_bar, nav_panel, control_panel, components])
 
-        # Arrangement
-        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
-        nav_control_elements = [dashboard_title, nav_panel, control_panel]
-        nav_control_panel = (
-            html.Div(nav_control_elements, className="nav_control_panel")
-            if any(not getattr(element, "hidden", False) for element in nav_control_elements)
-            else None
+    def _arrange_page_divs(self, page_divs: html.Div):
+        collapsable_icon = html.Div(
+            children=[html.Span("chevron_right", className="material-symbols-outlined", id="collapse_icon")],
+            className="collapsable-div",
+        )
+        left_header_divs = [page_divs["dashboard-title"]]
+        left_sidebar_divs = [page_divs["nav_bar_outer"]]
+
+        left_header = (
+            html.Div(children=left_header_divs, className="left-header", id="left-header")
+            if any(not getattr(div, "hidden", False) for div in left_header_divs)
+            else html.Div(hidden=True, id="left-header")
+        )
+        left_main_divs = [left_header, page_divs["nav_panel_outer"], page_divs["control_panel_outer"]]
+        left_sidebar = (
+            html.Div(children=left_sidebar_divs, className="left-sidebar", id="left-sidebar")
+            if any(not getattr(div, "hidden", False) for div in left_sidebar_divs)
+            else html.Div(hidden=True, id="left-sidebar")
+        )
+        left_main = (
+            html.Div(left_main_divs, className="left-main", id="left-main")
+            if any(not getattr(div, "hidden", False) for div in left_main_divs)
+            else html.Div(hidden=True, id="left-main")
         )
 
-        left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
-        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+        right_header = html.Div(
+            children=[page_divs["page_title"], page_divs["theme_selector"]], className="right-header"
+        )
+        right_main = page_divs["component_container_outer"]
+        left_side = html.Div(children=[left_sidebar, left_main], className="left_side", id="left_side_outer")
+        collapsable_left_side = dbc.Collapse(
+            children=[left_side],
+            id="collapse",
+            is_open=True,
+            dimension="width",
+            navbar=True,
+        )
+        right_side = html.Div(children=[right_header, right_main], className="right_side", id="right_side_outer")
+        return html.Div(
+            [collapsable_left_side, collapsable_icon, right_side], className="page_container", id="page_container_outer"
+        )
+
+    def _make_page_layout(self, page: Page):
+        page_divs = self._get_page_divs(page=page)
+        return self._arrange_page_divs(page_divs=page_divs)
 
     @staticmethod
     def _make_page_404_layout():
