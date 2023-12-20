@@ -153,6 +153,24 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
+    def test_page_registry_with_images(self, page_1, mocker, tmp_path):
+        Path(tmp_path / "app.svg").touch()
+        Path(tmp_path / "logo.svg").touch()
+        vizro.Vizro(assets_folder=tmp_path)
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1], title="My dashboard").pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            description="",
+            image="app.svg",
+            title="My dashboard: Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
