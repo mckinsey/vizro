@@ -113,9 +113,7 @@ class TestAccordionBuild:
     @pytest.mark.parametrize("pages, expected", test_cases)
     def test_accordion(self, pages, expected):
         accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
-        assert_component_equal(
-            accordion, html.Div(id="nav-panel"), keys_to_strip={"children"}
-        )
+        assert_component_equal(accordion, html.Div(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
 
     def test_accordion_one_page(self):
