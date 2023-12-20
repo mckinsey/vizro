@@ -1,7 +1,7 @@
 import logging
 from typing import List, Literal
 
-from dash import ctx, dcc
+from dash import ctx, dcc, html
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -34,6 +34,7 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(..., import_path=px)
     actions: List[Action] = []
+    _title: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_property: str = PrivateAttr("figure")
@@ -71,32 +72,48 @@ class Graph(VizroBaseModel):
         return self.figure[arg_name]
 
     @_log_call
+    def pre_build(self):
+        try:
+            self._title = self.figure._CapturedCallable__bound_arguments["title"]
+            self.figure._CapturedCallable__bound_arguments["title"] = None
+        except KeyError:
+            self._title = None
+
+    @_log_call
     def build(self):
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
-        return dcc.Loading(
-            dcc.Graph(
-                id=self.id,
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
+
+        graph_div = html.Div(
+            children=[
+                html.P(self._title, className="tile-title"),
+                dcc.Loading(
+                    dcc.Graph(
+                        id=self.id,
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                        },
+                        className="chart_container",
+                    ),
+                    color="grey",
+                    parent_className="loading-container",
                 ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
-                className="chart_container",
-            ),
-            color="grey",
-            parent_className="loading-container",
+            ],
+            style={"height": "96%"},  # inline style to be removed
         )
+        return graph_div
 
     @staticmethod
     def _update_theme(fig: go.Figure, theme_selector: bool):
