@@ -71,17 +71,14 @@ class Graph(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
-
-    def _set_title(self):
-        if "title" in self.figure._CapturedCallable__bound_arguments:
-            graph_title = self.figure._CapturedCallable__bound_arguments["title"]
-            self._title = graph_title
-        else:
-            self._title = None
     @_log_call
     def pre_build(self):
-        self._set_title()
-        self.figure._CapturedCallable__bound_arguments["title"] = ""
+        try:
+            self._title = self.figure._CapturedCallable__bound_arguments["title"]
+            self.figure._CapturedCallable__bound_arguments["title"] = None
+        except KeyError:
+            self._title = None
+
 
     @_log_call
     def build(self):
@@ -109,7 +106,7 @@ class Graph(VizroBaseModel):
 
         graph_div = html.Div(
             children=[
-                html.P(self._title) if self._title else html.P(hidden=True),
+                html.P(self._title, className="tile-title"),
                 dcc.Loading(
                     graph,
                     color="grey",

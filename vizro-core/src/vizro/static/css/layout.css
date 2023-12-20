@@ -156,3 +156,8 @@ div.dashboard_container .custom-tooltip {
   text-wrap: wrap;
   white-space: pre-wrap;
 }
+
+.tile-title {
+  font-size: 16px;
+  color: var(--text-primary);
+}
