@@ -35,12 +35,11 @@ at the same time, Vizro is easily extensible, so that you can tweak any componen
     - change any fields of any models (e.g. changing the title field from `Optional` to have a default)
 
 
-You can extend an existing component by sub-classing the component you want to alter.
-The below example is a bit lengthy, but the annotations should guide you through the most important lines of that code. Remember that when sub-classing a component
+You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
 you have access to all fields of all parent models, but you can choose to overwrite any field or method, or define new ones.
 
 The aim for this example is to enhance the [`RangeSlider`][vizro.models.RangeSlider] model so that
-one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. You will note that it is often easier to copy parts of the source-code when needing to change complex methods
+one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. You will note that it is often easier to call `super()` when overloading a complex method
 such as the `build` method in the below example instead of attempting to write it from scratch.
 
 In this case, the general three steps translate into:
@@ -73,8 +72,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ??? example "Example based on existing component"
 
     === "app.py"
-        ``` py linenums="1" hl_lines="66 67"
-        from dash import Input, Output, State, callback, callback_context, dcc, html
+        ``` py linenums="1" hl_lines="18 19"
         from typing_extensions import Literal
 
         import vizro.models as vm
@@ -88,103 +86,18 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         class TooltipNonCrossRangeSlider(vm.RangeSlider):
             """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
-            type: Literal["other_range_slider"] = "other_range_slider" # (1)!
+            type: Literal["other_range_slider"] = "other_range_slider"  # (1)!
 
             def build(self):  # (2)!
-                value = self.value or [self.min, self.max]  # type: ignore[list-item]
-
-                output = [
-                    Output(f"{self.id}_start_value", "value"),
-                    Output(f"{self.id}_end_value", "value"),
-                    Output(self.id, "value"),
-                    Output(f"temp-store-range_slider-{self.id}", "data"),
-                ]
-                input = [
-                    Input(f"{self.id}_start_value", "value"),
-                    Input(f"{self.id}_end_value", "value"),
-                    Input(self.id, "value"),
-                    State(f"temp-store-range_slider-{self.id}", "data"),
-                ]
-
-                @callback(output=output, inputs=input)
-                def update_slider_values(start, end, slider, input_store):
-                    trigger_id = callback_context.triggered_id
-                    if trigger_id == f"{self.id}_start_value" or trigger_id == f"{self.id}_end_value":
-                        start_text_value, end_text_value = start, end
-                    elif trigger_id == self.id:
-                        start_text_value, end_text_value = slider
-                    else:
-                        start_text_value, end_text_value = input_store if input_store is not None else value
-
-                    start_value = min(start_text_value, end_text_value)
-                    end_value = max(start_text_value, end_text_value)
-                    start_value = max(self.min, start_value)
-                    end_value = min(self.max, end_value)
-                    slider_value = [start_value, end_value]
-                    return start_value, end_value, slider_value, (start_value, end_value)
-
-                return html.Div(
-                    [
-                        html.P(self.title, id="range_slider_title") if self.title else None,
-                        html.Div(
-                            [
-                                dcc.RangeSlider(
-                                    id=self.id,
-                                    min=self.min,
-                                    max=self.max,
-                                    step=self.step,
-                                    marks=self.marks,
-                                    className="range_slider_control" if self.step else "range_slider_control_no_space",
-                                    value=value,
-                                    persistence=True,
-                                    persistence_type="session",
-                                    allowCross=False, # (3)!
-                                    tooltip={"placement": "bottom", "always_visible": True}, # (4)!
-                                ),
-                                html.Div(
-                                    [
-                                        dcc.Input(
-                                            id=f"{self.id}_start_value",
-                                            type="number",
-                                            placeholder="start",
-                                            min=self.min,
-                                            max=self.max,
-                                            className="slider_input_field_left"
-                                            if self.step
-                                            else "slider_input_field_no_space_left",
-                                            value=value[0],
-                                            size="24px",
-                                            persistence=True,
-                                            persistence_type="session",
-                                        ),
-                                        dcc.Input(
-                                            id=f"{self.id}_end_value",
-                                            type="number",
-                                            placeholder="end",
-                                            min=self.min,
-                                            max=self.max,
-                                            className="slider_input_field_right"
-                                            if self.step
-                                            else "slider_input_field_no_space_right",
-                                            value=value[1],
-                                            persistence=True,
-                                            persistence_type="session",
-                                        ),
-                                        dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
-                                    ],
-                                    className="slider_input_container",
-                                ),
-                            ],
-                            className="range_slider_inner_container",
-                        ),
-                    ],
-                    className="selector_container",
-                )
+                range_slider_build_obj = super().build()  # (3)!
+                range_slider_build_obj[self.id].allowCross = False  # (4)!
+                range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}  # (5)!
+                return range_slider_build_obj
 
 
         # 2. Add new components to expected type - here the selector of the parent components
-        vm.Filter.add_type("selector", TooltipNonCrossRangeSlider) # (5)!
-        vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider) # (6)!
+        vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)  # (6)!
+        vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)  # (7)!
 
         page = vm.Page(
             title="Custom Component",
@@ -192,18 +105,18 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
             components=[
                 vm.Graph(
                     id="for_custom_chart",
-                    figure=px.scatter(iris, title="Foo", x="sepal_length", y="petal_width", color="sepal_width"),
+                    figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
                 ),
             ],
             controls=[
                 vm.Filter(
                     column="sepal_length",
                     targets=["for_custom_chart"],
-                    selector=TooltipNonCrossRangeSlider(), # (7)!
+                    selector=TooltipNonCrossRangeSlider(),
                 ),
                 vm.Parameter(
                     targets=["for_custom_chart.range_x"],
-                    selector=TooltipNonCrossRangeSlider(title="Select x-axis range", min=0, max=10),
+                    selector=TooltipNonCrossRangeSlider(title="Select x-axis range", min=0, max=10),  # (8)!
                 ),
             ],
         )
@@ -214,12 +127,13 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         ```
 
         1.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
-        2.  Here we chose to mostly copy the source code of the build method and alter it directly. Alternatively we could overload the `build` method and alter the output of `super().build()`, but then we recommend pinning the version of `Vizro` in case of future breaking changes.
-        3.  This is the change that makes the `RangeSlider` not cross itself when moving the handle.
-        4.  This is the change that displays the tooltip below the handle.
-        5.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Filter` model, and thus must be added as an allowed type.
-        6.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Parameter` model, and thus must be added as an allowed type.
-        7.  The new component can now be inserted into a regular dashboard.
+        2.  Here we overload the `build` method by altering the output of `super().build()`. Alternatively one could copy the source code of the build method and alter it directly.
+        3.  `range_slider_build_obj[self.id]` then fetches the underlying `dcc.range_slider` object.
+        4.  This is the change that makes the `RangeSlider` not cross itself when moving the handle.
+        5.  This is the change that displays the tooltip below the handle.
+        6.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Filter` model, and thus must be added as an allowed type.
+        7.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Parameter` model, and thus must be added as an allowed type.
+        8.  The new component can now be inserted into a regular dashboard.
 
     === "yaml"
         ```yaml
