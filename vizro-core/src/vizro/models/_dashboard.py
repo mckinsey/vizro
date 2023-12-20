@@ -160,7 +160,7 @@ class Dashboard(VizroBaseModel):
             className="page_error_container",
         )
 
-    def _infer_image(self, basename: str):
+    def _infer_image(self, filename: str):
         valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
         assets_folder = Path(dash.get_app().config.assets_folder)
         if assets_folder.is_dir():
