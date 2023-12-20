@@ -79,41 +79,39 @@ class Graph(VizroBaseModel):
         except KeyError:
             self._title = None
 
-
     @_log_call
     def build(self):
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
-        graph = dcc.Graph(
-                id=self.id,
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
-                ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
-                className="chart_container",
-            )
 
         graph_div = html.Div(
             children=[
                 html.P(self._title, className="tile-title"),
                 dcc.Loading(
-                    graph,
+                    dcc.Graph(
+                        id=self.id,
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                        },
+                        className="chart_container",
+                    ),
                     color="grey",
                     parent_className="loading-container",
-                )
+                ),
             ],
-            style={"height": "96%"}
+            style={"height": "96%"},  # inline style to be removed
         )
         return graph_div
 

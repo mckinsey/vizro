@@ -158,6 +158,10 @@ div.dashboard_container .custom-tooltip {
 }
 
 .tile-title {
-  font-size: 16px;
+  font-size: 20px;
   color: var(--text-primary);
+  opacity: 0.85;
+  font-weight: normal;
+  white-space: pre;
+  padding-left: 80px;
 }
