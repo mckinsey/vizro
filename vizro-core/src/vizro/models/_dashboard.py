@@ -64,12 +64,6 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        meta_image = (
-            self._infer_image("app")
-            or self._infer_image("logo")
-            or get_relative_path(f"/{STATIC_URL_PREFIX}/images/app.svg")
-        )
-
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
@@ -78,7 +72,7 @@ class Dashboard(VizroBaseModel):
                 module=page.id,
                 name=page.title,
                 description=page.description,
-                image=meta_image,
+                image=self._infer_image("app") or self._infer_image("logo"),
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path if order else "/",
                 order=order,

@@ -76,6 +76,8 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
+            description="",
+            image=None,
             title="Page 1",
             path="/",
             order=0,
@@ -84,6 +86,8 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_2.id,
             name="Page 2",
+            description="",
+            image=None,
             title="Page 2",
             path="/page-2",
             order=1,
@@ -102,11 +106,31 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
+            description="",
+            image=None,
             title="My dashboard: Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
+
+    def test_page_registry_with_description(self, vizro_app, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(
+            pages=[vm.Page(title="Page 1", components=[vm.Button()], description="My description")]
+        ).pre_build()
+
+        mock_register_page.assert_any_call(
+            module="Page 1",
+            name="Page 1",
+            description="My description",
+            image=None,
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
 
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
