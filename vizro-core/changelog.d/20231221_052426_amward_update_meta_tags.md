@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enabled adding description and image to the meta tags. ([#185](https://github.com/mckinsey/vizro/pull/185))
+- Enable adding description and image to the meta tags. ([#185](https://github.com/mckinsey/vizro/pull/185))
 
 <!--
 ### Changed
