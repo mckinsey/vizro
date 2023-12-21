@@ -125,3 +125,7 @@ h5,
 h6 {
   color: var(--text-secondary);
 }
+
+span {
+  color: var(--text-secondary);
+}
