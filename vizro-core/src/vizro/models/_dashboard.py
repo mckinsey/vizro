@@ -125,10 +125,9 @@ class Dashboard(VizroBaseModel):
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
-            html.Div([html.H2(self.title)], id="dashboard-title")
-            if self.title
-            else html.Div(id="dashboard-title", hidden=True)
+            html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
+
         settings = html.Div(
             daq.BooleanSwitch(
                 id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
@@ -149,7 +148,7 @@ class Dashboard(VizroBaseModel):
         components = page_content["components"]
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
-    def _arrange_page_divs(self, page_divs: html.Div):
+    def _arrange_page_divs(self, page_divs: _PageDivsType):
         left_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
