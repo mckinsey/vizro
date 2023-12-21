@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, TypedDict, Any
+from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -13,6 +13,8 @@ try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
+
+from dash.development.base_component import Component
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
@@ -28,7 +30,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: List[Any]):
+def _all_hidden(components: List[Component]):
     """Returns True if all components are either None and/or have hidden=True."""
     return all(component is None or getattr(component, "hidden", False) for component in components)
 
