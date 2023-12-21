@@ -38,6 +38,9 @@ Building on the above, there are several routes one can take. The following exam
 
 ## Enhanced `plotly.express` chart with reference line
 
+The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then
+add a `Parameter` that allows the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
+
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"
         ```py
@@ -90,7 +93,7 @@ Building on the above, there are several routes one can take. The following exam
     === "Result"
         [![Graph2]][Graph2]
 
-    [Graph2]: ../../assets/user_guides/custom_charts/custom_chart_enhanced_scatter.png
+    [Graph2]: ../../assets/user_guides/custom_charts/custom_chart_showcase_parameter.gif
 
 
 ## New Waterfall chart based on `go.Figure()`
@@ -155,7 +158,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
         Vizro().build(dashboard).run()
         ```
 
-        1.  Note how we are able to apply a filter even to a custom chart
+        1.  Note how we are able to apply a filter to a custom chart
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration
