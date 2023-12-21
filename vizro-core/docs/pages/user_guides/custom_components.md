@@ -128,7 +128,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         1.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
         2.  Here we override the `build` method by altering the output of `super().build()`. Alternatively one could copy the source code of the build method and alter it directly.
-        3.  `range_slider_build_obj[self.id]` then fetches the underlying `dcc.range_slider` object.
+        3.  `range_slider_build_obj[self.id]` then fetches the underlying [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) object.
         4.  This is the change that makes the `RangeSlider` not cross itself when moving the handle.
         5.  This is the change that displays the tooltip below the handle.
         6.  **Don't forget!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Filter` model, and thus must be added as an allowed type.
