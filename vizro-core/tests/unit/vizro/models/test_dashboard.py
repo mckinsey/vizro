@@ -15,7 +15,7 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models._dashboard import _is_hidden
+from vizro.models._dashboard import _all_hidden
 
 
 class TestDashboardInstantiation:
@@ -169,4 +169,4 @@ class TestDashboardBuild:
     ],
 )
 def test_get_hideable_parent_div_visible(components, expected):
-    assert _is_hidden(components) == expected
+    assert _all_hidden(components) == expected
