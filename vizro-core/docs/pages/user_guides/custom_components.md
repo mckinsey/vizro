@@ -127,7 +127,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         ```
 
         1.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
-        2.  Here we overload the `build` method by altering the output of `super().build()`. Alternatively one could copy the source code of the build method and alter it directly.
+        2.  Here we override the `build` method by altering the output of `super().build()`. Alternatively one could copy the source code of the build method and alter it directly.
         3.  `range_slider_build_obj[self.id]` then fetches the underlying `dcc.range_slider` object.
         4.  This is the change that makes the `RangeSlider` not cross itself when moving the handle.
         5.  This is the change that displays the tooltip below the handle.
