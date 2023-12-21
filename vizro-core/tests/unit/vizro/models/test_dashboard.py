@@ -141,7 +141,7 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
-        dashboard_container = dbc.Container(
+        dashboard_container = html.Div(
             id="dashboard_container_outer",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
@@ -149,7 +149,6 @@ class TestDashboardBuild:
                 dash.page_container,
             ],
             className="vizro_dark",
-            fluid=True,
         )
         result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))

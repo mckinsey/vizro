@@ -266,7 +266,6 @@ class Jumbotron(vm.VizroBaseModel):
 2. Build the component using existing `dash` components.
 ```py
 return html.Div(
-    dbc.Container(
         ...
     )
     ...

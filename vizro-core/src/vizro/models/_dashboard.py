@@ -113,7 +113,7 @@ class Dashboard(VizroBaseModel):
             Input("theme_selector", "on"),
         )
 
-        return dbc.Container(
+        return html.Div(
             id="dashboard_container_outer",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
@@ -121,7 +121,6 @@ class Dashboard(VizroBaseModel):
                 dash.page_container,
             ],
             className=self.theme,
-            fluid=True,
         )
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
