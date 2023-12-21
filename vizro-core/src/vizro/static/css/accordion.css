@@ -121,8 +121,8 @@
 }
 
 .accordion-item-button a {
-  font-size: var(--text-size-02);
-  line-height: var(--text-size-03);
+  font-size: var(--text-size-02) !important;
+  line-height: var(--text-size-03) !important;
   width: 100%;
 }
 
