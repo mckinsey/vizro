@@ -1,14 +1,16 @@
 # How to create custom components
 
-If you can't find a component that you would like to have in the code basis, you can easily create your own custom component.
-This guide shows you how to create custom components or enhance existing ones.
+Vizro's public API is deliberately kept small in order to facilitate quick and easy configuration of a dashboard. However,
+at the same time, Vizro is easily extensible, so that you can tweak any component to your liking or even create entirely new ones.
+
+If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
+This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
 In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
 
-
-Vizro's public API is deliberately kept small in order to facilitate quick and easy configuration of a dashboard. However,
-at the same time, Vizro is easily extensible, so that you can tweak any component to your liking or even create entirely new ones.
+All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
+or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
 
 !!!note
 
