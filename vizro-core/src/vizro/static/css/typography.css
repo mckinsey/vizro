@@ -126,6 +126,6 @@ h6 {
   color: var(--text-secondary);
 }
 
-span {
+.card_text span {
   color: var(--text-secondary);
 }
