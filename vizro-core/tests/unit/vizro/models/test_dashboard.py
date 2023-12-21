@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
@@ -14,6 +15,7 @@ except ImportError:  # pragma: no cov
 
 import vizro
 import vizro.models as vm
+from vizro import Vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models._dashboard import _all_hidden
 
@@ -77,6 +79,8 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
+            description="",
+            image=None,
             title="Page 1",
             path="/",
             order=0,
@@ -85,6 +89,8 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_2.id,
             name="Page 2",
+            description="",
+            image=None,
             title="Page 2",
             path="/page-2",
             order=1,
@@ -103,7 +109,66 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
+            description="",
+            image=None,
             title="My dashboard: Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    def test_page_registry_with_description(self, vizro_app, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(
+            pages=[vm.Page(title="Page 1", components=[vm.Button()], description="My description")]
+        ).pre_build()
+
+        mock_register_page.assert_any_call(
+            module="Page 1",
+            name="Page 1",
+            description="My description",
+            image=None,
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    @pytest.mark.parametrize(
+        "image_path", ["app.png", "app.svg", "images/app.png", "images/app.svg", "logo.png", "logo.svg"]
+    )
+    def test_page_registry_with_image(self, page_1, mocker, tmp_path, image_path):
+        if Path(image_path).parent != Path("."):
+            Path(tmp_path / image_path).parent.mkdir()
+        Path(tmp_path / image_path).touch()
+        Vizro(assets_folder=tmp_path)
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1]).pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            description="",
+            image=image_path,
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    def test_page_registry_with_images(self, page_1, mocker, tmp_path):
+        Path(tmp_path / "app.svg").touch()
+        Path(tmp_path / "logo.svg").touch()
+        Vizro(assets_folder=tmp_path)
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1]).pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            description="",
+            image="app.svg",
+            title="Page 1",
             path="/",
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.

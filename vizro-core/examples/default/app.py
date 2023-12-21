@@ -24,6 +24,7 @@ def create_variable_analysis():
     """Function returns a page with gapminder data to do variable analysis."""
     page_variable = vm.Page(
         title="Variable Analysis",
+        description="Analyzing population, GDP per capita and life expectancy on country and continent level",
         layout=vm.Layout(
             grid=[
                 # fmt: off
@@ -194,6 +195,7 @@ def create_relation_analysis():
     """Function returns a page to perform relation analysis."""
     page_relation_analysis = vm.Page(
         title="Relationship Analysis",
+        description="Investigating the interconnection between population, GDP per capita and life expectancy",
         layout=vm.Layout(
             grid=[[0, 0, 0, 0, 1]] + [[2, 2, 3, 3, 3]] * 4 + [[4, 4, 4, 4, 4]] * 5,
             row_min_height="100px",
@@ -323,6 +325,7 @@ def create_continent_summary():
     """Function returns a page with markdown including images."""
     page_summary = vm.Page(
         title="Continent Summary",
+        description="Summarizing the main findings for each continent",
         layout=vm.Layout(grid=[[i] for i in range(5)], row_min_height="190px", row_gap="25px"),
         components=[
             vm.Card(
@@ -415,6 +418,7 @@ def create_benchmark_analysis():
 
     page_country = vm.Page(
         title="Benchmark Analysis",
+        description="Discovering how the metrics differ for each country and export data for further investigation",
         layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
             vm.Table(
@@ -496,6 +500,7 @@ def create_home_page():
     """Function returns the homepage."""
     page_home = vm.Page(
         title="Homepage",
+        description="Vizro demo app for studying gapminder data",
         layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
         components=[
             vm.Card(

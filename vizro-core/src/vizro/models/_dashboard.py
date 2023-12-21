@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
@@ -88,6 +89,8 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        meta_image = self._infer_image("app") or self._infer_image("logo")
+
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
@@ -95,6 +98,8 @@ class Dashboard(VizroBaseModel):
             dash.register_page(
                 module=page.id,
                 name=page.title,
+                description=page.description,
+                image=meta_image,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path if order else "/",
                 order=order,
@@ -193,3 +198,11 @@ class Dashboard(VizroBaseModel):
             ],
             className="page_error_container",
         )
+
+    def _infer_image(self, filename: str):
+        valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
+        assets_folder = Path(dash.get_app().config.assets_folder)
+        if assets_folder.is_dir():
+            for path in Path(assets_folder).rglob(f"{filename}.*"):
+                if path.suffix in valid_extensions:
+                    return str(path.relative_to(assets_folder))

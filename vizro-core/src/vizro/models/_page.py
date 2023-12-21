@@ -32,6 +32,7 @@ class Page(VizroBaseModel):
         components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
+        description (str): Description for meta tags.
         layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
@@ -42,6 +43,7 @@ class Page(VizroBaseModel):
 
     components: List[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
+    description: str = Field("", description="Description for meta tags.")
     layout: Layout = None  # type: ignore[assignment]
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
