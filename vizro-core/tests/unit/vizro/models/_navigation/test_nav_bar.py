@@ -29,9 +29,9 @@ class TestNavBarInstantiation:
 
     def test_nav_bar_mandatory_and_optional(self, pages_as_dict):
         nav_link = vm.NavLink(label="Label")
-        nav_bar = vm.NavBar(id="nav_bar", pages=pages_as_dict, items=[nav_link])
+        nav_bar = vm.NavBar(id="nav-bar", pages=pages_as_dict, items=[nav_link])
 
-        assert nav_bar.id == "nav_bar"
+        assert nav_bar.id == "nav-bar"
         assert nav_bar.pages == pages_as_dict
         assert nav_bar.items == [nav_link]
 
@@ -93,13 +93,9 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button, keys_to_strip={"id", "className"})
-        assert_component_equal(
-            built_nav_bar["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", className="nav_panel"),
-            keys_to_strip={"children"},
-        )
-        assert_component_equal(built_nav_bar["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(built_nav_bar["nav-bar"], expected_button, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(built_nav_bar["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_bar_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -119,11 +115,8 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons, keys_to_strip={"id", "className"})
-        assert_component_equal(
-            built_nav_bar["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
-        )
+        assert_component_equal(built_nav_bar["nav-bar"], expected_buttons, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))
 
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
@@ -138,8 +131,8 @@ class TestNavBarBuildMethod:
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_button, keys_to_strip={"id", "className"})
-        assert_component_equal(built_nav_bar["nav_panel_outer"], html.Div(hidden=True, id="nav_panel_outer"))
+        assert_component_equal(built_nav_bar["nav-bar"], expected_button, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-panel"], html.Div(hidden=True, id="nav-panel"))
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -159,8 +152,5 @@ class TestNavBarBuildMethod:
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav_bar_outer"], expected_buttons, keys_to_strip={"id", "className"})
-        assert_component_equal(
-            built_nav_bar["nav_panel_outer"],
-            html.Div(id="nav_panel_outer", hidden=True),
-        )
+        assert_component_equal(built_nav_bar["nav-bar"], expected_buttons, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))

@@ -17,6 +17,7 @@ import vizro
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro.models._dashboard import _all_hidden
 
 
 class TestDashboardInstantiation:
@@ -205,7 +206,7 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
-        dashboard_container = dbc.Container(
+        dashboard_container = html.Div(
             id="dashboard_container_outer",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
@@ -213,8 +214,23 @@ class TestDashboardBuild:
                 dash.page_container,
             ],
             className="vizro_dark",
-            fluid=True,
         )
         result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
         expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
         assert result == expected
+
+
+@pytest.mark.parametrize(
+    "components, expected",
+    [
+        ([html.Div(hidden=False)], False),
+        ([html.Div(id="children-id")], False),
+        ([html.Div(hidden=True), None, html.Div(hidden=False)], False),
+        ([html.Div(hidden=True), None, html.Div(id="children-id")], False),
+        ([html.Div(hidden=True)], True),
+        ([None], True),
+        ([html.Div(hidden=True), None], True),
+    ],
+)
+def test_get_hideable_parent_div_visible(components, expected):
+    assert _all_hidden(components) == expected
