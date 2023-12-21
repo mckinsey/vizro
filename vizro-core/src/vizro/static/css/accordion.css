@@ -104,9 +104,8 @@
   width: 100%;
 }
 
-#page-container .accordion-item-button {
+.accordion-item-button {
   align-items: center;
-  background-color: inherit;
   color: var(--text-secondary);
   display: flex;
   font-size: var(--text-size-02);
@@ -116,34 +115,28 @@
   width: 100%;
 }
 
-#page-container .accordion-item-button.btn.btn-primary.active {
+.accordion-item-button.btn.btn-primary.active {
   background-color: var(--state-overlays-selected);
   color: var(--text-primary);
 }
 
-/*
-* Since the text inside a accordion btn is very specific
-* Adding important to increase the specificity
-*/
-#page-container .accordion-item-button a {
-  align-items: flex-start;
-  display: flex;
-  font-size: var(--text-size-02) !important;
-  line-height: var(--text-size-03) !important;
+.accordion-item-button a {
+  font-size: var(--text-size-02);
+  line-height: var(--text-size-03);
   width: 100%;
 }
 
-#page-container .accordion-item-button:focus {
+.accordion-item-button:focus {
   background-color: var(--background-selected);
   color: var(--text-primary);
 }
 
-#page-container .accordion-item-button:hover {
+.accordion-item-button:hover {
   background-color: var(--state-overlays-selected-hover);
   color: var(--text-primary);
 }
 
-#page-container .accordion-button:hover {
+.accordion-button:hover {
   color: var(--text-primary);
 }
 
