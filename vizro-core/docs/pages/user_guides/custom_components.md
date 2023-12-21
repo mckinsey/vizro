@@ -39,7 +39,7 @@ You can extend an existing component by sub-classing the component you want to a
 you have access to all fields of all parent models, but you can choose to overwrite any field or method, or define new ones.
 
 The aim for this example is to enhance the [`RangeSlider`][vizro.models.RangeSlider] model so that
-one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. You will note that it is often easier to call `super()` when overloading a complex method
+one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. You will note that it is often easier to call `super()` when overriding a complex method
 such as the `build` method in the below example instead of attempting to write it from scratch.
 
 In this case, the general three steps translate into:
