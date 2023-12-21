@@ -7,7 +7,6 @@
 
 #left-main {
   align-items: flex-start;
-  background: var(--surfaces-bg-02);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -18,6 +17,7 @@
 }
 
 #left-side {
+  background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
 }
@@ -42,8 +42,8 @@
 #left-header {
   display: flex;
   flex-direction: row;
-  width: 100%;
   gap: 8px;
+  width: 100%;
 }
 
 #left-header:not(:empty) {
@@ -118,8 +118,6 @@
 
 #nav-bar {
   align-items: center;
-  background-color: var(--surfaces-bg-02);
-  border-right: 1px solid var(--border-subtle-alpha-01);
   display: inline-flex;
   flex-direction: column;
   padding-top: 26px;
@@ -128,7 +126,6 @@
 
 .icon-button {
   align-items: center;
-  background-color: var(--surfaces-bg-02);
   display: flex;
   height: 64px;
   justify-content: center;
@@ -168,12 +165,11 @@ div.dashboard_container .custom-tooltip {
 }
 
 #left-sidebar {
+  border-right: 1px solid var(--border-subtle-alpha-01);
   display: flex;
   flex-direction: column;
-  width: 64px;
-  background-color: var(--surfaces-bg-02);
-  border-right: 1px solid var(--border-subtle-alpha-01);
   gap: 40px;
+  width: 64px;
 }
 
 #page-container div[hidden] {
