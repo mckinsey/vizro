@@ -1,13 +1,12 @@
-.page_container {
+#page-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
   width: 100vw;
 }
 
-.nav_control_panel {
+#left-main {
   align-items: flex-start;
-  background: var(--surfaces-bg-02);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -17,12 +16,13 @@
   width: 352px;
 }
 
-.left_side {
+#left-side {
+  background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
 }
 
-.right_side {
+#right-side {
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@
   width: 100%;
 }
 
-.header {
+#right-header {
   align-items: baseline;
   display: flex;
   flex-direction: row;
@@ -39,7 +39,18 @@
   justify-content: space-between;
 }
 
-.component_container {
+#left-header {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+}
+
+#left-header:not(:empty) {
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+}
+
+#components {
   display: flex;
   height: 100%;
   overflow: auto;
@@ -51,17 +62,17 @@
   width: 100%;
 }
 
-.nav_panel {
+#nav-panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 
-.nav_panel:not(:empty) {
+#nav-panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-.control_panel {
+#control-panel {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -69,7 +80,7 @@
   padding: 4px 0 24px 0;
 }
 
-.control_panel:not(:empty) {
+#control-panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
@@ -105,10 +116,8 @@
   width: 100%;
 }
 
-.nav-bar {
+#nav-bar {
   align-items: center;
-  background-color: var(--surfaces-bg-02);
-  border-right: 1px solid var(--border-subtle-alpha-01);
   display: inline-flex;
   flex-direction: column;
   padding-top: 26px;
@@ -117,7 +126,6 @@
 
 .icon-button {
   align-items: center;
-  background-color: var(--surfaces-bg-02);
   display: flex;
   height: 64px;
   justify-content: center;
@@ -153,6 +161,17 @@ div.dashboard_container .custom-tooltip {
   max-width: 180px;
   overflow-wrap: break-word;
   padding: var(--spacing-01) var(--spacing-02);
-  text-wrap: wrap;
   white-space: pre-wrap;
+}
+
+#left-sidebar {
+  border-right: 1px solid var(--border-subtle-alpha-01);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 64px;
+}
+
+#page-container div[hidden] {
+  display: none;
 }

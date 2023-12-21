@@ -1,5 +1,5 @@
 /* Outer layout for dash dropdown */
-div.page_container .dash-dropdown {
+#page-container .dash-dropdown {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -8,7 +8,7 @@ div.page_container .dash-dropdown {
 }
 
 /* Dropdown menu when clicking on expand arrow */
-div.page_container .Select-menu-outer {
+#page-container .Select-menu-outer {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -18,47 +18,47 @@ div.page_container .Select-menu-outer {
 }
 
 /* Dropdown menu options */
-div.page_container .VirtualizedSelectOption {
+#page-container .VirtualizedSelectOption {
   color: var(--text-primary);
   font-weight: var(--text-weight-regular);
 }
 
 /* Dropdown menu hover effect */
-div.page_container .VirtualizedSelectFocusedOption {
+#page-container .VirtualizedSelectFocusedOption {
   background-color: var(--state-overlays-hover);
 }
 
 /* Input box for existing values and user input */
-div.page_container .Select-control {
+#page-container .Select-control {
   background-color: inherit;
   border: inherit;
   border-radius: inherit;
   height: 32px;
 }
 
-div.page_container .Select.is-focused > .Select-control {
+#page-container .Select.is-focused > .Select-control {
   background-color: var(--field-enabled);
 }
 
 /* User input */
-div.page_container .dash-dropdown .Select-input {
+#page-container .dash-dropdown .Select-input {
   display: block;
   height: var(--tag-height);
   margin-left: unset;
 }
 
-div.page_container.Select-input > input {
+#page-container.Select-input > input {
   height: 100%;
   padding: 0;
 }
 
 /* Border on focus */
-div.page_container .is-focused:not(.is-open) > .Select-control {
+#page-container .is-focused:not(.is-open) > .Select-control {
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
 }
 
 /* Single-select dropdown only ------------------- */
-div.page_container .Select--single .Select-value {
+#page-container .Select--single .Select-value {
   padding-left: 8px;
 }
 
@@ -73,7 +73,7 @@ div.page_container .Select--single .Select-value {
 }
 
 /* Tags ---------------------------*/
-div.page_container .Select--multi .Select-value {
+#page-container .Select--multi .Select-value {
   background-color: var(--tags-bg-color);
   border: 0;
   border-radius: 0;
@@ -88,14 +88,14 @@ div.page_container .Select--multi .Select-value {
 }
 
 /* Tag: Label */
-div.page_container .Select--multi .Select-value-label {
+#page-container .Select--multi .Select-value-label {
   color: var(--text-secondary);
   line-height: var(--text-size-05);
   padding: 0 4px;
 }
 
 /* Tag: Cross */
-div.page_container .Select--multi .Select-value-icon {
+#page-container .Select--multi .Select-value-icon {
   color: var(--text-secondary);
   background: inherit;
   border: none;
@@ -105,7 +105,7 @@ div.page_container .Select--multi .Select-value-icon {
 }
 
 /* Tag: Cross on hover */
-div.page_container .Select--multi .Select-value-icon:hover {
+#page-container .Select--multi .Select-value-icon:hover {
   background: inherit;
   color: var(--text-secondary);
 }
@@ -117,7 +117,7 @@ div.page_container .Select--multi .Select-value-icon:hover {
 }
 
 /* Page Selector Dropdown */
-div.page_container
+#page-container
   .dash-dropdown
   .Select-menu-outer
   .VirtualizedSelectSelectedOption
@@ -125,21 +125,17 @@ div.page_container
   pointer-events: none;
 }
 
-div.page_container
-  .dash-dropdown
-  .Select-menu-outer
-  .VirtualizedSelectOption
-  > a {
+#page-container .dash-dropdown .Select-menu-outer .VirtualizedSelectOption > a {
   height: 100%;
   width: 100%;
 }
 
-div.nav_panel a {
+#nav-panel a {
   font-weight: var(--text-weight-regular);
   line-height: var(--text-size-07);
 }
 
-div.page_container .Select--multi .Select-clear-zone {
+#page-container .Select--multi .Select-clear-zone {
   width: 16px;
   color: var(--text-secondary);
 }

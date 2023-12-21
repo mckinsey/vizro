@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -13,6 +13,8 @@ try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
+
+from dash.development.base_component import Component
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
@@ -26,6 +28,29 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+
+def _all_hidden(components: List[Component]):
+    """Returns True if all components are either None and/or have hidden=True."""
+    return all(component is None or getattr(component, "hidden", False) for component in components)
+
+
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfills by making the expected keys explicit.
+_PageDivsType = TypedDict(
+    "_PageDivsType",
+    {
+        "dashboard-title": html.Div,
+        "settings": html.Div,
+        "page-title": html.H2,
+        "nav-bar": html.Div,
+        "nav-panel": html.Div,
+        "control-panel": html.Div,
+        "components": html.Div,
+    },
+)
 
 
 class Dashboard(VizroBaseModel):
@@ -88,7 +113,7 @@ class Dashboard(VizroBaseModel):
             Input("theme_selector", "on"),
         )
 
-        return dbc.Container(
+        return html.Div(
             id="dashboard_container_outer",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
@@ -96,44 +121,56 @@ class Dashboard(VizroBaseModel):
                 dash.page_container,
             ],
             className=self.theme,
-            fluid=True,
         )
 
-    def _make_page_layout(self, page: Page):
+    def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
-            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
-            if self.title
-            else html.Div(hidden=True, id="dashboard_title_outer")
+            html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
-        theme_switch = daq.BooleanSwitch(
-            id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+
+        settings = html.Div(
+            daq.BooleanSwitch(
+                id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+            ),
+            id="settings",
         )
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_title = html.H2(children=page.title, id="page_title")
+        page_title = html.H2(page.title, id="page-title")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
-        nav_bar = navigation["nav_bar_outer"]
-        nav_panel = navigation["nav_panel_outer"]
+        nav_bar = navigation["nav-bar"]
+        nav_panel = navigation["nav-panel"]
 
         # Different across pages
         page_content: _PageBuildType = page.build()
-        control_panel = page_content["control_panel_outer"]
-        component_container = page_content["component_container_outer"]
+        control_panel = page_content["control-panel"]
+        components = page_content["components"]
+        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
-        # Arrangement
-        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
-        nav_control_elements = [dashboard_title, nav_panel, control_panel]
-        nav_control_panel = (
-            html.Div(nav_control_elements, className="nav_control_panel")
-            if any(not getattr(element, "hidden", False) for element in nav_control_elements)
-            else None
-        )
+    def _arrange_page_divs(self, page_divs: _PageDivsType):
+        left_header_divs = [page_divs["dashboard-title"]]
+        left_sidebar_divs = [page_divs["nav-bar"]]
+        left_main_divs = [
+            html.Div(left_header_divs, id="left-header", hidden=_all_hidden(left_header_divs)),
+            page_divs["nav-panel"],
+            page_divs["control-panel"],
+        ]
 
-        left_side = html.Div(children=[nav_bar, nav_control_panel], className="left_side", id="left_side_outer")
-        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+        left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
+        left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
+        left_side = html.Div([left_sidebar, left_main], id="left-side")
+
+        right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
+        right_main = page_divs["components"]
+        right_side = html.Div([right_header, right_main], id="right-side")
+
+        return html.Div([left_side, right_side], id="page-container")
+
+    def _make_page_layout(self, page: Page):
+        page_divs = self._get_page_divs(page=page)
+        return self._arrange_page_divs(page_divs=page_divs)
 
     @staticmethod
     def _make_page_404_layout():

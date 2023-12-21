@@ -125,3 +125,7 @@ h5,
 h6 {
   color: var(--text-secondary);
 }
+
+.card_text span {
+  color: var(--text-secondary);
+}
