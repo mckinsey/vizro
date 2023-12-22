@@ -177,10 +177,11 @@ def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, Li
 def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_string: str, value: Any):
     keys = dot_separated_string.split(".")
     current_property = graph_config
-    for key in keys[:-1]:
-        current_property = current_property[key]
-    current_property[keys[-1]] = value
-    return graph_config
+
+    nested_properties = {key: {keys[-1]: value} for key in keys[:-1]}
+    current_property.update(nested_properties)
+
+    return current_property
 
 
 def _get_parametrized_config(
