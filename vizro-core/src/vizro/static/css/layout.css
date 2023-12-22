@@ -1,9 +1,9 @@
 #page-container {
   display: flex;
-  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   width: 100vw;
+  flex-direction: column;
 }
 
 #left-main {
@@ -27,9 +27,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  overflow: auto;
   padding: 32px;
   width: 100%;
+  overflow: auto;
 }
 
 #right-header {
@@ -41,15 +41,15 @@
 }
 
 #page-header {
-  align-items: center;
-  background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  min-height: 64px;
+  width: 100%;
+  background-color: var(--surfaces-bg-02);
   padding-left: 20px;
   padding-right: 32px;
-  width: 100%;
+  min-height: 64px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #page-header:not(:empty) {
@@ -173,8 +173,8 @@ div.dashboard_container .custom-tooltip {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding-top: 16px;
   width: 64px;
+  padding-top: 16px;
 }
 
 #page-container div[hidden] {
@@ -189,17 +189,4 @@ div.dashboard_container .custom-tooltip {
 
 #dashboard-title {
   margin: 0;
-  width: 100%;
-}
-
-#logo {
-  height: 100%;
-}
-
-#logo-and-title {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  height: 32px;
 }
