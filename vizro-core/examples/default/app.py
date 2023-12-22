@@ -21,7 +21,7 @@ def multiple_containers_custom_layout():
                         id="graph_11",
                         figure=px.line(
                             df_gapminder,
-                            title="Graph_11",
+                            title="Graph 1",
                             x="year",
                             y="lifeExp",
                             color="continent",
@@ -33,7 +33,7 @@ def multiple_containers_custom_layout():
                         id="graph_12",
                         figure=px.scatter(
                             df_gapminder,
-                            title="Graph_12",
+                            title="Graph 2",
                             x="gdpPercap",
                             y="lifeExp",
                             size="pop",
@@ -51,7 +51,7 @@ def multiple_containers_custom_layout():
                         id="graph_13",
                         figure=px.box(
                             df_gapminder,
-                            title="Graph_13",
+                            title="Graph 3",
                             x="continent",
                             y="lifeExp",
                             color="continent",
@@ -87,9 +87,11 @@ def multiple_containers_nested():
         ),
         components=[
             vm.Container(
+                title="Container III",
                 layout=vm.Layout(grid=[[0, 1], [0, 1]]),
                 components=[
                     vm.Container(
+                        title="Sub-Container I",
                         layout=vm.Layout(
                             grid=[
                                 [0, 0, 1, 1],
@@ -146,6 +148,7 @@ def multiple_containers_nested():
                         ],
                     ),
                     vm.Container(
+                        title="Sub-Container II",
                         components=[
                             vm.Graph(
                                 id="graph_6rn",
@@ -164,7 +167,7 @@ def multiple_containers_nested():
                 ],
             ),
             vm.Container(
-                title="Second container",
+                title="Container IV",
                 components=[
                     vm.Graph(
                         id="graph_6rnn",
