@@ -23,9 +23,11 @@
 }
 
 .card_button {
-  height: 84%;
+  height: 100%;
+  left: 0;
   position: absolute;
-  width: 92%;
+  top: 0;
+  width: 100%;
 }
 
 .card_text h1,

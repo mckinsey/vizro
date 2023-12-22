@@ -59,17 +59,17 @@ class NavBar(VizroBaseModel):
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
         # We always show all the nav_link buttons, but only show the accordion for the active page. This works because
-        # item.build only returns the nav_panel_outer Div when the item is active.
+        # item.build only returns the nav_panel Div when the item is active.
         # In future maybe we should do this by showing all navigation panels and then setting hidden=True for all but
         # one using a clientside callback?
         # Wrapping built_items into html.Div here is not for rendering purposes but so that we can look up the
         # components by id easily instead of needing to iterate through a nested list.
         built_items = html.Div([item.build(active_page_id=active_page_id) for item in self.items])
         buttons = [built_items[item.id] for item in self.items]
-        if "nav_panel_outer" in built_items:
-            nav_panel_outer = built_items["nav_panel_outer"]
+        if "nav-panel" in built_items:
+            nav_panel = built_items["nav-panel"]
         else:
             # Active page is not in navigation at all, so hide navigation panel.
-            nav_panel_outer = html.Div(hidden=True, id="nav_panel_outer")
+            nav_panel = html.Div(hidden=True, id="nav-panel")
 
-        return html.Div([html.Div(buttons, className="nav-bar", id="nav_bar_outer"), nav_panel_outer])
+        return html.Div([html.Div(buttons, id="nav-bar"), nav_panel])

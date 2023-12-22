@@ -1,4 +1,4 @@
-div.right_side
+#right-side
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -7,7 +7,7 @@ div.right_side
   color: var(--text-primary);
 }
 
-div.right_side
+#right-side
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -16,7 +16,7 @@ div.right_side
   color: var(--text-primary);
 }
 
-div.right_side
+#right-side
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -24,7 +24,7 @@ div.right_side
   --hover: var(--main-container-bg-color);
 }
 
-div.right_side
+#right-side
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -33,7 +33,7 @@ div.right_side
   font-size: 14px;
 }
 
-div.right_side
+#right-side
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner

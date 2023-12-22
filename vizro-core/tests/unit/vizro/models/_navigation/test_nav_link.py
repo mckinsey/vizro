@@ -99,7 +99,7 @@ class TestNavLinkBuildMethod:
             id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert_component_equal(built_nav_link["nav_panel_outer"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_link_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
@@ -120,4 +120,4 @@ class TestNavLinkBuildMethod:
             id="nav_link",
         )
         assert_component_equal(built_nav_link["nav_link"], expected_button)
-        assert "nav_panel_outer" not in built_nav_link
+        assert "nav-panel" not in built_nav_link

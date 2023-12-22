@@ -12,7 +12,7 @@
   background: var(--fill-medium-emphasis);
 }
 
-.left_side::-webkit-scrollbar-thumb {
+#left-side::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-02);
 }
 
@@ -24,7 +24,7 @@
   border-color: var(--surfaces-bg-card);
 }
 
-.component_container::-webkit-scrollbar-thumb {
+#components::-webkit-scrollbar-thumb {
   border-color: var(--main-container-bg-color);
 }
 
