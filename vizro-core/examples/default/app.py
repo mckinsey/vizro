@@ -162,7 +162,7 @@ def multiple_containers_nested():
                                     hover_name="country",
                                 ),
                             )
-                        ]
+                        ],
                     ),
                 ],
             ),

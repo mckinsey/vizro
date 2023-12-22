@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal
 
 from dash import html
 
 try:
-    from pydantic.v1 import validator, Field
+    from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import validator, Field
+    from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
@@ -32,6 +32,7 @@ class Container(VizroBaseModel):
     @validator("layout", always=True)
     def set_layout(cls, layout, values) -> Layout:
         from vizro.models import Layout
+
         if "components" not in values:
             return layout
 
@@ -70,9 +71,9 @@ class Container(VizroBaseModel):
                         "gridRowGap": self.layout.row_gap,
                         "gridColumnGap": self.layout.col_gap,
                         "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
-                                               f"minmax({self.layout.col_min_width}, 1fr))",
+                        f"minmax({self.layout.col_min_width}, 1fr))",
                         "gridTemplateRows": f"repeat({len(self.layout.grid)},"
-                                            f"minmax({self.layout.row_min_height}, 1fr))",
+                        f"minmax({self.layout.row_min_height}, 1fr))",
                     },
                     className="component_container_grid",
                 ),
