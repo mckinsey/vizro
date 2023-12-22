@@ -178,10 +178,15 @@ def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_
     keys = dot_separated_string.split(".")
     current_property = graph_config
 
-    nested_properties = {key: {keys[-1]: value} for key in keys[:-1]}
-    current_property.update(nested_properties)
-
-    return current_property
+    for key in keys[:-1]:
+        if key in current_property:
+            if isinstance(current_property[key], dict):
+                current_property = current_property[key]
+        else:
+            current_property.setdefault(key, {keys[-1]: value})
+            return graph_config
+    current_property[keys[-1]] = value
+    return graph_config
 
 
 def _get_parametrized_config(
