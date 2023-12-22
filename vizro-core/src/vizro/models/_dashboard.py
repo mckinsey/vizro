@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -50,6 +50,7 @@ _PageDivsType = TypedDict(
         "nav-panel": html.Div,
         "control-panel": html.Div,
         "components": html.Div,
+        "logo": html.Img,
     },
 )
 
@@ -130,6 +131,12 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
+        logo_img = self._infer_image(filename="logo")
+        logo = (
+            html.Img(src=get_asset_url(logo_img), id="logo")
+            if logo_img
+            else html.Img(id="logo", hidden=True)
+        )
         dashboard_title = (
             html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
@@ -140,6 +147,7 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -152,10 +160,12 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         components = page_content["components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
+        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components, logo])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        page_header_divs = [page_divs["dashboard-title"]]
+        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        logo_title_div = html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))
+        page_header_divs = [logo_title_div]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
             page_divs["nav-panel"],
@@ -164,7 +174,9 @@ class Dashboard(VizroBaseModel):
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        page_header_divs.append(page_divs["settings"]) if self.title else right_header_divs.append(page_divs["settings"])
+        right_header_divs.append(page_divs["settings"]) if _all_hidden(logo_title) else page_header_divs.append(
+            page_divs["settings"]
+        )
 
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
