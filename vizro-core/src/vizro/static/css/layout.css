@@ -47,7 +47,7 @@
   background-color: var(--surfaces-bg-02);
   padding-left: 20px;
   padding-right: 32px;
-  height: 64px;
+  min-height: 64px;
   justify-content: space-between;
   align-items: center;
 }
@@ -184,7 +184,7 @@ div.dashboard_container .custom-tooltip {
 #page-main {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 64px);
+  height: 100%;
 }
 
 #dashboard-title {
