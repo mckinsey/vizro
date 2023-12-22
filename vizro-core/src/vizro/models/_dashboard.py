@@ -155,10 +155,9 @@ class Dashboard(VizroBaseModel):
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        left_header_divs = [page_divs["dashboard-title"]]
+        page_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
-            html.Div(left_header_divs, id="left-header", hidden=_all_hidden(left_header_divs)),
             page_divs["nav-panel"],
             page_divs["control-panel"],
         ]
@@ -171,7 +170,9 @@ class Dashboard(VizroBaseModel):
         right_main = page_divs["components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page-container")
+        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
+        page_main = html.Div([left_side, right_side], id="page-main")
+        return html.Div([page_header, page_main], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
