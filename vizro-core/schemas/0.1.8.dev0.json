@@ -254,6 +254,67 @@
       "required": ["grid"],
       "additionalProperties": false
     },
+    "Container": {
+      "title": "Container",
+      "description": "All models that are registered to the model manager should inherit from this class.\n\nArgs:\n    id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `\"\"`.\n        When no ID is chosen, ID will be automatically generated.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "default": "",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "container",
+          "enum": ["container"],
+          "type": "string"
+        },
+        "components": {
+          "title": "Components",
+          "type": "array",
+          "items": {
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "button": "#/definitions/Button",
+                "card": "#/definitions/Card",
+                "graph": "#/definitions/Graph",
+                "table": "#/definitions/Table",
+                "container": "#/definitions/Container"
+              }
+            },
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Button"
+              },
+              {
+                "$ref": "#/definitions/Card"
+              },
+              {
+                "$ref": "#/definitions/Graph"
+              },
+              {
+                "$ref": "#/definitions/Table"
+              },
+              {
+                "$ref": "#/definitions/Container"
+              }
+            ]
+          }
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "layout": {
+          "$ref": "#/definitions/Layout"
+        }
+      },
+      "required": ["components"],
+      "additionalProperties": false
+    },
     "OptionsDictType": {
       "title": "OptionsDictType",
       "type": "object",
@@ -864,7 +925,8 @@
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table"
+                "table": "#/definitions/Table",
+                "container": "#/definitions/Container"
               }
             },
             "oneOf": [
@@ -879,6 +941,9 @@
               },
               {
                 "$ref": "#/definitions/Table"
+              },
+              {
+                "$ref": "#/definitions/Container"
               }
             ]
           }
