@@ -179,12 +179,8 @@ def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_
     current_property = graph_config
 
     for key in keys[:-1]:
-        if key in current_property:
-            if isinstance(current_property[key], dict):
-                current_property = current_property[key]
-        else:
-            current_property.setdefault(key, {keys[-1]: value})
-            return graph_config
+        current_property = current_property.setdefault(key, {})
+
     current_property[keys[-1]] = value
     return graph_config
 
