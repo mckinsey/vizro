@@ -24,7 +24,7 @@
   border-color: var(--surfaces-bg-card);
 }
 
-#components::-webkit-scrollbar-thumb {
+#right-side::-webkit-scrollbar-thumb {
   border-color: var(--main-container-bg-color);
 }
 
