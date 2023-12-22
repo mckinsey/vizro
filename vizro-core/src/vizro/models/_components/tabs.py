@@ -4,7 +4,10 @@ from typing import TYPE_CHECKING, List, Literal
 
 import dash_mantine_components as dmc
 from dash import html
-from pydantic import validator
+try:
+    from pydantic.v1 import validator
+except ImportError:  # pragma: no cov
+    from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
