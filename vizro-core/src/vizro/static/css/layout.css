@@ -175,3 +175,18 @@ div.dashboard_container .custom-tooltip {
 #page-container div[hidden] {
   display: none;
 }
+
+@media (max-width: 1400px) {
+  .component_container_grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #left-main {
+    display: none;
+  }
+
+  #right-header {
+    height: unset;
+  }
+}
