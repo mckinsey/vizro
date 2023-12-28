@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   overflow: auto;
   padding: var(--spacing-04);
   position: relative;
@@ -12,7 +13,7 @@
 
 .nav_card_container {
   height: 98%;
-  margin-top: 8px;
+  /*margin-top: 8px; */ /*For what do we need this?*/
   position: relative;
 }
 

@@ -1,4 +1,5 @@
 .chart_container {
   height: 100%;
   width: 100%;
+  min-height: 460px;
 }

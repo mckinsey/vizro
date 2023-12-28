@@ -138,6 +138,7 @@ class Page(VizroBaseModel):
                     "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
+                className="component-grid-area"
             )
             for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]

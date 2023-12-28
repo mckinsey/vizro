@@ -176,17 +176,31 @@ div.dashboard_container .custom-tooltip {
   display: none;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 600px) {
   .component_container_grid {
     display: flex;
     flex-direction: column;
   }
+}
 
+@media (max-width: 1100px) {
   #left-main {
     display: none;
   }
 
   #right-header {
     height: unset;
+  }
+  #left-side {
+    zoom: 64%;
+  }
+
+  #right-side {
+    zoom: 64%;
+  }
+
+  .component-grid-area {
+    display: flex;
+    flex: 1;
   }
 }
