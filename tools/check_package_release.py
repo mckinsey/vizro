@@ -54,6 +54,6 @@ if __name__ == "__main__":
             package_version = attempted_package_version
 
     with open(env_file, "a") as f:
-        f.write(f"NEW_RELEASE={str(new_release)}\n")
+        f.write(f"NEW_RELEASE={new_release!s}\n")
         if new_release:
             f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
