@@ -71,7 +71,7 @@ class VizroBaseModel(BaseModel):
             new_annotation = _add_to_discriminated_union(field.outer_type_)
         elif sub_field is not None and _is_discriminated_union(sub_field):
             # Field is a list of discriminated union e.g. components: List[ComponentType].
-            new_annotation = List[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc,index]
+            new_annotation = List[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
         else:
             raise ValueError(
                 f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
