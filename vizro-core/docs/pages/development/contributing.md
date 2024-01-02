@@ -46,8 +46,8 @@ If no example is specified (`hatch run example`) then the [default example](http
 
 ## Documentation
 
- If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
- 
+If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
+
 ```console
 hatch run docs:serve
 ```
@@ -154,7 +154,8 @@ Note that `requirements.txt` is not used by Hatch, and so it should not be edite
 manually for dependency management. Instead, edit `pyproject.toml` or `hatch.toml` when
 adding or removing dependencies.
 
-## 
+##
+
 ## Changelog
 
 Vizro keeps a changelog, where all notable changes to the project will be documented. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
