@@ -191,7 +191,16 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Adding a dashboard title
 
-If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top left of every page. It is also combined with the `title` specified in [`Page`][vizro.models.Page] to set:
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top left of every page. 
 
-- `<title>` HTML element that controls the text labeling a browser window;
-- `<meta>` elements that control how a preview is generated when sharing a link to your dashboard (e.g. on social media).
+
+## Browser title
+
+The [website icon](assets.md/#changing-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's 
+title bar.  For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
+
+## Meta tags for social media
+
+Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat 
+clients.  The preview includes the `URL`, `title`, plus an [image](assets.md/#meta-tags-image) and
+[Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing the [Vizro demo app](https://vizro.mckinsey.com/).  
