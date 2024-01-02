@@ -25,6 +25,7 @@ To create and add a page to your dashboard, do the following steps:
 2. Configure your `components`, see our guide on [Charts/Components](components.md)
 3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
+5. (optional) Provide a `description` of your `Page` for the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
     === "app.py"
@@ -37,6 +38,7 @@ To create and add a page to your dashboard, do the following steps:
 
         page = vm.Page(
             title="Page Title",
+            description="Longer description of the page content",
             components=[
                 vm.Graph(
                     id="sunburst", figure=px.sunburst(gapminder, path=["continent", "country"], values="pop", color="lifeExp")
@@ -79,6 +81,7 @@ To create and add a page to your dashboard, do the following steps:
               - sunburst.color
             type: parameter
           title: Page Title
+          description: "Longer description of the page content"
         ```
     === "Result"
         [![Page]][Page]
