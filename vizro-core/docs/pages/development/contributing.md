@@ -44,6 +44,14 @@ hatch run example from_dict
 
 If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/default/app.py) is used.
 
+## Documentation
+
+If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
+
+```console
+hatch run docs:serve
+```
+
 ## Debugging tips
 
 - [Dash dev tools](https://dash.plotly.com/devtools) are enabled in all the Hatch environments by setting environment variable `DASH_DEBUG = "true"`, and so there is no need to specify `debug=True` when calling `Vizro.run` to enable them. The reload functionality, callback graph and in-browser error messages are particularly useful.
@@ -124,7 +132,7 @@ Note that Hatch's `default` environment specifies `pre-commit` as a dependency b
 
 We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We do this via `pre-commit`, however there are a few things to note:
 
-1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained [here](https://go.dev/doc/install).
+1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained in the [Go documentation](https://go.dev/doc/install).
 2. For that reason `hatch run lint` skips the secret scans, to function on all machines.
 3. To run a secret-scan, simply run `hatch run secrets`.
 4. Secret scans will run on CI, but it is highly recommended to check for secrets **before pushing to the remote repository** and ideally also before even committing.
