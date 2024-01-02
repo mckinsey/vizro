@@ -29,7 +29,6 @@
   gap: var(--spacing-06);
   padding: 32px;
   width: 100%;
-  height: calc(100% - 64px);
 }
 
 #right-header {
@@ -183,7 +182,7 @@ div.dashboard_container .custom-tooltip {
 #page-main {
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: calc(100% - 64px);
 }
 
 #dashboard-title {
