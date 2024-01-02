@@ -29,7 +29,7 @@
   gap: var(--spacing-06);
   padding: 32px;
   width: 100%;
-  overflow: auto;
+  height: calc(100% - 64px);
 }
 
 #right-header {
@@ -59,6 +59,7 @@
   display: flex;
   height: 100%;
   width: 100%;
+  overflow: auto;
 }
 
 .component_container_grid {
