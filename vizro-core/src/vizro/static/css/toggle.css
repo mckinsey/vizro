@@ -27,13 +27,13 @@
 
 #page-container .mantine-Switch-thumb {
   border: none;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background-color: var(--fill-medium-emphasis);
 }
 
 #page-container input:checked + * > .mantine-11dx59s {
-  left: calc(100% - 14px);
+  left: calc(100% - 12px);
   background: var(--text-contrast-primary);
 }
 
