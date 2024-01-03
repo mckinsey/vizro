@@ -115,7 +115,7 @@ class TestDunderMethodsGraph:
                 "external": {
                     "theme_selector": CallbackTriggerDict(
                         id="theme_selector",
-                        property="on",
+                        property="checked",
                         value=template == "vizro_dark",
                         str_id="theme_selector",
                         triggered=False,
