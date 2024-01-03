@@ -74,7 +74,7 @@ def callback_context_filter_interaction(request):
                 "parameters": [],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
+                    property="checked",
                     value=True,
                     str_id="theme_selector",
                     triggered=False,

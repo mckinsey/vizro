@@ -68,7 +68,7 @@ def callback_context_parameter_y(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
+                    property="checked",
                     value=True,
                     str_id="theme_selector",
                     triggered=False,
@@ -100,7 +100,7 @@ def callback_context_parameter_hover_data(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
+                    property="checked",
                     value=True,
                     str_id="theme_selector",
                     triggered=False,
@@ -139,7 +139,7 @@ def callback_context_parameter_y_and_x(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
+                    property="checked",
                     value=True,
                     str_id="theme_selector",
                     triggered=False,

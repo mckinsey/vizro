@@ -163,7 +163,7 @@ class Page(VizroBaseModel):
 
             @callback(
                 [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
-                Input("theme_selector", "on"),
+                Input("theme_selector", "checked"),
                 prevent_initial_call="initial_duplicate",
             )
             def update_graph_theme(theme_selector: bool):
