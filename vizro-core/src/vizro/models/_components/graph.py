@@ -102,5 +102,5 @@ class Graph(VizroBaseModel):
     def _update_theme(fig: go.Figure, theme_selector: bool):
         # Basically the same as doing fig.update_layout(template="vizro_light/dark") but works for both the call in
         # self.__call__ and in the update_graph_theme callback.
-        fig["layout"]["template"] = themes.dark if theme_selector else themes.light
+        fig["layout"]["template"] = themes.light if theme_selector else themes.dark
         return fig

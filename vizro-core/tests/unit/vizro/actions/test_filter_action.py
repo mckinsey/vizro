@@ -50,7 +50,7 @@ def callback_context_filter_continent(request):
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
                     property="checked",
-                    value=True,
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
@@ -89,7 +89,7 @@ def callback_context_filter_continent_and_pop(request):
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
                     property="checked",
-                    value=True,
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
