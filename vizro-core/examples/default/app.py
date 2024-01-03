@@ -316,15 +316,6 @@ def create_relation_analysis():
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
                 ),
             ),
-            vm.Parameter(
-                targets=["scatter_relation_2007.color_discrete_map.Africa"],
-                selector=vm.Dropdown(
-                    options=["#00b4ff", "#ff9222", "#3949ab", "#ff5267", "#08bdba"],
-                    multi=False,
-                    value="#00b4ff",
-                    title="Choose color.",
-                ),
-            ),
         ],
     )
     return page_relation_analysis

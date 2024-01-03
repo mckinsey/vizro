@@ -3,11 +3,6 @@ import pytest
 from vizro.actions._actions_utils import _create_target_arg_mapping, _update_nested_graph_properties
 
 
-@pytest.fixture
-def fake_graph_property_dict():
-    return {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}}
-
-
 class TestUpdateNestedGraphProperties:
     def test_update_nested_graph_properties_single_level(self):
         graph = {"color": "blue"}
@@ -15,21 +10,44 @@ class TestUpdateNestedGraphProperties:
         expected = {"color": "red"}
         assert result == expected
 
-    def test_update_nested_graph_properties_multiple_levels(self):
-        graph = {"node": {"label": "A", "color": "blue"}}
-        result = _update_nested_graph_properties(graph, "node.color", 2)
-        expected = {"node": {"label": "A", "color": 2}}
+    @pytest.mark.parametrize(
+        "graph, dot_separated_strings, expected",
+        [
+            ({"node": {"label": "A", "color": "blue"}}, "node.color", {"node": {"label": "A", "color": "red"}}),
+            (
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
+                "nodes.A.color",
+                {"nodes": {"A": {"color": "red"}, "B": {"color": "green"}}},
+            ),
+        ],
+    )
+    def test_update_nested_graph_properties_multiple_levels(self, graph, dot_separated_strings, expected):
+        result = _update_nested_graph_properties(graph, dot_separated_strings, "red")
         assert result == expected
 
-    def test_update_nested_graph_properties_nested_dict(self):
-        graph = {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}}
-        result = _update_nested_graph_properties(graph, "nodes.A.color", "red")
-        expected = {"nodes": {"A": {"color": "red"}, "B": {"color": "green"}}}
+    @pytest.mark.parametrize(
+        "graph, dot_separated_strings, expected",
+        [
+            (
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
+                "nodes.C.color",
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}, "C": {"color": "red"}}},
+            ),
+            (
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "red"}}},
+                "nodes.B.value",
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "red", "value": "red"}}},
+            ),
+            (
+                {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
+                "nodes.B",
+                {"nodes": {"A": {"color": "blue"}, "B": "red"}},
+            ),
+        ],
+    )
+    def test_update_nested_graph_properties_add_keys(self, graph, dot_separated_strings, expected):
+        result = _update_nested_graph_properties(graph, dot_separated_strings, "red")
         assert result == expected
-
-    def test_update_nested_graph_properties_invalid_key(self, fake_graph_property_dict):
-        with pytest.raises(KeyError, match="C"):
-            _update_nested_graph_properties(fake_graph_property_dict, "nodes.C.color", "red")
 
     def test_update_nested_graph_properties_invalid_type(self):
         graph = {"color": "blue"}
