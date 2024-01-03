@@ -116,7 +116,7 @@ class TestDunderMethodsGraph:
                     "theme_selector": CallbackTriggerDict(
                         id="theme_selector",
                         property="checked",
-                        value=template == "vizro_dark",
+                        value=template == "vizro_light",
                         str_id="theme_selector",
                         triggered=False,
                     )

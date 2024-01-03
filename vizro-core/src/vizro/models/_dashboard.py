@@ -136,7 +136,11 @@ class Dashboard(VizroBaseModel):
 
         settings = html.Div(
             dmc.Switch(
-                id="theme_selector", checked=self.theme == "vizro_dark", persistence=True, persistence_type="session", className="toggle-switch"
+                id="theme_selector",
+                checked=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
             ),
             id="settings",
         )
