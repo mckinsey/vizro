@@ -37,8 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug while updating nested graph properties.  ([#273](https://github.com/mckinsey/vizro/pull/237))
-
+- Fix bug while updating nested graph properties. ([#273](https://github.com/mckinsey/vizro/pull/237))
 
 <!--
 ### Security
