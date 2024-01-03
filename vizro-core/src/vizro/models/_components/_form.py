@@ -84,8 +84,8 @@ class Form(VizroBaseModel):
             style={
                 "gridRowGap": self.layout.row_gap,
                 "gridColumnGap": self.layout.col_gap,
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # noqa: E501
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # noqa: E501
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",
             },
             className="component_container_grid",
             id=self.id,
@@ -93,7 +93,7 @@ class Form(VizroBaseModel):
 
 
 if __name__ == "__main__":
-    from vizro.models import Layout  # noqa: F811
+    from vizro.models import Layout
 
     Form.update_forward_refs(Layout=Layout)
 
