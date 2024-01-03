@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Add CSS for `dmc.Switch` and fix CSS when toggle-switch is turned on ([#244](https://github.com/mckinsey/vizro/pull/244))
 
-
 <!--
 ### Security
 
