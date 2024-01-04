@@ -47,9 +47,15 @@ class TestUpdateNestedGraphProperties:
                 "red",
                 {"nodes": {"A": {"color": "blue"}, "B": "red"}},
             ),
+            (
+                {},
+                "color",
+                "red",
+                {"color": "red"}
+            )
         ],
     )
-    def test_update_nested_graph_properties_add_keys(self, graph, dot_separated_strings, value, expected):
+    def test_update_nested_graph_properties_add_or_overwrite_keys(self, graph, dot_separated_strings, value, expected):
         result = _update_nested_graph_properties(graph, dot_separated_strings, value)
         assert result == expected
 
