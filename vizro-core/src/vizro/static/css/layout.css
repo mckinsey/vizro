@@ -46,9 +46,10 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  min-height: 64px;
+  height: 64px;
   padding: 0 32px;
   width: 100%;
+  min-height: 0;
 }
 
 #page-header:not(:empty) {
@@ -182,6 +183,7 @@ div.dashboard_container .custom-tooltip {
 
 #page-main {
   display: flex;
+  flex: 1 1 0;
   flex-direction: row;
   height: calc(100% - 64px);
 }
