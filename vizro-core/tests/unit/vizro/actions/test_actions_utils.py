@@ -13,7 +13,7 @@ class TestUpdateNestedGraphProperties:
     @pytest.mark.parametrize(
         "graph, dot_separated_strings, value, expected",
         [
-            ({"node": {"label": "A", "color": "blue"}}, "node.color",  "red", {"node": {"label": "A", "color": "red"}}),
+            ({"node": {"label": "A", "color": "blue"}}, "node.color", "red", {"node": {"label": "A", "color": "red"}}),
             (
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
                 "nodes.A.color",

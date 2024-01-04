@@ -174,7 +174,9 @@ def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, Li
     return results
 
 
-def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_string: str, value: Any) -> Dict[str, Any]:
+def _update_nested_graph_properties(
+    graph_config: Dict[str, Any], dot_separated_string: str, value: Any
+) -> Dict[str, Any]:
     keys = dot_separated_string.split(".")
     current_property = graph_config
 
