@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug while updating nested graph properties. ([#273](https://github.com/mckinsey/vizro/pull/237))
+- Fix a bug that prevented the update of nested graph properties through parameters when the graph property was not previously defined. ([#273](https://github.com/mckinsey/vizro/pull/237))
 
 <!--
 ### Security

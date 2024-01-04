@@ -11,48 +11,52 @@ class TestUpdateNestedGraphProperties:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "graph, dot_separated_strings, expected",
+        "graph, dot_separated_strings, value, expected",
         [
-            ({"node": {"label": "A", "color": "blue"}}, "node.color", {"node": {"label": "A", "color": "red"}}),
+            ({"node": {"label": "A", "color": "blue"}}, "node.color",  "red", {"node": {"label": "A", "color": "red"}}),
             (
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
                 "nodes.A.color",
+                "red",
                 {"nodes": {"A": {"color": "red"}, "B": {"color": "green"}}},
             ),
         ],
     )
-    def test_update_nested_graph_properties_multiple_levels(self, graph, dot_separated_strings, expected):
-        result = _update_nested_graph_properties(graph, dot_separated_strings, "red")
+    def test_update_nested_graph_properties_multiple_levels(self, graph, dot_separated_strings, value, expected):
+        result = _update_nested_graph_properties(graph, dot_separated_strings, value)
         assert result == expected
 
     @pytest.mark.parametrize(
-        "graph, dot_separated_strings, expected",
+        "graph, dot_separated_strings, value, expected",
         [
             (
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
                 "nodes.C.color",
+                "red",
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}, "C": {"color": "red"}}},
             ),
             (
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "red"}}},
                 "nodes.B.value",
+                "red",
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "red", "value": "red"}}},
             ),
             (
                 {"nodes": {"A": {"color": "blue"}, "B": {"color": "green"}}},
                 "nodes.B",
+                "red",
                 {"nodes": {"A": {"color": "blue"}, "B": "red"}},
             ),
         ],
     )
-    def test_update_nested_graph_properties_add_keys(self, graph, dot_separated_strings, expected):
-        result = _update_nested_graph_properties(graph, dot_separated_strings, "red")
+    def test_update_nested_graph_properties_add_keys(self, graph, dot_separated_strings, value, expected):
+        result = _update_nested_graph_properties(graph, dot_separated_strings, value)
         assert result == expected
 
     def test_update_nested_graph_properties_invalid_type(self):
         graph = {"color": "blue"}
         with pytest.raises(TypeError, match="'str' object does not support item assignment"):
-            _update_nested_graph_properties(graph, "color.value", 42)
+            _update_nested_graph_properties(graph, "color.value", "42")
 
 
 class TestCreateTargetArgMapping:
