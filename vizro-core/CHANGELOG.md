@@ -27,7 +27,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fix position of invisible button inside `Card` ([#236](https://github.com/mckinsey/vizro/pull/236))
+- Fix position of invisible button inside `Card`. ([#236](https://github.com/mckinsey/vizro/pull/236))
 
 - Fix a bug that prevented the update of nested graph properties through parameters when the graph property was not previously defined. ([#273](https://github.com/mckinsey/vizro/pull/237))
 
