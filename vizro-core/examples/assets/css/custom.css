@@ -6,6 +6,5 @@ img[src*="#my-image"] {
 }
 
 #logo {
-  margin-left: -8px;
-  height: 40px;
+  margin-left: -12px;
 }
