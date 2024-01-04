@@ -189,3 +189,15 @@ div.dashboard_container .custom-tooltip {
 #dashboard-title {
   margin: 0;
 }
+
+#logo {
+  height: 100%;
+}
+
+#logo-and-title {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  height: 32px;
+}
