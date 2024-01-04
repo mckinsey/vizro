@@ -11,6 +11,25 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.8'></a>
+# 0.1.8 — 2024-01-04
+
+## Added
+
+- When set, the dashboard title appears alongside the individual page title as the text labeling a browser tab. ([#228](https://github.com/mckinsey/vizro/pull/228))
+
+- Enable adding description and image to the meta tags. ([#185](https://github.com/mckinsey/vizro/pull/185))
+
+## Changed
+
+- Re-arrange main containers on page and change their CSS IDs. ([#205](https://github.com/mckinsey/vizro/pull/205))
+
+## Fixed
+
+- Fix position of invisible button inside `Card` ([#236](https://github.com/mckinsey/vizro/pull/236))
+
+- Fix a bug that prevented the update of nested graph properties through parameters when the graph property was not previously defined. ([#273](https://github.com/mckinsey/vizro/pull/237))
+
 <a id='changelog-0.1.7'></a>
 
 # 0.1.7 — 2023-12-15
