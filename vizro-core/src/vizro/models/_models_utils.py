@@ -1,13 +1,11 @@
 import logging
 from functools import wraps
-from typing import TYPE_CHECKING, List
+from typing import List
 
 import numpy as np
+from dash import html
 
 from vizro._constants import EMPTY_SPACE_CONST
-
-if TYPE_CHECKING:
-    pass
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +48,17 @@ def set_layout(cls, layout, values):
     if len(unique_grid_idx) != len(values["components"]):
         raise ValueError("Number of page and grid components need to be the same.")
     return layout
+
+
+def _create_component_container(self, components_content):
+    component_container = html.Div(
+        components_content,
+        style={
+            "gridRowGap": self.layout.row_gap,
+            "gridColumnGap": self.layout.col_gap,
+            "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}," f"minmax({self.layout.col_min_width}, 1fr))",
+            "gridTemplateRows": f"repeat({len(self.layout.grid)}," f"minmax({self.layout.row_min_height}, 1fr))",
+        },
+        className="grid-layout",
+    )
+    return component_container

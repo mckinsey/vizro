@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, set_components, set_layout
+from vizro.models._models_utils import _create_component_container, _log_call, set_components, set_layout
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -52,21 +52,7 @@ class Container(VizroBaseModel):
             )
             for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
-        components_container = self._create_component_container(components_content)
+        components_container = _create_component_container(self, components_content)
 
         # TODO: Perhaps there is a better name for: className="container-container"
         return html.Div(children=[html.H3(self.title), components_container], className="container-container")
-
-    def _create_component_container(self, components_content):
-        component_container = html.Div(
-            components_content,
-            style={
-                "gridRowGap": self.layout.row_gap,
-                "gridColumnGap": self.layout.col_gap,
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
-                f"minmax({self.layout.col_min_width}, 1fr))",
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}," f"minmax({self.layout.row_min_height}, 1fr))",
-            },
-            className="grid-layout",
-        )
-        return component_container

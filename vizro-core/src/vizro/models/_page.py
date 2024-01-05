@@ -15,7 +15,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import _log_call, set_components, set_layout
+from vizro.models._models_utils import _create_component_container, _log_call, set_components, set_layout
 
 from .types import ComponentType, ControlType
 
@@ -151,7 +151,7 @@ class Page(VizroBaseModel):
             )
             for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
-        components_container = self._create_component_container(components_content)
+        components_container = _create_component_container(self, components_content)
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
@@ -184,17 +184,3 @@ class Page(VizroBaseModel):
             )
             def update_graph_theme(theme_selector: bool):
                 return [component._update_theme(Patch(), theme_selector) for component in themed_components]
-
-    def _create_component_container(self, components_content):
-        component_container = html.Div(
-            components_content,
-            style={
-                "gridRowGap": self.layout.row_gap,
-                "gridColumnGap": self.layout.col_gap,
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
-                f"minmax({self.layout.col_min_width}, 1fr))",
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}," f"minmax({self.layout.row_min_height}, 1fr))",
-            },
-            className="grid-layout",
-        )
-        return component_container
