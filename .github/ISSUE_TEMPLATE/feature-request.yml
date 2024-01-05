@@ -12,7 +12,12 @@ body:
         We'd appreciate it if you could search on Vizro's existing issues prior to filing
         a feature request to avoid any duplicate tickets, as we have limited maintainer capacity to triage
         them. Thanks!
-
+  - type: dropdown
+    attributes:
+      label: Which package?
+      options:
+        - vizro
+        - vizro-ai
   - type: textarea
     attributes:
       label: What's the problem this feature will solve?
