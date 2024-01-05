@@ -62,3 +62,16 @@ def _create_component_container(self, components_content):
         className="grid-layout",
     )
     return component_container
+
+
+def _assign_component_grid_area(self):
+    return [
+        html.Div(
+            component.build(),
+            style={
+                "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
+                "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
+            },
+        )
+        for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
+    ]

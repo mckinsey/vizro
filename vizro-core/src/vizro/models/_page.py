@@ -15,7 +15,13 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import _create_component_container, _log_call, set_components, set_layout
+from vizro.models._models_utils import (
+    _assign_component_grid_area,
+    _create_component_container,
+    _log_call,
+    set_components,
+    set_layout,
+)
 
 from .types import ComponentType, ControlType
 
@@ -141,17 +147,10 @@ class Page(VizroBaseModel):
             if controls_content
             else html.Div(hidden=True, id="control-panel")
         )
-        components_content = [
-            html.Div(
-                component.build(),
-                style={
-                    "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
-                    "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
-                },
-            )
-            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
-        ]
+        components_content = _assign_component_grid_area(self)
         components_container = _create_component_container(self, components_content)
+
+        # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])

@@ -1,5 +1,5 @@
-.container-container {
-  height: 100%; /*Need to find a clever way to calculate automatically*/
+.page-component-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
