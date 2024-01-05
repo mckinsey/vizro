@@ -5,6 +5,6 @@ from ._vizro_ai import VizroAI
 
 __all__ = ["VizroAI"]
 
-__version__ = "0.1.1"
+__version__ = "0.1.2.dev0"
 
 logging.basicConfig(level=os.getenv("VIZRO_AI_LOG_LEVEL", "INFO"))
