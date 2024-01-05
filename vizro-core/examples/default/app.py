@@ -12,8 +12,7 @@ single_container_default_layout = vm.Page(
     title="Single Container - default layout",
     components=[
         vm.Container(
-            id="container-1",
-            title="Container I",
+            title="Container 1",
             components=[
                 vm.Graph(
                     id="graph_1",
@@ -75,8 +74,7 @@ multiple_containers_custom_layout = vm.Page(
     title="Multiple Containers - custom layout",
     components=[
         vm.Container(
-            id="cont_1",
-            title="Container I",
+            title="Container 2",
             layout=vm.Layout(grid=[[0, 1]]),
             components=[
                 vm.Graph(
@@ -105,8 +103,7 @@ multiple_containers_custom_layout = vm.Page(
             ],
         ),
         vm.Container(
-            id="cont_2",
-            title="Container II",
+            title="Container 3",
             layout=vm.Layout(grid=[[0, 1]], row_min_height="300px"),
             components=[
                 vm.Graph(
@@ -146,10 +143,11 @@ multiple_containers_nested = vm.Page(
     ),
     components=[
         vm.Container(
+            title="Container 4",
             layout=vm.Layout(grid=[[0, 1], [0, 1]]),
             components=[
                 vm.Container(
-                    title="Another container",
+                    title="Sub-Container 1",
                     layout=vm.Layout(
                         grid=[
                             [0, 0, 1, 1],
@@ -206,6 +204,7 @@ multiple_containers_nested = vm.Page(
                     ],
                 ),
                 vm.Container(
+                    title="Container 5",
                     components=[
                         vm.Graph(
                             id="graph_6rn",
@@ -219,12 +218,12 @@ multiple_containers_nested = vm.Page(
                                 hover_name="country",
                             ),
                         )
-                    ]
+                    ],
                 ),
             ],
         ),
         vm.Container(
-            title="Second container",
+            title="Container 6",
             components=[
                 vm.Graph(
                     id="graph_6rnn",
