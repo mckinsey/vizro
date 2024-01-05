@@ -142,11 +142,8 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
-        control_panel = (
-            html.Div(children=[*controls_content], id="control-panel")
-            if controls_content
-            else html.Div(hidden=True, id="control-panel")
-        )
+        control_panel = html.Div(children=[*controls_content], id="control-panel", hidden=not controls_content)
+
         components_content = _assign_component_grid_area(self)
         components_container = _create_component_container(self, components_content)
 

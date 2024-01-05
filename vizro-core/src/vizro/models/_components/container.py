@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
-    """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
+    """Html.Div that can wrap other `Page.components`.
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.
