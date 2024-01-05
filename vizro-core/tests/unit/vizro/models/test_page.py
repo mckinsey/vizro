@@ -112,7 +112,7 @@ class TestPageInstantiation:
     def test_invalid_component_types(self, test_component):
         with pytest.raises(
             ValidationError,
-            match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'tabs', 'container')"),
+            match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'container')"),
         ):
             vm.Page(title="Page Title", components=[test_component])
 

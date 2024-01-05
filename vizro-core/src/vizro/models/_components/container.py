@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Literal, Optional
 
 from dash import html
+
 try:
     from pydantic.v1 import validator
 except ImportError:  # pragma: no cov
@@ -65,8 +66,8 @@ class Container(VizroBaseModel):
             style={
                 "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
                 "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]  # noqa: E501
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # type: ignore[union-attr]
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]
             },
             className="component_container_grid",
         )
