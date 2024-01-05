@@ -15,7 +15,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._models_utils import _log_call, set_components, set_layout
 
 from .types import ComponentType, ControlType
 
@@ -52,6 +52,10 @@ class Page(VizroBaseModel):
     # TODO: Remove default on page load action if possible
     actions: List[ActionsChain] = []
 
+    # Re-used validators
+    _validate_components = validator("components", allow_reuse=True, always=True)(set_components)
+    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+
     @root_validator(pre=True)
     def set_id(cls, values):
         if "title" not in values:
@@ -59,26 +63,6 @@ class Page(VizroBaseModel):
 
         values.setdefault("id", values["title"])
         return values
-
-    @validator("components", always=True)
-    def set_components(cls, components):
-        if not components:
-            raise ValueError("Ensure this value has at least 1 item.")
-        return components
-
-    @validator("layout", always=True)
-    def set_layout(cls, layout, values) -> Layout:
-        if "components" not in values:
-            return layout
-
-        if layout is None:
-            grid = [[i] for i in range(len(values["components"]))]
-            return Layout(grid=grid)
-
-        unique_grid_idx = get_unique_grid_component_ids(layout.grid)
-        if len(unique_grid_idx) != len(values["components"]):
-            raise ValueError("Number of page and grid components need to be the same.")
-        return layout
 
     @validator("path", always=True)
     def set_path(cls, path, values) -> str:

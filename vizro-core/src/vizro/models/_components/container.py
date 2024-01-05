@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._models_utils import _log_call, set_components, set_layout
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -36,25 +36,9 @@ class Container(VizroBaseModel):
     title: str = Field(..., description="Title to be displayed.")
     layout: Layout = None  # type: ignore[assignment]
 
-    @validator("components", always=True)
-    def set_components(cls, components):
-        if not components:
-            raise ValueError("Ensure this value has at least 1 item.")
-        return components
-
-    @validator("layout", always=True)
-    def set_layout(cls, layout, values) -> Layout:
-        if "components" not in values:
-            return layout
-
-        if layout is None:
-            grid = [[i] for i in range(len(values["components"]))]
-            return Layout(grid=grid)
-
-        unique_grid_idx = get_unique_grid_component_ids(layout.grid)
-        if len(unique_grid_idx) != len(values["components"]):
-            raise ValueError("Number of page and grid components need to be the same.")
-        return layout
+    # Re-used validators
+    _validate_components = validator("components", allow_reuse=True, always=True)(set_components)
+    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call
     def build(self):
@@ -66,9 +50,7 @@ class Container(VizroBaseModel):
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for component, grid_coord in zip(
-                self.components, self.layout.component_grid_lines
-            )
+            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
         components_container = self._create_component_container(components_content)
 
