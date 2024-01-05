@@ -50,14 +50,11 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-#components {
-  display: flex;
-  height: 100%;
+#page-components {
   overflow: auto;
-  width: 100%;
 }
 
-.component_container_grid {
+.grid-layout {
   display: grid;
   width: 100%;
   height: 100%;

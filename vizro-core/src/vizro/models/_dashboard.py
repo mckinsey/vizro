@@ -49,7 +49,7 @@ _PageDivsType = TypedDict(
         "nav-bar": html.Div,
         "nav-panel": html.Div,
         "control-panel": html.Div,
-        "components": html.Div,
+        "page-components": html.Div,
     },
 )
 
@@ -151,8 +151,8 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
-        components = page_content["components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
+        page_components = page_content["page-components"]
+        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
         left_header_divs = [page_divs["dashboard-title"]]
@@ -168,7 +168,7 @@ class Dashboard(VizroBaseModel):
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
         right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
-        right_main = page_divs["components"]
+        right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
         return html.Div([left_side, right_side], id="page-container")

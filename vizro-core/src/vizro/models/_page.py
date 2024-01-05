@@ -23,7 +23,7 @@ from .types import ComponentType, ControlType
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "components": html.Div})
+_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
 class Page(VizroBaseModel):
@@ -152,6 +152,8 @@ class Page(VizroBaseModel):
             for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
         ]
         components_container = self._create_component_container(components_content)
+        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.id = "page-components"
         return html.Div([control_panel, components_container])
 
     def _update_graph_theme(self):
@@ -185,21 +187,14 @@ class Page(VizroBaseModel):
 
     def _create_component_container(self, components_content):
         component_container = html.Div(
-            children=[
-                html.Div(
-                    components_content,
-                    style={
-                        "gridRowGap": self.layout.row_gap,
-                        "gridColumnGap": self.layout.col_gap,
-                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
-                        f"minmax({self.layout.col_min_width}, 1fr))",
-                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"
-                        f"minmax({self.layout.row_min_height}, 1fr))",
-                    },
-                    className="component_container_grid",
-                ),
-                dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
-            ],
-            id="components",
+            components_content,
+            style={
+                "gridRowGap": self.layout.row_gap,
+                "gridColumnGap": self.layout.col_gap,
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
+                f"minmax({self.layout.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}," f"minmax({self.layout.row_min_height}, 1fr))",
+            },
+            className="grid-layout",
         )
         return component_container
