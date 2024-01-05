@@ -254,6 +254,68 @@
       "required": ["grid"],
       "additionalProperties": false
     },
+    "Container": {
+      "title": "Container",
+      "description": "Html.Div that can wrap other `Page.components`.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "default": "",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "container",
+          "enum": ["container"],
+          "type": "string"
+        },
+        "components": {
+          "title": "Components",
+          "type": "array",
+          "items": {
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "button": "#/definitions/Button",
+                "card": "#/definitions/Card",
+                "graph": "#/definitions/Graph",
+                "table": "#/definitions/Table",
+                "container": "#/definitions/Container"
+              }
+            },
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Button"
+              },
+              {
+                "$ref": "#/definitions/Card"
+              },
+              {
+                "$ref": "#/definitions/Graph"
+              },
+              {
+                "$ref": "#/definitions/Table"
+              },
+              {
+                "$ref": "#/definitions/Container"
+              }
+            ]
+          }
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed.",
+          "type": "string"
+        },
+        "layout": {
+          "$ref": "#/definitions/Layout"
+        }
+      },
+      "required": ["components", "title"],
+      "additionalProperties": false
+    },
     "OptionsDictType": {
       "title": "OptionsDictType",
       "type": "object",
@@ -864,7 +926,8 @@
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table"
+                "table": "#/definitions/Table",
+                "container": "#/definitions/Container"
               }
             },
             "oneOf": [
@@ -879,6 +942,9 @@
               },
               {
                 "$ref": "#/definitions/Table"
+              },
+              {
+                "$ref": "#/definitions/Container"
               }
             ]
           }
