@@ -149,6 +149,7 @@ multiple_containers_nested = vm.Page(
             layout=vm.Layout(grid=[[0, 1], [0, 1]]),
             components=[
                 vm.Container(
+                    title="Another container",
                     layout=vm.Layout(
                         grid=[
                             [0, 0, 1, 1],

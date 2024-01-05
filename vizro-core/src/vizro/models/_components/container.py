@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, List, Literal
 
 from dash import html
 
 try:
-    from pydantic.v1 import validator
+    from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import validator
+    from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
@@ -18,16 +18,32 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
+    """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
+
+    Args:
+        type (Literal["container"]): Defaults to `"container"`.
+        components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
+            has to be provided.
+        title (str): Title to be displayed.
+        layout (Layout): Layout to place components in. Defaults to `None`.
+
+    Raises:
+        ValueError: If number of page and grid components is not the same
+    """
+
     type: Literal["container"] = "container"
     components: List[ComponentType]
-    title: Optional[str]
-    layout: Optional[Layout] = None
-    # controls to be added later
+    title: str = Field(..., description="Title to be displayed.")
+    layout: Layout = None  # type: ignore[assignment]
+
+    @validator("components", always=True)
+    def set_components(cls, components):
+        if not components:
+            raise ValueError("Ensure this value has at least 1 item.")
+        return components
 
     @validator("layout", always=True)
-    def set_layout(cls, layout, values):
-        from vizro.models import Layout
-
+    def set_layout(cls, layout, values) -> Layout:
         if "components" not in values:
             return layout
 
@@ -38,7 +54,6 @@ class Container(VizroBaseModel):
         unique_grid_idx = get_unique_grid_component_ids(layout.grid)
         if len(unique_grid_idx) != len(values["components"]):
             raise ValueError("Number of page and grid components need to be the same.")
-
         return layout
 
     @_log_call
@@ -52,7 +67,7 @@ class Container(VizroBaseModel):
                 },
             )
             for component, grid_coord in zip(
-                self.components, self.layout.component_grid_lines  # type: ignore[union-attr]
+                self.components, self.layout.component_grid_lines
             )
         ]
         components_container = self._create_component_container(components_content)
@@ -64,10 +79,10 @@ class Container(VizroBaseModel):
         component_container = html.Div(
             components_content,
             style={
-                "gridRowGap": self.layout.row_gap,  # type: ignore[union-attr]
-                "gridColumnGap": self.layout.col_gap,  # type: ignore[union-attr]
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",  # type: ignore[union-attr]
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",  # type: ignore[union-attr]
+                "gridRowGap": self.layout.row_gap,
+                "gridColumnGap": self.layout.col_gap,
+                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",
             },
             className="component_container_grid",
         )
