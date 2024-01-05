@@ -185,7 +185,17 @@ div.dashboard_container .custom-tooltip {
   width: 12px;
 }
 
+.collapsable-button:hover {
+  background-color: red;
+}
+
 #collapse_icon.material-symbols-outlined {
   z-index: 1;
   position: absolute;
+  background-color: var(--border-subtle-alpha-01);
+  border-radius: 50%;
+}
+
+#collapse_icon.material-symbols-outlined:hover {
+  color: var(--text-active);
 }

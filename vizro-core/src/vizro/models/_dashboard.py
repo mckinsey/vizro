@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Literal
 import dash
 import dash_bootstrap_components as dbc
 import dash_daq as daq
+import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_relative_path, html
 
 try:
@@ -103,7 +104,7 @@ class Dashboard(VizroBaseModel):
 
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
-            Output("collapse", "is_open"),
+            [Output("collapse", "is_open"), Output("collapse_icon", "style"), Output("collapse_tooltip", "label")],
             Input("collapse_icon", "n_clicks"),
             State("collapse", "is_open"),
         )
@@ -145,7 +146,23 @@ class Dashboard(VizroBaseModel):
 
     def _arrange_page_divs(self, page_divs: html.Div):
         collapsable_icon = html.Div(
-            children=[html.Span("chevron_right", className="material-symbols-outlined", id="collapse_icon")],
+            children=[
+                dmc.Tooltip(
+                    id="collapse_tooltip",
+                    label="Hide Menu",
+                    offset=20,
+                    withArrow=True,
+                    children=[
+                        html.Span(
+                            "keyboard_double_arrow_right",
+                            className="material-symbols-outlined",
+                            id="collapse_icon",
+                            style={},
+                        )
+                    ],
+                    position="right-end",
+                )
+            ],
             className="collapsable-div",
         )
         left_header_divs = [page_divs["dashboard-title"]]
