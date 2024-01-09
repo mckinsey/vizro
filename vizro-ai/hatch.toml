@@ -22,6 +22,7 @@ dependencies = [
 VIZRO_AI_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
+example = "cd examples; python example.py"
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",

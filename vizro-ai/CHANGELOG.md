@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.1'></a>
+
+# 0.1.1 — 2024-01-04
+
+## Fixed
+
+- Fix incompatibility with `pydantic>=2.0.0` ([#189](https://github.com/mckinsey/vizro/pull/189))
+
+## Security
+
+- Bump langchain version to 0.0.329, suggested by snyk ([#204](https://github.com/mckinsey/vizro/pull/204))
+
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2023-11-13
