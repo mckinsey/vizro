@@ -23,10 +23,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
-### Changed
-
-- Change return of `_get_chart_code` from returning code string only to return dictionary with keys `code_string`, `code_explanation` and `business_insights` ([#256](https://github.com/mckinsey/vizro/pull/256))
-
 <!--
 ### Deprecated
 
@@ -36,7 +32,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Add keyword `explain` to `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
+- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
 
 <!--
 ### Security

@@ -60,7 +60,7 @@ You can utilize Vizro-AI in any standard development environment by creating a `
 
 You have the possibility to integrate Vizro-AI into your application. For example, this can be achieved through a frontend that allows users to input prompts using a text field.
 
-Vizro-AI's `_get_chart_code` method returns a dictionary containing the Python code string that can be used to prepare the data and create the visualization. It also contains the code explanation and business insights. The code is validated and debugged to ensure that it is executable and ready to be integrated.
+Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.
 
 !!! example "Application integration"
     === "app.py"
@@ -71,11 +71,7 @@ Vizro-AI's `_get_chart_code` method returns a dictionary containing the Python c
         vizro_ai = VizroAI()
 
         df = px.data.gapminder()
-        output = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time", explain=True)
-
-        code_string = output.get("code_string")
-        code_explanation = output.get("code_explanation")
-        business_insights = output.get("business_insights")
+        code_string = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time")
         ```
     === "code_string"
         [![ResultCode]][ResultCode]
@@ -83,3 +79,4 @@ Vizro-AI's `_get_chart_code` method returns a dictionary containing the Python c
     [ResultCode]: ../../assets/user_guides/code_string_app_integration.png
 
 The returned `code_string` can be used to dynamically render charts within your application. You may have the option to encapsulate the chart within a `fig` object or convert the figure into a JSON string for further integration.
+In case you would like to use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(df, ..., explain=False)`, which returns a dictionary containing the code explanation and chart insights alongside the code.

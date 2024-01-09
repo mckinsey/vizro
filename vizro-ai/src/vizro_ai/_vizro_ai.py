@@ -91,7 +91,7 @@ class VizroAI:
             "code_string": code_string,
         }
 
-    def _get_chart_code(self, df: pd.DataFrame, user_input: str, explain: bool = False) -> str:
+    def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
 
         Can be used in integration with other application if only code snippet return is required.
@@ -102,7 +102,7 @@ class VizroAI:
             explain: Flag to include explanation in response
         """
         # TODO refine and update error handling
-        return self._run_plot_tasks(df, user_input, explain=explain)
+        return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(self, df: pd.DataFrame, user_input: str, explain: bool = False) -> Union[None, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
