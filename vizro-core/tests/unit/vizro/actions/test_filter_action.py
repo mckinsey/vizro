@@ -30,10 +30,10 @@ def target_box_filtered_continent_and_pop(request, gapminder_2007, box_params):
 
 
 @pytest.fixture
-def callback_context_filter_continent(request):
-    """Mock dash.callback_context that represents continent Filter value selection."""
+def ctx_filter_continent(request):
+    """Mock dash.ctx that represents continent Filter value selection."""
     continent = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -57,15 +57,15 @@ def callback_context_filter_continent(request):
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 @pytest.fixture
-def callback_context_filter_continent_and_pop(request):
-    """Mock dash.callback_context that represents continent and pop Filter value selection."""
+def ctx_filter_continent_and_pop(request):
+    """Mock dash.ctx that represents continent and pop Filter value selection."""
     continent, pop = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -96,20 +96,20 @@ def callback_context_filter_continent_and_pop(request):
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
 class TestFilter:
     @pytest.mark.parametrize(
-        "callback_context_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
+        "ctx_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
         [(["Africa"], ["Africa"], ["Africa"]), (["Africa", "Europe"], ["Africa", "Europe"], ["Africa", "Europe"])],
         indirect=True,
     )
     def test_one_filter_no_targets(
         self,
-        callback_context_filter_continent,
+        ctx_filter_continent,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -130,13 +130,13 @@ class TestFilter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_continent,target_scatter_filtered_continent",
+        "ctx_filter_continent,target_scatter_filtered_continent",
         [(["Africa"], ["Africa"]), (["Africa", "Europe"], ["Africa", "Europe"])],
         indirect=True,
     )
     def test_one_filter_one_target(
         self,
-        callback_context_filter_continent,
+        ctx_filter_continent,
         target_scatter_filtered_continent,
     ):
         # Creating and adding a Filter object to the existing Page
@@ -157,13 +157,13 @@ class TestFilter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
+        "ctx_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
         [(["Africa"], ["Africa"], ["Africa"]), (["Africa", "Europe"], ["Africa", "Europe"], ["Africa", "Europe"])],
         indirect=True,
     )
     def test_one_filter_multiple_targets(
         self,
-        callback_context_filter_continent,
+        ctx_filter_continent,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -189,7 +189,7 @@ class TestFilter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
+        "ctx_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
         [
             ([["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]]),
             (
@@ -202,7 +202,7 @@ class TestFilter:
     )
     def test_multiple_filters_no_targets(
         self,
-        callback_context_filter_continent_and_pop,
+        ctx_filter_continent_and_pop,
         target_scatter_filtered_continent_and_pop,
         target_box_filtered_continent_and_pop,
     ):
@@ -227,7 +227,7 @@ class TestFilter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
+        "ctx_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
         [
             ([["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]]),
             ([["Africa", "Europe"], [10**6, 10**7]], [["Africa", "Europe"], [10**6, 10**7]]),
@@ -236,7 +236,7 @@ class TestFilter:
     )
     def test_multiple_filters_one_target(
         self,
-        callback_context_filter_continent_and_pop,
+        ctx_filter_continent_and_pop,
         target_scatter_filtered_continent_and_pop,
     ):
         # Creating and adding a Filter objects to the existing Page
@@ -262,7 +262,7 @@ class TestFilter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
+        "ctx_filter_continent_and_pop,target_scatter_filtered_continent_and_pop,target_box_filtered_continent_and_pop",
         [
             ([["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]]),
             (
@@ -275,7 +275,7 @@ class TestFilter:
     )
     def test_multiple_filters_multiple_targets(
         self,
-        callback_context_filter_continent_and_pop,
+        ctx_filter_continent_and_pop,
         target_scatter_filtered_continent_and_pop,
         target_box_filtered_continent_and_pop,
     ):

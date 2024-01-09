@@ -39,10 +39,10 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
 
 
 @pytest.fixture
-def callback_context_on_page_load(request):
-    """Mock dash.callback_context that represents on page load."""
+def ctx_on_page_load(request):
+    """Mock dash.ctx that represents on page load."""
     continent_filter, pop, y, x, template = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -88,14 +88,14 @@ def callback_context_on_page_load(request):
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
+        "ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
         [
             (
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
@@ -108,11 +108,11 @@ class TestOnPageLoad:
                 "vizro_light",
             ),
         ],
-        indirect=["callback_context_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
+        indirect=["ctx_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
     )
     def test_multiple_controls_one_target(
         self,
-        callback_context_on_page_load,
+        ctx_on_page_load,
         target_scatter_filtered_continent_and_pop_parameter_y_and_x,
         template,
         box_chart,
@@ -163,7 +163,7 @@ class TestOnPageLoad:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_on_page_load, "
+        "ctx_on_page_load, "
         "target_scatter_filtered_continent_and_pop_parameter_y_and_x, "
         "target_box_filtered_continent_and_pop_parameter_y_and_x",
         [
@@ -182,7 +182,7 @@ class TestOnPageLoad:
     )
     def test_multiple_controls_multiple_targets(
         self,
-        callback_context_on_page_load,
+        ctx_on_page_load,
         target_scatter_filtered_continent_and_pop_parameter_y_and_x,
         target_box_filtered_continent_and_pop_parameter_y_and_x,
     ):
