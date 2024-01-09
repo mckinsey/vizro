@@ -74,13 +74,6 @@ class DataManager:
         # to not do any inplace=True operations, but probably safest to leave it here.
         return self.__original_data[dataset_name].copy()
 
-    def _has_registered_data(self, component_id: ComponentID) -> bool:
-        try:
-            self._get_component_data(component_id)
-            return True
-        except KeyError:
-            return False
-
     def _clear(self):
         self.__init__()  # type: ignore[misc]
 
