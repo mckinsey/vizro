@@ -67,11 +67,15 @@ Vizro-AI's `_get_chart_code` method returns the Python code string that can be u
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
-
+        
         vizro_ai = VizroAI()
-
+        
         df = px.data.gapminder()
-        code_string = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time", explain=True)
+        output = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time", explain=True)
+        
+        code_string = output.get("code_string")
+        code_explanation = output.get("code_explanation")
+        business_insights = output.get("business_insights")
         ```
     === "code_string"
         [![ResultCode]][ResultCode]
