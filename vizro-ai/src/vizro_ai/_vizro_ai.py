@@ -99,7 +99,6 @@ class VizroAI:
         Args:
             df: The dataframe to be analyzed
             user_input: User questions or descriptions of the desired visual
-            explain: Flag to include explanation in response
         """
         # TODO refine and update error handling
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
