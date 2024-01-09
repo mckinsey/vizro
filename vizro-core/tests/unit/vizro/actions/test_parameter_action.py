@@ -68,8 +68,8 @@ def ctx_parameter_y(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
@@ -100,8 +100,8 @@ def ctx_parameter_hover_data(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
@@ -139,8 +139,8 @@ def ctx_parameter_y_and_x(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
