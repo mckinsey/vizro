@@ -79,4 +79,4 @@ Vizro-AI's `_get_chart_code` method returns the Python code string that can be u
     [ResultCode]: ../../assets/user_guides/code_string_app_integration.png
 
 The returned `code_string` can be used to dynamically render charts within your application. You may have the option to encapsulate the chart within a `fig` object or convert the figure into a JSON string for further integration.
-In case you would like to use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(df, ..., explain=False)`, which returns a dictionary containing the code explanation and chart insights alongside the code.
+In case you would like to use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(df, ..., explain=True)`, which returns a dictionary containing the code explanation and chart insights alongside the code.
