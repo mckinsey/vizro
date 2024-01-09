@@ -60,7 +60,7 @@ You can utilize Vizro-AI in any standard development environment by creating a `
 
 You have the possibility to integrate Vizro-AI into your application. For example, this can be achieved through a frontend that allows users to input prompts using a text field.
 
-Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.
+Vizro-AI's `_get_chart_code` method returns a dictionary containing the Python code string that can be used to prepare the data and create the visualization as well the code explanation and business insights. The code is validated and debugged to ensure that it is executable and ready to be integrated.
 
 !!! example "Application integration"
     === "app.py"
