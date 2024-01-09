@@ -45,8 +45,8 @@ def managers_one_page_without_graphs_one_button():
 
 
 @pytest.fixture
-def callback_context_export_data(request):
-    """Mock dash.callback_context that represents filters and filter interactions applied."""
+def ctx_export_data(request):
+    """Mock dash.ctx that represents filters and filter interactions applied."""
     targets, pop_filter, continent_filter_interaction, country_table_filter_interaction = request.param
     args_grouping_filter_interaction = []
     if continent_filter_interaction:
@@ -97,7 +97,7 @@ def callback_context_export_data(request):
                 ),
             }
         )
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filters": [
@@ -123,14 +123,14 @@ def callback_context_export_data(request):
         ],
     }
 
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 class TestExportData:
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
-    @pytest.mark.parametrize("callback_context_export_data", [([[], None, None, None])], indirect=True)
-    def test_no_graphs_no_targets(self, callback_context_export_data):
+    @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
+    def test_no_graphs_no_targets(self, ctx_export_data):
         # Add action to relevant component
         model_manager["button"].actions = [vm.Action(id="test_action", function=export_data())]
 
@@ -141,10 +141,8 @@ class TestExportData:
         assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize(
-        "callback_context_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True
-    )
-    def test_graphs_no_targets(self, callback_context_export_data, gapminder_2007):
+    @pytest.mark.parametrize("ctx_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True)
+    def test_graphs_no_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [vm.Action(id="test_action", function=export_data())]
 
@@ -169,14 +167,14 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, targets",
+        "ctx_export_data, targets",
         [
             ([["scatter_chart", "box_chart"], None, None, None], None),
             ([["scatter_chart", "box_chart"], None, None, None], []),
         ],
-        indirect=["callback_context_export_data"],
+        indirect=["ctx_export_data"],
     )
-    def test_graphs_false_targets(self, callback_context_export_data, targets, gapminder_2007):
+    def test_graphs_false_targets(self, ctx_export_data, targets, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [vm.Action(id="test_action", function=export_data(targets=targets))]
 
@@ -200,8 +198,8 @@ class TestExportData:
         assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize("callback_context_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
-    def test_one_target(self, callback_context_export_data, gapminder_2007):
+    @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
+    def test_one_target(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [vm.Action(id="test_action", function=export_data(targets=["scatter_chart"]))]
 
@@ -219,10 +217,8 @@ class TestExportData:
         assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize(
-        "callback_context_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True
-    )
-    def test_multiple_targets(self, callback_context_export_data, gapminder_2007):
+    @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True)
+    def test_multiple_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [
             vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
@@ -248,10 +244,10 @@ class TestExportData:
         assert result == expected
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-    @pytest.mark.parametrize("callback_context_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
+    @pytest.mark.parametrize("ctx_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
     def test_invalid_target(
         self,
-        callback_context_export_data,
+        ctx_export_data,
     ):
         # Add action to relevant component
         model_manager["button"].actions = [
@@ -264,7 +260,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
+        "ctx_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, None],
@@ -282,7 +278,7 @@ class TestExportData:
     )
     def test_multiple_targets_with_filter_and_filter_interaction(
         self,
-        callback_context_export_data,
+        ctx_export_data,
         target_scatter_filter_and_filter_interaction,
         target_box_filtered_pop,
     ):
@@ -323,7 +319,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
     @pytest.mark.parametrize(
-        "callback_context_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
+        "ctx_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
             (
                 [["scatter_chart", "box_chart"], [10**6, 10**7], None, "Algeria"],
@@ -341,7 +337,7 @@ class TestExportData:
     )
     def test_multiple_targets_with_filter_and_filter_interaction_and_table(
         self,
-        callback_context_export_data,
+        ctx_export_data,
         target_scatter_filter_and_filter_interaction,
         target_box_filtered_pop,
     ):
