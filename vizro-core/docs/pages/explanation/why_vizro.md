@@ -6,14 +6,16 @@ hide:
 
 # Why Vizro?
 
-Vizro is a high-level framework built on top of Dash and Pydantic, 
-which makes it easier to build advanced dashboards 
-since it automates many of the otherwise complex and time-consuming tasks 
+Vizro is a high-level framework built on top of Dash and Pydantic,
+which makes it easier to build advanced dashboards
+since it automates many of the otherwise complex and time-consuming tasks
 traditionally associated with designing, building and deploying front-end applications,
 from prototypes to production.
 
 ### 1) Build beautiful & powerful dashboards, quickly & easily
+
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
+
 <details open>
 <summary> (See more details) </summary>
 
@@ -23,9 +25,9 @@ Users can configure Vizro dashboards without needing to know advanced software d
 </figure>
 
 - **Beautiful** - inbuilt visual design best practices are applied automatically,
-so users can create beautiful dashboards without needing to know any HTML, CSS or design principles.
-- **Powerful** - advanced functionality and interactions come out-of-the-box, by using just a few lines of simple configuration. 
-- **Quick and easy** - the simple configuration follows an intuitive "grammar of dashboards" which is quick to learn and easy to use. 
+  so users can create beautiful dashboards without needing to know any HTML, CSS or design principles.
+- **Powerful** - advanced functionality and interactions come out-of-the-box, by using just a few lines of simple configuration.
+- **Quick and easy** - the simple configuration follows an intuitive "grammar of dashboards" which is quick to learn and easy to use.
 This removes most of the "glue code" that would otherwise need to be written. Thousands of lines of code are reduced to tens of lines of configuration.
 Users can configure Vizro dashboards without needing to know any advanced software development principles of how to build front-end applications.
 </details>
@@ -38,74 +40,61 @@ Users benefit from the power of the Dash framework and the flexibility of React.
 <summary> (See more details) </summary>
 
 - **Dash** - since Vizro is built on top of Dash, then users benefit from all the underlying power and customizations offered by the Dash framework,
-including the ability to use extension libraries related to Dash.
+  including the ability to use extension libraries related to Dash.
 - **React** - since Dash enables JavaScript React components to be incorporated into Dash applications, Vizro users can create custom charts and UI components which offer the infinite flexibility of React.
 - **Vizro extensions** - adding extensions such as user defined custom charts, components, actions and data connectors is intuitively incorporated into the configuration language of Vizro.
 </details>
 
 ### 3) Rapidly scale from prototypes to production deployment
+
 Consistency and re-usability designed for scale.
+
 <details>
 <summary> (See more details) </summary>
 
-- **Prototype rapidly** - even complex dashboards can be created within minutes using Vizro, 
-which enables prototype dashboards to be created and iterated on quickly and easily, with very low barrier to entry.
+- **Prototype rapidly** - even complex dashboards can be created within minutes using Vizro,
+  which enables prototype dashboards to be created and iterated on quickly and easily, with very low barrier to entry.
 - **Deploy easily** - since Vizro is built on Dash which uses Flask, it is simple to deploy Vizro like any other Dash application, and use application servers such as Gunicorn to scale to multiple users.
-- **Scale** - since Vizro provides standardization of visual design, application architecture and configuration language, 
+- **Scale** - since Vizro provides standardization of visual design, application architecture and configuration language,
 it is easier to scale across multiple developers, projects and implementations in a consistent and re-usable way.
 </details>
-
-
-
-
-
-
-
-
-
-
 
 ## How does Vizro differ from Dash or Streamlit?
 
 Potential users sometimes request comparisons between Vizro and similar tools such as Dash and Streamlit.
-In many ways a direct comparison is not possible as these products tackle somewhat different use cases and their relative pros and cons change depending on the particular requirements of each different user. 
+In many ways a direct comparison is not possible as these products tackle somewhat different use cases and their relative pros and cons change depending on the particular requirements of each different user.
 
 Any attempt at a high-level explanation must rely on an oversimplification that misses many important nuances. With the caveat that it's not possible to "compare apples with pears", and that any comparison will have a different conclusion for different users, an oversimplified view could be:
 
 <details>
 <summary>Streamlit is great for rapid prototyping</summary>
 
-* **rapid prototyping** - Streamlit's architecture allows you to write apps the same way you write plain Python scripts. 
-To unlock this, Streamlit apps have a unique data flow: any time something must be updated on the screen, Streamlit reruns your entire Python script from top to bottom. [[1]](https://docs.streamlit.io/library/get-started/main-concepts) 
-This turns data scripts into sharable web apps in minutes. [[2]](https://streamlit.io/) 
-Adding a widget is the same as declaring a variable.
-(No need to write a backend, define routes, handle HTTP requests, connect a frontend, write HTML, CSS, JavaScript, etc. [[3]](https://streamlit.io/))
+- **rapid prototyping** - Streamlit's architecture allows you to write apps the same way you write plain Python scripts.
+  To unlock this, Streamlit apps have a unique data flow: any time something must be updated on the screen, Streamlit reruns your entire Python script from top to bottom. [[1]](https://docs.streamlit.io/library/get-started/main-concepts)
+  This turns data scripts into sharable web apps in minutes. [[2]](https://streamlit.io/)
+  Adding a widget is the same as declaring a variable.
+  (No need to write a backend, define routes, handle HTTP requests, connect a frontend, write HTML, CSS, JavaScript, etc. [[3]](https://streamlit.io/))
 
 </details>
-
 
 <details>
 <summary> Dash is great for customization and scalability </summary>
 
+- **customization** - one of the great things about Dash is that it is built on top of React.js, a JavaScript library for building web components.
+  Thousands of components have been built and released with open source licenses by the React community, any of which could be adapted into a Dash component. [[4]](https://dash.plotly.com/plugins)
+  Dash supports adding custom CSS [[5]](https://dash.plotly.com/external-resources) and HTML, callbacks for custom behaviour,
+  and many component libraries such as Dash Bootstrap components [[6]](https://dash-bootstrap-components.opensource.faculty.ai/)
+- **scalability** - based on Flask which is widely adopted by the Python community and deployed in production environments
+  everywhere [[7]](https://medium.com/plotly/introducing-dash-5ecf7191b503) Dash was designed to be a stateless framework. Stateless frameworks are more scalable and robust [[8]](https://dash.plotly.com/sharing-data-between-callbacks#why-share-state?)
 
-* **customization** - one of the great things about Dash is that it is built on top of React.js, a JavaScript library for building web components.
-Thousands of components have been built and released with open source licenses by the React community, any of which could be adapted into a Dash component. [[4]](https://dash.plotly.com/plugins)
-Dash supports adding custom CSS [[5]](https://dash.plotly.com/external-resources) and HTML, callbacks for custom behaviour,
-and many component libraries such as Dash Bootstrap components [[6]](https://dash-bootstrap-components.opensource.faculty.ai/)
-* **scalability** - based on Flask which is widely adopted by the Python community and deployed in production environments
-everywhere [[7]](https://medium.com/plotly/introducing-dash-5ecf7191b503) Dash was designed to be a stateless framework. Stateless frameworks are more scalable and robust [[8]](https://dash.plotly.com/sharing-data-between-callbacks#why-share-state?)
-
-
-
-</details> 
-
+</details>
 
 <details>
 <summary> Vizro is great for combining rapid prototyping with customization and scalability </summary>
 
-* **rapid prototyping** - since Vizro is a high-level framework providing declarative configuration, it is quick and easy to create powerful interactive apps in minutes, without needing to write callbacks, HTML, CSS, or JavaScript. Key topics such as applying state management, application architecture, and testing are done automatically by Vizro.
-* **customization and scalability** - since Vizro is built on top of Dash, then users benefit from all the underlying power of the Dash framework for customization and scalability
-* **beauty and robustness** - since Vizro uses inbuilt visual design and software development best practices, it automatically generates dashboards which look beautiful and can go from prototype to production quickly and easily
+- **rapid prototyping** - since Vizro is a high-level framework providing declarative configuration, it is quick and easy to create powerful interactive apps in minutes, without needing to write callbacks, HTML, CSS, or JavaScript. Key topics such as applying state management, application architecture, and testing are done automatically by Vizro.
+- **customization and scalability** - since Vizro is built on top of Dash, then users benefit from all the underlying power of the Dash framework for customization and scalability
+- **beauty and robustness** - since Vizro uses inbuilt visual design and software development best practices, it automatically generates dashboards which look beautiful and can go from prototype to production quickly and easily
 
 </details>
 
@@ -114,7 +103,7 @@ If you prefer a top-down scripting style, then Streamlit is a powerful approach.
 If you prefer full control and customization over callbacks and layouts, then Dash is a powerful approach.
 If you prefer a configuration approach with in-built best practices, and the potential for customization and scalability through Dash, then Vizro is a powerful approach.
 
-For a more detailed comparison, it may help to visit the introductory articles of [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://towardsdatascience.com/coding-ml-tools-like-you-code-ml-models-ddba3357eace) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db), 
+For a more detailed comparison, it may help to visit the introductory articles of [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://towardsdatascience.com/coding-ml-tools-like-you-code-ml-models-ddba3357eace) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db),
 to see how each tool serves a distinct purpose, and could be the best tool of choice.
 
 ## Comparing Vizro with Python packages and business intelligence (BI) tools such as Streamlit, Tableau and PowerBI
@@ -130,7 +119,7 @@ along with the ability to scale easily across multiple developers and implementa
 <summary> (See more details) </summary>
 
 | Functionality                                                                                                                                                                                                                                                                                                                                                 | Benefits                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | In context of Python packages                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | In context of BI tools                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Assembly system** <ul><li>Configuration-driven assembly system of Vizro automatically builds user-friendly, higher-level dashboard concepts (e.g. a filter) from low-level individual components (e.g. a dropdown component plus a filtering function).</li></ul>                                                                                           | <ul><li>Removes the need for users to learn how to write the “glue code” which combines lower-level components.</li><li>Removes the time taken to write, test and optimize the “glue code” which combines lower-level components.</li><li>Reduces what can be 1000s of lines of code down to dozens of lines of configuration.</li></ul>                                                                                                                                                                                                                                                                                                                                                                            | Many Python packages still require a moderate understanding of the coding required to assemble higher-level dashboard concepts, which necessitates the creation of “glue code” to combine lower-level components. <br/><br/> Vizro primarily provides a configuration to simplify that assembly of components offered by existing packages (currently leveraging Plotly/Dash), and so occupies a slightly different niche from libraries offering primarily the lower-level components themselves. It also removes the requirement from users to implement certain code standards for the assembled code themselves, and therefore saves time on often time consuming things such as writing unit tests and ensuring linting coverage. | Many BI tools incorporate the assembly of higher-level concepts automatically from GUI (drop-and-drag) interfaces, and occupy a slightly different niche to the configuration driven assembly provided by Vizro.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **Inbuilt visual design decisions** <ul><li>UX decisions such as placement of filters and orientation of charts in relation to other components on the screen.</li><li>Visual design decisions such as chart formatting and spacing between components.</li><li>Colors including text, backgrounds and chart contents.</li></ul>                              | <ul><li>Ensures visual consistency within applications, and across applications built by the same user.</li><li>Speeds up development by removing the need to spend time on visual design decisions.</li><li>Removes the need for advanced expertise in visual design.</li><li>Ensures basic color accessibility for most likely color combinations.</li></ul>                                                                                                                                                                                                                                                                                                                                                      | Many Python packages provide inbuilt color choices, and visual design choices for certain components. <br/><br/> Vizro applies that to a wide range of component combinations and complex user flows, offering a holistic and comprehensive approach to automatically enable beautiful visual design best practices, whilst allowing customization and flexibility.                                                                                                                                                                                                                                                                                                                                                                    | Many BI tools provide inbuilt color choices and visual design choices for certain components. <br/><br/> Vizro provides inbuilt visual design for components in addition to the ability to customize them in a flexible way where needed (for example through CSS), and provides automatic arrangement of components on the screen.                                                                                                                                                                                                                                                                                                                                |
 | **Inbuilt application architecture decisions** <ul><li>The architectural decisions required to connect components in advanced ways - such as combining connecting filters to charts with multi-screen navigation to allow drill-throughs between screens.</li></ul>                                                                                           | <ul><li>Ensures structural consistency within applications, and across applications built by the same user.</li><li>Speeds up development by removing the need to spend time on architectural decisions or development.</li><li>Removes need for advanced expertise in application architecture.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                          | Many Python packages provide inbuilt application architecture choices for certain functionalities. <br/><br/> Vizro applies that to a wide range of component combinations and complex user flows, offering a holistic and comprehensive approach to the entire application architecture, whilst allowing customization and flexibility where relevant.                                                                                                                                                                                                                                                                                                                                                                                | Many BI tools apply proprietary application architecture by default. <br/><br/> Vizro enables the user to view and understand the application architecture by directly viewing the code.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
