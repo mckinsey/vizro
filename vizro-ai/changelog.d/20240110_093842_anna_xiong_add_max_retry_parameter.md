@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 <!--
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- - Added `max_debug_retry` parameter to `VizroAI.plot` to allow users to determine the maximum number of debugging attempts desired ([#261](https://github.com/mckinsey/vizro/pull/261))
 
 -->
 <!--
