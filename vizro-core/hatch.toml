@@ -25,7 +25,8 @@ dependencies = [
   "chromedriver-autoinstaller-fix",
   "toml",
   "pyyaml",
-  "openpyxl"
+  "openpyxl",
+  "kedro>=0.17.3"  # added to run test_get_action_callback_mapping.py::test_datasets_from_catalog unit test
 ]
 
 [envs.default.env-vars]

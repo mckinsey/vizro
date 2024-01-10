@@ -16,14 +16,14 @@ from vizro.models.types import capture
 
 @capture("action")
 def custom_action_example():
-    pass
+    pass  # pragma: no cov
 
 
 # custom action with same name as some predefined action
 def get_custom_action_with_known_name():
     @capture("action")
     def export_data():
-        pass
+        pass  # pragma: no cov
 
     return export_data()
 

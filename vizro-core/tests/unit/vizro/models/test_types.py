@@ -15,11 +15,11 @@ from vizro.models.types import CapturedCallable, capture
 
 
 def positional_only_function(a, /):
-    pass
+    pass  # pragma: no cov
 
 
 def var_positional_function(*args):
-    pass
+    pass  # pragma: no cov
 
 
 @pytest.mark.parametrize("function", [positional_only_function, var_positional_function])
@@ -179,7 +179,7 @@ def decorated_graph_function_px(data_frame):
 
 @capture("graph")
 def invalid_decorated_graph_function():
-    return go.Figure()
+    return go.Figure()  # pragma: no cov
 
 
 class Model(VizroBaseModel):

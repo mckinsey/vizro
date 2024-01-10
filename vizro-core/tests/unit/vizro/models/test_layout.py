@@ -144,7 +144,7 @@ class TestWorkingGrid:
     def test_working_grid(self, grid):
         try:
             vm.Layout(grid=grid)
-        except ValidationError as ve:
+        except ValidationError as ve:  # pragma: no cov
             assert False, f"{grid} raised a value error {ve}."
 
 
