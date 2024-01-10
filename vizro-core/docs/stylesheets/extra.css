@@ -42,7 +42,6 @@ td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;
 }
 
-
 img.component-img {
   height: 180px;
   width: 100%;

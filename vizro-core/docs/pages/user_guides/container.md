@@ -6,7 +6,7 @@ This guide shows you how to use containers to organize your page components into
 
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
-1. Insert the [`Container`][vizro.models.Container] into the `components` argument of the [`Page`][vizro.models.Page] 
+1. Insert the [`Container`][vizro.models.Container] into the `components` argument of the [`Page`][vizro.models.Page]
 2. Provide a `title` to your [`Container`][vizro.models.Container]
 3. Configure your `components`, see our overview page on the various options [here](components.md)
 4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
@@ -20,7 +20,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         from vizro import Vizro
 
         iris = px.data.iris()
-        
+
         page = vm.Page(
             title="Containers",
             components=[
@@ -56,9 +56,9 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
