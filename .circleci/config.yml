@@ -73,7 +73,7 @@ jobs:
                     --header "content-type: application/json" \
                   | jq -r '.items[0].status'
                 )
-                echo $$created_workflow_status_updated
+                echo $created_workflow_status_updated
               done
 
               if [[ "$created_workflow_status_updated" != "success" ]]; then
