@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Introduce `Container` model as a new `Page` component ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Introduce `Container` model as a new `Page` component ([#254](https://github.com/mckinsey/vizro/pull/254))
 
 <!--
 ### Changed
