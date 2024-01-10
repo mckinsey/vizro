@@ -11,9 +11,8 @@ In general, you can create a custom component based on any dash-compatible compo
 
 !!! warning "Adding a dash-bootstrap component"
 
-    Please note that Vizro currently does not include a default Bootstrap stylesheet, which
-    can lead to issues when using [dash-bootstrap components](https://dash-bootstrap-components.opensource.faculty.ai/) as custom components.
-    To ensure proper styling and functionality, adding custom CSS is required.
+    When adding a custom component based on [dash-bootstrap components](https://dash-bootstrap-components.opensource.faculty.ai/)
+    it’s necessary to add custom CSS to ensure proper styling and functionality.
 
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
 or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
