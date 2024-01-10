@@ -21,8 +21,8 @@ The user-provided `assets` folder thus always takes precedence.
 
 !!! warning "Dash Bootstrap Themes"
 
-    Please note that Vizro currently does not support Dash Bootstrap Themes. Adding a Bootstrap stylesheet will not work
-    accordingly inside the Vizro app.
+    Please note that Vizro currently does not support [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
+    Adding a Bootstrap stylesheet will not work accordingly inside the Vizro app.
 
 ## Changing the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
