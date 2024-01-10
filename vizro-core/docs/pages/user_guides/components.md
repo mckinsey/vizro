@@ -7,7 +7,7 @@ listed below to fill your dashboard with visuals.
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
 
-<a class="card-wrapper" href="../graph.md">
+<a class="card-wrapper" href="../graph">
   <div class="card">
     <div class="card-content">
       <h5>Graph</h5>
@@ -17,7 +17,7 @@ listed below to fill your dashboard with visuals.
   </div>
 </a>
 
-<a class="card-wrapper" href="../table.md">
+<a class="card-wrapper" href="../table">
   <div class="card">
     <div class="card-content">
       <h5>Table</h5>
@@ -27,7 +27,7 @@ listed below to fill your dashboard with visuals.
   </div>
 </a>
 
-<a class="card-wrapper" href="../card_button.md">
+<a class="card-wrapper" href="../card_button">
   <div class="card">
     <div class="card-content">
       <h5>Card & Button</h5>
@@ -37,7 +37,7 @@ listed below to fill your dashboard with visuals.
   </div>
 </a>
 
-<a class="card-wrapper" href="../container.md">
+<a class="card-wrapper" href="../container">
   <div class="card">
     <div class="card-content">
       <h5>Container</h5>
