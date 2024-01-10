@@ -102,9 +102,8 @@ insert text into your dashboard and can be configured using markdown syntax. For
 bar chart that visualizes the GDP development per continent since 1952.
 
 Remember, you can combine and arrange various types of `components` on a dashboard page. For more in-depth information
-on using and configuring different `components`, refer to the user guide for
-[components](../user_guides/components.md). It serves as a detailed resource to learn about the
-wide range of `components` available and how to make the most of them in your dashboards.
+on using and configuring different `components`, refer to our user guides on [components](../user_guides/graph.md). It serves as a detailed resource to learn about the wide range of `components` available and how to make the most of them
+in your dashboards.
 
 ??? info "Further information for `components`"
     Currently available types of `components`:
@@ -708,7 +707,7 @@ After completing the tutorial you now have a solid understanding of the main ele
 and how to bring them together.
 
 For future dashboard creations, you can explore more about the available dashboard `components` by going through the
-[user guide](../user_guides/components.md). To gain more in-depth knowledge about the usage and configuration
+[user guides](../user_guides/graph.md). To gain more in-depth knowledge about the usage and configuration
 details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user_guides/parameters.md)
 and [Selectors](../user_guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head
 to [Navigation](../user_guides/navigation.md).

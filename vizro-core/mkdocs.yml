@@ -14,7 +14,8 @@ nav:
       - Components:
           - Graphs: pages/user_guides/graph.md
           - Tables: pages/user_guides/table.md
-          - Cards & Buttons: pages/user_guides/components.md
+          - Cards & Buttons: pages/user_guides/card_button.md
+          - Containers: pages/user_guides/container.md
 
       - Controls:
           - Filters: pages/user_guides/filters.md
