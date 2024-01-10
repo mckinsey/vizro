@@ -2,9 +2,6 @@
 
 This guide shows you how to use cards and buttons to visualize and interact with your data in the dashboard.
 
-The [`Page`][vizro.models.Page] models accepts the `components` argument, where you can enter your visual content e.g.
-[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button].
-
 ## Card
 
 The [`Card`][vizro.models.Card] is a flexible and extensible component, allowing for customization via Markdown text.

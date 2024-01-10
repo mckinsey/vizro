@@ -12,6 +12,7 @@ nav:
           - Pages: pages/user_guides/pages.md
           - Run Methods: pages/user_guides/run.md
       - Components:
+          - Overview: pages/user_guides/components.md
           - Graphs: pages/user_guides/graph.md
           - Tables: pages/user_guides/table.md
           - Cards & Buttons: pages/user_guides/card_button.md
