@@ -49,10 +49,10 @@ def target_box_parameter_y_and_x(request, gapminder_2007, box_params):
 
 
 @pytest.fixture
-def callback_context_parameter_y(request):
-    """Mock dash.callback_context that represents y-axis Parameter value selection."""
+def ctx_parameter_y(request):
+    """Mock dash.ctx that represents y-axis Parameter value selection."""
     y = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -68,23 +68,23 @@ def callback_context_parameter_y(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 @pytest.fixture
-def callback_context_parameter_hover_data(request):
-    """Mock dash.callback_context that represents hover_data Parameter value selection."""
+def ctx_parameter_hover_data(request):
+    """Mock dash.ctx that represents hover_data Parameter value selection."""
     hover_data = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -100,23 +100,23 @@ def callback_context_parameter_hover_data(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 @pytest.fixture
-def callback_context_parameter_y_and_x(request):
-    """Mock dash.callback_context that represents y-axis Parameter value selection."""
+def ctx_parameter_y_and_x(request):
+    """Mock dash.ctx that represents y-axis Parameter value selection."""
     y, x = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -139,28 +139,28 @@ def callback_context_parameter_y_and_x(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=True,
+                    property="checked",
+                    value=False,
                     str_id="theme_selector",
                     triggered=False,
                 ),
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
 class TestParameter:
     @pytest.mark.parametrize(
-        "callback_context_parameter_y, target_scatter_parameter_y",
+        "ctx_parameter_y, target_scatter_parameter_y",
         [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
         indirect=True,
     )
     def test_one_parameter_one_target(
         self,
-        callback_context_parameter_y,
+        ctx_parameter_y,
         target_scatter_parameter_y,
     ):
         # Creating and adding a Parameter object to the existing Page
@@ -183,7 +183,7 @@ class TestParameter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_parameter_hover_data, target_scatter_parameter_hover_data",
+        "ctx_parameter_hover_data, target_scatter_parameter_hover_data",
         [
             (["NONE"], [None]),
             (["NONE", "pop"], ["pop"]),
@@ -196,7 +196,7 @@ class TestParameter:
     )
     def test_one_parameter_one_target_NONE_list(
         self,
-        callback_context_parameter_hover_data,
+        ctx_parameter_hover_data,
         target_scatter_parameter_hover_data,
     ):
         # Creating and adding a Parameter object to the existing Page
@@ -221,13 +221,13 @@ class TestParameter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
+        "ctx_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
         [("pop", "pop", "pop"), ("gdpPercap", "gdpPercap", "gdpPercap")],
         indirect=True,
     )
     def test_one_parameter_multiple_targets(
         self,
-        callback_context_parameter_y,
+        ctx_parameter_y,
         target_scatter_parameter_y,
         target_box_parameter_y,
     ):
@@ -252,13 +252,13 @@ class TestParameter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x",
+        "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x",
         [(["pop", "continent"], ["pop", "continent"]), (["gdpPercap", "country"], ["gdpPercap", "country"])],
         indirect=True,
     )
     def test_multiple_parameters_one_target(
         self,
-        callback_context_parameter_y_and_x,
+        ctx_parameter_y_and_x,
         target_scatter_parameter_y_and_x,
     ):
         # Creating and adding a Parameter object to the existing Page
@@ -287,7 +287,7 @@ class TestParameter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
+        "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
         [
             (["pop", "continent"], ["pop", "continent"], ["pop", "continent"]),
             (["gdpPercap", "country"], ["gdpPercap", "country"], ["gdpPercap", "country"]),
@@ -296,7 +296,7 @@ class TestParameter:
     )
     def test_multiple_parameters_multiple_targets(
         self,
-        callback_context_parameter_y_and_x,
+        ctx_parameter_y_and_x,
         target_scatter_parameter_y_and_x,
         target_box_parameter_y_and_x,
     ):
@@ -327,7 +327,7 @@ class TestParameter:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
+        "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
         [
             (["pop", "continent"], ["pop", "pop"], ["continent", "continent"]),
             (["gdpPercap", "country"], ["gdpPercap", "gdpPercap"], ["country", "country"]),
@@ -336,7 +336,7 @@ class TestParameter:
     )
     def test_one_parameter_per_target_multiple_attributes(
         self,
-        callback_context_parameter_y_and_x,
+        ctx_parameter_y_and_x,
         target_scatter_parameter_y_and_x,
         target_box_parameter_y_and_x,
     ):

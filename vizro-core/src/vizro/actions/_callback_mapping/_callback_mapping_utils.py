@@ -90,7 +90,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
             if "filter_interaction" in include_inputs
             else []
         ),
-        "theme_selector": State("theme_selector", "on") if "theme_selector" in include_inputs else [],
+        "theme_selector": State("theme_selector", "checked") if "theme_selector" in include_inputs else [],
     }
     return action_input_mapping
 

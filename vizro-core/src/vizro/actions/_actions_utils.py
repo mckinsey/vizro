@@ -20,7 +20,7 @@ ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]
 
 
 class CallbackTriggerDict(TypedDict):
-    """Represent dash.callback_context.args_grouping item. Shortened as 'ctd' in the code.
+    """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
     Args:
         id: The component ID. If it`s a pattern matching ID, it will be a dict.

@@ -110,20 +110,20 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
     def test_update_theme_inside_callback(self, standard_px_chart, template):
-        mock_callback_context = {
+        mock_ctx = {
             "args_grouping": {
                 "external": {
                     "theme_selector": CallbackTriggerDict(
                         id="theme_selector",
-                        property="on",
-                        value=template == "vizro_dark",
+                        property="checked",
+                        value=template == "vizro_light",
                         str_id="theme_selector",
                         triggered=False,
                     )
                 }
             }
         }
-        context_value.set(AttributeDict(**mock_callback_context))
+        context_value.set(AttributeDict(**mock_ctx))
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
 
