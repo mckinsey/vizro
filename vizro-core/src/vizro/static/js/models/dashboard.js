@@ -1,3 +1,3 @@
-export function _update_dashboard_theme(on) {
-  return on ? "vizro_dark" : "vizro_light";
+export function _update_dashboard_theme(checked) {
+  return checked ? "vizro_light" : "vizro_dark";
 }

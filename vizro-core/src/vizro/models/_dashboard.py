@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_daq as daq
+import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
 
 try:
@@ -115,7 +115,7 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
             Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
+            Input("theme_selector", "checked"),
         )
 
         return html.Div(
@@ -135,8 +135,12 @@ class Dashboard(VizroBaseModel):
         )
 
         settings = html.Div(
-            daq.BooleanSwitch(
-                id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+            dmc.Switch(
+                id="theme_selector",
+                checked=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
             ),
             id="settings",
         )

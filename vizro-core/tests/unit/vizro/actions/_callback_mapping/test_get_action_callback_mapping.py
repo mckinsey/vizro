@@ -127,7 +127,7 @@ def action_callback_inputs_expected():
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
             },
         ],
-        "theme_selector": dash.State("theme_selector", "on"),
+        "theme_selector": dash.State("theme_selector", "checked"),
     }
 
 
