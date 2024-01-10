@@ -25,8 +25,7 @@ class ModelManager:
         self.__models: Dict[ModelID, VizroBaseModel] = {}
         self._frozen_state = False
 
-    # TODO: Consider do we need to save "page_id=None, parent_model_id=None" eagerly to the model itself
-    #       and make all searching helper methods much easier?
+    # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     @_state_modifier
     def __setitem__(self, model_id: ModelID, model: Model):
         if model_id in self.__models:
@@ -48,7 +47,7 @@ class ModelManager:
         """
         yield from self.__models
 
-    # TODO: Consider do we need to add additional argument "model_page_id=None"
+    # TODO: Consider adding an option to iterate only through specific page - "in_page_with_id=None"
     def _items_with_type(self, model_type: Type[Model]) -> Generator[Tuple[ModelID, Model], None, None]:
         """Iterates through all models of type `model_type` (including subclasses)."""
         for model_id in self:
@@ -63,9 +62,9 @@ class ModelManager:
             if action_id in [action.id for action in actions_chain.actions]:
                 return self[ModelID(str(actions_chain.trigger.component_id))]
 
-    # TODO: consider returning with yield
+    # TODO: Consider returning with yield
     def _get_model_children(self, model_id: ModelID) -> List[ModelID]:
-        """Gets all components recursively of the model with the `model_id`."""
+        """Gets all child components of the model with `model_id'."""
         model_children = []
 
         def __get_model_children_helper(model: VizroBaseModel) -> None:
@@ -74,17 +73,17 @@ class ModelManager:
                 for sub_model in model.components:
                     __get_model_children_helper(model=sub_model)
 
-        __get_model_children_helper(model=self.__models[model_id])
+        __get_model_children_helper(model=self[model_id])
         return model_children
 
-    # TODO: Consider moving this one into Dashboard or some util file
+    # TODO: Consider moving this method in the Dashboard model or some other util file
     def _get_model_page(self, model_id: ModelID) -> Page:  # type: ignore[return]
-        """Gets the page id of the page that contains the model with the `model_id`."""
+        """Gets the id of the page containing the model with "model_id"."""
         from vizro.models import Page
 
         for page_id, _ in model_manager._items_with_type(Page):
             page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
-            page: Page = cast(Page, self.__models[page_id])
+            page: Page = cast(Page, self[page_id])
 
             if hasattr(page, "actions"):
                 for actions_chain in page._get_page_actions_chains():
