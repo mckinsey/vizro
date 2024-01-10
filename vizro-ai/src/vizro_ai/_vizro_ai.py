@@ -112,7 +112,7 @@ class VizroAI:
             df: The dataframe to be analyzed
             user_input: User questions or descriptions of the desired visual
             explain: Flag to include explanation in response
-            max_debug_retry: Number of times LLM can retry for debug
+            max_debug_retry: Maximum number of retries to debug errors. Defaults to 3
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
         code_string = output_dict.get("code_string")
