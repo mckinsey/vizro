@@ -110,7 +110,7 @@ class Page(VizroBaseModel):
         return page_actions_chains
 
     def _get_page_model_ids_with_figure(self) -> List[ModelID]:
-        """Gets all components that have a registered dataframe on the page."""
+        """Gets all components from the page that have a 'figure' registered."""
         return [
             model_id
             for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
