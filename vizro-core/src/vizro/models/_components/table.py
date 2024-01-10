@@ -20,7 +20,7 @@ from vizro.models.types import CapturedCallable
 logger = logging.getLogger(__name__)
 
 
-def _get_table_type(figure): # this function can be applied also in pre-build
+def _get_table_type(figure):  # this function can be applied also in pre-build
     kwargs = figure._arguments.copy()
 
     # This workaround is needed because the underlying table object requires a data_frame
@@ -80,7 +80,6 @@ class Table(VizroBaseModel):
     @property
     def table_type(self):
         return self._table_type
-
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
