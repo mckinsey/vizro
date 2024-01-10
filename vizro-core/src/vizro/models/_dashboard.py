@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_relative_path, html
 
 try:
@@ -182,8 +181,7 @@ class Dashboard(VizroBaseModel):
                     ],
                     position="right-end",
                     arrowOffset=10,
-                    style={"marginTop": "12px", "marginLeft": "8px"}
-
+                    style={"marginTop": "12px", "marginLeft": "8px"},
                 )
             ],
             className="collapsable-div",
