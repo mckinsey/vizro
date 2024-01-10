@@ -28,7 +28,8 @@ dependencies = [
   "tornado>=6.3.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
   "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
   "werkzeug>=3.0.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
-  "MarkupSafe"  # required to sanitize user input
+  "MarkupSafe",  # required to sanitize user input,
+  "dash-ag-grid"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]

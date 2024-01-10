@@ -8,7 +8,7 @@ from dash import Output, State, dcc
 from vizro.actions import _on_page_load, _parameter, export_data, filter_interaction
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, Page, Table, VizroBaseModel
+from vizro.models import Action, Page, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
@@ -108,18 +108,27 @@ def _get_inputs_of_figure_interactions(
     for action in figure_interactions_on_page:
         # TODO: Consider do we want to move the following logic into Model implementation
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
-        if isinstance(triggered_model, Table):
-            inputs.append(
-                {
-                    "active_cell": State(
-                        component_id=triggered_model._callable_object_id, component_property="active_cell"
-                    ),
-                    "derived_viewport_data": State(
-                        component_id=triggered_model._callable_object_id,
-                        component_property="derived_viewport_data",
-                    ),
-                }
-            )
+        if hasattr(triggered_model, "table_type"):  # not check this, put this configuration inside the models
+            if triggered_model.table_type == "DataTable":
+                inputs.append(
+                    {
+                        "active_cell": State(
+                            component_id=triggered_model._callable_object_id, component_property="active_cell"
+                        ),
+                        "derived_viewport_data": State(
+                            component_id=triggered_model._callable_object_id,
+                            component_property="derived_viewport_data",
+                        ),
+                    }
+                )
+            elif triggered_model.table_type == "AgGrid":
+                inputs.append(
+                    {
+                        "cellClicked": State(
+                            component_id=triggered_model._callable_object_id, component_property="cellClicked"
+                        ),
+                    }
+                )
         else:
             inputs.append(
                 {

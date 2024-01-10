@@ -111,7 +111,7 @@ def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseMod
     )
 
 
-def _apply_table_filter_interaction(
+def _apply_dashtable_filter_interaction(
     data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
 ) -> pd.DataFrame:
     ctd_active_cell = ctd_filter_interaction["active_cell"]
@@ -133,6 +133,26 @@ def _apply_table_filter_interaction(
     return data_frame
 
 
+def _apply_aggrid_filter_interaction(
+    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+) -> pd.DataFrame:
+    ctd_cellClicked = ctd_filter_interaction["cellClicked"]
+    if not ctd_cellClicked["value"]:
+        return data_frame
+
+    # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
+    source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_cellClicked["id"]))
+
+    for action in source_table_actions:
+        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            continue
+        column = ctd_cellClicked["value"]["colId"]
+        clicked_data = ctd_cellClicked["value"]["value"]
+        data_frame = data_frame[data_frame[column].isin([clicked_data])]
+
+    return data_frame
+
+
 def _apply_filter_interaction(
     data_frame: pd.DataFrame,
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
@@ -147,7 +167,14 @@ def _apply_filter_interaction(
             )
 
         if "active_cell" in ctd_filter_interaction and "derived_viewport_data" in ctd_filter_interaction:
-            data_frame = _apply_table_filter_interaction(
+            data_frame = _apply_dashtable_filter_interaction(
+                data_frame=data_frame,
+                target=target,
+                ctd_filter_interaction=ctd_filter_interaction,
+            )
+
+        if "cellClicked" in ctd_filter_interaction:
+            data_frame = _apply_aggrid_filter_interaction(
                 data_frame=data_frame,
                 target=target,
                 ctd_filter_interaction=ctd_filter_interaction,
