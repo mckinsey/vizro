@@ -1,7 +1,7 @@
 # Components
 
 The [`Page`][vizro.models.Page] model accepts the `components` argument, where you can enter any of the components
-listed below to fill your dashboard.
+listed below to fill your dashboard with visuals.
 
 
 <div class="card-section-wrapper" style="display: block;">
