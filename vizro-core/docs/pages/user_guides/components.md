@@ -1,53 +1,48 @@
 # Components
 
-The [`Page`][vizro.models.Page] models accepts the `components` argument, where you can enter your visual content e.g.
-[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button].
+The [`Page`][vizro.models.Page] model accepts the `components` argument, where you can enter any of the components
+listed below to fill your dashboard.
 
-Here you can find a list of all our available components and their user guides:
 
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
 
-<a class="card-wrapper" href="pages/tutorials/first_dashboard/">
+<a class="card-wrapper" href="../graph.md">
   <div class="card">
     <div class="card-content">
       <h5>Graph</h5>
-      <p>
-        New to Vizro? Take a look at our tutorials to get started and to explore our core features.
-      </p>
+      <img src="../../../assets/user_guides/components/graph1.png" class="component-img">
+      <p>View User Guide →</p>
     </div>
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/user_guides/install/">
+<a class="card-wrapper" href="../table.md">
   <div class="card">
     <div class="card-content">
       <h5>Table</h5>
-      <p>
-        Our user guides provide step-by-step instructions on how to leverage our core features.
-      </p>
+      <img src="../../../assets/user_guides/table/table.png" class="component-img">
+      <p>View User Guide →</p>
     </div>
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/API_reference/vizro/">
+<a class="card-wrapper" href="../card_button.md">
   <div class="card">
     <div class="card-content">
       <h5>Card & Button</h5>
-      <p>
-        The API reference contains a detailed description of the Vizro API and our pydantic models.
-      </p>
+      <img src="../../../assets/user_guides/components/card_text.png" class="component-img">
+      <p>View User Guide →</p>
     </div>
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/explanation/why_vizro/">
+<a class="card-wrapper" href="../container.md">
   <div class="card">
     <div class="card-content">
       <h5>Container</h5>
-      <p>
-        Our explanation section contains background information and the answer to "why" questions.
-      </p>
+      <img src="../../../assets/user_guides/components/containers.png" class="component-img">
+      <p>View User Guide →</p>
     </div>
   </div>
 </a>
