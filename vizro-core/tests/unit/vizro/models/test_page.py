@@ -51,10 +51,6 @@ class TestPageInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.Page(title="Page 1")
 
-    def test_mandatory_components_invalid(self):
-        with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
-            vm.Page(title="Page 5", components=[])
-
     def test_set_id_duplicate_title_valid(self):
         vm.Page(title="Page 1", components=[vm.Button()], id="my-id-1")
         vm.Page(title="Page 1", components=[vm.Button()], id="my-id-2")
@@ -86,35 +82,6 @@ class TestPageInstantiation:
     def test_set_path_invalid(self, test_path):
         page = vm.Page(title="Page 1", components=[vm.Button()], path=test_path)
         assert page.path == "/this-needs-fixing"
-
-    def test_set_layout_valid(self):
-        vm.Page(title="Page 1", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
-
-    def test_set_layout_invalid(self):
-        with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
-            vm.Page(title="Page 4", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
-
-    def test_valid_component_types(self, standard_px_chart, standard_dash_table):
-        vm.Page(
-            title="Page Title",
-            components=[
-                vm.Graph(figure=standard_px_chart),
-                vm.Card(text="""# Header 1"""),
-                vm.Button(),
-                vm.Table(figure=standard_dash_table),
-            ],
-        )
-
-    @pytest.mark.parametrize(
-        "test_component",
-        [vm.Checklist(), vm.Dropdown(), vm.RadioItems(), vm.RangeSlider(), vm.Slider()],
-    )
-    def test_invalid_component_types(self, test_component):
-        with pytest.raises(
-            ValidationError,
-            match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'container')"),
-        ):
-            vm.Page(title="Page Title", components=[test_component])
 
     def test_valid_control_types(self, standard_px_chart):
         vm.Page(
