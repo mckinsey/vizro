@@ -108,8 +108,8 @@ def _get_inputs_of_figure_interactions(
     for action in figure_interactions_on_page:
         # TODO: Consider do we want to move the following logic into Model implementation
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
-        if hasattr(triggered_model, "table_type"):  # not check this, put this configuration inside the models
-            if triggered_model.table_type == "DataTable":
+        if hasattr(triggered_model, "_table_type"):  # not check this, put this configuration inside the models
+            if triggered_model._table_type == "DataTable":
                 inputs.append(
                     {
                         "active_cell": State(
@@ -121,7 +121,7 @@ def _get_inputs_of_figure_interactions(
                         ),
                     }
                 )
-            elif triggered_model.table_type == "AgGrid":
+            elif triggered_model._table_type == "AgGrid":
                 inputs.append(
                     {
                         "cellClicked": State(

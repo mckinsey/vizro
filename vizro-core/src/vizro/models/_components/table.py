@@ -29,7 +29,7 @@ def _get_table_type(figure):  # this function can be applied also in pre-build
     # The underlying table object is pre-built, so we can fetch its ID.
     underlying_table_object = figure._function(**kwargs)
     table_type = underlying_table_object.__class__.__name__
-    return table_type
+    return underlying_table_object, table_type
 
 
 class Table(VizroBaseModel):
@@ -46,7 +46,6 @@ class Table(VizroBaseModel):
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
     title: str = Field("", description="Title of the table")
-    # foo: str = Field(None, exclude=True)
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -62,24 +61,13 @@ class Table(VizroBaseModel):
 
     @validator("actions")
     def set_actions(cls, v, values):
-        table_type = _get_table_type(values["figure"])
+        _, table_type = _get_table_type(values["figure"])
         if table_type == "DataTable":
             return _set_actions(v, values, "active_cell")
         elif table_type == "AgGrid":
             return _set_actions(v, values, "cellClicked")
         else:
             raise ValueError(f"Table type {table_type} not supported.")
-
-    # set_actions = _action_validator_factory("cellClicked")  # Need to make this sit with the captured callable
-
-    # Approach similar to layout model - need to confirm if we can do without __init__ and populate at another time
-    def __init__(self, **data):
-        super().__init__(**data)
-        self._table_type = _get_table_type(self.figure)
-
-    @property
-    def table_type(self):
-        return self._table_type
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -97,14 +85,7 @@ class Table(VizroBaseModel):
     @_log_call
     def pre_build(self):
         if self.actions:
-            kwargs = self.figure._arguments.copy()
-
-            # This workaround is needed because the underlying table object requires a data_frame
-            kwargs["data_frame"] = DataFrame()
-
-            # The underlying table object is pre-built, so we can fetch its ID.
-            underlying_table_object = self.figure._function(**kwargs)
-            table_type = underlying_table_object.__class__.__name__
+            underlying_table_object, table_type = _get_table_type(self.figure)
 
             if not hasattr(underlying_table_object, "id"):
                 raise ValueError(
