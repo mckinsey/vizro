@@ -41,3 +41,22 @@
 td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;
 }
+
+:root {
+  --md-admonition-icon--details: url("../assets/explanation/why_vizro/search_icon.svg");
+}
+.md-typeset .admonition.details,
+.md-typeset details.details {
+  border-color: rgb(158, 158, 158);
+}
+.md-typeset .details > .admonition-title,
+.md-typeset .details > summary {
+  background-color: rgba(245, 245, 245, 0.3);
+  opacity: 0.5;
+}
+.md-typeset .details > .admonition-title::before,
+.md-typeset .details > summary::before {
+  background-color: rgb(3, 3, 3);
+  -webkit-mask-image: var(--md-admonition-icon--details);
+  mask-image: var(--md-admonition-icon--details);
+}
