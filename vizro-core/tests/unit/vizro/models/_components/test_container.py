@@ -1,6 +1,7 @@
 """Unit tests for vizro.models.Container."""
-
 import pytest
+from asserts import STRIP_ALL, assert_component_equal
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -38,3 +39,10 @@ class TestContainerInstantiation:
     def test_mandatory_components_missing(self):
         with pytest.raises(ValidationError, match="field required"):
             vm.Container(title="Title")
+
+
+class TestContainerBuildMethod:
+    def test_button_build(self):
+        result = vm.Container(title="Title", components=[vm.Button()]).build()
+        assert_component_equal(result, html.Div(className="page-component-container"), keys_to_strip={"children"})
+        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
