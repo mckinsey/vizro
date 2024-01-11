@@ -1,5 +1,6 @@
-from vizro.models.types import capture
 import dash_ag_grid as dag
+
+from vizro.models.types import capture
 
 
 @capture("action")
