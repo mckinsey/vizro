@@ -15,6 +15,7 @@ from prototypes to production.
 ### 1) Build beautiful & powerful dashboards, quickly & easily
 
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
+
 <!-- prettier-ignore -->
 ??? details "See more details"
 
