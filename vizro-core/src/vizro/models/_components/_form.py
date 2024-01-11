@@ -18,7 +18,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._models_utils import _log_call, set_layout
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -38,21 +38,8 @@ class Form(VizroBaseModel):
     components: List[_FormComponentType]
     layout: Layout = None  # type: ignore[assignment]
 
-    @validator("layout", always=True)
-    def set_layout(cls, layout, values):
-        from vizro.models import Layout
-
-        if "components" not in values:
-            return layout
-
-        if layout is None:
-            grid = [[i] for i in range(len(values["components"]))]
-            return Layout(grid=grid)
-
-        unique_grid_idx = get_unique_grid_component_ids(layout.grid)
-        if len(unique_grid_idx) != len(values["components"]):
-            raise ValueError("Number of form and grid components need to be the same.")
-        return layout
+    # Re-used validators
+    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call
     def pre_build(self):
@@ -87,7 +74,7 @@ class Form(VizroBaseModel):
                 "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",
                 "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",
             },
-            className="component_container_grid",
+            className="grid-layout",
             id=self.id,
         )
 
