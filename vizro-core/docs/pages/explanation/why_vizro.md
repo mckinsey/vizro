@@ -15,10 +15,9 @@ from prototypes to production.
 ### 1) Build beautiful & powerful dashboards, quickly & easily
 
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
-
+<!-- prettier-ignore -->
 ??? details "See more details"
 
-<!-- prettier-ignore -->
     <figure markdown>
     <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" alt="Image title" />
     <figcaption>less than 30 lines of configuration can create dashboards with multiple charts and filters</figcaption>
