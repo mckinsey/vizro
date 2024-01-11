@@ -1,8 +1,4 @@
 """Example to show dashboard configuration."""
-
-import sys
-
-import dash_ag_grid as dag
 import pandas as pd
 
 import vizro.models as vm
@@ -10,24 +6,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 
-#######################################
-from vizro.models.types import capture
-from vizro.tables import dash_data_table
-
-print("PYTHON EXECUTABLE", sys.executable)
-
-
-@capture("action")
-def AgGrid(data_frame=None):
-    """Custom AgGrid."""
-    return dag.AgGrid(
-        id="get-started-example-basic",
-        rowData=data_frame.to_dict("records"),
-        columnDefs=[{"field": col} for col in data_frame.columns],
-    )
-
-
-#######################################
+from vizro.tables import dash_data_table, dash_ag_grid
 
 df = px.data.gapminder()
 df_mean = (
@@ -61,7 +40,7 @@ def create_benchmark_analysis():
             vm.Table(
                 id="table_country_new",
                 title="Click on a cell in country column:",
-                figure=AgGrid(
+                figure=dash_ag_grid(
                     data_frame=df,
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],

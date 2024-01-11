@@ -5,7 +5,7 @@ from dash import dash_table, dcc, html
 from pandas import DataFrame
 
 try:
-    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+    from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
@@ -114,8 +114,9 @@ class Table(VizroBaseModel):
 
             self._callable_object_id = underlying_table_object.id
             self._table_type = table_type
-            # Idea: fetch it from the functions attributes? Or just hard-code it here? Can check difference between AGGrid and dashtable because we call it already
-            # Once we recognise, two ways to go: 1) slightly change model properties 2) inject dash dependencies,
+            # Idea: fetch it from the functions attributes? Or just hard-code it here?
+            # Can check difference between AGGrid and dashtable because we call it already
+            # Once we recognize, two ways to go: 1) slightly change model properties 2) inject dash dependencies,
 
     def build(self):
         return dcc.Loading(
