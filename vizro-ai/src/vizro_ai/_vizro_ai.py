@@ -38,7 +38,7 @@ class VizroAI:
         """
         self.model_name = model_name
         self.temperature = temperature
-        self.components_instances = {}
+        # self.components_instances = {}
         self._llm_to_use = None
         # TODO add pending URL link to docs
         logger.info(
@@ -54,11 +54,11 @@ class VizroAI:
         _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
         return _llm_to_use
 
-    def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
-        """Lazy initialization of components."""
-        if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
-        return self.components_instances[component_class]
+    # def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
+    #     """Lazy initialization of components."""
+    #     if component_class not in self.components_instances:
+    #         self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+    #     return self.components_instances[component_class]
 
     def _run_plot_tasks(
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
