@@ -4,48 +4,38 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 listed below to fill your dashboard with visuals.
 
 
-<div class="card-section-wrapper" style="display: block;">
-<div class="responsive-grid">
+<div class="grid cards" markdown>
 
-<a class="card-wrapper" href="../graph">
-  <div class="card">
-    <div class="card-content">
-      <h5>Graph</h5>
-      <img src="../../../assets/user_guides/components/graph1.png" class="component-img">
-      <p>View User Guide →</p>
-    </div>
-  </div>
-</a>
+- :octicons-graph-16:{ .lg .middle } __Graph__
 
-<a class="card-wrapper" href="../table">
-  <div class="card">
-    <div class="card-content">
-      <h5>Table</h5>
-      <img src="../../../assets/user_guides/table/table.png" class="component-img">
-      <p>View User Guide →</p>
-    </div>
-  </div>
-</a>
+    ---
 
-<a class="card-wrapper" href="../card_button">
-  <div class="card">
-    <div class="card-content">
-      <h5>Card & Button</h5>
-      <img src="../../../assets/user_guides/components/card_text.png" class="component-img">
-      <p>View User Guide →</p>
-    </div>
-  </div>
-</a>
+    Use graphs to visualize your data with any Plotly chart in the dashboard.
 
-<a class="card-wrapper" href="../container">
-  <div class="card">
-    <div class="card-content">
-      <h5>Container</h5>
-      <img src="../../../assets/user_guides/components/containers.png" class="component-img">
-      <p>View User Guide →</p>
-    </div>
-  </div>
-</a>
+    [:octicons-arrow-right-24: View User Guide](graph.md)
 
-</div>
+- :material-table-large:{ .lg .middle } __Table__
+
+    ---
+
+    Use tables to visualize your tabular data in the dashboard.
+
+    [:octicons-arrow-right-24: View User Guide](table.md)
+
+- :material-cards-outline:{ .lg .middle } __Card & Button__
+
+    ---
+
+    Use cards and buttons to visualize text, navigate to different URLs or attach any custom action.
+
+    [:octicons-arrow-right-24: View User Guide](card_button.md)
+
+- :octicons-table-16:{ .lg .middle } __Container__
+
+    ---
+
+    Use containers to organize your page components into subsections inside the dashboard.
+
+    [:octicons-arrow-right-24: View User Guide](container.md)
+
 </div>
