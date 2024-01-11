@@ -86,8 +86,7 @@ In case you would like to use the insights or code explanation, you can use `viz
 - Type: int
 - Brief: By default, the `max_debug_retry` is set to 3, the function will attempt to debug errors up to three times.
 If the errors are not resolved after the maximum number of retries, the function will cease further debugging attempts.
-- **Example**:
-   E.g. if you would like adjust to 5 debugging attempts, you can set `max_debug_retry = 5` in the plot function:
+- E.g. if you would like adjust to 5 debugging attempts, you can set `max_debug_retry = 5` in the plot function:
     ```py
      vizro_ai.plot(df = df, user_input = "your user input", max_debug_retry= 5)
     ```
