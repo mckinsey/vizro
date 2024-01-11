@@ -17,10 +17,12 @@ from prototypes to production.
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
 
 ??? details "See more details"
-<figure markdown>
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" alt="Image title" />
-<figcaption>less than 30 lines of configuration can create dashboards with multiple charts and filters</figcaption>
-</figure>
+
+<!-- prettier-ignore -->
+    <figure markdown>
+    <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" alt="Image title" />
+    <figcaption>less than 30 lines of configuration can create dashboards with multiple charts and filters</figcaption>
+    </figure>
 
     - **Beautiful** - inbuilt visual design best practices are applied automatically,
     so users can create beautiful dashboards without needing to know any HTML, CSS or design principles.
