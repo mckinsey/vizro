@@ -17,7 +17,7 @@ from prototypes to production.
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
 
 <!-- prettier-ignore -->
-??? details "See more details"
+???+ details "See more details"
 
     <figure markdown>
     <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" alt="Image title" />
