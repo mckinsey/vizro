@@ -41,3 +41,22 @@
 td:not([class]):not(:last-child) {
   border-right: 1px solid lightgrey;
 }
+
+:root {
+  --md-admonition-icon--details: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z"/></svg>');
+}
+.md-typeset .admonition.details,
+.md-typeset details.details {
+  border-color: rgb(158, 158, 158);
+}
+.md-typeset .details > .admonition-title,
+.md-typeset .details > summary {
+  background-color: rgba(245, 245, 245, 0.3);
+  opacity: 0.5;
+}
+.md-typeset .details > .admonition-title::before,
+.md-typeset .details > summary::before {
+  background-color: rgb(3, 3, 3);
+  -webkit-mask-image: var(--md-admonition-icon--details);
+  mask-image: var(--md-admonition-icon--details);
+}
