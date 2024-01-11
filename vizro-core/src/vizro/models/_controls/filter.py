@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import List, Literal
 
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
@@ -13,6 +13,7 @@ except ImportError:  # pragma: no cov
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
@@ -23,11 +24,6 @@ from vizro.models._components.form import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
-
-if TYPE_CHECKING:
-    pass
-
-from vizro.managers._model_manager import ModelID
 
 # TODO: Add temporal when relevant component is available
 SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown}
