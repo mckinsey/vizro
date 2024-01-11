@@ -22,6 +22,7 @@ You can directly feed a Pandas DataFrame to your chart. This is the simplest way
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
