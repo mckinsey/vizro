@@ -2,8 +2,6 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-## Graph
-
 The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways.
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:

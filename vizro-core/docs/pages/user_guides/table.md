@@ -2,8 +2,6 @@
 
 This guide shows you how to use tables to visualize your data in the dashboard.
 
-## Table
-
 The [`Table`][vizro.models.Table] model allows you to visualize data in a tabular format.
 
 To add a [`Table`][vizro.models.Table] to your page, do the following:
