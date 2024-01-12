@@ -506,9 +506,9 @@ def create_home_page():
             vm.Card(
                 text="""
                         ![](assets/images/icons/features.svg#icon-top)
-        
+
                         ### Controls
-        
+
                         Vizro has two different control types **filters** and **parameters**.
 
                         """,
@@ -561,7 +561,7 @@ dashboard = vm.Dashboard(
                 items=[
                     vm.NavLink(label="Homepage", pages=["Vizro Features"], icon="Home"),
                     vm.NavLink(
-                        label="Featues",
+                        label="Features",
                         pages={
                 "Components": ["Chart", "Card", "Button"],
                 "Controls": ["Filter", "Parameter"],
