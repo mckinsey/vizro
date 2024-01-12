@@ -74,3 +74,20 @@ class TestSharedLayoutFunctions:
             ],
             keys_to_strip={"children"},
         )
+    
+    def test_create_component_container(self, model):
+        model = model(title="Title", components=[vm.Button(), vm.Button()])
+        result = _create_component_container(model, [html.Div(), html.Div()])
+        assert_component_equal(
+            result,
+            html.Div(
+                className="grid-layout",
+                style={
+                    "gridRowGap": "12px",
+                    "gridColumnGap": "12px",
+                    "gridTemplateColumns": "repeat(1,minmax(0px, 1fr))",
+                    "gridTemplateRows": "repeat(2,minmax(0px, 1fr))",
+                },
+            ),
+            keys_to_strip={"children"},
+        )
