@@ -74,7 +74,7 @@ class TestSharedLayoutFunctions:
             ],
             keys_to_strip={"children"},
         )
-    
+
     def test_create_component_container(self, model):
         model = model(title="Title", components=[vm.Button(), vm.Button()])
         result = _create_component_container(model, [html.Div(), html.Div()])
