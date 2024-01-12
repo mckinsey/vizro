@@ -119,7 +119,12 @@ class Dashboard(VizroBaseModel):
         )
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
-            [Output("collapse", "is_open"), Output("collapse_icon", "style"), Output("collapse_tooltip", "label")],
+            [
+                Output("collapse", "is_open"),
+                Output("collapse_icon", "style"),
+                Output("collapse_tooltip", "label"),
+                Output("collapse_tooltip", "offset"),
+            ],
             Input("collapse_icon", "n_clicks"),
             State("collapse", "is_open"),
         )
@@ -165,26 +170,19 @@ class Dashboard(VizroBaseModel):
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        collapsable_icon = html.Div(
-            children=[
-                dmc.Tooltip(
-                    id="collapse_tooltip",
-                    label="Hide Menu",
-                    offset=20,
-                    withArrow=True,
-                    children=[
-                        html.Span(
-                            "keyboard_double_arrow_right",
-                            className="material-symbols-outlined",
-                            id="collapse_icon",
-                        )
-                    ],
-                    position="right-end",
-                    arrowOffset=10,
-                    style={"marginTop": "12px", "marginLeft": "8px"},
-                )
-            ],
-            className="collapsable-div",
+        collapsable_icon = dmc.Tooltip(
+            html.Span(
+                "keyboard_double_arrow_right",
+                className="material-symbols-outlined",
+                id="collapse_icon",
+            ),
+            id="collapse_tooltip",
+            label="Hide Menu",
+            offset=24,
+            withArrow=True,
+            position="right",
+            arrowOffset=10,
+            className="collapse-button-tooltip",
         )
 
         left_header_divs = [page_divs["dashboard-title"]]
@@ -204,7 +202,7 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div([right_header, right_main], id="right-side")
 
         collapsable_left_side = dbc.Collapse(
-            children=[left_side],
+            left_side,
             id="collapse",
             is_open=True,
             dimension="width",

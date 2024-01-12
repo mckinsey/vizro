@@ -15,7 +15,12 @@ export function _collapse_nav_panel(n_clicks, is_open) {
     ];
 
   if (is_open) {
-    return [false, { transform: "rotate(0deg)" }, "Show Menu"];
+    return [
+      false,
+      { transform: "rotate(0deg)", left: "12px" },
+      "Show Menu",
+      36,
+    ];
   } else {
     return [
       true,
@@ -24,6 +29,7 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
+      24,
     ];
   }
 }
