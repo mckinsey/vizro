@@ -168,6 +168,39 @@ pages:
           type: range_slider
         type: filter
     title: Filters
+  - components:
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: sepal_width
+          y: sepal_length
+          size: petal_length
+          color: species
+          color_discrete_map: { "setosa": "#00b4ff", "versicolor": "#ff9222" }
+        id: scatter_chart_pm
+        type: graph
+      - figure:
+          _target_: bar
+          data_frame: iris
+          x: sepal_width
+          y: sepal_length
+          color: species
+          color_discrete_map: { "setosa": "#00b4ff", "versicolor": "#ff9222" }
+        id: bar_chart_pm
+        type: graph
+    controls:
+      - selector:
+          options: ["#ff5267", "#3949ab"]
+          value: #3949ab
+          multi: False
+          type: dropdown
+        targets:
+          [
+            "scatter_chart_pm.color_discrete_map.virginica",
+            "bar_chart_pm.color_discrete_map.virginica",
+          ]
+        type: parameter
+    title: Parameters
 navigation:
   nav_selector:
     type: nav_bar
@@ -186,3 +219,4 @@ navigation:
             - Button
           Controls:
             - Filters
+            - Parameters

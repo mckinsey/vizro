@@ -172,9 +172,47 @@ filters = vm.Page(
     ],
 )
 
+parameters = vm.Page(
+    title="Parameters",
+    components=[
+        vm.Graph(
+            id="scatter_chart_pm",
+            figure=px.scatter(
+                iris,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                size="petal_length",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+            ),
+        ),
+        vm.Graph(
+            id="bar_chart_pm",
+            figure=px.bar(
+                iris,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["scatter_chart_pm.color_discrete_map.virginica", "bar_chart_pm.color_discrete_map.virginica"],
+            selector=vm.Dropdown(
+                options=["#ff5267", "#3949ab"],
+                multi=False,
+                value="#3949ab",
+            ),
+        ),
+    ],
+)
 
+
+# DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
-controls = [filters]
+controls = [filters, parameters]
 
 dashboard = vm.Dashboard(
     pages=[home] + components + controls,
@@ -186,7 +224,7 @@ dashboard = vm.Dashboard(
                     label="Features",
                     pages={
                         "Components": ["Graphs", "Table", "Cards", "Button"],
-                        "Controls": ["Filters"],
+                        "Controls": ["Filters", "Parameters"]
                         #  "Actions": ["Export data", "Filter interaction"],
                         #   "Extensions": ["Custom plotly chart", "Custom graph object chart", "Custom range slider", "Custom jumbotron",],
                     },

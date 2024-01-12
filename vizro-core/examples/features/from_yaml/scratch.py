@@ -12,65 +12,6 @@ from vizro.models.types import capture
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-# CONTROLS --------------------------------------------------------------------
-filters = vm.Page(
-    title="Filter",
-    path="controls-filter",
-    components=[
-        vm.Graph(
-            id="scatter_chart_filter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
-        ),
-        vm.Graph(
-            id="scatter_chart_filter_2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="sepal_length", targets=["scatter_chart_filter"], selector=vm.RangeSlider(step=1)),
-        vm.Filter(column="petal_length", targets=["scatter_chart_filter_2"], selector=vm.RangeSlider(step=1)),
-    ],
-)
-
-parameters = vm.Page(
-    title="Parameter",
-    components=[
-        vm.Graph(
-            id="scatter_chart_param",
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                size="petal_length",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-            ),
-        ),
-        vm.Graph(
-            id="bar_chart_param",
-            figure=px.bar(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-            ),
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=[
-                "scatter_chart_param.color_discrete_map.versicolor",
-                "bar_chart_param.color_discrete_map.versicolor",
-            ],
-            selector=vm.Dropdown(
-                options=["#D0F0C0", "#ff9222"],
-                multi=False,
-                value="#ff9222",
-            ),
-        ),
-    ],
-)
-
 # ACTIONS ---------------------------------------------------------------------
 export_data = vm.Page(
     title="Export data",
