@@ -209,13 +209,37 @@ parameters = vm.Page(
     ],
 )
 
+# ACTIONS ---------------------------------------------------------------------
+export_data = vm.Page(
+    title="Export data",
+    components=[
+        vm.Graph(
+            id="scatter_export_data",
+            figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species"),
+        ),
+        vm.Graph(
+            id="hist_export_data",
+            figure=px.histogram(iris, x="petal_length", color="species"),
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
 
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
+actions = [export_data]
 
 dashboard = vm.Dashboard(
-    pages=[home] + components + controls,
+    pages=[home] + components + controls + actions,
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -224,8 +248,8 @@ dashboard = vm.Dashboard(
                     label="Features",
                     pages={
                         "Components": ["Graphs", "Table", "Cards", "Button"],
-                        "Controls": ["Filters", "Parameters"]
-                        #  "Actions": ["Export data", "Filter interaction"],
+                        "Controls": ["Filters", "Parameters"],
+                        "Actions": ["Export data"],
                         #   "Extensions": ["Custom plotly chart", "Custom graph object chart", "Custom range slider", "Custom jumbotron",],
                     },
                     icon="Library Add",

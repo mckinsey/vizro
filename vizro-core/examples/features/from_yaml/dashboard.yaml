@@ -201,6 +201,31 @@ pages:
           ]
         type: parameter
     title: Parameters
+  - components:
+      - type: graph
+        id: scatter_export_data
+        figure:
+          _target_: scatter
+          data_frame: iris
+          color: species
+          x: petal_length
+          y: sepal_length
+      - type: graph
+        id: hist_export_data
+        figure:
+          _target_: histogram
+          data_frame: iris
+          color: species
+          x: petal_length
+      - type: button
+        text: Export data
+        actions:
+          - function:
+              _target_: export_data
+    controls:
+      - type: filter
+        column: species
+    title: Export data
 navigation:
   nav_selector:
     type: nav_bar
@@ -220,3 +245,5 @@ navigation:
           Controls:
             - Filters
             - Parameters
+          Actions:
+            - Export data

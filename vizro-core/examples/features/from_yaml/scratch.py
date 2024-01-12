@@ -6,36 +6,12 @@ from dash import Input, Output, State, callback, callback_context, dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import filter_interaction
 from vizro.models.types import capture
 
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-# ACTIONS ---------------------------------------------------------------------
-export_data = vm.Page(
-    title="Export data",
-    path="action-export-data",
-    components=[
-        vm.Graph(
-            id="scatter_export_data",
-            figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species"),
-        ),
-        vm.Graph(
-            id="hist_export_data",
-            figure=px.histogram(iris, x="petal_length", color="species"),
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-    ],
-)
 
 filter_interaction = vm.Page(
     title="Filter interaction",
