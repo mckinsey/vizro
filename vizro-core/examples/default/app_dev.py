@@ -11,6 +11,7 @@ df = px.data.gapminder()
 page_variable = vm.Page(
     title="Variable Analysis",
     description="Analyzing population, GDP per capita and life expectancy on country and continent level",
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7]]),
     components=[
         vm.Card(
             text="""
@@ -26,22 +27,19 @@ page_variable = vm.Page(
 
             """
         ),
-        vm.Graph(
-            id="variable_map",
-            figure=px.choropleth(
-                df,
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-                animation_frame="year",
-                labels={
-                    "year": "year",
-                    "lifeExp": "Life expectancy",
-                    "pop": "Population",
-                    "gdpPercap": "GDP per capita",
-                },
-                title="Global development over time",
-            ),
+        vm.Card(
+            text="""
+                ### Overview
+                The world map provides initial insights into the variations of metrics across countries and
+                continents. Click on Play to see the animation and explore the development over time.
+
+                #### Observation
+                A global trend of increasing life expectancy emerges, with some exceptions in specific African
+                countries. Additionally, despite similar population growth rates across continents, the overall
+                global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+                capita experiences growth in most regions.
+
+            """
         ),
         vm.Card(
             text="""
@@ -55,36 +53,76 @@ page_variable = vm.Page(
                 large growth over the observed years.
             """
         ),
-        vm.Graph(
-            id="variable_boxplot",
-            figure=px.box(
-                df,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                labels={
-                    "year": "year",
-                    "lifeExp": "Life expectancy",
-                    "pop": "Population",
-                    "gdpPercap": "GDP per capita",
-                    "continent": "Continent",
-                },
-                title="Distribution per continent",
-                color_discrete_map={
-                    "Africa": "#00b4ff",
-                    "Americas": "#ff9222",
-                    "Asia": "#3949ab",
-                    "Europe": "#ff5267",
-                    "Oceania": "#08bdba",
-                },
-            ),
+        vm.Card(
+            text="""
+        ### Overview
+        The world map provides initial insights into the variations of metrics across countries and
+        continents. Click on Play to see the animation and explore the development over time.
+
+        #### Observation
+        A global trend of increasing life expectancy emerges, with some exceptions in specific African
+        countries. Additionally, despite similar population growth rates across continents, the overall
+        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+        capita experiences growth in most regions.
+
+    """
         ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["variable_map.color", "variable_boxplot.y"],
-            selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
-        )
+        vm.Card(
+            text="""
+        ### Overview
+        The world map provides initial insights into the variations of metrics across countries and
+        continents. Click on Play to see the animation and explore the development over time.
+
+        #### Observation
+        A global trend of increasing life expectancy emerges, with some exceptions in specific African
+        countries. Additionally, despite similar population growth rates across continents, the overall
+        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+        capita experiences growth in most regions.
+
+    """
+        ),
+        vm.Card(
+            text="""
+        ### Overview
+        The world map provides initial insights into the variations of metrics across countries and
+        continents. Click on Play to see the animation and explore the development over time.
+
+        #### Observation
+        A global trend of increasing life expectancy emerges, with some exceptions in specific African
+        countries. Additionally, despite similar population growth rates across continents, the overall
+        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+        capita experiences growth in most regions.
+
+    """
+        ),
+        vm.Card(
+            text="""
+        ### Overview
+        The world map provides initial insights into the variations of metrics across countries and
+        continents. Click on Play to see the animation and explore the development over time.
+
+        #### Observation
+        A global trend of increasing life expectancy emerges, with some exceptions in specific African
+        countries. Additionally, despite similar population growth rates across continents, the overall
+        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+        capita experiences growth in most regions.
+
+    """
+        ),
+        vm.Card(
+            text="""
+        ### Overview
+        The world map provides initial insights into the variations of metrics across countries and
+        continents. Click on Play to see the animation and explore the development over time.
+
+        #### Observation
+        A global trend of increasing life expectancy emerges, with some exceptions in specific African
+        countries. Additionally, despite similar population growth rates across continents, the overall
+        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
+        capita experiences growth in most regions.
+
+    """
+        ),
     ],
 )
 
