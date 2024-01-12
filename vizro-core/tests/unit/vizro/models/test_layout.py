@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 try:
@@ -8,7 +7,6 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines
-from vizro.models._models_utils import get_unique_grid_component_ids
 
 
 class TestLayoutInstantiation:
@@ -146,12 +144,3 @@ class TestWorkingGrid:
             vm.Layout(grid=grid)
         except ValidationError as ve:
             assert False, f"{grid} raised a value error {ve}."
-
-
-@pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
-def test_get_unique_grid_component_ids(grid):
-    result = get_unique_grid_component_ids(grid)
-    expected = np.array([0, 1, 2])
-
-    assert isinstance(result, np.ndarray)
-    assert (result == expected).all()
