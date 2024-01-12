@@ -42,7 +42,7 @@ class TestContainerInstantiation:
 
 
 class TestContainerBuildMethod:
-    def test_button_build(self):
+    def test_container_build(self):
         result = vm.Container(title="Title", components=[vm.Button()]).build()
         assert_component_equal(result, html.Div(className="page-component-container"), keys_to_strip={"children"})
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
