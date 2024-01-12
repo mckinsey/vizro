@@ -141,6 +141,33 @@ pages:
         - [0]
         - [1]
     title: Button
+  - components:
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: sepal_length
+          y: petal_width
+          color: species
+        id: scatter_chart1
+        type: graph
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: petal_length
+          y: sepal_width
+          color: species
+        id: scatter_chart2
+        type: graph
+    controls:
+      - column: species
+        type: filter
+      - column: petal_length
+        targets:
+          - scatter_chart2
+        selector:
+          type: range_slider
+        type: filter
+    title: Filters
 navigation:
   nav_selector:
     type: nav_bar
@@ -157,3 +184,5 @@ navigation:
             - Table
             - Cards
             - Button
+          Controls:
+            - Filters

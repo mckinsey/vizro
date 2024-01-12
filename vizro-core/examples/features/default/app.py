@@ -159,9 +159,25 @@ button = vm.Page(
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
+# CONTROLS --------------------------------------------------------------------
+filters = vm.Page(
+    title="Filters",
+    components=[
+        vm.Graph(id="scatter_chart1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+        vm.Filter(column="petal_length", targets=["scatter_chart2"], selector=vm.RangeSlider()),
+    ],
+)
+
+
+components = [graphs, table, cards, button]
+controls = [filters]
 
 dashboard = vm.Dashboard(
-    pages=[home, graphs, table, cards, button],
+    pages=[home] + components + controls,
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -170,7 +186,7 @@ dashboard = vm.Dashboard(
                     label="Features",
                     pages={
                         "Components": ["Graphs", "Table", "Cards", "Button"],
-                        # "Controls": ["Filter", "Parameter"],
+                        "Controls": ["Filters"],
                         #  "Actions": ["Export data", "Filter interaction"],
                         #   "Extensions": ["Custom plotly chart", "Custom graph object chart", "Custom range slider", "Custom jumbotron",],
                     },
