@@ -280,9 +280,9 @@
               "mapping": {
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
+                "container": "#/definitions/Container",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table",
-                "container": "#/definitions/Container"
+                "table": "#/definitions/Table"
               }
             },
             "oneOf": [
@@ -293,13 +293,13 @@
                 "$ref": "#/definitions/Card"
               },
               {
+                "$ref": "#/definitions/Container"
+              },
+              {
                 "$ref": "#/definitions/Graph"
               },
               {
                 "$ref": "#/definitions/Table"
-              },
-              {
-                "$ref": "#/definitions/Container"
               }
             ]
           }
@@ -925,9 +925,9 @@
               "mapping": {
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
+                "container": "#/definitions/Container",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table",
-                "container": "#/definitions/Container"
+                "table": "#/definitions/Table"
               }
             },
             "oneOf": [
@@ -938,13 +938,13 @@
                 "$ref": "#/definitions/Card"
               },
               {
+                "$ref": "#/definitions/Container"
+              },
+              {
                 "$ref": "#/definitions/Graph"
               },
               {
                 "$ref": "#/definitions/Table"
-              },
-              {
-                "$ref": "#/definitions/Container"
               }
             ]
           }
