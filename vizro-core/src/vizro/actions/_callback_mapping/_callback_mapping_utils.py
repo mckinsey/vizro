@@ -108,27 +108,13 @@ def _get_inputs_of_figure_interactions(
     for action in figure_interactions_on_page:
         # TODO: Consider do we want to move the following logic into Model implementation
         triggered_model = _get_triggered_model(action_id=ModelID(str(action.id)))
+        # This also needs to be done for the graph callables, but that should not be hard
+        # I think this would have made more sense if we had one model for tables and graphs
+        # But really this seems to rather demand an object oriented approach
+
         if hasattr(triggered_model, "_table_type"):  # not check this, put this configuration inside the models
-            if triggered_model._table_type == "DataTable":
-                inputs.append(
-                    {
-                        "active_cell": State(
-                            component_id=triggered_model._callable_object_id, component_property="active_cell"
-                        ),
-                        "derived_viewport_data": State(
-                            component_id=triggered_model._callable_object_id,
-                            component_property="derived_viewport_data",
-                        ),
-                    }
-                )
-            elif triggered_model._table_type == "AgGrid":
-                inputs.append(
-                    {
-                        "cellClicked": State(
-                            component_id=triggered_model._callable_object_id, component_property="cellClicked"
-                        ),
-                    }
-                )
+            inputs.append(triggered_model.figure.action_info["filter_interaction_input"](triggered_model))
+
         else:
             inputs.append(
                 {

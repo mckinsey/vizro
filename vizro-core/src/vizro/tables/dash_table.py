@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import Any, Dict, Mapping
 
 import pandas as pd
-from dash import dash_table
+from dash import State, dash_table
 
 from vizro.models.types import capture
 
@@ -18,7 +18,6 @@ def _set_defaults_nested(supplied: Mapping[str, Any], defaults: Mapping[str, Any
     return dict(supplied)
 
 
-@capture("table")
 def dash_data_table(data_frame: pd.DataFrame, **kwargs):
     """Standard `dash_table.DataTable`."""
     defaults = {
@@ -33,3 +32,16 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs):
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dash_table.DataTable(data=data_frame.to_dict("records"), **kwargs)
+
+
+dash_data_table.action_info = {
+    "filter_interaction_input": lambda x: {
+        "active_cell": State(component_id=x._callable_object_id, component_property="active_cell"),
+        "derived_viewport_data": State(
+            component_id=x._callable_object_id,
+            component_property="derived_viewport_data",
+        ),
+    }
+}
+
+dash_data_table = capture("table")(dash_data_table)

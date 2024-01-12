@@ -306,6 +306,9 @@ class capture:
                     captured_callable["data_frame"]
                 except KeyError as exc:
                     raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
+
+                if hasattr(func, "action_info"):
+                    captured_callable.action_info = func.action_info
                 return captured_callable
 
             return wrapped

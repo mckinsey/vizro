@@ -159,6 +159,8 @@ def _apply_filter_interaction(
     target: str,
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
+        # This would also have to be abstracted outside the function, but is a little more complicated
+        # essentially we have to go: ctd_filter_interaction[<wildcard>]["id"] -> get parent Vizro Table -> get function -> get attributes
         if "clickData" in ctd_filter_interaction:
             data_frame = _apply_graph_filter_interaction(
                 data_frame=data_frame,

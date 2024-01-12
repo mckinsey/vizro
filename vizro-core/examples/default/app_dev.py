@@ -1,10 +1,14 @@
 """Example to show dashboard configuration."""
+from typing import List
+
 import pandas as pd
+from dash import State, dash_table
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.gapminder()
@@ -17,6 +21,34 @@ df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].tran
 df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
 df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
+
+
+def my_custom_table(data_frame=None, id: str = None, chosen_columns: List[str] = None):
+    """Custom table."""
+    columns = [{"name": i, "id": i} for i in chosen_columns]
+    defaults = {
+        "style_as_list_view": True,
+        "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
+        "style_header": {
+            "border_bottom": "1px solid var(--state-overlays-selected-hover)",
+            "border_top": "1px solid var(--main-container-bg-color)",
+            "height": "32px",
+        },
+    }
+    return dash_table.DataTable(data=data_frame.to_dict("records"), columns=columns, id=id, **defaults)
+
+
+my_custom_table.action_info = {
+    "filter_interaction_input": lambda x: {
+        "active_cell": State(component_id=x._callable_object_id, component_property="active_cell"),
+        "derived_viewport_data": State(
+            component_id=x._callable_object_id,
+            component_property="derived_viewport_data",
+        ),
+    }
+}
+
+my_custom_table = capture("table")(my_custom_table)
 
 
 def create_benchmark_analysis():
@@ -40,6 +72,7 @@ def create_benchmark_analysis():
                 id="table_country_new",
                 title="Click on a cell in country column:",
                 figure=dash_ag_grid(
+                    id="dash_ag_grid_country",
                     data_frame=df,
                 ),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
@@ -103,6 +136,16 @@ def create_benchmark_analysis():
                         )
                     ),
                 ],
+            ),
+            vm.Table(  # the custom table works with its own set of states defined above
+                id="custom_table",
+                title="Custom Dash DataTable",
+                figure=my_custom_table(
+                    id="custom_dash_table_callable_id",
+                    data_frame=df,
+                    chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
+                ),
+                actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
         ],
         controls=[
