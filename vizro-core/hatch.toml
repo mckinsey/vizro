@@ -34,9 +34,9 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
 example = "cd examples/dev; python app.py"
+example-charts = "cd examples/charts; python app.py"
 example-demo = "cd examples/demo; python app.py"
 example-feat = "cd examples/features/{args:default}; python app.py"
-example-charts = "cd examples/charts; python app.py"
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",
