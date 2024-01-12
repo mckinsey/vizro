@@ -6,63 +6,10 @@ from dash import Input, Output, State, callback, callback_context, dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import filter_interaction
 from vizro.models.types import capture
 
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
-
-
-filter_interaction = vm.Page(
-    title="Filter interaction",
-    components=[
-        vm.Graph(
-            id="bar_relation_filter_interaction",
-            figure=px.box(
-                gapminder_2007,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                custom_data=["continent"],
-                labels={
-                    "lifeExp": "Life expectancy",
-                    "continent": "Continent",
-                },
-                color_discrete_map={
-                    "Africa": "#00b4ff",
-                    "Americas": "#ff9222",
-                    "Asia": "#3949ab",
-                    "Europe": "#ff5267",
-                    "Oceania": "#08bdba",
-                },
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_filter_interaction"]))],
-        ),
-        vm.Graph(
-            id="scatter_relation_filter_interaction",
-            figure=px.scatter(
-                gapminder_2007,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-                labels={
-                    "lifeExp": "Life expectancy",
-                    "gdpPercap": "GDP per capita",
-                    "continent": "Continent",
-                },
-                color_discrete_map={
-                    "Africa": "#00b4ff",
-                    "Americas": "#ff9222",
-                    "Asia": "#3949ab",
-                    "Europe": "#ff5267",
-                    "Oceania": "#08bdba",
-                },
-            ),
-        ),
-    ],
-    controls=[vm.Filter(column="continent")],
-)
 
 
 # EXTENSIONS ------------------------------------------------------------------

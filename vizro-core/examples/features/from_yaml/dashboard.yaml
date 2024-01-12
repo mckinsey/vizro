@@ -226,6 +226,32 @@ pages:
       - type: filter
         column: species
     title: Export data
+  - components:
+      - type: graph
+        id: bar_relation_2007
+        figure:
+          _target_: box
+          data_frame: gapminder_2007
+          color: continent
+          x: continent
+          y: lifeExp
+          custom_data:
+            - continent
+        actions:
+          - function:
+              _target_: filter_interaction
+              targets:
+                - scatter_relation_2007
+      - type: graph
+        id: scatter_relation_2007
+        figure:
+          _target_: scatter
+          data_frame: gapminder_2007
+          color: continent
+          x: gdpPercap
+          y: lifeExp
+          size: pop
+    title: Chart interaction
 navigation:
   nav_selector:
     type: nav_bar
@@ -247,3 +273,4 @@ navigation:
             - Parameters
           Actions:
             - Export data
+            - Chart interaction

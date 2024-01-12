@@ -1,7 +1,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
 iris = px.data.iris()
@@ -233,10 +233,39 @@ export_data = vm.Page(
     ],
 )
 
+
+chart_interaction = vm.Page(
+    title="Chart interaction",
+    components=[
+        vm.Graph(
+            id="bar_relation_2007",
+            figure=px.box(
+                gapminder_2007,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                custom_data=["continent"],
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+        ),
+        vm.Graph(
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                gapminder_2007,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
-actions = [export_data]
+actions = [export_data, chart_interaction]
 
 dashboard = vm.Dashboard(
     pages=[home] + components + controls + actions,
@@ -249,7 +278,7 @@ dashboard = vm.Dashboard(
                     pages={
                         "Components": ["Graphs", "Table", "Cards", "Button"],
                         "Controls": ["Filters", "Parameters"],
-                        "Actions": ["Export data"],
+                        "Actions": ["Export data", "Chart interaction"],
                         #   "Extensions": ["Custom plotly chart", "Custom graph object chart", "Custom range slider", "Custom jumbotron",],
                     },
                     icon="Library Add",
