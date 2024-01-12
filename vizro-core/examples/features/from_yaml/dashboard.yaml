@@ -1,0 +1,159 @@
+pages:
+  - components:
+      - text: |
+          ![](assets/images/icons/line-chart.svg#icon-top)
+
+          ### Components
+
+          Main components of vizro include **charts**, **tables**, **cards** and **buttons**.
+        href: /graphs
+        type: card
+      - text: |
+          ![](assets/images/icons/filters.svg#icon-top)
+
+          ### Controls
+
+          Vizro has two different control types **filters** and **parameters**.
+        href: /filters
+        type: card
+      - text: |
+          ![](assets/images/icons/download.svg#icon-top)
+
+          ### Actions
+
+          Standard predefined actions are made available including **export data** and **filer interactions**.
+        href: /export-data
+        type: card
+      - text: |
+          ![](assets/images/icons/use-case.svg#icon-top)
+
+          ### Extensions
+
+          Vizro enables customization of **plotly express** and **graph object charts** as well as
+          creating custom components based on Dash.
+        href: /custom-chart
+        type: card
+    layout:
+      grid: [[0, 1], [2, 3]]
+      col_gap: 24px
+      row_gap: 16px
+    title: Vizro Features
+  - components:
+      - figure:
+          _target_: scatter_matrix
+          color: species
+          data_frame: iris
+          dimensions:
+            ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+        type: graph
+    controls:
+      - column: species
+        type: filter
+        selector:
+          title: Species
+          type: dropdown
+    title: Graphs
+  - components:
+      - figure:
+          _target_: dash_data_table
+          data_frame: gapminder_2007
+        title: Dash DataTable
+        type: table
+    controls:
+      - column: continent
+        type: filter
+    title: Table
+  - components:
+      - text: |
+          # Header level 1 <h1>
+
+          ## Header level 2 <h2>
+
+          ### Header level 3 <h3>
+
+          #### Header level 4 <h4>
+        type: card
+      - text: |
+          ### Paragraphs
+
+          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+          Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+          Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+
+          Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+        type: card
+      - text: |
+          ### Block Quotes
+
+          >
+          > A block quote is a long quotation, indented to create a separate block of text.
+          >
+        type: card
+      - text: |
+          ### Lists
+
+          * Item A
+            * Sub Item 1
+            * Sub Item 2
+          * Item B
+        type: card
+      - text: |
+          ### Emphasis
+
+          This word will be *italic*
+
+          This word will be **bold**
+
+          This word will be _**bold and italic**_
+        type: card
+    title: Cards
+  - components:
+      - figure:
+          _target_: scatter
+          x: sepal_width
+          y: sepal_length
+          color: species
+          size: petal_length
+          data_frame: iris
+        id: scatter_chart
+        type: graph
+      - type: button
+        text: Export data
+        id: export_data
+        actions:
+          - function:
+              _target_: export_data
+              targets:
+                - scatter_chart
+    controls:
+      - column: species
+        selector:
+          title: Species
+          type: dropdown
+        type: filter
+    layout:
+      grid:
+        - [0]
+        - [0]
+        - [0]
+        - [0]
+        - [1]
+    title: Button
+navigation:
+  nav_selector:
+    type: nav_bar
+    items:
+      - label: Homepage
+        icon: Home
+        pages:
+          - Vizro Features
+      - label: Features
+        icon: Library Add
+        pages:
+          Components:
+            - Graphs
+            - Table
+            - Cards
+            - Button
