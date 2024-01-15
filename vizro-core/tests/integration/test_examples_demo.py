@@ -26,16 +26,15 @@ def setup_integration_test_environment(monkeypatch_session):
         chromedriver_autoinstaller_fix.install()
 
 
-@pytest.fixture(params=["default", "from_dict", "from_json", "from_yaml"])
-def dashboard(request, monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / f"examples/{request.param}")
+def demo_dashboard(monkeypatch):
+    monkeypatch.chdir(Path(__file__).parents[2] / "examples/demo/")
     app = runpy.run_path("app.py")
     return app["dashboard"]
 
 
 # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
-def test_dashboard(dash_duo, dashboard):
-    app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/assets").build(dashboard).dash
+def test_demo_dashboard(dash_duo, demo_dashboard):
+    app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/demo/assets").build(demo_dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
