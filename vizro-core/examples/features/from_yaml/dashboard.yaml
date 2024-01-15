@@ -31,7 +31,7 @@ pages:
 
           Vizro enables customization of **plotly express** and **graph object charts** as well as
           creating custom components based on Dash.
-        href: /custom-chart
+        href: /custom-charts
         type: card
     layout:
       grid: [[0, 1], [2, 3]]
@@ -252,6 +252,18 @@ pages:
           y: lifeExp
           size: pop
     title: Chart interaction
+  - components:
+      - text: |
+          ## Custom charts are currently only possible via python configuration
+        href: /graphs
+        type: card
+    title: Custom Charts
+  - components:
+      - text: |
+          ## Custom components are currently only possible via python configuration
+        href: /graphs
+        type: card
+    title: Custom Components
 navigation:
   nav_selector:
     type: nav_bar
@@ -274,3 +286,6 @@ navigation:
           Actions:
             - Export data
             - Chart interaction
+          Extensions:
+            - Custom Charts
+            - Custom Components
