@@ -65,13 +65,13 @@ class RangeSlider(VizroBaseModel):
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
             Output(self.id, "value"),
-            Output(f"temp-store-range_slider-{self.id}", "data"),
+            Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
             Input(f"{self.id}_start_value", "value"),
             Input(f"{self.id}_end_value", "value"),
             Input(self.id, "value"),
-            State(f"temp-store-range_slider-{self.id}", "data"),
+            State(f"{self.id}_input_store", "data"),
             State(f"{self.id}_callback_data", "data"),
         ]
 
@@ -136,7 +136,11 @@ class RangeSlider(VizroBaseModel):
                                     if self.step
                                     else "slider_input_field_no_space_right",
                                 ),
-                                dcc.Store(id=f"temp-store-range_slider-{self.id}", storage_type="session"),
+                                dcc.Store(
+                                    id=f"{self.id}_input_store",
+                                    storage_type="session",
+                                    data=self.value or [value[0], value[1]],
+                                ),
                             ],
                             className="slider_input_container",
                         ),

@@ -60,12 +60,12 @@ class Slider(VizroBaseModel):
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
-            Output(f"{self.id}_temp_store", "data"),
+            Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
-            State(f"{self.id}_temp_store", "data"),
+            State(f"{self.id}_input_store", "data"),
             State(f"{self.id}_callback_data", "data"),
         ]
 
@@ -112,7 +112,7 @@ class Slider(VizroBaseModel):
                             persistence_type="session",
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"{self.id}_temp_store", storage_type="session"),
+                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=self.value or self.min),
                     ],
                     className="slider_inner_container",
                 ),
