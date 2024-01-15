@@ -343,6 +343,7 @@ class TooltipNonCrossRangeSlider(vm.RangeSlider):
     type: Literal["other_range_slider"] = "other_range_slider"
 
     def build(self):
+        """Extend existing component by calling the super build and update properties."""
         range_slider_build_obj = super().build()
         range_slider_build_obj[self.id].allowCross = False
         range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
@@ -362,6 +363,7 @@ class Jumbotron(vm.VizroBaseModel):
     text: str
 
     def build(self):
+        """Build the new component based on Dash components."""
         return html.Div(
             [
                 html.H2(self.title),
