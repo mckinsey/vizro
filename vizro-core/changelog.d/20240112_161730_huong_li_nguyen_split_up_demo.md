@@ -13,6 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
+- Remove dict, json and notebook examples from `Demo` ([#267](https://github.com/mckinsey/vizro/pull/267))
 
 ### Added
 
