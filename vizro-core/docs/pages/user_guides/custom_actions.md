@@ -60,7 +60,7 @@ The following example shows how to create a custom action that postpones executi
         ```
     === "app.yaml"
         ```yaml
-        # Custom action are currently only possible via python configuration
+        # Custom actions are currently only possible via python configuration
         ```
 
 
@@ -140,7 +140,7 @@ The following example shows how to create a custom action that shows the clicked
         3. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
     === "app.yaml"
         ```yaml
-        # Custom action are currently only possible via python configuration
+        # Custom actions are currently only possible via python configuration
         ```
     === "Result"
         [![CustomAction]][CustomAction]
@@ -212,7 +212,7 @@ If there are multiple `outputs` defined then the return value is iterated throug
         2. These values are assigned to the `outputs` in the same order.
     === "app.yaml"
         ```yaml
-        # Custom action are currently only possible via python configuration
+        # Custom actions are currently only possible via python configuration
         ```
     === "Result"
         [![CustomAction2]][CustomAction2]

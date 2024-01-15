@@ -1,11 +1,24 @@
+"""Example app to show all features of Vizro."""
+import pandas as pd
+import plotly.graph_objects as go
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
+waterfall_df = pd.DataFrame(
+    {
+        "measure": ["relative", "relative", "total", "relative", "relative", "total"],
+        "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+        "text": ["+60", "+80", "", "-40", "-20", "Total"],
+        "y": [60, 80, 0, -40, -20, 0],
+    }
+)
 
 # HOME ------------------------------------------------------------------------
 home = vm.Page(
@@ -52,7 +65,7 @@ home = vm.Page(
                 Vizro enables customization of **plotly express** and **graph object charts** as well as
                 creating custom components based on Dash.
             """,
-            href="/custom-chart",
+            href="/custom-charts",
         ),
     ],
 )
@@ -262,13 +275,71 @@ chart_interaction = vm.Page(
 )
 
 
+# EXTENSIONS ------------------------------------------------------------------
+@capture("graph")
+def scatter_with_line(data_frame, x, y, hline=None, title=None):
+    """Custom scatter chart based on px."""
+    fig = px.scatter(data_frame=data_frame, x=x, y=y, title=title)
+    fig.add_hline(y=hline, line_color="orange")
+    return fig
+
+
+@capture("graph")
+def waterfall(data_frame, measure, x, y, text, title=None):
+    """Custom waterfall chart based on go."""
+    fig = go.Figure()
+    fig.add_traces(
+        go.Waterfall(
+            measure=data_frame[measure],
+            x=data_frame[x],
+            y=data_frame[y],
+            text=data_frame[text],
+            decreasing={"marker": {"color": "#ff5267"}},
+            increasing={"marker": {"color": "#08bdba"}},
+            totals={"marker": {"color": "#00b4ff"}},
+        ),
+    )
+    fig.update_layout(title=title)
+    return fig
+
+
+custom_charts = vm.Page(
+    title="Custom Charts",
+    components=[
+        vm.Graph(
+            id="custom_scatter",
+            figure=scatter_with_line(
+                x="sepal_length",
+                y="sepal_width",
+                hline=3.5,
+                data_frame=iris,
+                title="Custom px chart",
+            ),
+        ),
+        vm.Graph(
+            id="custom_waterfall",
+            figure=waterfall(
+                data_frame=waterfall_df, measure="measure", x="x", y="y", text="text", title="Custom go chart"
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="petal_width", targets=["custom_scatter"]),
+        vm.Filter(
+            column="x", targets=["custom_waterfall"], selector=vm.Dropdown(title="Financial categories", multi=True)
+        ),
+    ],
+)
+
+
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
 actions = [export_data, chart_interaction]
+extensions = [custom_charts]
 
 dashboard = vm.Dashboard(
-    pages=[home] + components + controls + actions,
+    pages=[home, *components, *controls, *actions, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -279,7 +350,9 @@ dashboard = vm.Dashboard(
                         "Components": ["Graphs", "Table", "Cards", "Button"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
-                        #   "Extensions": ["Custom plotly chart", "Custom graph object chart", "Custom range slider", "Custom jumbotron",],
+                        "Extensions": ["Custom Charts",
+                    # "Custom range slider", "Custom jumbotron",
+                        ],
                     },
                     icon="Library Add",
                 ),

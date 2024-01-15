@@ -1,12 +1,9 @@
 from typing import Literal
 
-import pandas as pd
-import plotly.graph_objects as go
 from dash import Input, Output, State, callback, callback_context, dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.models.types import capture
 
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
@@ -14,76 +11,6 @@ gapminder_2007 = px.data.gapminder().query("year == 2007")
 
 # EXTENSIONS ------------------------------------------------------------------
 def create_extensions_page():
-    @capture("graph")
-    def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None):
-        fig = px.scatter(data_frame=data_frame, x=x, y=y, color=color, size=size)
-        fig.add_hline(y=hline, line_color="gray")
-        return fig
-
-    page_custom_chart_plotly = vm.Page(
-        title="Custom plotly chart",
-        path="custom-plotly-chart",
-        components=[
-            vm.Graph(
-                id="enhanced_scatter",
-                figure=scatter_with_line(
-                    x="sepal_length",
-                    y="sepal_width",
-                    color="species",
-                    size="petal_width",
-                    hline=3,
-                    data_frame=px.data.iris(),
-                ),
-            ),
-        ],
-        controls=[
-            vm.Filter(column="petal_width"),
-        ],
-    )
-
-    def waterfall_data():
-        return pd.DataFrame(
-            {
-                "measure": ["relative", "relative", "total", "relative", "relative", "total"],
-                "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
-                "text": ["+60", "+80", "", "-40", "-20", "Total"],
-                "y": [60, 80, 0, -40, -20, 0],
-            }
-        )
-
-    @capture("graph")
-    def waterfall(data_frame, measure, x, y, text, title=None):
-        fig = go.Figure()
-        fig.add_traces(
-            go.Waterfall(
-                measure=data_frame[measure],
-                x=data_frame[x],
-                y=data_frame[y],
-                text=data_frame[text],
-                decreasing={"marker": {"color": "#ff5267"}},
-                increasing={"marker": {"color": "#08bdba"}},
-                totals={"marker": {"color": "#00b4ff"}},
-            ),
-        )
-
-        fig.update_layout(title=title)
-        return fig
-
-    page_custom_chart_go = vm.Page(
-        title="Custom graph object chart",
-        components=[
-            vm.Graph(
-                id="waterfall",
-                figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
-            ),
-        ],
-        controls=[
-            vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
-        ],
-    )
-
-    iris = px.data.iris()
-
     # 1. Create custom component - here based on the existing RangeSlider
     class TooltipNonCrossRangeSlider(vm.RangeSlider):
         """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
@@ -238,4 +165,4 @@ def create_extensions_page():
         ],
     )
 
-    return [page_custom_chart_plotly, page_custom_chart_go, page_custom_component_range_slider, page_custom_jumbotron]
+    return [page_custom_component_range_slider, page_custom_jumbotron]

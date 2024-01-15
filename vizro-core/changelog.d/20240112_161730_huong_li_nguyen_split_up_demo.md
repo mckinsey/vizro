@@ -15,12 +15,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Remove dict, json and notebook examples from `demo` ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
-
 ### Added
 
 - Add `Features` dashboard to `examples` ([#1](https://github.com/mckinsey/vizro/pull/1))
-
 
 <!--
 ### Changed
