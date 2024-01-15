@@ -1,6 +1,9 @@
 """Example app to show all features of Vizro."""
+from typing import Literal
+
 import pandas as pd
 import plotly.graph_objects as go
+from dash import html
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -275,7 +278,7 @@ chart_interaction = vm.Page(
 )
 
 
-# EXTENSIONS ------------------------------------------------------------------
+# CUSTOM CHARTS ------------------------------------------------------------------
 @capture("graph")
 def scatter_with_line(data_frame, x, y, hline=None, title=None):
     """Custom scatter chart based on px."""
@@ -332,11 +335,71 @@ custom_charts = vm.Page(
 )
 
 
+# CUSTOM COMPONENTS -------------------------------------------------------------
+# 1. Extend existing components
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+
+    type: Literal["other_range_slider"] = "other_range_slider"
+
+    def build(self):
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
+        return range_slider_build_obj
+
+
+vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+
+
+# 2. Create new custom component
+class Jumbotron(vm.VizroBaseModel):
+    """New custom component `Jumbotron`."""
+
+    type: Literal["jumbotron"] = "jumbotron"
+    title: str
+    subtitle: str
+    text: str
+
+    def build(self):
+        return html.Div(
+            [
+                html.H2(self.title),
+                html.H3(self.subtitle),
+                html.P(self.text),
+            ]
+        )
+
+
+vm.Page.add_type("components", Jumbotron)
+
+custom_components = vm.Page(
+    title="Custom Components",
+    components=[
+        Jumbotron(
+            title="Custom component based on new creation",
+            subtitle="This is a subtitle to summarize some content.",
+            text="This is the main body of text of the Jumbotron.",
+        ),
+        vm.Graph(
+            id="for_custom_chart",
+            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="sepal_length",
+            targets=["for_custom_chart"],
+            selector=TooltipNonCrossRangeSlider(title="Custom component based on extension"),
+        )
+    ],
+)
+
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
 actions = [export_data, chart_interaction]
-extensions = [custom_charts]
+extensions = [custom_charts, custom_components]
 
 dashboard = vm.Dashboard(
     pages=[home, *components, *controls, *actions, *extensions],
@@ -350,9 +413,7 @@ dashboard = vm.Dashboard(
                         "Components": ["Graphs", "Table", "Cards", "Button"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
-                        "Extensions": ["Custom Charts",
-                    # "Custom range slider", "Custom jumbotron",
-                        ],
+                        "Extensions": ["Custom Charts", "Custom Components"],
                     },
                     icon="Library Add",
                 ),
