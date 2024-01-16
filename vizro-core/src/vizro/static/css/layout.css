@@ -177,7 +177,7 @@ div.dashboard_container .custom-tooltip {
   display: none;
 }
 
-#collapse_icon.material-symbols-outlined {
+#collapse-icon.material-symbols-outlined {
   position: absolute;
   border-radius: 50%;
   cursor: pointer;
@@ -185,7 +185,7 @@ div.dashboard_container .custom-tooltip {
   background-color: var(--tooltip-bg-color);
 }
 
-#collapse_icon.material-symbols-outlined:hover {
+#collapse-icon.material-symbols-outlined:hover {
   color: var(--text-active);
 }
 

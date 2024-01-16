@@ -25,7 +25,12 @@ describe("_collapse_nav_panel function", () => {
 
   test("should return the correct values when n_clicks is not 0 and is_open is true", () => {
     const result = _collapse_nav_panel(1, true);
-    const expected = [false, { transform: "rotate(0deg)" }, "Show Menu"];
+    const expected = [
+      false,
+      { transform: "rotate(0deg)", left: "12px" },
+      "Show Menu",
+      36,
+    ];
 
     expect(result).toEqual(expected);
   });
@@ -39,6 +44,7 @@ describe("_collapse_nav_panel function", () => {
         transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
+      24,
     ];
 
     expect(result).toEqual(expected);

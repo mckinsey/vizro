@@ -120,13 +120,13 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
             [
-                Output("collapse", "is_open"),
-                Output("collapse_icon", "style"),
-                Output("collapse_tooltip", "label"),
-                Output("collapse_tooltip", "offset"),
+                Output("collapsable-left-side", "is_open"),
+                Output("collapse-icon", "style"),
+                Output("collapse-tooltip", "label"),
+                Output("collapse-tooltip", "offset"),
             ],
-            Input("collapse_icon", "n_clicks"),
-            State("collapse", "is_open"),
+            Input("collapse-icon", "n_clicks"),
+            State("collapsable-left-side", "is_open"),
         )
 
         return html.Div(
@@ -174,9 +174,9 @@ class Dashboard(VizroBaseModel):
             html.Span(
                 "keyboard_double_arrow_right",
                 className="material-symbols-outlined",
-                id="collapse_icon",
+                id="collapse-icon",
             ),
-            id="collapse_tooltip",
+            id="collapse-tooltip",
             label="Hide Menu",
             offset=24,
             withArrow=True,
@@ -203,7 +203,7 @@ class Dashboard(VizroBaseModel):
 
         collapsable_left_side = dbc.Collapse(
             left_side,
-            id="collapse",
+            id="collapsable-left-side",
             is_open=True,
             dimension="width",
             navbar=True,
