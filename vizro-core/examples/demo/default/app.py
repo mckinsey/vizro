@@ -505,7 +505,7 @@ def create_home_page():
         components=[
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/hypotheses.svg#icon-top)
+                    ![](assets/images/icons/hypotheses.svg#icon-top)
 
                     ### Variable Analysis
 
@@ -515,7 +515,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                        ![](assets/images/icons/content/hypotheses.svg#icon-top)
+                        ![](assets/images/icons/hypotheses.svg#icon-top)
 
                         ### Relationship Analysis
 
@@ -525,7 +525,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/collections.svg#icon-top)
+                    ![](assets/images/icons/collections.svg#icon-top)
 
                     ### Continent Summary
 
@@ -535,7 +535,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
+                    ![](assets/images/icons/features.svg#icon-top)
 
                     ### Benchmark Analysis
 

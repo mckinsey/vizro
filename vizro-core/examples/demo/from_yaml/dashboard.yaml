@@ -1,28 +1,28 @@
 pages:
   - components:
       - text: |
-          ![](assets/images/icons/content/hypotheses.svg#icon-top)
+          ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Variable Analysis
           Analyzing population, GDP per capita and life expectancy on country and continent level.
         href: /variable-analysis
         type: card
       - text: |
-          ![](assets/images/icons/content/hypotheses.svg#icon-top)
+          ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Relationship Analysis
           Investigating the interconnection between population, GDP per capita and life expectancy.
         href: /relationship-analysis
         type: card
       - text: |
-          ![](assets/images/icons/content/collections.svg#icon-top)
+          ![](assets/images/icons/collections.svg#icon-top)
 
           ### Continent Summary
           Summarizing the main findings for each continent.
         href: /continent-summary
         type: card
       - text: |
-          ![](assets/images/icons/content/features.svg#icon-top)
+          ![](assets/images/icons/features.svg#icon-top)
 
           ### Country Analysis
           Discovering how the metrics differ for each country and export data for further investigation.

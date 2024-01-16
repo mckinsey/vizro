@@ -7,9 +7,8 @@ import pytest
 from vizro import Vizro
 
 
-@pytest.fixture(params=["default"])
-def template_dashboard(request, monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / f"examples/template/{request.param}")
+def template_dashboard(monkeypatch):
+    monkeypatch.chdir(Path(__file__).parents[2] / "examples/template")
     app = runpy.run_path("app.py")
     return app["dashboard"]
 
