@@ -9,6 +9,11 @@ This guide shows you how to create custom components that are completely new, or
 In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
 
+!!! warning "Adding a dash-bootstrap component"
+
+    When adding a custom component based on [dash-bootstrap components](https://dash-bootstrap-components.opensource.faculty.ai/)
+    it’s necessary to add custom CSS to ensure proper styling and functionality.
+
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
 or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
 
@@ -274,4 +279,5 @@ vm.Page.add_type("components", Jumbotron)
     function or integration they write - especially with regard to leaking any sensitive information or exposing to
     any security threat during implementation.
 
-    By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser. Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.
+    By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
+    Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.

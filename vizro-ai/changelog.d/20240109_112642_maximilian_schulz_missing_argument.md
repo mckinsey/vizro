@@ -22,25 +22,21 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
-### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
-
--->
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
 
--->
-
+<!--
 ### Security
 
-- Bump langchain version to 0.0.329, suggested by snyk ([#204](https://github.com/mckinsey/vizro/pull/204))
+- A bullet item for the Security category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+
+-->
