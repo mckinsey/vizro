@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_daq as daq
+import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
@@ -116,7 +116,7 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
             Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
+            Input("theme_selector", "checked"),
         )
 
         return html.Div(
@@ -135,8 +135,12 @@ class Dashboard(VizroBaseModel):
             html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
         settings = html.Div(
-            daq.BooleanSwitch(
-                id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+            dmc.Switch(
+                id="theme_selector",
+                checked=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
             ),
             id="settings",
         )
@@ -168,10 +172,11 @@ class Dashboard(VizroBaseModel):
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        right_header_divs.append(page_divs["settings"]) if _all_hidden(page_header_divs) else page_header_divs.append(
-            page_divs["settings"]
-        )
-
+        if _all_hidden(page_header_divs):
+            right_header_divs.append(page_divs["settings"])
+        else:
+            page_header_divs.append(page_divs["settings"])
+           
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
