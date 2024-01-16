@@ -49,7 +49,7 @@ _PageDivsType = TypedDict(
         "nav-bar": html.Div,
         "nav-panel": html.Div,
         "control-panel": html.Div,
-        "components": html.Div,
+        "page-components": html.Div,
         "logo": html.Div,
     },
 )
@@ -158,7 +158,7 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
-        components = page_content["components"]
+        components = page_content["page-components"]
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components, logo])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
@@ -182,7 +182,7 @@ class Dashboard(VizroBaseModel):
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
         right_header = html.Div(right_header_divs, id="right-header")
-        right_main = page_divs["components"]
+        right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
@@ -215,7 +215,8 @@ class Dashboard(VizroBaseModel):
             className="page_error_container",
         )
 
-    def _infer_image(self, filename: str):
+    @staticmethod
+    def _infer_image(filename: str):
         valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
         assets_folder = Path(dash.get_app().config.assets_folder)
         if assets_folder.is_dir():
