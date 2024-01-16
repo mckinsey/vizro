@@ -191,7 +191,7 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Adding a dashboard title
 
-If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top left of every page.
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
 
 ## Browser title
