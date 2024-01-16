@@ -200,6 +200,6 @@ div.dashboard_container .custom-tooltip {
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 16px;
   height: 100%;
 }
