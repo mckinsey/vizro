@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Move dashboard title into top header container `page-header` ([#238](https://github.com/mckinsey/vizro/pull/238))
+- Move dashboard title into top header container `page-header`. ([#238](https://github.com/mckinsey/vizro/pull/238))
 
 <!--
 ### Deprecated
