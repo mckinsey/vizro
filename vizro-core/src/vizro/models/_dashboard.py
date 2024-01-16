@@ -178,7 +178,7 @@ class Dashboard(VizroBaseModel):
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
         right_header = html.Div(right_header_divs, id="right-header")
-        right_main = page_divs["components"]
+        right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
