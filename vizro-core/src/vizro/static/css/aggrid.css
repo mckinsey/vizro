@@ -15,6 +15,7 @@
 #page-container .ag-theme-custom-theme .ag-header-cell {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
     color: var(--text-secondary);
+    padding-left: 0px;
 }
 #page-container .ag-theme-custom-theme .ag-header-cell:hover {
     border-bottom: 1px solid var(--state-overlays-selected-hover);
@@ -30,4 +31,5 @@
 #page-container .ag-theme-custom-theme .ag-cell {
   display: flex;
   align-items: center;
+    padding-left: 0px;
 }
