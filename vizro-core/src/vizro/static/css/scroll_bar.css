@@ -12,7 +12,7 @@
   background: var(--fill-medium-emphasis);
 }
 
-#left-side::-webkit-scrollbar-thumb {
+#left-main::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-02);
 }
 

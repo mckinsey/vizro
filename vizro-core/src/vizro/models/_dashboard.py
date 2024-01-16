@@ -159,23 +159,31 @@ class Dashboard(VizroBaseModel):
         return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        left_header_divs = [page_divs["dashboard-title"]]
+        page_header_divs = [page_divs["dashboard-title"]]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
-            html.Div(left_header_divs, id="left-header", hidden=_all_hidden(left_header_divs)),
             page_divs["nav-panel"],
             page_divs["control-panel"],
         ]
+        right_header_divs = [page_divs["page-title"]]
+
+        # Apply different container position logic based on condition
+        if self.title:
+            page_header_divs.append(page_divs["settings"])
+        else:
+            right_header_divs.append(page_divs["settings"])
 
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
+        right_header = html.Div(right_header_divs, id="right-header")
         right_main = page_divs["components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page-container")
+        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
+        page_main = html.Div([left_side, right_side], id="page-main")
+        return html.Div([page_header, page_main], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
