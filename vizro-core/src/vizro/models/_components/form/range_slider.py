@@ -59,7 +59,7 @@ class RangeSlider(VizroBaseModel):
 
     @_log_call
     def build(self):
-        value = self.value or [self.min, self.max]  # type: ignore[list-item]
+        init_value = self.value or [self.min, self.max]  # type: ignore[list-item]
 
         output = [
             Output(f"{self.id}_start_value", "value"),
@@ -100,7 +100,7 @@ class RangeSlider(VizroBaseModel):
                             max=self.max,
                             step=self.step,
                             marks=self.marks,
-                            value=value,
+                            value=init_value,
                             persistence=True,
                             persistence_type="session",
                             className="range_slider_control" if self.step else "range_slider_control_no_space",
@@ -114,7 +114,7 @@ class RangeSlider(VizroBaseModel):
                                     min=self.min,
                                     max=self.max,
                                     step=self.step,
-                                    value=value[0],
+                                    value=init_value[0],
                                     size="24px",
                                     persistence=True,
                                     persistence_type="session",
@@ -129,7 +129,7 @@ class RangeSlider(VizroBaseModel):
                                     min=self.min,
                                     max=self.max,
                                     step=self.step,
-                                    value=value[1],
+                                    value=init_value[1],
                                     persistence=True,
                                     persistence_type="session",
                                     className="slider_input_field_right"
@@ -139,7 +139,7 @@ class RangeSlider(VizroBaseModel):
                                 dcc.Store(
                                     id=f"{self.id}_input_store",
                                     storage_type="session",
-                                    data=self.value or [value[0], value[1]],
+                                    data=init_value,
                                 ),
                             ],
                             className="slider_input_container",

@@ -57,6 +57,8 @@ class Slider(VizroBaseModel):
 
     @_log_call
     def build(self):
+        init_value = self.value or self.min
+
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
@@ -94,7 +96,7 @@ class Slider(VizroBaseModel):
                             max=self.max,
                             step=self.step,
                             marks=self.marks,
-                            value=self.value or self.min,
+                            value=init_value,
                             included=False,
                             persistence=True,
                             persistence_type="session",
@@ -107,12 +109,12 @@ class Slider(VizroBaseModel):
                             min=self.min,
                             max=self.max,
                             step=self.step,
-                            value=self.value or self.min,
+                            value=init_value,
                             persistence=True,
                             persistence_type="session",
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=self.value or self.min),
+                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                     ],
                     className="slider_inner_container",
                 ),

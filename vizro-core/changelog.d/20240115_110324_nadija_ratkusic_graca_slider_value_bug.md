@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed an issue with the default value of the `value` argument in sliders. ([#266](https://github.com/mckinsey/vizro/pull/266))
+- Fix bug of `value` argument not properly being evaluated in `Slider` and `RangeSlider`. ([#266](https://github.com/mckinsey/vizro/pull/266))
 
 <!--
 ### Security
