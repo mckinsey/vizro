@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
-    """Html.Div that can wrap other `Page.components`.
+    """Container to group together a set of components on a page.
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.
