@@ -33,7 +33,7 @@ DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
-example = "cd examples/template; python app.py"
+example = "cd examples/_dev; python app.py"
 example-demo = "cd examples/demo/{args:default}; python app.py"
 example-feat = "cd examples/features/{args:default}; python app.py"
 lint = "hatch run lint:lint {args:--all-files}"

@@ -8,15 +8,15 @@ from vizro import Vizro
 
 
 @pytest.fixture()
-def template_dashboard(monkeypatch):
-    monkeypatch.chdir(Path(__file__).parents[2] / "examples/template")
+def dev_dashboard(monkeypatch):
+    monkeypatch.chdir(Path(__file__).parents[2] / "examples/_dev")
     app = runpy.run_path("app.py")
     return app["dashboard"]
 
 
 # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
-def test_template_dashboard(dash_duo, template_dashboard):
-    app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/template/assets").build(template_dashboard).dash
+def test_dev_dashboard(dash_duo, dev_dashboard):
+    app = Vizro(assets_folder=Path(__file__).parents[2] / "examples/_dev/assets").build(dev_dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
