@@ -4,7 +4,6 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
 ### Highlights ✨
 
 - Introduce `Container` model as a new `Page` component ([#254](https://github.com/mckinsey/vizro/pull/254))
