@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Optional
+from typing import Dict, List, Literal, Optional, Union
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
@@ -30,7 +30,7 @@ class RangeSlider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
+        marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -40,7 +40,7 @@ class RangeSlider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[int, Union[str, Dict[str, str]]]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[List[float]] = Field(
         None, description="Default start and end value for slider", min_items=2, max_items=2
     )
