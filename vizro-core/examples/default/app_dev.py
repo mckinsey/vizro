@@ -43,6 +43,8 @@ def create_benchmark_analysis():
                     data_frame=df,
                     # className="ag-theme-alpine ag-theme-acmecorp",
                     className="ag-theme-custom-theme",
+                    defaultColDef={"resizable": True, "sortable": True},
+                    columnSize="sizeToFit",
                 ),
                 # actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
