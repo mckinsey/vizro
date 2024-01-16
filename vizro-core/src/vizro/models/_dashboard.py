@@ -176,7 +176,7 @@ class Dashboard(VizroBaseModel):
             right_header_divs.append(page_divs["settings"])
         else:
             page_header_divs.append(page_divs["settings"])
-           
+
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
