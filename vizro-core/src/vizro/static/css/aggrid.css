@@ -8,28 +8,35 @@
     --ag-icon-size: 14px;
 }
 
-/*#page-container .ag-theme-custom-theme .ag-header {*/
-/*  --ag-header-foreground-color: pink;*/
-/*}*/
-
 #page-container .ag-theme-custom-theme .ag-header-cell {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
-    color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle-alpha-02);
     padding-left: 0px;
 }
 #page-container .ag-theme-custom-theme .ag-header-cell:hover {
-    border-bottom: 1px solid var(--state-overlays-selected-hover);
-  color: var(--text-primary);
+    border-bottom: 1px solid var(--border-hover);
+}
+#page-container .ag-theme-custom-theme .ag-header-cell:focus {
+    border-bottom: 1px solid var(--border-selected);
+    color: var(--text-primary);
 }
 #page-container .ag-theme-custom-theme .ag-header-row {
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 #page-container .ag-theme-custom-theme .ag-row {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  border-bottom: 1px solid var(--border-subtle-alpha-02);
 }
 #page-container .ag-theme-custom-theme .ag-cell {
   display: flex;
   align-items: center;
     padding-left: 0px;
 }
+/* Changes header on click, this has the advantage of not remaining when cell is not sorted, but still "clicked" */
+/* Ie after clicking a third time, it should probably go back to the initial state*/
+/* However the line appearing is not in extended enough*/
+/* Alternative currently used: .ag-header-cell:focus*/
+/*#page-container .ag-theme-custom-theme .ag-header-cell-sorted-asc,*/
+/*#page-container .ag-theme-custom-theme .ag-header-cell-sorted-desc {*/
+/*    border-bottom: 1px solid var(--border-selected);*/
+/*    color: var(--text-primary);*/
+/*}*/
