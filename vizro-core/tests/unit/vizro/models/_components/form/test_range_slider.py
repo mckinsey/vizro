@@ -99,7 +99,7 @@ def expected_range_slider_with_optional():
                         min=0,
                         max=10,
                         step=2,
-                        marks={1.0: "1", 5.0: "5", 10.0: "10"},
+                        marks={1: "1", 5: "5", 10: "10"},
                         className="range_slider_control",
                         value=[0, 10],
                         persistence=True,
