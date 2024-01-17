@@ -193,6 +193,9 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
+## Adding a dashboard logo
+
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named 'logo' is present within the assets folder. The supported file extensions include [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"].
 
 ## Browser title
 
