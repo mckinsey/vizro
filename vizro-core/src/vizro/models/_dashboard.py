@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
@@ -185,7 +184,7 @@ class Dashboard(VizroBaseModel):
 
         collapsable_icon = dmc.Tooltip(
             html.Span(
-                "keyboard_double_arrow_right",
+                "keyboard_double_arrow_left",
                 className="material-symbols-outlined",
                 id="collapse-icon",
             ),

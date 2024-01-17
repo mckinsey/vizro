@@ -8,16 +8,22 @@ export function _collapse_nav_panel(n_clicks, is_open) {
       is_open,
       is_open
         ? {
+            transform: "rotate(0deg)",
+          }
+        : {
             transform: "rotate(180deg)",
             transition: "transform 0.35s ease-in-out",
-          }
-        : { transform: "rotate(0deg)" },
+          },
     ];
 
   if (is_open) {
     return [
       false,
-      { transform: "rotate(0deg)", left: "12px" },
+      {
+        transform: "rotate(180deg)",
+        left: "12px",
+        transition: "transform 0.35s ease-in-out",
+      },
       "Show Menu",
       36,
     ];
@@ -25,8 +31,7 @@ export function _collapse_nav_panel(n_clicks, is_open) {
     return [
       true,
       {
-        transform: "rotate(180deg)",
-        transition: "transform 0.35s ease-in-out",
+        transform: "rotate(0deg)",
       },
       "Hide Menu",
       24,

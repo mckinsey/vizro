@@ -15,8 +15,7 @@ describe("_collapse_nav_panel function", () => {
     const expected = [
       is_open,
       {
-        transform: "rotate(180deg)",
-        transition: "transform 0.35s ease-in-out",
+        transform: "rotate(0deg)",
       },
     ];
 
@@ -27,7 +26,11 @@ describe("_collapse_nav_panel function", () => {
     const result = _collapse_nav_panel(1, true);
     const expected = [
       false,
-      { transform: "rotate(0deg)", left: "12px" },
+      {
+        transform: "rotate(180deg)",
+        left: "12px",
+        transition: "transform 0.35s ease-in-out",
+      },
       "Show Menu",
       36,
     ];
@@ -40,8 +43,7 @@ describe("_collapse_nav_panel function", () => {
     const expected = [
       true,
       {
-        transform: "rotate(180deg)",
-        transition: "transform 0.35s ease-in-out",
+        transform: "rotate(0deg)",
       },
       "Hide Menu",
       24,
