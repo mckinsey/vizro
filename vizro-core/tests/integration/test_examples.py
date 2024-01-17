@@ -43,4 +43,3 @@ def test_dashboard(dash_duo, example_path, dashboard, version):
     app = Vizro(assets_folder=example_path / "assets").build(dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
-
