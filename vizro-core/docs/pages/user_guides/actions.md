@@ -39,6 +39,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
         page = vm.Page(
             title="Using actions",
             components=[
+                vm.Graph(
                     figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
                 ),
                 vm.Graph(
