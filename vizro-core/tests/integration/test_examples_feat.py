@@ -7,7 +7,7 @@ import pytest
 from vizro import Vizro
 
 
-@pytest.fixture(params=["default", "from_yaml"])
+@pytest.fixture(params=["default", "yaml_version"])
 def features_dashboard(request, monkeypatch):
     monkeypatch.chdir(Path(__file__).parents[2] / f"examples/features/{request.param}")
     app = runpy.run_path("app.py")

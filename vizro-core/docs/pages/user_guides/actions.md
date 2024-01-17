@@ -68,7 +68,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
             - type: graph
@@ -171,7 +171,7 @@ Here is an example of how to configure a chart interaction when the source is a 
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
             - type: graph
@@ -253,7 +253,7 @@ Here is an example of how to configure a chart interaction when the source is a 
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
             - type: table

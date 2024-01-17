@@ -42,7 +42,7 @@ automatically based on the target column, e.g. a dropdown for categorical data o
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -94,7 +94,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -153,7 +153,7 @@ Below is an advanced example where we only target one page component, and where 
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:

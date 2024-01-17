@@ -54,7 +54,7 @@ setting some defaults for some of the arguments to help with styling.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
           - figure:
@@ -146,7 +146,7 @@ an example of a styled table where some conditional formatting is applied. There
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
