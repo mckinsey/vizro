@@ -9,50 +9,23 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
 
+df = px.data.gapminder()
+df_mean = (
+    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
+)
 
-def retrieve_gapminder():
-    """This is a function that returns gapminder data."""
-    return px.data.gapminder()
-
-
-def retrieve_gapminder_year(year: int):
-    """This is a function that returns gapminder data for a year."""
-    return px.data.gapminder().query(f"year == {year}")
-
-
-def retrieve_gapminder_continent_comparison():
-    """This is a function adds aggregated continent information to gapminder data."""
-    df = px.data.gapminder()
-    df_transformed = df.copy()
-    df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-    df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-    df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
-    df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")],
-                          ignore_index=True)
-
-    return df_concat
+df_transformed = df.copy()
+df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
+df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
+df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
+df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
 
-def retrieve_avg_gapminder():
-    """This is a function that returns aggregated gapminder data."""
-    df = px.data.gapminder()
-    mean = (
-        df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
-    )
-    return mean
-
-
-def retrieve_avg_gapminder_year(year: int):
-    """This is a function that returns aggregated gapminder data for a specific year."""
-    return retrieve_avg_gapminder().query(f"year == {year}")
-
-
-# If you're not interested in lazy loading then you could just do data_manager["gapminder"] = px.data.gapminder()
-data_manager["gapminder"] = retrieve_gapminder
-data_manager["gapminder_2007"] = lambda: retrieve_gapminder_year(2007)
-data_manager["gapminder_avg"] = retrieve_avg_gapminder
-data_manager["gapminder_avg_2007"] = lambda: retrieve_avg_gapminder_year(2007)
-data_manager["gapminder_country_analysis"] = retrieve_gapminder_continent_comparison
+data_manager["df"] = df
+data_manager["df_2007"] = df.query("year == 2007")
+data_manager["df_mean"] = df_mean
+data_manager["df_mean_2007"] = df_mean.query("year == 2007")
+data_manager["df_concat"] = df_concat
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)

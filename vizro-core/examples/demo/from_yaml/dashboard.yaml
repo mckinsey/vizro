@@ -4,7 +4,7 @@ pages:
           ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Variable Analysis
-          
+
           Analyzing population, GDP per capita and life expectancy on country and continent level.
         href: /variable-analysis
         type: card
@@ -12,7 +12,7 @@ pages:
           ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Relationship Analysis
-          
+
           Investigating the interconnection between population, GDP per capita and life expectancy.
         href: /relationship-analysis
         type: card
@@ -20,7 +20,7 @@ pages:
           ![](assets/images/icons/collections.svg#icon-top)
 
           ### Continent Summary
-          
+
           Summarizing the main findings for each continent.
         href: /continent-summary
         type: card
@@ -28,7 +28,7 @@ pages:
           ![](assets/images/icons/features.svg#icon-top)
 
           ### Benchmark Analysis
-          
+
           Discovering how the metrics differ for each country compared to the continent average
           and export data for further investigation.
         href: /benchmark-analysis
@@ -54,7 +54,7 @@ pages:
       - figure:
           _target_: choropleth
           color: lifeExp
-          data_frame: gapminder
+          data_frame: df
           locations: iso_alpha
           animation_frame: year
           title: Global development over time
@@ -79,7 +79,7 @@ pages:
       - figure:
           _target_: box
           color: continent
-          data_frame: gapminder
+          data_frame: df
           x: continent
           y: lifeExp
           title: Distribution per continent
@@ -111,7 +111,7 @@ pages:
       - figure:
           _target_: line
           color: continent
-          data_frame: gapminder_avg
+          data_frame: df_mean
           x: year
           y: lifeExp
           title: Development between 1952 and 2007
@@ -141,7 +141,7 @@ pages:
       - figure:
           _target_: bar
           color: continent
-          data_frame: gapminder_avg_2007
+          data_frame: df_mean_2007
           x: lifeExp
           y: continent
           orientation: h
@@ -195,7 +195,7 @@ pages:
       - figure:
           _target_: box
           color: continent
-          data_frame: gapminder_2007
+          data_frame: df_2007
           x: continent
           y: lifeExp
           title: Relationship in 2007
@@ -223,7 +223,7 @@ pages:
       - figure:
           _target_: scatter
           color: continent
-          data_frame: gapminder_2007
+          data_frame: df_2007
           x: gdpPercap
           y: lifeExp
           hover_name: country
@@ -246,7 +246,7 @@ pages:
       - figure:
           _target_: scatter
           color: continent
-          data_frame: gapminder
+          data_frame: df
           x: gdpPercap
           y: lifeExp
           animation_frame: year
@@ -397,7 +397,7 @@ pages:
   - components:
       - figure:
           _target_: dash_data_table
-          data_frame: gapminder
+          data_frame: df
           id: dash_data_table_country
           columns:
             - id: country
@@ -407,7 +407,7 @@ pages:
             - id: year
               name: year
             - format:
-                specifier: ',.1f'
+                specifier: ",.1f"
               id: lifeExp
               name: lifeExp
               type: numeric
@@ -417,27 +417,27 @@ pages:
               name: gdpPercap
               type: numeric
             - format:
-                specifier: ',d'
+                specifier: ",d"
               id: pop
               name: pop
               type: numeric
           style_data_conditional:
-            - backgroundColor: '#ff9222'
+            - backgroundColor: "#ff9222"
               if:
                 column_id: gdpPercap
-                filter_query: '{gdpPercap} < 1045'
-            - backgroundColor: '#de9e75'
+                filter_query: "{gdpPercap} < 1045"
+            - backgroundColor: "#de9e75"
               if:
                 column_id: gdpPercap
-                filter_query: '{gdpPercap} >= 1045 && {gdpPercap} <= 4095'
-            - backgroundColor: '#aaa9ba'
+                filter_query: "{gdpPercap} >= 1045 && {gdpPercap} <= 4095"
+            - backgroundColor: "#aaa9ba"
               if:
                 column_id: gdpPercap
-                filter_query: '{gdpPercap} > 4095 && {gdpPercap} <= 12695'
-            - backgroundColor: '#00b4ff'
+                filter_query: "{gdpPercap} > 4095 && {gdpPercap} <= 12695"
+            - backgroundColor: "#00b4ff"
               if:
                 column_id: gdpPercap
-                filter_query: '{gdpPercap} > 12695'
+                filter_query: "{gdpPercap} > 12695"
           sort_action: native
           style_cell:
             textAlign: left
@@ -452,7 +452,7 @@ pages:
       - figure:
           _target_: line
           color: color
-          data_frame: gapminder_country_analysis
+          data_frame: df_concat
           title: Country vs. Continent
           x: year
           y: gdpPercap
