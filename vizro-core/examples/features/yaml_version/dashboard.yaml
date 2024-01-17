@@ -13,7 +13,7 @@ pages:
 
           ### Controls
 
-          Vizro has two different control types **filters** and **parameters**.
+          Vizro has two different control types **filters** and **parameters.
         href: /filters
         type: card
       - text: |
