@@ -37,7 +37,6 @@ The following example shows how to create a custom action that postpones executi
             title="Example of a simple custom action",
             components=[
                 vm.Graph(
-                    id="scatter_chart",
                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")
                 ),
                 vm.Button(

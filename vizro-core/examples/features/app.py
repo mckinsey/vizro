@@ -159,7 +159,6 @@ button = vm.Page(
     layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
     components=[
         vm.Graph(
-            id="scatter_chart",
             figure=px.scatter(
                 iris,
                 x="sepal_width",
@@ -170,7 +169,7 @@ button = vm.Page(
         ),
         vm.Button(
             text="Export data",
-            actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
+            actions=[vm.Action(function=export_data())],
         ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
@@ -180,7 +179,7 @@ button = vm.Page(
 filters = vm.Page(
     title="Filters",
     components=[
-        vm.Graph(id="scatter_chart1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
         vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
     ],
     controls=[
@@ -231,18 +230,14 @@ export_data_action = vm.Page(
     title="Export data",
     components=[
         vm.Graph(
-            id="scatter_export_data",
             figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species"),
         ),
         vm.Graph(
-            id="hist_export_data",
             figure=px.histogram(iris, x="petal_length", color="species"),
         ),
         vm.Button(
             text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-            ],
+            actions=[vm.Action(function=export_data())],
         ),
     ],
     controls=[
@@ -255,7 +250,6 @@ chart_interaction = vm.Page(
     title="Chart interaction",
     components=[
         vm.Graph(
-            id="bar_relation_2007",
             figure=px.box(
                 gapminder_2007,
                 x="continent",
@@ -447,7 +441,6 @@ custom_actions = vm.Page(
     title="Custom Actions",
     components=[
         vm.Graph(
-            id="scatter_chart_custom_action",
             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
         ),
         vm.Button(

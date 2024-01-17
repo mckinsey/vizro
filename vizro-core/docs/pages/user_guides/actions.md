@@ -39,12 +39,9 @@ a result, when a dashboard user now clicks the button, all data on the page will
         page = vm.Page(
             title="Using actions",
             components=[
-                vm.Graph(
-                    id="scatter",
                     figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
                 ),
                 vm.Graph(
-                    id="hist",
                     figure=px.histogram(iris, x="petal_length", color="species"),
                 ),
                 vm.Button(
@@ -72,7 +69,6 @@ a result, when a dashboard user now clicks the button, all data on the page will
         pages:
           - components:
             - type: graph
-              id: scatter
               figure:
                 _target_: scatter
                 data_frame: iris
@@ -80,7 +76,6 @@ a result, when a dashboard user now clicks the button, all data on the page will
                 x: petal_length
                 y: sepal_length
             - type: graph
-              id: hist
               figure:
                 _target_: histogram
                 data_frame: iris
@@ -140,7 +135,6 @@ Here is an example of how to configure a chart interaction when the source is a 
                     title="Filter interaction",
                     components=[
                         vm.Graph(
-                            id="bar_relation_2007",
                             figure=px.box(
                                 df_gapminder,
                                 x="continent",
@@ -175,7 +169,6 @@ Here is an example of how to configure a chart interaction when the source is a 
         pages:
           - components:
             - type: graph
-              id: bar_relation_2007
               figure:
                 _target_: box
                 data_frame: gapminder

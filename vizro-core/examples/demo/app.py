@@ -426,7 +426,6 @@ def create_benchmark_analysis():
         layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
             vm.Table(
-                id="table_country",
                 title="Click on a cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",

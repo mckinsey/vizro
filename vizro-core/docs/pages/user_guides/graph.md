@@ -35,7 +35,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
             title="My first page",
             components=[
                 vm.Graph(
-                    id="my_chart",
                     figure=px.scatter_matrix(
                         df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
                     ),
@@ -59,7 +58,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
               color: species
               data_frame: iris
               dimensions: ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-            id: my_chart
             type: graph
           controls:
             - column: species

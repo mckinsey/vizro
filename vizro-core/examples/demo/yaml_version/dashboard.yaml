@@ -441,7 +441,6 @@ pages:
           sort_action: native
           style_cell:
             textAlign: left
-        id: table_country
         title: Click on a cell in country column
         type: table
         actions:

@@ -117,7 +117,6 @@ pages:
           color: species
           size: petal_length
           data_frame: iris
-        id: scatter_chart
         type: graph
       - type: button
         text: Export data
@@ -125,8 +124,6 @@ pages:
         actions:
           - function:
               _target_: export_data
-              targets:
-                - scatter_chart
     controls:
       - column: species
         selector:
@@ -148,7 +145,6 @@ pages:
           x: sepal_length
           y: petal_width
           color: species
-        id: scatter_chart1
         type: graph
       - figure:
           _target_: scatter
@@ -203,7 +199,6 @@ pages:
     title: Parameters
   - components:
       - type: graph
-        id: scatter_export_data
         figure:
           _target_: scatter
           data_frame: iris
@@ -211,7 +206,6 @@ pages:
           x: petal_length
           y: sepal_length
       - type: graph
-        id: hist_export_data
         figure:
           _target_: histogram
           data_frame: iris
@@ -228,7 +222,6 @@ pages:
     title: Export data
   - components:
       - type: graph
-        id: bar_relation_2007
         figure:
           _target_: box
           data_frame: gapminder_2007
