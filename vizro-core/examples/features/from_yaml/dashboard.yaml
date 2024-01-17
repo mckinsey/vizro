@@ -255,15 +255,23 @@ pages:
   - components:
       - text: |
           ## Custom charts are currently only possible via python configuration
-        href: /graphs
         type: card
     title: Custom Charts
   - components:
       - text: |
           ## Custom components are currently only possible via python configuration
-        href: /graphs
         type: card
     title: Custom Components
+  - components:
+      - text: |
+          ## Custom tables are currently only possible via python configuration
+        type: card
+    title: Custom Tables
+  - components:
+      - text: |
+          ## Custom actions are currently only possible via python configuration
+        type: card
+    title: Custom Actions
 navigation:
   nav_selector:
     type: nav_bar
@@ -288,5 +296,7 @@ navigation:
             - Chart interaction
           Extensions:
             - Custom Charts
+            - Custom Tables
             - Custom Components
+            - Custom Actions
 title: Vizro Features

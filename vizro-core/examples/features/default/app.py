@@ -1,9 +1,10 @@
 """Example app to show all features of Vizro."""
-from typing import Literal
+from time import sleep
+from typing import List, Literal
 
 import pandas as pd
 import plotly.graph_objects as go
-from dash import html
+from dash import dash_table, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -335,6 +336,43 @@ custom_charts = vm.Page(
 )
 
 
+# CUSTOM TABLE ------------------------------------------------------------------
+@capture("table")
+def my_custom_table(data_frame=None, chosen_columns: List[str] = None):
+    """Custom table with added logic to filter on chosen columns."""
+    columns = [{"name": i, "id": i} for i in chosen_columns]
+    defaults = {
+        "style_as_list_view": True,
+        "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
+        "style_header": {
+            "border_bottom": "1px solid var(--state-overlays-selected-hover)",
+            "border_top": "1px solid var(--main-container-bg-color)",
+            "height": "32px",
+        },
+    }
+    return dash_table.DataTable(data=data_frame.to_dict("records"), columns=columns, **defaults)
+
+
+custom_tables = vm.Page(
+    title="Custom Tables",
+    components=[
+        vm.Table(
+            id="custom_table",
+            title="Custom Dash DataTable",
+            figure=my_custom_table(
+                data_frame=gapminder_2007, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["custom_table.chosen_columns"],
+            selector=vm.Dropdown(title="Choose columns", options=gapminder_2007.columns.to_list(), multi=True),
+        )
+    ],
+)
+
+
 # CUSTOM COMPONENTS -------------------------------------------------------------
 # 1. Extend existing components
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
@@ -401,7 +439,7 @@ custom_components = vm.Page(
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
 actions = [export_data, chart_interaction]
-extensions = [custom_charts, custom_components]
+extensions = [custom_charts, custom_tables, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
@@ -416,7 +454,7 @@ dashboard = vm.Dashboard(
                         "Components": ["Graphs", "Table", "Cards", "Button"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
-                        "Extensions": ["Custom Charts", "Custom Components"],
+                        "Extensions": ["Custom Charts", "Custom Tables", "Custom Components"],
                     },
                     icon="Library Add",
                 ),
