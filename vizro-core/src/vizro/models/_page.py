@@ -22,7 +22,7 @@ from .types import ComponentType, ControlType
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "components": html.Div})
+_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
 class Page(VizroBaseModel):
@@ -186,6 +186,6 @@ class Page(VizroBaseModel):
                 ),
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
             ],
-            id="components",
+            id="page-components",
         )
         return component_container

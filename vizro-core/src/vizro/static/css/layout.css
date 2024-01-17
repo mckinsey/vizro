@@ -1,5 +1,6 @@
 #page-container {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   width: 100vw;
@@ -12,7 +13,7 @@
   flex-direction: column;
   gap: var(--spacing-08);
   overflow: auto;
-  padding: 40px 32px 0 32px;
+  padding: 32px 32px 0;
   width: 352px;
 }
 
@@ -28,7 +29,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  padding: 40px 32px 32px;
+  padding: 32px;
   width: 100%;
 }
 
@@ -40,18 +41,23 @@
   justify-content: space-between;
 }
 
-#left-header {
+#page-header {
+  align-items: center;
+  background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 32px;
   width: 100%;
+  min-height: 0;
 }
 
-#left-header:not(:empty) {
+#page-header:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-#components {
+#page-components {
   display: flex;
   height: 100%;
   overflow: auto;
@@ -121,14 +127,12 @@
   align-items: center;
   display: inline-flex;
   flex-direction: column;
-  padding-top: 26px;
-  width: 64px;
 }
 
 .icon-button {
   align-items: center;
   display: flex;
-  height: 64px;
+  height: 80px;
   justify-content: center;
   width: 100%;
 }
@@ -170,11 +174,35 @@ div.dashboard_container .custom-tooltip {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  width: 64px;
+  padding-top: 10px;
+  width: 80px;
 }
 
 #page-container div[hidden] {
   display: none;
+}
+
+#page-main {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: row;
+  height: calc(100% - 64px);
+}
+
+#dashboard-title {
+  margin: 0;
+}
+
+#logo {
+  height: 100%;
+}
+
+#logo-and-title {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  height: 100%;
 }
 
 #collapse-icon.material-symbols-outlined {
