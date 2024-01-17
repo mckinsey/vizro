@@ -44,6 +44,7 @@ describe("_collapse_nav_panel function", () => {
       true,
       {
         transform: "rotate(0deg)",
+        transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
       24,

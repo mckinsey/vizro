@@ -32,6 +32,7 @@ export function _collapse_nav_panel(n_clicks, is_open) {
       true,
       {
         transform: "rotate(0deg)",
+        transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
       24,

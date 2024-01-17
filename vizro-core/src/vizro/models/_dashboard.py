@@ -182,26 +182,30 @@ class Dashboard(VizroBaseModel):
         ]
         right_header_divs = [page_divs["page-title"]]
 
-        collapsable_icon = dmc.Tooltip(
-            html.Span(
-                "keyboard_double_arrow_left",
-                className="material-symbols-outlined",
-                id="collapse-icon",
-            ),
-            id="collapse-tooltip",
-            label="Hide Menu",
-            offset=24,
-            withArrow=True,
-            position="right",
-            arrowOffset=10,
-            className="collapse-button-tooltip",
-        )
-
         # Apply different container position logic based on condition
         if _all_hidden(page_header_divs):
             right_header_divs.append(page_divs["settings"])
         else:
             page_header_divs.append(page_divs["settings"])
+
+        collapsable_icon = (
+            dmc.Tooltip(
+                html.Span(
+                    "keyboard_double_arrow_left",
+                    className="material-symbols-outlined",
+                    id="collapse-icon",
+                ),
+                id="collapse-tooltip",
+                label="Hide Menu",
+                offset=24,
+                withArrow=True,
+                position="right",
+                arrowOffset=10,
+                className="collapse-button-tooltip",
+            )
+            if not _all_hidden([*left_sidebar_divs, *left_main_divs])
+            else None
+        )
 
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
