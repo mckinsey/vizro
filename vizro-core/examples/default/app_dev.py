@@ -4,7 +4,6 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.gapminder()
@@ -41,8 +40,8 @@ def create_benchmark_analysis():
                 title="Click on a cell in country column:",
                 figure=dash_ag_grid(
                     data_frame=df,
-                    # className="ag-theme-alpine ag-theme-acmecorp",
-                    className="ag-theme-custom-theme",
+                    className="ag-theme-alpine vizro",
+                    # className="ag-theme-custom-theme",
                     defaultColDef={"resizable": True, "sortable": True},
                     columnSize="sizeToFit",
                 ),
@@ -82,7 +81,7 @@ def create_benchmark_analysis():
                     sort_action="native",
                     style_cell={"textAlign": "left"},
                 ),
-            #     actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
+                #     actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             # vm.Graph(
             #     id="line_country",
