@@ -1,6 +1,6 @@
 """Example app to show all features of Vizro."""
 from time import sleep
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -227,7 +227,7 @@ parameters = vm.Page(
 )
 
 # ACTIONS ---------------------------------------------------------------------
-export_data = vm.Page(
+export_data_action = vm.Page(
     title="Export data",
     components=[
         vm.Graph(
@@ -338,7 +338,7 @@ custom_charts = vm.Page(
 
 # CUSTOM TABLE ------------------------------------------------------------------
 @capture("table")
-def my_custom_table(data_frame=None, chosen_columns: List[str] = None):
+def my_custom_table(data_frame=None, chosen_columns: Optional[List[str]] = None):
     """Custom table with added logic to filter on chosen columns."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
@@ -435,11 +435,38 @@ custom_components = vm.Page(
     ],
 )
 
+
+# CUSTOM ACTIONS ---------------------------------------------------------------
+@capture("action")
+def my_custom_action(t: int):
+    """Custom action."""
+    sleep(t)
+
+
+custom_actions = vm.Page(
+    title="Custom Actions",
+    components=[
+        vm.Graph(
+            id="scatter_chart_custom_action",
+            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+                vm.Action(function=my_custom_action(t=2)),
+                vm.Action(function=export_data(file_format="xlsx")),
+            ],
+        ),
+    ],
+    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+)
+
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button]
 controls = [filters, parameters]
-actions = [export_data, chart_interaction]
-extensions = [custom_charts, custom_tables, custom_components]
+actions = [export_data_action, chart_interaction]
+extensions = [custom_charts, custom_tables, custom_components, custom_actions]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
@@ -454,7 +481,7 @@ dashboard = vm.Dashboard(
                         "Components": ["Graphs", "Table", "Cards", "Button"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
-                        "Extensions": ["Custom Charts", "Custom Tables", "Custom Components"],
+                        "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
                     },
                     icon="Library Add",
                 ),
