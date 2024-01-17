@@ -448,6 +448,18 @@ pages:
           step: 1
           marks: null
         type: filter
+      - selector:
+          title: Choose y-axis
+          type: dropdown
+          value: gdpPercap
+          multi: False
+          options:
+            - lifeExp
+            - pop
+            - gdpPercap
+        targets:
+          - line_country.y
+        type: parameter
     layout:
       grid: [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [2, -1]]
       col_gap: 32px
