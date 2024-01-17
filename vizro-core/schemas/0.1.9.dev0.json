@@ -590,10 +590,7 @@
                 "type": "string"
               },
               {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "string"
-                }
+                "type": "object"
               }
             ]
           }
@@ -668,10 +665,7 @@
                 "type": "string"
               },
               {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "string"
-                }
+                "type": "object"
               }
             ]
           }
