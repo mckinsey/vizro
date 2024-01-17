@@ -7,7 +7,7 @@ from vizro import Vizro
 df = px.data.iris()
 
 page = vm.Page(
-    title="My first dashboard",
+    title="Page Title",
     components=[
         vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
         vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
@@ -17,7 +17,7 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(title="Dashboard Title", pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

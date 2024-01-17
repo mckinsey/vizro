@@ -404,6 +404,7 @@ actions = [export_data, chart_interaction]
 extensions = [custom_charts, custom_components]
 
 dashboard = vm.Dashboard(
+    title="Vizro Features",
     pages=[home, *components, *controls, *actions, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
