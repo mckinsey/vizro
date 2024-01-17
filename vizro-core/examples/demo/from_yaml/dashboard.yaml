@@ -399,6 +399,48 @@ pages:
           _target_: dash_data_table
           data_frame: gapminder
           id: dash_data_table_country
+          columns:
+            - id: country
+              name: country
+            - id: continent
+              name: continent
+            - id: year
+              name: year
+            - format:
+                specifier: ',.1f'
+              id: lifeExp
+              name: lifeExp
+              type: numeric
+            - format:
+                specifier: $,.2f
+              id: gdpPercap
+              name: gdpPercap
+              type: numeric
+            - format:
+                specifier: ',d'
+              id: pop
+              name: pop
+              type: numeric
+          style_data_conditional:
+            - backgroundColor: '#ff9222'
+              if:
+                column_id: gdpPercap
+                filter_query: '{gdpPercap} < 1045'
+            - backgroundColor: '#de9e75'
+              if:
+                column_id: gdpPercap
+                filter_query: '{gdpPercap} >= 1045 && {gdpPercap} <= 4095'
+            - backgroundColor: '#aaa9ba'
+              if:
+                column_id: gdpPercap
+                filter_query: '{gdpPercap} > 4095 && {gdpPercap} <= 12695'
+            - backgroundColor: '#00b4ff'
+              if:
+                column_id: gdpPercap
+                filter_query: '{gdpPercap} > 12695'
+          sort_action: native
+          style_cell:
+            textAlign: left
         id: table_country
         title: Click on a cell in country column
         type: table
