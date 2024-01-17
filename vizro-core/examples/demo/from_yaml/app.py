@@ -22,19 +22,15 @@ def retrieve_gapminder_year(year: int):
 
 def retrieve_gapminder_continent_comparison():
     """This is a function adds aggregated continent information to gapminder data."""
-    df_gapminder = px.data.gapminder()
-    df_gapminder_agg = px.data.gapminder()
+    df = px.data.gapminder()
+    df_transformed = df.copy()
+    df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
+    df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
+    df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
+    df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")],
+                          ignore_index=True)
 
-    df_gapminder_agg["lifeExp"] = df_gapminder_agg.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-    df_gapminder_agg["gdpPercap"] = df_gapminder_agg.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-    df_gapminder_agg["pop"] = df_gapminder_agg.groupby(by=["continent", "year"])["pop"].transform("sum")
-
-    df_gapminder["data"] = "Country"
-    df_gapminder_agg["data"] = "Continent"
-
-    df_gapminder_comp = pd.concat([df_gapminder_agg, df_gapminder], ignore_index=True)
-
-    return df_gapminder_comp
+    return df_concat
 
 
 def retrieve_avg_gapminder():

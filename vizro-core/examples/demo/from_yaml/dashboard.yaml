@@ -393,13 +393,14 @@ pages:
       row_min_height: 190px
       row_gap: 25px
     title: Continent Summary
+    description: Summarizing the main findings for each continent
   - components:
       - figure:
           _target_: dash_data_table
           data_frame: gapminder
           id: dash_data_table_country
         id: table_country
-        title: Table Country
+        title: Click on a cell in country column
         type: table
         actions:
           - function:
@@ -408,9 +409,9 @@ pages:
                 - line_country
       - figure:
           _target_: line
-          color: data
+          color: color
           data_frame: gapminder_country_analysis
-          title: Line Country
+          title: Country vs. Continent
           x: year
           y: gdpPercap
           labels:
@@ -444,7 +445,13 @@ pages:
         selector:
           type: range_slider
           title: Select timeframe
+          step: 1
+          marks: null
         type: filter
+    layout:
+      grid: [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [2, -1]]
+      col_gap: 32px
+      row_gap: 60px
     title: Benchmark Analysis
     description: Discovering how the metrics differ for each country and export data for further investigation
 navigation:
