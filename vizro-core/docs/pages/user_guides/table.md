@@ -17,6 +17,195 @@ To add a [`Table`][vizro.models.Table] to your page, do the following:
 
 See below for an overview of currently supported table functions.
 
+### Dash AG Grid
+
+The [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
+It is Vizro's recommended table implementation.
+
+You can use the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) in Vizro by importing
+```py
+from vizro.tables import dash_ag_grid
+```
+The Vizro version of this grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
+This must be entered under the argument `data_frame`. All other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Note that we are
+setting some defaults for some of the arguments to help with styling and usability.
+
+Note also that Dash AG Grid is based the original [Javascript implementation](https://www.ag-grid.com/).
+
+!!! example "Dash AG Grid"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder().query("year == 2007")
+
+        page = vm.Page(
+            title="Example of a Dash AG Grid",
+            components=[
+                vm.Table(id="table", title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
+            ],
+            controls=[vm.Filter(column="continent")],
+        )
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+        - components:
+          - figure:
+              _target_: dash_ag_grid
+              data_frame: gapminder_2007
+            title: Dash AG Grid
+            id: table
+            type: table
+          controls:
+            - column: continent
+              type: filter
+          title: Example of a Dash AG Grid
+        ```
+    === "Result"
+        [![Table]][Table]
+
+    [Table]: ../../assets/user_guides/table/table.png
+
+#### Styling/Modifying the Dash AG Grid
+
+As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find
+an example of a styled table where some conditional formatting is applied. There are many more ways to alter the grid beyond this showcase.
+
+??? example "Styled Dash AG Grid"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder().query("year == 2007")
+
+        cellStyle = {
+            "styleConditions": [
+                {
+                    "condition": "params.value < 1045",
+                    "style": {"backgroundColor": "#ff9222"},
+                },
+                {
+                    "condition": "params.value >= 1045 && params.value <= 4095",
+                    "style": {"backgroundColor": "#de9e75"},
+                },
+                {
+                    "condition": "params.value > 4095 && params.value <= 12695",
+                    "style": {"backgroundColor": "#aaa9ba"},
+                },
+                {
+                    "condition": "params.value > 12695",
+                    "style": {"backgroundColor": "#00b4ff"},
+                },
+            ]
+        }
+
+        columnDefs = [
+            {"field": "country"},
+            {"field": "continent"},
+            {"field": "year"},
+            {
+                "field": "lifeExp",
+                "type": "rightAligned",
+                "valueFormatter": {"function": "d3.format('.1f')(params.value)"},
+            },
+            {
+                "field": "gdpPercap",
+                "type": "rightAligned",
+                "valueFormatter": {"function": "d3.format('$,.1f')(params.value)"},
+                "cellStyle": cellStyle,
+            },
+            {
+                "field": "pop",
+                "type": "rightAligned",
+                "valueFormatter": {"function": "d3.format(',.0f')(params.value)"},
+            },
+        ]
+
+        page = vm.Page(
+            title="Example of Modified Dash AG Grid",
+            components=[
+                vm.Table(
+                    title="Modified Dash AG Grid",
+                    figure=dash_ag_grid(
+                        data_frame=df,
+                        columnDefs=columnDefs,
+                    ),
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See from_yaml example
+        pages:
+          - components:
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: gapminder_2007
+                  columnDefs:
+                    - field: country
+                    - field: continent
+                    - field: year
+                    - field: lifeExp
+                      type: rightAligned
+                      valueFormatter:
+                        function: "d3.format('.1f')(params.value)"
+                    - field: gdpPercap
+                      type: rightAligned
+                      valueFormatter:
+                        function: "d3.format('$,.1f')(params.value)"
+                      cellStyle:
+                        styleConditions:
+                          - condition: params.value < 1045
+                            style:
+                              backgroundColor: "#ff9222"
+                          - condition: params.value >= 1045 && params.value <= 4095
+                            style:
+                              backgroundColor: "#de9e75"
+                          - condition: params.value > 4095 && params.value <= 12695
+                            style:
+                              backgroundColor: "#aaa9ba"
+                          - condition: params.value > 12695
+                            style:
+                              backgroundColor: "#00b4ff"
+                    - field: pop
+                      type: rightAligned
+                      valueFormatter:
+                        function: "d3.format(',.0f')(params.value)"
+                title: Dash AG Grid
+                id: table
+                type: table
+            controls:
+              - column: continent
+                type: filter
+            title: Example of a Dash AG Grid
+        ```
+    === "Result"
+        [![Table2]][Table2]
+
+    [Table2]: ../../assets/user_guides/table/styled_table.png
+
+To enhance existing tables, please see our How-to-guide on creating [custom tables](custom_tables.md).
+
+
+
 ### Dash DataTable
 
 The [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table component designed for viewing, editing, and exploring large datasets.
