@@ -1,10 +1,28 @@
 # ruff: noqa: F403, F405
+import os
 import runpy
 from pathlib import Path
 
+import chromedriver_autoinstaller_fix
 import pytest
 
 from vizro import Vizro
+
+
+# Taken from https://github.com/pytest-dev/pytest/issues/363#issuecomment-1335631998.
+@pytest.fixture(scope="module")
+def monkeypatch_session():
+    with pytest.MonkeyPatch.context() as mp:
+        yield mp
+
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_integration_test_environment(monkeypatch_session):
+    # Dash debug mode seems to interfere with the tests, so we disable it here. Note "false" as a string is correct.
+    monkeypatch_session.setenv("DASH_DEBUG", "false")
+    # We only need to install chromedriver outside CI.
+    if not os.getenv("CI"):
+        chromedriver_autoinstaller_fix.install()
 
 
 @pytest.mark.parametrize("dir", ["_dev", "demo", "features"])
