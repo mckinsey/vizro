@@ -1,4 +1,4 @@
-"""Example to show simple dashboard configuration."""
+"""Rough example used by developers."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -9,8 +9,8 @@ df = px.data.iris()
 page = vm.Page(
     title="Page Title",
     components=[
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
     ],
     controls=[
         vm.Filter(column="species"),
