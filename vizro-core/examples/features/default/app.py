@@ -25,7 +25,7 @@ waterfall_df = pd.DataFrame(
 
 # HOME ------------------------------------------------------------------------
 home = vm.Page(
-    title="Vizro Features",
+    title="Homepage",
     layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
     components=[
         vm.Card(
@@ -409,7 +409,7 @@ dashboard = vm.Dashboard(
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
-                vm.NavLink(label="Homepage", pages=["Vizro Features"], icon="Home"),
+                vm.NavLink(label="Homepage", pages=["Homepage"], icon="Home"),
                 vm.NavLink(
                     label="Features",
                     pages={

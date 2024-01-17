@@ -37,7 +37,7 @@ pages:
       grid: [[0, 1], [2, 3]]
       col_gap: 24px
       row_gap: 16px
-    title: Vizro Features
+    title: Homepage
   - components:
       - figure:
           _target_: scatter_matrix
@@ -271,7 +271,7 @@ navigation:
       - label: Homepage
         icon: Home
         pages:
-          - Vizro Features
+          - Homepage
       - label: Features
         icon: Library Add
         pages:
