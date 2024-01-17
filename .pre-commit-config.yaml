@@ -37,7 +37,7 @@ repos:
 
   # Linter for json, yaml, md, css and more
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+    rev: v4.0.0-alpha.7
     hooks:
       - id: prettier
 
