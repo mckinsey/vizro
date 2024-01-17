@@ -54,7 +54,7 @@ pages:
       - figure:
           _target_: choropleth
           color: lifeExp
-          data_frame: df
+          data_frame: gapminder
           locations: iso_alpha
           animation_frame: year
           title: Global development over time
@@ -79,7 +79,7 @@ pages:
       - figure:
           _target_: box
           color: continent
-          data_frame: df
+          data_frame: gapminder
           x: continent
           y: lifeExp
           title: Distribution per continent
@@ -111,7 +111,7 @@ pages:
       - figure:
           _target_: line
           color: continent
-          data_frame: df_mean
+          data_frame: gapminder_mean
           x: year
           y: lifeExp
           title: Development between 1952 and 2007
@@ -141,7 +141,7 @@ pages:
       - figure:
           _target_: bar
           color: continent
-          data_frame: df_mean_2007
+          data_frame: gapminder_mean_2007
           x: lifeExp
           y: continent
           orientation: h
@@ -195,7 +195,7 @@ pages:
       - figure:
           _target_: box
           color: continent
-          data_frame: df_2007
+          data_frame: gapminder_2007
           x: continent
           y: lifeExp
           title: Relationship in 2007
@@ -223,7 +223,7 @@ pages:
       - figure:
           _target_: scatter
           color: continent
-          data_frame: df_2007
+          data_frame: gapminder_2007
           x: gdpPercap
           y: lifeExp
           hover_name: country
@@ -246,7 +246,7 @@ pages:
       - figure:
           _target_: scatter
           color: continent
-          data_frame: df
+          data_frame: gapminder
           x: gdpPercap
           y: lifeExp
           animation_frame: year
@@ -397,7 +397,7 @@ pages:
   - components:
       - figure:
           _target_: dash_data_table
-          data_frame: df
+          data_frame: gapminder
           id: dash_data_table_country
           columns:
             - id: country
@@ -452,7 +452,7 @@ pages:
       - figure:
           _target_: line
           color: color
-          data_frame: df_concat
+          data_frame: gapminder_concat
           title: Country vs. Continent
           x: year
           y: gdpPercap
