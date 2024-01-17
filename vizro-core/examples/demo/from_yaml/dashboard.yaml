@@ -4,6 +4,7 @@ pages:
           ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Variable Analysis
+          
           Analyzing population, GDP per capita and life expectancy on country and continent level.
         href: /variable-analysis
         type: card
@@ -11,6 +12,7 @@ pages:
           ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Relationship Analysis
+          
           Investigating the interconnection between population, GDP per capita and life expectancy.
         href: /relationship-analysis
         type: card
@@ -18,21 +20,25 @@ pages:
           ![](assets/images/icons/collections.svg#icon-top)
 
           ### Continent Summary
+          
           Summarizing the main findings for each continent.
         href: /continent-summary
         type: card
       - text: |
           ![](assets/images/icons/features.svg#icon-top)
 
-          ### Country Analysis
-          Discovering how the metrics differ for each country and export data for further investigation.
-        href: /country-analysis
+          ### Benchmark Analysis
+          
+          Discovering how the metrics differ for each country compared to the continent average
+          and export data for further investigation.
+        href: /benchmark-analysis
         type: card
     layout:
       grid: [[0, 1], [2, 3]]
-      col_gap: 25px
+      col_gap: 24px
       row_gap: 16px
     title: Homepage
+    description: Vizro demo app for studying gapminder data
   - components:
       - text: |
           ### Overview
@@ -172,8 +178,9 @@ pages:
     layout:
       grid: [[0, 1, 1, 1], [2, 3, 3, 3], [4, 5, 5, 5], [6, 7, 7, 7]]
       row_min_height: 400px
-      row_gap: 25px
+      row_gap: 24px
     title: Variable Analysis
+    description: Analyzing population, GDP per capita and life expectancy on country and continent level
   - components:
       - text: |
           Population, GDP per capita, and life expectancy are interconnected metrics that provide insights into the
@@ -266,7 +273,7 @@ pages:
       - selector:
           title: Choose x-axis
           type: dropdown
-          value: lifeExp
+          value: gdpPercap
           multi: False
           options:
             - lifeExp
@@ -279,7 +286,7 @@ pages:
       - selector:
           title: Choose y-axis
           type: dropdown
-          value: gdpPercap
+          value: lifeExp
           multi: False
           options:
             - lifeExp
@@ -318,8 +325,9 @@ pages:
           [4, 4, 4, 4, 4],
         ]
       row_min_height: 100px
-      row_gap: 25px
+      row_gap: 24px
     title: Relationship Analysis
+    description: Investigating the interconnection between population, GDP per capita and life expectancy
   - components:
       - text: |
           ### Africa
@@ -437,14 +445,24 @@ pages:
           type: range_slider
           title: Select timeframe
         type: filter
-    title: Country Analysis
+    title: Benchmark Analysis
+    description: Discovering how the metrics differ for each country and export data for further investigation
 navigation:
-  pages:
-    Analysis:
-      - Homepage
-      - Variable Analysis
-      - Relationship Analysis
-      - Country Analysis
-    Summary:
-      - Continent Summary
+  nav_selector:
+    type: nav_bar
+    items:
+      - label: Homepage
+        icon: Home
+        pages:
+          - Homepage
+      - label: Analysis
+        icon: Stacked Bar Chart
+        pages:
+          - Variable Analysis
+          - Relationship Analysis
+          - Benchmark Analysis
+      - label: Summary
+        icon: Globe
+        pages:
+          - Continent Summary
 title: Vizro demo

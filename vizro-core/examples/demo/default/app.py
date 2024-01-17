@@ -35,7 +35,7 @@ def create_variable_analysis():
                 # fmt: on
             ],
             row_min_height="400px",
-            row_gap="25px",
+            row_gap="24px",
         ),
         components=[
             vm.Card(
