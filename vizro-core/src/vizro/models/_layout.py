@@ -1,6 +1,7 @@
 from typing import List, NamedTuple, Optional, Tuple
 
 import numpy as np
+from dash import html
 from numpy import ma
 
 try:
@@ -10,7 +11,7 @@ except ImportError:  # pragma: no cov
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import get_unique_grid_component_ids
+from vizro.models._models_utils import _log_call
 
 GAP_DEFAULT = "12px"
 MIN_DEFAULT = "0px"
@@ -23,6 +24,32 @@ class ColRowGridLines(NamedTuple):
     col_end: int
     row_start: int
     row_end: int
+
+
+def _get_unique_grid_component_ids(grid: List[List[int]]):
+    unique_grid_idx = np.unique(grid)
+    unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
+    return unique_grid_comp_idx
+
+
+# Validators for reuse
+def set_layout(cls, layout, values):
+    from vizro.models import Layout
+
+    if "components" not in values:
+        return layout
+
+    if layout is None:
+        grid = [[i] for i in range(len(values["components"]))]
+        return Layout(grid=grid)
+
+    unique_grid_idx = _get_unique_grid_component_ids(layout.grid)
+    if len(unique_grid_idx) != len(values["components"]):
+        raise ValueError("Number of page and grid components need to be the same.")
+    return layout
+
+
+# TODO: Insert layout only
 
 
 def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
@@ -106,7 +133,7 @@ def _validate_grid_areas(grid_areas: List[ColRowGridLines]) -> None:
 def _get_grid_lines(grid: List[List[int]]) -> Tuple[List[ColRowGridLines], List[ColRowGridLines]]:
     """Gets list of ColRowGridLines for components and spaces on screen for validation and placement."""
     component_grid_lines = []
-    unique_grid_idx = get_unique_grid_component_ids(grid)
+    unique_grid_idx = _get_unique_grid_component_ids(grid)
     for component_idx in unique_grid_idx:
         matrix = ma.masked_equal(grid, component_idx)
         component_grid_lines.append(_convert_to_combined_grid_coord(matrix))
@@ -143,7 +170,7 @@ class Layout(VizroBaseModel):
             raise ValueError("All rows must be of same length.")
 
         # Validate grid type and values
-        unique_grid_idx = get_unique_grid_component_ids(grid)
+        unique_grid_idx = _get_unique_grid_component_ids(grid)
         if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange((unique_grid_idx.max() + 1))):
             raise ValueError("Grid must contain consecutive integers starting from 0.")
 
@@ -159,6 +186,31 @@ class Layout(VizroBaseModel):
     @property
     def component_grid_lines(self):
         return self._component_grid_lines
+
+    @_log_call
+    def build(self):
+        """Creates empty container with inline style to later position components in."""
+        components_content = [
+            html.Div(
+                style={
+                    "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
+                    "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
+                },
+            )
+            for grid_coord in self.component_grid_lines
+        ]
+
+        component_container = html.Div(
+            components_content,
+            style={
+                "gridRowGap": self.row_gap,
+                "gridColumnGap": self.col_gap,
+                "gridTemplateColumns": f"repeat({len(self.grid[0])}," f"minmax({self.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.grid)}," f"minmax({self.row_min_height}, 1fr))",
+            },
+            className="grid-layout",
+        )
+        return component_container
 
 
 if __name__ == "__main__":

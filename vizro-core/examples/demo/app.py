@@ -8,16 +8,20 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
-df = px.data.gapminder()
-df_mean = (
-    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
+gapminder = px.data.gapminder()
+gapminder_mean = (
+    gapminder.groupby(by=["continent", "year"])
+    .agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"})
+    .reset_index()
 )
 
-df_transformed = df.copy()
-df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
-df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
+gapminder_transformed = gapminder.copy()
+gapminder_transformed["lifeExp"] = gapminder.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
+gapminder_transformed["gdpPercap"] = gapminder.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
+gapminder_transformed["pop"] = gapminder.groupby(by=["continent", "year"])["pop"].transform("sum")
+gapminder_concat = pd.concat(
+    [gapminder_transformed.assign(color="Continent Avg."), gapminder.assign(color="Country")], ignore_index=True
+)
 
 
 def create_variable_analysis():
@@ -35,7 +39,7 @@ def create_variable_analysis():
                 # fmt: on
             ],
             row_min_height="400px",
-            row_gap="25px",
+            row_gap="24px",
         ),
         components=[
             vm.Card(
@@ -55,7 +59,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_map",
                 figure=px.choropleth(
-                    df,
+                    gapminder,
                     locations="iso_alpha",
                     color="lifeExp",
                     hover_name="country",
@@ -84,7 +88,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_boxplot",
                 figure=px.box(
-                    df,
+                    gapminder,
                     x="continent",
                     y="lifeExp",
                     color="continent",
@@ -122,7 +126,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_line",
                 figure=px.line(
-                    df_mean,
+                    gapminder_mean,
                     y="lifeExp",
                     x="year",
                     color="continent",
@@ -158,7 +162,7 @@ def create_variable_analysis():
             vm.Graph(
                 id="variable_bar",
                 figure=px.bar(
-                    df_mean.query("year == 2007"),
+                    gapminder_mean.query("year == 2007"),
                     x="lifeExp",
                     y="continent",
                     orientation="h",
@@ -220,7 +224,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="bar_relation_2007",
                 figure=px.box(
-                    df.query("year == 2007"),
+                    gapminder.query("year == 2007"),
                     x="continent",
                     y="lifeExp",
                     color="continent",
@@ -246,7 +250,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="scatter_relation_2007",
                 figure=px.scatter(
-                    df.query("year == 2007"),
+                    gapminder.query("year == 2007"),
                     x="gdpPercap",
                     y="lifeExp",
                     size="pop",
@@ -271,7 +275,7 @@ def create_relation_analysis():
             vm.Graph(
                 id="scatter_relation",
                 figure=px.scatter(
-                    df,
+                    gapminder,
                     x="gdpPercap",
                     y="lifeExp",
                     animation_frame="year",
@@ -422,11 +426,10 @@ def create_benchmark_analysis():
         layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
             vm.Table(
-                id="table_country",
                 title="Click on a cell in country column:",
                 figure=dash_data_table(
                     id="dash_data_table_country",
-                    data_frame=df,
+                    data_frame=gapminder,
                     columns=columns,
                     style_data_conditional=[
                         {
@@ -460,7 +463,7 @@ def create_benchmark_analysis():
             vm.Graph(
                 id="line_country",
                 figure=px.line(
-                    df_concat,
+                    gapminder_concat,
                     title="Country vs. Continent",
                     x="year",
                     y="gdpPercap",
@@ -505,7 +508,7 @@ def create_home_page():
         components=[
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/hypotheses.svg#icon-top)
+                    ![](assets/images/icons/hypotheses.svg#icon-top)
 
                     ### Variable Analysis
 
@@ -515,7 +518,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                        ![](assets/images/icons/content/hypotheses.svg#icon-top)
+                        ![](assets/images/icons/hypotheses.svg#icon-top)
 
                         ### Relationship Analysis
 
@@ -525,7 +528,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/collections.svg#icon-top)
+                    ![](assets/images/icons/collections.svg#icon-top)
 
                     ### Continent Summary
 
@@ -535,7 +538,7 @@ def create_home_page():
             ),
             vm.Card(
                 text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
+                    ![](assets/images/icons/features.svg#icon-top)
 
                     ### Benchmark Analysis
 
@@ -550,6 +553,7 @@ def create_home_page():
 
 
 dashboard = vm.Dashboard(
+    title="Vizro Demo",
     pages=[
         create_home_page(),
         create_variable_analysis(),
@@ -573,4 +577,4 @@ dashboard = vm.Dashboard(
 )
 
 if __name__ == "__main__":
-    Vizro(assets_folder="../assets").build(dashboard).run()
+    Vizro().build(dashboard).run()

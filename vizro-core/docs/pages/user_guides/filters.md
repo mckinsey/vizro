@@ -28,7 +28,7 @@ automatically based on the target column, e.g. a dropdown for categorical data o
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
             controls=[
                 vm.Filter(column="species"),
@@ -42,7 +42,7 @@ automatically based on the target column, e.g. a dropdown for categorical data o
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -51,7 +51,6 @@ automatically based on the target column, e.g. a dropdown for categorical data o
                   x: sepal_length
                   y: petal_width
                   color: species
-                id: scatter_chart
                 type: graph
             controls:
               - column: species
@@ -80,7 +79,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width")),
             ],
             controls=[
                 vm.Filter(column="species",selector=vm.RadioItems()),
@@ -94,7 +93,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -102,7 +101,6 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
                   data_frame: iris
                   x: sepal_length
                   y: petal_width
-                id: scatter_chart
                 type: graph
             controls:
               - column: species
@@ -153,7 +151,7 @@ Below is an advanced example where we only target one page component, and where 
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:

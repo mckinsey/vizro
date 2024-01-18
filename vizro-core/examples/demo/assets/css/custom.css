@@ -4,3 +4,8 @@ img[src*="#my-image"] {
   float: left;
   margin: 10px 25px;
 }
+
+#logo {
+  margin-left: -8px;
+  height: 40px;
+}

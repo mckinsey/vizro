@@ -36,13 +36,13 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 ## Examples
 
-Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `from_dict` example, execute:
+Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `features/yaml_version` example, execute:
 
 ```console
-hatch run example from_dict
+hatch run example features/yaml_version
 ```
 
-If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/default/app.py) is used.
+If no example is specified (`hatch run example`) then the [`_dev` example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
 
 ## Documentation
 

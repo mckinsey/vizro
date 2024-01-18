@@ -6,7 +6,7 @@ except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines
+from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
 
 
 class TestLayoutInstantiation:

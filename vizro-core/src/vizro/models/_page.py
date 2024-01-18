@@ -15,13 +15,8 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import (
-    _assign_component_grid_area,
-    _create_component_container,
-    _log_call,
-    set_components,
-    set_layout,
-)
+from vizro.models._layout import set_layout
+from vizro.models._models_utils import _log_call, set_components
 
 from .types import ComponentType, ControlType
 
@@ -43,9 +38,6 @@ class Page(VizroBaseModel):
         layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
-
-    Raises:
-        ValueError: If number of page and grid components is not the same
     """
 
     components: List[ComponentType]
@@ -142,15 +134,16 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(children=[*controls_content], id="control-panel", hidden=not controls_content)
+        control_panel = html.Div(children=controls_content, id="control-panel", hidden=not controls_content)
 
-        components_content = _assign_component_grid_area(self)
-        components_container = _create_component_container(self, components_content)
+        components_container = self.layout.build()
+        for idx, component in enumerate(self.components):
+            components_container.children[idx].children = component.build()
 
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
-        return html.Div([control_panel, components_container])
+        return html.Div([control_panel, components_container], id=self.id)
 
     def _update_graph_theme(self):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
