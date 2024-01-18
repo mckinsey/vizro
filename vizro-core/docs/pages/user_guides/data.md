@@ -87,7 +87,7 @@ Vizro, you need:
         ```
     === "app.yaml"
         ```yaml linenums="1" hl_lines="6"
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see from_yaml example
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration - see yaml_version example
         pages:
         - components:
             - figure:
