@@ -95,7 +95,7 @@ class TestPageInstantiation:
     def test_check_for_valid_component_types(self):
         with pytest.raises(
             ValidationError,
-            match=re.escape("(allowed values: 'button', 'card', 'graph', 'table', 'container')"),
+            match=re.escape("(allowed values: 'button', 'card', 'container', 'graph', 'table')"),
         ):
             vm.Page(title="Page Title", components=[vm.Checklist()])
 
