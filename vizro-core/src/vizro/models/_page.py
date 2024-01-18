@@ -15,12 +15,12 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
+from vizro.models._layout import set_layout
 from vizro.models._models_utils import (
     _assign_component_grid_area,
     _create_component_container,
     _log_call,
     set_components,
-    set_layout,
 )
 
 from .types import ComponentType, ControlType

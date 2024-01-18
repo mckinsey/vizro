@@ -15,10 +15,10 @@ from vizro.models._models_utils import (
     _create_component_container,
     _log_call,
     set_components,
-    set_layout,
 )
-from vizro.models.types import ComponentType
 
+from vizro.models.types import ComponentType
+from vizro.models._layout import set_layout
 if TYPE_CHECKING:
     from vizro.models import Layout
 
@@ -48,6 +48,11 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
+        #components_container = self.layout.build()
+        #for component in self.components:
+        #for child in components_container.children:
+        #    child = component.build()
+        #components_container.children = [component.build() for component in self.components]
         components_content = _assign_component_grid_area(self)
         components_container = _create_component_container(self, components_content)
         return html.Div(children=[html.H3(self.title), components_container], className="page-component-container")
