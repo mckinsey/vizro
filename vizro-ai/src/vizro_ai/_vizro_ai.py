@@ -15,6 +15,7 @@ from vizro_ai.components import (
     GetVisualCode,
 )
 from vizro_ai.utils import _safeguard_check
+from vizro_ai.task_pipeline.pipeline_manager import PipelineManager
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class VizroAI:
     """Vizro-AI main class."""
 
     model_constructor: ModelConstructor = ModelConstructor()
+    pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
     def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
@@ -38,7 +40,7 @@ class VizroAI:
         """
         self.model_name = model_name
         self.temperature = temperature
-        # self.components_instances = {}
+        self.components_instances = {}
         self._llm_to_use = None
         # TODO add pending URL link to docs
         logger.info(
@@ -54,23 +56,27 @@ class VizroAI:
         _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
         return _llm_to_use
 
-    # def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
-    #     """Lazy initialization of components."""
-    #     if component_class not in self.components_instances:
-    #         self.components_instances[component_class] = component_class(llm=self.llm_to_use)
-    #     return self.components_instances[component_class]
+    def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
+        """Lazy initialization of components."""
+        if component_class not in self.components_instances:
+            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+        return self.components_instances[component_class]
 
     def _run_plot_tasks(
-        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
-        target_chart = self._lazy_get_component(GetChartSelection).run(df=df, chain_input=user_input)
-        df_code = self._lazy_get_component(GetDataFrameCraft).run(df=df, chain_input=user_input)
-        visual_code = self._lazy_get_component(GetVisualCode).run(
-            chain_input=user_input, chart_types=target_chart, df_code=df_code
-        )
-        custom_chart_code = self._lazy_get_component(GetCustomChart).run(chain_input=visual_code)
+        # target_chart = self._lazy_get_component(GetChartSelection).run(df=df, chain_input=user_input)
+        # df_code = self._lazy_get_component(GetDataFrameCraft).run(df=df, chain_input=user_input)
+        # visual_code = self._lazy_get_component(GetVisualCode).run(
+        #     chain_input=user_input, chart_types=target_chart, df_code=df_code
+        # )
+        # custom_chart_code = self._lazy_get_component(GetCustomChart).run(chain_input=visual_code)
+        self.pipeline_manager.llm = self.llm_to_use
+        plot_pipeline = self.pipeline_manager.create_plot_pipeline()
+        custom_chart_code = plot_pipeline.run(chain_input=user_input, df=df)
 
+        # TODO add debug in pipeline after getting _debug_helper logic in component
         fix_func = self._lazy_get_component(GetDebugger).run
         validated_code_dict = _debug_helper(
             code_string=custom_chart_code, max_debug_retry=max_debug_retry, fix_chain=fix_func, df=df
@@ -133,7 +139,7 @@ class VizroAI:
 
 
 def _debug_helper(
-    code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
+        code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
 ) -> Dict[bool, str]:
     """Debugging helper."""
     # TODO plug logic back into component
@@ -155,7 +161,7 @@ def _debug_helper(
 
 
 def _exec_code(
-    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
+        code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
 ) -> None:
     """Execute code in notebook with correct namespace."""
     from IPython import get_ipython
