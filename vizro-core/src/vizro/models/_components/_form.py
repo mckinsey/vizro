@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal
 
-from dash import html
-
 try:
     from pydantic.v1 import validator
 except ImportError:  # pragma: no cov

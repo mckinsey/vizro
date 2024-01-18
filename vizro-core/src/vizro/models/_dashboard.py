@@ -159,7 +159,9 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo])
+        return html.Div(
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+        )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
         logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
