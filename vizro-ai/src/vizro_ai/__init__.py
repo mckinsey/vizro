@@ -1,6 +1,10 @@
 import logging
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from ._vizro_ai import VizroAI
 
 __all__ = ["VizroAI"]
