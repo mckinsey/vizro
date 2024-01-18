@@ -16,7 +16,7 @@ class Pipeline:
         self.components = []
         self.components_instances = {}
 
-    def add(self, component_class, input_keys: List = None, output_key: str = None):
+    def add(self, component_class, input_keys: List | None = None, output_key: str | None = None):
         """Add a component class to the pipeline along with its input and output specifications.
 
         Args:
