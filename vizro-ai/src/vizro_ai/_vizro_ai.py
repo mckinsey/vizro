@@ -71,6 +71,7 @@ class VizroAI:
         # custom_chart_code = self._lazy_get_component(GetCustomChart).run(chain_input=visual_code)
         self.pipeline_manager.llm = self.llm_to_use
         plot_pipeline = self.pipeline_manager.create_plot_pipeline()
+        # TODO here the run should take kwargs
         custom_chart_code = plot_pipeline.run(chain_input=user_input, df=df)
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
