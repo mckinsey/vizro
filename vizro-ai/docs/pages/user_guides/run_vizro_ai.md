@@ -15,9 +15,6 @@ To run Vizro-AI in jupyter, create a new cell and execute the code below to rend
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         vizro_ai = VizroAI()
 
         df = px.data.gapminder()

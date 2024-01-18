@@ -18,16 +18,33 @@ file. Then, you can load the API key from the `.env` file in your development en
 Avoid committing the `.env` file if you are using a version control system such as Git.
 You can add `.env` to your `.gitignore` file to avoid committing it.
 
+By default, when vizro-ai is imported, it automatically loads the `.env` file.
+This file is searched for in the current directory and, if not found, the search continues upwards through the directory hierarchy.
+
 !!! example "API key setup and usage"
     === ".env"
         ```text
         OPENAI_API_KEY=<your API key>
         ```
-    === "Jupyter Notebook"
-        ```python
-        from dotenv import load_dotenv
-        load_dotenv()
-        ```
+#### Customizing the .env file location and name
+If you would like to customize the .env file location and name, you can set it manually.
+The default import of the .env file can be overridden by specifying the path and name.
+Here's how you can do it:
+```py
+from dotenv import load_dotenv, find_dotenv
+from os.path import join, dirname
+
+# Specify the exact path to your .env file
+env_file = join(dirname(__file__), '.env')  # Adjust the path as needed
+
+# Alternatively, specify a different .env file name
+env_file = find_dotenv(".env.dev")  # Replace ".env.dev" with your file name
+
+# Load the specified .env file
+load_dotenv(env_file)
+```
+Note: Please refer to [python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for detailed information.
+
 
 __Method 2: Set up the API key as an environment variable for all projects__
 
