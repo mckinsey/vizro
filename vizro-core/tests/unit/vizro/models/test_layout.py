@@ -184,7 +184,7 @@ class TestLayoutBuild:
             },
             className="grid-layout",
         )
-        assert_component_equal(result, expected, keys_to_strip={})
+        assert_component_equal(result, expected)
 
 
 def test_place_components_in_grid():
