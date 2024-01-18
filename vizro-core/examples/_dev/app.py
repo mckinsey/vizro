@@ -1,132 +1,12 @@
 """Rough example used by developers."""
 
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data
+from vizro.tables import dash_data_table
 
 df = px.data.gapminder()
-
-
-page_variable = vm.Page(
-    title="Variable Analysis",
-    description="Analyzing population, GDP per capita and life expectancy on country and continent level",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7]]),
-    components=[
-        vm.Card(
-            text="""
-                ### Overview
-                The world map provides initial insights into the variations of metrics across countries and
-                continents. Click on Play to see the animation and explore the development over time.
-
-                #### Observation
-                A global trend of increasing life expectancy emerges, with some exceptions in specific African
-                countries. Additionally, despite similar population growth rates across continents, the overall
-                global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-                capita experiences growth in most regions.
-
-            """
-        ),
-        vm.Card(
-            text="""
-                ### Overview
-                The world map provides initial insights into the variations of metrics across countries and
-                continents. Click on Play to see the animation and explore the development over time.
-
-                #### Observation
-                A global trend of increasing life expectancy emerges, with some exceptions in specific African
-                countries. Additionally, despite similar population growth rates across continents, the overall
-                global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-                capita experiences growth in most regions.
-
-            """
-        ),
-        vm.Card(
-            text="""
-                ### Distribution
-                The boxplot illustrates the distribution of each metric across continents, facilitating comparisons
-                of life expectancy, GDP per capita, and population statistics.
-
-                Observations reveal that Europe and Oceania have the highest life expectancy and GDP per capita,
-                likely influenced by their smaller population growth. Additionally, Asia and America exhibit
-                notable GDP per capita outliers, indicating variations among countries within these continents or
-                large growth over the observed years.
-            """
-        ),
-        vm.Card(
-            text="""
-        ### Overview
-        The world map provides initial insights into the variations of metrics across countries and
-        continents. Click on Play to see the animation and explore the development over time.
-
-        #### Observation
-        A global trend of increasing life expectancy emerges, with some exceptions in specific African
-        countries. Additionally, despite similar population growth rates across continents, the overall
-        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-        capita experiences growth in most regions.
-
-    """
-        ),
-        vm.Card(
-            text="""
-        ### Overview
-        The world map provides initial insights into the variations of metrics across countries and
-        continents. Click on Play to see the animation and explore the development over time.
-
-        #### Observation
-        A global trend of increasing life expectancy emerges, with some exceptions in specific African
-        countries. Additionally, despite similar population growth rates across continents, the overall
-        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-        capita experiences growth in most regions.
-
-    """
-        ),
-        vm.Card(
-            text="""
-        ### Overview
-        The world map provides initial insights into the variations of metrics across countries and
-        continents. Click on Play to see the animation and explore the development over time.
-
-        #### Observation
-        A global trend of increasing life expectancy emerges, with some exceptions in specific African
-        countries. Additionally, despite similar population growth rates across continents, the overall
-        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-        capita experiences growth in most regions.
-
-    """
-        ),
-        vm.Card(
-            text="""
-        ### Overview
-        The world map provides initial insights into the variations of metrics across countries and
-        continents. Click on Play to see the animation and explore the development over time.
-
-        #### Observation
-        A global trend of increasing life expectancy emerges, with some exceptions in specific African
-        countries. Additionally, despite similar population growth rates across continents, the overall
-        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-        capita experiences growth in most regions.
-
-    """
-        ),
-        vm.Card(
-            text="""
-        ### Overview
-        The world map provides initial insights into the variations of metrics across countries and
-        continents. Click on Play to see the animation and explore the development over time.
-
-        #### Observation
-        A global trend of increasing life expectancy emerges, with some exceptions in specific African
-        countries. Additionally, despite similar population growth rates across continents, the overall
-        global population continues to expand, with India and China leading the way.  Meanwhile, GDP per
-        capita experiences growth in most regions.
-
-    """
-        ),
-    ],
-)
-
 
 single_container_default_layout = vm.Page(
     title="Single Container - default layout",
@@ -259,7 +139,8 @@ multiple_containers_nested = vm.Page(
             [0, 0, 0, 0],
             [1, 1, 1, 1],
             [1, 1, 1, 1],
-        ]
+        ],
+        row_min_height="500px",
     ),
     components=[
         vm.Container(
@@ -363,12 +244,88 @@ multiple_containers_nested = vm.Page(
 )
 
 
+graph_and_container = vm.Page(
+    title="Graph and Container",
+    components=[
+        vm.Graph(
+            figure=px.line(
+                df,
+                title="Graph Standalone",
+                x="year",
+                y="lifeExp",
+                color="continent",
+                line_group="country",
+                hover_name="country",
+            ),
+        ),
+        vm.Container(
+            title="Container Standalone",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        df,
+                        title="Graph_2",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.box(
+                        df,
+                        title="Graph_3",
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+            ],
+        ),
+    ],
+    controls=[vm.Filter(column="continent")],
+)
+
+table_and_container = vm.Page(
+    title="Table and Container",
+    components=[
+        vm.Table(figure=dash_data_table(id="dash_data_table_country", data_frame=df)),
+        vm.Container(
+            title="Container Standalone",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        df,
+                        title="Graph_2",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.box(
+                        df,
+                        title="Graph_3",
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+            ],
+        ),
+    ],
+    controls=[vm.Filter(column="continent")],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
-        page_variable,
         single_container_default_layout,
         multiple_containers_custom_layout,
         multiple_containers_nested,
+        graph_and_container,
+        table_and_container,
     ]
 )
 
