@@ -1,6 +1,6 @@
 """Unit tests for vizro.models.Container."""
 import pytest
-from asserts import STRIP_ALL, assert_component_equal
+from asserts import assert_component_equal
 from dash import html
 
 try:
@@ -43,6 +43,24 @@ class TestContainerInstantiation:
 
 class TestContainerBuildMethod:
     def test_container_build(self):
-        result = vm.Container(title="Title", components=[vm.Button()]).build()
-        assert_component_equal(result, html.Div(className="page-component-container"), keys_to_strip={"children"})
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        result = vm.Container(id="container", title="Title", components=[vm.Button()]).build()
+        assert_component_equal(
+            result, html.Div(className="page-component-container", id="container"), keys_to_strip={"children"}
+        )
+        assert_component_equal(
+            result.children,
+            [
+                html.H3("Title"),
+                html.Div(
+                    [html.Div(vm.Button().build(), style={"gridColumn": "1/2", "gridRow": "1/2"})],
+                    className="grid-layout",
+                    style={
+                        "gridColumnGap": "12px",
+                        "gridRowGap": "12px",
+                        "gridTemplateColumns": "repeat(1,minmax(0px, 1fr))",
+                        "gridTemplateRows": "repeat(1,minmax(0px, 1fr))",
+                    },
+                ),
+            ],
+            keys_to_strip={"id"},
+        )
