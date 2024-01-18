@@ -16,12 +16,7 @@ from vizro.models._components.form import (
     Slider,
 )
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import (
-    _assign_component_grid_area,
-    _create_component_container,
-    _log_call,
-    set_components,
-)
+from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -57,7 +52,6 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_content = _assign_component_grid_area(self)
-        components_container = _create_component_container(self, components_content)
+        components_container = self.layout.build(self.components)
         components_container.id = self.id
         return components_container

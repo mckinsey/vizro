@@ -1,6 +1,7 @@
 from typing import List, NamedTuple, Optional, Tuple
 
 import numpy as np
+from dash import html
 from numpy import ma
 
 try:
@@ -10,6 +11,7 @@ except ImportError:  # pragma: no cov
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
+from vizro.models._models_utils import _log_call
 
 GAP_DEFAULT = "12px"
 MIN_DEFAULT = "0px"
@@ -188,6 +190,31 @@ class Layout(VizroBaseModel):
     # TODO: Insert components as args inside build
     # TODO: Insert components afterwards
     # TODO: Create build for Layout
+
+    @_log_call
+    def build(self, components):
+        components_content = [
+            html.Div(
+                component.build(),
+                style={
+                    "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
+                    "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
+                },
+            )
+            for component, grid_coord in zip(components, self.component_grid_lines)
+        ]
+
+        component_container = html.Div(
+            components_content,
+            style={
+                "gridRowGap": self.row_gap,
+                "gridColumnGap": self.col_gap,
+                "gridTemplateColumns": f"repeat({len(self.grid[0])}," f"minmax({self.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.grid)}," f"minmax({self.row_min_height}, 1fr))",
+            },
+            className="grid-layout",
+        )
+        return component_container
 
 
 if __name__ == "__main__":

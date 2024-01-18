@@ -11,12 +11,7 @@ except ImportError:  # pragma: no cov
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import (
-    _assign_component_grid_area,
-    _create_component_container,
-    _log_call,
-    set_components,
-)
+from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -48,11 +43,9 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # components_container = self.layout.build()
+        components_container = self.layout.build(self.components)
         # for component in self.components:
         # for child in components_container.children:
         #    child = component.build()
         # components_container.children = [component.build() for component in self.components]
-        components_content = _assign_component_grid_area(self)
-        components_container = _create_component_container(self, components_content)
         return html.Div(children=[html.H3(self.title), components_container], className="page-component-container")
