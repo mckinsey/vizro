@@ -139,7 +139,10 @@ class Page(VizroBaseModel):
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(children=controls_content, id="control-panel", hidden=not controls_content)
 
-        components_container = self.layout.build(self.components)
+        components_container = self.layout.build()
+        for idx, component in enumerate(self.components):
+            components_container.children[idx].children = component.build()
+
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"

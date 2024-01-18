@@ -43,9 +43,7 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_container = self.layout.build(self.components)
-        # for component in self.components:
-        # for child in components_container.children:
-        #    child = component.build()
-        # components_container.children = [component.build() for component in self.components]
+        components_container = self.layout.build()
+        for idx, component in enumerate(self.components):
+            components_container.children[idx].children = component.build()
         return html.Div(children=[html.H3(self.title), components_container], className="page-component-container")

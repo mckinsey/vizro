@@ -52,6 +52,8 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_container = self.layout.build(self.components)
+        components_container = self.layout.build()
+        for idx, component in enumerate(self.components):
+            components_container.children[idx].children = component.build()
         components_container.id = self.id
         return components_container

@@ -187,21 +187,17 @@ class Layout(VizroBaseModel):
     def component_grid_lines(self):
         return self._component_grid_lines
 
-    # TODO: Insert components as args inside build
-    # TODO: Insert components afterwards
-    # TODO: Create build for Layout
-
     @_log_call
-    def build(self, components):
+    def build(self):
+        """Creates empty container with inline style to later position components in."""
         components_content = [
             html.Div(
-                component.build(),
                 style={
                     "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for component, grid_coord in zip(components, self.component_grid_lines)
+            for grid_coord in self.component_grid_lines
         ]
 
         component_container = html.Div(
