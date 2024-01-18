@@ -7,15 +7,11 @@ import pandas as pd
 from vizro_ai.chains import ModelConstructor
 from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import (
-    GetChartSelection,
     GetCodeExplanation,
-    GetCustomChart,
-    GetDataFrameCraft,
     GetDebugger,
-    GetVisualCode,
 )
-from vizro_ai.utils import _safeguard_check
 from vizro_ai.task_pipeline.pipeline_manager import PipelineManager
+from vizro_ai.utils import _safeguard_check
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +52,7 @@ class VizroAI:
         _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
         return _llm_to_use
 
+    # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
@@ -63,7 +60,7 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
         # target_chart = self._lazy_get_component(GetChartSelection).run(df=df, chain_input=user_input)
@@ -139,7 +136,7 @@ class VizroAI:
 
 
 def _debug_helper(
-        code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
+    code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
 ) -> Dict[bool, str]:
     """Debugging helper."""
     # TODO plug logic back into component
@@ -161,7 +158,7 @@ def _debug_helper(
 
 
 def _exec_code(
-        code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
+    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
 ) -> None:
     """Execute code in notebook with correct namespace."""
     from IPython import get_ipython
