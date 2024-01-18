@@ -3,19 +3,6 @@ export function _update_dashboard_theme(checked) {
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
-  if (!n_clicks)
-    return [
-      is_open,
-      is_open
-        ? {
-            transform: "rotate(0deg)",
-          }
-        : {
-            transform: "rotate(180deg)",
-            transition: "transform 0.35s ease-in-out",
-          },
-    ];
-
   if (is_open) {
     return [
       false,

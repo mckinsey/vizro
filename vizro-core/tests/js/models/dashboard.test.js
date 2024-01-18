@@ -9,19 +9,6 @@ test("true returns vizro_light and false vizro_dark", () => {
 });
 
 describe("_collapse_nav_panel function", () => {
-  test("should return the correct values when n_clicks is 0", () => {
-    const is_open = true;
-    const result = _collapse_nav_panel(0, is_open);
-    const expected = [
-      is_open,
-      {
-        transform: "rotate(0deg)",
-      },
-    ];
-
-    expect(result).toEqual(expected);
-  });
-
   test("should return the correct values when n_clicks is not 0 and is_open is true", () => {
     const result = _collapse_nav_panel(1, true);
     const expected = [

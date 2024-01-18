@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable the side panel to collapse/expand via a button that is present by default. ([#225](https://github.com/mckinsey/vizro/pull/225))
+- Enable the side panel to collapse/expand with a button. ([#225](https://github.com/mckinsey/vizro/pull/225))
 
 <!--
 ### Changed
