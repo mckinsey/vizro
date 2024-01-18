@@ -10,7 +10,13 @@ from asserts import assert_component_equal
 from dash import html
 
 import vizro.models as vm
-from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids, _place_components_in_grid
+from vizro.models._layout import (
+    GAP_DEFAULT,
+    MIN_DEFAULT,
+    ColRowGridLines,
+    _get_unique_grid_component_ids,
+    _place_components_in_grid,
+)
 
 
 class TestLayoutInstantiation:
