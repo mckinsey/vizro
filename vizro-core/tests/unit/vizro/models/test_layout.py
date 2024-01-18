@@ -5,6 +5,10 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
+import numpy as np
+from asserts import assert_component_equal
+from dash import html
+
 import vizro.models as vm
 from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
 
@@ -144,3 +148,40 @@ class TestWorkingGrid:
             vm.Layout(grid=grid)
         except ValidationError as ve:
             assert False, f"{grid} raised a value error {ve}."
+
+
+class TestSharedLayoutHelpers:
+    @pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
+    def test_get_unique_grid_component_ids(self, grid):
+        result = _get_unique_grid_component_ids(grid)
+        expected = np.array([0, 1, 2])
+
+        assert isinstance(result, np.ndarray)
+        assert (result == expected).all()
+
+    def test_set_layout_valid(self, model_with_layout):
+        model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+
+    def test_set_layout_invalid(self, model):
+        with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
+            model(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+
+
+class TestLayoutBuild:
+    def test_layout_build(self):
+        result = vm.Layout(grid=[[0, 1], [0, 2]]).build()
+        expected = html.Div(
+            [
+                html.Div(style={"gridColumn": "1/2", "gridRow": "1/3"}),
+                html.Div(style={"gridColumn": "2/3", "gridRow": "1/2"}),
+                html.Div(style={"gridColumn": "2/3", "gridRow": "2/3"}),
+            ],
+            style={
+                "gridRowGap": "12px",
+                "gridColumnGap": "12px",
+                "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
+                "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
+            },
+            className="grid-layout",
+        )
+        assert_component_equal(result, expected, keys_to_strip={})
