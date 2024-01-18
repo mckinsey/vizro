@@ -20,10 +20,18 @@ class PipelineManager:
         """
         self.llm = llm
 
-    def create_plot_pipeline(self):
-        """Create and return the plot pipeline."""
+    @property
+    def chart_type_pipeline(self):
+        """Target chart types pipeline."""
         pipeline = Pipeline(self.llm)
         pipeline.add(GetChartSelection, input_keys=["df", "chain_input"], output_key="chart_types")
+        # Add more components as needed
+        return pipeline
+
+    @property
+    def plot_pipeline(self):
+        """Plot pipeline."""
+        pipeline = Pipeline(self.llm)
         pipeline.add(GetDataFrameCraft, input_keys=["df", "chain_input"], output_key="df_code")
         pipeline.add(GetVisualCode, input_keys=["chain_input", "chart_types", "df_code"], output_key="chain_input")
         pipeline.add(GetCustomChart, input_keys=["chain_input"], output_key="custom_chart_code")

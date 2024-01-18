@@ -63,16 +63,13 @@ class VizroAI:
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
-        # target_chart = self._lazy_get_component(GetChartSelection).run(df=df, chain_input=user_input)
-        # df_code = self._lazy_get_component(GetDataFrameCraft).run(df=df, chain_input=user_input)
-        # visual_code = self._lazy_get_component(GetVisualCode).run(
-        #     chain_input=user_input, chart_types=target_chart, df_code=df_code
-        # )
-        # custom_chart_code = self._lazy_get_component(GetCustomChart).run(chain_input=visual_code)
         self.pipeline_manager.llm = self.llm_to_use
-        plot_pipeline = self.pipeline_manager.create_plot_pipeline()
-        # TODO here the run should take kwargs
-        custom_chart_code = plot_pipeline.run(chain_input=user_input, df=df)
+        chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
+        chart_types = chart_type_pipeline.run({"chain_input": user_input, "df": df})
+
+        # TODO update to loop through charts for multiple charts creation
+        plot_pipeline = self.pipeline_manager.plot_pipeline
+        custom_chart_code = plot_pipeline.run({"chain_input": user_input, "df": df, "chart_types": chart_types})
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
         fix_func = self._lazy_get_component(GetDebugger).run
