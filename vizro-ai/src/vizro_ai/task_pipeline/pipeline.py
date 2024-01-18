@@ -35,5 +35,5 @@ class Pipeline:
             # TODO consider extend to multiple output keys
             if output_key:
                 context[output_key] = output
-
+        # TODO think what format should be return, dictionary or tuple
         return output
