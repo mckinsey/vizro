@@ -27,9 +27,6 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.
-
-    Raises:
-        ValueError: If number of page and grid components is not the same
     """
 
     type: Literal["container"] = "container"
