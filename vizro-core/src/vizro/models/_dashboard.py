@@ -118,17 +118,19 @@ class Dashboard(VizroBaseModel):
             Output("dashboard_container_outer", "className"),
             Input("theme_selector", "checked"),
         )
-        clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
-            [
-                Output("collapsable-left-side", "is_open"),
-                Output("collapse-icon", "style"),
-                Output("collapse-tooltip", "label"),
-                Output("collapse-tooltip", "offset"),
-            ],
-            Input("collapse-icon", "n_clicks"),
-            State("collapsable-left-side", "is_open"),
-        )
+        left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
+        if left_side_div_present:
+            clientside_callback(
+                ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+                [
+                    Output("collapsable-left-side", "is_open"),
+                    Output("collapse-icon", "style"),
+                    Output("collapse-tooltip", "label"),
+                    Output("collapse-tooltip", "offset"),
+                ],
+                Input("collapse-icon", "n_clicks"),
+                State("collapsable-left-side", "is_open"),
+            )
 
         return html.Div(
             id="dashboard_container_outer",
@@ -216,7 +218,6 @@ class Dashboard(VizroBaseModel):
             id="collapsable-left-side",
             is_open=True,
             dimension="width",
-            navbar=True,
         )
 
         right_header = html.Div(right_header_divs, id="right-header")
