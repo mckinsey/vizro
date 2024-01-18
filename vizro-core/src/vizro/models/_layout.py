@@ -41,7 +41,6 @@ def set_layout(cls, layout, values):
         grid = [[i] for i in range(len(values["components"]))]
         return Layout(grid=grid)
 
-
     unique_grid_idx = _get_unique_grid_component_ids(layout.grid)
     if len(unique_grid_idx) != len(values["components"]):
         raise ValueError("Number of page and grid components need to be the same.")
@@ -49,7 +48,6 @@ def set_layout(cls, layout, values):
 
 
 # TODO: Insert layout only
-
 
 
 def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
@@ -133,7 +131,7 @@ def _validate_grid_areas(grid_areas: List[ColRowGridLines]) -> None:
 def _get_grid_lines(grid: List[List[int]]) -> Tuple[List[ColRowGridLines], List[ColRowGridLines]]:
     """Gets list of ColRowGridLines for components and spaces on screen for validation and placement."""
     component_grid_lines = []
-    unique_grid_idx = get_unique_grid_component_ids(grid)
+    unique_grid_idx = _get_unique_grid_component_ids(grid)
     for component_idx in unique_grid_idx:
         matrix = ma.masked_equal(grid, component_idx)
         component_grid_lines.append(_convert_to_combined_grid_coord(matrix))
@@ -170,7 +168,7 @@ class Layout(VizroBaseModel):
             raise ValueError("All rows must be of same length.")
 
         # Validate grid type and values
-        unique_grid_idx = get_unique_grid_component_ids(grid)
+        unique_grid_idx = _get_unique_grid_component_ids(grid)
         if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange((unique_grid_idx.max() + 1))):
             raise ValueError("Grid must contain consecutive integers starting from 0.")
 
@@ -190,6 +188,7 @@ class Layout(VizroBaseModel):
     # TODO: Insert components as args inside build
     # TODO: Insert components afterwards
     # TODO: Create build for Layout
+
 
 if __name__ == "__main__":
     print(repr(Layout(grid=[[0, 1], [0, 2]])))  # noqa: T201

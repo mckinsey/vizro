@@ -1,11 +1,7 @@
 import logging
 from functools import wraps
-from typing import List
 
-import numpy as np
 from dash import html
-
-from vizro._constants import EMPTY_SPACE_CONST
 
 logger = logging.getLogger(__name__)
 

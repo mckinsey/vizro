@@ -18,7 +18,8 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._models_utils import _log_call, set_layout
+from vizro.models._layout import set_layout
+from vizro.models._models_utils import _log_call
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
