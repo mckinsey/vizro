@@ -10,7 +10,7 @@ from asserts import assert_component_equal
 from dash import html
 
 import vizro.models as vm
-from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
+from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids, _place_components_in_grid
 
 
 class TestLayoutInstantiation:
@@ -185,3 +185,23 @@ class TestLayoutBuild:
             className="grid-layout",
         )
         assert_component_equal(result, expected, keys_to_strip={})
+
+
+def test_place_components_in_grid():
+    grid = vm.Layout(grid=[[0, 1], [0, 2]]).build()
+    result = _place_components_in_grid(grid=grid, components=[vm.Button(), vm.Button(), vm.Button()])
+    expected = html.Div(
+        [
+            html.Div(vm.Button().build(), style={"gridColumn": "1/2", "gridRow": "1/3"}),
+            html.Div(vm.Button().build(), style={"gridColumn": "2/3", "gridRow": "1/2"}),
+            html.Div(vm.Button().build(), style={"gridColumn": "2/3", "gridRow": "2/3"}),
+        ],
+        style={
+            "gridRowGap": "12px",
+            "gridColumnGap": "12px",
+            "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
+            "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
+        },
+        className="grid-layout",
+    )
+    assert_component_equal(result, expected, keys_to_strip={"id"})
