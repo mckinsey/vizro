@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal
 
+from dash import html
+
 try:
     from pydantic.v1 import validator
 except ImportError:  # pragma: no cov
@@ -55,5 +57,4 @@ class Form(VizroBaseModel):
         components_container = self.layout.build()
         for idx, component in enumerate(self.components):
             components_container.children[idx].children = component.build()
-        components_container.id = self.id
-        return components_container
+        return html.Div(components_container, id=self.id)
