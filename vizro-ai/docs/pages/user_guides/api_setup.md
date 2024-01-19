@@ -28,7 +28,7 @@ This file is searched for in the current directory and, if not found, the search
         ```
 #### Customizing the .env file location and name
 If you would like to customize the .env file location and name, you can set it manually.
-The default import of the .env file can be overridden by specifying the path and name.
+The default import of the `.env` file can be overridden by specifying the path and name.
 Here's how you can do it:
 ```py
 from dotenv import load_dotenv, find_dotenv
