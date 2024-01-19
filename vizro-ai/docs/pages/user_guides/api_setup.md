@@ -18,7 +18,7 @@ file. Then, you can load the API key from the `.env` file in your development en
 Avoid committing the `.env` file if you are using a version control system such as Git.
 You can add `.env` to your `.gitignore` file to avoid committing it.
 
-By default, when vizro-ai is imported, it automatically loads the `.env` file.
+By default, when `vizro-ai` is imported, it automatically loads the `.env` file.
 This file is searched for in the current directory and, if not found, the search continues upwards through the directory hierarchy.
 
 !!! example "API key setup and usage"
