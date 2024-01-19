@@ -86,33 +86,10 @@ class Page(VizroBaseModel):
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
 
-    def _get_page_actions_chains(self) -> List[ActionsChain]:
-        """Gets all ActionsChains present on the page."""
-        page_actions_chains = []
-
-        for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id))):
-            model = model_manager[model_id]
-            if hasattr(model, "actions"):
-                page_actions_chains.extend(model.actions)
-
-        for control in self.controls:
-            if hasattr(control, "selector") and control.selector:
-                page_actions_chains.extend(control.selector.actions)
-
-        return page_actions_chains
-
-    def _get_page_model_ids_with_figure(self) -> List[ModelID]:
-        """Gets all components from the page that have a 'figure' registered."""
-        return [
-            model_id
-            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
-            if hasattr(model_manager[model_id], "figure")
-        ]
-
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        targets = list(self._get_page_model_ids_with_figure())
+        targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
         if targets:
             self.actions = [
                 ActionsChain(
