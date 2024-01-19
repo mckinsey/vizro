@@ -421,6 +421,7 @@ pages:
               id: pop
               name: pop
               type: numeric
+          page_size: 30
           style_data_conditional:
             - backgroundColor: "#ff9222"
               if:
