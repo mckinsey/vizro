@@ -431,6 +431,7 @@ def create_benchmark_analysis():
                     id="dash_data_table_country",
                     data_frame=gapminder,
                     columns=columns,
+                    page_size=30,
                     style_data_conditional=[
                         {
                             "if": {"filter_query": "{gdpPercap} < 1045", "column_id": "gdpPercap"},

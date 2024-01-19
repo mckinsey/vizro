@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._layout import set_layout
+from vizro.models._layout import _place_components_in_grid, set_layout
 from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import ComponentType
 
@@ -40,9 +40,7 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_container = self.layout.build()
-        for idx, component in enumerate(self.components):
-            components_container.children[idx].children = component.build()
+        components_container = _place_components_in_grid(grid=self.layout.build(), components=self.components)
         return html.Div(
             children=[html.H3(self.title), components_container], className="page-component-container", id=self.id
         )

@@ -26,6 +26,13 @@ class ColRowGridLines(NamedTuple):
     row_end: int
 
 
+def _place_components_in_grid(grid, components):
+    """Places components inside pre-defined grid."""
+    for idx, component in enumerate(components):
+        grid.children[idx].children = component.build()
+    return grid
+
+
 def _get_unique_grid_component_ids(grid: List[List[int]]):
     unique_grid_idx = np.unique(grid)
     unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
