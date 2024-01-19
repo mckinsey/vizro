@@ -32,7 +32,7 @@ class Pipeline:
         """
         self.components.append((component_class, input_keys, output_key))
 
-    def run(self, initial_args: Dict[Any]):
+    def run(self, initial_args: Dict[str, Any]):
         """Execute the pipeline with the provided initial args.
 
         Args:
@@ -56,5 +56,5 @@ class Pipeline:
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+            self.components_instances[component_class] = component_class(llm=self.llm)
         return self.components_instances[component_class]

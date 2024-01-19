@@ -65,11 +65,13 @@ class VizroAI:
         """Task execution."""
         self.pipeline_manager.llm = self.llm_to_use
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
-        chart_types = chart_type_pipeline.run({"chain_input": user_input, "df": df})
+        chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
         # TODO update to loop through charts for multiple charts creation
         plot_pipeline = self.pipeline_manager.plot_pipeline
-        custom_chart_code = plot_pipeline.run({"chain_input": user_input, "df": df, "chart_types": chart_types})
+        custom_chart_code = plot_pipeline.run(
+            initial_args={"chain_input": user_input, "df": df, "chart_types": chart_types}
+        )
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
         fix_func = self._lazy_get_component(GetDebugger).run
