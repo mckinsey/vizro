@@ -2,24 +2,57 @@ from __future__ import annotations
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, List, Literal, Optional, cast
+from pathlib import Path
+from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
-from pydantic import Field, validator
+import dash_mantine_components as dmc
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
+
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
+
+from dash.development.base_component import Component
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models._navigation._navigation_utils import _NavBuildType
 
 if TYPE_CHECKING:
     from vizro.models import Page
+    from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
+
+
+def _all_hidden(components: List[Component]):
+    """Returns True if all components are either None and/or have hidden=True."""
+    return all(component is None or getattr(component, "hidden", False) for component in components)
+
+
+# This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
+# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
+# to see what contract the component fulfills by making the expected keys explicit.
+_PageDivsType = TypedDict(
+    "_PageDivsType",
+    {
+        "dashboard-title": html.Div,
+        "settings": html.Div,
+        "page-title": html.H2,
+        "nav-bar": html.Div,
+        "nav-panel": html.Div,
+        "control-panel": html.Div,
+        "page-components": html.Div,
+        "logo": html.Div,
+    },
+)
 
 
 class Dashboard(VizroBaseModel):
@@ -29,16 +62,16 @@ class Dashboard(VizroBaseModel):
         pages (List[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
-        navigation (Optional[Navigation]): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (Optional[str]): Dashboard title to appear on every page on top left-side. Defaults to `None`.
+        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
+        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
     """
 
     pages: List[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Optional[Navigation] = None
-    title: Optional[str] = Field(None, description="Dashboard title to appear on every page on top left-side.")
+    navigation: Navigation = None  # type: ignore[assignment]
+    title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     @validator("pages", always=True)
     def validate_pages(cls, pages):
@@ -47,23 +80,31 @@ class Dashboard(VizroBaseModel):
         return pages
 
     @validator("navigation", always=True)
-    def validate_navigation(cls, navigation, values):
+    def set_navigation_pages(cls, navigation, values):
         if "pages" not in values:
             return navigation
 
-        if navigation is None or not navigation.pages:
-            return Navigation(pages=[page.id for page in values["pages"]])
+        navigation = navigation or Navigation()
+        navigation.pages = navigation.pages or [page.id for page in values["pages"]]
         return navigation
 
     @_log_call
     def pre_build(self):
+        meta_image = self._infer_image("app") or self._infer_image("logo")
+
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         for order, page in enumerate(self.pages):
-            path = page.path if order else "/"
             dash.register_page(
-                module=page.id, name=page.title, path=path, order=order, layout=partial(self._make_page_layout, page)
+                module=page.id,
+                name=page.title,
+                description=page.description,
+                image=meta_image,
+                title=f"{self.title}: {page.title}" if self.title else page.title,
+                path=page.path if order else "/",
+                order=order,
+                layout=partial(self._make_page_layout, page),
             )
         dash.register_page(module=MODULE_PAGE_404, layout=self._make_page_404_layout())
 
@@ -75,48 +116,82 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
             Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
+            Input("theme_selector", "checked"),
         )
 
-        return dbc.Container(
+        return html.Div(
             id="dashboard_container_outer",
             children=[
-                html.Div(id=f"vizro_version_{vizro.__version__}"),
+                html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
             className=self.theme,
-            fluid=True,
         )
 
-    def _make_page_layout(self, page: Page):
+    def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
-            html.Div(children=[html.H2(self.title), html.Hr()], className="dashboard_title", id="dashboard_title_outer")
-            if self.title
-            else html.Div(hidden=True, id="dashboard_title_outer")
+            html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
-        theme_switch = daq.BooleanSwitch(id="theme_selector", on=self.theme == "vizro_dark", persistence=True)
+        settings = html.Div(
+            dmc.Switch(
+                id="theme_selector",
+                checked=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
+            ),
+            id="settings",
+        )
+        logo_img = self._infer_image(filename="logo")
+        path_to_logo = get_asset_url(logo_img) if logo_img else None
+        logo = html.Img(src=path_to_logo, id="logo", hidden=not path_to_logo)
 
-        # Shared across pages but slightly differ in content
-        page_title = html.H2(children=page.title, id="page_title")
-        navigation = cast(Navigation, self.navigation).build(active_page_id=page.id)
+        # Shared across pages but slightly differ in content. These could possibly be done by a clientside
+        # callback instead.
+        page_title = html.H2(page.title, id="page-title")
+        navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
+        nav_bar = navigation["nav-bar"]
+        nav_panel = navigation["nav-panel"]
 
         # Different across pages
-        page_content = page.build()
-        control_panel = page_content["control_panel_outer"]
-        component_container = page_content["component_container_outer"]
+        page_content: _PageBuildType = page.build()
+        control_panel = page_content["control-panel"]
+        components = page_content["page-components"]
+        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components, logo])
 
-        # Arrangement
-        header = html.Div(children=[page_title, theme_switch], className="header", id="header_outer")
-        left_side_elements = [dashboard_title, navigation, control_panel]
-        left_side = (
-            html.Div(children=left_side_elements, className="left_side", id="left_side_outer")
-            if any(left_side_elements)
-            else html.Div(hidden=True, id="left_side_outer")
-        )
-        right_side = html.Div(children=[header, component_container], className="right_side", id="right_side_outer")
-        return html.Div([left_side, right_side], className="page_container", id="page_container_outer")
+    def _arrange_page_divs(self, page_divs: _PageDivsType):
+        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        page_header_divs = [html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))]
+        left_sidebar_divs = [page_divs["nav-bar"]]
+        left_main_divs = [
+            page_divs["nav-panel"],
+            page_divs["control-panel"],
+        ]
+        right_header_divs = [page_divs["page-title"]]
+
+        # Apply different container position logic based on condition
+        if _all_hidden(page_header_divs):
+            right_header_divs.append(page_divs["settings"])
+        else:
+            page_header_divs.append(page_divs["settings"])
+
+        left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
+        left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
+        left_side = html.Div([left_sidebar, left_main], id="left-side")
+
+        right_header = html.Div(right_header_divs, id="right-header")
+        right_main = page_divs["page-components"]
+        right_side = html.Div([right_header, right_main], id="right-side")
+
+        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
+        page_main = html.Div([left_side, right_side], id="page-main")
+        return html.Div([page_header, page_main], id="page-container")
+
+    def _make_page_layout(self, page: Page):
+        page_divs = self._get_page_divs(page=page)
+        return self._arrange_page_divs(page_divs=page_divs)
 
     @staticmethod
     def _make_page_404_layout():
@@ -139,3 +214,12 @@ class Dashboard(VizroBaseModel):
             ],
             className="page_error_container",
         )
+
+    @staticmethod
+    def _infer_image(filename: str):
+        valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
+        assets_folder = Path(dash.get_app().config.assets_folder)
+        if assets_folder.is_dir():
+            for path in Path(assets_folder).rglob(f"{filename}.*"):
+                if path.suffix in valid_extensions:
+                    return str(path.relative_to(assets_folder))

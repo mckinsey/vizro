@@ -1,66 +1,121 @@
 """Unit tests for vizro.models.Accordion."""
-import json
+import re
 
-import plotly
+import dash_bootstrap_components as dbc
 import pytest
+from asserts import assert_component_equal
 from dash import html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._navigation._accordion import Accordion
+from vizro._constants import ACCORDION_DEFAULT_TITLE
+
+pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestAccordionInstantiation:
     """Tests accordion model instantiation."""
 
-    def test_accordion_valid_pages_as_list(self, pages_as_list):
-        accordion = Accordion(pages=pages_as_list, id="accordion_id")
-        assert accordion.id == "accordion_id"
-        assert accordion.pages == {"SELECT PAGE": pages_as_list}
+    def test_mandatory_only(self):
+        accordion = vm.Accordion()
 
-    def test_accordion_valid_pages_as_dict(self, pages_as_dict):
-        accordion = Accordion(pages=pages_as_dict, id="accordion_id")
-        assert accordion.id == "accordion_id"
+        assert hasattr(accordion, "id")
+        assert accordion.pages == {}
+
+    def test_mandatory_and_optional(self, pages_as_dict):
+        accordion = vm.Accordion(id="accordion", pages=pages_as_dict)
+        assert hasattr(accordion, "id")
         assert accordion.pages == pages_as_dict
 
-    def test_navigation_valid_pages_not_all_included(self):
-        accordion = Accordion(pages=["Page 1"], id="accordion_id")
-        assert accordion.id == "accordion_id"
-        assert accordion.pages == {"SELECT PAGE": ["Page 1"]}
+    def test_valid_pages_as_list(self, pages_as_list):
+        accordion = vm.Accordion(pages=pages_as_list)
+        assert accordion.pages == {ACCORDION_DEFAULT_TITLE: pages_as_list}
 
-    def test_invalid_field_pages_required(self):
-        with pytest.raises(ValidationError, match="field required"):
-            Accordion()
-
-    @pytest.mark.parametrize("pages", [{"SELECT PAGE": []}, []])
+    @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
-            Accordion(pages=pages)
+            vm.Accordion(pages=pages)
 
     def test_invalid_field_pages_wrong_input_type(self):
         with pytest.raises(ValidationError, match="str type expected"):
-            Accordion(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
+            vm.Accordion(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
+
+    @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
+    def test_invalid_page(self, pages):
+        with pytest.raises(
+            ValidationError, match=re.escape("Unknown page ID ['non existent page'] provided to argument 'pages'.")
+        ):
+            vm.Accordion(pages=pages)
 
 
-@pytest.mark.usefixtures("vizro_app", "dashboard_prebuild")
 class TestAccordionBuild:
     """Tests accordion build method."""
 
-    def test_accordion_build_pages_as_list(self, pages_as_list, accordion_from_page_as_list):
-        accordion = Accordion(pages=pages_as_list, id="accordion_list").build(active_page_id="Page 1")
-        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_page_as_list, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+    common_args = {"always_open": True, "persistence": True, "persistence_type": "session", "id": "accordion"}
 
-    def test_accordion_build_pages_as_dict(self, pages_as_dict, accordion_from_pages_as_dict):
-        accordion = Accordion(pages=pages_as_dict, id="accordion_dict").build(active_page_id="Page 1")
-        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(accordion_from_pages_as_dict, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+    test_cases = [
+        (
+            {"Group": ["Page 1", "Page 2"]},
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
+                            dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
+                        ],
+                        title="GROUP",
+                    )
+                ],
+                **common_args,
+            ),
+        ),
+        (
+            {"Group 1": ["Page 1"], "Group 2": ["Page 2"]},
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
+                        ],
+                        title="GROUP 1",
+                    ),
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
+                        ],
+                        title="GROUP 2",
+                    ),
+                ],
+                **common_args,
+            ),
+        ),
+        (
+            ["Page 1", "Page 2"],
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
+                            dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
+                        ],
+                        title=ACCORDION_DEFAULT_TITLE,
+                    ),
+                ],
+                **common_args,
+            ),
+        ),
+    ]
 
-    def test_single_page_and_hidden_div(self):
-        accordion = Accordion(pages=["Page 1"]).build()
-        result = json.loads(json.dumps(accordion, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(html.Div(hidden=True), cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+    @pytest.mark.parametrize("pages, expected", test_cases)
+    def test_accordion(self, pages, expected):
+        accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
+        assert_component_equal(accordion, html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
+
+    def test_accordion_one_page(self):
+        accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")
+        assert_component_equal(accordion, html.Div(hidden=True, id="nav-panel"))

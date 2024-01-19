@@ -1,6 +1,9 @@
 from typing import List, Literal
 
-from pydantic import Field, validator
+try:
+    from pydantic.v1 import Field, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
@@ -77,7 +80,6 @@ class Parameter(VizroBaseModel):
         return self.selector.build()
 
     def _set_slider_values(self):
-        self.selector: SelectorType
         if isinstance(self.selector, (Slider, RangeSlider)):
             if self.selector.min is None or self.selector.max is None:
                 raise TypeError(
@@ -85,17 +87,14 @@ class Parameter(VizroBaseModel):
                 )
 
     def _set_categorical_selectors_options(self):
-        self.selector: SelectorType
         if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
 
     def _set_selector(self):
-        self.selector: SelectorType
         if not self.selector.title:
             self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
 
     def _set_actions(self):
-        self.selector: SelectorType
         if not self.selector.actions:
             self.selector.actions = [
                 Action(

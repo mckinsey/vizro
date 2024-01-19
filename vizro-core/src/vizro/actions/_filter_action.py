@@ -18,7 +18,7 @@ def _filter(
     targets: List[ModelID],
     filter_function: Callable[[pd.Series, Any], pd.Series],
     **inputs: Dict[str, Any],
-) -> Dict[ModelID, Any]:
+) -> Dict[str, Any]:
     """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:
@@ -33,7 +33,7 @@ def _filter(
     """
     return _get_modified_page_figures(
         targets=targets,
-        ctds_filter=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["parameters"],
+        ctds_filter=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )

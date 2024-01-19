@@ -4,7 +4,11 @@ import json
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
@@ -21,6 +25,7 @@ def expected_checklist():
                 value=["ALL"],
                 className="selector_body_checklist",
                 persistence=True,
+                persistence_type="session",
             ),
         ],
         className="selector_container",
@@ -38,7 +43,7 @@ class TestChecklistInstantiation:
         assert checklist.type == "checklist"
         assert checklist.options == []
         assert checklist.value is None
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     def test_create_checklist_mandatory_and_optional(self):
@@ -80,7 +85,7 @@ class TestChecklistInstantiation:
         assert checklist.type == "checklist"
         assert checklist.options == expected
         assert checklist.value is None
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
@@ -112,7 +117,7 @@ class TestChecklistInstantiation:
         assert hasattr(checklist, "id")
         assert checklist.type == "checklist"
         assert checklist.value == test_value
-        assert checklist.title is None
+        assert checklist.title == ""
         assert checklist.actions == []
 
     @pytest.mark.parametrize(
@@ -134,8 +139,8 @@ class TestChecklistInstantiation:
         with pytest.raises(ValidationError, match="value is not a valid list"):
             Checklist(value="A", options=["A", "B", "C"])
 
-    def test_set_action_via_validator(self, test_action_function):
-        checklist = Checklist(actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, identity_action_function):
+        checklist = Checklist(actions=[Action(function=identity_action_function())])
         actions_chain = checklist.actions[0]
         assert actions_chain.trigger.component_property == "value"
 

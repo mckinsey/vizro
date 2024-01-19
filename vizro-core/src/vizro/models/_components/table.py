@@ -1,9 +1,13 @@
 import logging
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 from dash import dash_table, dcc, html
 from pandas import DataFrame
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
 from vizro.managers import data_manager
@@ -23,13 +27,13 @@ class Table(VizroBaseModel):
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Table like object to be displayed. Current choices include:
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
-        title (str): Title of the table. Defaults to `None`.
+        title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
-    title: Optional[str] = Field(None, description="Title of the table")
+    title: str = Field("", description="Title of the table")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -38,12 +42,12 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    set_actions = _action_validator_factory("active_cell")  # type: ignore[pydantic-field]
+    set_actions = _action_validator_factory("active_cell")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))  # type: ignore[arg-type]
+        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
         return self.figure(**kwargs)
 
     # Convenience wrapper/syntactic sugar.
@@ -77,7 +81,7 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             html.Div(
                 [
-                    html.H3(self.title, className="table-title") if self.title else html.Div(hidden=True),
+                    html.H3(self.title, className="table-title") if self.title else None,
                     html.Div(
                         dash_table.DataTable(**({"id": self._callable_object_id} if self.actions else {})), id=self.id
                     ),

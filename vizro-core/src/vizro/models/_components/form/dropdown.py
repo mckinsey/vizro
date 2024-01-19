@@ -1,7 +1,11 @@
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
-from pydantic import Field, PrivateAttr, root_validator, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -20,15 +24,15 @@ class Dropdown(VizroBaseModel):
             [`SingleValueType`][vizro.models.types.SingleValueType] and
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
     type: Literal["dropdown"] = "dropdown"
-    options: OptionsType = []  # type: ignore[assignment]
+    options: OptionsType = []
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
-    title: Optional[str] = Field(None, description="Title to be displayed")
+    title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -53,13 +57,14 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
         return html.Div(
             [
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
+                    persistence_type="session",
                     className="selector_body_dropdown",
                 ),
             ],

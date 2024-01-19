@@ -2,7 +2,11 @@ import re
 
 import pandas as pd
 import pytest
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -71,7 +75,7 @@ class TestPageInstantiation:
             ("2147abc", "/2147abc"),
             ("this_path_works", "/this_path_works"),
             ("this/path/works", "/this/path/works"),
-            (None, "/page-12"),
+            ("", "/page-12"),
         ],
     )
     def test_set_path_valid(self, test_path, expected):
@@ -148,10 +152,3 @@ class TestPagePreBuildMethod:
 
 
 # TODO: Add unit tests for private methods in page build
-@pytest.mark.usefixtures("vizro_app")
-def test_page_build_left_side_removed(standard_px_chart):
-    page = vm.Page(title="Single Page", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
-    dashboard = vm.Dashboard(pages=[page])
-    dashboard.pre_build()
-    dashboard.navigation.pre_build()
-    assert "className='left_side'" not in str(page.build())

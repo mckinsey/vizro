@@ -5,7 +5,11 @@ import dash_bootstrap_components as dbc
 import plotly
 import pytest
 from dash import dcc, html
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -33,7 +37,7 @@ class TestCardInstantiation:
         assert hasattr(card, "id")
         assert card.type == "card"
         assert card.text == "Text to test card"
-        assert card.href is None
+        assert card.href == ""
 
     @pytest.mark.parametrize("id, href", [("id_1", "/page_1_reference"), ("id_2", "https://www.google.de/")])
     def test_create_card_mandatory_and_optional(self, id, href):

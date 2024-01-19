@@ -1,4 +1,4 @@
-name: lint-vizro-all
+name: Lint
 
 defaults:
   run:
@@ -9,35 +9,29 @@ on:
     branches: [main]
   pull_request:
     branches:
-      - "main"
-
-concurrency:
-  group: lint-${{ github.head_ref }}
+      - main
 
 env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.11"
 
 jobs:
-  run:
-    name: Python ${{ matrix.python-version }} on Linux
+  lint-vizro-all:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8"]
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
         run: pip install --upgrade hatch
 
       - name: Lint
-        run: hatch run lint:lint
+        run: hatch run lint

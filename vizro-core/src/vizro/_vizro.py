@@ -22,7 +22,10 @@ class Vizro:
             kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
         """
-        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="")
+        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
+        self.dash.config.external_stylesheets.append(
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
@@ -58,6 +61,10 @@ class Vizro:
         Returns:
             Vizro: App object
         """
+        # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
+        if dashboard.title:
+            self.dash.title = dashboard.title
+
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 

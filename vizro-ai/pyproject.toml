@@ -10,13 +10,14 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11"
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
   "pandas",
   "tabulate",
   "openai>=0.27.8,<1.0.0",  # TODO add support for openai>=1.0.0
-  "langchain==0.0.325",
+  "langchain==0.0.329",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.4",  # TODO set upper bound later
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
@@ -46,3 +47,10 @@ skip_covered = true
 branch = true
 parallel = true
 source_pkgs = ["vizro_ai"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+  # Ignore this warning here as it comes from pandas until pandas is made compatible with Python 3.12
+  'ignore:.*utcfromtimestamp.*:DeprecationWarning'
+]

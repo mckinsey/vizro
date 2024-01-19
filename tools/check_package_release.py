@@ -34,21 +34,26 @@ def _check_no_dev_version(package_name, package_version):
 
 
 if __name__ == "__main__":
+    package_name = "dummy_package"
+    package_version = "0.0.0"
     new_release = False
-    number_of_releases = False
     env_file = str(os.getenv("GITHUB_ENV"))
 
-    for package_name in AVAILABLE_PACKAGES:
-        package_version = subprocess.check_output(["hatch", "version"], cwd=f"{package_name}").decode("utf-8").strip()
+    for attempted_package_name in AVAILABLE_PACKAGES:
+        attempted_package_version = (
+            subprocess.check_output(["hatch", "version"], cwd=f"{attempted_package_name}").decode("utf-8").strip()
+        )
 
-        if _check_no_dev_version(package_name, package_version) and _check_no_version_pypi(
-            package_name, package_version
+        if _check_no_dev_version(attempted_package_name, attempted_package_version) and _check_no_version_pypi(
+            attempted_package_name, attempted_package_version
         ):
             if new_release:
                 sys.exit("Cannot release two packages at the same time. Please modify your PR.")
             new_release = True
+            package_name = attempted_package_name
+            package_version = attempted_package_version
 
-        with open(env_file, "a") as f:
-            f.write(f"NEW_RELEASE={str(new_release)}\n")
-            if new_release:
-                f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")
+    with open(env_file, "a") as f:
+        f.write(f"NEW_RELEASE={new_release!s}\n")
+        if new_release:
+            f.write(f"PACKAGE_NAME={package_name}\nPACKAGE_VERSION={package_version}\n")

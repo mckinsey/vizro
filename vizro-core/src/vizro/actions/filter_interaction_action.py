@@ -15,7 +15,7 @@ from vizro.models.types import capture
 def filter_interaction(
     targets: Optional[List[ModelID]] = None,
     **inputs: Dict[str, Any],
-) -> Dict[ModelID, Any]:
+) -> Dict[str, Any]:
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
@@ -25,7 +25,7 @@ def filter_interaction(
 
     Args:
         targets: List of target component ids to filter by chart interaction. If missing, will target all valid
-            components on page. Defaults to None.
+            components on page. Defaults to `None`.
         inputs: Dict mapping action function names with their inputs e.g.
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
@@ -34,7 +34,7 @@ def filter_interaction(
     """
     return _get_modified_page_figures(
         targets=targets,
-        ctds_filter=ctx.args_grouping["filters"],
-        ctds_filter_interaction=ctx.args_grouping["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["parameters"],
+        ctds_filter=ctx.args_grouping["external"]["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )

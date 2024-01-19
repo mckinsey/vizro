@@ -7,7 +7,11 @@ import pytest
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-from pydantic import ValidationError
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -106,23 +110,25 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
     def test_update_theme_inside_callback(self, standard_px_chart, template):
-        mock_callback_context = {
+        mock_ctx = {
             "args_grouping": {
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="on",
-                    value=template == "vizro_dark",
-                    str_id="theme_selector",
-                    triggered=False,
-                )
+                "external": {
+                    "theme_selector": CallbackTriggerDict(
+                        id="theme_selector",
+                        property="checked",
+                        value=template == "vizro_light",
+                        str_id="theme_selector",
+                        triggered=False,
+                    )
+                }
             }
         }
-        context_value.set(AttributeDict(**mock_callback_context))
+        context_value.set(AttributeDict(**mock_ctx))
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
 
-    def test_set_action_via_validator(self, standard_px_chart, test_action_function):
-        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=test_action_function)])
+    def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
+        graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
         actions_chain = graph.actions[0]
         assert actions_chain.trigger.component_property == "clickData"
 

@@ -68,7 +68,7 @@ def trigger_to_actions_chain_mapper_component(request):
 
 
 @pytest.fixture
-def managers_one_page_two_components_two_controls(dash_data_table_with_id):
+def managers_one_page_two_components_two_controls(vizro_app, dash_data_table_with_id):
     """Instantiates managers with one page that contains two controls and two components."""
     vm.Dashboard(
         pages=[
@@ -116,7 +116,7 @@ def managers_one_page_two_components_two_controls(dash_data_table_with_id):
 
 
 @pytest.fixture
-def managers_one_page_no_actions():
+def managers_one_page_no_actions(vizro_app):
     """Instantiates managers with one "empty" page."""
     vm.Dashboard(
         pages=[
@@ -134,7 +134,7 @@ def managers_one_page_no_actions():
 class TestGetActionLoopComponents:
     """Tests getting required components for the action loop."""
 
-    @pytest.mark.usefixtures("vizro_app", "managers_one_page_no_actions")
+    @pytest.mark.usefixtures("managers_one_page_no_actions")
     def test_no_components(self):
         result = _get_action_loop_components()
         result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
@@ -143,7 +143,7 @@ class TestGetActionLoopComponents:
 
         assert result == expected
 
-    @pytest.mark.usefixtures("vizro_app", "managers_one_page_two_components_two_controls")
+    @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
     @pytest.mark.parametrize(
         "gateway_components, "
         "action_trigger_components, "

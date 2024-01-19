@@ -36,13 +36,21 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 ## Examples
 
-Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `from_dict` example, execute:
+Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `features/yaml_version` example, execute:
 
 ```console
-hatch run example from_dict
+hatch run example features/yaml_version
 ```
 
-If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/default/app.py) is used.
+If no example is specified (`hatch run example`) then the [`_dev` example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
+
+## Documentation
+
+If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
+
+```console
+hatch run docs:serve
+```
 
 ## Debugging tips
 
@@ -79,7 +87,7 @@ To run tests against a particular Python version, specify the particular Hatch e
 hatch run all.py3.10:test -vv
 ```
 
-The script executed by `hatch run cov` measures test coverage and generates a report.
+The script executed by `hatch run test-unit-coverage` measures test coverage and generates a report.
 
 To run jest unit tests for javascript functions, run `hatch run test-js`.
 Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
@@ -111,18 +119,20 @@ target-version = ["py37"]
 line-length = 120
 ```
 
-Linting checks are enforced in CI. To run pre-commit hooks locally, there are two options:
+We use [`pre-commit ci`](https://pre-commit.ci/) to automatically fix all the linting checks that we can (e.g. `black` formatting) when a PR is pushed. Other linting failures (e.g. `mypy`) need manual intervention from the developer.
+
+To run pre-commit hooks locally, there are two options:
 
 1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, please read below for an explanation and how to install `go`.
 2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run e.g. `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
 
-Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`.
+Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`. Once per month, `pre-commit ci` raises a PR to do so.
 
 ## Secret scans
 
 We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We do this via `pre-commit`, however there are a few things to note:
 
-1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained [here](https://go.dev/doc/install).
+1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained in the [Go documentation](https://go.dev/doc/install).
 2. For that reason `hatch run lint` skips the secret scans, to function on all machines.
 3. To run a secret-scan, simply run `hatch run secrets`.
 4. Secret scans will run on CI, but it is highly recommended to check for secrets **before pushing to the remote repository** and ideally also before even committing.

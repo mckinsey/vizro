@@ -43,7 +43,7 @@ setting some defaults for some of the arguments to help with styling.
         page = vm.Page(
             title="Example of a Dash DataTable",
             components=[
-                vm.Table(id="table", title="Dash DataTable", figure=dash_data_table(data_frame=df)),
+                vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
             controls=[vm.Filter(column="continent")],
         )
@@ -54,14 +54,13 @@ setting some defaults for some of the arguments to help with styling.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
           - figure:
               _target_: dash_data_table
               data_frame: gapminder_2007
             title: Dash DataTable
-            id: table
             type: table
           controls:
             - column: continent
@@ -125,7 +124,6 @@ an example of a styled table where some conditional formatting is applied. There
             title="Example of a styled Dash DataTable",
             components=[
                 vm.Table(
-                    id="table",
                     title="Styled table",
                     figure=dash_data_table(
                         data_frame=df,
@@ -146,7 +144,7 @@ an example of a styled table where some conditional formatting is applied. There
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -196,7 +194,6 @@ an example of a styled table where some conditional formatting is applied. There
                         state: active
                       backgroundColor: rgba(0, 116, 217, 0.3)
                       border: 1px solid rgb(0, 116, 217)
-                id: table
                 type: table
             controls:
               - column: continent
@@ -209,79 +206,4 @@ an example of a styled table where some conditional formatting is applied. There
 
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
-#### Custom Table
-
-In case you want to add custom logic to a Dash DataTable, e.g. when requiring computations that can be controlled by parameters, it is possible to
-create a custom Dash DataTable in Vizro.
-
-For this, similar to how one would create a [custom chart](../user_guides/custom_charts.md), simply do the following:
-
-- define a function that returns a  `dash_table.DataTable` object
-- decorate it with the `@capture("table")` decorator
-- the function must accept a `data_frame` argument (of type `pandas.DataFrame`)
-- the table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
-
-
-The following example shows a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
-
-??? example "Custom Dash DataTable"
-    === "app.py"
-        ```py
-        from typing import List
-
-        from dash import dash_table
-
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.models.types import capture
-
-        df = px.data.gapminder().query("year == 2007")
-
-
-        @capture("table")
-        def my_custom_table(data_frame=None, chosen_columns: List[str] = None):
-            """Custom table."""
-            columns = [{"name": i, "id": i} for i in chosen_columns]
-            defaults = {
-                "style_as_list_view": True,
-                "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
-                "style_header": {
-                    "border_bottom": "1px solid var(--state-overlays-selected-hover)",
-                    "border_top": "1px solid var(--main-container-bg-color)",
-                    "height": "32px",
-                },
-            }
-            return dash_table.DataTable(data=data_frame.to_dict("records"), columns=columns, **defaults)
-
-
-        page = vm.Page(
-            title="Example of a custom Dash DataTable",
-            components=[
-                vm.Table(
-                    id="custom_table",
-                    title="Custom Dash DataTable",
-                    figure=my_custom_table(
-                        data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
-                    ),
-                ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["custom_table.chosen_columns"],
-                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list(), multi=True),
-                )
-            ],
-        )
-        dashboard = vm.Dashboard(pages=[page])
-
-        Vizro().build(dashboard).run()
-        ```
-    === "app.yaml"
-        ```yaml
-        # Custom tables are currently only possible via python configuration
-        ```
-    === "Result"
-        [![Table3]][Table3]
-
-    [Table3]: ../../assets/user_guides/table/custom_table.png
+To enhance existing tables, please see our How-to-guide on creating [custom tables](custom_tables.md).

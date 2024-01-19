@@ -20,7 +20,7 @@ ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]
 
 
 class CallbackTriggerDict(TypedDict):
-    """Represent dash.callback_context.args_grouping item. Shortened as 'ctd' in the code.
+    """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
     Args:
         id: The component ID. If it`s a pattern matching ID, it will be a dict.
@@ -57,7 +57,11 @@ def _apply_filters(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if target not in action.function["targets"] or ALL_OPTION in selector_value:
+            if (
+                action.function._function.__name__ != "_filter"
+                or target not in action.function["targets"]
+                or ALL_OPTION in selector_value
+            ):
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -78,14 +82,14 @@ def _apply_graph_filter_interaction(
     source_graph_id: ModelID = ctd_click_data["id"]
     source_graph_actions = _get_component_actions(model_manager[source_graph_id])
     try:
-        custom_data_columns = model_manager[source_graph_id]["custom_data"]  # type: ignore[index]
+        custom_data_columns = model_manager[source_graph_id]["custom_data"]
     except KeyError as exc:
         raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
 
     customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
     for action in source_graph_actions:
-        if target not in action.function["targets"]:
+        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
             continue
         for custom_data_idx, column in enumerate(custom_data_columns):
             data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
@@ -119,7 +123,7 @@ def _apply_table_filter_interaction(
     source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
 
     for action in source_table_actions:
-        if target not in action.function["targets"]:
+        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
             continue
         column = ctd_active_cell["value"]["column_id"]
         derived_viewport_data_row = ctd_active_cell["value"]["row"]
@@ -156,7 +160,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item, return-value]
+        return [i for i in value if i != NONE_OPTION] or [None]
     return value
 
 
@@ -170,11 +174,15 @@ def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, Li
     return results
 
 
-def _update_nested_graph_properties(graph_config: Dict[str, Any], dot_separated_string: str, value: Any):
+def _update_nested_graph_properties(
+    graph_config: Dict[str, Any], dot_separated_string: str, value: Any
+) -> Dict[str, Any]:
     keys = dot_separated_string.split(".")
     current_property = graph_config
+
     for key in keys[:-1]:
-        current_property = current_property[key]
+        current_property = current_property.setdefault(key, {})
+
     current_property[keys[-1]] = value
     return graph_config
 
@@ -186,7 +194,7 @@ def _get_parametrized_config(
     for target in targets:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
-        graph_config = deepcopy(model_manager[target].figure._arguments)  # type: ignore[attr-defined]
+        graph_config = deepcopy(model_manager[target].figure._arguments)
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
@@ -203,7 +211,7 @@ def _get_parametrized_config(
             for action in selector_actions:
                 action_targets = _create_target_arg_mapping(action.function["targets"])
 
-                if target not in action_targets:
+                if action.function._function.__name__ != "_parameter" or target not in action_targets:
                     continue
 
                 for action_targets_arg in action_targets[target]:
@@ -247,7 +255,7 @@ def _get_modified_page_figures(
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
     ctds_parameters: List[CallbackTriggerDict],
     targets: Optional[List[ModelID]] = None,
-) -> Dict[ModelID, Any]:
+) -> Dict[str, Any]:
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
@@ -261,10 +269,8 @@ def _get_modified_page_figures(
         parameters=ctds_parameters,
     )
 
-    outputs = {}
+    outputs: Dict[str, Any] = {}
     for target in targets:
-        outputs[target] = model_manager[target](  # type: ignore[operator]
-            data_frame=filtered_data[target], **parameterized_config[target]
-        )
+        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
 
     return outputs

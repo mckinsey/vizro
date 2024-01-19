@@ -1,7 +1,11 @@
-from typing import Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, validator
+
+try:
+    from pydantic.v1 import Field, PrivateAttr, validator
+except ImportError:  # pragma: no cov
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -26,9 +30,9 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.
+        marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
-        title (Optional[str]): Title to be displayed. Defaults to `None`.
+        title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
     """
 
@@ -36,9 +40,9 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
+    marks: Optional[Dict[int, Union[str, Dict[str, Any]]]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
-    title: Optional[str] = Field(None, description="Title to be displayed.")
+    title: str = Field("", description="Title to be displayed.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -53,15 +57,17 @@ class Slider(VizroBaseModel):
 
     @_log_call
     def build(self):
+        init_value = self.value or self.min
+
         output = [
             Output(f"{self.id}_text_value", "value"),
             Output(self.id, "value"),
-            Output(f"{self.id}_temp_store", "data"),
+            Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
             Input(f"{self.id}_text_value", "value"),
             Input(self.id, "value"),
-            State(f"{self.id}_temp_store", "data"),
+            State(f"{self.id}_input_store", "data"),
             State(f"{self.id}_callback_data", "data"),
         ]
 
@@ -81,7 +87,7 @@ class Slider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else html.Div(hidden=True),
+                html.P(self.title) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(
@@ -90,9 +96,10 @@ class Slider(VizroBaseModel):
                             max=self.max,
                             step=self.step,
                             marks=self.marks,
-                            value=self.value or self.min,
+                            value=init_value,
                             included=False,
                             persistence=True,
+                            persistence_type="session",
                             className="slider_control" if self.step else "slider_control_no_space",
                         ),
                         dcc.Input(
@@ -102,11 +109,12 @@ class Slider(VizroBaseModel):
                             min=self.min,
                             max=self.max,
                             step=self.step,
-                            value=self.value or self.min,
+                            value=init_value,
                             persistence=True,
+                            persistence_type="session",
                             className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
                         ),
-                        dcc.Store(id=f"{self.id}_temp_store", storage_type="local"),
+                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                     ],
                     className="slider_inner_container",
                 ),

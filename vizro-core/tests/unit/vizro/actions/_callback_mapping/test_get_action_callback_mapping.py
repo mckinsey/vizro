@@ -127,7 +127,7 @@ def action_callback_inputs_expected():
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
             },
         ],
-        "theme_selector": dash.State("theme_selector", "on"),
+        "theme_selector": dash.State("theme_selector", "checked"),
     }
 
 
@@ -163,8 +163,8 @@ def export_data_inputs_expected():
 @pytest.fixture
 def export_data_outputs_expected(request):
     return {
-        f"download-dataframe_{target}": dash.Output(
-            {"action_id": "export_data_action", "target_id": target, "type": "download-dataframe"}, "data"
+        f"download_dataframe_{target}": dash.Output(
+            {"action_id": "export_data_action", "target_id": target, "type": "download_dataframe"}, "data"
         )
         for target in request.param
     }
@@ -173,7 +173,7 @@ def export_data_outputs_expected(request):
 @pytest.fixture
 def export_data_components_expected(request):
     return [
-        dash.dcc.Download(id={"type": "download-dataframe", "action_id": "export_data_action", "target_id": target})
+        dash.dcc.Download(id={"type": "download_dataframe", "action_id": "export_data_action", "target_id": target})
         for target in request.param
     ]
 

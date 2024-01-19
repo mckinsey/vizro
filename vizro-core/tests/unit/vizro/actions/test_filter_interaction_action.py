@@ -12,8 +12,8 @@ from vizro.managers import model_manager
 
 
 @pytest.fixture
-def callback_context_filter_interaction(request):
-    """Mock dash.callback_context that represents a click on a continent data-point and table selected cell."""
+def ctx_filter_interaction(request):
+    """Mock dash.ctx that represents a click on a continent data-point and table selected cell."""
     continent_filter_interaction, country_table_filter_interaction = request.param
 
     args_grouping_filter_interaction = []
@@ -66,21 +66,23 @@ def callback_context_filter_interaction(request):
             }
         )
 
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
-            "filters": [],
-            "filter_interaction": args_grouping_filter_interaction,
-            "parameters": [],
-            "theme_selector": CallbackTriggerDict(
-                id="theme_selector",
-                property="on",
-                value=True,
-                str_id="theme_selector",
-                triggered=False,
-            ),
+            "external": {
+                "filters": [],
+                "filter_interaction": args_grouping_filter_interaction,
+                "parameters": [],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="checked",
+                    value=False,
+                    str_id="theme_selector",
+                    triggered=False,
+                ),
+            }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
@@ -112,22 +114,23 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
 class TestFilterInteraction:
-    @pytest.mark.parametrize("callback_context_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
+    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [vm.Action(id="test_action", function=filter_interaction())]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {}
 
-        assert result == {}
+        assert result == expected
 
     @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction," "target_scatter_filtered_continent," "target_box_filtered_continent",
+        "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
             (("Africa", None), ("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None), ("Europe", None)),
@@ -137,7 +140,7 @@ class TestFilterInteraction:
     )
     def test_filter_interaction_without_targets_desired_behavior(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -146,12 +149,15 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction,target_scatter_filtered_continent",
+        "ctx_filter_interaction,target_scatter_filtered_continent",
         [
             (("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None)),
@@ -161,7 +167,7 @@ class TestFilterInteraction:
     )
     def test_filter_interaction_with_one_target(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
     ):
         # Add action to relevant component - here component[0] is the source_chart
@@ -171,11 +177,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
+        assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
+        "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
             (("Africa", None), ("Africa", None), ("Africa", None)),
             (("Europe", None), ("Europe", None), ("Europe", None)),
@@ -185,7 +194,7 @@ class TestFilterInteraction:
     )
     def test_filter_interaction_with_two_target(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -196,17 +205,20 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result == expected
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
-    @pytest.mark.parametrize("callback_context_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
+    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
     def test_filter_interaction_with_invalid_targets(
         self,
         target,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
     ):
         with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
@@ -215,7 +227,7 @@ class TestFilterInteraction:
             ]
 
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction,target_scatter_filtered_continent",
+        "ctx_filter_interaction,target_scatter_filtered_continent",
         [
             ((None, "Algeria"), (None, "Algeria")),
             ((None, "Albania"), (None, "Albania")),
@@ -225,7 +237,7 @@ class TestFilterInteraction:
     )
     def test_table_filter_interaction_with_one_target(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
     ):
         model_manager["box_chart"].actions = [
@@ -237,11 +249,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
+        assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
+        "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
         [
             ((None, "Algeria"), (None, "Algeria"), (None, "Algeria")),
             ((None, "Albania"), (None, "Albania"), (None, "Albania")),
@@ -251,7 +266,7 @@ class TestFilterInteraction:
     )
     def test_table_filter_interaction_with_two_targets(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -266,12 +281,15 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result == expected
 
     @pytest.mark.parametrize(
-        "callback_context_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
+        "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
         [
             (("Africa", "Algeria"), ("Africa", "Algeria"), ("Africa", "Algeria")),
             (("Europe", "Albania"), ("Europe", "Albania"), ("Europe", "Albania")),
@@ -281,7 +299,7 @@ class TestFilterInteraction:
     )
     def test_mixed_chart_and_table_filter_interaction_with_two_targets(
         self,
-        callback_context_filter_interaction,
+        ctx_filter_interaction,
         target_scatter_filtered_continent,
         target_box_filtered_continent,
     ):
@@ -296,9 +314,12 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
+        expected = {
+            "scatter_chart": target_scatter_filtered_continent,
+            "box_chart": target_box_filtered_continent,
+        }
 
-        assert result["scatter_chart"] == target_scatter_filtered_continent
-        assert result["box_chart"] == target_box_filtered_continent
+        assert result == expected
 
     # TODO: Simplify parametrization, such that we have less repetitive code
     # TODO: Eliminate above xfails

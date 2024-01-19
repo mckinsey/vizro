@@ -14,6 +14,7 @@
 
 ## Previous team members and code contributors
 
+[Ann Marie Ward](https://github.com/AnnMarieW),
 [Ned Letcher](https://github.com/ned2),
 Natalia Kurakina,
 [Leon Nallamuthu](https://github.com/leonnallamuthu),
