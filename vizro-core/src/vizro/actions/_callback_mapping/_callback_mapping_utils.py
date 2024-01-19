@@ -128,7 +128,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     }
 
 
-def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, List[State]]:
+def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Gets mapping of relevant output target name and `Outputs` for `export_data` action."""
     action = model_manager[action_id]
 

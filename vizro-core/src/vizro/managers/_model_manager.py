@@ -56,7 +56,7 @@ class ModelManager:
                 yield model_id, cast(Model, self[model_id])
 
     # TODO: Consider returning with yield
-    # TODO: Make collection of model ids to be Set[ModelID].
+    # TODO: Make collection of model ids (throughout this file) to be Set[ModelID].
     def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[List[ModelID]] = None) -> List[ModelID]:
         if all_model_ids is None:
             all_model_ids = []
@@ -91,6 +91,7 @@ class ModelManager:
             if model_id in page_model_ids:
                 return cast(ModelID, page.id)
 
+    # TODO: Increase the genericity of this method
     def _get_page_actions_chains(self, page_id: ModelID) -> List[ActionsChain]:
         """Gets all ActionsChains present on the page."""
         page = self[page_id]
@@ -121,6 +122,7 @@ class ModelManager:
         return [
             model_id
             for model_id in self._get_model_children(model_id=page_id)
+            # Optimally this statement should be: "if isinstance(model, Figure)"
             if hasattr(model_manager[model_id], "figure")
         ]
 
