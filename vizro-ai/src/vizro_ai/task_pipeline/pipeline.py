@@ -1,12 +1,14 @@
 """Task Pipeline."""
 
-from typing import Any, List, Union
+from typing import Any, Dict, List, Union
+
+from vizro_ai.chains._llm_models import LLM_MODELS
 
 
 class Pipeline:
     """A pipeline to manage the flow of tasks in a sequence."""
 
-    def __init__(self, llm):
+    def __init__(self, llm: LLM_MODELS):
         """Initialize the Pipeline.
 
         Args:
@@ -30,8 +32,16 @@ class Pipeline:
         """
         self.components.append((component_class, input_keys, output_key))
 
-    def run(self, initial_args):
-        """Execute the pipeline with the provided initial args."""
+    def run(self, initial_args: Dict[Any]):
+        """Execute the pipeline with the provided initial args.
+
+        Args:
+            initial_args: Initial arguments that need to be passed for pipeline.
+
+        Returns:
+            Output of the last stage in pipeline.
+
+        """
         context = initial_args
         output = None
         for component_class, input_keys, output_key in self.components:
