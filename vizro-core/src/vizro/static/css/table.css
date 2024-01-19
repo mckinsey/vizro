@@ -22,6 +22,7 @@
   .dash-spreadsheet-inner
   table {
   --hover: var(--main-container-bg-color);
+  width: 100%;
 }
 
 #right-side
@@ -41,10 +42,19 @@
   font-size: 14px;
 }
 
+.dash-table-container .previous-next-container .page-number  {
+  color: var(--text-primary);
+}
+
+.dash-table-container .previous-next-container {
+    padding: 4px 0;
+    font-size: 14px;
+}
+
 .table-container {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 36px);
   overflow: auto;
-  padding: 12px;
-  padding-left: 32px;
   width: 100%;
 }
