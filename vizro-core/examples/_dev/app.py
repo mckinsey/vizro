@@ -292,11 +292,14 @@ table_and_container = vm.Page(
         vm.Container(
             title="Container w/ Table",
             components=[
-                vm.Table(title="Table Title", figure=dash_data_table(
-                    id="dash_data_table_country",
-                    data_frame=df,
-                    page_size=30,
-                ))
+                vm.Table(
+                    title="Table Title",
+                    figure=dash_data_table(
+                        id="dash_data_table_country",
+                        data_frame=df,
+                        page_size=30,
+                    ),
+                )
             ],
         ),
         vm.Container(
