@@ -289,9 +289,18 @@ graph_and_container = vm.Page(
 table_and_container = vm.Page(
     title="Table and Container",
     components=[
-        vm.Table(figure=dash_data_table(id="dash_data_table_country", data_frame=df)),
         vm.Container(
-            title="Container Standalone",
+            title="Container w/ Table",
+            components=[
+                vm.Table(title="Table Title", figure=dash_data_table(
+                    id="dash_data_table_country",
+                    data_frame=df,
+                    page_size=30,
+                ))
+            ],
+        ),
+        vm.Container(
+            title="Another Container",
             components=[
                 vm.Graph(
                     figure=px.scatter(
@@ -300,15 +309,6 @@ table_and_container = vm.Page(
                         x="gdpPercap",
                         y="lifeExp",
                         size="pop",
-                        color="continent",
-                    ),
-                ),
-                vm.Graph(
-                    figure=px.box(
-                        df,
-                        title="Graph_3",
-                        x="continent",
-                        y="lifeExp",
                         color="continent",
                     ),
                 ),
