@@ -1,6 +1,6 @@
 """Task Pipeline."""
 
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional
 
 from vizro_ai.chains._llm_models import LLM_MODELS
 
@@ -18,17 +18,15 @@ class Pipeline:
         self.components = []
         self.components_instances = {}
 
-    def add(self, component_class, input_keys: Union[List, None] = None, output_key: Union[str, None] = None):
+    def add(self, component_class, input_keys: Optional[List[str]] = None, output_key: Optional[str] = None):
         """Add a component class to the pipeline along with its input and output specifications.
 
         Args:
             component_class: The class of the component to be added to the pipeline.
-
-            input_keys: The keys or identifiers for the inputs that this component expects. These should match the
-            output keys of previous components in the pipeline, if applicable.
-
+            input_keys: The keys or identifiers for the inputs that this component expects.
+                    These should match the output keys of previous components in the pipeline, if applicable.
             output_key: The key or identifier for the output that this component will produce.
-            This can be used as an input key for subsequent components.
+                    This can be used as an input key for subsequent components.
         """
         self.components.append((component_class, input_keys, output_key))
 
@@ -46,8 +44,8 @@ class Pipeline:
         output = None
         for component_class, input_keys, output_key in self.components:
             component = self._lazy_get_component(component_class)
-            args = {key: context[key] for key in input_keys} if input_keys else {}
-            output = component.run(**args)
+            kwargs = {key: context[key] for key in input_keys} if input_keys else {}
+            output = component.run(**kwargs)
             # TODO extend to multiple output keys and output type
             if output_key:
                 context[output_key] = output

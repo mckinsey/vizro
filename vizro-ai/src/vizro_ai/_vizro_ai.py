@@ -10,7 +10,7 @@ from vizro_ai.components import (
     GetCodeExplanation,
     GetDebugger,
 )
-from vizro_ai.task_pipeline.pipeline_manager import PipelineManager
+from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils import _safeguard_check
 
 logger = logging.getLogger(__name__)

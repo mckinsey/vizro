@@ -6,7 +6,7 @@ from vizro_ai.components import (
     GetDataFrameCraft,
     GetVisualCode,
 )
-from vizro_ai.task_pipeline.pipeline import Pipeline
+from vizro_ai.task_pipeline._pipeline import Pipeline
 
 
 class PipelineManager:
