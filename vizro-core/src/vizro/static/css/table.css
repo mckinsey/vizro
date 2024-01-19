@@ -46,7 +46,7 @@
   color: var(--text-primary);
 }
 
-.dash-table-container .previous-next-container {
+#right-side .dash-table-container .previous-next-container {
   padding: 4px 0;
   font-size: 14px;
 }
