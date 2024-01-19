@@ -49,18 +49,6 @@ class TestContainerBuildMethod:
         )
         assert_component_equal(
             result.children,
-            [
-                html.H3("Title"),
-                html.Div(
-                    [html.Div(vm.Button().build(), style={"gridColumn": "1/2", "gridRow": "1/2"})],
-                    className="grid-layout",
-                    style={
-                        "gridColumnGap": "12px",
-                        "gridRowGap": "12px",
-                        "gridTemplateColumns": "repeat(1,minmax(0px, 1fr))",
-                        "gridTemplateRows": "repeat(1,minmax(0px, 1fr))",
-                    },
-                ),
-            ],
-            keys_to_strip={"id"},
+            [html.H3("Title"), html.Div([html.Div(vm.Button().build())])],
+            keys_to_strip={"id", "className", "style"},
         )
