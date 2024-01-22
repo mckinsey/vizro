@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, List, NewType, Tuple, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Dict, Generator, List, NewType, Optional, Tuple, Type, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
-    from vizro.models import Page, VizroBaseModel
+    from vizro.models import VizroBaseModel
+    from vizro.models._action._actions_chain import ActionsChain
 
 rd = random.Random(0)
 
@@ -54,42 +55,31 @@ class ModelManager:
             if isinstance(self[model_id], model_type):
                 yield model_id, cast(Model, self[model_id])
 
-    # TODO: Consider moving this one to the _callback_mapping_utils.py since it's only used there
-    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:  # type: ignore[return]
-        from vizro.models._action._actions_chain import ActionsChain
-
-        for _, actions_chain in model_manager._items_with_type(ActionsChain):
-            if action_id in [action.id for action in actions_chain.actions]:
-                return self[ModelID(str(actions_chain.trigger.component_id))]
-
     # TODO: Consider returning with yield
-    def _get_model_children(self, model_id: ModelID) -> List[ModelID]:
-        """Gets all child components of the model with `model_id'."""
-        model_children = []
+    # TODO: Make collection of model ids (throughout this file) to be Set[ModelID].
+    def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[List[ModelID]] = None) -> List[ModelID]:
+        if all_model_ids is None:
+            all_model_ids = []
 
-        def __get_model_children_helper(model: VizroBaseModel) -> None:
-            model_children.append(ModelID(str(model.id)))
-            if hasattr(model, "components"):
-                for sub_model in model.components:
-                    __get_model_children_helper(model=sub_model)
-
-        __get_model_children_helper(model=self[model_id])
-        return model_children
+        all_model_ids.append(model_id)
+        model = self[model_id]
+        if hasattr(model, "components"):
+            for child_model in model.components:
+                self._get_model_children(child_model.id, all_model_ids)
+        return all_model_ids
 
     # TODO: Consider moving this method in the Dashboard model or some other util file
-    def _get_model_page(self, model_id: ModelID) -> Page:  # type: ignore[return]
+    def _get_model_page_id(self, model_id: ModelID) -> ModelID:  # type: ignore[return]
         """Gets the id of the page containing the model with "model_id"."""
         from vizro.models import Page
 
-        for page_id, _ in model_manager._items_with_type(Page):
+        for page_id, page in model_manager._items_with_type(Page):
             page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
-            page: Page = cast(Page, self[page_id])
 
-            if hasattr(page, "actions"):
-                for actions_chain in page._get_page_actions_chains():
-                    page_model_ids.append(actions_chain.id)
-                    for action in actions_chain.actions:
-                        page_model_ids.append(action.id)
+            for actions_chain in self._get_page_actions_chains(page_id=page_id):
+                page_model_ids.append(actions_chain.id)
+                for action in actions_chain.actions:
+                    page_model_ids.append(action.id)
 
             for control in page.controls:
                 page_model_ids.append(control.id)
@@ -99,7 +89,42 @@ class ModelManager:
             # TODO: Add navigation, accordions and other page objects
 
             if model_id in page_model_ids:
-                return page
+                return cast(ModelID, page.id)
+
+    # TODO: Increase the genericity of this method
+    def _get_page_actions_chains(self, page_id: ModelID) -> List[ActionsChain]:
+        """Gets all ActionsChains present on the page."""
+        page = self[page_id]
+        page_actions_chains = []
+
+        for model_id in self._get_model_children(model_id=page_id):
+            model = self[model_id]
+            if hasattr(model, "actions"):
+                page_actions_chains.extend(model.actions)
+
+        for control in page.controls:
+            if hasattr(control, "selector") and control.selector:
+                page_actions_chains.extend(control.selector.actions)
+
+        return page_actions_chains
+
+    # TODO: Consider moving this one to the _callback_mapping_utils.py since it's only used there
+    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:  # type: ignore[return]
+        """Gets the model that triggers the action with "action_id"."""
+        from vizro.models._action._actions_chain import ActionsChain
+
+        for _, actions_chain in model_manager._items_with_type(ActionsChain):
+            if action_id in [action.id for action in actions_chain.actions]:
+                return self[ModelID(str(actions_chain.trigger.component_id))]
+
+    def _get_page_model_ids_with_figure(self, page_id: ModelID) -> List[ModelID]:
+        """Gets ids of all components from the page that have a 'figure' registered."""
+        return [
+            model_id
+            for model_id in self._get_model_children(model_id=page_id)
+            # Optimally this statement should be: "if isinstance(model, Figure)"
+            if hasattr(model_manager[model_id], "figure")
+        ]
 
     @staticmethod
     def _generate_id() -> ModelID:
