@@ -26,8 +26,8 @@ To create a dashboard:
         page = vm.Page(
             title="My first dashboard",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),            ],
+                vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),            ],
             controls=[
                 vm.Filter(column="species"),
             ],
@@ -49,7 +49,6 @@ To create a dashboard:
             "components": [
                 {
                     "type": "graph",
-                    "id": "scatter_chart",
                     "figure": px.scatter(
                         df,
                         x="sepal_length",
@@ -59,7 +58,6 @@ To create a dashboard:
                 },
                 {
                     "type": "graph",
-                    "id": "hist_chart",
                     "figure": px.histogram(
                         df,
                         x="sepal_width",
@@ -82,7 +80,7 @@ To create a dashboard:
     === "dashboard.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -91,14 +89,12 @@ To create a dashboard:
                   x: sepal_length
                   y: petal_width
                   color: species
-                id: scatter_chart
                 type: graph
               - figure:
                   _target_: histogram
                   data_frame: iris
                   x: sepal_width
                   color: species
-                id: hist_chart
                 type: graph
             controls:
               - column: species
@@ -119,7 +115,6 @@ To create a dashboard:
                                 "x": "sepal_length",
                                 "y": "petal_width"
                             },
-                            "id": "scatter_chart",
                             "type": "graph"
                         },
                         {
@@ -129,7 +124,6 @@ To create a dashboard:
                                 "data_frame": "iris",
                                 "x": "sepal_width",
                             },
-                            "id": "hist_chart",
                             "type": "graph"
                         }
                     ],

@@ -38,7 +38,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -136,7 +136,7 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
           - text: |
@@ -149,6 +149,8 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
               #### Header level 4 <h4>
             type: card
           - text: |
+              ### Paragraphs
+
               Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
               Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
@@ -156,28 +158,30 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
               Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
               Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-            title: Paragraphs
             type: card
           - text: |
+              ### Block Quotes
+
               >
               > A block quote is a long quotation, indented to create a separate block of text.
               >
-            title: Block Quotes
             type: card
           - text: |
+              ### Lists
+
               * Item A
                 * Sub Item 1
                 * Sub Item 2
               * Item B
-            title: Lists
             type: card
           - text: |
+              ### Emphasis
+
               This word will be *italic*
 
               This word will be **bold**
 
               This word will be _**bold and italic**_
-            title: Emphasis
             type: card
           title: Customizing Text
         ```
@@ -231,7 +235,7 @@ accessibility of your app. Providing an image ALT text is optional.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -306,7 +310,7 @@ and provide an attribute selector to select images with that matching URL hash.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -372,7 +376,7 @@ and provide an attribute selector to select images with that matching URL hash.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -460,7 +464,7 @@ To create a navigation card, do the following:
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -556,7 +560,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
     === "app.yaml"
         ```yaml hl_lines="5 13"
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -649,7 +653,7 @@ In the below example we show how to configure a button to export the filtered da
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
             - figure:

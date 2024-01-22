@@ -1,0 +1,20 @@
+pages:
+  - components:
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: sepal_length
+          y: petal_width
+          color: species
+        type: graph
+      - figure:
+          _target_: histogram
+          data_frame: iris
+          x: sepal_width
+          color: species
+        type: graph
+    controls:
+      - column: species
+        type: filter
+    title: Page Title
+title: Dashboard Title
