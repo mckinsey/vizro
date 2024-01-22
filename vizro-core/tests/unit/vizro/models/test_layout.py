@@ -162,9 +162,9 @@ class TestSharedLayoutHelpers:
     def test_set_layout_valid(self, model_with_layout):
         model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
-    def test_set_layout_invalid(self, model):
+    def test_set_layout_invalid(self, model_with_layout):
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
-            model(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+            model_with_layout(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
 
 
 class TestLayoutBuild:
