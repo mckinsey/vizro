@@ -115,7 +115,7 @@ class Page(VizroBaseModel):
 
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"] = component.build()
+            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
