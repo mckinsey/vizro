@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable automatic loading of .env ([#270](https://github.com/mckinsey/vizro/pull/270))
+- Enable automatic loading of environment variables in a `.env` file ([#270](https://github.com/mckinsey/vizro/pull/270))
 
 <!--
 ### Changed
