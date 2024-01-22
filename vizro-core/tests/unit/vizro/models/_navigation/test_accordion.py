@@ -68,8 +68,10 @@ class TestAccordionBuild:
                             dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
                         ],
                         title="GROUP",
+                        item_id="Group",
                     )
                 ],
+                active_item="Group",
                 **common_args,
             ),
         ),
@@ -82,14 +84,17 @@ class TestAccordionBuild:
                             dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
                         ],
                         title="GROUP 1",
+                        item_id="Group 1"
                     ),
                     dbc.AccordionItem(
                         children=[
                             dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
                         ],
                         title="GROUP 2",
+                        item_id="Group 2"
                     ),
                 ],
+                active_item="Group 1",
                 **common_args,
             ),
         ),
@@ -103,8 +108,10 @@ class TestAccordionBuild:
                             dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
                         ],
                         title=ACCORDION_DEFAULT_TITLE,
+                        item_id="SELECT PAGE",
                     ),
                 ],
+                active_item="SELECT PAGE",
                 **common_args,
             ),
         ),
