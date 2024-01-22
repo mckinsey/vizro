@@ -1,6 +1,7 @@
 dash>=2.14.1
 dash_bootstrap_components
 pandas
+pyarrow
 pydantic>=1.10.13
 dash_mantine_components
 ipython>=8.10.0
