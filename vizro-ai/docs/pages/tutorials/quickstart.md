@@ -41,13 +41,6 @@ You should see a return output of the version.
 
 A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user_guides/api_setup.md) on how to set up the API.
 
-After successful setup, your API key is loaded in Jupyter with the following two lines:
-
-```py
-from dotenv import load_dotenv
-load_dotenv()
-```
-
 ### 4. Ask your first question using Vizro-AI
 
 For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
@@ -62,10 +55,8 @@ By passing your prepared data and your written visualization request to this met
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
         ```
