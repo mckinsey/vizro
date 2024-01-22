@@ -40,7 +40,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
+  "kedro>=0.17.3, <0.19.2",
   "wheel>=0.38.0"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413
 ]
 
