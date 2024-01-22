@@ -188,6 +188,6 @@ class TestLayoutBuild:
                 "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
             },
             className="grid-layout",
-            id="layout_id"
+            id="layout_id",
         )
         assert_component_equal(result, expected)
