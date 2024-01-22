@@ -13,7 +13,7 @@ Before proceeding, ensure the installation of the `vizro_ai` package by followin
 
 A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user_guides/api_setup.md) for instructions on setting up the API.
 
-Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`
+Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`.
 
 If you would like to customize the `.env` file location and name, you can set it manually.
 You can override the default import of the `.env` file by specifying the path and name of your custom `.env` file.
