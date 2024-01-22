@@ -49,9 +49,6 @@ def set_layout(cls, layout, values):
     return layout
 
 
-# TODO: Insert layout only
-
-
 def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
     """Converts matrix coordinates from user `grid` to one combined grid area spanned by component i.
 
