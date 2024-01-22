@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Introduce `Container` model as a new `Page` component ([#254](https://github.com/mckinsey/vizro/pull/254))
+- Introduce `Container` model as a new `Page` component. Visit the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user_guides/container/) to learn more. ([#254](https://github.com/mckinsey/vizro/pull/254))
 
 <!--
 ### Removed
