@@ -50,8 +50,8 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result.children,
             [html.H3("Title"), html.Div([html.Div(vm.Button().build())])],
-            # TODO: Previously I've ignored id, className and style here as I had the helper function tested in test_layout.py
-            # With the new changes it seems like we shouldn't strip them now? Do we then need to duplicate for
-            # Page and Form as well?
+            # TODO: Previously I've ignored id, className and style as I had the helper function tested in
+            # test_layout.py. With the new changes it seems like we shouldn't strip them now?
+            # Shall we then need to duplicate for Page and Form as well?
             keys_to_strip={"id", "className", "style"},
         )
