@@ -26,13 +26,6 @@ class ColRowGridLines(NamedTuple):
     row_end: int
 
 
-def _place_components_in_grid(grid, components):
-    """Places components inside pre-defined grid."""
-    for idx, component in enumerate(components):
-        grid.children[idx].children = component.build()
-    return grid
-
-
 def _get_unique_grid_component_ids(grid: List[List[int]]):
     unique_grid_idx = np.unique(grid)
     unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
@@ -194,17 +187,21 @@ class Layout(VizroBaseModel):
     def component_grid_lines(self):
         return self._component_grid_lines
 
+    # The return type has a contract in which each component has a key f"{layout.id}_{component_idx}".
+    # We could have _LayoutBuildType as a return type annotation, but it would need to be generated
+    # dynamically which is tricky and not amenable to type checking anyway.
     @_log_call
     def build(self):
         """Creates empty container with inline style to later position components in."""
         components_content = [
             html.Div(
+                id=f"{self.id}_{component_idx}",
                 style={
                     "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
                 },
             )
-            for grid_coord in self.component_grid_lines
+            for component_idx, grid_coord in enumerate(self.component_grid_lines)
         ]
 
         component_container = html.Div(
@@ -216,6 +213,7 @@ class Layout(VizroBaseModel):
                 "gridTemplateRows": f"repeat({len(self.grid)}," f"minmax({self.row_min_height}, 1fr))",
             },
             className="grid-layout",
+            id=self.id,
         )
         return component_container
 

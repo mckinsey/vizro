@@ -54,5 +54,7 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_container = _place_components_in_grid(grid=self.layout.build(), components=self.components)
+        components_container = self.layout.build()
+        for component_idx, component in enumerate(self.components):
+            components_container[f"{self.layout.id}_{component_idx}"] = component.build()
         return html.Div(components_container, id=self.id)

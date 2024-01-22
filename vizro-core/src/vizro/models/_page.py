@@ -112,7 +112,10 @@ class Page(VizroBaseModel):
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(children=controls_content, id="control-panel", hidden=not controls_content)
-        components_container = _place_components_in_grid(grid=self.layout.build(), components=self.components)
+
+        components_container = self.layout.build()
+        for component_idx, component in enumerate(self.components):
+            components_container[f"{self.layout.id}_{component_idx}"] = component.build()
 
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
