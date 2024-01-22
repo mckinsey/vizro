@@ -190,6 +190,10 @@ class Layout(VizroBaseModel):
     # The return type has a contract in which each component has a key f"{layout.id}_{component_idx}".
     # We could have _LayoutBuildType as a return type annotation, but it would need to be generated
     # dynamically which is tricky and not amenable to type checking anyway.
+    # Possibly in future we would have a public method to generate this string or maybe even
+    # a new method Layout.inject or similar that handles the injection of components into the grid for us.
+    # Another alternative is to take [component.build() for component in components] as an argument
+    # in the build method here.
     @_log_call
     def build(self):
         """Creates empty container with inline style to later position components in."""
