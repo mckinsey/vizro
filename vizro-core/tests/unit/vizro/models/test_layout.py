@@ -15,7 +15,6 @@ from vizro.models._layout import (
     MIN_DEFAULT,
     ColRowGridLines,
     _get_unique_grid_component_ids,
-    _place_components_in_grid,
 )
 
 
@@ -175,12 +174,12 @@ class TestSharedLayoutHelpers:
 
 class TestLayoutBuild:
     def test_layout_build(self):
-        result = vm.Layout(grid=[[0, 1], [0, 2]]).build()
+        result = vm.Layout(grid=[[0, 1], [0, 2]], id="layout_id").build()
         expected = html.Div(
             [
-                html.Div(style={"gridColumn": "1/2", "gridRow": "1/3"}),
-                html.Div(style={"gridColumn": "2/3", "gridRow": "1/2"}),
-                html.Div(style={"gridColumn": "2/3", "gridRow": "2/3"}),
+                html.Div(id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3"}),
+                html.Div(id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2"}),
+                html.Div(id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3"}),
             ],
             style={
                 "gridRowGap": "12px",
@@ -189,25 +188,6 @@ class TestLayoutBuild:
                 "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
             },
             className="grid-layout",
+            id="layout_id"
         )
         assert_component_equal(result, expected)
-
-
-def test_place_components_in_grid():
-    grid = vm.Layout(grid=[[0, 1], [0, 2]]).build()
-    result = _place_components_in_grid(grid=grid, components=[vm.Button(), vm.Button(), vm.Button()])
-    expected = html.Div(
-        [
-            html.Div(vm.Button().build(), style={"gridColumn": "1/2", "gridRow": "1/3"}),
-            html.Div(vm.Button().build(), style={"gridColumn": "2/3", "gridRow": "1/2"}),
-            html.Div(vm.Button().build(), style={"gridColumn": "2/3", "gridRow": "2/3"}),
-        ],
-        style={
-            "gridRowGap": "12px",
-            "gridColumnGap": "12px",
-            "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
-            "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
-        },
-        className="grid-layout",
-    )
-    assert_component_equal(result, expected, keys_to_strip={"id"})
