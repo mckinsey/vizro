@@ -32,10 +32,10 @@ The default import of the `.env` file can be overridden by specifying the path a
 Here's how you can do it:
 ```py
 from dotenv import load_dotenv, find_dotenv
-from os.path import join, dirname
+from pathlib import Path
 
 # Specify the exact path to your .env file
-env_file = join(dirname(__file__), '.env')  # Adjust the path as needed
+env_file = Path.cwd() / ".env"  # Adjust the path as needed
 
 # Alternatively, specify a different .env file name
 env_file = find_dotenv(".env.dev")  # Replace ".env.dev" with your file name
