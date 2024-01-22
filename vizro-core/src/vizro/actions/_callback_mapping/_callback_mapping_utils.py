@@ -20,7 +20,7 @@ class ModelActionsChains(NamedTuple):
 
 
 def _get_actions(model) -> List[ActionsChain]:
-    """Gets the list of trigger action chains in the `action` parameter for any model."""
+    """Gets the list of trigger action chains in the `action` parameter for any `model`."""
     if hasattr(model, "selector"):
         return model.selector.actions
     elif hasattr(model, "actions"):
