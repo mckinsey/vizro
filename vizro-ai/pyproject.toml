@@ -15,6 +15,7 @@ classifiers = [
 ]
 dependencies = [
   "pandas",
+  "pyarrow>=14.0.1",  # needed for pandas 3.0, version pinned by Snyk to avoid a vulnerability
   "tabulate",
   "openai>=0.27.8,<1.0.0",  # TODO add support for openai>=1.0.0
   "langchain==0.0.329",
