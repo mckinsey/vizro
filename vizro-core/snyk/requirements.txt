@@ -1,6 +1,6 @@
 dash>=2.14.1
 dash_bootstrap_components
-pandas
+pandas<2.2
 pyarrow>=14.0.1
 pydantic>=1.10.13
 dash_mantine_components
