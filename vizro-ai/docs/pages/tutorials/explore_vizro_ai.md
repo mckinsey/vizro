@@ -17,7 +17,7 @@ Upon successful setup, your API key should be ready in the environment when you 
 
 If you would like to customize the `.env` file location and name, you can set it manually.
 You can override the default import of the `.env` file by specifying the path and name of your custom `.env` file.
-Please refer to [api setup](../user_guides/api_setup.md) for instructions on customizing the `.env` file location and name.
+Please refer to [API setup](../user_guides/api_setup.md) for instructions on customizing the `.env` file location and name.
 
 ### 2. Create your visualization using different languages
 
