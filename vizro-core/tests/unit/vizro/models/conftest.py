@@ -14,5 +14,5 @@ def identity_action_function():
 
 
 @pytest.fixture(params=[vm.Container, vm.Page])
-def model_with_grid(request):
+def model_with_layout(request):
     return request.param
