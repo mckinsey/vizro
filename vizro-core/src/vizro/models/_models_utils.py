@@ -1,10 +1,5 @@
 import logging
 from functools import wraps
-from typing import List
-
-import numpy as np
-
-from vizro._constants import EMPTY_SPACE_CONST
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +15,8 @@ def _log_call(method):
     return _wrapper
 
 
-def get_unique_grid_component_ids(grid: List[List[int]]):
-    unique_grid_idx = np.unique(grid)
-    unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
-    return unique_grid_comp_idx
+# Validators for reuse
+def set_components(cls, components):
+    if not components:
+        raise ValueError("Ensure this value has at least 1 item.")
+    return components
