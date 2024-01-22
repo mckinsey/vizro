@@ -145,7 +145,6 @@ The below examples shows a more involved use-case. We create and style a waterfa
             title="Custom chart",
             components=[
                 vm.Graph(
-                    id="waterfall",
                     figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
                 ),
             ],

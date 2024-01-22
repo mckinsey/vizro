@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -50,6 +50,7 @@ _PageDivsType = TypedDict(
         "nav-panel": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
+        "logo": html.Div,
     },
 )
 
@@ -133,7 +134,6 @@ class Dashboard(VizroBaseModel):
         dashboard_title = (
             html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
-
         settings = html.Div(
             dmc.Switch(
                 id="theme_selector",
@@ -144,6 +144,9 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+        logo_img = self._infer_image(filename="logo")
+        path_to_logo = get_asset_url(logo_img) if logo_img else None
+        logo = html.Img(src=path_to_logo, id="logo", hidden=not path_to_logo)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -156,26 +159,37 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components])
+        return html.Div(
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+        )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        left_header_divs = [page_divs["dashboard-title"]]
+        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        page_header_divs = [html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [
-            html.Div(left_header_divs, id="left-header", hidden=_all_hidden(left_header_divs)),
             page_divs["nav-panel"],
             page_divs["control-panel"],
         ]
+        right_header_divs = [page_divs["page-title"]]
+
+        # Apply different container position logic based on condition
+        if _all_hidden(page_header_divs):
+            right_header_divs.append(page_divs["settings"])
+        else:
+            page_header_divs.append(page_divs["settings"])
 
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
+        right_header = html.Div(right_header_divs, id="right-header")
         right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page-container")
+        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
+        page_main = html.Div([left_side, right_side], id="page-main")
+        return html.Div([page_header, page_main], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
@@ -203,7 +217,8 @@ class Dashboard(VizroBaseModel):
             className="page_error_container",
         )
 
-    def _infer_image(self, filename: str):
+    @staticmethod
+    def _infer_image(filename: str):
         valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
         assets_folder = Path(dash.get_app().config.assets_folder)
         if assets_folder.is_dir():

@@ -86,9 +86,9 @@ class Filter(VizroBaseModel):
 
     def _set_targets(self):
         if not self.targets:
-            for component_id in model_manager._get_model_page(
-                model_id=ModelID(str(self.id))
-            )._get_page_model_ids_with_figure():
+            for component_id in model_manager._get_page_model_ids_with_figure(
+                page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
+            ):
                 data_frame = data_manager._get_component_data(component_id)
                 if self.column in data_frame.columns:
                     self.targets.append(component_id)

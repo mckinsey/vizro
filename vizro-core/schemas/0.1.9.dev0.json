@@ -256,7 +256,7 @@
     },
     "Container": {
       "title": "Container",
-      "description": "Html.Div that can wrap other `Page.components`.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -280,9 +280,9 @@
               "mapping": {
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
+                "container": "#/definitions/Container",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table",
-                "container": "#/definitions/Container"
+                "table": "#/definitions/Table"
               }
             },
             "oneOf": [
@@ -293,13 +293,13 @@
                 "$ref": "#/definitions/Card"
               },
               {
+                "$ref": "#/definitions/Container"
+              },
+              {
                 "$ref": "#/definitions/Graph"
               },
               {
                 "$ref": "#/definitions/Table"
-              },
-              {
-                "$ref": "#/definitions/Container"
               }
             ]
           }
@@ -611,7 +611,7 @@
     },
     "RangeSlider": {
       "title": "RangeSlider",
-      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -647,7 +647,14 @@
           "default": {},
           "type": "object",
           "additionalProperties": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
           }
         },
         "value": {
@@ -679,7 +686,7 @@
     },
     "Slider": {
       "title": "Slider",
-      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[float, str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -715,7 +722,14 @@
           "default": {},
           "type": "object",
           "additionalProperties": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
           }
         },
         "value": {
@@ -808,7 +822,7 @@
     },
     "Parameter": {
       "title": "Parameter",
-      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.\n\nRaises:\n    ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.",
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.",
       "type": "object",
       "properties": {
         "id": {
@@ -907,7 +921,7 @@
     },
     "Page": {
       "title": "Page",
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    description (str): Description for meta tags.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.\n\nRaises:\n    ValueError: If number of page and grid components is not the same",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    description (str): Description for meta tags.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -925,9 +939,9 @@
               "mapping": {
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
+                "container": "#/definitions/Container",
                 "graph": "#/definitions/Graph",
-                "table": "#/definitions/Table",
-                "container": "#/definitions/Container"
+                "table": "#/definitions/Table"
               }
             },
             "oneOf": [
@@ -938,13 +952,13 @@
                 "$ref": "#/definitions/Card"
               },
               {
+                "$ref": "#/definitions/Container"
+              },
+              {
                 "$ref": "#/definitions/Graph"
               },
               {
                 "$ref": "#/definitions/Table"
-              },
-              {
-                "$ref": "#/definitions/Container"
               }
             ]
           }

@@ -28,7 +28,7 @@ will automatically be stacked underneath each other. If that is your desired lay
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -89,7 +89,7 @@ To customize the grid arrangement, provide the relevant grid specification:
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -141,7 +141,7 @@ grid = [[0, 1, -1],
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |
@@ -216,7 +216,7 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |

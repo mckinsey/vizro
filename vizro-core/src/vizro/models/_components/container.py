@@ -10,13 +10,8 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import (
-    _assign_component_grid_area,
-    _create_component_container,
-    _log_call,
-    set_components,
-    set_layout,
-)
+from vizro.models._layout import set_layout
+from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -24,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class Container(VizroBaseModel):
-    """Html.Div that can wrap other `Page.components`.
+    """Container to group together a set of components on a page.
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.
@@ -32,9 +27,6 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.
-
-    Raises:
-        ValueError: If number of page and grid components is not the same
     """
 
     type: Literal["container"] = "container"
@@ -48,6 +40,9 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
-        components_content = _assign_component_grid_area(self)
-        components_container = _create_component_container(self, components_content)
-        return html.Div(children=[html.H3(self.title), components_container], className="page-component-container")
+        components_container = self.layout.build()
+        for component_idx, component in enumerate(self.components):
+            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        return html.Div(
+            children=[html.H3(self.title), components_container], className="page-component-container", id=self.id
+        )

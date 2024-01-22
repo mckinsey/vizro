@@ -1,38 +1,44 @@
 pages:
   - components:
       - text: |
-          ![](assets/images/icons/content/hypotheses.svg#icon-top)
+          ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Variable Analysis
+
           Analyzing population, GDP per capita and life expectancy on country and continent level.
         href: /variable-analysis
         type: card
       - text: |
-          ![](assets/images/icons/content/hypotheses.svg#icon-top)
+          ![](assets/images/icons/hypotheses.svg#icon-top)
 
           ### Relationship Analysis
+
           Investigating the interconnection between population, GDP per capita and life expectancy.
         href: /relationship-analysis
         type: card
       - text: |
-          ![](assets/images/icons/content/collections.svg#icon-top)
+          ![](assets/images/icons/collections.svg#icon-top)
 
           ### Continent Summary
+
           Summarizing the main findings for each continent.
         href: /continent-summary
         type: card
       - text: |
-          ![](assets/images/icons/content/features.svg#icon-top)
+          ![](assets/images/icons/features.svg#icon-top)
 
-          ### Country Analysis
-          Discovering how the metrics differ for each country and export data for further investigation.
-        href: /country-analysis
+          ### Benchmark Analysis
+
+          Discovering how the metrics differ for each country compared to the continent average
+          and export data for further investigation.
+        href: /benchmark-analysis
         type: card
     layout:
       grid: [[0, 1], [2, 3]]
-      col_gap: 25px
+      col_gap: 24px
       row_gap: 16px
     title: Homepage
+    description: Vizro demo app for studying gapminder data
   - components:
       - text: |
           ### Overview
@@ -105,7 +111,7 @@ pages:
       - figure:
           _target_: line
           color: continent
-          data_frame: gapminder_avg
+          data_frame: gapminder_mean
           x: year
           y: lifeExp
           title: Development between 1952 and 2007
@@ -135,7 +141,7 @@ pages:
       - figure:
           _target_: bar
           color: continent
-          data_frame: gapminder_avg_2007
+          data_frame: gapminder_mean_2007
           x: lifeExp
           y: continent
           orientation: h
@@ -172,8 +178,9 @@ pages:
     layout:
       grid: [[0, 1, 1, 1], [2, 3, 3, 3], [4, 5, 5, 5], [6, 7, 7, 7]]
       row_min_height: 400px
-      row_gap: 25px
+      row_gap: 24px
     title: Variable Analysis
+    description: Analyzing population, GDP per capita and life expectancy on country and continent level
   - components:
       - text: |
           Population, GDP per capita, and life expectancy are interconnected metrics that provide insights into the
@@ -266,7 +273,7 @@ pages:
       - selector:
           title: Choose x-axis
           type: dropdown
-          value: lifeExp
+          value: gdpPercap
           multi: False
           options:
             - lifeExp
@@ -279,7 +286,7 @@ pages:
       - selector:
           title: Choose y-axis
           type: dropdown
-          value: gdpPercap
+          value: lifeExp
           multi: False
           options:
             - lifeExp
@@ -318,8 +325,9 @@ pages:
           [4, 4, 4, 4, 4],
         ]
       row_min_height: 100px
-      row_gap: 25px
+      row_gap: 24px
     title: Relationship Analysis
+    description: Investigating the interconnection between population, GDP per capita and life expectancy
   - components:
       - text: |
           ### Africa
@@ -385,13 +393,56 @@ pages:
       row_min_height: 190px
       row_gap: 25px
     title: Continent Summary
+    description: Summarizing the main findings for each continent
   - components:
       - figure:
           _target_: dash_data_table
           data_frame: gapminder
           id: dash_data_table_country
-        id: table_country
-        title: Table Country
+          columns:
+            - id: country
+              name: country
+            - id: continent
+              name: continent
+            - id: year
+              name: year
+            - format:
+                specifier: ",.1f"
+              id: lifeExp
+              name: lifeExp
+              type: numeric
+            - format:
+                specifier: $,.2f
+              id: gdpPercap
+              name: gdpPercap
+              type: numeric
+            - format:
+                specifier: ",d"
+              id: pop
+              name: pop
+              type: numeric
+          page_size: 30
+          style_data_conditional:
+            - backgroundColor: "#ff9222"
+              if:
+                column_id: gdpPercap
+                filter_query: "{gdpPercap} < 1045"
+            - backgroundColor: "#de9e75"
+              if:
+                column_id: gdpPercap
+                filter_query: "{gdpPercap} >= 1045 && {gdpPercap} <= 4095"
+            - backgroundColor: "#aaa9ba"
+              if:
+                column_id: gdpPercap
+                filter_query: "{gdpPercap} > 4095 && {gdpPercap} <= 12695"
+            - backgroundColor: "#00b4ff"
+              if:
+                column_id: gdpPercap
+                filter_query: "{gdpPercap} > 12695"
+          sort_action: native
+          style_cell:
+            textAlign: left
+        title: Click on a cell in country column
         type: table
         actions:
           - function:
@@ -400,9 +451,9 @@ pages:
                 - line_country
       - figure:
           _target_: line
-          color: data
-          data_frame: gapminder_country_analysis
-          title: Line Country
+          color: color
+          data_frame: gapminder_concat
+          title: Country vs. Continent
           x: year
           y: gdpPercap
           labels:
@@ -436,14 +487,43 @@ pages:
         selector:
           type: range_slider
           title: Select timeframe
+          step: 1
+          marks: null
         type: filter
-    title: Country Analysis
+      - selector:
+          title: Choose y-axis
+          type: dropdown
+          value: gdpPercap
+          multi: False
+          options:
+            - lifeExp
+            - pop
+            - gdpPercap
+        targets:
+          - line_country.y
+        type: parameter
+    layout:
+      grid: [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [2, -1]]
+      col_gap: 32px
+      row_gap: 60px
+    title: Benchmark Analysis
+    description: Discovering how the metrics differ for each country and export data for further investigation
 navigation:
-  pages:
-    Analysis:
-      - Homepage
-      - Variable Analysis
-      - Relationship Analysis
-      - Country Analysis
-    Summary:
-      - Continent Summary
+  nav_selector:
+    type: nav_bar
+    items:
+      - label: Homepage
+        icon: Home
+        pages:
+          - Homepage
+      - label: Analysis
+        icon: Stacked Bar Chart
+        pages:
+          - Variable Analysis
+          - Relationship Analysis
+          - Benchmark Analysis
+      - label: Summary
+        icon: Globe
+        pages:
+          - Continent Summary
+title: Vizro demo

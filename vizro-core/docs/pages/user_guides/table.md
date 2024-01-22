@@ -38,7 +38,7 @@ setting some defaults for some of the arguments to help with styling.
         page = vm.Page(
             title="Example of a Dash DataTable",
             components=[
-                vm.Table(id="table", title="Dash DataTable", figure=dash_data_table(data_frame=df)),
+                vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
             controls=[vm.Filter(column="continent")],
         )
@@ -49,14 +49,13 @@ setting some defaults for some of the arguments to help with styling.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
           - figure:
               _target_: dash_data_table
               data_frame: gapminder_2007
             title: Dash DataTable
-            id: table
             type: table
           controls:
             - column: continent
@@ -120,7 +119,6 @@ an example of a styled table where some conditional formatting is applied. There
             title="Example of a styled Dash DataTable",
             components=[
                 vm.Table(
-                    id="table",
                     title="Styled table",
                     figure=dash_data_table(
                         data_frame=df,
@@ -141,7 +139,7 @@ an example of a styled table where some conditional formatting is applied. There
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -191,7 +189,6 @@ an example of a styled table where some conditional formatting is applied. There
                         state: active
                       backgroundColor: rgba(0, 116, 217, 0.3)
                       border: 1px solid rgb(0, 116, 217)
-                id: table
                 type: table
             controls:
               - column: continent
