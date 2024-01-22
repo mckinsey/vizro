@@ -72,7 +72,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     === "Result"
         [![Graph]][Graph]
 
-    [Graph]: ../../assets/user_guides/components/graph1.png
+    [Graph]: ../../assets/user_guides/components/graph.png
 
 Note that in the above example we directly inserted the chart into the `figure` argument for the `.py` version. This is also the simplest way to connect your chart to a Pandas `DataFrame` - for other connections, please refer to [this guide on data connections](data.md). For the `yaml` version, we simply referred to the [`plotly.express`](https://plotly.com/python/plotly-express/) name by string.
 

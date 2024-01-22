@@ -44,8 +44,7 @@ setting some defaults for some of the arguments to help with styling.
             title="Example of a Dash DataTable",
             components=[
                 vm.Table(id="table", title="Dash DataTable", figure=dash_data_table(data_frame=df)),
-            ],
-            controls=[vm.Filter(column="continent")],
+            ]
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -63,9 +62,6 @@ setting some defaults for some of the arguments to help with styling.
             title: Dash DataTable
             id: table
             type: table
-          controls:
-            - column: continent
-              type: filter
           title: Example of a Dash DataTable
         ```
     === "Result"
@@ -137,7 +133,6 @@ an example of a styled table where some conditional formatting is applied. There
                     ),
                 ),
             ],
-            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -198,9 +193,6 @@ an example of a styled table where some conditional formatting is applied. There
                       border: 1px solid rgb(0, 116, 217)
                 id: table
                 type: table
-            controls:
-              - column: continent
-                type: filter
             title: Dash DataTable
 
         ```

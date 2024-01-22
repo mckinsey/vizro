@@ -640,7 +640,6 @@ In the below example we show how to configure a button to export the filtered da
                     actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
                 ),
             ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -670,12 +669,6 @@ In the below example we show how to configure a button to export the filtered da
                     _target_: export_data
                     targets:
                       - scatter_chart
-            controls:
-              - column: species
-                selector:
-                  title: Species
-                  type: dropdown
-                type: filter
             layout:
               grid:
                 - [0]

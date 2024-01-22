@@ -156,6 +156,30 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
+    @pytest.mark.parametrize(
+        "image_path",
+        [
+            "logo.svg",
+            "logo.png",
+            "logo.apng",
+            "logo.avif",
+            "logo.gif",
+            "logo.jpeg",
+            "logo.jpg",
+            "logo.webp",
+            "images/logo.svg",
+        ],
+    )
+    def test_infer_image(self, page_1, tmp_path, image_path):
+        if Path(image_path).parent != Path("."):
+            Path(tmp_path / image_path).parent.mkdir()
+
+        Path(tmp_path / image_path).touch()
+        Vizro(assets_folder=tmp_path)
+        vm.Dashboard(pages=[page_1]).pre_build()
+
+        assert_component_equal(vm.Dashboard._infer_image("logo"), image_path)
+
     def test_page_registry_with_images(self, page_1, mocker, tmp_path):
         Path(tmp_path / "app.svg").touch()
         Path(tmp_path / "logo.svg").touch()

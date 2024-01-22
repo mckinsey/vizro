@@ -195,7 +195,7 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 
 ## Adding a dashboard logo
 
-Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named 'logo' is present within the assets folder. The supported file extensions include [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"].
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named 'logo' is present within the assets folder. The supported file extensions include ["apng", "avif", "gif", "jpeg", "jpg", "png", "svg", "webp"].
 
 ## Browser title
 
