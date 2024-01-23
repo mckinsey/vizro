@@ -13,12 +13,11 @@ Before proceeding, ensure the installation of the `vizro_ai` package by followin
 
 A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user_guides/api_setup.md) for instructions on setting up the API.
 
-Upon successful setup, load your API key with the following two lines:
+Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`.
 
-```py
-from dotenv import load_dotenv
-load_dotenv()
-```
+If you would like to customize the `.env` file location and name, you can set it manually.
+You can override the default import of the `.env` file by specifying the path and name of your custom `.env` file.
+Please refer to [API setup](../user_guides/api_setup.md) for instructions on customizing the `.env` file location and name.
 
 ### 2. Create your visualization using different languages
 
@@ -30,10 +29,8 @@ Vizro-AI is versatile, supporting prompts and chart visualizations in multiple l
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "请画一个世界年均GDP的趋势图")
         ```
@@ -50,10 +47,8 @@ Subsequently, we'll switch to German and prompt the visualization of life expect
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "Visualiere den Trend von der Lebenserwartung in USA über die Jahre im Vergleich zur Veränderung der weltweiten Lebenserwartung über die Jahre und kreiere eine deutsche Visualisierung", explain=True)
         ```
@@ -73,10 +68,8 @@ To begin, we'll create an animated bar chart illustrating the population develop
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "The chart should be an animated stacked bar chart with popoluation on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years.")
         ```
@@ -93,10 +86,8 @@ Having unveiled our animated bar chart showcasing population development per cou
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "The chart should be an animated stacked bar chart with popoluation on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Please improve layout.")
         ```
@@ -116,10 +107,8 @@ Now, upon closer inspection, two challenges emerge. Firstly, the legend overlaps
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
-
         df = px.data.gapminder()
+
         vizro_ai = VizroAI()
         vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Make sure that y axis range fits entire data. Please improve layout and optimize layout of legend.")
         ```

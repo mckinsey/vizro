@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import List, Literal
 
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
@@ -13,6 +13,7 @@ except ImportError:  # pragma: no cov
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
@@ -23,11 +24,6 @@ from vizro.models._components.form import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
-
-if TYPE_CHECKING:
-    from vizro.models import Page
-
-from vizro.managers._model_manager import ModelID
 
 # TODO: Add temporal when relevant component is available
 SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown}
@@ -43,14 +39,6 @@ def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
-
-
-def _get_component_page(component_id: str) -> Page:  # type: ignore[return]
-    from vizro.models import Page
-
-    for page_id, page in model_manager._items_with_type(Page):
-        if any(control.id == component_id for control in page.controls):
-            return page
 
 
 class Filter(VizroBaseModel):
@@ -98,11 +86,12 @@ class Filter(VizroBaseModel):
 
     def _set_targets(self):
         if not self.targets:
-            for component in _get_component_page(str(self.id)).components:
-                if data_manager._has_registered_data(component.id):
-                    data_frame = data_manager._get_component_data(component.id)
-                    if self.column in data_frame.columns:
-                        self.targets.append(component.id)
+            for component_id in model_manager._get_page_model_ids_with_figure(
+                page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
+            ):
+                data_frame = data_manager._get_component_data(component_id)
+                if self.column in data_frame.columns:
+                    self.targets.append(component_id)
             if not self.targets:
                 raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
 

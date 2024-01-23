@@ -43,7 +43,7 @@ class CapturedCallable:
     """
 
     def __init__(self, function, /, *args, **kwargs):
-        """Creates a new CapturedCallable object that will be able to re-run `function`.
+        """Creates a new `CapturedCallable` object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
 
@@ -147,7 +147,7 @@ class CapturedCallable:
 
     @classmethod
     def __get_validators__(cls):
-        """Makes type compatible with pydantic model without needing arbitrary_types_allowed."""
+        """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
         yield cls._parse_json
 
     @classmethod
@@ -362,7 +362,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Table"],
+    Union["Button", "Card", "Container", "Graph", "Table"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
