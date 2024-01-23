@@ -6,8 +6,44 @@ from vizro import Vizro
 from vizro.actions import export_data
 from vizro.tables import dash_data_table
 
-df_gapminder = px.data.gapminder()
+gapminder = px.data.gapminder()
+iris = px.data.iris()
 
+containers = vm.Page(
+    title="Containers",
+    components=[
+        vm.Container(
+            title="Container I",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", title="Container I - Scatter"
+                    )
+                ),
+                vm.Graph(
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar")
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container II",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        marginal_y="violin",
+                        marginal_x="box",
+                        title="Container II - Scatter",
+                    )
+                ),
+            ],
+        ),
+    ],
+)
 
 single_tabs = vm.Page(
     title="Single Tabs",
@@ -20,7 +56,7 @@ single_tabs = vm.Page(
                         vm.Graph(
                             id="graph_1",
                             figure=px.line(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_1",
                                 x="year",
                                 y="lifeExp",
@@ -32,7 +68,7 @@ single_tabs = vm.Page(
                         vm.Graph(
                             id="graph_2",
                             figure=px.box(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_3",
                                 x="continent",
                                 y="lifeExp",
@@ -47,7 +83,7 @@ single_tabs = vm.Page(
                         vm.Graph(
                             id="graph_3",
                             figure=px.scatter(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_4",
                                 x="gdpPercap",
                                 y="lifeExp",
@@ -58,7 +94,7 @@ single_tabs = vm.Page(
                         vm.Graph(
                             id="graph_4",
                             figure=px.box(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_5",
                                 x="continent",
                                 y="lifeExp",
@@ -96,7 +132,7 @@ single_tabs_action = vm.Page(
                         vm.Table(
                             figure=dash_data_table(
                                 id="dash_datatable-1",
-                                data_frame=df_gapminder,
+                                data_frame=gapminder,
                             ),
                         ),
                         vm.Button(
@@ -120,7 +156,7 @@ tabs_and_component = vm.Page(
     components=[
         vm.Graph(
             figure=px.box(
-                df_gapminder,
+                gapminder,
                 title="Graph_5",
                 x="continent",
                 y="lifeExp",
@@ -135,7 +171,7 @@ tabs_and_component = vm.Page(
                         vm.Table(
                             figure=dash_data_table(
                                 id="dash_datatable-1",
-                                data_frame=df_gapminder,
+                                data_frame=gapminder,
                             ),
                         ),
                     ],
@@ -159,7 +195,7 @@ multiple_tabs = vm.Page(
                     components=[
                         vm.Graph(
                             figure=px.scatter(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_44",
                                 x="gdpPercap",
                                 y="lifeExp",
@@ -174,7 +210,7 @@ multiple_tabs = vm.Page(
                     components=[
                         vm.Graph(
                             figure=px.scatter(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_441",
                                 x="gdpPercap",
                                 y="lifeExp",
@@ -193,7 +229,7 @@ multiple_tabs = vm.Page(
                     components=[
                         vm.Graph(
                             figure=px.scatter(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_45",
                                 x="gdpPercap",
                                 y="lifeExp",
@@ -208,7 +244,7 @@ multiple_tabs = vm.Page(
                     components=[
                         vm.Graph(
                             figure=px.scatter(
-                                df_gapminder,
+                                gapminder,
                                 title="Graph_451",
                                 x="gdpPercap",
                                 y="lifeExp",
@@ -225,7 +261,7 @@ multiple_tabs = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    title="Dashboard Title", pages=[single_tabs, single_tabs_action, tabs_and_component, multiple_tabs]
+    title="Dashboard Title", pages=[containers, single_tabs, single_tabs_action, tabs_and_component, multiple_tabs]
 )
 
 if __name__ == "__main__":
