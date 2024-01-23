@@ -46,11 +46,15 @@ class VizroAI:
             f"and visit this page for detailed information: "
             "https://vizro-ai.readthedocs.io/en/latest/pages/explanation/disclaimer/"
         )
+        self._set_task_pipeline_llm()
 
     @property
     def llm_to_use(self) -> LLM_MODELS:
         _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
         return _llm_to_use
+
+    def _set_task_pipeline_llm(self) -> None:
+        self.pipeline_manager.llm = self.llm_to_use
 
     # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
@@ -63,7 +67,6 @@ class VizroAI:
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
-        self.pipeline_manager.llm = self.llm_to_use
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
         chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
