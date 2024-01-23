@@ -5,7 +5,7 @@ pages:
 
           ### Components
 
-          Main components of vizro include **charts**, **tables**, **cards** and **buttons**.
+          Main components of vizro include **charts**, **tables**, **cards**, **buttons** and **tabs**.
         href: /graphs
         type: card
       - text: |
@@ -265,6 +265,44 @@ pages:
           ## Custom actions are currently only possible via python configuration
         type: card
     title: Custom Actions
+  - components:
+      - tabs:
+          - title: Tab I
+            type: container
+            components:
+              - type: graph
+                figure:
+                  _target_: bar
+                  data_frame: gapminder_2007
+                  title: Graph 1
+                  x: continent
+                  y: lifeExp
+                  color: continent
+              - type: graph
+                figure:
+                  _target_: box
+                  data_frame: gapminder_2007
+                  title: Graph 2
+                  x: continent
+                  y: lifeExp
+                  color: continent
+          - title: Tab II
+            type: container
+            components:
+              - type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: gapminder_2007
+                  title: Graph 3
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+        type: tabs
+    controls:
+      - type: filter
+        column: continent
+    title: Tabs
 navigation:
   nav_selector:
     type: nav_bar
@@ -281,6 +319,7 @@ navigation:
             - Table
             - Cards
             - Button
+            - Tabs
           Controls:
             - Filters
             - Parameters

@@ -35,7 +35,7 @@ home = vm.Page(
 
                 ### Components
 
-                Main components of vizro include **charts**, **tables**, **cards** and **buttons**.
+                Main components of vizro include **charts**, **tables**, **cards**, **buttons** and **tabs**.
                 """,
             href="/graphs",
         ),
@@ -173,6 +173,55 @@ button = vm.Page(
         ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+)
+
+tabs = vm.Page(
+    title="Tabs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab I",
+                    components=[
+                        vm.Graph(
+                            figure=px.bar(
+                                gapminder_2007,
+                                title="Graph 1",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.box(
+                                gapminder_2007,
+                                title="Graph 2",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Tab II",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                gapminder_2007,
+                                title="Graph 3",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+    controls=[vm.Filter(column="continent")],
 )
 
 # CONTROLS --------------------------------------------------------------------
@@ -456,7 +505,7 @@ custom_actions = vm.Page(
 )
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, table, cards, button]
+components = [graphs, table, cards, button, tabs]
 controls = [filters, parameters]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
@@ -471,7 +520,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "Table", "Cards", "Button"],
+                        "Components": ["Graphs", "Table", "Cards", "Button", "Tabs"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
