@@ -29,5 +29,5 @@
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-02);
+  border-color: var(--main-container-bg-color);
 }
