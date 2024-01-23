@@ -19,7 +19,7 @@
 }
 
 .tab__content {
-  height: calc(100% - 28px);
+  height: 100%;
 }
 
 .tab__title {
@@ -51,4 +51,8 @@
 
 .tab__title[data-active] .mantine-Tabs-tabLabel {
   color: var(--text-active);
+}
+
+.tab__content .container__title {
+  display: none;
 }
