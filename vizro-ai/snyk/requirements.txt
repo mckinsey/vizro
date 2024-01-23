@@ -1,5 +1,4 @@
 pandas
-pyarrow>=14.0.1
 tabulate
 openai>=0.27.8,<1.0.0
 langchain==0.0.329

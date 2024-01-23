@@ -52,5 +52,7 @@ source_pkgs = ["vizro_ai"]
 filterwarnings = [
   "error",
   # Ignore until pandas is made compatible with Python 3.12:
-  "ignore:.*utcfromtimestamp:DeprecationWarning"
+  "ignore:.*utcfromtimestamp:DeprecationWarning",
+  # Ignore until pandas 3 is released:
+  "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
 ]
