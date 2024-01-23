@@ -11,14 +11,14 @@ except ImportError:  # pragma: no cov
 
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
-    Button,
     Checklist,
     Dropdown,
     RadioItems,
     RangeSlider,
     Slider,
 )
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._layout import set_layout
+from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -38,21 +38,9 @@ class Form(VizroBaseModel):
     components: List[_FormComponentType]
     layout: Layout = None  # type: ignore[assignment]
 
-    @validator("layout", always=True)
-    def set_layout(cls, layout, values):
-        from vizro.models import Layout
-
-        if "components" not in values:
-            return layout
-
-        if layout is None:
-            grid = [[i] for i in range(len(values["components"]))]
-            return Layout(grid=grid)
-
-        unique_grid_idx = get_unique_grid_component_ids(layout.grid)
-        if len(unique_grid_idx) != len(values["components"]):
-            raise ValueError("Number of form and grid components need to be the same.")
-        return layout
+    # Re-used validators
+    _validate_components = validator("components", allow_reuse=True, always=True)(set_components)
+    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call
     def pre_build(self):
@@ -66,49 +54,7 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        component_container = [
-            html.Div(
-                component.build(),
-                style={
-                    "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
-                    "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
-                },
-            )
-            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
-        ]
-        return self._make_form_layout(component_container)
-
-    def _make_form_layout(self, component_container):
-        return html.Div(
-            component_container,
-            style={
-                "gridRowGap": self.layout.row_gap,
-                "gridColumnGap": self.layout.col_gap,
-                "gridTemplateColumns": f"repeat({len(self.layout.grid[0])}, minmax({self.layout.col_min_width}, 1fr))",
-                "gridTemplateRows": f"repeat({len(self.layout.grid)}, minmax({self.layout.row_min_height}, 1fr))",
-            },
-            className="component_container_grid",
-            id=self.id,
-        )
-
-
-if __name__ == "__main__":
-    from vizro.models import Layout
-
-    Form.update_forward_refs(Layout=Layout)
-
-    print(  # noqa: T201
-        repr(
-            Form(
-                layout=Layout(grid=[[i] for i in range(7)], row_min_height="200px"),
-                components=[
-                    Checklist(options=["Option 1", "Option 2", "Option 3"]),
-                    Dropdown(options=["Option 1", "Option 2", "Option 3"]),
-                    RadioItems(options=["Option 1", "Option 2", "Option 3"]),
-                    Slider(min=0, max=5, step=1),
-                    RangeSlider(min=0, max=5, step=1),
-                    Button(id="form"),
-                ],
-            )
-        )
-    )
+        components_container = self.layout.build()
+        for component_idx, component in enumerate(self.components):
+            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        return html.Div(components_container, id=self.id)
