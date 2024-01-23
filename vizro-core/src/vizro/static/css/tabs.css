@@ -1,4 +1,11 @@
-.tabs-list {
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.tabs__list {
   align-items: flex-start;
   align-self: stretch;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
@@ -7,48 +14,41 @@
   height: 32px;
 }
 
-.tab-label {
+.tabs__panel {
+  height: calc(100% - 60px);
+}
+
+.tab__content {
+  height: calc(100% - 28px);
+}
+
+.tab__title {
   align-items: flex-start;
   border-bottom: 1px solid transparent;
+  color: var(--text-secondary);
   display: flex;
   font-size: 16px;
-  color: var(--text-secondary);
   height: 32px;
   line-height: 20px;
   margin: 0;
   padding: 0;
 }
 
-.tab-label:hover {
+.tab__title:hover {
   background-color: transparent;
   border-bottom: 1px solid var(--text-active);
 }
 
-.tab-label[data-active] {
+.tab__title[data-active] {
   border-bottom: 1px solid var(--text-active);
   color: var(--text-active);
 }
 
-.tab-label[data-active]:hover {
+.tab__title[data-active]:hover {
   background-color: transparent;
   border-color: 1px solid var(--text-active);
 }
 
-.tab-label[data-active] .mantine-Tabs-tabLabel {
+.tab__title[data-active] .mantine-Tabs-tabLabel {
   color: var(--text-active);
-}
-
-.tab-body {
-  height: 100%;
-}
-
-.tabs-panel {
-  height: 100%;
-}
-
-.tabs-root {
-  flex-direction: column;
-  display: flex;
-  height: 100%;
-  gap: 20px;
 }

@@ -25,21 +25,20 @@ class Tabs(VizroBaseModel):
 
     @_log_call
     def build(self):
+        tabs_list = dmc.TabsList(
+            [dmc.Tab(tab.title, value=tab.id, className="tab__title") for tab in self.tabs],
+            className="tabs__list",
+        )
+
+        tabs_panel = [
+            dmc.TabsPanel(html.Div([tab.build()], className="tab__content"), value=tab.id, className="tabs__panel")
+            for tab in self.tabs
+        ]
+
         return dmc.Tabs(
             id=self.id,
             value=self.tabs[0].id,
-            children=[
-                dmc.TabsList(
-                    [dmc.Tab(tab.title, value=tab.id, className="tab-label") for tab in self.tabs],
-                    className="tabs-list",
-                )
-            ]
-            + [
-                dmc.TabsPanel(
-                    html.Div(children=[tab.build()], className="tab-body"), value=tab.id, className="tabs-panel"
-                )
-                for tab in self.tabs
-            ],
+            children=[tabs_list, *tabs_panel],
             persistence=True,
-            className="tabs-root",
+            className="tabs",
         )
