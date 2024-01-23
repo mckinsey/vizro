@@ -1,14 +1,13 @@
 dash>=2.14.1
 dash_bootstrap_components
-pandas<2.2
-pyarrow>=14.0.1
+pandas
 pydantic>=1.10.13
 dash_mantine_components
-ipython>=8.10.0
 numpy>=1.22.2
-tornado>=6.3.2
 setuptools>=65.5.1
 werkzeug>=3.0.1
-MarkupSafe
-kedro>=0.17.3, <0.19.2
+kedro>=0.17.3
+kedro-datasets
 wheel>=0.38.0
+ipython>=8.10.0
+tornado>=6.3.2

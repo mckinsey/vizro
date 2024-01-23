@@ -53,7 +53,7 @@ class Vizro:
         )
 
     def build(self, dashboard: Dashboard):
-        """Builds the dashboard.
+        """Builds the `dashboard`.
 
         Args:
             dashboard (Dashboard): [`Dashboard`][vizro.models.Dashboard] object.
@@ -99,7 +99,7 @@ class Vizro:
 
     @staticmethod
     def _reset():
-        """Private method that clears all state in the vizro app."""
+        """Private method that clears all state in the `Vizro` app."""
         data_manager._clear()
         model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
@@ -111,7 +111,7 @@ class Vizro:
 
     @staticmethod
     def _get_external_assets(new_path: str, folder: Path, extension: str) -> List[str]:
-        """Returns a list of paths to assets with given extension in folder, prefixed with new_path.
+        """Returns a list of paths to assets with given `extension` in `folder`, prefixed with `new_path`.
 
         e.g. with new_path="/vizro", extension="css", folder="/path/to/vizro/vizro-core/src/vizro/static",
         we will get ["/vizro/css/accordion.css", "/vizro/css/button.css", ...].
