@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Introduce `Tabs` model as a new `Page` component ([#279](https://github.com/mckinsey/vizro/pull/279))
+- Introduce `Tabs` model as a new `Page` component. ([#280](https://github.com/mckinsey/vizro/pull/280))
 
 <!--
 ### Removed
