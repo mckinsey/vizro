@@ -15,7 +15,6 @@ classifiers = [
 ]
 dependencies = [
   "pandas",
-  "pyarrow>=14.0.1",  # needed for pandas 3.0, version pinned by Snyk to avoid a vulnerability
   "tabulate",
   "openai>=0.27.8,<1.0.0",  # TODO add support for openai>=1.0.0
   "langchain==0.0.329",
@@ -52,6 +51,8 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
-  # Ignore this warning here as it comes from pandas until pandas is made compatible with Python 3.12
-  'ignore:.*utcfromtimestamp.*:DeprecationWarning'
+ # Ignore until pandas is made compatible with Python 3.12:
+  "ignore:.*utcfromtimestamp:DeprecationWarning",
+  # Ignore until pandas 3 is released:
+  #"ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
 ]

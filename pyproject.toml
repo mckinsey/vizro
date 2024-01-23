@@ -1,3 +1,5 @@
+# THIS IS NOT DESCRIBING A PACKAGE, but the DEV environment of this mono-repo
+# In order to install the packages of this mono-repo from source, refer to the pyproject.toml in the relevant folder
 [project]
 authors = [
   {name = "Vizro Team"}
