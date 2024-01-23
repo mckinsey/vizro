@@ -18,6 +18,13 @@ if TYPE_CHECKING:
 
 
 class Tabs(VizroBaseModel):
+    """Tabs to group together a set of containers on a page.
+
+    Args:
+        type (Literal["tabs"]): Defaults to `"tabs"`.
+        tabs (List[Container]): See [`Container`][vizro.models.Container]. Defaults to `[]`.
+    """
+
     type: Literal["tabs"] = "tabs"
     tabs: List[Container] = []
 
