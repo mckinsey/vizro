@@ -50,7 +50,7 @@ def set_layout(cls, layout, values):
 
 
 def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
-    """Converts matrix coordinates from user `grid` to one combined grid area spanned by component i.
+    """Converts `matrix` coordinates from user `grid` to one combined grid area spanned by component i.
 
     Required for validation of grid areas spanned by components.
 
@@ -73,7 +73,7 @@ def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
 
 
 def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> List[ColRowGridLines]:
-    """Converts matrix coordinates from user `grid` to list of grid areas spanned by each placement of component i.
+    """Converts `matrix` coordinates from user `grid` to list of grid areas spanned by each placement of component i.
 
     Required for validation of grid areas spanned by spaces, where the combined area does not need to be rectangular.
 
@@ -97,7 +97,7 @@ def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> List[ColRowGridLine
 
 
 def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
-    """Checks if rectangles r1 and r2 overlap in areas.
+    """Checks if rectangles `r1` and `r2` overlap in areas.
 
     1. Computes the min and max of r1 and r2 on both axes.
     2. Computes the boundaries of the intersection rectangle (x1=left, x2=right, y1=top, y2=bottom)
@@ -120,7 +120,7 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
 
 
 def _validate_grid_areas(grid_areas: List[ColRowGridLines]) -> None:
-    """Validates grid areas spanned by screen components in `Layout`."""
+    """Validates `grid_areas` spanned by screen components in `Layout`."""
     for i, r1 in enumerate(grid_areas):
         for r2 in grid_areas[i + 1 :]:
             if _do_rectangles_overlap(r1, r2):
