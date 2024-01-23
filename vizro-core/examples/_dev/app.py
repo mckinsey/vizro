@@ -1,7 +1,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
 from vizro.tables import dash_data_table
 
 df = px.data.gapminder()
@@ -46,7 +45,7 @@ dashboard = vm.Dashboard(
     title="Dashboard Title",
     pages=[
         table_and_container,
-    ]
+    ],
 )
 
 if __name__ == "__main__":
