@@ -88,6 +88,7 @@
   --tags-text-color: var(--tags-dark-mode-text-color);
   --tooltip-text-primary: rgba(20, 23, 33, 0.88);
   --status-warning: var(--status-dark-mode-warning);
+  --tooltip-bg-color: var(--primary-dark-500);
 }
 
 .vizro_light {
@@ -149,4 +150,5 @@
   --tags-text-color: var(--tags-light-mode-text-color);
   --tooltip-text-primary: rgba(255, 255, 255, 0.88);
   --status-warning: var(--status-light-mode-warning);
+  --tooltip-bg-color: var(--primary-light-100);
 }
