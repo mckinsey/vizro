@@ -20,7 +20,8 @@ classifiers = [
 dependencies = [
   "dash>=2.14.1",  # 2.14.1 needed for compatibility with werkzeug
   "dash_bootstrap_components",
-  "pandas",
+  "pandas<2.2",
+  "pyarrow>=14.0.1",  # needed for pandas 3.0, version pinned by Snyk to avoid a vulnerability
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
   "dash_mantine_components",
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
@@ -39,7 +40,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
+  "kedro>=0.17.3, <0.19.2",
   "wheel>=0.38.0"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413
 ]
 
@@ -57,7 +58,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
-fail_under = 90
+fail_under = 91
 show_missing = true
 skip_covered = true
 
