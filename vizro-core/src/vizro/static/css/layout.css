@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
   width: 100vw;
 }
 
@@ -183,7 +182,7 @@ div.dashboard_container .custom-tooltip {
   display: flex;
   flex: 1 1 0;
   flex-direction: row;
-  height: calc(100% - 64px);
+  height: calc(100vh - 64px);
 }
 
 #dashboard-title {
