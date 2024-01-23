@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def _all_hidden(components: List[Component]):
-    """Returns True if all components are either None and/or have hidden=True."""
+    """Returns True if all `components` are either None and/or have hidden=True."""
     return all(component is None or getattr(component, "hidden", False) for component in components)
 
 
