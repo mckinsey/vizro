@@ -53,6 +53,6 @@
   color: var(--text-active);
 }
 
-.tab__content .container__title {
+.tab__content > .page-component-container > .container__title {
   display: none;
 }

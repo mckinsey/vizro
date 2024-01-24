@@ -260,8 +260,56 @@ multiple_tabs = vm.Page(
 )
 
 
+tabs_with_nested_containers = vm.Page(
+    title="Tabs with nested containers",
+    components=[
+        vm.Tabs(
+            tabs=[
+                # LN: Does it make more sense to put the outer container title as tab label or the innermost?
+                vm.Container(
+                    title="Tab 1",
+                    components=[
+                        vm.Container(
+                            title="Nested Container Title",
+                            components=[
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        gapminder,
+                                        title="Graph_441",
+                                        x="gdpPercap",
+                                        y="lifeExp",
+                                        size="pop",
+                                        color="continent",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container Title",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        title="Graph_45",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+            ],
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
-    title="Dashboard Title", pages=[containers, single_tabs, single_tabs_action, tabs_and_component, multiple_tabs]
+    title="Dashboard Title",
+    pages=[containers, single_tabs, single_tabs_action, tabs_and_component, multiple_tabs, tabs_with_nested_containers],
 )
 
 if __name__ == "__main__":
