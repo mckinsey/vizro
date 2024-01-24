@@ -1,9 +1,8 @@
 """Unit tests for vizro.models.Card."""
-import json
 
 import dash_bootstrap_components as dbc
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -12,20 +11,6 @@ except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 import vizro.models as vm
-
-
-@pytest.fixture
-def expected_card():
-    text = dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id")
-    button = html.Div(
-        dbc.Button(
-            href="https://www.google.com",
-            className="card_button",
-        ),
-        className="button_container",
-    )
-
-    return html.Div([text, button], className="nav_card_container", id="card_id_outer")
 
 
 class TestCardInstantiation:
@@ -60,12 +45,18 @@ class TestCardInstantiation:
 class TestBuildMethod:
     """Tests build method."""
 
-    def test_card_build(self, expected_card):
-        card = vm.Card(text="Hello", id="card_id", href="https://www.google.com")
+    def test_card_build(self):
+        card = vm.Card(text="Hello", href="https://www.google.com")
         card = card.build()
-        result = json.loads(json.dumps(card, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_card, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+
+        expected_card = html.Div(
+            [
+                dcc.Markdown("Hello", dangerously_allow_html=False),
+                html.Div(dbc.Button(href="https://www.google.com")),
+            ],
+        )
+
+        assert_component_equal(card, expected_card, keys_to_strip={"id", "className"})
 
     @pytest.mark.parametrize(
         "test_text, expected",

@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Table."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dash_table, dcc, html
 
 try:
@@ -26,38 +25,6 @@ def dash_table_with_arguments():
 @pytest.fixture
 def dash_table_with_str_dataframe():
     return dash_data_table(data_frame="gapminder")
-
-
-@pytest.fixture
-def expected_table():
-    return dcc.Loading(
-        html.Div(
-            [
-                None,
-                html.Div(dash_table.DataTable(), id="text_table"),
-            ],
-            className="table-container",
-            id="text_table_outer",
-        ),
-        color="grey",
-        parent_className="loading-container",
-    )
-
-
-@pytest.fixture
-def expected_table_with_id():
-    return dcc.Loading(
-        html.Div(
-            [
-                None,
-                html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
-            ],
-            className="table-container",
-            id="text_table_outer",
-        ),
-        color="grey",
-        parent_className="loading-container",
-    )
 
 
 @pytest.fixture
@@ -170,27 +137,44 @@ class TestPreBuildTable:
 
 
 class TestBuildTable:
-    def test_table_build_mandatory_only(self, standard_dash_table, expected_table):
+    def test_table_build_mandatory_only(self, standard_dash_table):
         table = vm.Table(
-            id="text_table",
             figure=standard_dash_table,
         )
 
         table.pre_build()
+        built_table = table.build()
+        expected_table = dcc.Loading(
+            html.Div(
+                [
+                    None,
+                    html.Div(dash_table.DataTable()),
+                ],
+            ),
+        )
 
-        result = json.loads(json.dumps(table.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_table, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        assert_component_equal(
+            built_table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
+        )
 
-    def test_table_build_with_id(self, dash_data_table_with_id, filter_interaction_action, expected_table_with_id):
+    def test_table_build_with_underlying_dt_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(
-            id="text_table",
             figure=dash_data_table_with_id,
             actions=[filter_interaction_action],
         )
 
         table.pre_build()
+        built_table = table.build()
 
-        result = json.loads(json.dumps(table.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_table_with_id, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        expected_table = dcc.Loading(
+            html.Div(
+                [
+                    None,
+                    html.Div(dash_table.DataTable(id="underlying_table_id")),
+                ],
+            ),
+        )
+
+        assert_component_equal(
+            built_table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
+        )

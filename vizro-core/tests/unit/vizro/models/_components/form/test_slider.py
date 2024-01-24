@@ -1,8 +1,7 @@
 """Unit tests for hyphen.models.slider."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -216,7 +215,4 @@ class TestBuildMethod:
         slider = vm.Slider(min=0, max=10, step=1, value=5, id="slider_id", title="Test title")
         slider = slider.build()
 
-        result = json.loads(json.dumps(slider, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_slider, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
+        assert_component_equal(slider, expected_slider)
