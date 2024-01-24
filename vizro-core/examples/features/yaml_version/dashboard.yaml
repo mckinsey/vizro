@@ -5,7 +5,7 @@ pages:
 
           ### Components
 
-          Main components of vizro include **charts**, **tables**, **cards**, **buttons** and **tabs**.
+          Main components of vizro include **charts**, **tables**, **cards**, **containers**, **buttons** and **tabs**.
         href: /graphs
         type: card
       - text: |
@@ -21,7 +21,7 @@ pages:
 
           ### Actions
 
-          Standard predefined actions are made available including **export data** and **filer interactions**.
+          Standard predefined actions are made available including **export data** and **filter interactions**.
         href: /export-data
         type: card
       - text: |
@@ -266,6 +266,42 @@ pages:
         type: card
     title: Custom Actions
   - components:
+      - components:
+          - figure:
+              _target_: scatter
+              data_frame: iris
+              x: sepal_length
+              y: petal_width
+              color: species
+              title: Container I - Scatter
+            type: graph
+          - figure:
+              _target_: bar
+              data_frame: iris
+              x: sepal_length
+              y: petal_width
+              color: species
+              title: Container I - Bar
+            type: graph
+        layout:
+          grid: [[0, 1]]
+        type: container
+        title: Container I
+      - components:
+          - figure:
+              _target_: scatter
+              data_frame: iris
+              x: sepal_width
+              y: sepal_length
+              color: species
+              marginal_y: violin
+              marginal_x: box
+              title: Container II - Scatter
+            type: graph
+        type: container
+        title: Container II
+    title: Containers
+  - components:
       - tabs:
           - title: Tab I
             type: container
@@ -299,10 +335,10 @@ pages:
                   size: pop
                   color: continent
         type: tabs
-    controls:
-      - type: filter
-        column: continent
-    title: Tabs
+  controls:
+    - type: filter
+      column: continent
+  title: Tabs
 navigation:
   nav_selector:
     type: nav_bar
@@ -319,6 +355,7 @@ navigation:
             - Table
             - Cards
             - Button
+            - Containers
             - Tabs
           Controls:
             - Filters
