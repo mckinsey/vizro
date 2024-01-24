@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
 gapminder = px.data.gapminder()
@@ -48,32 +48,31 @@ containers = vm.Page(
 single_tabs = vm.Page(
     title="Single Tabs",
     components=[
+        vm.Graph(
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
         vm.Tabs(
             tabs=[
                 vm.Container(
                     title="Tab I",
                     components=[
                         vm.Graph(
-                            id="graph_1",
-                            figure=px.line(
-                                gapminder,
-                                title="Graph_1",
-                                x="year",
-                                y="lifeExp",
-                                color="continent",
-                                line_group="country",
-                                hover_name="country",
-                            ),
-                        ),
-                        vm.Graph(
-                            id="graph_2",
+                            id="bar_relation_2007",
                             figure=px.box(
                                 gapminder,
-                                title="Graph_3",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
+                                custom_data=["continent"],
                             ),
+                            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
                         ),
                     ],
                 ),
@@ -107,15 +106,6 @@ single_tabs = vm.Page(
         ),
     ],
     controls=[
-        vm.Parameter(
-            targets=[
-                "graph_1.y",
-                "graph_2.y",
-                "graph_3.y",
-                "graph_4.y",
-            ],
-            selector=vm.RadioItems(options=["lifeExp", "pop", "gdpPercap"], title="Select variable"),
-        ),
         vm.Filter(column="continent"),
     ],
 )
