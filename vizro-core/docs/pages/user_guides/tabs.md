@@ -96,7 +96,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
                             title: Graph 2
                             x: continent
                             y: lifeExp
-                            color: continent 
+                            color: continent
                   - title: Tab II
                     type: container
                     components:
