@@ -1,4 +1,7 @@
-import { _update_dashboard_theme } from "./models/dashboard.js";
+import {
+  _update_dashboard_theme,
+  _collapse_nav_panel,
+} from "./models/dashboard.js";
 import { _update_range_slider_values } from "./models/range_slider.js";
 import { _update_slider_values } from "./models/slider.js";
 import {
@@ -15,5 +18,6 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     trigger_to_global_store: _trigger_to_global_store,
     gateway: _gateway,
     after_action_cycle_breaker: _after_action_cycle_breaker,
+    collapse_nav_panel: _collapse_nav_panel,
   },
 });
