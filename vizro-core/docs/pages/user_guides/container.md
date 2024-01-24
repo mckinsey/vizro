@@ -123,46 +123,88 @@ This nesting capability allows users to create more complex layouts and manage r
 
 To create nested containers, simply add a `Container` to the `components` argument of another `Container`.
 
-!!! example "Container"
+!!! example "Nested Containers"
     === "app.py"
         ```py
 
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-
-        iris = px.data.iris()
-
+        
+        df = px.data.gapminder()
+        
         page = vm.Page(
-            title="Containers",
+            title="Nested Containers",
             components=[
                 vm.Container(
-                    title="Container I",
-                    layout=vm.Layout(grid=[[0, 1]]),
+                    title="Container Title",
+                    layout=vm.Layout(grid=[[0, 1], [0, 1]], , col_gap="80px"),
                     components=[
                         vm.Container(
-                    title="Container II",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(
-                                iris,
-                                x="sepal_width",
-                                y="sepal_length",
-                                color="species",
-                                marginal_y="violin",
-                                marginal_x="box",
-                                title="Container II - Scatter",
-                            )
+                            title="Nested Container I",
+                            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+                            components=[
+                                vm.Graph(
+                                    figure=px.line(
+                                        df,
+                                        title="Graph 1 - Nested Container I",
+                                        x="year",
+                                        y="lifeExp",
+                                        color="continent",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        df,
+                                        title="Graph 2 - Nested Container I",
+                                        x="gdpPercap",
+                                        y="lifeExp",
+                                        size="pop",
+                                        color="continent",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    figure=px.box(
+                                        df,
+                                        title="Graph 3 - Nested Container I",
+                                        x="continent",
+                                        y="lifeExp",
+                                        color="continent",
+                                    ),
+                                ),
+                            ],
                         ),
-                    ],
-                ),
+                        vm.Container(
+                            title="Nested Container II",
+                            layout=vm.Layout(grid=[[0, 1]]),
+                            components=[
+                                vm.Graph(
+                                    figure=px.line(
+                                        df,
+                                        title="Graph 4 - Nested Container II",
+                                        x="year",
+                                        y="lifeExp",
+                                        color="continent",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        df,
+                                        title="Graph 5 - Nested Container II",
+                                        x="gdpPercap",
+                                        y="lifeExp",
+                                        size="pop",
+                                        color="continent",
+                                    ),
+                                ),
+                            ],
+                        ),
                     ],
                 ),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
@@ -208,6 +250,6 @@ To create nested containers, simply add a `Container` to the `components` argume
             title: Containers
         ```
     === "Result"
-        [![Container]][Container]
+        [![NestedContainer]][NestedContainer]
 
-    [Container]: ../../assets/user_guides/components/containers.png
+    [Container]: ../../assets/user_guides/components/nested_containers.png
