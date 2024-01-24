@@ -335,10 +335,10 @@ pages:
                   size: pop
                   color: continent
         type: tabs
-  controls:
-    - type: filter
-      column: continent
-  title: Tabs
+    controls:
+      - type: filter
+        column: continent
+    title: Tabs
 navigation:
   nav_selector:
     type: nav_bar
