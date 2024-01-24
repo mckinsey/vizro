@@ -7,34 +7,28 @@ df = px.data.gapminder()
 
 page = vm.Page(
     title="Nested Containers",
-    layout=vm.Layout(
-        grid=[[0, 1], [0, 1]],
-        row_min_height="400px",
-    ),
     components=[
         vm.Container(
-            title="Container",
-            layout=vm.Layout(grid=[[0, 1], [0, 1]]),
+            title="Container Title",
+            layout=vm.Layout(grid=[[0, 1], [0, 1]], col_gap="80px"),
             components=[
                 vm.Container(
-                    title="Nested Container",
+                    title="Nested Container I",
                     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
                     components=[
                         vm.Graph(
                             figure=px.line(
                                 df,
-                                title="Graph 1 - Nested Container",
+                                title="Graph 1 - Nested Container I",
                                 x="year",
                                 y="lifeExp",
                                 color="continent",
-                                line_group="country",
-                                hover_name="country",
                             ),
                         ),
                         vm.Graph(
                             figure=px.scatter(
                                 df,
-                                title="Graph 2 - Nested Container",
+                                title="Graph 2 - Nested Container I",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -44,7 +38,7 @@ page = vm.Page(
                         vm.Graph(
                             figure=px.box(
                                 df,
-                                title="Graph 3 - Nested Container",
+                                title="Graph 3 - Nested Container I",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
@@ -52,16 +46,30 @@ page = vm.Page(
                         ),
                     ],
                 ),
-                vm.Graph(
-                    figure=px.line(
-                        df,
-                        title="Graph 4 - Container",
-                        x="year",
-                        y="lifeExp",
-                        color="continent",
-                        line_group="country",
-                        hover_name="country",
-                    ),
+                vm.Container(
+                    title="Nested Container II",
+                    layout=vm.Layout(grid=[[0, 1]]),
+                    components=[
+                        vm.Graph(
+                            figure=px.line(
+                                df,
+                                title="Graph 4 - Nested Container II",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.scatter(
+                                df,
+                                title="Graph 5 - Nested Container II",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
                 ),
             ],
         ),
