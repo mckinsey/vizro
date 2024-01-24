@@ -8,7 +8,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 2. Insert your [`Containers`][vizro.models.Container] into the `components` argument of the [`Tabs`][vizro.models.Tabs]
 
 By using the [`Tabs`][vizro.models.Tabs], the following applies:
-- If targets are not specified, [`Filters`][vizro.models.Filter] affect all components on all tabs, i.e., they also filter the components on the non-opened tab
+- [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
 - The `title` of the outer [`Container`][vizro.models.Container] inserted into `Tabs.components` will be displayed as a tab label, and the title will removed from the `Container`
 - If you want to keep the `Container.title` inside the Tab, you can apply custom CSS
 - If you want a different `Container.title` inside the tab, add a nested [`Container`][vizro.models.Container]
