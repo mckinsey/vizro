@@ -48,21 +48,22 @@ containers = vm.Page(
 single_tabs = vm.Page(
     title="Single Tabs",
     components=[
-        vm.Graph(
-            id="scatter_relation_2007",
-            figure=px.scatter(
-                gapminder,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
         vm.Tabs(
             tabs=[
                 vm.Container(
                     title="Tab I",
                     components=[
+                        vm.Graph(
+                            id="graph_3",
+                            figure=px.scatter(
+                                gapminder,
+                                title="Graph_4",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
                         vm.Graph(
                             id="bar_relation_2007",
                             figure=px.box(
@@ -80,23 +81,22 @@ single_tabs = vm.Page(
                     title="Tab II",
                     components=[
                         vm.Graph(
-                            id="graph_3",
-                            figure=px.scatter(
-                                gapminder,
-                                title="Graph_4",
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
-                        vm.Graph(
                             id="graph_4",
                             figure=px.box(
                                 gapminder,
                                 title="Graph_5",
                                 x="continent",
                                 y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            id="scatter_relation_2007",
+                            figure=px.scatter(
+                                gapminder,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
                                 color="continent",
                             ),
                         ),
@@ -295,10 +295,73 @@ tabs_with_nested_containers = vm.Page(
     ],
 )
 
+tabs_without_charts = vm.Page(
+    title="Tabs without Graphs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab I",
+                    components=[
+                        vm.Table(
+                            figure=dash_data_table(
+                                id="dash_datatable-single",
+                                data_frame=gapminder,
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.box(
+                                gapminder,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                                custom_data=["continent"],
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Tab II",
+                    components=[
+                        vm.Card(
+                            text="""
+                                ![](assets/images/icons/collections.svg#icon-top)
+
+                                ### Continent Summary
+
+                                Summarizing the main findings for each continent.
+                            """,
+                        ),
+                        vm.Graph(
+                            figure=px.box(
+                                gapminder,
+                                title="Graph_5",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
+)
 
 dashboard = vm.Dashboard(
     title="Dashboard Title",
-    pages=[containers, single_tabs, single_tabs_action, tabs_and_component, multiple_tabs, tabs_with_nested_containers],
+    pages=[
+        containers,
+        single_tabs,
+        single_tabs_action,
+        tabs_and_component,
+        multiple_tabs,
+        tabs_with_nested_containers,
+        tabs_without_charts,
+    ],
 )
 
 if __name__ == "__main__":
