@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed bug on accordion, ensuring the relevant accordion section is opened when navigating from nav cards or by typing the path directly in browser. ([#276](https://github.com/mckinsey/vizro/pull/276))
+- Fix bug on accordion group not opening properly when re-directing to active page via navigation card or URL path. ([#276](https://github.com/mckinsey/vizro/pull/276))
 
 <!--
 ### Security
