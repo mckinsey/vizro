@@ -214,40 +214,64 @@ To create nested containers, simply add a `Container` to the `components` argume
         pages:
           - components:
               - components:
-                  - figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_length
-                      y: petal_width
-                      color: species
-                      title: Container I - Scatter
-                    type: graph
-                  - figure:
-                      _target_: bar
-                      data_frame: iris
-                      x: sepal_length
-                      y: petal_width
-                      color: species
-                      title: Container I - Bar
-                    type: graph
+                  - components:
+                      - figure:
+                          _target_: line
+                          data_frame: gapminder
+                          x: year
+                          y: lifeExp
+                          color: continent
+                          title: Graph 1 - Nested Container I
+                        type: graph
+                      - figure:
+                          _target_: scatter
+                          data_frame: gapminder
+                          x: gdpPercap
+                          y: lifeExp
+                          size: pop
+                          color: continent
+                          title: Graph 2 - Nested Container I
+                        type: graph
+                      - figure:
+                          _target_: box
+                          data_frame: gapminder
+                          x: continent
+                          y: lifeExp
+                          color: continent
+                          title: Graph 3 - Nested Container I
+                        type: graph
+                    layout:
+                      grid: [[ 0, 1 ], [2, 2]]
+                    type: container
+                    title: Nested Container I
+                  - components:
+                      - figure:
+                          _target_: line
+                          data_frame: gapminder
+                          x: year
+                          y: lifeExp
+                          color: continent
+                          title: Graph 4 - Nested Container II
+                        type: graph
+                      - figure:
+                          _target_: scatter
+                          data_frame: gapminder
+                          x: gdpPercap
+                          y: lifeExp
+                          size: pop
+                          color: continent
+                          title: Graph 5 - Nested Container II
+                        type: graph
+                    layout:
+                      grid: [[ 0, 1 ]]
+                    type: container
+                    title: Nested Container I
                 layout:
-                  grid: [[0, 1]]
+                  grid: [[0, 1], [0, 1]]
+                  col_gap: 80px
                 type: container
-                title: Container I
-              - components:
-                  - figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_width
-                      y: sepal_length
-                      color: species
-                      marginal_y: violin
-                      marginal_x: box
-                      title: Container II - Scatter
-                    type: graph
-                type: container
-                title: Container II
-            title: Containers
+                title: Container Title
+            title: Nested Containers
         ```
     === "Result"
         [![NestedContainer]][NestedContainer]
