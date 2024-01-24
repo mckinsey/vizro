@@ -1,5 +1,6 @@
 # How to use tabs
 
+Tabs organize and separate groups of related content in a dashboard, letting users navigate between different sections or views within a click.
 This guide shows you how to use tabs to organize your containers into subsections inside the dashboard.
 
 To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
