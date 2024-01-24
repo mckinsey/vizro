@@ -17,7 +17,7 @@ nav:
           - Tables: pages/user_guides/table.md
           - Cards & Buttons: pages/user_guides/card_button.md
           - Containers: pages/user_guides/container.md
-
+          - Tabs: pages/user_guides/tabs.md
       - Controls:
           - Filters: pages/user_guides/filters.md
           - Parameters: pages/user_guides/parameters.md

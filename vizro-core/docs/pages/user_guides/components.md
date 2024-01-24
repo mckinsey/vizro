@@ -37,5 +37,12 @@ listed below to fill your dashboard with visuals.
     Use containers to organize your page components into subsections inside the dashboard.
 
     [:octicons-arrow-right-24: View User Guide](container.md)
+- :material-tab-plus:{ .lg .middle } __Tabs__
+
+    ---
+
+    Use tabs to organize your containers into subsections inside the dashboard.
+
+    [:octicons-arrow-right-24: View User Guide](tabs.md)
 
 </div>
