@@ -130,9 +130,9 @@ To create nested containers, simply add a `Container` to the `components` argume
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         df = px.data.gapminder()
-        
+
         page = vm.Page(
             title="Nested Containers",
             components=[
