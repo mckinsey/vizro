@@ -40,6 +40,13 @@ class Container(VizroBaseModel):
 
     @_log_call
     def build(self):
+        # Title is not displayed if Container is inside Tabs using CSS combinators (only applies to outer container)
+        # Other options we might want to consider in the future to hide the title:
+        # 1) Argument inside Container.build that flags if used inside Tabs, then sets hidden attribute for the heading
+        # or just doesn't supply the element at all
+        # 2) Logic inside Tabs.build that sets hidden=True for the heading or uses del to remove the heading via
+        # providing an ID to the heading and accessing it in the component tree
+        # 3) New field in Container like short_title to allow tab label to be set independently
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

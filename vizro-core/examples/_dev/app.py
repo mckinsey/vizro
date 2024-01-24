@@ -265,7 +265,6 @@ tabs_with_nested_containers = vm.Page(
     components=[
         vm.Tabs(
             tabs=[
-                # LN: Does it make more sense to put the outer container title as tab label or the innermost?
                 vm.Container(
                     title="Tab 1",
                     components=[

@@ -22,11 +22,11 @@ class Tabs(VizroBaseModel):
 
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.
-        tabs (List[Container]): See [`Container`][vizro.models.Container]. Defaults to `[]`.
+        tabs (List[Container]): See [`Container`][vizro.models.Container].
     """
 
     type: Literal["tabs"] = "tabs"
-    tabs: List[Container] = []
+    tabs: List[Container]
 
     _validate_tabs = validator("tabs", allow_reuse=True, always=True)(_validate_min_length)
 
@@ -37,7 +37,7 @@ class Tabs(VizroBaseModel):
             className="tabs__list",
         )
 
-        tabs_panel = [
+        tabs_panels = [
             dmc.TabsPanel(html.Div([tab.build()], className="tab__content"), value=tab.id, className="tabs__panel")
             for tab in self.tabs
         ]
@@ -45,7 +45,7 @@ class Tabs(VizroBaseModel):
         return dmc.Tabs(
             id=self.id,
             value=self.tabs[0].id,
-            children=[tabs_list, *tabs_panel],
+            children=[tabs_list, *tabs_panels],
             persistence=True,
             className="tabs",
         )
