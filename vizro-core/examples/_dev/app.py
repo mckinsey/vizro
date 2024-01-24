@@ -9,42 +9,6 @@ from vizro.tables import dash_data_table
 gapminder = px.data.gapminder()
 iris = px.data.iris()
 
-containers = vm.Page(
-    title="Containers",
-    components=[
-        vm.Container(
-            title="Container I",
-            layout=vm.Layout(grid=[[0, 1]]),
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris, x="sepal_length", y="petal_width", color="species", title="Container I - Scatter"
-                    )
-                ),
-                vm.Graph(
-                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar")
-                ),
-            ],
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        marginal_y="violin",
-                        marginal_x="box",
-                        title="Container II - Scatter",
-                    )
-                ),
-            ],
-        ),
-    ],
-)
-
 single_tabs = vm.Page(
     title="Single Tabs",
     components=[
@@ -354,7 +318,6 @@ tabs_without_charts = vm.Page(
 dashboard = vm.Dashboard(
     title="Dashboard Title",
     pages=[
-        containers,
         single_tabs,
         single_tabs_action,
         tabs_and_component,
