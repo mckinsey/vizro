@@ -3,6 +3,7 @@
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
+The dashboard includes a collapsible side panel that users can easily minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
 ## Using the default navigation
 

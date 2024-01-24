@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_asset_url, get_relative_path, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def _all_hidden(components: List[Component]):
-    """Returns True if all components are either None and/or have hidden=True."""
+    """Returns True if all `components` are either None and/or have hidden=True."""
     return all(component is None or getattr(component, "hidden", False) for component in components)
 
 
@@ -118,6 +118,19 @@ class Dashboard(VizroBaseModel):
             Output("dashboard_container_outer", "className"),
             Input("theme_selector", "checked"),
         )
+        left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
+        if left_side_div_present:
+            clientside_callback(
+                ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+                [
+                    Output("collapsable-left-side", "is_open"),
+                    Output("collapse-icon", "style"),
+                    Output("collapse-tooltip", "label"),
+                    Output("collapse-tooltip", "offset"),
+                ],
+                Input("collapse-icon", "n_clicks"),
+                State("collapsable-left-side", "is_open"),
+            )
 
         return html.Div(
             id="dashboard_container_outer",
@@ -158,8 +171,10 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
-        components = page_content["page-components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components, logo])
+        page_components = page_content["page-components"]
+        return html.Div(
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+        )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
         logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
@@ -177,16 +192,42 @@ class Dashboard(VizroBaseModel):
         else:
             page_header_divs.append(page_divs["settings"])
 
+        collapsable_icon = (
+            dmc.Tooltip(
+                html.Span(
+                    "keyboard_double_arrow_left",
+                    className="material-symbols-outlined",
+                    id="collapse-icon",
+                ),
+                id="collapse-tooltip",
+                label="Hide Menu",
+                offset=24,
+                withArrow=True,
+                position="right",
+                arrowOffset=10,
+                className="collapse-button-tooltip",
+            )
+            if not _all_hidden([*left_sidebar_divs, *left_main_divs])
+            else None
+        )
+
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
+
+        collapsable_left_side = dbc.Collapse(
+            left_side,
+            id="collapsable-left-side",
+            is_open=True,
+            dimension="width",
+        )
 
         right_header = html.Div(right_header_divs, id="right-header")
         right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
-        page_main = html.Div([left_side, right_side], id="page-main")
+        page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
         return html.Div([page_header, page_main], id="page-container")
 
     def _make_page_layout(self, page: Page):

@@ -51,6 +51,8 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
-  # Ignore this warning here as it comes from pandas until pandas is made compatible with Python 3.12
-  'ignore:.*utcfromtimestamp.*:DeprecationWarning'
+  # Ignore until pandas is made compatible with Python 3.12:
+  "ignore:.*utcfromtimestamp:DeprecationWarning",
+  # Ignore until pandas 3 is released:
+  "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning"
 ]
