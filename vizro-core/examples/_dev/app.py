@@ -1,54 +1,74 @@
 """Rough example used by developers."""
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table
 
 df = px.data.gapminder()
 
-table_and_container = vm.Page(
-    title="Table and Container",
+page = vm.Page(
+    title="Nested Containers",
+    layout=vm.Layout(
+        grid=[[0, 1], [0, 1]],
+        row_min_height="400px",
+    ),
     components=[
         vm.Container(
-            title="Container w/ Table",
+            title="Container",
+            layout=vm.Layout(grid=[[0, 1], [0, 1]]),
             components=[
-                vm.Table(
-                    title="Table Title",
-                    figure=dash_data_table(
-                        id="dash_data_table_country",
-                        data_frame=df,
-                        page_size=30,
-                    ),
-                )
-            ],
-        ),
-        vm.Container(
-            title="Another Container",
-            components=[
+                vm.Container(
+                    title="Nested Container",
+                    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+                    components=[
+                        vm.Graph(
+                            figure=px.line(
+                                df,
+                                title="Graph 1 - Nested Container",
+                                x="year",
+                                y="lifeExp",
+                                color="continent",
+                                line_group="country",
+                                hover_name="country",
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.scatter(
+                                df,
+                                title="Graph 2 - Nested Container",
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            figure=px.box(
+                                df,
+                                title="Graph 3 - Nested Container",
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
                 vm.Graph(
-                    figure=px.scatter(
+                    figure=px.line(
                         df,
-                        title="Graph_2",
-                        x="gdpPercap",
+                        title="Graph 4 - Container",
+                        x="year",
                         y="lifeExp",
-                        size="pop",
                         color="continent",
+                        line_group="country",
+                        hover_name="country",
                     ),
                 ),
             ],
         ),
     ],
-    controls=[vm.Filter(column="continent")],
 )
 
-
-dashboard = vm.Dashboard(
-    title="Dashboard Title",
-    pages=[
-        table_and_container,
-    ],
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
