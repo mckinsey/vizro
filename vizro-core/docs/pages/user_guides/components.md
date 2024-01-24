@@ -10,7 +10,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use graphs to visualize your data with any Plotly chart in the dashboard.
+    Use graphs to visualize your data with any Plotly chart.
 
     [:octicons-arrow-right-24: View User Guide](graph.md)
 
@@ -18,7 +18,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use tables to visualize your tabular data in the dashboard.
+    Use tables to visualize your tabular data.
 
     [:octicons-arrow-right-24: View User Guide](table.md)
 
@@ -26,7 +26,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use cards and buttons to visualize text, navigate to different URLs or attach any custom action.
+    Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
 
     [:octicons-arrow-right-24: View User Guide](card_button.md)
 
@@ -34,7 +34,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use containers to organize your page components into subsections inside the dashboard.
+    Use containers to group your page components into sections and subsections.
 
     [:octicons-arrow-right-24: View User Guide](container.md)
 
@@ -42,7 +42,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use tabs to organize your containers into subsections inside the dashboard.
+    Use tabs to group your containers and navigate between them.
 
     [:octicons-arrow-right-24: View User Guide](tabs.md)
 

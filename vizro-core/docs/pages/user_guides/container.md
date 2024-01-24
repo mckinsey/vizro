@@ -1,6 +1,6 @@
 # How to use containers
 
-This guide shows you how to use containers to organize your page components into subsections inside the dashboard.
+This guide shows you how to use containers to group your page components into sections and subsections.
 
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
@@ -102,6 +102,6 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
             title: Containers
         ```
     === "Result"
-       [![Container]][Container]
+        [![Container]][Container]
 
     [Container]: ../../assets/user_guides/components/containers.png
