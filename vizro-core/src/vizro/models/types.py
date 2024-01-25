@@ -293,7 +293,7 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
-        #TODO: should we have "grid" - also add this
+        # TODO: should we have "grid" - also add this
         elif self._mode == "table":
 
             @functools.wraps(func)
