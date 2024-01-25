@@ -210,7 +210,6 @@ containers = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="continent")],
 )
 
 tab_1 = vm.Container(
@@ -253,7 +252,7 @@ tab_2 = vm.Container(
     ],
 )
 
-tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])])
+tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
 
 # CONTROLS --------------------------------------------------------------------
 filters = vm.Page(
