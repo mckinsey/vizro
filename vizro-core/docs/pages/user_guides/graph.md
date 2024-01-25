@@ -2,11 +2,6 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-The [`Page`][vizro.models.Page] models accepts the `components` argument, where you can enter your visual content e.g.
-[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button].
-
-## Graph
-
 The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways.
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:

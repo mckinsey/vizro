@@ -12,9 +12,11 @@ nav:
           - Pages: pages/user_guides/pages.md
           - Run Methods: pages/user_guides/run.md
       - COMPONENTS:
+          - Overview: pages/user_guides/components.md
           - Graphs: pages/user_guides/graph.md
           - Tables: pages/user_guides/table.md
-          - Cards & Buttons: pages/user_guides/components.md
+          - Cards & Buttons: pages/user_guides/card_button.md
+          - Containers: pages/user_guides/container.md
 
       - CONTROLS:
           - Filters: pages/user_guides/filters.md
@@ -90,8 +92,11 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
-  - attr_list
   - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search
