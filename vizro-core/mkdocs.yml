@@ -38,14 +38,14 @@ nav:
           - Custom Tables: pages/user_guides/custom_tables.md
           - Custom Components: pages/user_guides/custom_components.md
           - Custom Actions: pages/user_guides/custom_actions.md
-  - API REFERENCE:
+  - API Reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md
       - Data Manager: pages/API_reference/manager.md
       - Actions: pages/API_reference/actions.md
-  - EXPLANATION:
+  - Explanation:
       - Why Vizro: pages/explanation/why_vizro.md
-  - CONTRIBUTE:
+  - Contribute:
       - Contributing: pages/development/contributing.md
       - Authors: pages/development/authors.md
 
