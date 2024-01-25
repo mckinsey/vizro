@@ -156,7 +156,7 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
-    # TODO: Move the test to `TestDashboardBuild` when asset_component_equal is implemented for build method
+    # TODO: Move the test to `TestDashboardBuild` once asset_component_equal is implemented for dashboard build method
     @pytest.mark.parametrize(
         "image_path",
         [
