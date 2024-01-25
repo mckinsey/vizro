@@ -22,6 +22,8 @@ df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].
 df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
+gapminder_2007 = df.query("year == 2007")
+
 
 def my_custom_table(data_frame=None, id: str = None, chosen_columns: List[str] = None):
     """Custom table."""
@@ -64,11 +66,11 @@ def create_benchmark_analysis():
     ]
 
     page_country = vm.Page(
-        title="Benchmark Analysis",
+        title="Table Test",
         # description="Discovering how the metrics differ for each country and export data for further investigation",
         # layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
         components=[
-            vm.Table(
+            vm.Grid(
                 id="table_country_new",
                 title="Click on a cell in country column:",
                 figure=dash_ag_grid(
@@ -162,10 +164,35 @@ def create_benchmark_analysis():
     return page_country
 
 
-dashboard = vm.Dashboard(
-    pages=[
-        create_benchmark_analysis(),
+chart_interaction = vm.Page(
+    title="Chart interaction",
+    components=[
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                custom_data=["continent"],
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+        ),
+        vm.Graph(
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                gapminder_2007,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
     ],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[create_benchmark_analysis(), chart_interaction],
 )
 
 if __name__ == "__main__":

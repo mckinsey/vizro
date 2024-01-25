@@ -293,6 +293,7 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
+        #TODO: should we have "grid" - also add this
         elif self._mode == "table":
 
             @functools.wraps(func)
@@ -362,15 +363,15 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Container", "Graph", "Table"],
+    Union["Button", "Card", "Container", "Graph", "Grid", "Table"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
-[`Graph`][vizro.models.Graph]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
+[`Graph`][vizro.models.Graph] or [`Grid`][vizro.models.Grid]."""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."

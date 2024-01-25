@@ -1,8 +1,8 @@
 import logging
-from typing import List, Literal
+from typing import Dict, List, Literal
 
-from dash import dash_table, dcc, html
-from pandas import DataFrame
+import pandas as pd
+from dash import State, dash_table, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -10,6 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 import vizro.tables as vt
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -58,13 +59,47 @@ class Table(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
+    # Interaction methods
+    def _get_figure_interaction_input(self):
+        """Requiried properties when using pre-defined `filter_interaction`"""
+        return {
+            "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
+            "derived_viewport_data": State(
+                component_id=self._callable_object_id,
+                component_property="derived_viewport_data",
+            ),
+            "modelID": State(component_id=self.id, component_property="id"),
+        }
+
+    def _filter_interaction(
+        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+    ) -> pd.DataFrame:
+        """Function to be carried out for pre-defined `filter_interaction`"""
+        ctd_active_cell = ctd_filter_interaction["active_cell"]
+        ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
+        if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
+            return data_frame
+
+        # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
+        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
+
+        for action in source_table_actions:
+            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+                continue
+            column = ctd_active_cell["value"]["column_id"]
+            derived_viewport_data_row = ctd_active_cell["value"]["row"]
+            clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
+            data_frame = data_frame[data_frame[column].isin([clicked_data])]
+
+        return data_frame
+
     @_log_call
     def pre_build(self):
         if self.actions:
             kwargs = self.figure._arguments.copy()
 
             # This workaround is needed because the underlying table object requires a data_frame
-            kwargs["data_frame"] = DataFrame()
+            kwargs["data_frame"] = pd.DataFrame()
 
             # The underlying table object is pre-built, so we can fetch its ID.
             underlying_table_object = self.figure._function(**kwargs)

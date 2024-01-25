@@ -139,19 +139,13 @@ def _apply_filter_interaction(
     target: str,
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
-        if "clickData" in ctd_filter_interaction:
-            data_frame = _apply_graph_filter_interaction(
-                data_frame=data_frame,
-                target=target,
-                ctd_filter_interaction=ctd_filter_interaction,
-            )
-
-        if "active_cell" in ctd_filter_interaction and "derived_viewport_data" in ctd_filter_interaction:
-            data_frame = _apply_table_filter_interaction(
-                data_frame=data_frame,
-                target=target,
-                ctd_filter_interaction=ctd_filter_interaction,
-            )
+        #TODO: make this more robust, such that it doesn't require the modelID
+        triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
+        data_frame = triggered_model._filter_interaction(
+            data_frame=data_frame,
+            target=target,
+            ctd_filter_interaction=ctd_filter_interaction,
+        )
 
     return data_frame
 
