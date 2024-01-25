@@ -241,11 +241,9 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
             title: Custom Layout - Advanced Example
         ```
     === "Result"
-        [![GridAdvanced]][GridAdvanced]
+        [![GridAdv]][GridAdv]
 
-    [Grid]: ../../assets/user_guides/layout/grid_advanced.png=== "Result"
-        [![GridAdvanced]][GridAdvanced]
-    === "Result"
+    [GridAdv]: ../../assets/user_guides/layout/grid_advanced.png
 
 ## Adding empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.

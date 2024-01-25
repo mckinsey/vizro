@@ -9,7 +9,7 @@ While there is currently no apparent difference in rendering, additional functio
 enhancing the ability to manage related components.
 
 ## When to use containers
-In general, any arbritraly granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 However, there are a few cases where you might want to use a `Container` instead:
 
@@ -22,10 +22,10 @@ However, there are a few cases where you might want to use a `Container` instead
 ## Containers
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
-1. Insert the [`Container`][vizro.models.Container] into the `components` argument of the [`Page`][vizro.models.Page]
-2. Provide a `title` to your [`Container`][vizro.models.Container]
+1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
+2. Provide a `title` to your `Container`
 3. Configure your `components`, see our overview page on the various options [here](components.md)
-4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
+4. (optional) Configure your `layout` , see our guide on [`Layout`](layouts.md)
 
 !!! example "Container"
     === "app.py"
@@ -137,9 +137,9 @@ To create nested containers, simply add a `Container` to the `components` argume
 !!! note
 
     Note that an almost identical layout can also be achieved using [`Page.layout`](layouts.md), see the
-    [advanced grid example](layouts.md#grid-advanced-example) on how this can be done. Here we use `Container` because
-    we need finer control of selected grid areas (e.g. adding different titles to each subgrid and have different
-    spacing between groups of components).
+    [advanced grid example](layouts.md#grid-advanced-example) on how this can be done. Here we use `Container` instead
+    of `Page.layout` because we need finer control of selected grid areas (e.g. adding different titles to each subgrid
+    and have different spacing between groups of components).
 
 !!! example "Nested Containers"
     === "app.py"
@@ -295,4 +295,4 @@ To create nested containers, simply add a `Container` to the `components` argume
     === "Result"
         [![NestedContainer]][NestedContainer]
 
-    [Container]: ../../assets/user_guides/components/nested_containers.png
+    [NestedContainer]: ../../assets/user_guides/components/nested_containers.png
