@@ -16,6 +16,7 @@ The user-provided `assets` folder thus always takes precedence.
 │       ├── icons
 │           ├── collections.svg
 │       ├── app.svg
+│       ├── logo.svg
 │   ├── favicon.ico
 ```
 
@@ -183,5 +184,11 @@ See more information in the [Pages User Guide](pages.md).
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
 clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
 `logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+
+## Logo image
+
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
