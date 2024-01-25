@@ -143,7 +143,7 @@ class TestBuildTable:
         )
 
         table.pre_build()
-        built_table = table.build()
+        table = table.build()
         expected_table = dcc.Loading(
             html.Div(
                 [
@@ -154,7 +154,7 @@ class TestBuildTable:
         )
 
         assert_component_equal(
-            built_table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
+            table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
         )
 
     def test_table_build_with_underlying_dt_id(self, dash_data_table_with_id, filter_interaction_action):
