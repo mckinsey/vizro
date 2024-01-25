@@ -37,5 +37,3 @@ listed below to fill your dashboard with visuals.
     Use containers to group your page components into sections and subsections.
 
     [:octicons-arrow-right-24: View User Guide](container.md)
-
-</div>
