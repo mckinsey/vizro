@@ -3,15 +3,20 @@
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
 A `Container` complements the concept of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
-`Page.layout` provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
+ [`Page.layout`](layouts.md) provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
 
 While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
 enhancing the ability to manage related components.
 
 ## When to use containers
-- If you want to organize specific components together within a page section/subsection to achieve more granular control of your layout within the `Page`
-- If you want to add a title to a section/subsection of your page
-- If you want to apply controls specific to a `Container` (will be supported soon)
+In general, any arbritraly granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
+However, there are a few cases where you might want to use a `Container` instead:
+
+- If you want to split up your grid into subgrids to organize components together
+- If you want to add a title to your subgrids
+- If you want different row and column spacing between subgrids
+- If you want to apply controls to selected subgrids (will be supported soon)
 
 
 ## Containers
@@ -128,6 +133,13 @@ Containers can be nested, providing a hierarchical structure for organizing comp
 This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
 
 To create nested containers, simply add a `Container` to the `components` argument of another `Container`.
+
+!!! note
+
+    Note that an almost identical layout can also be achieved using [`Page.layout`](layouts.md), see the
+    [advanced grid example](layouts.md#grid-advanced-example) on how this can be done. Here we use `Container` because
+    we need finer control of selected grid areas (e.g. adding different titles to each subgrid and have different
+    spacing between groups of components).
 
 !!! example "Nested Containers"
     === "app.py"

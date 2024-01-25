@@ -46,11 +46,11 @@ will automatically be stacked underneath each other. If that is your desired lay
 
 
 
-## Customizing the grid arrangement
+## Configuring the grid
 To customize the grid arrangement, you can configure the `grid` parameter of the [`Layout`][vizro.models.Layout] model.
 The example below shows how the grid works and how to specify a valid one:
 
-```python title="Example"
+```python title="Basic Example"
 grid = [[0, 1],
         [0, 2]]
 ```
@@ -63,11 +63,15 @@ grid = [[0, 1],
 - The integers in the `grid` need to be consecutive integers starting with 0 (e.g. `0`, `1`, `2`)
 - Each chart/component will take the entire space of its grid area (empty spaces are currently not enabled)
 - The area spanned by a chart/component in the grid must be rectangular
+- The grid can be arbitrarily large, allowing arbitrarily granular control of the grid:
 
+```python title="Advanced Example"
+grid=[[0, 1, 3, 4],
+      [2, 2, 3, 4]]
+```
 
-To customize the grid arrangement, provide the relevant grid specification:
-
-!!! example "Grid Arrangement"
+### Grid - Basic Example
+!!! example "Grid Arrangement - Basic Example"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -109,6 +113,139 @@ To customize the grid arrangement, provide the relevant grid specification:
         [![Grid]][Grid]
 
     [Grid]: ../../assets/user_guides/layout/one_left_two_right.png
+
+### Grid - Advanced Example
+Generally, the `Layout` provides full control over the arrangement of top-level components within a Page,
+allowing arbitrarily granular control of the grid by creating larger grids.
+
+If you want to divide the grid into subgrids with finer control over these, you can use [Containers](container.md).
+See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
+
+!!! example "Grid Arrangement - Advanced Example"
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        gapminder = px.data.gapminder()
+
+        page = vm.Page(
+            title="Custom Layout - Advanced Example",
+            layout=vm.Layout(grid=[[0, 1, 3, 4],
+                                    [2, 2, 3, 4]]),
+            components=[
+                vm.Graph(
+                    figure=px.line(
+                        gapminder,
+                        title="Graph 1",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        title="Graph 2",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.box(
+                        gapminder,
+                        title="Graph 3",
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.line(
+                        gapminder,
+                        title="Graph 4",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        title="Graph 5",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: line
+                  data_frame: gapminder
+                  x: year
+                  y: lifeExp
+                  color: continent
+                  title: Graph 1
+                type: graph
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  title: Graph 2
+                type: graph
+              - figure:
+                  _target_: box
+                  data_frame: gapminder
+                  x: continent
+                  y: lifeExp
+                  color: continent
+                  title: Graph 3
+                type: graph
+              - figure:
+                  _target_: line
+                  data_frame: gapminder
+                  x: year
+                  y: lifeExp
+                  color: continent
+                  title: Graph 4
+                type: graph
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  title: Graph 5
+                type: graph
+            layout:
+              grid: [[0, 1, 3, 4], [2, 2, 3, 4]]
+            title: Custom Layout - Advanced Example
+        ```
+    === "Result"
+        [![GridAdvanced]][GridAdvanced]
+
+    [Grid]: ../../assets/user_guides/layout/grid_advanced.png=== "Result"
+        [![GridAdvanced]][GridAdvanced]
+    === "Result"
 
 ## Adding empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.
@@ -161,26 +298,6 @@ grid = [[0, 1, -1],
         [![GridEmpty]][GridEmpty]
 
     [GridEmpty]: ../../assets/user_guides/layout/layout_empty_spaces.png
-
-
-## Using custom layout examples
-Below is a table of examples you can take as a reference to create some selected layouts:
-
-| Configuration                                              | Description            | Image                                                                                |
-|------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
-| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left               | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left               | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0,1]])`                              | two_top                | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
-| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left             | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
-| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right     | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom     | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom     | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right   | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right     | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right   | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
-| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
-
 
 ## Controlling the scroll behavior
 By default, the grid will try to fit all charts/components on the screen. This can lead to distortions of the chart/component looking
@@ -257,3 +374,22 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 ## Further customizations
 For further customizations, such as changing the gap between row and column, please refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
+
+
+## Using custom layout examples
+Below is a table of examples you can take as a reference to create some selected layouts:
+
+| Configuration                                              | Description            | Image                                                                                |
+|------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
+| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left               | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left               | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0,1]])`                              | two_top                | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
+| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left             | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
+| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right     | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom     | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom     | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right   | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right     | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right   | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
+| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
