@@ -1,13 +1,16 @@
 # How to use containers
 
-This guide shows you how to use containers to group your page components into sections and subsections within the page.
-A `Container` complements the concept of a [`Page`][vizro.models.Page]. While `Page.layout` provides a way to structure the overall layout of the page,
-a `Container` allows for more granular control within a specific section of that page. While there is currently no apparent difference
-in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container), enhancing the ability to manage related components.
+This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-## When to use containers?
-- If you want to organize specific components together within a page section/sub-section, achieving more granular control of your layout within the `Page`
-- If you want to add a title to a section/sub-section of your page
+A `Container` complements the concept of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
+`Page.layout` provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
+
+While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
+enhancing the ability to manage related components.
+
+## When to use containers
+- If you want to organize specific components together within a page section/subsection to achieve more granular control of your layout within the `Page`
+- If you want to add a title to a section/subsection of your page
 - If you want to apply controls specific to a `Container` (will be supported soon)
 
 
@@ -34,7 +37,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
             components=[
                 vm.Container(
                     title="Container I",
-                    layout=vm.Layout(grid=[[0, 1]]),
+                    layout=vm.Layout(grid=[[0, 1]]),  # (1)!
                     components=[
                         vm.Graph(
                             figure=px.scatter(
@@ -69,6 +72,9 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         Vizro().build(dashboard).run()
         ```
+
+        1.  If you don't specify `layout`, it will default to `[[0], [1]]`, meaning the components will be arranged in rows.
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
@@ -119,7 +125,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 ## Nested containers
 Containers can be nested, providing a hierarchical structure for organizing components.
-This nesting capability allows users to create more complex layouts and manage related components at various levels of granularity.
+This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
 
 To create nested containers, simply add a `Container` to the `components` argument of another `Container`.
 
@@ -133,73 +139,74 @@ To create nested containers, simply add a `Container` to the `components` argume
 
         df = px.data.gapminder()
 
+        nested_container_one = vm.Container(
+            title="Nested Container I",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            components=[
+                vm.Graph(
+                    figure=px.line(
+                        df,
+                        title="Graph 1 - Nested Container I",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        df,
+                        title="Graph 2 - Nested Container I",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.box(
+                        df,
+                        title="Graph 3 - Nested Container I",
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+            ],
+        )
+
+        nested_container_two = vm.Container(
+            title="Nested Container II",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Graph(
+                    figure=px.line(
+                        df,
+                        title="Graph 4 - Nested Container II",
+                        x="year",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.scatter(
+                        df,
+                        title="Graph 5 - Nested Container II",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+            ],
+        )
+
         page = vm.Page(
             title="Nested Containers",
             components=[
                 vm.Container(
                     title="Container Title",
-                    layout=vm.Layout(grid=[[0, 1], [0, 1]], , col_gap="80px"),
-                    components=[
-                        vm.Container(
-                            title="Nested Container I",
-                            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
-                            components=[
-                                vm.Graph(
-                                    figure=px.line(
-                                        df,
-                                        title="Graph 1 - Nested Container I",
-                                        x="year",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                ),
-                                vm.Graph(
-                                    figure=px.scatter(
-                                        df,
-                                        title="Graph 2 - Nested Container I",
-                                        x="gdpPercap",
-                                        y="lifeExp",
-                                        size="pop",
-                                        color="continent",
-                                    ),
-                                ),
-                                vm.Graph(
-                                    figure=px.box(
-                                        df,
-                                        title="Graph 3 - Nested Container I",
-                                        x="continent",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                ),
-                            ],
-                        ),
-                        vm.Container(
-                            title="Nested Container II",
-                            layout=vm.Layout(grid=[[0, 1]]),
-                            components=[
-                                vm.Graph(
-                                    figure=px.line(
-                                        df,
-                                        title="Graph 4 - Nested Container II",
-                                        x="year",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                ),
-                                vm.Graph(
-                                    figure=px.scatter(
-                                        df,
-                                        title="Graph 5 - Nested Container II",
-                                        x="gdpPercap",
-                                        y="lifeExp",
-                                        size="pop",
-                                        color="continent",
-                                    ),
-                                ),
-                            ],
-                        ),
-                    ],
+                    layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),
+                    components=[nested_container_one, nested_container_two],
                 ),
             ],
         )
@@ -267,7 +274,7 @@ To create nested containers, simply add a `Container` to the `components` argume
                     type: container
                     title: Nested Container I
                 layout:
-                  grid: [[0, 1], [0, 1]]
+                  grid: [[0, 1]]
                   col_gap: 80px
                 type: container
                 title: Container Title
