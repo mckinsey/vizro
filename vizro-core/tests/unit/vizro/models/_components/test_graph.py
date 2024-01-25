@@ -123,11 +123,12 @@ class TestProcessFigureDataFrame:
 
 class TestBuild:
     def test_graph_build(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart)
+        graph = vm.Graph(id="text_graph", figure=standard_px_chart)
         graph = graph.build()
 
         expected_graph = dcc.Loading(
             dcc.Graph(
+                id="text_graph",
                 figure=go.Figure(
                     layout={
                         "paper_bgcolor": "rgba(0,0,0,0)",
@@ -141,6 +142,9 @@ class TestBuild:
                     "frameMargins": 0,
                     "responsive": True,
                 },
+                className="chart_container",
             ),
+            color="grey",
+            parent_className="loading-container",
         )
-        assert_component_equal(graph, expected_graph, keys_to_strip={"id", "className", "color", "parent_className"})
+        assert_component_equal(graph, expected_graph)

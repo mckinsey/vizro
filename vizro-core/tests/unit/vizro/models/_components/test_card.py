@@ -46,17 +46,21 @@ class TestBuildMethod:
     """Tests build method."""
 
     def test_card_build(self):
-        card = vm.Card(text="Hello", href="https://www.google.com")
+        card = vm.Card(text="Hello", href="https://www.google.com", id="card_id")
         card = card.build()
 
         expected_card = html.Div(
             [
-                dcc.Markdown("Hello", dangerously_allow_html=False),
-                html.Div(dbc.Button(href="https://www.google.com")),
+                dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
+                html.Div(
+                    dbc.Button(href="https://www.google.com", className="card_button"), className="button_container"
+                ),
             ],
+            className="nav_card_container",
+            id="card_id_outer",
         )
 
-        assert_component_equal(card, expected_card, keys_to_strip={"id", "className"})
+        assert_component_equal(card, expected_card)
 
     @pytest.mark.parametrize(
         "test_text, expected",

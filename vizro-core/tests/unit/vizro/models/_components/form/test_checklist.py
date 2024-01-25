@@ -129,11 +129,12 @@ class TestChecklistBuild:
     """Tests model build method."""
 
     def test_checklist_build(self):
-        checklist = Checklist(options=["A", "B", "C"], title="Title").build()
+        checklist = Checklist(options=["A", "B", "C"], title="Title", id="checklist_id").build()
         expected_checklist = html.Div(
             [
                 html.P("Title"),
                 dcc.Checklist(
+                    id="checklist_id",
                     options=["ALL", "A", "B", "C"],
                     value=["ALL"],
                     className="selector_body_checklist",
@@ -141,5 +142,7 @@ class TestChecklistBuild:
                     persistence_type="session",
                 ),
             ],
+            className="selector_container",
+            id="checklist_id_outer",
         )
-        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id", "className"})
+        assert_component_equal(checklist, expected_checklist)

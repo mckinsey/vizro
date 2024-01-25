@@ -129,17 +129,25 @@ class TestRadioItemsBuild:
     """Tests model build method."""
 
     def test_radio_items_build(self):
-        radio_items = RadioItems(options=["A", "B", "C"], title="Title").build()
+        radio_items = RadioItems(
+            options=["A", "B", "C"],
+            title="Title",
+            id="radio_items_id",
+        ).build()
         expected_radio_items = html.Div(
             [
                 html.P("Title"),
                 dcc.RadioItems(
+                    id="radio_items_id",
                     options=["A", "B", "C"],
                     value="A",
+                    className="selector_body_radio_items",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
+            className="selector_container",
+            id="radio_items_id_outer",
         )
 
-        assert_component_equal(radio_items, expected_radio_items, keys_to_strip={"id", "className"})
+        assert_component_equal(radio_items, expected_radio_items)

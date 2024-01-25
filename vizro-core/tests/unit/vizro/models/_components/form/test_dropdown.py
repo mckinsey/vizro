@@ -148,35 +148,52 @@ class TestDropdownBuild:
     """Tests model build method."""
 
     def test_dropdown_with_all_option(self):
-        dropdown = Dropdown(options=["A", "B", "C"], title="Title").build()
+        dropdown = Dropdown(
+            options=["A", "B", "C"],
+            title="Title",
+            id="dropdown_id",
+        ).build()
         expected_dropdown = html.Div(
             [
                 html.P("Title"),
                 dcc.Dropdown(
+                    id="dropdown_id",
                     options=["ALL", "A", "B", "C"],
                     value="ALL",
                     multi=True,
                     persistence=True,
                     persistence_type="session",
+                    className="selector_body_dropdown",
                 ),
             ],
+            className="selector_dropdown_container",
+            id="dropdown_id_outer",
         )
 
-        assert_component_equal(dropdown, expected_dropdown, keys_to_strip={"id", "className"})
+        assert_component_equal(dropdown, expected_dropdown)
 
     def test_dropdown_without_all_option(self):
-        dropdown = Dropdown(options=["A", "B", "C"], multi=False, title="Title").build()
+        dropdown = Dropdown(
+            options=["A", "B", "C"],
+            multi=False,
+            title="Title",
+            id="dropdown_id",
+        ).build()
         expected_dropdown = html.Div(
             [
                 html.P("Title"),
                 dcc.Dropdown(
+                    id="dropdown_id",
                     options=["A", "B", "C"],
                     value="A",
                     multi=False,
                     persistence=True,
                     persistence_type="session",
+                    className="selector_body_dropdown",
                 ),
             ],
+            className="selector_dropdown_container",
+            id="dropdown_id_outer",
         )
 
-        assert_component_equal(dropdown, expected_dropdown, keys_to_strip={"id", "className"})
+        assert_component_equal(dropdown, expected_dropdown)

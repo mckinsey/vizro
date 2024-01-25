@@ -138,27 +138,27 @@ class TestPreBuildTable:
 
 class TestBuildTable:
     def test_table_build_mandatory_only(self, standard_dash_table):
-        table = vm.Table(
-            figure=standard_dash_table,
-        )
-
+        table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable()),
+                    html.Div(dash_table.DataTable(), id="text_table"),
                 ],
+                className="table-container",
+                id="text_table_outer",
             ),
+            color="grey",
+            parent_className="loading-container",
         )
 
-        assert_component_equal(
-            table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
-        )
+        assert_component_equal(table, expected_table)
 
-    def test_table_build_with_underlying_dt_id(self, dash_data_table_with_id, filter_interaction_action):
+    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(
+            id="text_table",
             figure=dash_data_table_with_id,
             actions=[filter_interaction_action],
         )
@@ -170,11 +170,13 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="underlying_table_id")),
+                    html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
                 ],
+                className="table-container",
+                id="text_table_outer",
             ),
+            color="grey",
+            parent_className="loading-container",
         )
 
-        assert_component_equal(
-            built_table, expected_table, keys_to_strip={"id", "parent_className", "color", "className"}
-        )
+        assert_component_equal(built_table, expected_table)
