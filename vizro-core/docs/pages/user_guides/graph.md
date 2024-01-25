@@ -2,11 +2,6 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-The [`Page`][vizro.models.Page] models accepts the `components` argument, where you can enter your visual content e.g.
-[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button].
-
-## Graph
-
 The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways.
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:
@@ -70,7 +65,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     === "Result"
         [![Graph]][Graph]
 
-    [Graph]: ../../assets/user_guides/components/graph1.png
+    [Graph]: ../../assets/user_guides/components/graph.png
 
 Note that in the above example we directly inserted the chart into the `figure` argument for the `.py` version. This is also the simplest way to connect your chart to a Pandas `DataFrame` - for other connections, please refer to [this guide on data connections](data.md). For the `yaml` version, we simply referred to the [`plotly.express`](https://plotly.com/python/plotly-express/) name by string.
 

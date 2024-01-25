@@ -6,37 +6,39 @@ nav:
       - Quickstart: pages/tutorials/first_dashboard.md
       - Explore Vizro: pages/tutorials/explore_components.md
   - User Guides:
-      - Fundamentals:
+      - FUNDAMENTALS:
           - Install: pages/user_guides/install.md
           - Dashboards: pages/user_guides/dashboard.md
           - Pages: pages/user_guides/pages.md
           - Run Methods: pages/user_guides/run.md
-      - Components:
+      - COMPONENTS:
+          - Overview: pages/user_guides/components.md
           - Graphs: pages/user_guides/graph.md
           - Tables: pages/user_guides/table.md
-          - Cards & Buttons: pages/user_guides/components.md
+          - Cards & Buttons: pages/user_guides/card_button.md
+          - Containers: pages/user_guides/container.md
 
-      - Controls:
+      - CONTROLS:
           - Filters: pages/user_guides/filters.md
           - Parameters: pages/user_guides/parameters.md
           - Selectors: pages/user_guides/selectors.md
-      - Navigation:
+      - NAVIGATION:
           - Navigation: pages/user_guides/navigation.md
-      - Visual Formatting:
+      - VISUAL FORMATTING:
           - Layouts: pages/user_guides/layouts.md
           - Themes: pages/user_guides/themes.md
           - Assets: pages/user_guides/assets.md
-      - Actions:
+      - ACTIONS:
           - Actions: pages/user_guides/actions.md
-      - Data Connections:
+      - DATA CONNECTIONS:
           - Data: pages/user_guides/data.md
           - Integrations: pages/user_guides/integration.md
-      - Extensions:
+      - EXTENSIONS:
           - Custom Charts: pages/user_guides/custom_charts.md
           - Custom Tables: pages/user_guides/custom_tables.md
           - Custom Components: pages/user_guides/custom_components.md
           - Custom Actions: pages/user_guides/custom_actions.md
-  - API reference:
+  - API Reference:
       - Vizro: pages/API_reference/vizro.md
       - Models: pages/API_reference/models.md
       - Data Manager: pages/API_reference/manager.md
@@ -90,8 +92,11 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
-  - attr_list
   - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search
