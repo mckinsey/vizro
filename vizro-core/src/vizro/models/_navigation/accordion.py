@@ -58,7 +58,7 @@ class Accordion(VizroBaseModel):
             )
 
         active_item = next(
-            page_group for page_group, page_members in self.pages.items() if active_page_id in page_members
+            (page_group for page_group, page_members in self.pages.items() if active_page_id in page_members), None
         )
 
         return html.Div(
