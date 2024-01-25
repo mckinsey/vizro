@@ -156,8 +156,7 @@ class TestSharedLayoutHelpers:
         result = _get_unique_grid_component_ids(grid)
         expected = np.array([0, 1, 2])
 
-        assert isinstance(result, np.ndarray)
-        assert (result == expected).all()
+        np.testing.assert_array_equal(result, expected)
 
     def test_set_layout_valid(self, model_with_layout):
         model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))

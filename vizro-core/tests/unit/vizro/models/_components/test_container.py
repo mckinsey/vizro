@@ -1,6 +1,7 @@
 """Unit tests for vizro.models.Container."""
+import dash_bootstrap_components as dbc
 import pytest
-from asserts import assert_component_equal
+from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 
 try:
@@ -43,15 +44,14 @@ class TestContainerInstantiation:
 
 class TestContainerBuildMethod:
     def test_container_build(self):
-        result = vm.Container(id="container", title="Title", components=[vm.Button()]).build()
+        result = vm.Container(
+            id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
+        ).build()
         assert_component_equal(
             result, html.Div(className="page-component-container", id="container"), keys_to_strip={"children"}
         )
-        assert_component_equal(
-            result.children,
-            [html.H3("Title"), html.Div([html.Div(vm.Button().build())])],
-            # TODO: Previously I've ignored id, className and style as I had the helper function tested in
-            # test_layout.py. With the new changes it seems like we shouldn't strip them now?
-            # Shall we then need to duplicate for Page and Form as well?
-            keys_to_strip={"id", "className", "style"},
-        )
+        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        # We still want to test the exact H3 produced in Container.build:
+        assert_component_equal(result.children[0], html.H3("Title"))
+        # And also that a button has been inserted in the right place:
+        assert_component_equal(result["layout_id_0"].children.children, dbc.Button(), keys_to_strip=STRIP_ALL)
