@@ -187,7 +187,6 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
-![Dashboard with title](../../assets/user_guides/dashboard/dashboard_with_title.png)
 
 ## Adding a dashboard logo
 
