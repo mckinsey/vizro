@@ -91,7 +91,7 @@ def expected_range_slider_with_optional():
                     "max": 10,
                 },
             ),
-            html.P("Title"),
+            html.Label("Title", htmlFor="range_slider_with_all"),
             html.Div(
                 [
                     dcc.RangeSlider(

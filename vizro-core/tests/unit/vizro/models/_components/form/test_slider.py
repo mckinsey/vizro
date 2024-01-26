@@ -25,7 +25,7 @@ def expected_slider():
                     "max": 10,
                 },
             ),
-            html.P("Test title"),
+            html.Label("Test title", htmlFor="slider_id"),
             html.Div(
                 [
                     dcc.Slider(
