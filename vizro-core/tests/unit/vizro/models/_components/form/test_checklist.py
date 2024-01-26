@@ -129,7 +129,7 @@ class TestChecklistBuild:
     """Tests model build method."""
 
     def test_checklist_build(self):
-        checklist = Checklist(options=["A", "B", "C"], title="Title", id="checklist_id").build()
+        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Div(
             [
                 html.P("Title"),

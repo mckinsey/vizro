@@ -46,7 +46,7 @@ class TestBuildMethod:
     """Tests build method."""
 
     def test_card_build(self):
-        card = vm.Card(text="Hello", href="https://www.google.com", id="card_id")
+        card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
 
         expected_card = html.Div(

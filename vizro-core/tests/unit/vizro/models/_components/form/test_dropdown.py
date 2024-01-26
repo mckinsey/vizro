@@ -174,10 +174,10 @@ class TestDropdownBuild:
 
     def test_dropdown_without_all_option(self):
         dropdown = Dropdown(
+            id="dropdown_id",
             options=["A", "B", "C"],
             multi=False,
             title="Title",
-            id="dropdown_id",
         ).build()
         expected_dropdown = html.Div(
             [
