@@ -53,15 +53,27 @@ def ctx_on_page_load(request):
                         triggered=False,
                     ),
                     CallbackTriggerDict(
-                        id="pop_filter", property="value", value=pop, str_id="pop_filter", triggered=False
+                        id="pop_filter",
+                        property="value",
+                        value=pop,
+                        str_id="pop_filter",
+                        triggered=False,
                     ),
                 ],
                 "parameters": [
                     CallbackTriggerDict(
-                        id="y_parameter", property="value", value=y, str_id="y_parameter", triggered=False
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
                     ),
                     CallbackTriggerDict(
-                        id="x_parameter", property="value", value=x, str_id="x_parameter", triggered=False
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
                     ),
                 ],
                 "theme_selector": CallbackTriggerDict(

@@ -57,11 +57,19 @@ def ctx_parameter_y(request):
                 "filters": [],
                 "parameters": [
                     CallbackTriggerDict(
-                        id="y_parameter", property="value", value=y, str_id="y_parameter", triggered=False
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
                     )
                 ],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
+                    id="theme_selector",
+                    property="checked",
+                    value=False,
+                    str_id="theme_selector",
+                    triggered=False,
                 ),
             }
         }
@@ -89,7 +97,11 @@ def ctx_parameter_hover_data(request):
                     )
                 ],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
+                    id="theme_selector",
+                    property="checked",
+                    value=False,
+                    str_id="theme_selector",
+                    triggered=False,
                 ),
             }
         }
@@ -109,14 +121,26 @@ def ctx_parameter_y_and_x(request):
                 "filters": [],
                 "parameters": [
                     CallbackTriggerDict(
-                        id="y_parameter", property="value", value=y, str_id="y_parameter", triggered=False
+                        id="y_parameter",
+                        property="value",
+                        value=y,
+                        str_id="y_parameter",
+                        triggered=False,
                     ),
                     CallbackTriggerDict(
-                        id="x_parameter", property="value", value=x, str_id="x_parameter", triggered=False
+                        id="x_parameter",
+                        property="value",
+                        value=x,
+                        str_id="x_parameter",
+                        triggered=False,
                     ),
                 ],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
+                    id="theme_selector",
+                    property="checked",
+                    value=False,
+                    str_id="theme_selector",
+                    triggered=False,
                 ),
             }
         }

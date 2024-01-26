@@ -58,7 +58,6 @@ repos:
     rev: 23.12.1
     hooks:
       - id: black
-        args: [--skip-magic-trailing-comma]
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.6

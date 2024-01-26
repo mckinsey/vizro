@@ -56,12 +56,28 @@ class TestLayoutInstantiation:
 class TestMalformedGrid:
     """Tests validators to detect malformed grid."""
 
-    @pytest.mark.parametrize("grid", [0, [0], [-1], [[0], 1], [0, 1, 0], [0, 1, 3]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            0,
+            [0],
+            [-1],
+            [[0], 1],
+            [0, 1, 0],
+            [0, 1, 3],
+        ],
+    )
     def test_invalid_input_type(self, grid):
         with pytest.raises(ValidationError, match="value is not a valid list"):
             vm.Layout(grid=grid)
 
-    @pytest.mark.parametrize("grid", [[["Table Graph"], ["Table ."]], [["A"], ["B"], ["C"]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [["Table Graph"], ["Table ."]],
+            [["A"], ["B"], ["C"]],
+        ],
+    )
     def test_invalid_input_value(self, grid):
         with pytest.raises(ValidationError, match="value is not a valid integer"):
             vm.Layout(grid=grid)
@@ -83,12 +99,25 @@ class TestMalformedGrid:
         with pytest.raises(ValidationError, match="Grid areas must be rectangular and not overlap!"):
             vm.Layout(grid=grid)
 
-    @pytest.mark.parametrize("grid", [[[1, 2], [3, 4]], [[0, 2], [3, 4]], [[6, 4], [2, 5]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[1, 2], [3, 4]],
+            [[0, 2], [3, 4]],
+            [[6, 4], [2, 5]],
+        ],
+    )
     def test_invalid_int_sequence(self, grid):
         with pytest.raises(ValidationError, match="Grid must contain consecutive integers starting from 0."):
             vm.Layout(grid=grid)
 
-    @pytest.mark.parametrize("grid", [[[0, 1, 2], [3, 4]], [[0, 1], [2, 3, 4]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[0, 1, 2], [3, 4]],
+            [[0, 1], [2, 3, 4]],
+        ],
+    )
     def test_invalid_list_length(self, grid):
         with pytest.raises(ValidationError, match="All rows must be of same length."):
             vm.Layout(grid=grid)
@@ -122,7 +151,14 @@ class TestWorkingGrid:
 
 
 class TestSharedLayoutHelpers:
-    @pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[0, -1], [1, 2]],
+            [[0, -1, 1, 2]],
+            [[-1, -1, -1], [0, 1, 2]],
+        ],
+    )
     def test_get_unique_grid_component_ids(self, grid):
         result = _get_unique_grid_component_ids(grid)
         expected = np.array([0, 1, 2])

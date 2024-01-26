@@ -89,21 +89,30 @@ def managers_one_page_four_controls_three_figures_filter_interaction(request, da
                 id="parameter_x",
                 targets=["scatter_chart.x", "scatter_chart_2.x"],
                 selector=vm.Dropdown(
-                    id="parameter_x_selector", options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap"
+                    id="parameter_x_selector",
+                    options=["lifeExp", "gdpPercap", "pop"],
+                    multi=False,
+                    value="gdpPercap",
                 ),
             ),
             vm.Parameter(
                 id="parameter_y",
                 targets=["scatter_chart.y", "scatter_chart_2.y"],
                 selector=vm.Dropdown(
-                    id="parameter_y_selector", options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp"
+                    id="parameter_y_selector",
+                    options=["lifeExp", "gdpPercap", "pop"],
+                    multi=False,
+                    value="lifeExp",
                 ),
             ),
             vm.Parameter(
                 id="vizro_table_row_selectable",
                 targets=["vizro_table.row_selectable"],
                 selector=vm.Dropdown(
-                    id="parameter_table_row_selectable", options=["multi", "single"], multi=False, value="single"
+                    id="parameter_table_row_selectable",
+                    options=["multi", "single"],
+                    multi=False,
+                    value="single",
                 ),
             ),
         ],

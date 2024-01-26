@@ -156,7 +156,9 @@ button = vm.Page(
     title="Button",
     layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
     components=[
-        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species", size="petal_length")),
+        vm.Graph(
+            figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species", size="petal_length"),
+        ),
         vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
@@ -171,11 +173,21 @@ containers = vm.Page(
             components=[
                 vm.Graph(
                     figure=px.scatter(
-                        iris, x="sepal_length", y="petal_width", color="species", title="Container I - Scatter"
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        title="Container I - Scatter",
                     )
                 ),
                 vm.Graph(
-                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar")
+                    figure=px.bar(
+                        iris,
+                        x="sepal_length",
+                        y="sepal_width",
+                        color="species",
+                        title="Container I - Bar",
+                    )
                 ),
             ],
         ),
@@ -202,8 +214,15 @@ containers = vm.Page(
 filters = vm.Page(
     title="Filters",
     components=[
-        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
+        vm.Graph(
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+            )
+        ),
+        vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species,")),
     ],
     controls=[
         vm.Filter(column="species"),
@@ -260,12 +279,24 @@ chart_interaction = vm.Page(
     title="Chart interaction",
     components=[
         vm.Graph(
-            figure=px.box(gapminder_2007, x="continent", y="lifeExp", color="continent", custom_data=["continent"]),
+            figure=px.box(
+                gapminder_2007,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                custom_data=["continent"],
+            ),
             actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
         ),
         vm.Graph(
             id="scatter_relation_2007",
-            figure=px.scatter(gapminder_2007, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+            figure=px.scatter(
+                gapminder_2007,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
         ),
     ],
 )
@@ -305,13 +336,22 @@ custom_charts = vm.Page(
         vm.Graph(
             id="custom_scatter",
             figure=scatter_with_line(
-                x="sepal_length", y="sepal_width", hline=3.5, data_frame=iris, title="Custom px chart"
+                x="sepal_length",
+                y="sepal_width",
+                hline=3.5,
+                data_frame=iris,
+                title="Custom px chart",
             ),
         ),
         vm.Graph(
             id="custom_waterfall",
             figure=waterfall(
-                data_frame=waterfall_df, measure="measure", x="x", y="y", text="text", title="Custom go chart"
+                data_frame=waterfall_df,
+                measure="measure",
+                x="x",
+                y="y",
+                text="text",
+                title="Custom go chart",
             ),
         ),
     ],
@@ -348,7 +388,8 @@ custom_tables = vm.Page(
             id="custom_table",
             title="Custom Dash DataTable",
             figure=my_custom_table(
-                data_frame=gapminder_2007, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
+                data_frame=gapminder_2007,
+                chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
             ),
         )
     ],

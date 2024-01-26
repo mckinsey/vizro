@@ -23,7 +23,14 @@ table_and_container = vm.Page(
             title="Another Container",
             components=[
                 vm.Graph(
-                    figure=px.scatter(df, title="Graph_2", x="gdpPercap", y="lifeExp", size="pop", color="continent")
+                    figure=px.scatter(
+                        df,
+                        title="Graph_2",
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    )
                 )
             ],
         ),
