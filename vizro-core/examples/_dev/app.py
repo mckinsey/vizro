@@ -5,14 +5,15 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 df = px.data.gapminder()
-nested_container_one = vm.Container(
-    title="Nested Container I",
+
+child_container_one = vm.Container(
+    title="Container I",
     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
             figure=px.line(
                 df,
-                title="Graph 1 - Nested Container I",
+                title="Graph 1 - Container I",
                 x="year",
                 y="lifeExp",
                 color="continent",
@@ -21,7 +22,7 @@ nested_container_one = vm.Container(
         vm.Graph(
             figure=px.scatter(
                 df,
-                title="Graph 2 - Nested Container I",
+                title="Graph 2 - Container I",
                 x="gdpPercap",
                 y="lifeExp",
                 size="pop",
@@ -31,7 +32,7 @@ nested_container_one = vm.Container(
         vm.Graph(
             figure=px.box(
                 df,
-                title="Graph 3 - Nested Container I",
+                title="Graph 3 - Container I",
                 x="continent",
                 y="lifeExp",
                 color="continent",
@@ -39,14 +40,15 @@ nested_container_one = vm.Container(
         ),
     ],
 )
-nested_container_two = vm.Container(
-    title="Nested Container II",
+
+child_container_two = vm.Container(
+    title="Container II",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
         vm.Graph(
             figure=px.line(
                 df,
-                title="Graph 4 - Nested Container II",
+                title="Graph 4 - Container II",
                 x="year",
                 y="lifeExp",
                 color="continent",
@@ -55,7 +57,7 @@ nested_container_two = vm.Container(
         vm.Graph(
             figure=px.scatter(
                 df,
-                title="Graph 5 - Nested Container II",
+                title="Graph 5 - Container II",
                 x="gdpPercap",
                 y="lifeExp",
                 size="pop",
@@ -69,9 +71,9 @@ page = vm.Page(
     title="Nested Containers",
     components=[
         vm.Container(
-            title="Container Title",
+            title="Parent Container",
             layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),
-            components=[nested_container_one, nested_container_two],
+            components=[child_container_one, child_container_two],
         ),
     ],
 )
