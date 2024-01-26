@@ -17,6 +17,6 @@ class TestSharedValidators:
 
     def test_check_for_valid_component_types(self, model_with_layout):
         with pytest.raises(
-            ValidationError, match=re.escape("(allowed values: 'button', 'card', 'container', 'graph', 'table')")
+            ValidationError, match=re.escape("(allowed values: 'button', 'card', 'container', 'graph', 'table', 'tabs')")
         ):
             model_with_layout(title="Page Title", components=[vm.Checklist()])
