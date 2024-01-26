@@ -10,7 +10,10 @@ from vizro.managers import model_manager
 def dashboard_result(request):
     # Inject the navigation into the dashboard. Note we need to call request.param since they are all lambda functions.
     dashboard = vm.Dashboard(
-        pages=[vm.Page(title="Page 1", components=[vm.Button()]), vm.Page(title="Page 2", components=[vm.Button()])],
+        pages=[
+            vm.Page(title="Page 1", components=[vm.Button()]),
+            vm.Page(title="Page 2", components=[vm.Button()]),
+        ],
         navigation=request.param(),
     )
     Vizro()._pre_build()

@@ -31,13 +31,22 @@ def _get_action_callback_mapping(
             "components": _get_export_data_callback_components,
             "outputs": _get_export_data_callback_outputs,
         },
-        _filter.__wrapped__: {"inputs": _get_action_callback_inputs, "outputs": _get_action_callback_outputs},
+        _filter.__wrapped__: {
+            "inputs": _get_action_callback_inputs,
+            "outputs": _get_action_callback_outputs,
+        },
         filter_interaction.__wrapped__: {
             "inputs": _get_action_callback_inputs,
             "outputs": _get_action_callback_outputs,
         },
-        _parameter.__wrapped__: {"inputs": _get_action_callback_inputs, "outputs": _get_action_callback_outputs},
-        _on_page_load.__wrapped__: {"inputs": _get_action_callback_inputs, "outputs": _get_action_callback_outputs},
+        _parameter.__wrapped__: {
+            "inputs": _get_action_callback_inputs,
+            "outputs": _get_action_callback_outputs,
+        },
+        _on_page_load.__wrapped__: {
+            "inputs": _get_action_callback_inputs,
+            "outputs": _get_action_callback_outputs,
+        },
     }
     action_call = action_callback_mapping.get(action_function, {}).get(argument)
     default_value: Union[List[dcc.Download], Dict[str, DashDependency]] = [] if argument == "components" else {}

@@ -15,7 +15,11 @@ table_and_container = vm.Page(
             components=[
                 vm.Table(
                     title="Table Title",
-                    figure=dash_data_table(id="dash_data_table_country", data_frame=df, page_size=30),
+                    figure=dash_data_table(
+                        id="dash_data_table_country",
+                        data_frame=df,
+                        page_size=30,
+                    ),
                 )
             ],
         ),

@@ -123,7 +123,10 @@ def managers_one_page_four_controls_three_figures_filter_interaction(request, da
 @pytest.fixture
 def action_callback_inputs_expected():
     return {
-        "filters": [dash.State("filter_continent_selector", "value"), dash.State("filter_country_selector", "value")],
+        "filters": [
+            dash.State("filter_continent_selector", "value"),
+            dash.State("filter_country_selector", "value"),
+        ],
         "parameters": [
             dash.State("parameter_x_selector", "value"),
             dash.State("parameter_y_selector", "value"),
@@ -151,7 +154,10 @@ def action_callback_outputs_expected(request):
 @pytest.fixture
 def export_data_inputs_expected():
     return {
-        "filters": [dash.State("filter_continent_selector", "value"), dash.State("filter_country_selector", "value")],
+        "filters": [
+            dash.State("filter_continent_selector", "value"),
+            dash.State("filter_country_selector", "value"),
+        ],
         "parameters": [],
         "filter_interaction": [
             {"clickData": dash.State("scatter_chart", "clickData")},
@@ -213,7 +219,12 @@ class TestCallbackMapping:
                     {"component_id": "vizro_table", "component_property": "children"},
                 ],
             ),
-            ("filter_interaction_action", [{"component_id": "scatter_chart_2", "component_property": "figure"}]),
+            (
+                "filter_interaction_action",
+                [
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
+            ),
             (
                 "table_filter_interaction_action",
                 [

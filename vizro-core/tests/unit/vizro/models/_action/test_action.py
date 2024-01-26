@@ -83,12 +83,28 @@ class TestActionInstantiation:
         assert action.inputs == inputs
         assert action.outputs == outputs
 
-    @pytest.mark.parametrize("inputs", [[""], ["component"], ["component_property"], ["component.property.property"]])
+    @pytest.mark.parametrize(
+        "inputs",
+        [
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
     def test_inputs_invalid(self, inputs, identity_action_function):
         with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=identity_action_function(), inputs=inputs, outputs=[])
 
-    @pytest.mark.parametrize("outputs", [[""], ["component"], ["component_property"], ["component.property.property"]])
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
     def test_outputs_invalid(self, outputs, identity_action_function):
         with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=identity_action_function(), inputs=[], outputs=outputs)

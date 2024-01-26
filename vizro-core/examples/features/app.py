@@ -80,7 +80,9 @@ graphs = vm.Page(
     components=[
         vm.Graph(
             figure=px.scatter_matrix(
-                iris, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
+                iris,
+                dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                color="species",
             )
         )
     ],
@@ -89,7 +91,12 @@ graphs = vm.Page(
 
 table = vm.Page(
     title="Table",
-    components=[vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=gapminder_2007))],
+    components=[
+        vm.Table(
+            title="Dash DataTable",
+            figure=dash_data_table(data_frame=gapminder_2007),
+        )
+    ],
     controls=[vm.Filter(column="continent")],
 )
 
@@ -157,7 +164,13 @@ button = vm.Page(
     layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
     components=[
         vm.Graph(
-            figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species", size="petal_length"),
+            figure=px.scatter(
+                iris,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                size="petal_length",
+            ),
         ),
         vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
     ],
@@ -222,7 +235,10 @@ filters = vm.Page(
                 color="species",
             )
         ),
-        vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species,")),
+        vm.Graph(
+            id="scatter_chart2",
+            figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species,"),
+        ),
     ],
     controls=[
         vm.Filter(column="species"),

@@ -22,7 +22,10 @@ class ActionsChain(VizroBaseModel):
 # Validators for reuse in other models to convert to ActionsChain
 def _set_actions(actions: List[Action], values: Dict[str, Any], trigger_property: str) -> List[ActionsChain]:
     return [
-        ActionsChain(trigger=Trigger(component_id=values["id"], component_property=trigger_property), actions=actions),
+        ActionsChain(
+            trigger=Trigger(component_id=values["id"], component_property=trigger_property),
+            actions=actions,
+        )
     ]
 
 
