@@ -123,8 +123,7 @@ class TestProcessFigureDataFrame:
 
 class TestBuild:
     def test_graph_build(self, standard_px_chart):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart)
-        graph = graph.build()
+        graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
 
         expected_graph = dcc.Loading(
             dcc.Graph(

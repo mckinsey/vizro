@@ -157,14 +157,9 @@ class TestBuildTable:
         assert_component_equal(table, expected_table)
 
     def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action):
-        table = vm.Table(
-            id="text_table",
-            figure=dash_data_table_with_id,
-            actions=[filter_interaction_action],
-        )
-
+        table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
         table.pre_build()
-        built_table = table.build()
+        table = table.build()
 
         expected_table = dcc.Loading(
             html.Div(
@@ -179,4 +174,4 @@ class TestBuildTable:
             parent_className="loading-container",
         )
 
-        assert_component_equal(built_table, expected_table)
+        assert_component_equal(table, expected_table)

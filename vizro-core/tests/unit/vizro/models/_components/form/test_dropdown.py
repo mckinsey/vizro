@@ -173,12 +173,7 @@ class TestDropdownBuild:
         assert_component_equal(dropdown, expected_dropdown)
 
     def test_dropdown_without_all_option(self):
-        dropdown = Dropdown(
-            id="dropdown_id",
-            options=["A", "B", "C"],
-            multi=False,
-            title="Title",
-        ).build()
+        dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
                 html.P("Title"),

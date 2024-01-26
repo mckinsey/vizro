@@ -129,11 +129,7 @@ class TestRadioItemsBuild:
     """Tests model build method."""
 
     def test_radio_items_build(self):
-        radio_items = RadioItems(
-            id="radio_items_id",
-            options=["A", "B", "C"],
-            title="Title",
-        ).build()
+        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Div(
             [
                 html.P("Title"),

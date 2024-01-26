@@ -310,8 +310,7 @@ class TestRangeSliderBuild:
     """Tests model build method."""
 
     def test_range_slider_build_default(self, expected_range_slider_default):
-        range_slider = vm.RangeSlider(id="range_slider")
-        range_slider = range_slider.build()
+        range_slider = vm.RangeSlider(id="range_slider").build()
 
         assert_component_equal(range_slider, expected_range_slider_default)
 
@@ -324,7 +323,6 @@ class TestRangeSliderBuild:
             id="range_slider_with_all",
             title="Title",
             marks={1: "1", 5: "5", 10: "10"},
-        )
-        range_slider = range_slider.build()
+        ).build()
 
         assert_component_equal(range_slider, expected_range_slider_with_optional)
