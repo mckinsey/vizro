@@ -38,26 +38,40 @@ def managers_one_page_four_controls_three_figures_filter_interaction(request, da
         id="test_page",
         title="My first dashboard",
         components=[
-            vm.Graph(
-                id="scatter_chart",
-                figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
-                actions=[
-                    vm.Action(id="filter_interaction_action", function=filter_interaction(targets=["scatter_chart_2"]))
-                ],
-            ),
-            vm.Graph(
-                id="scatter_chart_2",
-                figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
-                actions=[vm.Action(id="custom_action", function=custom_action_example())],
-            ),
-            vm.Table(
-                id="vizro_table",
-                figure=dash_data_table_with_id,
-                actions=[
-                    vm.Action(
-                        id="table_filter_interaction_action",
-                        function=filter_interaction(targets=["scatter_chart", "scatter_chart_2"]),
-                    )
+            vm.Container(
+                title="test_container_1",
+                components=[
+                    vm.Graph(
+                        id="scatter_chart",
+                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
+                        actions=[
+                            vm.Action(
+                                id="filter_interaction_action", function=filter_interaction(targets=["scatter_chart_2"])
+                            )
+                        ],
+                    ),
+                    vm.Container(
+                        title="test_container_2",
+                        components=[
+                            vm.Graph(
+                                id="scatter_chart_2",
+                                figure=px.scatter(
+                                    px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]
+                                ),
+                                actions=[vm.Action(id="custom_action", function=custom_action_example())],
+                            ),
+                            vm.Table(
+                                id="vizro_table",
+                                figure=dash_data_table_with_id,
+                                actions=[
+                                    vm.Action(
+                                        id="table_filter_interaction_action",
+                                        function=filter_interaction(targets=["scatter_chart", "scatter_chart_2"]),
+                                    )
+                                ],
+                            ),
+                        ],
+                    ),
                 ],
             ),
             vm.Button(
