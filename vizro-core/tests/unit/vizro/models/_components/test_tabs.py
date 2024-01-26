@@ -1,0 +1,74 @@
+"""Unit tests for vizro.models.Container."""
+import dash_mantine_components as dmc
+import pytest
+from asserts import assert_component_equal
+from dash import html
+
+try:
+    from pydantic.v1 import ValidationError
+except ImportError:  # pragma: no cov
+    from pydantic import ValidationError
+
+import vizro.models as vm
+
+
+@pytest.fixture
+def containers():
+    return [
+        vm.Container(id="container-1", title="Title-1", components=[vm.Button()]),
+        vm.Container(id="container-2", title="Title-2", components=[vm.Button()]),
+    ]
+
+
+class TestTabsInstantiation:
+    """Tests model instantiation and the validators run at that time."""
+
+    def test_create_tabs_mandatory_only(self, containers):
+        tabs = vm.Tabs(id="tab-id", tabs=containers)
+        assert isinstance(tabs.tabs[0], vm.Container) and isinstance(tabs.tabs[1], vm.Container)
+        assert tabs.id == "tab-id"
+        assert tabs.type == "tabs"
+
+    def test_mandatory_tabs_missing(self):
+        with pytest.raises(ValidationError, match="field required"):
+            vm.Tabs(id="tab-id")
+
+
+class TestTabsBuildMethod:
+    def test_tabs_build(self, containers):
+        result = vm.Tabs(id="tab-id", tabs=containers).build()
+        assert_component_equal(
+            result,
+            dmc.Tabs(id="tab-id", value="container-1", persistence=True, className="tabs"),
+            keys_to_strip={"children"},
+        )
+        assert_component_equal(
+            result.children,
+            [dmc.TabsList(), dmc.TabsPanel(value="container-1"), dmc.TabsPanel(value="container-2")],
+            keys_to_strip={"children", "className"},
+        )
+        assert_component_equal(
+            result.children[0],
+            dmc.TabsList(
+                children=[
+                    dmc.Tab(value="container-1", children="Title-1", className="tab__title"),
+                    dmc.Tab(value="container-2", children="Title-2", className="tab__title"),
+                ],
+                className="tabs__list",
+            ),
+        )
+        assert_component_equal(
+            result.children[1],
+            dmc.TabsPanel(className="tabs__panel", value="container-1"),
+            keys_to_strip={"children"},
+        )
+        assert_component_equal(
+            result.children[2],
+            dmc.TabsPanel(className="tabs__panel", value="container-2"),
+            keys_to_strip={"children"},
+        )
+        assert_component_equal(
+            result.children[1].children,
+            html.Div([html.H3(), html.Div()], className="tab__content"),
+            keys_to_strip={"children"},
+        )
