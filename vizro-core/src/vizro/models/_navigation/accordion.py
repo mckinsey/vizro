@@ -53,8 +53,13 @@ class Accordion(VizroBaseModel):
                     children=accordion_buttons,
                     title=page_group.upper(),
                     class_name="accordion-item-header",
+                    item_id=page_group,
                 )
             )
+
+        active_item = next(
+            (page_group for page_group, page_members in self.pages.items() if active_page_id in page_members), None
+        )
 
         return html.Div(
             children=[
@@ -65,6 +70,7 @@ class Accordion(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     always_open=True,
+                    active_item=active_item,
                 ),
             ],
             id="nav-panel",
