@@ -46,11 +46,7 @@ def expected_graph():
                     "yaxis": {"visible": False},
                 }
             ),
-            config={
-                "autosizable": True,
-                "frameMargins": 0,
-                "responsive": True,
-            },
+            config={"autosizable": True, "frameMargins": 0, "responsive": True},
             className="chart_container",
         ),
         color="grey",

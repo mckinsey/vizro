@@ -15,11 +15,7 @@ table_and_container = vm.Page(
             components=[
                 vm.Table(
                     title="Table Title",
-                    figure=dash_data_table(
-                        id="dash_data_table_country",
-                        data_frame=df,
-                        page_size=30,
-                    ),
+                    figure=dash_data_table(id="dash_data_table_country", data_frame=df, page_size=30),
                 )
             ],
         ),
@@ -27,15 +23,8 @@ table_and_container = vm.Page(
             title="Another Container",
             components=[
                 vm.Graph(
-                    figure=px.scatter(
-                        df,
-                        title="Graph_2",
-                        x="gdpPercap",
-                        y="lifeExp",
-                        size="pop",
-                        color="continent",
-                    ),
-                ),
+                    figure=px.scatter(df, title="Graph_2", x="gdpPercap", y="lifeExp", size="pop", color="continent")
+                )
             ],
         ),
     ],
@@ -43,12 +32,7 @@ table_and_container = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(
-    title="Dashboard Title",
-    pages=[
-        table_and_container,
-    ],
-)
+dashboard = vm.Dashboard(title="Dashboard Title", pages=[table_and_container])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

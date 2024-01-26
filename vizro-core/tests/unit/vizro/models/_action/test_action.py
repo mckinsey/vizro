@@ -33,11 +33,7 @@ def custom_action_function_mock_return(request):
 
 @pytest.fixture
 def custom_action_build_expected():
-    return html.Div(
-        children=[],
-        id="action_test_action_model_components_div",
-        hidden=True,
-    )
+    return html.Div(children=[], id="action_test_action_model_components_div", hidden=True)
 
 
 @pytest.fixture
@@ -87,28 +83,12 @@ class TestActionInstantiation:
         assert action.inputs == inputs
         assert action.outputs == outputs
 
-    @pytest.mark.parametrize(
-        "inputs",
-        [
-            [""],
-            ["component"],
-            ["component_property"],
-            ["component.property.property"],
-        ],
-    )
+    @pytest.mark.parametrize("inputs", [[""], ["component"], ["component_property"], ["component.property.property"]])
     def test_inputs_invalid(self, inputs, identity_action_function):
         with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=identity_action_function(), inputs=inputs, outputs=[])
 
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component"],
-            ["component_property"],
-            ["component.property.property"],
-        ],
-    )
+    @pytest.mark.parametrize("outputs", [[""], ["component"], ["component_property"], ["component.property.property"]])
     def test_outputs_invalid(self, outputs, identity_action_function):
         with pytest.raises(ValidationError, match="string does not match regex"):
             Action(function=identity_action_function(), inputs=[], outputs=outputs)
@@ -182,11 +162,7 @@ class TestActionPrivateMethods:
     @pytest.mark.parametrize(
         "inputs_and_outputs, expected_get_callback_mapping_inputs, expected_get_callback_mapping_outputs",
         [
-            (
-                ["component.property"],
-                [State("component", "property")],
-                Output("component", "property"),
-            ),
+            (["component.property"], [State("component", "property")], Output("component", "property")),
             (
                 ["component_1.property", "component_2.property"],
                 [State("component_1", "property"), State("component_2", "property")],
@@ -232,10 +208,7 @@ class TestActionPrivateMethods:
                 [Output("component", "property"), Output("component_2", "property")],
             ),
             # multiple dict outputs
-            (
-                {"component_1": "value_1"},
-                {"component_1": Output("component", "property")},
-            ),
+            ({"component_1": "value_1"}, {"component_1": Output("component", "property")}),
             (
                 {"component_1": "value_1", "component_2": "value_2"},
                 {"component_1": Output("component_1", "property"), "component_2": Output("component_2", "property")},
@@ -253,25 +226,18 @@ class TestActionPrivateMethods:
         )
 
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
-    @pytest.mark.parametrize(
-        "custom_action_function_mock_return",
-        [False, 0, "", [], (), {}],
-        indirect=True,
-    )
+    @pytest.mark.parametrize("custom_action_function_mock_return", [False, 0, "", [], (), {}], indirect=True)
     def test_action_callback_function_no_outputs_return_value_not_None(
         self, custom_action_function_mock_return, callback_outputs
     ):
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
-            ValueError,
-            match="Action function has returned a value but the action has no defined outputs.",
+            ValueError, match="Action function has returned a value but the action has no defined outputs."
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return",
-        [None, False, 0, 123],
-        indirect=["custom_action_function_mock_return"],
+        "custom_action_function_mock_return", [None, False, 0, 123], indirect=["custom_action_function_mock_return"]
     )
     def test_action_callback_function_outputs_list_return_value_not_collection(
         self, custom_action_function_mock_return
@@ -330,7 +296,6 @@ class TestActionPrivateMethods:
     ):
         action = Action(function=custom_action_function_mock_return())
         with pytest.raises(
-            ValueError,
-            match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}.",
+            ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})

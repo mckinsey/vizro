@@ -5,9 +5,7 @@ from dash._utils import AttributeDict
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -48,11 +46,7 @@ def ctx_filter_continent(request):
                 ],
                 "parameters": [],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
+                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
                 ),
             }
         }
@@ -78,20 +72,12 @@ def ctx_filter_continent_and_pop(request):
                         triggered=False,
                     ),
                     CallbackTriggerDict(
-                        id="pop_filter",
-                        property="value",
-                        value=pop,
-                        str_id="pop_filter",
-                        triggered=False,
+                        id="pop_filter", property="value", value=pop, str_id="pop_filter", triggered=False
                     ),
                 ],
                 "parameters": [],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
+                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
                 ),
             }
         }
@@ -108,10 +94,7 @@ class TestFilter:
         indirect=True,
     )
     def test_one_filter_no_targets(
-        self,
-        ctx_filter_continent,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_continent, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Creating and adding a Filter object to the existing Page
         continent_filter = vm.Filter(id="test_filter", column="continent", selector=vm.Dropdown(id="continent_filter"))
@@ -122,10 +105,7 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
@@ -134,11 +114,7 @@ class TestFilter:
         [(["Africa"], ["Africa"]), (["Africa", "Europe"], ["Africa", "Europe"])],
         indirect=True,
     )
-    def test_one_filter_one_target(
-        self,
-        ctx_filter_continent,
-        target_scatter_filtered_continent,
-    ):
+    def test_one_filter_one_target(self, ctx_filter_continent, target_scatter_filtered_continent):
         # Creating and adding a Filter object to the existing Page
         continent_filter = vm.Filter(
             id="test_filter", column="continent", targets=["scatter_chart"], selector=vm.Dropdown(id="continent_filter")
@@ -150,9 +126,7 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
 
@@ -162,10 +136,7 @@ class TestFilter:
         indirect=True,
     )
     def test_one_filter_multiple_targets(
-        self,
-        ctx_filter_continent,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_continent, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Creating and adding a Filter object to the existing Page
         continent_filter = vm.Filter(
@@ -181,10 +152,7 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
@@ -234,11 +202,7 @@ class TestFilter:
         ],
         indirect=True,
     )
-    def test_multiple_filters_one_target(
-        self,
-        ctx_filter_continent_and_pop,
-        target_scatter_filtered_continent_and_pop,
-    ):
+    def test_multiple_filters_one_target(self, ctx_filter_continent_and_pop, target_scatter_filtered_continent_and_pop):
         # Creating and adding a Filter objects to the existing Page
         continent_filter = vm.Filter(
             id="test_filter_continent",
@@ -255,9 +219,7 @@ class TestFilter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent_and_pop,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent_and_pop}
 
         assert result == expected
 

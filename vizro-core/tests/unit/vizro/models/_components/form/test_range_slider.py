@@ -17,14 +17,7 @@ import vizro.models as vm
 def expected_range_slider_default():
     return html.Div(
         [
-            dcc.Store(
-                "range_slider_callback_data",
-                data={
-                    "id": "range_slider",
-                    "min": None,
-                    "max": None,
-                },
-            ),
+            dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": None, "max": None}),
             None,
             html.Div(
                 [
@@ -83,14 +76,7 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            dcc.Store(
-                "range_slider_with_all_callback_data",
-                data={
-                    "id": "range_slider_with_all",
-                    "min": 0,
-                    "max": 10,
-                },
-            ),
+            dcc.Store("range_slider_with_all_callback_data", data={"id": "range_slider_with_all", "min": 0, "max": 10}),
             html.P("Title"),
             html.Div(
                 [
@@ -230,10 +216,7 @@ class TestRangeSliderInstantiation:
         with pytest.raises(ValidationError, match=match):
             vm.RangeSlider(min=0, max=10, value=value)
 
-    @pytest.mark.parametrize(
-        "step, expected",
-        [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)],
-    )
+    @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
     def test_validate_step_valid(self, step, expected):
         range_slider = vm.RangeSlider(min=0, max=10, step=step)
 
@@ -261,10 +244,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.marks == expected
 
     def test_invalid_marks(self):
-        with pytest.raises(
-            ValidationError,
-            match="2 validation errors for RangeSlider",
-        ):
+        with pytest.raises(ValidationError, match="2 validation errors for RangeSlider"):
             vm.RangeSlider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
@@ -285,16 +265,7 @@ class TestRangeSliderInstantiation:
         slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks)
         assert slider.marks == expected
 
-    @pytest.mark.parametrize(
-        "title",
-        [
-            "test",
-            1,
-            1.0,
-            """## Test header""",
-            "",
-        ],
-    )
+    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):
         slider = vm.RangeSlider(title=title)
 

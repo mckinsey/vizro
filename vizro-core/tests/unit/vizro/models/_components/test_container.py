@@ -23,10 +23,7 @@ class TestContainerInstantiation:
 
     def test_create_container_mandatory_and_optional(self):
         container = vm.Container(
-            title="Title",
-            components=[vm.Button(), vm.Button()],
-            id="my-id",
-            layout=vm.Layout(grid=[[0, 1]]),
+            title="Title", components=[vm.Button(), vm.Button()], id="my-id", layout=vm.Layout(grid=[[0, 1]])
         )
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0, 1]]

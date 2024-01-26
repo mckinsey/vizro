@@ -95,8 +95,7 @@ class TestRadioItemsInstantiation:
 
     def test_create_radio_items_invalid_options_dict(self):
         with pytest.raises(
-            ValidationError,
-            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
+            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
         ):
             RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 

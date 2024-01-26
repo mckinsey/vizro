@@ -17,13 +17,7 @@ import vizro.models as vm
 @pytest.fixture
 def expected_card():
     text = dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id")
-    button = html.Div(
-        dbc.Button(
-            href="https://www.google.com",
-            className="card_button",
-        ),
-        className="button_container",
-    )
+    button = html.Div(dbc.Button(href="https://www.google.com", className="card_button"), className="button_container")
 
     return html.Div([text, button], className="nav_card_container", id="card_id_outer")
 

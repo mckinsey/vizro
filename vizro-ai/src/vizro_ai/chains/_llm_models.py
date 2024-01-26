@@ -12,26 +12,10 @@ LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
 PREDEFINED_MODELS: List[Dict[str, any]] = [
-    {
-        "name": "gpt-3.5-turbo-0613",
-        "max_tokens": 4096,
-        "wrapper": ChatOpenAI,
-    },
-    {
-        "name": "gpt-4-0613",
-        "max_tokens": 8192,
-        "wrapper": ChatOpenAI,
-    },
-    {
-        "name": "gpt-3.5-turbo-1106",
-        "max_tokens": 16385,
-        "wrapper": ChatOpenAI,
-    },
-    {
-        "name": "gpt-4-1106-preview",
-        "max_tokens": 128000,
-        "wrapper": ChatOpenAI,
-    },
+    {"name": "gpt-3.5-turbo-0613", "max_tokens": 4096, "wrapper": ChatOpenAI},
+    {"name": "gpt-4-0613", "max_tokens": 8192, "wrapper": ChatOpenAI},
+    {"name": "gpt-3.5-turbo-1106", "max_tokens": 16385, "wrapper": ChatOpenAI},
+    {"name": "gpt-4-1106-preview", "max_tokens": 128000, "wrapper": ChatOpenAI},
 ]
 
 

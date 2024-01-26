@@ -48,10 +48,7 @@ def _build_action_loop_callbacks() -> None:
         )
 
         gateway_inputs.append(
-            Input(
-                component_id={"type": "gateway_input", "trigger_id": actions_chain.id},
-                component_property="data",
-            )
+            Input(component_id={"type": "gateway_input", "trigger_id": actions_chain.id}, component_property="data")
         )
 
     # Determines the final sequence of actions to be triggered.

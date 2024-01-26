@@ -10,10 +10,7 @@ from vizro.managers import model_manager
 def dashboard_result(request):
     # Inject the navigation into the dashboard. Note we need to call request.param since they are all lambda functions.
     dashboard = vm.Dashboard(
-        pages=[
-            vm.Page(title="Page 1", components=[vm.Button()]),
-            vm.Page(title="Page 2", components=[vm.Button()]),
-        ],
+        pages=[vm.Page(title="Page 1", components=[vm.Button()]), vm.Page(title="Page 2", components=[vm.Button()])],
         navigation=request.param(),
     )
     Vizro()._pre_build()
@@ -87,11 +84,7 @@ navbar_flat_cases = [
     (
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),
         lambda: vm.Navigation(
-            nav_selector=vm.NavBar(
-                items=[
-                    vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1"),
-                ]
-            )
+            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1")])
         ),
     ),
 ]
@@ -144,9 +137,7 @@ navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
 
 
 @pytest.mark.parametrize(
-    "dashboard_result, dashboard_expected",
-    accordion_cases + navbar_flat_cases + navbar_grouped_cases,
-    indirect=True,
+    "dashboard_result, dashboard_expected", accordion_cases + navbar_flat_cases + navbar_grouped_cases, indirect=True
 )
 def test_navigation_build(dashboard_result, dashboard_expected):
     result = dashboard_result.navigation.build()

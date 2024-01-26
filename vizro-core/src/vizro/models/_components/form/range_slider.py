@@ -83,14 +83,7 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Store(
-                    f"{self.id}_callback_data",
-                    data={
-                        "id": self.id,
-                        "min": self.min,
-                        "max": self.max,
-                    },
-                ),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.P(self.title) if self.title else None,
                 html.Div(
                     [
@@ -136,11 +129,7 @@ class RangeSlider(VizroBaseModel):
                                     if self.step
                                     else "slider_input_field_no_space_right",
                                 ),
-                                dcc.Store(
-                                    id=f"{self.id}_input_store",
-                                    storage_type="session",
-                                    data=init_value,
-                                ),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                             ],
                             className="slider_input_container",
                         ),

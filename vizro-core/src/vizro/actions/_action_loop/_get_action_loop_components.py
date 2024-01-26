@@ -33,10 +33,7 @@ def _get_action_loop_components() -> html.Div:
     # Required to avoid the "Unknown callback Input" issue for multiple page app examples.
     components.extend(
         [
-            dcc.Store(
-                id={"type": "gateway_input", "trigger_id": actions_chain.id},
-                data=f"{actions_chain.id}",
-            )
+            dcc.Store(id={"type": "gateway_input", "trigger_id": actions_chain.id}, data=f"{actions_chain.id}")
             for actions_chain in actions_chains
         ]
     )
@@ -47,12 +44,7 @@ def _get_action_loop_components() -> html.Div:
     components.extend([dcc.Store(id={"type": "action_trigger", "action_name": action.id}) for action in actions])
 
     # Additional store with all action_triggers ids.
-    components.append(
-        dcc.Store(
-            id="action_trigger_actions_id",
-            data=[action.id for action in actions],
-        )
-    )
+    components.append(dcc.Store(id="action_trigger_actions_id", data=[action.id for action in actions]))
 
     # Additional store that maps the actions chain trigger id and the list of action ids that should be executed.
     components.append(

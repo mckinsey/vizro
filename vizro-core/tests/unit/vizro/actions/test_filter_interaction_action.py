@@ -5,9 +5,7 @@ from dash._utils import AttributeDict
 
 import vizro.models as vm
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -23,13 +21,7 @@ def ctx_filter_interaction(request):
                 "clickData": CallbackTriggerDict(
                     id="box_chart",
                     property="clickData",
-                    value={
-                        "points": [
-                            {
-                                "customdata": [continent_filter_interaction],
-                            }
-                        ]
-                    },
+                    value={"points": [{"customdata": [continent_filter_interaction]}]},
                     str_id="box_chart",
                     triggered=False,
                 )
@@ -49,16 +41,8 @@ def ctx_filter_interaction(request):
                     id="underlying_table_id",
                     property="derived_viewport_data",
                     value=[
-                        {
-                            "country": country_table_filter_interaction,
-                            "continent": "Africa",
-                            "year": 2007,
-                        },
-                        {
-                            "country": "Egypt",
-                            "continent": "Africa",
-                            "year": 2007,
-                        },
+                        {"country": country_table_filter_interaction, "continent": "Africa", "year": 2007},
+                        {"country": "Egypt", "continent": "Africa", "year": 2007},
                     ],
                     str_id="underlying_table_id",
                     triggered=False,
@@ -73,11 +57,7 @@ def ctx_filter_interaction(request):
                 "filter_interaction": args_grouping_filter_interaction,
                 "parameters": [],
                 "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
+                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
                 ),
             }
         }
@@ -116,8 +96,7 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
 class TestFilterInteraction:
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
-        self,
-        ctx_filter_interaction,
+        self, ctx_filter_interaction
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [vm.Action(id="test_action", function=filter_interaction())]
@@ -139,20 +118,14 @@ class TestFilterInteraction:
         indirect=True,
     )
     def test_filter_interaction_without_targets_desired_behavior(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [vm.Action(id="test_action", function=filter_interaction())]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
@@ -165,11 +138,7 @@ class TestFilterInteraction:
         ],
         indirect=True,
     )
-    def test_filter_interaction_with_one_target(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-    ):
+    def test_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [
             vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart"]))
@@ -177,9 +146,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
 
@@ -193,10 +160,7 @@ class TestFilterInteraction:
         indirect=True,
     )
     def test_filter_interaction_with_two_target(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [
@@ -205,21 +169,14 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
-    def test_filter_interaction_with_invalid_targets(
-        self,
-        target,
-        ctx_filter_interaction,
-    ):
+    def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
         with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
             model_manager["box_chart"].actions = [
@@ -235,11 +192,7 @@ class TestFilterInteraction:
         ],
         indirect=True,
     )
-    def test_table_filter_interaction_with_one_target(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-    ):
+    def test_table_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
         model_manager["box_chart"].actions = [
             vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart"]))
         ]
@@ -249,9 +202,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
 
@@ -265,10 +216,7 @@ class TestFilterInteraction:
         indirect=True,
     )
     def test_table_filter_interaction_with_two_targets(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         model_manager["box_chart"].actions = [
             vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
@@ -281,10 +229,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
@@ -298,10 +243,7 @@ class TestFilterInteraction:
         indirect=True,
     )
     def test_mixed_chart_and_table_filter_interaction_with_two_targets(
-        self,
-        ctx_filter_interaction,
-        target_scatter_filtered_continent,
-        target_box_filtered_continent,
+        self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         model_manager["box_chart"].actions = [
             vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
@@ -314,10 +256,7 @@ class TestFilterInteraction:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function()
-        expected = {
-            "scatter_chart": target_scatter_filtered_continent,
-            "box_chart": target_box_filtered_continent,
-        }
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 

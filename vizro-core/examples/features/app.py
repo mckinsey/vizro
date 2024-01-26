@@ -81,17 +81,15 @@ graphs = vm.Page(
         vm.Graph(
             figure=px.scatter_matrix(
                 iris, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
-            ),
-        ),
+            )
+        )
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
 table = vm.Page(
     title="Table",
-    components=[
-        vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=gapminder_2007)),
-    ],
+    components=[vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=gapminder_2007))],
     controls=[vm.Filter(column="continent")],
 )
 
@@ -107,7 +105,7 @@ cards = vm.Page(
                 ### Header level 3 <h3>
 
                 #### Header level 4 <h4>
-            """,
+            """
         ),
         vm.Card(
             text="""
@@ -119,7 +117,7 @@ cards = vm.Page(
                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-            """,
+            """
         ),
         vm.Card(
             text="""
@@ -128,7 +126,7 @@ cards = vm.Page(
                 >
                 > A block quote is a long quotation, indented to create a separate block of text.
                 >
-            """,
+            """
         ),
         vm.Card(
             text="""
@@ -138,7 +136,7 @@ cards = vm.Page(
                     * Sub Item 1
                     * Sub Item 2
                 * Item B
-            """,
+            """
         ),
         vm.Card(
             text="""
@@ -149,7 +147,7 @@ cards = vm.Page(
                 This word will be **bold**
 
                 This word will be _**bold and italic**_
-            """,
+            """
         ),
     ],
 )
@@ -158,19 +156,8 @@ button = vm.Page(
     title="Button",
     layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
     components=[
-        vm.Graph(
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                size="petal_length",
-            ),
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[vm.Action(function=export_data())],
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species", size="petal_length")),
+        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
@@ -205,7 +192,7 @@ containers = vm.Page(
                         marginal_x="box",
                         title="Container II - Scatter",
                     )
-                ),
+                )
             ],
         ),
     ],
@@ -252,12 +239,8 @@ parameters = vm.Page(
     controls=[
         vm.Parameter(
             targets=["scatter_chart_pm.color_discrete_map.virginica", "bar_chart_pm.color_discrete_map.virginica"],
-            selector=vm.Dropdown(
-                options=["#ff5267", "#3949ab"],
-                multi=False,
-                value="#3949ab",
-            ),
-        ),
+            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab"),
+        )
     ],
 )
 
@@ -265,20 +248,11 @@ parameters = vm.Page(
 export_data_action = vm.Page(
     title="Export data",
     components=[
-        vm.Graph(
-            figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species"),
-        ),
-        vm.Graph(
-            figure=px.histogram(iris, x="petal_length", color="species"),
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[vm.Action(function=export_data())],
-        ),
+        vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species")),
+        vm.Graph(figure=px.histogram(iris, x="petal_length", color="species")),
+        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
     ],
-    controls=[
-        vm.Filter(column="species"),
-    ],
+    controls=[vm.Filter(column="species")],
 )
 
 
@@ -286,24 +260,12 @@ chart_interaction = vm.Page(
     title="Chart interaction",
     components=[
         vm.Graph(
-            figure=px.box(
-                gapminder_2007,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                custom_data=["continent"],
-            ),
+            figure=px.box(gapminder_2007, x="continent", y="lifeExp", color="continent", custom_data=["continent"]),
             actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
         ),
         vm.Graph(
             id="scatter_relation_2007",
-            figure=px.scatter(
-                gapminder_2007,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
+            figure=px.scatter(gapminder_2007, x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
     ],
 )
@@ -331,7 +293,7 @@ def waterfall(data_frame, measure, x, y, text, title=None):
             decreasing={"marker": {"color": "#ff5267"}},
             increasing={"marker": {"color": "#08bdba"}},
             totals={"marker": {"color": "#00b4ff"}},
-        ),
+        )
     )
     fig.update_layout(title=title)
     return fig
@@ -343,11 +305,7 @@ custom_charts = vm.Page(
         vm.Graph(
             id="custom_scatter",
             figure=scatter_with_line(
-                x="sepal_length",
-                y="sepal_width",
-                hline=3.5,
-                data_frame=iris,
-                title="Custom px chart",
+                x="sepal_length", y="sepal_width", hline=3.5, data_frame=iris, title="Custom px chart"
             ),
         ),
         vm.Graph(
@@ -392,7 +350,7 @@ custom_tables = vm.Page(
             figure=my_custom_table(
                 data_frame=gapminder_2007, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
             ),
-        ),
+        )
     ],
     controls=[
         vm.Parameter(
@@ -432,13 +390,7 @@ class Jumbotron(vm.VizroBaseModel):
 
     def build(self):
         """Build the new component based on Dash components."""
-        return html.Div(
-            [
-                html.H2(self.title),
-                html.H3(self.subtitle),
-                html.P(self.text),
-            ]
-        )
+        return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
 
 
 vm.Page.add_type("components", Jumbotron)
@@ -476,9 +428,7 @@ def my_custom_action(t: int):
 custom_actions = vm.Page(
     title="Custom Actions",
     components=[
-        vm.Graph(
-            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
         vm.Button(
             text="Export data",
             actions=[

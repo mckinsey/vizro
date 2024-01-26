@@ -119,8 +119,7 @@ class TestDropdownInstantiation:
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(
-            ValidationError,
-            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
+            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
         ):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
