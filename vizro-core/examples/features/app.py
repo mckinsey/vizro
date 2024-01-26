@@ -237,12 +237,21 @@ filters = vm.Page(
         ),
         vm.Graph(
             id="scatter_chart2",
-            figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species,"),
+            figure=px.scatter(
+                iris,
+                x="petal_length",
+                y="sepal_width",
+                color="species",
+            ),
         ),
     ],
     controls=[
         vm.Filter(column="species"),
-        vm.Filter(column="petal_length", targets=["scatter_chart2"], selector=vm.RangeSlider()),
+        vm.Filter(
+            column="petal_length",
+            targets=["scatter_chart2"],
+            selector=vm.RangeSlider(),
+        ),
     ],
 )
 
@@ -374,7 +383,9 @@ custom_charts = vm.Page(
     controls=[
         vm.Filter(column="petal_width", targets=["custom_scatter"]),
         vm.Filter(
-            column="x", targets=["custom_waterfall"], selector=vm.Dropdown(title="Financial categories", multi=True)
+            column="x",
+            targets=["custom_waterfall"],
+            selector=vm.Dropdown(title="Financial categories", multi=True),
         ),
     ],
 )
@@ -412,7 +423,11 @@ custom_tables = vm.Page(
     controls=[
         vm.Parameter(
             targets=["custom_table.chosen_columns"],
-            selector=vm.Dropdown(title="Choose columns", options=gapminder_2007.columns.to_list(), multi=True),
+            selector=vm.Dropdown(
+                title="Choose columns",
+                options=gapminder_2007.columns.to_list(),
+                multi=True,
+            ),
         )
     ],
 )
@@ -462,7 +477,13 @@ custom_components = vm.Page(
         ),
         vm.Graph(
             id="for_custom_chart",
-            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+            figure=px.scatter(
+                iris,
+                title="Iris Dataset",
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
         ),
     ],
     controls=[
@@ -485,7 +506,14 @@ def my_custom_action(t: int):
 custom_actions = vm.Page(
     title="Custom Actions",
     components=[
-        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(
+            figure=px.scatter(
+                iris,
+                x="sepal_length",
+                y="petal_width",
+                color="species",
+            )
+        ),
         vm.Button(
             text="Export data",
             actions=[
