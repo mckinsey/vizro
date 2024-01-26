@@ -58,7 +58,8 @@ h4,
   text-decoration: underline;
 }
 
-p, label,
+p,
+label,
 .body-ui-02 {
   color: var(--text-secondary);
   font-size: var(--text-size-02);
