@@ -78,8 +78,7 @@ class TestDropdownInstantiation:
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(
-            ValidationError,
-            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
+            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
         ):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
@@ -148,11 +147,7 @@ class TestDropdownBuild:
     """Tests model build method."""
 
     def test_dropdown_with_all_option(self):
-        dropdown = Dropdown(
-            options=["A", "B", "C"],
-            title="Title",
-            id="dropdown_id",
-        ).build()
+        dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
                 html.Label("Title", htmlFor="dropdown_id"),

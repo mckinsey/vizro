@@ -34,8 +34,8 @@ table_and_container = vm.Page(
                         y="lifeExp",
                         size="pop",
                         color="continent",
-                    ),
-                ),
+                    )
+                )
             ],
         ),
     ],
@@ -43,12 +43,7 @@ table_and_container = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(
-    title="Dashboard Title",
-    pages=[
-        table_and_container,
-    ],
-)
+dashboard = vm.Dashboard(title="Dashboard Title", pages=[table_and_container])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

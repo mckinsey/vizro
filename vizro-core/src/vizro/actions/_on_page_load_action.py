@@ -4,9 +4,7 @@ from typing import Any, Dict, List
 
 from dash import ctx
 
-from vizro.actions._actions_utils import (
-    _get_modified_page_figures,
-)
+from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 

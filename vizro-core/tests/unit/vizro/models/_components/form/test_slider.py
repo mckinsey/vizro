@@ -16,14 +16,7 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            dcc.Store(
-                "slider_id_callback_data",
-                data={
-                    "id": "slider_id",
-                    "min": 0,
-                    "max": 10,
-                },
-            ),
+            dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0, "max": 10}),
             html.Label("Test title", htmlFor="slider_id"),
             html.Div(
                 [
@@ -77,14 +70,7 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.actions == []
 
-    @pytest.mark.parametrize(
-        "min, max",
-        [
-            (0, None),
-            (None, 10),
-            (0, 10),
-        ],
-    )
+    @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
     def test_valid_min_max(self, min, max):
         slider = vm.Slider(min=min, max=max)
 
@@ -93,45 +79,22 @@ class TestSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError,
-            match="Maximum value of slider is required to be larger than minimum value.",
+            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
         ):
             vm.Slider(min=10, max=0)
 
-    @pytest.mark.parametrize(
-        "value",
-        [
-            5,
-            -5,
-            0,
-            6.5,
-            -10,
-            10,
-        ],
-    )
+    @pytest.mark.parametrize("value", [5, -5, 0, 6.5, -10, 10])
     def test_validate_slider_value_valid(self, value):
         slider = vm.Slider(min=-10, max=10, value=value)
 
         assert slider.value == value
 
-    @pytest.mark.parametrize(
-        "value",
-        [
-            11,
-            -1,
-        ],
-    )
+    @pytest.mark.parametrize("value", [11, -1])
     def test_validate_slider_value_invalid(self, value):
-        with pytest.raises(
-            ValidationError,
-            match="Please provide a valid value between the min and max value.",
-        ):
+        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
             vm.Slider(min=0, max=10, value=value)
 
-    @pytest.mark.parametrize(
-        "step, expected",
-        [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)],
-    )
+    @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
     def test_validate_step_valid(self, step, expected):
         slider = vm.Slider(min=0, max=10, step=step)
 
@@ -164,10 +127,7 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
     def test_invalid_marks(self):
-        with pytest.raises(
-            ValidationError,
-            match="2 validation errors for Slider",
-        ):
+        with pytest.raises(ValidationError, match="2 validation errors for Slider"):
             vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
@@ -188,16 +148,7 @@ class TestSliderInstantiation:
         slider = vm.Slider(min=0, max=10, step=step, marks=marks)
         assert slider.marks == expected
 
-    @pytest.mark.parametrize(
-        "title",
-        [
-            "test",
-            1,
-            1.0,
-            """## Test header""",
-            "",
-        ],
-    )
+    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):
         slider = vm.Slider(title=title)
 
