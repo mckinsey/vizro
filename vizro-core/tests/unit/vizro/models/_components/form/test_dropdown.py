@@ -13,7 +13,6 @@ from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
 
 
-
 class TestDropdownInstantiation:
     """Tests model instantiation."""
 
