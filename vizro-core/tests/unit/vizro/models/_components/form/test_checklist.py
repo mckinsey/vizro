@@ -13,25 +13,6 @@ from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
 
 
-@pytest.fixture()
-def expected_checklist():
-    return html.Div(
-        [
-            html.Label("Title", htmlFor="checklist_id"),
-            dcc.Checklist(
-                id="checklist_id",
-                options=["ALL", "A", "B", "C"],
-                value=["ALL"],
-                className="selector_body_checklist",
-                persistence=True,
-                persistence_type="session",
-            ),
-        ],
-        className="selector_container",
-        id="checklist_id_outer",
-    )
-
-
 class TestChecklistInstantiation:
     """Tests model instantiation."""
 

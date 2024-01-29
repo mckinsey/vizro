@@ -13,45 +13,6 @@ from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
 
 
-@pytest.fixture()
-def expected_dropdown_with_all():
-    return html.Div(
-        [
-            html.Label("Title", htmlFor="dropdown_id"),
-            dcc.Dropdown(
-                id="dropdown_id",
-                options=["ALL", "A", "B", "C"],
-                value="ALL",
-                multi=True,
-                persistence=True,
-                persistence_type="session",
-                className="selector_body_dropdown",
-            ),
-        ],
-        className="selector_dropdown_container",
-        id="dropdown_id_outer",
-    )
-
-
-@pytest.fixture()
-def expected_dropdown_without_all():
-    return html.Div(
-        [
-            html.Label("Title", htmlFor="dropdown_id"),
-            dcc.Dropdown(
-                id="dropdown_id",
-                options=["A", "B", "C"],
-                value="A",
-                multi=False,
-                persistence=True,
-                persistence_type="session",
-                className="selector_body_dropdown",
-            ),
-        ],
-        className="selector_dropdown_container",
-        id="dropdown_id_outer",
-    )
-
 
 class TestDropdownInstantiation:
     """Tests model instantiation."""

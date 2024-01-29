@@ -13,25 +13,6 @@ from vizro.models._action._action import Action
 from vizro.models._components.form import RadioItems
 
 
-@pytest.fixture()
-def expected_radio_items():
-    return html.Div(
-        [
-            html.Label("Title", htmlFor="radio_items_id"),
-            dcc.RadioItems(
-                id="radio_items_id",
-                options=["A", "B", "C"],
-                value="A",
-                className="selector_body_radio_items",
-                persistence=True,
-                persistence_type="session",
-            ),
-        ],
-        className="selector_container",
-        id="radio_items_id_outer",
-    )
-
-
 class TestRadioItemsInstantiation:
     """Tests model instantiation."""
 
