@@ -155,7 +155,7 @@ class TestDropdownBuild:
         ).build()
         expected_dropdown = html.Div(
             [
-                html.P("Title"),
+                html.Label("Title", htmlFor="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["ALL", "A", "B", "C"],
@@ -176,7 +176,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
-                html.P("Title"),
+                html.Label("Title", htmlFor="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],
