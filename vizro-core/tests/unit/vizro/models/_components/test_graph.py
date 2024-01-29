@@ -1,9 +1,8 @@
 """Unit tests for vizro.models.Graph."""
-import json
 
-import plotly
 import plotly.graph_objects as go
 import pytest
+from asserts import assert_component_equal
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -30,27 +29,6 @@ def standard_px_chart_with_str_dataframe():
         color="continent",
         hover_name="country",
         size_max=60,
-    )
-
-
-@pytest.fixture
-def expected_graph():
-    return dcc.Loading(
-        dcc.Graph(
-            id="text_graph",
-            figure=go.Figure(
-                layout={
-                    "paper_bgcolor": "rgba(0,0,0,0)",
-                    "plot_bgcolor": "rgba(0,0,0,0)",
-                    "xaxis": {"visible": False},
-                    "yaxis": {"visible": False},
-                }
-            ),
-            config={"autosizable": True, "frameMargins": 0, "responsive": True},
-            className="chart_container",
-        ),
-        color="grey",
-        parent_className="loading-container",
     )
 
 
@@ -144,9 +122,28 @@ class TestProcessFigureDataFrame:
 
 
 class TestBuild:
-    def test_graph_build(self, standard_px_chart, expected_graph):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart)
+    def test_graph_build(self, standard_px_chart):
+        graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
 
-        result = json.loads(json.dumps(graph.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_graph, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        expected_graph = dcc.Loading(
+            dcc.Graph(
+                id="text_graph",
+                figure=go.Figure(
+                    layout={
+                        "paper_bgcolor": "rgba(0,0,0,0)",
+                        "plot_bgcolor": "rgba(0,0,0,0)",
+                        "xaxis": {"visible": False},
+                        "yaxis": {"visible": False},
+                    }
+                ),
+                config={
+                    "autosizable": True,
+                    "frameMargins": 0,
+                    "responsive": True,
+                },
+                className="chart_container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+        )
+        assert_component_equal(graph, expected_graph)
