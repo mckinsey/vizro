@@ -105,7 +105,17 @@ def managers_one_page_two_components_two_controls(vizro_app, dash_data_table_wit
 @pytest.fixture
 def managers_one_page_no_actions(vizro_app):
     """Instantiates managers with one "empty" page."""
-    vm.Dashboard(pages=[vm.Page(id="test_page_no_actions", title="Second page", components=[vm.Card(text="")])])
+    vm.Dashboard(
+        pages=[
+            vm.Page(
+                id="test_page_no_actions",
+                title="Second page",
+                components=[
+                    vm.Card(text=""),
+                ],
+            ),
+        ]
+    )
 
     Vizro._pre_build()
 

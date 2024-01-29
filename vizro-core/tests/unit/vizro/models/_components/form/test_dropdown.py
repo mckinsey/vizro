@@ -147,11 +147,7 @@ class TestDropdownBuild:
     """Tests model build method."""
 
     def test_dropdown_with_all_option(self):
-        dropdown = Dropdown(
-            options=["A", "B", "C"],
-            title="Title",
-            id="dropdown_id",
-        ).build()
+        dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
                 html.P("Title"),

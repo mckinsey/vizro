@@ -98,7 +98,9 @@ class Action(VizroBaseModel):
         return callback_inputs, callback_outputs, action_components
 
     def _action_callback_function(
-        self, inputs: Union[Dict[str, Any], List[Any]], outputs: Union[Dict[str, Output], List[Output], Output, None]
+        self,
+        inputs: Union[Dict[str, Any], List[Any]],
+        outputs: Union[Dict[str, Output], List[Output], Output, None],
     ) -> Any:
         logger.debug("===== Running action with id %s, function %s =====", self.id, self.function._function.__name__)
         if logger.isEnabledFor(logging.DEBUG):
@@ -153,7 +155,9 @@ class Action(VizroBaseModel):
             "external": external_callback_inputs,
             "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
         }
-        callback_outputs = {"internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)}}
+        callback_outputs = {
+            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+        }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
         # This allows the action function to return None and match correctly on to the callback_outputs dictionary
