@@ -76,7 +76,7 @@ def expected_range_slider_with_optional():
     return html.Div(
         [
             dcc.Store("range_slider_with_all_callback_data", data={"id": "range_slider_with_all", "min": 0, "max": 10}),
-            html.P("Title"),
+            html.Label("Title", htmlFor="range_slider_with_all"),
             html.Div(
                 [
                     dcc.RangeSlider(

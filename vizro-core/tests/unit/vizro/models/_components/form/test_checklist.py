@@ -131,7 +131,7 @@ class TestChecklistBuild:
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Div(
             [
-                html.P("Title"),
+                html.Label("Title", htmlFor="checklist_id"),
                 dcc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],

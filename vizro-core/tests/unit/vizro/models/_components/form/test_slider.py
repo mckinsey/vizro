@@ -17,7 +17,7 @@ def expected_slider():
     return html.Div(
         [
             dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0, "max": 10}),
-            html.P("Test title"),
+            html.Label("Test title", htmlFor="slider_id"),
             html.Div(
                 [
                     dcc.Slider(

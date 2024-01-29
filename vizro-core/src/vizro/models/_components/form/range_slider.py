@@ -84,7 +84,7 @@ class RangeSlider(VizroBaseModel):
         return html.Div(
             [
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 html.Div(
                     [
                         dcc.RangeSlider(
