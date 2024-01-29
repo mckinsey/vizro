@@ -10,13 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, set_components
 from vizro.models.types import _FormComponentType

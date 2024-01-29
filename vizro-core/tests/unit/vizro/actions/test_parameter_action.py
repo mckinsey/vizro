@@ -5,9 +5,7 @@ from dash._utils import AttributeDict
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -158,11 +156,7 @@ class TestParameter:
         [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
         indirect=True,
     )
-    def test_one_parameter_one_target(
-        self,
-        ctx_parameter_y,
-        target_scatter_parameter_y,
-    ):
+    def test_one_parameter_one_target(self, ctx_parameter_y, target_scatter_parameter_y):
         # Creating and adding a Parameter object to the existing Page
         y_parameter = vm.Parameter(
             id="test_parameter",
@@ -176,9 +170,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_y,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_y}
 
         assert result == expected
 
@@ -194,11 +186,7 @@ class TestParameter:
         ],
         indirect=True,
     )
-    def test_one_parameter_one_target_NONE_list(
-        self,
-        ctx_parameter_hover_data,
-        target_scatter_parameter_hover_data,
-    ):
+    def test_one_parameter_one_target_NONE_list(self, ctx_parameter_hover_data, target_scatter_parameter_hover_data):
         # Creating and adding a Parameter object to the existing Page
         y_parameter = vm.Parameter(
             id="test_parameter",
@@ -214,9 +202,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_hover_data,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_hover_data}
 
         assert result == expected
 
@@ -225,12 +211,7 @@ class TestParameter:
         [("pop", "pop", "pop"), ("gdpPercap", "gdpPercap", "gdpPercap")],
         indirect=True,
     )
-    def test_one_parameter_multiple_targets(
-        self,
-        ctx_parameter_y,
-        target_scatter_parameter_y,
-        target_box_parameter_y,
-    ):
+    def test_one_parameter_multiple_targets(self, ctx_parameter_y, target_scatter_parameter_y, target_box_parameter_y):
         # Creating and adding a Parameter object to the existing Page
         y_parameter = vm.Parameter(
             id="test_parameter",
@@ -244,10 +225,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_y,
-            "box_chart": target_box_parameter_y,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_y, "box_chart": target_box_parameter_y}
 
         assert result == expected
 
@@ -256,11 +234,7 @@ class TestParameter:
         [(["pop", "continent"], ["pop", "continent"]), (["gdpPercap", "country"], ["gdpPercap", "country"])],
         indirect=True,
     )
-    def test_multiple_parameters_one_target(
-        self,
-        ctx_parameter_y_and_x,
-        target_scatter_parameter_y_and_x,
-    ):
+    def test_multiple_parameters_one_target(self, ctx_parameter_y_and_x, target_scatter_parameter_y_and_x):
         # Creating and adding a Parameter object to the existing Page
         y_parameter = vm.Parameter(
             id="test_parameter_x",
@@ -280,9 +254,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_y_and_x,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_y_and_x}
 
         assert result == expected
 
@@ -295,10 +267,7 @@ class TestParameter:
         indirect=True,
     )
     def test_multiple_parameters_multiple_targets(
-        self,
-        ctx_parameter_y_and_x,
-        target_scatter_parameter_y_and_x,
-        target_box_parameter_y_and_x,
+        self, ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x
     ):
         # Creating and adding a Parameter object to the existing Page
         y_parameter = vm.Parameter(
@@ -319,10 +288,7 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_y_and_x,
-            "box_chart": target_box_parameter_y_and_x,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_y_and_x, "box_chart": target_box_parameter_y_and_x}
 
         assert result == expected
 
@@ -335,10 +301,7 @@ class TestParameter:
         indirect=True,
     )
     def test_one_parameter_per_target_multiple_attributes(
-        self,
-        ctx_parameter_y_and_x,
-        target_scatter_parameter_y_and_x,
-        target_box_parameter_y_and_x,
+        self, ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x
     ):
         # Creating and adding a Parameter object to the existing Page
         scatter_parameter = vm.Parameter(
@@ -359,15 +322,11 @@ class TestParameter:
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
-        expected = {
-            "scatter_chart": target_scatter_parameter_y_and_x,
-        }
+        expected = {"scatter_chart": target_scatter_parameter_y_and_x}
 
         assert result == expected
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
-        expected = {
-            "box_chart": target_box_parameter_y_and_x,
-        }
+        expected = {"box_chart": target_box_parameter_y_and_x}
 
         assert result == expected

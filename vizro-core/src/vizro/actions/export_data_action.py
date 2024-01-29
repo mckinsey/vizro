@@ -5,9 +5,7 @@ from typing import Any, Dict, List, Optional
 from dash import ctx, dcc
 from typing_extensions import Literal
 
-from vizro.actions._actions_utils import (
-    _get_filtered_data,
-)
+from vizro.actions._actions_utils import _get_filtered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
@@ -15,9 +13,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def export_data(
-    targets: Optional[List[ModelID]] = None,
-    file_format: Literal["csv", "xlsx"] = "csv",
-    **inputs: Dict[str, Any],
+    targets: Optional[List[ModelID]] = None, file_format: Literal["csv", "xlsx"] = "csv", **inputs: Dict[str, Any]
 ) -> Dict[str, Any]:
     """Exports visible data of target charts/components on page after being triggered.
 

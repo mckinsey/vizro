@@ -5,9 +5,7 @@ from dash._utils import AttributeDict
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -36,11 +34,7 @@ def target_box_filtered_pop(request, gapminder_2007):
 @pytest.fixture
 def managers_one_page_without_graphs_one_button():
     """Instantiates a simple model_manager and data_manager with a page, and no graphs."""
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[vm.Button(id="button")],
-    )
+    vm.Page(id="test_page", title="My first dashboard", components=[vm.Button(id="button")])
     Vizro._pre_build()
 
 
@@ -55,13 +49,7 @@ def ctx_export_data(request):
                 "clickData": CallbackTriggerDict(
                     id="box_chart",
                     property="clickData",
-                    value={
-                        "points": [
-                            {
-                                "customdata": [continent_filter_interaction],
-                            }
-                        ]
-                    },
+                    value={"points": [{"customdata": [continent_filter_interaction]}]},
                     str_id="box_chart",
                     triggered=False,
                 )
@@ -81,16 +69,8 @@ def ctx_export_data(request):
                     id="underlying_table_id",
                     property="derived_viewport_data",
                     value=[
-                        {
-                            "country": "Algeria",
-                            "continent": "Africa",
-                            "year": 2007,
-                        },
-                        {
-                            "country": "Egypt",
-                            "continent": "Africa",
-                            "year": 2007,
-                        },
+                        {"country": "Algeria", "continent": "Africa", "year": 2007},
+                        {"country": "Egypt", "continent": "Africa", "year": 2007},
                     ],
                     str_id="underlying_table_id",
                     triggered=False,
@@ -102,23 +82,16 @@ def ctx_export_data(request):
             "external": {
                 "filters": [
                     CallbackTriggerDict(
-                        id="pop_filter",
-                        property="value",
-                        value=pop_filter,
-                        str_id="pop_filter",
-                        triggered=False,
+                        id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
                     )
                 ]
                 if pop_filter
                 else [],
                 "filter_interaction": args_grouping_filter_interaction,
-            },
+            }
         },
         "outputs_list": [
-            {
-                "id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"},
-                "property": "data",
-            }
+            {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets
         ],
     }
@@ -211,7 +184,7 @@ class TestExportData:
                 "content": gapminder_2007.to_csv(index=False),
                 "type": None,
                 "base64": False,
-            },
+            }
         }
 
         assert result == expected
@@ -245,10 +218,7 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
-    def test_invalid_target(
-        self,
-        ctx_export_data,
-    ):
+    def test_invalid_target(self, ctx_export_data):
         # Add action to relevant component
         model_manager["button"].actions = [
             vm.Action(id="test_action", function=export_data(targets=["invalid_target_id"]))
@@ -277,10 +247,7 @@ class TestExportData:
         indirect=True,
     )
     def test_multiple_targets_with_filter_and_filter_interaction(
-        self,
-        ctx_export_data,
-        target_scatter_filter_and_filter_interaction,
-        target_box_filtered_pop,
+        self, ctx_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
         pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
@@ -336,10 +303,7 @@ class TestExportData:
         indirect=True,
     )
     def test_multiple_targets_with_filter_and_filter_interaction_and_table(
-        self,
-        ctx_export_data,
-        target_scatter_filter_and_filter_interaction,
-        target_box_filtered_pop,
+        self, ctx_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
         pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
