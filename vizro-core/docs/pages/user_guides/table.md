@@ -40,7 +40,6 @@ setting some defaults for some of the arguments to help with styling.
             components=[
                 vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
-            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -57,9 +56,6 @@ setting some defaults for some of the arguments to help with styling.
               data_frame: gapminder_2007
             title: Dash DataTable
             type: table
-          controls:
-            - column: continent
-              type: filter
           title: Example of a Dash DataTable
         ```
     === "Result"
@@ -130,7 +126,6 @@ an example of a styled table where some conditional formatting is applied. There
                     ),
                 ),
             ],
-            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -190,9 +185,6 @@ an example of a styled table where some conditional formatting is applied. There
                       backgroundColor: rgba(0, 116, 217, 0.3)
                       border: 1px solid rgb(0, 116, 217)
                 type: table
-            controls:
-              - column: continent
-                type: filter
             title: Dash DataTable
 
         ```

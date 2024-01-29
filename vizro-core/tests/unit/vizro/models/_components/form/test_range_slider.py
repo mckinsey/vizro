@@ -1,8 +1,7 @@
 """Unit tests for hyphen.models.slider."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -311,13 +310,9 @@ class TestRangeSliderBuild:
     """Tests model build method."""
 
     def test_range_slider_build_default(self, expected_range_slider_default):
-        range_slider = vm.RangeSlider(id="range_slider")
-        component = range_slider.build()
+        range_slider = vm.RangeSlider(id="range_slider").build()
 
-        result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_range_slider_default, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
+        assert_component_equal(range_slider, expected_range_slider_default)
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
         range_slider = vm.RangeSlider(
@@ -328,10 +323,6 @@ class TestRangeSliderBuild:
             id="range_slider_with_all",
             title="Title",
             marks={1: "1", 5: "5", 10: "10"},
-        )
-        component = range_slider.build()
+        ).build()
 
-        result = json.loads(json.dumps(component, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_range_slider_with_optional, cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
+        assert_component_equal(range_slider, expected_range_slider_with_optional)
