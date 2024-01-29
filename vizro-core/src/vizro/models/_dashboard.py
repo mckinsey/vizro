@@ -180,10 +180,7 @@ class Dashboard(VizroBaseModel):
         logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
         page_header_divs = [html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
-        left_main_divs = [
-            page_divs["nav-panel"],
-            page_divs["control-panel"],
-        ]
+        left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
@@ -194,11 +191,7 @@ class Dashboard(VizroBaseModel):
 
         collapsable_icon = (
             dmc.Tooltip(
-                html.Span(
-                    "keyboard_double_arrow_left",
-                    className="material-symbols-outlined",
-                    id="collapse-icon",
-                ),
+                html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
                 id="collapse-tooltip",
                 label="Hide Menu",
                 offset=24,
@@ -215,12 +208,7 @@ class Dashboard(VizroBaseModel):
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        collapsable_left_side = dbc.Collapse(
-            left_side,
-            id="collapsable-left-side",
-            is_open=True,
-            dimension="width",
-        )
+        collapsable_left_side = dbc.Collapse(left_side, id="collapsable-left-side", is_open=True, dimension="width")
 
         right_header = html.Div(right_header_divs, id="right-header")
         right_main = page_divs["page-components"]

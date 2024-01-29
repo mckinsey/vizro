@@ -59,6 +59,7 @@ h4,
 }
 
 p,
+label,
 .body-ui-02 {
   color: var(--text-secondary);
   font-size: var(--text-size-02);

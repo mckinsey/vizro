@@ -71,7 +71,7 @@ class Accordion(VizroBaseModel):
                     persistence_type="session",
                     always_open=True,
                     active_item=active_item,
-                ),
+                )
             ],
             id="nav-panel",
         )

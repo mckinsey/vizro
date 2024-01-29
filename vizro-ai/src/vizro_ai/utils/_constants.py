@@ -1,15 +1,5 @@
 """File to store all constants."""
-WHITELISTED_PACKAGES = [
-    "pandas",
-    "numpy",
-    "vizro",
-    "plotly",
-    "datetime",
-    "matplotlib",
-    "dash",
-    "scipy",
-    "sklearn",
-]
+WHITELISTED_PACKAGES = ["pandas", "numpy", "vizro", "plotly", "datetime", "matplotlib", "dash", "scipy", "sklearn"]
 
 WHITELISTED_BUILTINS = [
     # '__name__',

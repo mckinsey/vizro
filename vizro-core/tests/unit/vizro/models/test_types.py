@@ -49,9 +49,7 @@ def captured_callable(request):
 
 
 @pytest.mark.parametrize(
-    "captured_callable",
-    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
-    indirect=True,
+    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
 )
 class TestCallKeywordArguments:
     def test_call_provide_required_argument(self, captured_callable):
@@ -61,19 +59,13 @@ class TestCallKeywordArguments:
         assert captured_callable(a=5, b=2, c=6) == 5 + 2 + 6
 
 
-@pytest.mark.parametrize(
-    "captured_callable",
-    [positional_or_keyword_function],
-    indirect=True,
-)
+@pytest.mark.parametrize("captured_callable", [positional_or_keyword_function], indirect=True)
 def test_call_positional_arguments(captured_callable):
     assert captured_callable(3) == 1 + 2 + 3
 
 
 @pytest.mark.parametrize(
-    "captured_callable",
-    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
-    indirect=True,
+    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
 )
 class TestDunderMethods:
     def test_getitem_known_args(self, captured_callable):
@@ -92,9 +84,7 @@ class TestDunderMethods:
 
 
 @pytest.mark.parametrize(
-    "captured_callable",
-    [positional_or_keyword_function, keyword_only_function, var_keyword_function],
-    indirect=True,
+    "captured_callable", [positional_or_keyword_function, keyword_only_function, var_keyword_function], indirect=True
 )
 def test_call_positional_and_keyword_supplied(captured_callable):
     with pytest.raises(ValueError, match="does not support calling with both positional and keyword arguments"):
@@ -170,11 +160,7 @@ def decorated_graph_function(data_frame):
 
 @capture("graph")
 def decorated_graph_function_px(data_frame):
-    return plotly_express.scatter(
-        data_frame=data_frame,
-        x="gdpPercap",
-        y="lifeExp",
-    )
+    return plotly_express.scatter(data_frame=data_frame, x="gdpPercap", y="lifeExp")
 
 
 @capture("graph")
@@ -213,17 +199,11 @@ class TestCapture:
         assert len(fig.data) == 0
 
     def test_decorated_graph_function_missing_data_frame(self):
-        with pytest.raises(
-            ValueError,
-            match="decorated_graph_function must supply a value to data_frame argument",
-        ):
+        with pytest.raises(ValueError, match="decorated_graph_function must supply a value to data_frame argument"):
             decorated_graph_function()
 
     def test_invalid_decorated_graph_function(self):
-        with pytest.raises(
-            ValueError,
-            match="invalid_decorated_graph_function must have data_frame argument",
-        ):
+        with pytest.raises(ValueError, match="invalid_decorated_graph_function must have data_frame argument"):
             invalid_decorated_graph_function()
 
 

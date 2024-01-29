@@ -252,8 +252,8 @@ tabs_with_nested_containers = vm.Page(
                         y="lifeExp",
                         size="pop",
                         color="continent",
-                    ),
-                ),
+                    )
+                )
             ],
         ),
     ],
