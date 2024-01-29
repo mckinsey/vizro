@@ -115,7 +115,7 @@ grid=[[0, 1, 3, 4],
     [Grid]: ../../assets/user_guides/layout/one_left_two_right.png
 
 ### Grid - Advanced Example
-Generally, the `Layout` provides full control over the arrangement of top-level components within a Page,
+Generally, the `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.
 
 If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md).
