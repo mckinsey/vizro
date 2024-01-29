@@ -17,7 +17,9 @@ df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].
 df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
-
+# Create a df with 40 columns and long column titles
+df_long = pd.DataFrame(
+    {f"Column with a long name that needs to be truncated {i}":[1, 2, 3] for i in range(40)})
 def create_benchmark_analysis():
     """Function returns a page to perform analysis on country level."""
     # Apply formatting to table columns
@@ -39,11 +41,14 @@ def create_benchmark_analysis():
                 id="table_country_new",
                 title="Click on a cell in country column:",
                 figure=dash_ag_grid(
-                    data_frame=df,
+                    data_frame=df_long,#df,#
                     className="ag-theme-alpine vizro",
                     # className="ag-theme-custom-theme",
-                    defaultColDef={"resizable": True, "sortable": True},
-                    columnSize="sizeToFit",
+                    defaultColDef={"resizable": True, "sortable": True, "editable": True, "filter": True},
+                    columnSizeOptions={
+                        'defaultMinWidth': 100,
+                    },
+                    columnSize="sizeToFit",#"autosize",#
                 ),
                 # actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
