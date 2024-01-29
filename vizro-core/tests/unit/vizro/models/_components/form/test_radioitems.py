@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.RadioItems."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -148,9 +147,22 @@ class TestRadioItemsInstantiation:
 class TestRadioItemsBuild:
     """Tests model build method."""
 
-    def test_radio_items_build(self, expected_radio_items):
-        radio_items = RadioItems(options=["A", "B", "C"], id="radio_items_id", title="Title").build()
+    def test_radio_items_build(self):
+        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
+        expected_radio_items = html.Div(
+            [
+                html.P("Title"),
+                dcc.RadioItems(
+                    id="radio_items_id",
+                    options=["A", "B", "C"],
+                    value="A",
+                    className="selector_body_radio_items",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+            className="selector_container",
+            id="radio_items_id_outer",
+        )
 
-        result = json.loads(json.dumps(radio_items, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_radio_items, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        assert_component_equal(radio_items, expected_radio_items)
