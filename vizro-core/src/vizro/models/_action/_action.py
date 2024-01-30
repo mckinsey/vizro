@@ -102,11 +102,7 @@ class Action(VizroBaseModel):
         inputs: Union[Dict[str, Any], List[Any]],
         outputs: Union[Dict[str, Output], List[Output], Output, None],
     ) -> Any:
-        logger.debug(
-            "===== Running action with id %s, function %s =====",
-            self.id,
-            self.function._function.__name__,
-        )
+        logger.debug("===== Running action with id %s, function %s =====", self.id, self.function._function.__name__)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=2, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))

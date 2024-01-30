@@ -39,7 +39,7 @@ class Alert(VizroBaseModel):
                     duration=self.duration,
                     is_open=self.is_open,
                     className="alert",
-                ),
+                )
             ],
             className="alert_container",
         )

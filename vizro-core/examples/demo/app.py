@@ -344,7 +344,7 @@ def create_continent_summary():
                     However, Africa has shown notable improvements in life expectancy over time, reaching 55 years in
                     2007. Despite these economic disparities, Africa's population has been steadily increasing,
                     reflecting its significant potential for development.
-                """,
+                """
             ),
             vm.Card(
                 text="""
@@ -359,7 +359,7 @@ def create_continent_summary():
                     maintained similar levels to Asia, reflecting its economic significance. With North America
                     generally reporting higher life expectancy compared to South America, America remains a region of
                     opportunities and challenges.
-                """,
+                """
             ),
             vm.Card(
                 text="""
@@ -373,7 +373,7 @@ def create_continent_summary():
                     Despite facing various socio-economic challenges, Asia's increasing life expectancy from 46 years
                     to 70 over the years reflects advancements in healthcare and overall well-being, making it a vital
                     region driving global progress and development.
-                """,
+                """
             ),
             vm.Card(
                 text="""
@@ -388,7 +388,7 @@ def create_continent_summary():
                     quality of life, Europe continues to be a leading force in the global economy. Between 1952 and
                     2007, Europe's population experienced moderate growth, with a factor of approximately 1.5,
                     notably lower compared to other continents like Asia and America.
-                """,
+                """
             ),
             vm.Card(
                 text="""
@@ -401,7 +401,7 @@ def create_continent_summary():
 
                     Despite a relatively smaller population size, Oceania's strong economic growth has contributed
                     to improved living standards and overall well-being of its population.
-                """,
+                """
             ),
         ],
     )
@@ -475,16 +475,7 @@ def create_benchmark_analysis():
                     hover_name="country",
                 ),
             ),
-            vm.Button(
-                text="Export data",
-                actions=[
-                    vm.Action(
-                        function=export_data(
-                            targets=["line_country"],
-                        )
-                    ),
-                ],
-            ),
+            vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["line_country"]))]),
         ],
         controls=[
             vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
@@ -573,7 +564,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(label="Summary", pages=["Continent Summary"], icon="Globe"),
             ]
-        ),
+        )
     ),
 )
 

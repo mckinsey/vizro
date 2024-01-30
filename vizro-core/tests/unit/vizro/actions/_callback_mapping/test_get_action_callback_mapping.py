@@ -136,9 +136,7 @@ def action_callback_inputs_expected():
             dash.State("parameter_table_row_selectable", "value"),
         ],
         "filter_interaction": [
-            {
-                "clickData": dash.State("scatter_chart", "clickData"),
-            },
+            {"clickData": dash.State("scatter_chart", "clickData")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
@@ -165,9 +163,7 @@ def export_data_inputs_expected():
         ],
         "parameters": [],
         "filter_interaction": [
-            {
-                "clickData": dash.State("scatter_chart", "clickData"),
-            },
+            {"clickData": dash.State("scatter_chart", "clickData")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
@@ -210,10 +206,7 @@ class TestCallbackMapping:
         ],
     )
     def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):
-        result = _get_action_callback_mapping(
-            action_id=action_id,
-            argument="inputs",
-        )
+        result = _get_action_callback_mapping(action_id=action_id, argument="inputs")
 
         callback_mapping_inputs_expected = request.getfixturevalue(callback_mapping_inputs_expected)
         assert result == callback_mapping_inputs_expected
@@ -229,7 +222,12 @@ class TestCallbackMapping:
                     {"component_id": "vizro_table", "component_property": "children"},
                 ],
             ),
-            ("filter_interaction_action", [{"component_id": "scatter_chart_2", "component_property": "figure"}]),
+            (
+                "filter_interaction_action",
+                [
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
+            ),
             (
                 "table_filter_interaction_action",
                 [
@@ -261,30 +259,20 @@ class TestCallbackMapping:
             ),
             (
                 "parameter_action_vizro_table_row_selectable",
-                [
-                    {"component_id": "vizro_table", "component_property": "children"},
-                ],
+                [{"component_id": "vizro_table", "component_property": "children"}],
             ),
         ],
         indirect=["action_callback_outputs_expected"],
     )
     def test_action_callback_mapping_outputs(self, action_id, action_callback_outputs_expected):
-        result = _get_action_callback_mapping(
-            action_id=action_id,
-            argument="outputs",
-        )
+        result = _get_action_callback_mapping(action_id=action_id, argument="outputs")
         assert result == action_callback_outputs_expected
 
     @pytest.mark.parametrize(
-        "export_data_outputs_expected",
-        [("scatter_chart", "scatter_chart_2", "vizro_table")],
-        indirect=True,
+        "export_data_outputs_expected", [("scatter_chart", "scatter_chart_2", "vizro_table")], indirect=True
     )
     def test_export_data_no_targets_set_mapping_outputs(self, export_data_outputs_expected):
-        result = _get_action_callback_mapping(
-            action_id="export_data_action",
-            argument="outputs",
-        )
+        result = _get_action_callback_mapping(action_id="export_data_action", argument="outputs")
 
         assert result == export_data_outputs_expected
 
@@ -301,23 +289,15 @@ class TestCallbackMapping:
     def test_export_data_targets_set_mapping_outputs(
         self, config_for_testing_all_components_with_actions, export_data_outputs_expected
     ):
-        result = _get_action_callback_mapping(
-            action_id="export_data_action",
-            argument="outputs",
-        )
+        result = _get_action_callback_mapping(action_id="export_data_action", argument="outputs")
 
         assert result == export_data_outputs_expected
 
     @pytest.mark.parametrize(
-        "export_data_components_expected",
-        [("scatter_chart", "scatter_chart_2", "vizro_table")],
-        indirect=True,
+        "export_data_components_expected", [("scatter_chart", "scatter_chart_2", "vizro_table")], indirect=True
     )
     def test_export_data_no_targets_set_mapping_components(self, export_data_components_expected):
-        result_components = _get_action_callback_mapping(
-            action_id="export_data_action",
-            argument="components",
-        )
+        result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
 
         result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
         expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
@@ -336,19 +316,13 @@ class TestCallbackMapping:
     def test_export_data_targets_set_mapping_components(
         self, config_for_testing_all_components_with_actions, export_data_components_expected
     ):
-        result_components = _get_action_callback_mapping(
-            action_id="export_data_action",
-            argument="components",
-        )
+        result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
         result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
         expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
         assert result == expected
 
     def test_known_action_unknown_argument(self):
-        result = _get_action_callback_mapping(
-            action_id="export_data_action",
-            argument="unknown-argument",
-        )
+        result = _get_action_callback_mapping(action_id="export_data_action", argument="unknown-argument")
         assert result == {}
 
     # "export_data_custom_action" represents a unique scenario within custom actions, where the function's name
@@ -356,17 +330,8 @@ class TestCallbackMapping:
     # It requires handling them as conventional custom actions.
     @pytest.mark.parametrize("action_id", ["custom_action", "export_data_custom_action"])
     @pytest.mark.parametrize(
-        "argument, expected",
-        [
-            ("inputs", {}),
-            ("outputs", {}),
-            ("components", []),
-            ("unknown-argument", {}),
-        ],
+        "argument, expected", [("inputs", {}), ("outputs", {}), ("components", []), ("unknown-argument", {})]
     )
     def test_custom_action_mapping(self, action_id, argument, expected):
-        result = _get_action_callback_mapping(
-            action_id=action_id,
-            argument=argument,
-        )
+        result = _get_action_callback_mapping(action_id=action_id, argument=argument)
         assert result == expected

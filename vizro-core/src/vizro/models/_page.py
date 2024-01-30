@@ -95,13 +95,11 @@ class Page(VizroBaseModel):
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
                     trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}",
-                        component_property="data",
+                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            function=_on_page_load(targets=targets),
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
                         )
                     ],
                 )

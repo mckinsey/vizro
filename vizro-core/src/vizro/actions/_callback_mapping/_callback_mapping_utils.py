@@ -31,10 +31,7 @@ def _get_matching_actions_by_function(
 def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State]:
     """Gets list of `States` for selected `control_type` of triggered `Page`."""
     return [
-        State(
-            component_id=control.selector.id,
-            component_property=control.selector._input_property,
-        )
+        State(component_id=control.selector.id, component_property=control.selector._input_property)
         for control in page.controls
         if isinstance(control, control_type)
     ]
@@ -45,8 +42,7 @@ def _get_inputs_of_figure_interactions(
 ) -> List[Dict[str, State]]:
     """Gets list of `States` for selected chart interaction `action_function` of triggered `Page`."""
     figure_interactions_on_page = _get_matching_actions_by_function(
-        page_id=ModelID(str(page.id)),
-        action_function=action_function,
+        page_id=ModelID(str(page.id)), action_function=action_function
     )
     inputs = []
     for action in figure_interactions_on_page:
@@ -58,17 +54,12 @@ def _get_inputs_of_figure_interactions(
                         component_id=triggered_model._callable_object_id, component_property="active_cell"
                     ),
                     "derived_viewport_data": State(
-                        component_id=triggered_model._callable_object_id,
-                        component_property="derived_viewport_data",
+                        component_id=triggered_model._callable_object_id, component_property="derived_viewport_data"
                     ),
                 }
             )
         else:
-            inputs.append(
-                {
-                    "clickData": State(component_id=triggered_model.id, component_property="clickData"),
-                }
-            )
+            inputs.append({"clickData": State(component_id=triggered_model.id, component_property="clickData")})
 
     return inputs
 
@@ -120,9 +111,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 
     return {
         target: Output(
-            component_id=target,
-            component_property=model_manager[target]._output_property,
-            allow_duplicate=True,
+            component_id=target, component_property=model_manager[target]._output_property, allow_duplicate=True
         )
         for target in targets
     }
@@ -144,11 +133,7 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 
     return {
         f"download_dataframe_{target}": Output(
-            component_id={
-                "type": "download_dataframe",
-                "action_id": action_id,
-                "target_id": target,
-            },
+            component_id={"type": "download_dataframe", "action_id": action_id, "target_id": target},
             component_property="data",
         )
         for target in targets
@@ -171,12 +156,6 @@ def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Downloa
         )
 
     return [
-        dcc.Download(
-            id={
-                "type": "download_dataframe",
-                "action_id": action_id,
-                "target_id": target,
-            },
-        )
+        dcc.Download(id={"type": "download_dataframe", "action_id": action_id, "target_id": target})
         for target in targets
     ]

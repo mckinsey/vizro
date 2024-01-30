@@ -157,9 +157,7 @@ class CapturedCallable:
 
     @classmethod
     def _parse_json(
-        cls,
-        callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]],
-        field: ModelField,
+        cls, callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]], field: ModelField
     ) -> CapturedCallable:
         """Parses callable_config specification from JSON/YAML to a CapturedCallable.
 
@@ -334,10 +332,7 @@ OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictTy
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
     Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
-    Field(
-        discriminator="type",
-        description="Selectors to be used inside a control.",
-    ),
+    Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
@@ -345,18 +340,12 @@ SelectorType = Annotated[
 
 _FormComponentType = Annotated[
     Union[SelectorType, "Button", "UserInput"],
-    Field(
-        discriminator="type",
-        description="Components that can be used to receive user input within a form.",
-    ),
+    Field(discriminator="type", description="Components that can be used to receive user input within a form."),
 ]
 
 ControlType = Annotated[
     Union["Filter", "Parameter"],
-    Field(
-        discriminator="type",
-        description="Control that affects components on the page.",
-    ),
+    Field(discriminator="type", description="Control that affects components on the page."),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
@@ -376,8 +365,7 @@ NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"],
-    Field(discriminator="type", description="Component for rendering navigation."),
+    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""

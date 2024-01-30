@@ -26,35 +26,20 @@ class TestParameterInstantiation:
             match="Invalid target scatter_chart. Targets must be supplied in the from of "
             "<target_component>.<target_argument>",
         ):
-            Parameter(
-                targets=["scatter_chart"],
-                selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            )
+            Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_check_target_present_failed(self):
         with pytest.raises(ValueError, match="Target scatter_chart_invalid not found in model_manager."):
-            Parameter(
-                targets=["scatter_chart_invalid.x"],
-                selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            )
+            Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed(self):
         with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
-            Parameter(
-                targets=["scatter_chart.x", "scatter_chart.x"],
-                selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            )
+            Parameter(targets=["scatter_chart.x", "scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     def test_duplicate_parameter_target_failed_two_params(self):
         with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
-            Parameter(
-                targets=["scatter_chart.x"],
-                selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            )
-            Parameter(
-                targets=["scatter_chart.x"],
-                selector=vm.Dropdown(options=["lifeExp", "pop"]),
-            )
+            Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+            Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")

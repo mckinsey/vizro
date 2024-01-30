@@ -151,7 +151,14 @@ class TestWorkingGrid:
 
 
 class TestSharedLayoutHelpers:
-    @pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[0, -1], [1, 2]],
+            [[0, -1, 1, 2]],
+            [[-1, -1, -1], [0, 1, 2]],
+        ],
+    )
     def test_get_unique_grid_component_ids(self, grid):
         result = _get_unique_grid_component_ids(grid)
         expected = np.array([0, 1, 2])

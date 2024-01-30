@@ -36,8 +36,7 @@ class Card(VizroBaseModel):
         text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
         button = html.Div(
             dbc.Button(
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-                className="card_button",
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href, className="card_button"
             ),
             className="button_container",
         )
