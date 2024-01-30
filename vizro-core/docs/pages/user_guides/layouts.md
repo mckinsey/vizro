@@ -257,3 +257,11 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 ## Further customizations
 For further customizations, such as changing the gap between row and column, please refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
+
+
+In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
+
+[`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide an alternative approach to customise your page layout.
+For example, if you want to have more granular control and want to learn how to break the overall page grid into subgrids, see our user guide on [Containers](container.md).
+If you want to display multiple containers on one page by stacking them on top of each other, and letting the user switch between them, see our user guide on [Tabs](tabs.md).

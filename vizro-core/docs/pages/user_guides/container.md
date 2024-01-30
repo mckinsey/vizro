@@ -105,3 +105,8 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         [![Container]][Container]
 
     [Container]: ../../assets/user_guides/components/containers.png
+
+
+An alternative way for displaying multiple containers on one page is to place them inside [Tabs](tabs.md).
+[`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+They are essentially a way of stacking multiple containers on top of each other, and letting the user switch between them.
