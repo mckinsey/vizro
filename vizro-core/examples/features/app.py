@@ -35,7 +35,8 @@ home = vm.Page(
 
                 ### Components
 
-                Main components of Vizro include **charts**, **tables**, **cards**, **containers** and **buttons**.
+                Main components of Vizro include **charts**, **tables**, **cards**, **containers**,
+                **buttons** and **tabs**.
                 """,
             href="/graphs",
         ),
@@ -222,6 +223,48 @@ containers = vm.Page(
         ),
     ],
 )
+
+tab_1 = vm.Container(
+    title="Tab I",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                gapminder_2007,
+                title="Graph 1",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 2",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+tab_2 = vm.Container(
+    title="Tab II",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 3",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+tabs = vm.Page(title="Tabs", components=[vm.Tabs(tabs=[tab_1, tab_2])], controls=[vm.Filter(column="continent")])
 
 # CONTROLS --------------------------------------------------------------------
 filters = vm.Page(
@@ -527,7 +570,7 @@ custom_actions = vm.Page(
 )
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, table, cards, button, containers]
+components = [graphs, table, cards, button, containers, tabs]
 controls = [filters, parameters]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
@@ -542,7 +585,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "Table", "Cards", "Button", "Containers"],
+                        "Components": ["Graphs", "Table", "Cards", "Button", "Containers", "Tabs"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],

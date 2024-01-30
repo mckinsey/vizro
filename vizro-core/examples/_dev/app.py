@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-df = px.data.gapminder()
+gapminder = px.data.gapminder()
 
 child_container_one = vm.Container(
     title="Container I",
