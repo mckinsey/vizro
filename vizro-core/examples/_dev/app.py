@@ -7,7 +7,6 @@ from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
 gapminder = px.data.gapminder()
-iris = px.data.iris()
 
 single_tabs = vm.Page(
     title="Single Tabs",

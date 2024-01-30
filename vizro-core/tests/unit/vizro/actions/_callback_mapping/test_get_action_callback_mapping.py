@@ -29,51 +29,54 @@ def get_custom_action_with_known_name():
 
 
 @pytest.fixture
-def managers_one_page_four_controls_three_figures_filter_interaction(request, dash_data_table_with_id):
+def config_for_testing_all_components_with_actions(request, dash_data_table_with_id):
     """Instantiates managers with one page that contains four controls, two graphs and filter interaction."""
     # If the fixture is parametrised set the targets. Otherwise, set export_data without targets.
     export_data_action_function = export_data(targets=request.param) if hasattr(request, "param") else export_data()
+    tab_1 = vm.Container(
+        title="test_container_1",
+        components=[
+            vm.Graph(
+                id="scatter_chart",
+                figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
+                actions=[
+                    vm.Action(id="filter_interaction_action", function=filter_interaction(targets=["scatter_chart_2"]))
+                ],
+            ),
+            vm.Container(
+                title="test_nested_container_1",
+                components=[
+                    vm.Graph(
+                        id="scatter_chart_2",
+                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
+                        actions=[vm.Action(id="custom_action", function=custom_action_example())],
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    tab_2 = vm.Container(
+        title="test_container_2",
+        components=[
+            vm.Table(
+                id="vizro_table",
+                figure=dash_data_table_with_id,
+                actions=[
+                    vm.Action(
+                        id="table_filter_interaction_action",
+                        function=filter_interaction(targets=["scatter_chart", "scatter_chart_2"]),
+                    )
+                ],
+            ),
+        ],
+    )
 
     vm.Page(
         id="test_page",
         title="My first dashboard",
         components=[
-            vm.Container(
-                title="test_container_1",
-                components=[
-                    vm.Graph(
-                        id="scatter_chart",
-                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
-                        actions=[
-                            vm.Action(
-                                id="filter_interaction_action", function=filter_interaction(targets=["scatter_chart_2"])
-                            )
-                        ],
-                    ),
-                    vm.Container(
-                        title="test_container_2",
-                        components=[
-                            vm.Graph(
-                                id="scatter_chart_2",
-                                figure=px.scatter(
-                                    px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]
-                                ),
-                                actions=[vm.Action(id="custom_action", function=custom_action_example())],
-                            ),
-                            vm.Table(
-                                id="vizro_table",
-                                figure=dash_data_table_with_id,
-                                actions=[
-                                    vm.Action(
-                                        id="table_filter_interaction_action",
-                                        function=filter_interaction(targets=["scatter_chart", "scatter_chart_2"]),
-                                    )
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-            ),
+            vm.Tabs(tabs=[tab_1, tab_2]),
             vm.Button(
                 id="export_data_button",
                 actions=[
@@ -188,7 +191,7 @@ def export_data_components_expected(request):
     ]
 
 
-@pytest.mark.usefixtures("managers_one_page_four_controls_three_figures_filter_interaction")
+@pytest.mark.usefixtures("config_for_testing_all_components_with_actions")
 class TestCallbackMapping:
     """Tests action callback mapping for predefined and custom actions."""
 
@@ -274,7 +277,7 @@ class TestCallbackMapping:
         assert result == export_data_outputs_expected
 
     @pytest.mark.parametrize(
-        "managers_one_page_four_controls_three_figures_filter_interaction, export_data_outputs_expected",
+        "config_for_testing_all_components_with_actions, export_data_outputs_expected",
         [
             (None, ["scatter_chart", "scatter_chart_2", "vizro_table"]),
             ([], ["scatter_chart", "scatter_chart_2", "vizro_table"]),
@@ -284,7 +287,7 @@ class TestCallbackMapping:
         indirect=True,
     )
     def test_export_data_targets_set_mapping_outputs(
-        self, managers_one_page_four_controls_three_figures_filter_interaction, export_data_outputs_expected
+        self, config_for_testing_all_components_with_actions, export_data_outputs_expected
     ):
         result = _get_action_callback_mapping(action_id="export_data_action", argument="outputs")
 
@@ -301,7 +304,7 @@ class TestCallbackMapping:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "managers_one_page_four_controls_three_figures_filter_interaction, export_data_components_expected",
+        "config_for_testing_all_components_with_actions, export_data_components_expected",
         [
             (None, ["scatter_chart", "scatter_chart_2", "vizro_table"]),
             ([], ["scatter_chart", "scatter_chart_2", "vizro_table"]),
@@ -311,7 +314,7 @@ class TestCallbackMapping:
         indirect=True,
     )
     def test_export_data_targets_set_mapping_components(
-        self, managers_one_page_four_controls_three_figures_filter_interaction, export_data_components_expected
+        self, config_for_testing_all_components_with_actions, export_data_components_expected
     ):
         result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
         result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
