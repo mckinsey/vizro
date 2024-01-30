@@ -47,5 +47,6 @@ class Tabs(VizroBaseModel):
             value=self.tabs[0].id,
             children=[tabs_list, *tabs_panels],
             persistence=True,
+            persistence_type="session",
             className="tabs",
         )

@@ -1,12 +1,12 @@
 """Rough example used by developers."""
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_data_table
 
 gapminder = px.data.gapminder()
-iris = px.data.iris()
 
 single_tabs = vm.Page(
     title="Single Tabs",

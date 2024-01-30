@@ -24,22 +24,22 @@ class TestTabsInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
     def test_create_tabs_mandatory_only(self, containers):
-        tabs = vm.Tabs(id="tab-id", tabs=containers)
-        assert isinstance(tabs.tabs[0], vm.Container) and isinstance(tabs.tabs[1], vm.Container)
-        assert tabs.id == "tab-id"
+        tabs = vm.Tabs(id="tabs-id", tabs=containers)
+        assert all(isinstance(tab, vm.Container) for tab in tabs.tabs) and len(tabs.tabs) == 2
+        assert tabs.id == "tabs-id"
         assert tabs.type == "tabs"
 
     def test_mandatory_tabs_missing(self):
         with pytest.raises(ValidationError, match="field required"):
-            vm.Tabs(id="tab-id")
+            vm.Tabs(id="tabs-id")
 
 
 class TestTabsBuildMethod:
     def test_tabs_build(self, containers):
-        result = vm.Tabs(id="tab-id", tabs=containers).build()
+        result = vm.Tabs(id="tabs-id", tabs=containers).build()
         assert_component_equal(
             result,
-            dmc.Tabs(id="tab-id", value="container-1", persistence=True, className="tabs"),
+            dmc.Tabs(id="tabs-id", value="container-1", persistence=True, persistence_type="session", className="tabs"),
             keys_to_strip={"children"},
         )
         assert_component_equal(
@@ -58,17 +58,18 @@ class TestTabsBuildMethod:
             ),
         )
         assert_component_equal(
-            result.children[1],
-            dmc.TabsPanel(className="tabs__panel", value="container-1"),
+            result.children[1:],
+            [
+                dmc.TabsPanel(className="tabs__panel", value="container-1"),
+                dmc.TabsPanel(className="tabs__panel", value="container-2"),
+            ],
             keys_to_strip={"children"},
         )
         assert_component_equal(
-            result.children[2],
-            dmc.TabsPanel(className="tabs__panel", value="container-2"),
-            keys_to_strip={"children"},
-        )
-        assert_component_equal(
-            result.children[1].children,
-            html.Div([html.H3(), html.Div()], className="tab__content"),
+            [tab.children.children for tab in result.children[1:]],
+            [
+                html.Div(id="container-1", className="page-component-container"),
+                html.Div(id="container-2", className="page-component-container"),
+            ],
             keys_to_strip={"children"},
         )
