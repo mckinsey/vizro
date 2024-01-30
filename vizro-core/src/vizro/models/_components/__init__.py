@@ -4,5 +4,6 @@ from vizro.models._components.card import Card
 from vizro.models._components.container import Container
 from vizro.models._components.graph import Graph
 from vizro.models._components.table import Table
+from vizro.models._components.tabs import Tabs
 
-__all__ = ["Button", "Card", "Container", "Graph", "Table"]
+__all__ = ["Button", "Card", "Container", "Graph", "Table", "Tabs"]
