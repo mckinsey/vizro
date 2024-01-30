@@ -1,13 +1,35 @@
 # How to use containers
 
-This guide shows you how to use containers to group your page components into sections and subsections.
+This guide shows you how to use containers to group your components into sections and subsections within the page.
 
+A [`Container`][vizro.models.Container] complements the concept of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
+ [`Page.layout`](layouts.md) provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
+
+While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
+enhancing the ability to manage related components.
+
+## When to use containers
+In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
+
+The `Page.layout` provides a grid, while the `Container` enables you to insert a `grid` into the component space on that page, allowing for more granular control by
+breaking the overall page grid into subgrids.
+
+Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
+
+- If you want to split up your grid into subgrids to organize components together
+- If you want to add a title to your subgrids
+- If you want different row and column spacing between subgrids
+- If you want to apply controls to selected subgrids (will be supported soon)
+
+
+## Basic Containers
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
-1. Insert the [`Container`][vizro.models.Container] into the `components` argument of the [`Page`][vizro.models.Page]
-2. Provide a `title` to your [`Container`][vizro.models.Container]
+1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
+2. Provide a `title` to your `Container`
 3. Configure your `components`, see our overview page on the various options [here](components.md)
-4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
+4. (optional) Configure your `layout` , see our guide on [`Layout`](layouts.md)
 
 !!! example "Container"
     === "app.py"
@@ -21,18 +43,28 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         page = vm.Page(
             title="Containers",
-            components=[
+            components=[  # (1)!
                 vm.Container(
                     title="Container I",
                     layout=vm.Layout(grid=[[0, 1]]),
                     components=[
                         vm.Graph(
                             figure=px.scatter(
-                                iris, x="sepal_length", y="petal_width", color="species", title="Container I - Scatter"
+                                iris,
+                                x="sepal_length",
+                                y="petal_width",
+                                color="species",
+                                title="Container I - Scatter"
                             )
                         ),
                         vm.Graph(
-                            figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar")
+                            figure=px.bar(
+                                iris,
+                                x="sepal_length",
+                                y="sepal_width",
+                                color="species",
+                                title="Container I - Bar"
+                            )
                         ),
                     ],
                 ),
@@ -59,6 +91,9 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         Vizro().build(dashboard).run()
         ```
+
+        1.  Note that the `Page.layout` argument is not specified here and will therefore default to `[[0], [1]]`, meaning the containers will be stacked in rows.
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
@@ -105,6 +140,29 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         [![Container]][Container]
 
     [Container]: ../../assets/user_guides/components/containers.png
+
+!!! note
+
+    Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md)
+    e.g. by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
+
+## Nested Containers
+Containers can be nested, providing a hierarchical structure for organizing components.
+This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
+
+To create nested containers, simply add a `Container` to the `components` argument of another `Container`.
+
+```python title="Example"
+vm.Container(
+    title="Parent Container",
+    components=[
+        vm.Container(
+            title="Child Container",
+            components=[vm.Button()]
+        )
+    ]
+)
+```
 
 
 An alternative way for displaying multiple containers on one page is to place them inside [Tabs](tabs.md).
