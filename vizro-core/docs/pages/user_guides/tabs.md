@@ -1,19 +1,16 @@
 # How to use tabs
 
-Tabs organize and separate groups of related content in a dashboard, letting users navigate between different sections or views within a click.
+Tabs organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
 This guide shows you how to use tabs to organize your containers into subsections inside the dashboard.
 
 To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
-2. Insert your [`Containers`][vizro.models.Container] into the `components` argument of the [`Tabs`][vizro.models.Tabs]
+2. Insert your [`Containers`][vizro.models.Container] into the `tabs` argument of the [`Tabs`][vizro.models.Tabs]
 
-By using the [`Tabs`][vizro.models.Tabs], the following applies:
+By using [`Tabs`][vizro.models.Tabs], the following applies:
 - [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
-- The `title` of the outer [`Container`][vizro.models.Container] inserted into `Tabs.components` will be displayed as a tab label, and the title will removed from the `Container`
-- If you want to keep the `Container.title` inside the Tab, you can apply custom CSS
-- If you want a different `Container.title` inside the tab, add a nested [`Container`][vizro.models.Container]
-
+- The `title` of the  [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
 !!! example "Tabs"
     === "app.py"
