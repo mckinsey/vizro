@@ -37,16 +37,20 @@ class TestTabsInstantiation:
 class TestTabsBuildMethod:
     def test_tabs_build(self, containers):
         result = vm.Tabs(id="tabs-id", tabs=containers).build()
+        # We want to test the component itself but not all its children
         assert_component_equal(
             result,
             dmc.Tabs(id="tabs-id", value="container-1", persistence=True, persistence_type="session", className="tabs"),
             keys_to_strip={"children"},
         )
+        # We want to test the children created in the Tabs.build but not e.g. the
+        # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
             result.children,
             [dmc.TabsList(), dmc.TabsPanel(value="container-1"), dmc.TabsPanel(value="container-2")],
             keys_to_strip={"children", "className"},
         )
+        # So we go down the tree and ignore the children selectively
         assert_component_equal(
             result.children[0],
             dmc.TabsList(
@@ -57,6 +61,7 @@ class TestTabsBuildMethod:
                 className="tabs__list",
             ),
         )
+        # This one removes the need for duplication of tests as the output is similar
         assert_component_equal(
             result.children[1:],
             [
@@ -65,6 +70,7 @@ class TestTabsBuildMethod:
             ],
             keys_to_strip={"children"},
         )
+        # We still check that the html.Div for the Containers are created, but we don't need to check its content
         assert_component_equal(
             [tab.children.children for tab in result.children[1:]],
             [
