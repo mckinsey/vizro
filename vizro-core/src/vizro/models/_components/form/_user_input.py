@@ -40,7 +40,7 @@ class UserInput(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,

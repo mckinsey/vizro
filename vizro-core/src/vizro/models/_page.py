@@ -16,7 +16,7 @@ from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, set_components
+from vizro.models._models_utils import _log_call, _validate_min_length
 
 from .types import ComponentType, ControlType
 
@@ -51,7 +51,7 @@ class Page(VizroBaseModel):
     actions: List[ActionsChain] = []
 
     # Re-used validators
-    _validate_components = validator("components", allow_reuse=True, always=True)(set_components)
+    _validate_components = validator("components", allow_reuse=True, always=True)(_validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @root_validator(pre=True)
@@ -95,13 +95,11 @@ class Page(VizroBaseModel):
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
                     trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}",
-                        component_property="data",
+                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            function=_on_page_load(targets=targets),
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
                         )
                     ],
                 )

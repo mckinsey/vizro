@@ -6,10 +6,7 @@ import pandas as pd
 
 from vizro_ai.chains import ModelConstructor
 from vizro_ai.chains._llm_models import LLM_MODELS
-from vizro_ai.components import (
-    GetCodeExplanation,
-    GetDebugger,
-)
+from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils import _safeguard_check
 

@@ -96,10 +96,7 @@ class TestDashboardPreBuild:
             order=1,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
-        mock_register_page.assert_any_call(
-            module="not_found_404",
-            layout=mock_make_page_404_layout(),
-        )
+        mock_register_page.assert_any_call(module="not_found_404", layout=mock_make_page_404_layout())
         assert mock_register_page.call_count == 3
 
     def test_page_registry_with_title(self, vizro_app, page_1, mocker):

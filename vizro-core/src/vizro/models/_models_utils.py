@@ -16,7 +16,7 @@ def _log_call(method):
 
 
 # Validators for reuse
-def set_components(cls, components):
-    if not components:
+def _validate_min_length(cls, field):
+    if not field:
         raise ValueError("Ensure this value has at least 1 item.")
-    return components
+    return field
