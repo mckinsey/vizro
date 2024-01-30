@@ -12,7 +12,7 @@ child_container_one = vm.Container(
     components=[
         vm.Graph(
             figure=px.line(
-                df,
+                gapminder,
                 title="Graph 1 - Container I",
                 x="year",
                 y="lifeExp",
@@ -21,7 +21,7 @@ child_container_one = vm.Container(
         ),
         vm.Graph(
             figure=px.scatter(
-                df,
+                gapminder,
                 title="Graph 2 - Container I",
                 x="gdpPercap",
                 y="lifeExp",
@@ -31,7 +31,7 @@ child_container_one = vm.Container(
         ),
         vm.Graph(
             figure=px.box(
-                df,
+                gapminder,
                 title="Graph 3 - Container I",
                 x="continent",
                 y="lifeExp",
@@ -47,7 +47,7 @@ child_container_two = vm.Container(
     components=[
         vm.Graph(
             figure=px.line(
-                df,
+                gapminder,
                 title="Graph 4 - Container II",
                 x="year",
                 y="lifeExp",
@@ -56,7 +56,7 @@ child_container_two = vm.Container(
         ),
         vm.Graph(
             figure=px.scatter(
-                df,
+                gapminder,
                 title="Graph 5 - Container II",
                 x="gdpPercap",
                 y="lifeExp",
