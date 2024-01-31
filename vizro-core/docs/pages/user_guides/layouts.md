@@ -404,9 +404,15 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 For further customizations, such as changing the gap between row and column, please refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
 
+## Alternative layout approaches
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 
-[`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide an alternative approach to customize your page layout.
-For example, if you want to have more granular control and break the overall page grid into subgrids, see our user guide on [Containers](container.md).
-If you want to display multiple containers on one page by putting them into the same screen space, and letting the user switch between them, see our user guide on [Tabs](tabs.md).
+!!! note "Alternative layout approaches: `Tabs` and `Containers`"
+
+    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide an alternative approach to customize your page layout.
+    For example, if you want to have more granular control and break the overall page grid into subgrids, see our [user guide on Containers](container.md).
+    
+    If you want to display multiple containers on one page by putting them into the same screen space, and letting the user switch between them, see our [user guide on Tabs](tabs.md).
+
+    ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
