@@ -8,6 +8,17 @@ A [`Container`][vizro.models.Container] complements the concept of a [`Page`][vi
 While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
 enhancing the ability to manage related components.
 
+??? note "Displaying multiple containers inside Tabs"
+
+    An alternative way for displaying multiple containers on one page is to place them inside [Tabs](tabs.md).
+
+    [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+    They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
+
+    ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
+
+
+
 ## When to use containers
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
@@ -142,7 +153,6 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         [![Container]][Container]
 
     [Container]: ../../assets/user_guides/components/containers.png
-
 
 !!! note
 

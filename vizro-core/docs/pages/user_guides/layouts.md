@@ -257,6 +257,25 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
 
     [GridAdv]: ../../assets/user_guides/layout/grid_advanced.png
 
+## Using custom layout examples
+Below is a table of examples you can take as a reference to create some selected layouts:
+
+| Configuration                                              | Description            | Image                                                                                |
+|------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
+| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left               | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left               | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0,1]])`                              | two_top                | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
+| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left             | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
+| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right     | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom     | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom     | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right   | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right     | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right   | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
+| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
+
+
 ## Adding empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.
 This can be achieved by specifying `-1` within your grid layout.
@@ -385,21 +404,15 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 For further customizations, such as changing the gap between row and column, please refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
 
+## Alternative layout approaches
+In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 
-## Using custom layout examples
-Below is a table of examples you can take as a reference to create some selected layouts:
+!!! note "Alternative layout approaches: `Tabs` and `Containers`"
 
-| Configuration                                              | Description            | Image                                                                                |
-|------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
-| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left               | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left               | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0,1]])`                              | two_top                | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
-| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left             | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
-| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right     | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom     | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom     | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right   | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right     | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right   | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
-| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
+    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide an alternative approach to customize your page layout.
+    For example, if you want to have more granular control and break the overall page grid into subgrids, see our [user guide on Containers](container.md).
+
+    If you want to display multiple containers on one page by putting them into the same screen space, and letting the user switch between them, see our [user guide on Tabs](tabs.md).
+
+    ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }

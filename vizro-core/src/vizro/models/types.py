@@ -34,11 +34,11 @@ class CapturedCallable:
     through the [`capture`][vizro.models.types.capture] decorator. Some of the functionality is similar to
     `functools.partial`.
 
-    Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the user guide on
-    [Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
+    Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
+    Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
 
-    (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the user guide on
-    [custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
+    (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
+    custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
     [custom actions][custom-actions].
     """
 
