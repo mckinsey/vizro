@@ -1,3 +1,4 @@
+"""Helper Functions For Vizro AI."""
 import traceback
 from typing import Callable, Dict, Optional
 
@@ -79,4 +80,7 @@ def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insight
 
 
 class DebugFailure(Exception):
+    """Debug Failure."""
+
+    # TODO add message and code string arg and add back in vizro ai
     pass
