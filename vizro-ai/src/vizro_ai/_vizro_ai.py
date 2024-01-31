@@ -7,7 +7,7 @@ from vizro_ai.chains import ModelConstructor
 from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.utils import _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
+from vizro_ai.utils.helper import _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
 
 logger = logging.getLogger(__name__)
 
