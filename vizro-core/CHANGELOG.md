@@ -12,6 +12,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 <!-- scriv-insert-here -->
 
 <a id='changelog-0.1.10'></a>
+
 # 0.1.10 — 2024-01-31
 
 ## Highlights ✨
@@ -20,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Replaced `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
+- Replace `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
 
 ## Fixed
 
