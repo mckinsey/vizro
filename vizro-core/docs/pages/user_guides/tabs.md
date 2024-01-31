@@ -1,11 +1,11 @@
 # How to use tabs
 
 Tabs organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
-They are essentially a way of stacking multiple [`Containers`](container.md) on top of each other, and letting the user switch between them.
+They are essentially a way of putting multiple [`Containers`](container.md) in the same screen space, and letting the user switch between them.
 [`Containers`][vizro.models.Container] enable the grouping of page components into sections and subsections.
 
-Both `Tabs` and `Containers` can be considered as a means to customize your page layout, and are an alternative to using [`Layout`](layout.md).
-However, if you simply want to arrange components on a page, we recommend reading our user guide on [`Layout`](layout.md) first.
+Both `Tabs` and `Containers` are a more advanced technique for customizing your page layout. If you simply want to arrange components on a page,
+we recommend reading our user guide on [`Layout`](layout.md) first.
 
 This guide shows you how to use tabs to organize your `Containers` into subsections inside the dashboard.
 
