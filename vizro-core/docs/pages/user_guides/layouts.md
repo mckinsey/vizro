@@ -7,7 +7,8 @@ The [`Page`][vizro.models.Page] model accepts the `layout` argument, where you c
 
 ## Using the default layout
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components
-will automatically be stacked horizontally. If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
+will automatically be [**vertically stacked**](layouts.md#stacking-components) down the page in one column.
+If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
 
 !!! example "Default Layout"
     === "app.py"
@@ -71,11 +72,15 @@ grid=[[0, 1, 3, 4],
 ```
 
 ### Stacking components
-- When no `Layout` is specified, components will automatically **stack horizontally**. For instance, if you have three components,
-the default `Layout.grid` will be `grid = [[0], [1], [2]]`. This means three equally sized rows, each containing a component spanning the entire width.
-- To **stack components vertically**, set the grid as `grid = [[0, 1, 2]]`.
+- When no `Layout` is specified, components will automatically be **stacked vertically** down the page in one column.
+For instance, if you have three components, the default `Layout.grid` will be `grid = [[0], [1], [2]]`.
+This means three equally sized rows, each containing a component spanning the entire width.
+- To **stack components horizontally**, set the grid as `grid = [[0, 1, 2]]`.
 This defines a single row that occupies the entire width and height, divided into three equal columns.
 
+<figure markdown>
+  ![Stacking components](../../assets/user_guides/layout/stacking.png){ width="680" }
+</figure>
 
 ### Grid - Basic Example
 !!! example "Grid Arrangement - Basic Example"

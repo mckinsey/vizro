@@ -12,8 +12,9 @@ enhancing the ability to manage related components.
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 
-The `Page.layout` provides a grid, while the `Container` enables you to insert a `grid` into the component space on that page, allowing for more granular control by
-breaking the overall page grid into subgrids.
+`Page.layout` has a `grid` argument that sets the overall layout of the page.
+`Container.layout` also has a `grid` argument. This enables you to insert a further `grid` into a component's space on the page,
+allowing for more granular control by breaking the overall page grid into subgrids.
 
 Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
 
@@ -46,7 +47,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
             components=[  # (1)!
                 vm.Container(
                     title="Container I",
-                    layout=vm.Layout(grid=[[0, 1]]),
+                    layout=vm.Layout(grid=[[0, 1]]),  # (2)!
                     components=[
                         vm.Graph(
                             figure=px.scatter(
@@ -92,7 +93,8 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         Vizro().build(dashboard).run()
         ```
 
-        1.  Note that the `Page.layout` argument is not specified here and will therefore default to `[[0], [1]]`, meaning the containers will be stacked in rows.
+        1. Note that the `Page.layout` argument is not specified here and will therefore defaults to `[[0], [1]]`, meaning the containers will be **vertically stacked** down the page in one column.
+        2. **Horizontally stack** the components side-by-side inside this `Container` in one row.
 
     === "app.yaml"
         ```yaml
