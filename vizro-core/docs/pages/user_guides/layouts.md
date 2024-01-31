@@ -412,7 +412,7 @@ recommended approach if you just want to arrange components on a page with consi
 
     [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide an alternative approach to customize your page layout.
     For example, if you want to have more granular control and break the overall page grid into subgrids, see our [user guide on Containers](container.md).
-    
+
     If you want to display multiple containers on one page by putting them into the same screen space, and letting the user switch between them, see our [user guide on Tabs](tabs.md).
 
     ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
