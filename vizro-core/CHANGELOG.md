@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Replaced `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
+- Replace `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
 
 ## Fixed
 
