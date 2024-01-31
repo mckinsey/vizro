@@ -1,11 +1,13 @@
 import traceback
 from typing import Callable, Dict, Optional
+
 import pandas as pd
+
 from .safeguard import _safeguard_check
 
 
 def _debug_helper(
-        code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
+    code_string: str, max_debug_retry: int, fix_chain: Callable, df: pd.DataFrame = None
 ) -> Dict[bool, str]:
     """Debugging helper."""
     # TODO plug logic back into component
@@ -27,7 +29,7 @@ def _debug_helper(
 
 
 def _exec_code(
-        code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
+    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
 ) -> None:
     """Execute code in notebook with correct namespace."""
     from IPython import get_ipython
