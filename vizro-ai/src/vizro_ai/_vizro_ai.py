@@ -7,7 +7,7 @@ from vizro_ai.chains import ModelConstructor
 from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.utils.helper import _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
+from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +118,7 @@ class VizroAI:
         code_explanation = output_dict.get("code_explanation")
 
         if code_string.startswith("Failed to debug code"):
-            raise Exception(
+            raise DebugFailure(
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
