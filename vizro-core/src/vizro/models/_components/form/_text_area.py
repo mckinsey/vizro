@@ -42,7 +42,6 @@ class TextArea(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-             #       className="user_input",
                 ),
             ],
             className="selector_container",
