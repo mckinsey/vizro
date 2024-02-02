@@ -44,6 +44,6 @@ class TextArea(VizroBaseModel):
                     debounce=True,
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

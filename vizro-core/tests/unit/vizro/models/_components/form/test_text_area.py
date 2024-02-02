@@ -45,7 +45,7 @@ class TestUserInputBuild:
                     debounce=True,
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id="text-area-id_outer",
         )
         assert_component_equal(text_area, expected_text_area)
