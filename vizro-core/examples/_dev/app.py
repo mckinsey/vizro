@@ -3,77 +3,39 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.models._components.form._text_area import TextArea
+from vizro.models._components.form._user_input import UserInput
 
-gapminder = px.data.gapminder()
+iris = px.data.iris()
 
-child_container_one = vm.Container(
-    title="Container I",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
-    components=[
-        vm.Graph(
-            figure=px.line(
-                gapminder,
-                title="Graph 1 - Container I",
-                x="year",
-                y="lifeExp",
-                color="continent",
-            ),
-        ),
-        vm.Graph(
-            figure=px.scatter(
-                gapminder,
-                title="Graph 2 - Container I",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-        vm.Graph(
-            figure=px.box(
-                gapminder,
-                title="Graph 3 - Container I",
-                x="continent",
-                y="lifeExp",
-                color="continent",
-            ),
-        ),
-    ],
-)
-
-child_container_two = vm.Container(
-    title="Container II",
-    layout=vm.Layout(grid=[[0, 1]]),
-    components=[
-        vm.Graph(
-            figure=px.line(
-                gapminder,
-                title="Graph 4 - Container II",
-                x="year",
-                y="lifeExp",
-                color="continent",
-            ),
-        ),
-        vm.Graph(
-            figure=px.scatter(
-                gapminder,
-                title="Graph 5 - Container II",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-)
+# Only added to container.components directly for dev example
+vm.Container.add_type("components", UserInput)
+vm.Container.add_type("components", TextArea)
+vm.Container.add_type("components", vm.Dropdown)
+vm.Container.add_type("components", vm.Button)
 
 page = vm.Page(
-    title="Nested Containers",
+    title="User Text Inputs",
+    layout=vm.Layout(grid=[[0, 1]], col_gap="40px"),
     components=[
         vm.Container(
-            title="Parent Container",
-            layout=vm.Layout(grid=[[0, 1]], col_gap="80px"),
-            components=[child_container_one, child_container_two],
+            title="Input Components",
+            layout=vm.Layout(grid=[[i] for i in range(9)], row_min_height="72px"),
+            components=[
+                UserInput(title="Input - Text (single-line)", placeholder="Enter text here", input_type="text"),
+                UserInput(title="Input - Number", placeholder="Enter a number here", input_type="number"),
+                UserInput(title="Input - Password", placeholder="Enter a password here", input_type="password"),
+                UserInput(title="Input - Email", placeholder="Enter an email here", input_type="email"),
+                UserInput(title="Input - Search", placeholder="Enter a search here", input_type="search"),
+                UserInput(title="Input - Tel", placeholder="Enter a phone number here", input_type="tel"),
+                UserInput(title="Input - URL", placeholder="Enter a url here", input_type="url"),
+                TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
+                vm.Button()
+            ]
+        ),
+        vm.Graph(
+            id="for_custom_chart",
+            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
         ),
     ],
 )
