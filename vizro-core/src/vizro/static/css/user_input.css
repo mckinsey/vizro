@@ -12,16 +12,22 @@
   text-overflow: ellipsis;
 }
 
+.user_input:empty {
+  color: var(--text-placeholder);
+}
+
 .user_input:enabled {
   color: var(--text-primary);
 }
 
 .user_input:hover {
   background: var(--field-hover);
+  box-shadow: var(--box-shadow-elevation-1);
 }
 
 .user_input:focus {
   background: var(--field-enabled);
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  outline: none;
   color: var(--text-primary);
 }

@@ -1,6 +1,7 @@
 textarea {
   background-color: var(--field-enabled);
   padding: var(--spacing-02);
+  color: var(--text-primary);
 }
 
 textarea:focus {

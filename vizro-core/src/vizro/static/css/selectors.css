@@ -13,7 +13,7 @@
 .selector_dropdown_container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-05);
+  gap: var(--spacing-02);
   width: 100%;
 }
 

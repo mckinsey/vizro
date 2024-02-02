@@ -72,10 +72,8 @@
   --text-secondary: var(--text-dark-mode-secondary);
   --background-selected: rgba(0, 0, 0, 0.12);
   --border-selected: var(--border-dark-mode-selected);
-  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.3),
-    0 0 1px 0 rgba(20, 23, 33, 0.88);
-  --box-shadow-elevation-1: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
-    0px 2px 6px -1px rgba(20, 23, 33, 0.16);
+  --box-shadow-elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.12), 0px 0px 1px 1px rgba(20, 23, 33, 0.08);
+  --box-shadow-elevation-1: 0px 2px 4px -1px rgba(20, 23, 33, 0.38), 0px 1px 2px -1px rgba(20, 23, 33, 0.88);
   --box-shadow-elevation-card: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
     0px 2px 6px -1px rgba(20, 23, 33, 0.16);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
@@ -136,8 +134,8 @@
   --text-secondary: var(--text-light-mode-secondary);
   --background-selected: var(--overlays-on-light-ui-high-contrast);
   --border-selected: var(--border-light-mode-selected);
-  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.08),
-    0 0 1px 0 rgba(20, 23, 33, 0.38);
+  --box-shadow-elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.12), 0px 0px 1px 1px rgba(20, 23, 33, 0.08);
+  --box-shadow-elevation-1: 0px 2px 4px -1px rgba(20, 23, 33, 0.12), 0px 1px 2px -1px rgba(20, 23, 33, 0.08);
   --box-shadow-elevation-card: 0px 1px 1px 0px rgba(20, 23, 33, 0.08),
     0px 0px 1px 0px rgba(20, 23, 33, 0.38);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
