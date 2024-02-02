@@ -28,6 +28,6 @@
 .user_input:focus {
   background: var(--field-enabled);
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
-  outline: none;
   color: var(--text-primary);
+  outline: none;
 }
