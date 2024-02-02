@@ -11,8 +11,6 @@ iris = px.data.iris()
 # Only added to container.components directly for dev example
 vm.Container.add_type("components", UserInput)
 vm.Container.add_type("components", TextArea)
-vm.Container.add_type("components", vm.Dropdown)
-vm.Container.add_type("components", vm.Button)
 
 page = vm.Page(
     title="User Text Inputs",
@@ -20,7 +18,7 @@ page = vm.Page(
     components=[
         vm.Container(
             title="Input Components",
-            layout=vm.Layout(grid=[[i] for i in range(9)], row_min_height="72px"),
+            layout=vm.Layout(grid=[[i] for i in range(8)], row_min_height="72px"),
             components=[
                 UserInput(title="Input - Text (single-line)", placeholder="Enter text here", input_type="text"),
                 UserInput(title="Input - Number", placeholder="Enter a number here", input_type="number"),
@@ -30,8 +28,7 @@ page = vm.Page(
                 UserInput(title="Input - Tel", placeholder="Enter a phone number here", input_type="tel"),
                 UserInput(title="Input - URL", placeholder="Enter a url here", input_type="url"),
                 TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
-                vm.Button()
-            ]
+            ],
         ),
         vm.Graph(
             id="for_custom_chart",

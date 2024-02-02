@@ -1,4 +1,5 @@
-.user_input, textarea {
+.user_input,
+textarea {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-0);
   display: flex;
@@ -19,7 +20,8 @@
   color: var(--text-placeholder);
 }
 
-.user_input:enabled, textarea:enabled {
+.user_input:enabled,
+textarea:enabled {
   color: var(--text-primary);
 }
 
@@ -27,12 +29,14 @@ textarea {
   padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
-.user_input:hover, textarea:hover {
+.user_input:hover,
+textarea:hover {
   background: var(--field-hover);
   box-shadow: var(--box-shadow-elevation-1);
 }
 
-.user_input:focus, textarea:focus {
+.user_input:focus,
+textarea:focus {
   background: var(--field-enabled);
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
   color: var(--text-primary);
