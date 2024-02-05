@@ -1,4 +1,5 @@
 """Schema manager for prepare llm calls."""
+
 import inspect
 from typing import Callable, List, Union
 

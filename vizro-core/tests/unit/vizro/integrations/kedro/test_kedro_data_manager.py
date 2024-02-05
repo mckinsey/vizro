@@ -1,4 +1,5 @@
 """Unit tests for vizro.integrations.kedro."""
+
 import types
 from pathlib import Path
 

@@ -1,4 +1,5 @@
 """Visual Code Component."""
+
 from typing import Dict, Tuple
 
 try:

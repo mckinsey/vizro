@@ -1,4 +1,5 @@
 """Types used in pydantic fields."""
+
 # ruff: noqa: F821
 from __future__ import annotations
 

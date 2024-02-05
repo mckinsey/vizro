@@ -1,4 +1,5 @@
 """Example to show dashboard configuration specified as a YAML file."""
+
 from pathlib import Path
 
 import yaml

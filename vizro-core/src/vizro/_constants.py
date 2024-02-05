@@ -1,4 +1,5 @@
 """File to store constants."""
+
 ALL_OPTION = "ALL"
 NONE_OPTION = "NONE"
 STATIC_URL_PREFIX = "vizro"

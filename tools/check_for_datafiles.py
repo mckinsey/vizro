@@ -1,4 +1,5 @@
 """FUNCTION TO CHECK FOR DATA FILES IN NON-WHITELISTED FOLDERS."""
+
 import glob
 from pathlib import Path
 

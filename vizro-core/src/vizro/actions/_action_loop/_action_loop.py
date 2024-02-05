@@ -1,6 +1,5 @@
 """The action loop creates all the required action callbacks and its components."""
 
-
 from dash import html
 
 from vizro.actions._action_loop._action_loop_utils import _get_actions_on_registered_pages

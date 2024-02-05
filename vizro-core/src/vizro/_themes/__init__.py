@@ -1,4 +1,5 @@
 """Init."""
+
 from ._templates.template_dark import dark
 from ._templates.template_light import light
 

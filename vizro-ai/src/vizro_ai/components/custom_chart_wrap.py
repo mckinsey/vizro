@@ -1,4 +1,5 @@
 """Custom Chart Component."""
+
 import logging
 from typing import Dict, Tuple
 

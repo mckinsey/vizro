@@ -1,4 +1,5 @@
 """Example app to show all features of Vizro."""
+
 from time import sleep
 from typing import List, Literal, Optional
 

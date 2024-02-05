@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.Accordion."""
+
 import re
 
 import dash_bootstrap_components as dbc
