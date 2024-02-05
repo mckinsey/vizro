@@ -18,15 +18,8 @@ page = vm.Page(
     components=[
         vm.Container(
             title="Input Components",
-            layout=vm.Layout(grid=[[i] for i in range(8)], row_min_height="72px"),
             components=[
-                UserInput(title="Input - Text (single-line)", placeholder="Enter text here", input_type="text"),
-                UserInput(title="Input - Number", placeholder="Enter a number here", input_type="number"),
-                UserInput(title="Input - Password", placeholder="Enter a password here", input_type="password"),
-                UserInput(title="Input - Email", placeholder="Enter an email here", input_type="email"),
-                UserInput(title="Input - Search", placeholder="Enter a search here", input_type="search"),
-                UserInput(title="Input - Tel", placeholder="Enter a phone number here", input_type="tel"),
-                UserInput(title="Input - URL", placeholder="Enter a url here", input_type="url"),
+                UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
                 TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
             ],
         ),
