@@ -13,17 +13,17 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 
 
-class UserInput(VizroBaseModel):
-    """Component provided to `Form` to allow single-line user input.
+class TextArea(VizroBaseModel):
+    """Component provided to `Form` to allow user multi-line text input.
 
     Args:
-        type (Literal["user_input"]): Defaults to `"user_input"`.
+        type (Literal["text_area"]): Defaults to `"text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (Optional[List[Action]]): Defaults to `[]`.
     """
 
-    type: Literal["user_input"] = "user_input"
+    type: Literal["text_area"] = "text_area"
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field("", description="Title to be displayed")
     placeholder: str = Field("", description="Default text to display in input field")
@@ -39,14 +39,12 @@ class UserInput(VizroBaseModel):
         return html.Div(
             [
                 html.Label(self.title, htmlFor=self.id) if self.title else None,
-                dbc.Input(
+                dbc.Textarea(
                     id=self.id,
                     placeholder=self.placeholder,
-                    type="text",
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="user_input",
                 ),
             ],
             className="input-container",

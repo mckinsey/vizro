@@ -108,7 +108,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         page = vm.Page(
             title="Custom Component",
-            path="custom-component",
             components=[
                 vm.Graph(
                     id="for_custom_chart",
@@ -239,7 +238,6 @@ vm.Page.add_type("components", Jumbotron)
 
         page = vm.Page(
             title="Custom Component",
-            path="custom-component",
             components=[
                 Jumbotron(  # (6)!
                     id="my_jumbotron",
