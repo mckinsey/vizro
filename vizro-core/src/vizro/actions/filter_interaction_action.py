@@ -4,18 +4,13 @@ from typing import Any, Dict, List, Optional
 
 from dash import ctx
 
-from vizro.actions._actions_utils import (
-    _get_modified_page_figures,
-)
+from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 
 
 @capture("action")
-def filter_interaction(
-    targets: Optional[List[ModelID]] = None,
-    **inputs: Dict[str, Any],
-) -> Dict[str, Any]:
+def filter_interaction(targets: Optional[List[ModelID]] = None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'

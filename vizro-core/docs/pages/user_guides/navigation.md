@@ -3,6 +3,7 @@
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
+The dashboard includes a collapsible side panel that users can easily minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
 ## Using the default navigation
 
@@ -43,7 +44,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -90,7 +91,7 @@ If you wish to include only some of your dashboard pages in your navigation then
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         # pages defined as in default example
         navigation:
           pages:
@@ -120,7 +121,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         # pages defined as in default example
         navigation:
           pages:
@@ -156,7 +157,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         # pages defined as in default example
         navigation:
           pages:
@@ -208,7 +209,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         # pages defined as in default example
         navigation:
           nav_selector:
@@ -253,7 +254,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         # pages defined as in default example
         navigation:
           nav_selector:

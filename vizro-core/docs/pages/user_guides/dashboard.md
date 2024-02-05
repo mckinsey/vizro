@@ -26,8 +26,8 @@ To create a dashboard:
         page = vm.Page(
             title="My first dashboard",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),            ],
+                vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),            ],
             controls=[
                 vm.Filter(column="species"),
             ],
@@ -49,7 +49,6 @@ To create a dashboard:
             "components": [
                 {
                     "type": "graph",
-                    "id": "scatter_chart",
                     "figure": px.scatter(
                         df,
                         x="sepal_length",
@@ -59,7 +58,6 @@ To create a dashboard:
                 },
                 {
                     "type": "graph",
-                    "id": "hist_chart",
                     "figure": px.histogram(
                         df,
                         x="sepal_width",
@@ -82,7 +80,7 @@ To create a dashboard:
     === "dashboard.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -91,14 +89,12 @@ To create a dashboard:
                   x: sepal_length
                   y: petal_width
                   color: species
-                id: scatter_chart
                 type: graph
               - figure:
                   _target_: histogram
                   data_frame: iris
                   x: sepal_width
                   color: species
-                id: hist_chart
                 type: graph
             controls:
               - column: species
@@ -119,7 +115,6 @@ To create a dashboard:
                                 "x": "sepal_length",
                                 "y": "petal_width"
                             },
-                            "id": "scatter_chart",
                             "type": "graph"
                         },
                         {
@@ -129,7 +124,6 @@ To create a dashboard:
                                 "data_frame": "iris",
                                 "x": "sepal_width",
                             },
-                            "id": "hist_chart",
                             "type": "graph"
                         }
                     ],
@@ -191,7 +185,22 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 ## Adding a dashboard title
 
-If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top left of every page. It is also combined with the `title` specified in [`Page`][vizro.models.Page] to set:
+If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
-- `<title>` HTML element that controls the text labeling a browser window;
-- `<meta>` elements that control how a preview is generated when sharing a link to your dashboard (e.g. on social media).
+
+## Adding a dashboard logo
+
+Vizro will automatically incorporate the dashboard [logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+
+![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
+
+## Browser title
+
+The [website icon](assets.md/#changing-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's
+title bar.  For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
+
+## Meta tags for social media
+
+Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
+clients.  The preview includes the `URL`, `title`, plus an [image](assets.md/#meta-tags-image) and
+[Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing the [Vizro demo app](https://vizro.mckinsey.com/).

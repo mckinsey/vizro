@@ -57,10 +57,7 @@ class VizroAiComponentBase(ABC):
         llm_kwargs_to_use, partial_vars = self._pre_process(*args, **kwargs)
 
         function_call_chain = FunctionCallChain(
-            llm=self.llm,
-            raw_prompt=self.prompt,
-            partial_vars_map=partial_vars,
-            llm_kwargs=llm_kwargs_to_use,
+            llm=self.llm, raw_prompt=self.prompt, partial_vars_map=partial_vars, llm_kwargs=llm_kwargs_to_use
         )
 
         response = function_call_chain.execute_chain(input_str=chain_input)

@@ -96,10 +96,7 @@ class TestDashboardPreBuild:
             order=1,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
-        mock_register_page.assert_any_call(
-            module="not_found_404",
-            layout=mock_make_page_404_layout(),
-        )
+        mock_register_page.assert_any_call(module="not_found_404", layout=mock_make_page_404_layout())
         assert mock_register_page.call_count == 3
 
     def test_page_registry_with_title(self, vizro_app, page_1, mocker):
@@ -155,6 +152,31 @@ class TestDashboardPreBuild:
             order=0,
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
+
+    # TODO: Move the test to `TestDashboardBuild` once asset_component_equal is implemented for dashboard build method
+    @pytest.mark.parametrize(
+        "image_path",
+        [
+            "logo.svg",
+            "logo.png",
+            "logo.apng",
+            "logo.avif",
+            "logo.gif",
+            "logo.jpeg",
+            "logo.jpg",
+            "logo.webp",
+            "images/logo.svg",
+        ],
+    )
+    def test_infer_image(self, page_1, tmp_path, image_path):
+        if Path(image_path).parent != Path("."):
+            Path(tmp_path / image_path).parent.mkdir()
+
+        Path(tmp_path / image_path).touch()
+        Vizro(assets_folder=tmp_path)
+        vm.Dashboard(pages=[page_1]).pre_build()
+
+        assert_component_equal(vm.Dashboard._infer_image("logo"), image_path)
 
     def test_page_registry_with_images(self, page_1, mocker, tmp_path):
         Path(tmp_path / "app.svg").touch()

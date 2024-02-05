@@ -2,11 +2,6 @@
 
 This guide shows you how to use tables to visualize your data in the dashboard.
 
-The [`Page`][vizro.models.Page] models accepts the `components` argument, where you can enter your visual content e.g.
-[`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card] or [`Button`][vizro.models.Button].
-
-## Table
-
 The [`Table`][vizro.models.Table] model allows you to visualize data in a tabular format.
 
 To add a [`Table`][vizro.models.Table] to your page, do the following:
@@ -43,9 +38,8 @@ setting some defaults for some of the arguments to help with styling.
         page = vm.Page(
             title="Example of a Dash DataTable",
             components=[
-                vm.Table(id="table", title="Dash DataTable", figure=dash_data_table(data_frame=df)),
+                vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
-            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -54,18 +48,14 @@ setting some defaults for some of the arguments to help with styling.
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
           - figure:
               _target_: dash_data_table
               data_frame: gapminder_2007
             title: Dash DataTable
-            id: table
             type: table
-          controls:
-            - column: continent
-              type: filter
           title: Example of a Dash DataTable
         ```
     === "Result"
@@ -125,7 +115,6 @@ an example of a styled table where some conditional formatting is applied. There
             title="Example of a styled Dash DataTable",
             components=[
                 vm.Table(
-                    id="table",
                     title="Styled table",
                     figure=dash_data_table(
                         data_frame=df,
@@ -137,7 +126,6 @@ an example of a styled table where some conditional formatting is applied. There
                     ),
                 ),
             ],
-            controls=[vm.Filter(column="continent")],
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -146,7 +134,7 @@ an example of a styled table where some conditional formatting is applied. There
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -196,11 +184,7 @@ an example of a styled table where some conditional formatting is applied. There
                         state: active
                       backgroundColor: rgba(0, 116, 217, 0.3)
                       border: 1px solid rgb(0, 116, 217)
-                id: table
                 type: table
-            controls:
-              - column: continent
-                type: filter
             title: Dash DataTable
 
         ```

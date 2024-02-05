@@ -12,7 +12,7 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
 2. The **control container**  where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 3. The **page header** that contains the page title and the theme toggle switch button
-4. The **component container** where you can add your [Charts/Components](components.md) to visualize your data
+4. The **component container** where you can add your [components](components.md) to visualize your data
 
 ![Page Container](../../assets/user_guides/pages/page_containers.png)
 
@@ -22,9 +22,10 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 To create and add a page to your dashboard, do the following steps:
 
 1. Provide a `title` to your [`Page`][vizro.models.Page]
-2. Configure your `components`, see our guide on [Charts/Components](components.md)
+2. Configure your `components`, see our guide on the [various options](components.md)
 3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
+5. (optional) Provide a `description` of your `Page` for the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
     === "app.py"
@@ -37,6 +38,7 @@ To create and add a page to your dashboard, do the following steps:
 
         page = vm.Page(
             title="Page Title",
+            description="Longer description of the page content",
             components=[
                 vm.Graph(
                     id="sunburst", figure=px.sunburst(gapminder, path=["continent", "country"], values="pop", color="lifeExp")
@@ -55,7 +57,7 @@ To create and add a page to your dashboard, do the following steps:
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - figure:
@@ -79,6 +81,7 @@ To create and add a page to your dashboard, do the following steps:
               - sunburst.color
             type: parameter
           title: Page Title
+          description: "Longer description of the page content"
         ```
     === "Result"
         [![Page]][Page]
@@ -145,7 +148,7 @@ To customize the page URL, provide a valid URL name to the `path` argument of [`
     === "app.yaml"
         ```yaml
         # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
         - components:
             - text: |

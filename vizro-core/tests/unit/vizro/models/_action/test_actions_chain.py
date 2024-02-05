@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.ActionChain."""
+
 import pytest
 
 from vizro.models._action._action import Action

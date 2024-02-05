@@ -1,4 +1,5 @@
 """Types used in pydantic fields."""
+
 # ruff: noqa: F821
 from __future__ import annotations
 
@@ -34,16 +35,16 @@ class CapturedCallable:
     through the [`capture`][vizro.models.types.capture] decorator. Some of the functionality is similar to
     `functools.partial`.
 
-    Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the user guide on
-    [Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
+    Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
+    Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
 
-    (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the user guide on
-    [custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
+    (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
+    custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
     [custom actions][custom-actions].
     """
 
     def __init__(self, function, /, *args, **kwargs):
-        """Creates a new CapturedCallable object that will be able to re-run `function`.
+        """Creates a new `CapturedCallable` object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
 
@@ -147,7 +148,7 @@ class CapturedCallable:
 
     @classmethod
     def __get_validators__(cls):
-        """Makes type compatible with pydantic model without needing arbitrary_types_allowed."""
+        """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
         yield cls._parse_json
 
     @classmethod
@@ -157,9 +158,7 @@ class CapturedCallable:
 
     @classmethod
     def _parse_json(
-        cls,
-        callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]],
-        field: ModelField,
+        cls, callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]], field: ModelField
     ) -> CapturedCallable:
         """Parses callable_config specification from JSON/YAML to a CapturedCallable.
 
@@ -334,10 +333,7 @@ OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictTy
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
     Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
-    Field(
-        discriminator="type",
-        description="Selectors to be used inside a control.",
-    ),
+    Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
@@ -345,24 +341,18 @@ SelectorType = Annotated[
 
 _FormComponentType = Annotated[
     Union[SelectorType, "Button", "UserInput"],
-    Field(
-        discriminator="type",
-        description="Components that can be used to receive user input within a form.",
-    ),
+    Field(discriminator="type", description="Components that can be used to receive user input within a form."),
 ]
 
 ControlType = Annotated[
     Union["Filter", "Parameter"],
-    Field(
-        discriminator="type",
-        description="Control that affects components on the page.",
-    ),
+    Field(discriminator="type", description="Control that affects components on the page."),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Graph", "Table"],
+    Union["Button", "Card", "Container", "Graph", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -376,8 +366,7 @@ NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
-    Union["Accordion", "NavBar"],
-    Field(discriminator="type", description="Component for rendering navigation."),
+    Union["Accordion", "NavBar"], Field(discriminator="type", description="Component for rendering navigation.")
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""

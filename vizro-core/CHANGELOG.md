@@ -11,6 +11,68 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.10'></a>
+
+# 0.1.10 — 2024-01-31
+
+## Highlights ✨
+
+- Introduce `Tabs` model as a new `Page` component. ([#280](https://github.com/mckinsey/vizro/pull/280))
+
+## Changed
+
+- Replace `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
+
+## Fixed
+
+- Fix bug on accordion group not opening properly when re-directing to active page via navigation card or URL path. ([#276](https://github.com/mckinsey/vizro/pull/276))
+
+<a id='changelog-0.1.9'></a>
+
+# 0.1.9 — 2024-01-25
+
+## Highlights ✨
+
+- Introduce `Container` model as a new `Page` component. Visit the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user_guides/container/) to learn more. ([#254](https://github.com/mckinsey/vizro/pull/254))
+
+## Added
+
+- Enable automatic logo insertion into `page-header` container. ([#248](https://github.com/mckinsey/vizro/pull/248))
+
+- Enable the side panel to collapse/expand with a button. ([#225](https://github.com/mckinsey/vizro/pull/225))
+
+## Changed
+
+- Move `dashboard-title` to top header container `page-header`. ([#238](https://github.com/mckinsey/vizro/pull/238))
+
+## Fixed
+
+- Add CSS for `dmc.Switch` and fix CSS when toggle-switch is turned on. ([#244](https://github.com/mckinsey/vizro/pull/244))
+
+- Fix bug of `value` argument not properly being evaluated in `Slider` and `RangeSlider`. ([#266](https://github.com/mckinsey/vizro/pull/266))
+
+- Fix bug on scrolling and viewport on Safari. ([#277](https://github.com/mckinsey/vizro/pull/277))
+
+<a id='changelog-0.1.8'></a>
+
+# 0.1.8 — 2024-01-04
+
+## Added
+
+- When set, the dashboard title appears alongside the individual page title as the text labeling a browser tab. ([#228](https://github.com/mckinsey/vizro/pull/228))
+
+- Enable adding description and image to the meta tags. ([#185](https://github.com/mckinsey/vizro/pull/185))
+
+## Changed
+
+- Re-arrange main containers on page and change their CSS IDs. ([#205](https://github.com/mckinsey/vizro/pull/205))
+
+## Fixed
+
+- Fix position of invisible button inside `Card`. ([#236](https://github.com/mckinsey/vizro/pull/236))
+
+- Fix a bug that prevented the update of nested graph properties through parameters when the graph property was not previously defined. ([#273](https://github.com/mckinsey/vizro/pull/237))
+
 <a id='changelog-0.1.7'></a>
 
 # 0.1.7 — 2023-12-15

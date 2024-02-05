@@ -1,9 +1,8 @@
 """Unit tests for vizro.models.Graph."""
-import json
 
-import plotly
 import plotly.graph_objects as go
 import pytest
+from asserts import assert_component_equal
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -30,31 +29,6 @@ def standard_px_chart_with_str_dataframe():
         color="continent",
         hover_name="country",
         size_max=60,
-    )
-
-
-@pytest.fixture
-def expected_graph():
-    return dcc.Loading(
-        dcc.Graph(
-            id="text_graph",
-            figure=go.Figure(
-                layout={
-                    "paper_bgcolor": "rgba(0,0,0,0)",
-                    "plot_bgcolor": "rgba(0,0,0,0)",
-                    "xaxis": {"visible": False},
-                    "yaxis": {"visible": False},
-                }
-            ),
-            config={
-                "autosizable": True,
-                "frameMargins": 0,
-                "responsive": True,
-            },
-            className="chart_container",
-        ),
-        color="grey",
-        parent_className="loading-container",
     )
 
 
@@ -110,20 +84,20 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
     def test_update_theme_inside_callback(self, standard_px_chart, template):
-        mock_callback_context = {
+        mock_ctx = {
             "args_grouping": {
                 "external": {
                     "theme_selector": CallbackTriggerDict(
                         id="theme_selector",
-                        property="on",
-                        value=template == "vizro_dark",
+                        property="checked",
+                        value=template == "vizro_light",
                         str_id="theme_selector",
                         triggered=False,
                     )
                 }
             }
         }
-        context_value.set(AttributeDict(**mock_callback_context))
+        context_value.set(AttributeDict(**mock_ctx))
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
 
@@ -148,9 +122,28 @@ class TestProcessFigureDataFrame:
 
 
 class TestBuild:
-    def test_graph_build(self, standard_px_chart, expected_graph):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart)
+    def test_graph_build(self, standard_px_chart):
+        graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
 
-        result = json.loads(json.dumps(graph.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_graph, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        expected_graph = dcc.Loading(
+            dcc.Graph(
+                id="text_graph",
+                figure=go.Figure(
+                    layout={
+                        "paper_bgcolor": "rgba(0,0,0,0)",
+                        "plot_bgcolor": "rgba(0,0,0,0)",
+                        "xaxis": {"visible": False},
+                        "yaxis": {"visible": False},
+                    }
+                ),
+                config={
+                    "autosizable": True,
+                    "frameMargins": 0,
+                    "responsive": True,
+                },
+                className="chart_container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+        )
+        assert_component_equal(graph, expected_graph)

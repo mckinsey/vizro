@@ -6,9 +6,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro._themes import dark, light
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -39,10 +37,10 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
 
 
 @pytest.fixture
-def callback_context_on_page_load(request):
-    """Mock dash.callback_context that represents on page load."""
+def ctx_on_page_load(request):
+    """Mock dash.ctx that represents on page load."""
     continent_filter, pop, y, x, template = request.param
-    mock_callback_context = {
+    mock_ctx = {
         "args_grouping": {
             "external": {
                 "filter_interaction": [],
@@ -80,22 +78,22 @@ def callback_context_on_page_load(request):
                 ],
                 "theme_selector": CallbackTriggerDict(
                     id="theme_selector",
-                    property="on",
-                    value=template == "vizro_dark",
+                    property="checked",
+                    value=template == "vizro_light",
                     str_id="theme_selector",
                     triggered=False,
                 ),
             }
         }
     }
-    context_value.set(AttributeDict(**mock_callback_context))
+    context_value.set(AttributeDict(**mock_ctx))
     return context_value
 
 
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
+        "ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
         [
             (
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
@@ -108,14 +106,10 @@ class TestOnPageLoad:
                 "vizro_light",
             ),
         ],
-        indirect=["callback_context_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
+        indirect=["ctx_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
     )
     def test_multiple_controls_one_target(
-        self,
-        callback_context_on_page_load,
-        target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-        template,
-        box_chart,
+        self, ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template, box_chart
     ):
         # Creating and adding a Filter objects to the existing Page
         continent_filter = vm.Filter(
@@ -163,7 +157,7 @@ class TestOnPageLoad:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "callback_context_on_page_load, "
+        "ctx_on_page_load, "
         "target_scatter_filtered_continent_and_pop_parameter_y_and_x, "
         "target_box_filtered_continent_and_pop_parameter_y_and_x",
         [
@@ -182,7 +176,7 @@ class TestOnPageLoad:
     )
     def test_multiple_controls_multiple_targets(
         self,
-        callback_context_on_page_load,
+        ctx_on_page_load,
         target_scatter_filtered_continent_and_pop_parameter_y_and_x,
         target_box_filtered_continent_and_pop_parameter_y_and_x,
     ):

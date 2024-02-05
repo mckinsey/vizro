@@ -1,4 +1,5 @@
 """Dark themed plotly template."""
+
 from plotly import graph_objects as go
 from plotly.graph_objs.layout._template import Template
 
@@ -99,12 +100,7 @@ def create_template_dark() -> Template:
             totals={"marker": {"color": COLORS["GREY_55"]}},
             textfont_color=template_dark.layout.title.font.color,
             textposition="outside",
-            connector={
-                "line": {
-                    "color": template_dark.layout.xaxis.tickcolor,
-                    "width": 1,
-                }
-            },
+            connector={"line": {"color": template_dark.layout.xaxis.tickcolor, "width": 1}},
         )
     ]
     return template_dark

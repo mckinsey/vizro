@@ -36,13 +36,21 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 ## Examples
 
-Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `from_dict` example, execute:
+Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `features/yaml_version` example, execute:
 
 ```console
-hatch run example from_dict
+hatch run example features/yaml_version
 ```
 
-If no example is specified (`hatch run example`) then the [default example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/default/app.py) is used.
+If no example is specified (`hatch run example`) then the [`_dev` example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
+
+## Documentation
+
+If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
+
+```console
+hatch run docs:serve
+```
 
 ## Debugging tips
 
@@ -124,7 +132,7 @@ Note that Hatch's `default` environment specifies `pre-commit` as a dependency b
 
 We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We do this via `pre-commit`, however there are a few things to note:
 
-1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained [here](https://go.dev/doc/install).
+1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained in the [Go documentation](https://go.dev/doc/install).
 2. For that reason `hatch run lint` skips the secret scans, to function on all machines.
 3. To run a secret-scan, simply run `hatch run secrets`.
 4. Secret scans will run on CI, but it is highly recommended to check for secrets **before pushing to the remote repository** and ideally also before even committing.

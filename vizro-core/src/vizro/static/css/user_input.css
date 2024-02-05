@@ -1,27 +1,49 @@
-.user_input {
+.user_input,
+textarea {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-0);
   display: flex;
   flex-direction: column;
   font-size: var(--text-size-02);
-  gap: var(--spacing-02);
-  height: 32px;
   letter-spacing: var(--letter-spacing-body-ui-02);
   line-height: var(--text-size-03);
-  padding: 8px 8px 8px 12px;
   text-overflow: ellipsis;
 }
 
-.user_input:enabled {
+.user_input {
+  gap: var(--spacing-02);
+  height: 32px;
+  padding: 8px 8px 8px 12px;
+}
+
+.user_input:empty {
+  color: var(--text-placeholder);
+}
+
+.user_input:enabled,
+textarea:enabled {
   color: var(--text-primary);
 }
 
-.user_input:hover {
-  background: var(--field-hover);
+textarea {
+  padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
-.user_input:focus {
+.user_input:hover,
+textarea:hover {
+  background: var(--field-hover);
+  box-shadow: var(--box-shadow-elevation-1);
+}
+
+.user_input:focus,
+textarea:focus {
   background: var(--field-enabled);
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
   color: var(--text-primary);
+  outline: none;
+}
+
+/* Should be replaced by a custom icon at some point*/
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }

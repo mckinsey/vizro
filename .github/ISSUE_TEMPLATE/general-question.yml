@@ -33,9 +33,15 @@ body:
       description: >-
         Please provide any attempts on answering the question, or any related information you already found here.
 
+  - type: dropdown
+    attributes:
+      label: Which package?
+      options:
+        - vizro
+        - vizro-ai
   - type: input
     attributes:
-      label: vizro version
+      label: Package version
   - type: input
     attributes:
       label: Python version

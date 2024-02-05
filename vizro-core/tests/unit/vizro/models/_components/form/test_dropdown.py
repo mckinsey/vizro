@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Dropdown."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -12,46 +11,6 @@ except ImportError:  # pragma: no cov
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
-
-
-@pytest.fixture()
-def expected_dropdown_with_all():
-    return html.Div(
-        [
-            html.P("Title"),
-            dcc.Dropdown(
-                id="dropdown_id",
-                options=["ALL", "A", "B", "C"],
-                value="ALL",
-                multi=True,
-                persistence=True,
-                persistence_type="session",
-                className="selector_body_dropdown",
-            ),
-        ],
-        className="selector_dropdown_container",
-        id="dropdown_id_outer",
-    )
-
-
-@pytest.fixture()
-def expected_dropdown_without_all():
-    return html.Div(
-        [
-            html.P("Title"),
-            dcc.Dropdown(
-                id="dropdown_id",
-                options=["A", "B", "C"],
-                value="A",
-                multi=False,
-                persistence=True,
-                persistence_type="session",
-                className="selector_body_dropdown",
-            ),
-        ],
-        className="selector_dropdown_container",
-        id="dropdown_id_outer",
-    )
 
 
 class TestDropdownInstantiation:
@@ -119,8 +78,7 @@ class TestDropdownInstantiation:
 
     def test_create_dropdown_invalid_options_dict(self):
         with pytest.raises(
-            ValidationError,
-            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
+            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
         ):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
@@ -188,16 +146,44 @@ class TestDropdownInstantiation:
 class TestDropdownBuild:
     """Tests model build method."""
 
-    def test_dropdown_with_all_option(self, expected_dropdown_with_all):
-        dropdown = Dropdown(options=["A", "B", "C"], id="dropdown_id", title="Title").build()
+    def test_dropdown_with_all_option(self):
+        dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
+        expected_dropdown = html.Div(
+            [
+                html.Label("Title", htmlFor="dropdown_id"),
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=["ALL", "A", "B", "C"],
+                    value="ALL",
+                    multi=True,
+                    persistence=True,
+                    persistence_type="session",
+                    className="selector_body_dropdown",
+                ),
+            ],
+            className="selector_dropdown_container",
+            id="dropdown_id_outer",
+        )
 
-        result = json.loads(json.dumps(dropdown, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_dropdown_with_all, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        assert_component_equal(dropdown, expected_dropdown)
 
-    def test_dropdown_without_all_option(self, expected_dropdown_without_all):
-        dropdown = Dropdown(options=["A", "B", "C"], multi=False, id="dropdown_id", title="Title").build()
+    def test_dropdown_without_all_option(self):
+        dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
+        expected_dropdown = html.Div(
+            [
+                html.Label("Title", htmlFor="dropdown_id"),
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=["A", "B", "C"],
+                    value="A",
+                    multi=False,
+                    persistence=True,
+                    persistence_type="session",
+                    className="selector_body_dropdown",
+                ),
+            ],
+            className="selector_dropdown_container",
+            id="dropdown_id_outer",
+        )
 
-        result = json.loads(json.dumps(dropdown, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_dropdown_without_all, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        assert_component_equal(dropdown, expected_dropdown)

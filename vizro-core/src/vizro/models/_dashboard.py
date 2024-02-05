@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_daq as daq
-from dash import ClientsideFunction, Input, Output, clientside_callback, get_relative_path, html
+import dash_mantine_components as dmc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_asset_url, get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def _all_hidden(components: List[Component]):
-    """Returns True if all components are either None and/or have hidden=True."""
+    """Returns True if all `components` are either None and/or have hidden=True."""
     return all(component is None or getattr(component, "hidden", False) for component in components)
 
 
@@ -49,7 +49,8 @@ _PageDivsType = TypedDict(
         "nav-bar": html.Div,
         "nav-panel": html.Div,
         "control-panel": html.Div,
-        "components": html.Div,
+        "page-components": html.Div,
+        "logo": html.Div,
     },
 )
 
@@ -115,8 +116,21 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
             Output("dashboard_container_outer", "className"),
-            Input("theme_selector", "on"),
+            Input("theme_selector", "checked"),
         )
+        left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
+        if left_side_div_present:
+            clientside_callback(
+                ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+                [
+                    Output("collapsable-left-side", "is_open"),
+                    Output("collapse-icon", "style"),
+                    Output("collapse-tooltip", "label"),
+                    Output("collapse-tooltip", "offset"),
+                ],
+                Input("collapse-icon", "n_clicks"),
+                State("collapsable-left-side", "is_open"),
+            )
 
         return html.Div(
             id="dashboard_container_outer",
@@ -133,13 +147,19 @@ class Dashboard(VizroBaseModel):
         dashboard_title = (
             html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
         )
-
         settings = html.Div(
-            daq.BooleanSwitch(
-                id="theme_selector", on=self.theme == "vizro_dark", persistence=True, persistence_type="session"
+            dmc.Switch(
+                id="theme_selector",
+                checked=self.theme == "vizro_light",
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
             ),
             id="settings",
         )
+        logo_img = self._infer_image(filename="logo")
+        path_to_logo = get_asset_url(logo_img) if logo_img else None
+        logo = html.Img(src=path_to_logo, id="logo", hidden=not path_to_logo)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -151,27 +171,52 @@ class Dashboard(VizroBaseModel):
         # Different across pages
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
-        components = page_content["components"]
-        return html.Div([dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, components])
+        page_components = page_content["page-components"]
+        return html.Div(
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+        )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        left_header_divs = [page_divs["dashboard-title"]]
+        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        page_header_divs = [html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
-        left_main_divs = [
-            html.Div(left_header_divs, id="left-header", hidden=_all_hidden(left_header_divs)),
-            page_divs["nav-panel"],
-            page_divs["control-panel"],
-        ]
+        left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
+        right_header_divs = [page_divs["page-title"]]
+
+        # Apply different container position logic based on condition
+        if _all_hidden(page_header_divs):
+            right_header_divs.append(page_divs["settings"])
+        else:
+            page_header_divs.append(page_divs["settings"])
+
+        collapsable_icon = (
+            dmc.Tooltip(
+                html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
+                id="collapse-tooltip",
+                label="Hide Menu",
+                offset=24,
+                withArrow=True,
+                position="right",
+                arrowOffset=10,
+                className="collapse-button-tooltip",
+            )
+            if not _all_hidden([*left_sidebar_divs, *left_main_divs])
+            else None
+        )
 
         left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
         left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
         left_side = html.Div([left_sidebar, left_main], id="left-side")
 
-        right_header = html.Div([page_divs["page-title"], page_divs["settings"]], id="right-header")
-        right_main = page_divs["components"]
+        collapsable_left_side = dbc.Collapse(left_side, id="collapsable-left-side", is_open=True, dimension="width")
+
+        right_header = html.Div(right_header_divs, id="right-header")
+        right_main = page_divs["page-components"]
         right_side = html.Div([right_header, right_main], id="right-side")
 
-        return html.Div([left_side, right_side], id="page-container")
+        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
+        page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
+        return html.Div([page_header, page_main], id="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
@@ -199,7 +244,8 @@ class Dashboard(VizroBaseModel):
             className="page_error_container",
         )
 
-    def _infer_image(self, filename: str):
+    @staticmethod
+    def _infer_image(filename: str):
         valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
         assets_folder = Path(dash.get_app().config.assets_folder)
         if assets_folder.is_dir():

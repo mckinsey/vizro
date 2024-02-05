@@ -9,14 +9,21 @@
   line-height: var(--text-size-03);
 }
 
+/* TODO: Consolidate gaps between all the containers. Check latest Figma design. */
+/* Eventually remove the need for all the different containers afterwards. */
 .selector_container,
-.selector_dropdown_container {
+.selector_dropdown_container,
+.input-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-03);
+  gap: var(--spacing-05);
   width: 100%;
 }
 
 .selector_dropdown_container {
+  gap: var(--spacing-04);
+}
+
+.input-container {
   gap: var(--spacing-02);
 }

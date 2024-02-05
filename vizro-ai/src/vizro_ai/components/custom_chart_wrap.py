@@ -1,4 +1,5 @@
 """Custom Chart Component."""
+
 import logging
 from typing import Dict, Tuple
 
@@ -121,7 +122,5 @@ if __name__ == "__main__":
 
     test_custom_chart = GetCustomChart(llm=llm_to_use)
 
-    res = test_custom_chart.run(
-        chain_input=outcome_visual_tool,
-    )
+    res = test_custom_chart.run(chain_input=outcome_visual_tool)
     print(res)  # noqa: T201

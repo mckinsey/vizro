@@ -1,8 +1,7 @@
 """Unit tests for vizro.models.Checklist."""
-import json
 
-import plotly
 import pytest
+from asserts import assert_component_equal
 from dash import dcc, html
 
 try:
@@ -12,25 +11,6 @@ except ImportError:  # pragma: no cov
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
-
-
-@pytest.fixture()
-def expected_checklist():
-    return html.Div(
-        [
-            html.P("Title"),
-            dcc.Checklist(
-                id="checklist_id",
-                options=["ALL", "A", "B", "C"],
-                value=["ALL"],
-                className="selector_body_checklist",
-                persistence=True,
-                persistence_type="session",
-            ),
-        ],
-        className="selector_container",
-        id="checklist_id_outer",
-    )
 
 
 class TestChecklistInstantiation:
@@ -95,8 +75,7 @@ class TestChecklistInstantiation:
 
     def test_create_checklist_invalid_options_dict(self):
         with pytest.raises(
-            ValidationError,
-            match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`.",
+            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
         ):
             Checklist(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
@@ -148,9 +127,21 @@ class TestChecklistInstantiation:
 class TestChecklistBuild:
     """Tests model build method."""
 
-    def test_checklist_build(self, expected_checklist):
-        checklist = Checklist(options=["A", "B", "C"], id="checklist_id", title="Title").build()
-
-        result = json.loads(json.dumps(checklist, cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(expected_checklist, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+    def test_checklist_build(self):
+        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
+        expected_checklist = html.Div(
+            [
+                html.Label("Title", htmlFor="checklist_id"),
+                dcc.Checklist(
+                    id="checklist_id",
+                    options=["ALL", "A", "B", "C"],
+                    value=["ALL"],
+                    className="selector_body_checklist",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+            className="selector_container",
+            id="checklist_id_outer",
+        )
+        assert_component_equal(checklist, expected_checklist)
