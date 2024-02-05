@@ -30,6 +30,8 @@ class UserInput(VizroBaseModel):
     actions: List[Action] = []
 
     # Re-used validators
+    # TODO: Before making public, consider how actions should be triggered and what the default property should be
+    # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     _set_actions = _action_validator_factory("value")
 
     @_log_call
