@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.Container."""
+
 import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal

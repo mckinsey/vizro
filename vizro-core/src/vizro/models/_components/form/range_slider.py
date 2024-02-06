@@ -111,9 +111,9 @@ class RangeSlider(VizroBaseModel):
                                     size="24px",
                                     persistence=True,
                                     persistence_type="session",
-                                    className="slider_input_field_left"
-                                    if self.step
-                                    else "slider_input_field_no_space_left",
+                                    className=(
+                                        "slider_input_field_left" if self.step else "slider_input_field_no_space_left"
+                                    ),
                                 ),
                                 dcc.Input(
                                     id=f"{self.id}_end_value",
@@ -125,9 +125,9 @@ class RangeSlider(VizroBaseModel):
                                     value=init_value[1],
                                     persistence=True,
                                     persistence_type="session",
-                                    className="slider_input_field_right"
-                                    if self.step
-                                    else "slider_input_field_no_space_right",
+                                    className=(
+                                        "slider_input_field_right" if self.step else "slider_input_field_no_space_right"
+                                    ),
                                 ),
                                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                             ],

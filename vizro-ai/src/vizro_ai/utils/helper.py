@@ -1,4 +1,5 @@
 """Helper Functions For Vizro AI."""
+
 import traceback
 from typing import Callable, Dict, Optional
 

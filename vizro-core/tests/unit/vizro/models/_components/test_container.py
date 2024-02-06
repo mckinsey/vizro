@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.Container."""
+
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal

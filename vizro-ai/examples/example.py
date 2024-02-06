@@ -1,4 +1,5 @@
 """AI plot example."""
+
 import plotly.express as px
 from vizro_ai import VizroAI
 

@@ -80,13 +80,15 @@ def ctx_export_data(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filters": [
-                    CallbackTriggerDict(
-                        id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
-                    )
-                ]
-                if pop_filter
-                else [],
+                "filters": (
+                    [
+                        CallbackTriggerDict(
+                            id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
+                        )
+                    ]
+                    if pop_filter
+                    else []
+                ),
                 "filter_interaction": args_grouping_filter_interaction,
             }
         },

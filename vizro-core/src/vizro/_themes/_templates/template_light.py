@@ -1,4 +1,5 @@
 """Light themed plotly template."""
+
 from plotly import graph_objects as go
 from plotly.graph_objs.layout._template import Template
 

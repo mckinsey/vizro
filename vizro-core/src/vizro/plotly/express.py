@@ -3,6 +3,7 @@
 Makes them compatible with the dashboard when you do `import vizro.plotly.express as px`.
 Only plotly figures are wrapped; everything else is passed through unmodified, e.g. px.data.
 """
+
 from typing import Any
 
 import plotly.express as px

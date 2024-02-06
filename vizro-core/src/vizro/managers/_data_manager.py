@@ -1,4 +1,5 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+
 from typing import Callable, Dict, Union
 
 import pandas as pd

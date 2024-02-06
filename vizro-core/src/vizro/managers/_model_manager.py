@@ -1,4 +1,5 @@
 """The model manager handles access to all `VizroBaseModel` instances used in a Vizro app."""
+
 from __future__ import annotations
 
 import random

@@ -1,4 +1,5 @@
 """Colors for plotly templates."""
+
 COLORS = {
     "WHITE_12": "rgba(255,255,255,0.10)",
     "WHITE_30": "rgba(255,255,255,0.30)",

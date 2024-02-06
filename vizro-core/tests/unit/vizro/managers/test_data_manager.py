@@ -1,4 +1,5 @@
 """Unit tests for vizro.managers.data_manager."""
+
 import pandas as pd
 import pytest
 

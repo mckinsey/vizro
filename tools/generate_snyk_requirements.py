@@ -1,4 +1,5 @@
 """FUNCTION TO GENERATE REQUIREMENTS.TXT AND OPTIONAL_REQUIREMENTS.TXT FILES."""
+
 import argparse
 import sys
 from pathlib import Path

@@ -1,4 +1,5 @@
 """Chart Type Selection Component."""
+
 from typing import Dict, Tuple
 
 import pandas as pd
