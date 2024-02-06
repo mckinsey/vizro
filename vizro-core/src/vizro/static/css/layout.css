@@ -221,3 +221,34 @@ div.dashboard_container .custom-tooltip {
   height: 24px;
   width: 0 !important;
 }
+
+
+/* Smartphones (portrait or landscape) ----------- */
+@media (max-width: 600px) or (max-height: 600px){
+  .grid-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  #collapse-icon.material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  .collapse-button-tooltip {
+    top: 20px;
+    left: -8px;
+  }
+
+  #page-header {
+    zoom: 64%;
+  }
+
+  #left-side {
+    zoom: 64%;
+  }
+
+  #right-side {
+    zoom: 64%;
+  }
+}
