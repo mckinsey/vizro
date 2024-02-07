@@ -222,9 +222,8 @@ div.dashboard_container .custom-tooltip {
   width: 0 !important;
 }
 
-
 /* Smartphones (portrait or landscape) ----------- */
-@media (max-width: 600px) or (max-height: 600px){
+@media (max-width: 600px) or (max-height: 600px) {
   .grid-layout {
     display: flex;
     flex-direction: column;
