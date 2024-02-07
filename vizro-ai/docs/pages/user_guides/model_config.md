@@ -45,4 +45,32 @@ cost. In general, the `gpt-3.5-turbo` collection provides the most cost-effectiv
 which would be a good starting point for most users. `gpt-4` models are more powerful than `gpt-3` models, e.g. they allow for more tokens per request. You can refer to these models' [capabilities](https://platform.openai.com/docs/models/overview)
 and [pricing](https://openai.com/pricing) for more information.
 
+### Azure OpenAI models
+
+The setup below allows you to integrate Azure's OpenAI models with VizroAI, by simply updating the `llm_to_use` attribute in `VizroAI`.
+To set up Azure OpenAI with Langchain, you'll configure the AzureOpenAI instance by specifying your deployment name and model name. 
+Environment variables for API configuration, such as `OPENAI_API_BASE`, `AZURE_OPENAI_API_KEY`, and optionally `AZURE_OPENAI_LOCATION` for regional endpoints, must be set. 
+Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security. 
+For a detailed walkthrough, refer to the Langchain documentation directly.
+https://python.langchain.com/docs/integrations/llms/azure_openai
+
+Here is an example of how to set AzureOpenAI model in `vizro_ai`.
+```py
+# Import Azure OpenAI and VizroAI
+from langchain_openai import AzureOpenAI
+from vizro_ai import VizroAI
+
+# Create an instance of Azure OpenAI
+# Replace the deployment name with your own
+llm = AzureOpenAI(
+    deployment_name="td2",
+    model_name="gpt-3.5-turbo-instruct",
+)
+
+
+# update llm_to_use to Azure OpenAI
+vizro_ai = VizroAI()
+vizro_ai.llm_to_use = llm
+```
+
 We are working on supporting more models and more vendors. Please stay tuned!
