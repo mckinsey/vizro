@@ -68,7 +68,7 @@ llm = AzureOpenAI(
 )
 
 
-# update llm_to_use to Azure OpenAI
+# Update llm_to_use to Azure OpenAI
 vizro_ai = VizroAI()
 vizro_ai.llm_to_use = llm
 ```
