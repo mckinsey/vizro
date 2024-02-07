@@ -25,9 +25,8 @@ class VizroAI:
             model_name: Model name in string format.
             temperature: Temperature parameter for LLM.
         """
-        self.components_instances = {}
         self.llm_to_use = self.model_constructor.get_llm_model(model_name, temperature)
-        # TODO add pending URL link to docs
+        self.components_instances = {}
         logger.info(
             f"You have selected {model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
