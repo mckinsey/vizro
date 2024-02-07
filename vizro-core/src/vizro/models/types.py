@@ -333,7 +333,7 @@ OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictTy
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
+    Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider", "DateRangePicker"],
     Field(
         discriminator="type",
         description="Selectors to be used inside a control.",

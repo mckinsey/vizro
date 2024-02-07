@@ -15,22 +15,20 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, DateRangePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
 # TODO: Add temporal when relevant component is available
-SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown}
+SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "temporal": DateRangePicker}
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
-SELECTORS = {"numerical": (RangeSlider, Slider), "categorical": (Checklist, Dropdown, RadioItems)}
+SELECTORS = {
+    "numerical": (RangeSlider, Slider),
+    "categorical": (Checklist, Dropdown, RadioItems),
+    "temporal": (DateRangePicker),
+}
 
 
 def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
@@ -39,6 +37,18 @@ def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
+
+
+def _filter_date_between(series: pd.Series, value: List[str]) -> pd.Series:
+    series = pd.to_datetime(series)
+    start_date = value[0]
+    end_date = value[1]
+
+    return series.between(start_date, end_date, inclusive="both")
+
+
+def _filter_date_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    return series
 
 
 class Filter(VizroBaseModel):
@@ -63,7 +73,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: SelectorType = None
-    _column_type: Literal["numerical", "categorical"] = PrivateAttr()
+    _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
@@ -97,8 +107,10 @@ class Filter(VizroBaseModel):
 
     def _set_column_type(self):
         data_frame = data_manager._get_component_data(self.targets[0])
-        if isinstance(data_frame[self.column], pd.PeriodDtype) or is_numeric_dtype(data_frame[self.column]):
+        if is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
+        elif pd.api.types.is_datetime64_any_dtype(pd.to_datetime(data_frame[self.column], errors="coerce")):
+            self._column_type = "temporal"
         else:
             self._column_type = "categorical"
 
@@ -138,9 +150,19 @@ class Filter(VizroBaseModel):
 
             self.selector.options = sorted(options)
 
+    def _set_filter_function(self):
+        if isinstance(self.selector, RangeSlider):
+            filter_function = _filter_between
+        elif isinstance(self.selector, DateRangePicker):
+            filter_function = _filter_date_between
+        else:
+            filter_function = _filter_isin
+
+        return filter_function
+
     def _set_actions(self):
         if not self.selector.actions:
-            filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
+            filter_function = self._set_filter_function()
             self.selector.actions = [
                 Action(
                     function=_filter(

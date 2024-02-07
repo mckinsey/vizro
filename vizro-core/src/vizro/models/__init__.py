@@ -2,7 +2,7 @@
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
 from ._components import Card, Container, Graph, Table
-from ._components.form import Button, Checklist, Dropdown, RadioItems, RangeSlider, Slider
+from ._components.form import Button, Checklist, Dropdown, RadioItems, RangeSlider, Slider, DateRangePicker
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
@@ -22,6 +22,7 @@ Page.update_forward_refs(
     Graph=Graph,
     Parameter=Parameter,
     Table=Table,
+    DateRangePicker=DateRangePicker,
 )
 Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLink)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
@@ -37,6 +38,7 @@ __all__ = [
     "Container",
     "Checklist",
     "Dashboard",
+    "DateRangePicker",
     "Dropdown",
     "Filter",
     "Graph",
