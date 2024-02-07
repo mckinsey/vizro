@@ -1,5 +1,13 @@
 name: Push to main
 
+on:
+  push:
+    branches: 
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
 jobs:
   version-bump:
     runs-on: ubuntu-latest
