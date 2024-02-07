@@ -4,7 +4,6 @@ from typing import Any, Dict, Union
 import pandas as pd
 
 from vizro_ai.chains import ModelConstructor
-from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
@@ -26,24 +25,17 @@ class VizroAI:
             model_name: Model name in string format.
             temperature: Temperature parameter for LLM.
         """
-        self.model_name = model_name
-        self.temperature = temperature
         self.components_instances = {}
-        self._llm_to_use = None
+        self.llm_to_use = self.model_constructor.get_llm_model(model_name, temperature)
         # TODO add pending URL link to docs
         logger.info(
-            f"You have selected {self.model_name},"
+            f"You have selected {model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
             "https://vizro-ai.readthedocs.io/en/latest/pages/explanation/disclaimer/"
         )
         self._set_task_pipeline_llm()
-
-    @property
-    def llm_to_use(self) -> LLM_MODELS:
-        _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
-        return _llm_to_use
 
     def _set_task_pipeline_llm(self) -> None:
         self.pipeline_manager.llm = self.llm_to_use
