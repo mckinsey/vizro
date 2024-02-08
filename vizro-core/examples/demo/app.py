@@ -174,7 +174,8 @@ def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None)
     )
 
     fig.update_layout(
-        title="Relationship over time", legend=dict(orientation="v", yanchor="bottom", y=0, xanchor="right", x=1)
+        title="Relationship over time",
+        legend={"orientation": "v", "yanchor": "bottom", "y": 0, "xanchor": "right", "x": 1},
     )
     fig.update_yaxes(automargin=True)
     fig.update_xaxes(automargin=True)
