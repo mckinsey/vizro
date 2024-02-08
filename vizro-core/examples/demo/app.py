@@ -44,10 +44,10 @@ def variable_map(data_frame: pd.DataFrame = None, color: Optional[str] = None):
         },
         title="Global development over time",
     )
-
     fig.update_layout(showlegend=False)
     fig.update_yaxes(automargin=True)
     fig.update_xaxes(automargin=True)
+    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
     return fig
 
 
@@ -162,6 +162,41 @@ def scatter_relation_2007(x: str, y: str, size: str, data_frame: pd.DataFrame = 
             "lifeExp": "Life expectancy",
             "continent": "Continent",
         },
+        color_discrete_map={
+            "Africa": "#00b4ff",
+            "Americas": "#ff9222",
+            "Asia": "#3949ab",
+            "Europe": "#ff5267",
+            "Oceania": "#08bdba",
+        },
+    )
+
+    fig.update_layout(showlegend=False)
+    fig.update_yaxes(automargin=True)
+    fig.update_xaxes(automargin=True)
+    return fig
+
+
+@capture("graph")
+def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None):
+    """Custom scatter figure that needs post update calls."""
+    fig = px.scatter(
+        data_frame,
+        x=x,
+        y=y,
+        animation_frame="year",
+        animation_group="country",
+        size=size,
+        color="continent",
+        hover_name="country",
+        facet_col="continent",
+        labels={
+            "gdpPercap": "GDP per capita",
+            "pop": "Population",
+            "lifeExp": "Life expectancy",
+            "continent": "Continent",
+        },
+        range_y=[25, 90],
         color_discrete_map={
             "Africa": "#00b4ff",
             "Americas": "#ff9222",
@@ -331,31 +366,7 @@ def create_relation_analysis():
             ),
             vm.Graph(
                 id="scatter_relation",
-                figure=px.scatter(
-                    gapminder,
-                    x="gdpPercap",
-                    y="lifeExp",
-                    animation_frame="year",
-                    animation_group="country",
-                    size="pop",
-                    color="continent",
-                    hover_name="country",
-                    facet_col="continent",
-                    labels={
-                        "gdpPercap": "GDP per capita",
-                        "pop": "Population",
-                        "lifeExp": "Life expectancy",
-                        "continent": "Continent",
-                    },
-                    range_y=[25, 90],
-                    color_discrete_map={
-                        "Africa": "#00b4ff",
-                        "Americas": "#ff9222",
-                        "Asia": "#3949ab",
-                        "Europe": "#ff5267",
-                        "Oceania": "#08bdba",
-                    },
-                ),
+                figure=scatter_relation(data_frame=gapminder, x="gdpPercap", y="lifeExp", size="pop"),
             ),
         ],
         controls=[
