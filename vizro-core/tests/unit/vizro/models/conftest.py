@@ -1,5 +1,4 @@
 import pytest
-
 import vizro.models as vm
 from vizro.models.types import capture
 

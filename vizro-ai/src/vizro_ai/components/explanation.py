@@ -37,8 +37,9 @@ code_explanation_prompt = (
 class GetCodeExplanation(VizroAiComponentBase):
     """Get Explanation of a code snippet.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt code explanation.
+
     """
 
     prompt: str = code_explanation_prompt

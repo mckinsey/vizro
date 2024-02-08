@@ -48,8 +48,9 @@ class CapturedCallable:
 
         Partially binds *args and **kwargs to the function call.
 
-        Raises:
+        Raises
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
+
         """
         # It is difficult to get positional-only and variadic positional arguments working at the same time as
         # variadic keyword arguments. Ideally we would do the __call__ as
@@ -218,7 +219,7 @@ class capture:
     Typically, it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
     `"action"`.
 
-    Examples:
+    Examples
         >>> @capture("graph")
         >>> def graph_function():
         >>>     ...
@@ -235,6 +236,7 @@ class capture:
     [custom tables](../user_guides/table#custom-table).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user_guides/actions/#custom-actions).
+
     """
 
     def __init__(self, mode: Literal["graph", "action", "table"]):

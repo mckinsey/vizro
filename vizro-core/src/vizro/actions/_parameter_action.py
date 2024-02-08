@@ -20,6 +20,7 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+
     """
     target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 
