@@ -27,7 +27,7 @@ jobs:
           hatch version patch,dev
           hatch run changelog:add
           hatch run schema
-          git config user.email "145135826+vizro-svc@users.noreply.github.com"
+          git config user.email "35569332+l0uden@users.noreply.github.com"
           git config user.name "Vizro Team"
           git add -A
           git commit -m "version bump after vizro"
