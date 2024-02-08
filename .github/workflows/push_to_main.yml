@@ -29,7 +29,7 @@ jobs:
           cd vizro-core
           hatch version patch,dev
           git config --global user.email "35569332+l0uden@users.noreply.github.com"
-          git config --global user.name "Vizro Team"
+          git config --global user.name "l0uden"
           git config --global init.defaultBranch main
           git init -b main
           git remote add origin https://github.com/l0uden/vizro.git
