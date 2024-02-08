@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add Azure OpenAI LLM model integration, e.g. Enable feature XXX ([#301](https://github.com/mckinsey/vizro/pull/301))
+- Add Azure OpenAI LLM model integration. ([#301](https://github.com/mckinsey/vizro/pull/301))
 
 <!--
 ### Changed
