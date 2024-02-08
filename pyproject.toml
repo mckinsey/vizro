@@ -64,8 +64,7 @@ target-version = "py38"
 # see: https://beta.ruff.rs/docs/rules/
 ignore = [
   "D104",  # undocumented-public-package
-  "D401",  # first-line should be in imperative mood
-  "D404"  # first-word of the first-line should not be "This"
+  "D401"  # first-line should be in imperative mood
 ]
 ignore-init-module-imports = true
 select = [

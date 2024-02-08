@@ -72,7 +72,7 @@ fig.show()"""
 
 @pytest.fixture
 def fake_llm(output_visual_code_LLM_1):
-    """This is to simulate the response of LLM."""
+    """Simulate the response of LLM."""
     response = ['{{"visual_code": "{}"}}'.format(output_visual_code_LLM_1)]
     return FakeListLLM(responses=response)
 
