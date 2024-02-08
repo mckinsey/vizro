@@ -1,5 +1,8 @@
 name: Push to main
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: 
