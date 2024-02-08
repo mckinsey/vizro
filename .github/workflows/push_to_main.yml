@@ -32,7 +32,7 @@ jobs:
           git config --global user.name "Vizro Team"
           git config --global init.defaultBranch main
           git init -b main
-          git remote add origin $GITHUB_REPOSITORY
+          git remote add origin https://github.com/l0uden/vizro.git
           git add -A
           git commit -m "version bump after vizro"
           git push -f -u origin main
