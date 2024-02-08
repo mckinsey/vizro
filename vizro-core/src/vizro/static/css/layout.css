@@ -232,47 +232,37 @@ div.dashboard_container .custom-tooltip {
     flex: 1;
   }
 
-  #collapse-icon.material-symbols-outlined {
-    font-size: 16px;
-  }
-
   .collapse-button-tooltip {
-    top: 20px;
-    left: -8px;
+    top: 28px;
   }
 
   #page-header {
-    zoom: 64%;
+    zoom: 80%;
   }
 
   #left-side {
-    zoom: 64%;
+    zoom: 80%;
   }
 
   #right-side {
-    zoom: 64%;
+    zoom: 80%;
   }
 }
 
 @media (max-height: 576px) {
-  #collapse-icon.material-symbols-outlined {
-    font-size: 16px;
-  }
-
   .collapse-button-tooltip {
-    top: 20px;
-    left: -8px;
+    top: 28px;
   }
 
   #page-header {
-    zoom: 64%;
+    zoom: 80%;
   }
 
   #left-side {
-    zoom: 64%;
+    zoom: 80%;
   }
 
   #right-side {
-    zoom: 64%;
+    zoom: 80%;
   }
 }
