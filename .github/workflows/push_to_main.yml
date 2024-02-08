@@ -30,3 +30,4 @@ jobs:
           git add -A
           git commit -m "version bump after vizro"
           git push -f -u origin main
+          
