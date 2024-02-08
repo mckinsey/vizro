@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -30,7 +30,6 @@ jobs:
           hatch version patch,dev
           git config --global user.email "35569332+l0uden@users.noreply.github.com"
           git config --global user.name "Vizro Team"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git add -A
           git commit -m "version bump after vizro"
           git push -f -u origin main
