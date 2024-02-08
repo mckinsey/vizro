@@ -17,10 +17,12 @@ class UserInput(VizroBaseModel):
     """Component provided to `Form` to allow single-line user input.
 
     Args:
+    ----
         type (Literal["user_input"]): Defaults to `"user_input"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (Optional[List[Action]]): Defaults to `[]`.
+
     """
 
     type: Literal["user_input"] = "user_input"

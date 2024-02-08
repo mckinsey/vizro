@@ -103,10 +103,13 @@ class FunctionCallChain(VizroBaseChain, ABC):
         """Execute chain.
 
         Args:
+        ----
             input_str: user question as input string.
 
         Returns:
+        -------
             args as a dictionary
+
         """
         raw_ans = self.chain.generate([{"input": input_str}])
         args = self._custom_parse(raw_ans.generations[0])

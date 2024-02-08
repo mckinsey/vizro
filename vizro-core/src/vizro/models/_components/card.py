@@ -16,10 +16,12 @@ class Card(VizroBaseModel):
     """Creates a card utilizing `dcc.Markdown` as title and text component.
 
     Args:
+    ----
         type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
+
     """
 
     type: Literal["card"] = "card"

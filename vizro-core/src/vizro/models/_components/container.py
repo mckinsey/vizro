@@ -22,11 +22,13 @@ class Container(VizroBaseModel):
     """Container to group together a set of components on a page.
 
     Args:
+    ----
         type (Literal["container"]): Defaults to `"container"`.
         components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.
+
     """
 
     type: Literal["container"] = "container"

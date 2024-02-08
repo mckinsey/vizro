@@ -12,8 +12,10 @@ class ActionLoop:
     def _create_app_callbacks(cls) -> html.Div:
         """Builds callbacks for the action loop and for each Action in the Dashboard and returns their components.
 
-        Returns:
+        Returns
+        -------
             List of required components for the action loop and for each `Action` in the `Dashboard`.
+
         """
         return html.Div([cls._build_action_loop(), cls._build_actions_models()], id="app_components_div", hidden=True)
 
@@ -21,8 +23,10 @@ class ActionLoop:
     def _build_action_loop():
         """Builds callbacks for the action loop and returns required components for the action loop mechanism to work.
 
-        Returns:
+        Returns
+        -------
             List of required components for the action loop e.g. List[dcc.Store, html.Div].
+
         """
         _build_action_loop_callbacks()
         return _get_action_loop_components()
@@ -31,8 +35,10 @@ class ActionLoop:
     def _build_actions_models():
         """Builds a callback for each `Action` model and returns required components for these callbacks.
 
-        Returns:
+        Returns
+        -------
             List of required components for each `Action` in the `Dashboard` e.g. List[dcc.Download]
+
         """
         actions = _get_actions_on_registered_pages()
         return html.Div([action.build() for action in actions], id="app_action_models_components_div", hidden=True)

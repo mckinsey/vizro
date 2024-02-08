@@ -6,9 +6,8 @@ try:
     from pydantic.v1 import Field, ValidationError
 except ImportError:  # pragma: no cov
     from pydantic import Field, ValidationError
-from typing_extensions import Annotated
-
 import vizro.models as vm
+from typing_extensions import Annotated
 
 
 class ChildX(vm.VizroBaseModel):

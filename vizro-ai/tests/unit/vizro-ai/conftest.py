@@ -1,7 +1,6 @@
 """Fixtures to be shared across several tests."""
 
 import pytest
-
 import vizro.plotly.express as px
 
 

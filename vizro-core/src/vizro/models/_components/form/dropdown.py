@@ -18,6 +18,7 @@ class Dropdown(VizroBaseModel):
     """Categorical multi-selector `Dropdown` to be provided to [`Filter`][vizro.models.Filter].
 
     Args:
+    ----
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[Union[SingleValueType, MultiValueType]]): See
@@ -26,6 +27,7 @@ class Dropdown(VizroBaseModel):
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["dropdown"] = "dropdown"

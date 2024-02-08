@@ -16,11 +16,13 @@ class Alert(VizroBaseModel):
     """Component `Alert` to provide user feedback.
 
     Args:
+    ----
         type (Literal["alert"]): Defaults to `"alert"`.
         text (str): Text to be displayed in the alert.
         is_open (bool): Flag indicating whether alert should be open by default. Defaults to `True`.
         duration (Optional[int]): Duration in milliseconds for the alert to appear. Defaults to `None`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["alert"] = "alert"
