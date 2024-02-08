@@ -30,4 +30,4 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/$GITHUB_REPOSITORY
           git add -A
           git commit -m "version bump after vizro"
-          git push
+          git push -f origin main
