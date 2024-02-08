@@ -29,6 +29,7 @@ class Table(VizroBaseModel):
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["table"] = "table"

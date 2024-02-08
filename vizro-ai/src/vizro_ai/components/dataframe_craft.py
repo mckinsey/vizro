@@ -44,8 +44,9 @@ code for that visualization. 5.Do not include any plotting code.
 class GetDataFrameCraft(VizroAiComponentBase):
     """Get dataframe code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt dataframe wrangling chain.
+
     """
 
     prompt: str = dataframe_prompt

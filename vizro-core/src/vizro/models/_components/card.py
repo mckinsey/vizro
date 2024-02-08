@@ -20,6 +20,7 @@ class Card(VizroBaseModel):
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
+
     """
 
     type: Literal["card"] = "card"

@@ -64,6 +64,7 @@ class Dashboard(VizroBaseModel):
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+
     """
 
     pages: List[Page]

@@ -24,8 +24,9 @@ whitelist_folders = ["/venv"]  # starting from project root dir
 def check_for_data_files():
     """Recursively finds all data files in non-whitelisted folders.
 
-    Raises:
+    Raises
         AssertionError if data files are present in non-whitelisted folders.
+
     """
     project_dir = str(Path(__file__).parent.parent)
     whitelist_dir = {f"{project_dir}{dir}" for dir in whitelist_folders}

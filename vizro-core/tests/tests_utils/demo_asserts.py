@@ -4,7 +4,6 @@ from typing import List
 
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
-
 from vizro.models import VizroBaseModel
 
 
