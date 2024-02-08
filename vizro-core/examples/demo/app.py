@@ -146,38 +146,6 @@ def bar_relation_2007(x: str, y: str, data_frame: pd.DataFrame = None):
 
 
 @capture("graph")
-def scatter_relation_2007(x: str, y: str, size: str, data_frame: pd.DataFrame = None):
-    """Custom scatter figure that needs post update calls."""
-    fig = px.scatter(
-        data_frame.query("year == 2007"),
-        x=x,
-        y=y,
-        size=size,
-        color="continent",
-        hover_name="country",
-        size_max=60,
-        labels={
-            "gdpPercap": "GDP per capita",
-            "pop": "Population",
-            "lifeExp": "Life expectancy",
-            "continent": "Continent",
-        },
-        color_discrete_map={
-            "Africa": "#00b4ff",
-            "Americas": "#ff9222",
-            "Asia": "#3949ab",
-            "Europe": "#ff5267",
-            "Oceania": "#08bdba",
-        },
-    )
-
-    fig.update_layout(showlegend=False)
-    fig.update_yaxes(automargin=True)
-    fig.update_xaxes(automargin=True)
-    return fig
-
-
-@capture("graph")
 def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None):
     """Custom scatter figure that needs post update calls."""
     fig = px.scatter(
@@ -187,9 +155,9 @@ def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None)
         animation_frame="year",
         animation_group="country",
         size=size,
+        size_max=60,
         color="continent",
         hover_name="country",
-        facet_col="continent",
         labels={
             "gdpPercap": "GDP per capita",
             "pop": "Population",
@@ -206,7 +174,9 @@ def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None)
         },
     )
 
-    fig.update_layout(showlegend=False)
+    fig.update_layout(
+        title="Relationship over time", legend=dict(orientation="v", yanchor="bottom", y=0, xanchor="right", x=1)
+    )
     fig.update_yaxes(automargin=True)
     fig.update_xaxes(automargin=True)
     return fig
@@ -335,7 +305,7 @@ def create_relation_analysis():
         title="Relationship Analysis",
         description="Investigating the interconnection between population, GDP per capita and life expectancy",
         layout=vm.Layout(
-            grid=[[0, 0, 0, 0, 1]] + [[2, 2, 3, 3, 3]] * 4 + [[4, 4, 4, 4, 4]] * 5,
+            grid=[[0, 0, 0, 0, 0]] + [[1, 1, 1, 1, 1]] * 4 + [[2, 2, 2, 2, 2]] * 5,
             row_min_height="100px",
             row_gap="24px",
         ),
@@ -349,20 +319,9 @@ def create_relation_analysis():
                     as healthcare quality and social policies also play significant roles.
             """
             ),
-            vm.Card(
-                text="""
-                        #### Last updated
-                        November, 2023
-                    """
-            ),
             vm.Graph(
                 id="bar_relation_2007",
                 figure=bar_relation_2007(data_frame=gapminder, x="continent", y="lifeExp"),
-                actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
-            ),
-            vm.Graph(
-                id="scatter_relation_2007",
-                figure=scatter_relation_2007(data_frame=gapminder, x="gdpPercap", y="lifeExp", size="pop"),
             ),
             vm.Graph(
                 id="scatter_relation",
@@ -371,19 +330,19 @@ def create_relation_analysis():
         ],
         controls=[
             vm.Parameter(
-                targets=["scatter_relation_2007.x", "scatter_relation.x"],
+                targets=["scatter_relation.x"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation_2007.y", "scatter_relation.y", "bar_relation_2007.y"],
+                targets=["scatter_relation.y", "bar_relation_2007.y"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation_2007.size", "scatter_relation.size"],
+                targets=["scatter_relation.size"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
                 ),
