@@ -36,10 +36,8 @@ visual_code_prompt = (
 class GetVisualCode(VizroAiComponentBase):
     """Get Visual code.
 
-    Attributes
-    ----------
+    Attributes:
         prompt (str): Prompt visual code.
-
     """
 
     prompt: str = visual_code_prompt
@@ -48,7 +46,6 @@ class GetVisualCode(VizroAiComponentBase):
         """Initialization of Chart Selection components.
 
         Args:
-        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -77,13 +74,11 @@ class GetVisualCode(VizroAiComponentBase):
         """Run chain to get visual code.
 
         Args:
-        ----
             chain_input: User input or intermediate question if needed.
             df_code: Code snippet of dataframe.
             chart_types: Chart types.
 
         Returns:
-        -------
             Visual code snippet.
 
         """

@@ -37,10 +37,8 @@ code_explanation_prompt = (
 class GetCodeExplanation(VizroAiComponentBase):
     """Get Explanation of a code snippet.
 
-    Attributes
-    ----------
+    Attributes:
         prompt (str): Prompt code explanation.
-
     """
 
     prompt: str = code_explanation_prompt
@@ -49,7 +47,6 @@ class GetCodeExplanation(VizroAiComponentBase):
         """Initialization of Code Explanation components.
 
         Args:
-        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -76,12 +73,10 @@ class GetCodeExplanation(VizroAiComponentBase):
         """Run chain to get code explanation.
 
         Args:
-        ----
             chain_input: User question or processed intermediate question if needed.
             code_snippet: The code snippet to be analyzed.
 
         Returns:
-        -------
             Code explanation.
 
         """

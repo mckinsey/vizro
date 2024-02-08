@@ -21,10 +21,8 @@ class Tabs(VizroBaseModel):
     """Tabs to group together a set of containers on a page.
 
     Args:
-    ----
         type (Literal["tabs"]): Defaults to `"tabs"`.
         tabs (List[Container]): See [`Container`][vizro.models.Container].
-
     """
 
     type: Literal["tabs"] = "tabs"

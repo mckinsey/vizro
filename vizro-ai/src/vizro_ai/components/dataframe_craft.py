@@ -44,10 +44,8 @@ code for that visualization. 5.Do not include any plotting code.
 class GetDataFrameCraft(VizroAiComponentBase):
     """Get dataframe code.
 
-    Attributes
-    ----------
+    Attributes:
         prompt (str): Prompt dataframe wrangling chain.
-
     """
 
     prompt: str = dataframe_prompt
@@ -56,7 +54,6 @@ class GetDataFrameCraft(VizroAiComponentBase):
         """Initialization of dataframe crafting components.
 
         Args:
-        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -82,12 +79,10 @@ class GetDataFrameCraft(VizroAiComponentBase):
         """Run chain to get dataframe code.
 
         Args:
-        ----
             chain_input: User question or processed intermediate question if needed.
             df: The dataframe to be analyzed
 
         Returns:
-        -------
             Dataframe code snippet
 
         """

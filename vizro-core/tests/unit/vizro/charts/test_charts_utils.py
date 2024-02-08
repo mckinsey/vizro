@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import plotly.graph_objects as go
 import pytest
+
 from vizro.models.types import capture
 
 

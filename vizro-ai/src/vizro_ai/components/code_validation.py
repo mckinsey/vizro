@@ -37,10 +37,8 @@ debugging_prompt = (
 class GetDebugger(VizroAiComponentBase):
     """Get Visual code.
 
-    Attributes
-    ----------
+    Attributes:
         prompt (str): Prompt visual code.
-
     """
 
     prompt: str = debugging_prompt
@@ -49,7 +47,6 @@ class GetDebugger(VizroAiComponentBase):
         """Initialization of Chart Selection components.
 
         Args:
-        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -77,12 +74,10 @@ class GetDebugger(VizroAiComponentBase):
         """Run chain to get visual code.
 
         Args:
-        ----
             chain_input: Error message as input here.
             code_snippet: Code snippet.
 
         Returns:
-        -------
             Visual code snippet.
 
         """

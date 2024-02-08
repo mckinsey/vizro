@@ -4,9 +4,10 @@ import json
 
 import plotly
 import pytest
+from dash import dcc, html
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components

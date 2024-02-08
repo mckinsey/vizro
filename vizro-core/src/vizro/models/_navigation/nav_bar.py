@@ -20,11 +20,9 @@ class NavBar(VizroBaseModel):
     """Navigation bar to be used as a nav_selector for `Navigation`.
 
     Args:
-    ----
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
         pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
         items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
-
     """
 
     type: Literal["nav_bar"] = "nav_bar"

@@ -5,9 +5,10 @@ from typing import List, Literal, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
+from dash import dash_table, html
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture

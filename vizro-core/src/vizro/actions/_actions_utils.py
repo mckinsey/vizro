@@ -23,13 +23,11 @@ class CallbackTriggerDict(TypedDict):
     """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
     Args:
-    ----
         id: The component ID. If it`s a pattern matching ID, it will be a dict.
         property: The component property used in the callback.
         value: The value of the component property at the time the callback was fired.
         str_id: For pattern matching IDs, it's the stringified dict ID without white spaces.
         triggered: A boolean indicating whether this input triggered the callback.
-
     """
 
     id: ModelID

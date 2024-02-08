@@ -1,4 +1,5 @@
 import pytest
+
 from vizro import Vizro
 
 # Allow our custom assert functions in tests_utils/asserts.py to do introspection nicely still.

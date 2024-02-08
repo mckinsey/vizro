@@ -26,11 +26,9 @@ class Graph(VizroBaseModel):
     """Wrapper for `dcc.Graph` to visualize charts in dashboard.
 
     Args:
-    ----
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
     """
 
     type: Literal["graph"] = "graph"

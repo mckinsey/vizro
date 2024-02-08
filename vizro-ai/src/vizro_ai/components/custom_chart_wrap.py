@@ -41,10 +41,8 @@ class GetCustomChart(VizroAiComponentBase):
     # TODO Explore if it is possible to create CustomChart without LLM
     """Get custom chart code.
 
-    Attributes
-    ----------
+    Attributes:
         prompt (str): Prompt custom chart code.
-
     """
 
     prompt: str = custom_chart_prompt
@@ -53,7 +51,6 @@ class GetCustomChart(VizroAiComponentBase):
         """Initialization of custom chart components.
 
         Args:
-        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -82,11 +79,9 @@ class GetCustomChart(VizroAiComponentBase):
         """Run chain to get custom chart code.
 
         Args:
-        ----
             chain_input: Chain input, undecorated visual code.
 
         Returns:
-        -------
             Custom chart snippet.
 
         """

@@ -2,8 +2,9 @@
 
 from pathlib import Path
 
-import vizro.plotly.express as px
 import yaml
+
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard

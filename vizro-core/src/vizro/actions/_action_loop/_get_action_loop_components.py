@@ -11,10 +11,8 @@ from vizro.actions._action_loop._action_loop_utils import (
 def _get_action_loop_components() -> html.Div:
     """Gets all required components for the action loop.
 
-    Returns
-    -------
+    Returns:
         List of dcc or html components.
-
     """
     actions_chains = _get_actions_chains_on_registered_pages()
     actions = _get_actions_on_registered_pages()
