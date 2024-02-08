@@ -21,6 +21,7 @@ class SchemaManager:
 
         Args:
             obj (Union[Callable, BaseModel]): function or pydantic model to register
+
         """
         if inspect.isfunction(obj):
             annotations = obj.__annotations__

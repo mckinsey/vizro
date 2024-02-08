@@ -20,6 +20,7 @@ def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[str,
 
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
+
     """
     return _get_modified_page_figures(
         targets=targets,

@@ -1,5 +1,4 @@
 import pytest
-
 from vizro.tables.dash_table import _set_defaults_nested
 
 

@@ -21,6 +21,7 @@ class Vizro:
         Args:
             kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
+
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
         self.dash.config.external_stylesheets.append(
@@ -60,6 +61,7 @@ class Vizro:
 
         Returns:
             Vizro: App object
+
         """
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
         if dashboard.title:
@@ -78,6 +80,7 @@ class Vizro:
         Args:
             args: Passed through to `dash.run`.
             kwargs: Passed through to `dash.run`.
+
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True

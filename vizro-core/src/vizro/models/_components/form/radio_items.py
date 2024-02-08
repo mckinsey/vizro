@@ -24,6 +24,7 @@ class RadioItems(VizroBaseModel):
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["radio_items"] = "radio_items"

@@ -26,6 +26,7 @@ class Dropdown(VizroBaseModel):
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["dropdown"] = "dropdown"

@@ -8,7 +8,7 @@ from vizro_ai.chains._llm_models import LLM_MODELS
 class VizroAiComponentBase(ABC):
     """Abstract Base Class that represents a blueprint for Vizro-AI components.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt for specific components.
 
     Public Methods:
@@ -17,6 +17,7 @@ class VizroAiComponentBase(ABC):
     Private Methods:
         _pre_process: A helper method for LLMChain input vars preprocess.
         _post_process: Another helper method for LLMChain output postprocess.
+
     """
 
     prompt: str = "default prompt place holder"
@@ -26,6 +27,7 @@ class VizroAiComponentBase(ABC):
 
         Args:
             llm: LLM model wrapped with Langchain wrapper.
+
         """
         self.llm = llm
 

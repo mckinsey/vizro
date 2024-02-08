@@ -41,8 +41,9 @@ class GetCustomChart(VizroAiComponentBase):
     # TODO Explore if it is possible to create CustomChart without LLM
     """Get custom chart code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt custom chart code.
+
     """
 
     prompt: str = custom_chart_prompt
