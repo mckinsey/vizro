@@ -27,7 +27,7 @@ jobs:
           hatch version patch,dev
           git config user.email "35569332+l0uden@users.noreply.github.com"
           git config user.name "Vizro Team"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/$GITHUB_REPOSITORY
           git add -A
           git commit -m "version bump after vizro"
           git push
