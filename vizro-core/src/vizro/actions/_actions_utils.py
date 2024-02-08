@@ -28,6 +28,7 @@ class CallbackTriggerDict(TypedDict):
         value: The value of the component property at the time the callback was fired.
         str_id: For pattern matching IDs, it's the stringified dict ID without white spaces.
         triggered: A boolean indicating whether this input triggered the callback.
+
     """
 
     id: ModelID

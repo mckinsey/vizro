@@ -36,7 +36,7 @@ class VizroBaseChain(ABC):
 class FunctionCallChain(VizroBaseChain, ABC):
     """LLM Chain with Function Calling."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         llm: LLM_MODELS,
         raw_prompt: str,
@@ -107,6 +107,7 @@ class FunctionCallChain(VizroBaseChain, ABC):
 
         Returns:
             args as a dictionary
+
         """
         raw_ans = self.chain.generate([{"input": input_str}])
         args = self._custom_parse(raw_ans.generations[0])

@@ -29,6 +29,7 @@ class Action(VizroBaseModel):
             Defaults to `[]`.
         outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
             Defaults to `[]`.
+
     """
 
     function: CapturedCallable = Field(..., import_path=vizro.actions)
@@ -147,8 +148,9 @@ class Action(VizroBaseModel):
     def build(self):
         """Builds a callback for the Action model and returns required components for the callback.
 
-        Returns:
+        Returns
             List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
+
         """
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {

@@ -5,7 +5,6 @@ import json
 import dash
 import plotly
 import pytest
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
