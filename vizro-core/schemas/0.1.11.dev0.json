@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.",
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n----\n    pages (List[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.",
   "type": "object",
   "properties": {
     "id": {
@@ -38,7 +38,7 @@
   "definitions": {
     "Action": {
       "title": "Action",
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.\n        Defaults to `[]`.\n    outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.\n        Defaults to `[]`.",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n----\n    function (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.\n        Defaults to `[]`.\n    outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.\n        Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -74,7 +74,7 @@
     },
     "Button": {
       "title": "Button",
-      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n----\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -108,7 +108,7 @@
     },
     "Card": {
       "title": "Card",
-      "description": "Creates a card utilizing `dcc.Markdown` as title and text component.\n\nArgs:\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to `\"\"`.",
+      "description": "Creates a card utilizing `dcc.Markdown` as title and text component.\n\nArgs:\n----\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -140,7 +140,7 @@
     },
     "Graph": {
       "title": "Graph",
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n----\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -168,7 +168,7 @@
     },
     "Table": {
       "title": "Table",
-      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n----\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -202,7 +202,7 @@
     },
     "Tabs": {
       "title": "Tabs",
-      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (List[Container]): See [`Container`][vizro.models.Container].",
+      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n----\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (List[Container]): See [`Container`][vizro.models.Container].",
       "type": "object",
       "properties": {
         "id": {
@@ -230,7 +230,7 @@
     },
     "Layout": {
       "title": "Layout",
-      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    grid (List[List[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Gap between rows in px. Defaults to `\"12px\"`.\n    col_gap (str): Gap between columns in px. Defaults to `\"12px\"`.\n    row_min_height (str): Minimum row height in px. Defaults to `\"0px\"`.\n    col_min_width (str): Minimum column width in px. Defaults to `\"0px\"`.",
+      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n----\n    grid (List[List[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Gap between rows in px. Defaults to `\"12px\"`.\n    col_gap (str): Gap between columns in px. Defaults to `\"12px\"`.\n    row_min_height (str): Minimum row height in px. Defaults to `\"0px\"`.\n    col_min_width (str): Minimum column width in px. Defaults to `\"0px\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -284,7 +284,7 @@
     },
     "Container": {
       "title": "Container",
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n----\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Layout): Layout to place components in. Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -376,7 +376,7 @@
     },
     "Checklist": {
       "title": "Checklist",
-      "description": "Categorical multi-selector `Checklist` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Categorical multi-selector `Checklist` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n----\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -463,7 +463,7 @@
     },
     "Dropdown": {
       "title": "Dropdown",
-      "description": "Categorical multi-selector `Dropdown` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Categorical multi-selector `Dropdown` to be provided to [`Filter`][vizro.models.Filter].\n\nArgs:\n----\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -565,7 +565,7 @@
     },
     "RadioItems": {
       "title": "RadioItems",
-      "description": "Categorical single-selector `RadioItems` to be provided to `Filter`.\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Categorical single-selector `RadioItems` to be provided to `Filter`.\n\nArgs:\n----\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -643,7 +643,7 @@
     },
     "RangeSlider": {
       "title": "RangeSlider",
-      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric multi-selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).\n\nArgs:\n----\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -718,7 +718,7 @@
     },
     "Slider": {
       "title": "Slider",
-      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Numeric single-selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Based on the underlying\n[`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).\n\nArgs:\n----\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -788,7 +788,7 @@
     },
     "Filter": {
       "title": "Filter",
-      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n--------\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n----\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
@@ -854,7 +854,7 @@
     },
     "Parameter": {
       "title": "Parameter",
-      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.",
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n--------\n    >>> print(repr(Parameter(\n    >>>    targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))))\n\nArgs:\n----\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.",
       "type": "object",
       "properties": {
         "id": {
@@ -914,7 +914,7 @@
     },
     "ActionsChain": {
       "title": "ActionsChain",
-      "description": "All models that are registered to the model manager should inherit from this class.\n\nArgs:\n    id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `\"\"`.\n        When no ID is chosen, ID will be automatically generated.",
+      "description": "All models that are registered to the model manager should inherit from this class.\n\nArgs:\n----\n    id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `\"\"`.\n        When no ID is chosen, ID will be automatically generated.",
       "type": "object",
       "properties": {
         "id": {
@@ -953,7 +953,7 @@
     },
     "Page": {
       "title": "Page",
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    description (str): Description for meta tags.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n----\n    components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    description (str): Description for meta tags.\n    layout (Layout): Layout to place components in. Defaults to `None`.\n    controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1055,7 +1055,7 @@
     },
     "Accordion": {
       "title": "Accordion",
-      "description": "Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].\n\nArgs:\n    type (Literal[\"accordion\"]): Defaults to `\"accordion\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.",
+      "description": "Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].\n\nArgs:\n----\n    type (Literal[\"accordion\"]): Defaults to `\"accordion\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1087,7 +1087,7 @@
     },
     "NavLink": {
       "title": "NavLink",
-      "description": "Icon to be used in Navigation Bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
+      "description": "Icon to be used in Navigation Bar of Dashboard.\n\nArgs:\n----\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1134,7 +1134,7 @@
     },
     "NavBar": {
       "title": "NavBar",
-      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.\n    items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
+      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n----\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.\n    items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -1174,7 +1174,7 @@
     },
     "Navigation": {
       "title": "Navigation",
-      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n----\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
       "type": "object",
       "properties": {
         "id": {
