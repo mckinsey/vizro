@@ -21,6 +21,7 @@ class TextArea(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (Optional[List[Action]]): Defaults to `[]`.
+
     """
 
     type: Literal["text_area"] = "text_area"

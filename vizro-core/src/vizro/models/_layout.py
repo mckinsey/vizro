@@ -63,6 +63,7 @@ def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
 
     Returns:
         ColRowGridLines for combined area spanned by all placements of screen component i
+
     """
     matrix_coord = [(x, y) for x, row in enumerate(matrix) for y, value in enumerate(row) if ma.is_masked(value)]
 
@@ -87,6 +88,7 @@ def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> List[ColRowGridLine
 
     Returns:
         List of ColRowGridLines for each individual placement of screen component i
+
     """
     matrix_coord = [(x, y) for x, row in enumerate(matrix) for y, value in enumerate(row) if ma.is_masked(value)]
 
@@ -111,6 +113,7 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
 
     Returns:
         Bool if rectangular grid area spanned by component i overlaps with the area of component j
+
     """
     x1 = max(min(r1.row_start, r1.row_end), min(r2.row_start, r2.row_end))
     y1 = max(min(r1.col_start, r1.col_end), min(r2.col_start, r2.col_end))
@@ -150,6 +153,7 @@ class Layout(VizroBaseModel):
         col_gap (str): Gap between columns in px. Defaults to `"12px"`.
         row_min_height (str): Minimum row height in px. Defaults to `"0px"`.
         col_min_width (str): Minimum column width in px. Defaults to `"0px"`.
+
     """
 
     grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")

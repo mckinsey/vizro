@@ -1,5 +1,4 @@
 import pytest
-
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain

@@ -27,6 +27,7 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.
+
     """
 
     type: Literal["container"] = "container"

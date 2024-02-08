@@ -38,6 +38,7 @@ class Page(VizroBaseModel):
         layout (Layout): Layout to place components in. Defaults to `None`.
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
+
     """
 
     components: List[ComponentType]

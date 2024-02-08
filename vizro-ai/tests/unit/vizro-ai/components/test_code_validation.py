@@ -5,7 +5,7 @@ from vizro_ai.components import GetDebugger
 
 @pytest.fixture
 def fake_llm():
-    """This is to simulate the response of LLM."""
+    """Simulate the response of LLM."""
     response = ['{{"fixed_code": "{}"}}'.format("print(df[['country', 'continent']])")]
     return FakeListLLM(responses=response)
 
