@@ -28,7 +28,7 @@ jobs:
         run: |
           cd vizro-core
           hatch version patch,dev
-          git config --global ser.email "35569332+l0uden@users.noreply.github.com"
+          git config --global user.email "35569332+l0uden@users.noreply.github.com"
           git config --global user.name "Vizro Team"
           git config --global init.defaultBranch main
           git init -b main
