@@ -25,8 +25,6 @@ jobs:
         run: |
           cd vizro-core
           hatch version patch,dev
-#          hatch run changelog:add
-#          hatch run schema
           git config user.email "35569332+l0uden@users.noreply.github.com"
           git config user.name "Vizro Team"
           git add -A
