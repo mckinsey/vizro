@@ -20,7 +20,6 @@ def _filter(
     """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:
-    ----
         filter_column: Data column to filter
         targets: List of target component ids to apply filters on
         filter_function: Filter function to apply
@@ -28,9 +27,7 @@ def _filter(
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
     Returns:
-    -------
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-
     """
     return _get_modified_page_figures(
         targets=targets,

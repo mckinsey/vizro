@@ -18,14 +18,12 @@ class RadioItems(VizroBaseModel):
     """Categorical single-selector `RadioItems` to be provided to `Filter`.
 
     Args:
-    ----
         type (Literal["radio_items"]): Defaults to `"radio_items"`.
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
     """
 
     type: Literal["radio_items"] = "radio_items"

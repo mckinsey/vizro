@@ -5,9 +5,10 @@ from typing import List, Literal, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
+from dash import dash_table, html
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
@@ -380,7 +381,7 @@ def scatter_with_line(data_frame, x, y, hline=None, title=None):
 
 
 @capture("graph")
-def waterfall(data_frame, measure, x, y, text, title=None):  # noqa: PLR0913
+def waterfall(data_frame, measure, x, y, text, title=None):
     """Custom waterfall chart based on go."""
     fig = go.Figure()
     fig.add_traces(

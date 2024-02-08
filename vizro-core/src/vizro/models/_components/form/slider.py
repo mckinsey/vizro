@@ -26,7 +26,6 @@ class Slider(VizroBaseModel):
     [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).
 
     Args:
-    ----
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
@@ -35,7 +34,6 @@ class Slider(VizroBaseModel):
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
     """
 
     type: Literal["slider"] = "slider"

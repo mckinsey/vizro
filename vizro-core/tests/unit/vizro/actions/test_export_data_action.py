@@ -1,7 +1,8 @@
 import pytest
-import vizro.models as vm
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
+
+import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict

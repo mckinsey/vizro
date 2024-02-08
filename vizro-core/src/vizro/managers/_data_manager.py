@@ -16,8 +16,7 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
-    Examples
-    --------
+    Examples:
         >>> import plotly.express as px
         >>> data_manager["iris"] = px.data.iris()
 

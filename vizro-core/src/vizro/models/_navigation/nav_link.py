@@ -23,7 +23,6 @@ class NavLink(VizroBaseModel):
     """Icon to be used in Navigation Bar of Dashboard.
 
     Args:
-    ----
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
         label (str): Text description of the icon for use in tooltip.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.

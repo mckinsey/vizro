@@ -1,8 +1,9 @@
 import pytest
-import vizro.models as vm
-import vizro.plotly.express as px
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
+
+import vizro.models as vm
+import vizro.plotly.express as px
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
