@@ -47,14 +47,13 @@ and [pricing](https://openai.com/pricing) for more information.
 
 ### Azure OpenAI models
 
-The setup below allows you to integrate Azure's OpenAI models with VizroAI, by simply updating the `llm_to_use` attribute in `VizroAI`.
-To set up Azure OpenAI with Langchain, you'll configure the AzureOpenAI instance by specifying your deployment name and model name.
+The setup below allows you to integrate Azure's OpenAI models with VizroAI. You can achieve this by simply updating the `llm_to_use` attribute in `VizroAI`.
+To set up Azure OpenAI with Langchain, you'll need to configure the AzureOpenAI instance by specifying your deployment name and model name.
 Environment variables for API configuration, such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
 Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
-For a detailed walkthrough, refer to the Langchain documentation directly.
-https://python.langchain.com/docs/integrations/llms/azure_openai
+For a detailed walkthrough, refer to the [Langchain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai) directly.
 
-Here is an example of how to set AzureOpenAI model in `vizro_ai`.
+Here is an example of how to set the LLM model to be an AzureOpenAI model:
 ```py
 # Import Azure OpenAI and VizroAI
 from langchain_openai import AzureOpenAI
