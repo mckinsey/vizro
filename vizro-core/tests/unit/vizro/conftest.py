@@ -2,7 +2,6 @@
 
 import plotly.graph_objects as go
 import pytest
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro

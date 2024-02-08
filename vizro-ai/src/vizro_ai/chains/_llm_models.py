@@ -38,10 +38,12 @@ PREDEFINED_MODELS: List[Dict[str, any]] = [
 class LLM(BaseModel):
     """Represents a Language Learning Model (LLM).
 
-    Attributes:
+    Attributes
+    ----------
         name (str): The name of the LLM.
         max_tokens (int): The maximum number of tokens that the LLM can handle.
         wrapper (callable): The langchain function used to instantiate the model.
+
     """
 
     name: str
@@ -65,14 +67,18 @@ class ModelConstructor:
         """Fetches and initializes an instance of the LLM.
 
         Args:
+        ----
             model_name (str): The name of the LLM.
             temperature (int, optional): A parameter for the wrapper. Defaults to 0.
 
         Returns:
+        -------
             The initialized instance of the LLM.
 
         Raises:
+        ------
             ValueError: If the model name is not found.
+
         """
         model = self.models.get(model_name.lower())
         if model:

@@ -17,9 +17,11 @@ class Button(VizroBaseModel):
     """Component provided to `Page` to trigger any defined `action` in `Page`.
 
     Args:
+    ----
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["button"] = "button"

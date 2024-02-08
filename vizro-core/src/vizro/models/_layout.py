@@ -59,10 +59,13 @@ def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
     Grid coordinates for component i=0: ColRowGridLines(col_start=1, col_end=2, row_start=1, row_end=3)
 
     Args:
+    ----
         matrix: Array that represents the user-provided grid with a mask on the relevant screen component i
 
     Returns:
+    -------
         ColRowGridLines for combined area spanned by all placements of screen component i
+
     """
     matrix_coord = [(x, y) for x, row in enumerate(matrix) for y, value in enumerate(row) if ma.is_masked(value)]
 
@@ -83,10 +86,13 @@ def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> List[ColRowGridLine
                                          ColRowGridLines(col_start=1, col_end=2, row_start=2, row_end=3)]
 
     Args:
+    ----
         matrix: Array that represents the user-provided grid with a mask on the relevant screen component i
 
     Returns:
+    -------
         List of ColRowGridLines for each individual placement of screen component i
+
     """
     matrix_coord = [(x, y) for x, row in enumerate(matrix) for y, value in enumerate(row) if ma.is_masked(value)]
 
@@ -106,11 +112,14 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
     See: https://github.com/SFML/SFML/blob/12d81304e63e333174d943ba3ff572e38abd56e0/include/SFML/Graphics/Rect.inl#L109
 
     Args:
+    ----
         r1: Tuple containing grid coordinates for screen component i
         r2: Tuple containing grid coordinates for screen component j
 
     Returns:
+    -------
         Bool if rectangular grid area spanned by component i overlaps with the area of component j
+
     """
     x1 = max(min(r1.row_start, r1.row_end), min(r2.row_start, r2.row_end))
     y1 = max(min(r1.col_start, r1.col_end), min(r2.col_start, r2.col_end))
@@ -145,11 +154,13 @@ class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
+    ----
         grid (List[List[int]]): Grid specification to arrange components on screen.
         row_gap (str): Gap between rows in px. Defaults to `"12px"`.
         col_gap (str): Gap between columns in px. Defaults to `"12px"`.
         row_min_height (str): Minimum row height in px. Defaults to `"0px"`.
         col_min_width (str): Minimum column width in px. Defaults to `"0px"`.
+
     """
 
     grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")

@@ -26,12 +26,14 @@ def assert_component_equal(left, right, *, keys_to_strip=None):
     If keys_to_strip is set to STRIP_ALL then only the type and namespace of component
     will be compared, similar to doing isinstance.
 
-    Examples:
+    Examples
+    --------
         >>> from dash import html
         >>> assert_component_equal(html.Div(), html.Div())
         >>> assert_component_equal(html.Div(id="a"), html.Div(), keys_to_strip={"id"})
         >>> assert_component_equal(html.Div([html.P(), html.P()], id="a"), html.Div(id="a"), keys_to_strip={"children"})
         >>> assert_component_equal(html.Div(html.P(), className="blah", id="a"), html.Div(), keys_to_strip=STRIP_ALL)
+
     """
     keys_to_strip = keys_to_strip or {}
     if keys_to_strip is STRIP_ALL:

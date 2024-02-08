@@ -41,8 +41,10 @@ chart_type_prompt = "choose a best chart types for this df info:{df_schema}, {df
 class GetChartSelection(VizroAiComponentBase):
     """Get Chart Types.
 
-    Attributes:
+    Attributes
+    ----------
         prompt (str): Prompt chart selection chains.
+
     """
 
     prompt: str = chart_type_prompt
@@ -51,6 +53,7 @@ class GetChartSelection(VizroAiComponentBase):
         """Initialization of Chart Selection components.
 
         Args:
+        ----
             llm: LLM model wrapped with Langchain wrapper
 
         """
@@ -76,10 +79,12 @@ class GetChartSelection(VizroAiComponentBase):
         """Run chain to get chart type.
 
         Args:
+        ----
             chain_input: User question or processed intermediate question if needed.
             df: The dataframe to be analyzed
 
         Returns:
+        -------
             Chart type string.
 
         """

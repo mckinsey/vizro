@@ -106,7 +106,14 @@ class TestGetVisualCodeInstantiation:
 
 
 class TestGetVisualCodeRun:
-    def test_fake_run(self, fake_llm, output_visual_code_LLM_1, expected_final_output_1, df_code_1, chart_types):
+    def test_fake_run(  # noqa: PLR0913
+        self,
+        fake_llm,
+        output_visual_code_LLM_1,
+        expected_final_output_1,
+        df_code_1,
+        chart_types,
+    ):
         get_visual_code = GetVisualCode(fake_llm)
         processed_code = get_visual_code.run(
             chain_input=output_visual_code_LLM_1, df_code=df_code_1, chart_types=chart_types

@@ -12,7 +12,9 @@ class Pipeline:
         """Initialize the Pipeline.
 
         Args:
+        ----
             llm: The LLM instance to be used by components in the pipeline.
+
         """
         self.llm = llm
         self.components = []
@@ -22,11 +24,13 @@ class Pipeline:
         """Add a component class to the pipeline along with its input and output specifications.
 
         Args:
+        ----
             component_class: The class of the component to be added to the pipeline.
             input_keys: The keys or identifiers for the inputs that this component expects.
                     These should match the output keys of previous components in the pipeline, if applicable.
             output_key: The key or identifier for the output that this component will produce.
                     This can be used as an input key for subsequent components.
+
         """
         self.components.append((component_class, input_keys, output_key))
 
@@ -34,9 +38,11 @@ class Pipeline:
         """Execute the pipeline with the provided initial args.
 
         Args:
+        ----
             initial_args: Initial arguments that need to be passed for pipeline.
 
         Returns:
+        -------
             Output of the last stage in pipeline.
 
         """

@@ -2,7 +2,6 @@
 
 import pandas as pd
 import pytest
-
 from vizro.managers._data_manager import DataManager
 
 
