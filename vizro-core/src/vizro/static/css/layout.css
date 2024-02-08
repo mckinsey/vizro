@@ -222,14 +222,38 @@ div.dashboard_container .custom-tooltip {
   width: 0 !important;
 }
 
-/* Smartphones (portrait or landscape) ----------- */
-@media (max-width: 600px) or (max-height: 600px) {
+/* Applies to device size x-small and small */
+@media (max-width: 576px) {
   .grid-layout {
     display: flex;
     flex-direction: column;
     flex: 1;
   }
 
+  #collapse-icon.material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  .collapse-button-tooltip {
+    top: 20px;
+    left: -8px;
+  }
+
+  #page-header {
+    zoom: 64%;
+  }
+
+  #left-side {
+    zoom: 64%;
+  }
+
+  #right-side {
+    zoom: 64%;
+  }
+}
+
+
+@media (max-height: 576px) {
   #collapse-icon.material-symbols-outlined {
     font-size: 16px;
   }

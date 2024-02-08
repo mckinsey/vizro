@@ -7,7 +7,7 @@ export function _update_dashboard_theme(checked) {
 
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
-    if (maxWidth === 600 && maxHeight === 600) {
+    if (maxWidth < 576 || maxHeight < 576) {
       return [
         false,
         {
