@@ -1,8 +1,5 @@
 name: Push to main
 
-permissions:
-  contents: write
-
 on:
   push:
     branches: 
@@ -16,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -30,7 +30,9 @@ jobs:
           hatch version patch,dev
           git config user.email "35569332+l0uden@users.noreply.github.com"
           git config user.name "Vizro Team"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/$GITHUB_REPOSITORY
+          git config --global init.defaultBranch main
+          git init -b main
+          git remote add origin $GITHUB_REPOSITORY
           git add -A
           git commit -m "version bump after vizro"
-          git push -f origin main
+          git push -f -u origin main
