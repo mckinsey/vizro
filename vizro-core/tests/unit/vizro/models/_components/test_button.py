@@ -2,10 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro.models as vm
 from asserts import assert_component_equal
 from dash import html
-
-import vizro.models as vm
 from vizro.actions import export_data
 
 
@@ -19,10 +18,7 @@ class TestButtonInstantiation:
         assert button.text == "Click me!"
         assert button.actions == []
 
-    @pytest.mark.parametrize(
-        "text",
-        ["Test", 123, 1.23, True, """# Header""", """<p>Hello </p>"""],
-    )
+    @pytest.mark.parametrize("text", ["Test", 123, 1.23, True, """# Header""", """<p>Hello </p>"""])
     def test_create_button_with_optional(self, text):
         button = vm.Button(text=text)
         assert hasattr(button, "id")

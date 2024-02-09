@@ -1,11 +1,7 @@
 """Pipeline Manager."""
+
 from vizro_ai.chains._llm_models import LLM_MODELS
-from vizro_ai.components import (
-    GetChartSelection,
-    GetCustomChart,
-    GetDataFrameCraft,
-    GetVisualCode,
-)
+from vizro_ai.components import GetChartSelection, GetCustomChart, GetDataFrameCraft, GetVisualCode
 from vizro_ai.task_pipeline._pipeline import Pipeline
 
 
@@ -17,6 +13,7 @@ class PipelineManager:
 
         Args:
             llm: Large language Model.
+
         """
         self.llm = llm
 

@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.10'></a>
+
+# 0.1.10 — 2024-01-31
+
+## Highlights ✨
+
+- Introduce `Tabs` model as a new `Page` component. ([#280](https://github.com/mckinsey/vizro/pull/280))
+
+## Changed
+
+- Replace `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
+
+## Fixed
+
+- Fix bug on accordion group not opening properly when re-directing to active page via navigation card or URL path. ([#276](https://github.com/mckinsey/vizro/pull/276))
+
 <a id='changelog-0.1.9'></a>
 
 # 0.1.9 — 2024-01-25

@@ -26,6 +26,7 @@ class Dropdown(VizroBaseModel):
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["dropdown"] = "dropdown"
@@ -57,7 +58,7 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,

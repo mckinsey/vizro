@@ -1,4 +1,5 @@
 """Script to generate JSON schema. For more information, run `hatch run schema --help`."""
+
 import argparse
 import json
 import sys

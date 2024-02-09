@@ -444,7 +444,6 @@ To create a navigation card, do the following:
 
         page_2 = vm.Page(
             title="Filters and parameters",
-            path="filters-and-parameters",
             components=[
                 vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
             ],
@@ -540,7 +539,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
         page_2 = vm.Page(
             title="Filters and parameters",
-            path="filters-and-parameters",
             components=[
                 vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
             ],

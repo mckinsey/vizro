@@ -1,4 +1,5 @@
 """Code Validation Component."""
+
 import traceback
 from typing import Dict, Tuple
 
@@ -36,8 +37,9 @@ debugging_prompt = (
 class GetDebugger(VizroAiComponentBase):
     """Get Visual code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt visual code.
+
     """
 
     prompt: str = debugging_prompt
@@ -101,8 +103,5 @@ if __name__ == "__main__":
 
     test = GetDebugger(llm=llm_to_use)
 
-    res = test.run(
-        chain_input=error_msg,
-        code_snippet=test_code_snippet,
-    )
+    res = test.run(chain_input=error_msg, code_snippet=test_code_snippet)
     print(res)  # noqa: T201

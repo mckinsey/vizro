@@ -1,4 +1,5 @@
 """The model manager handles access to all `VizroBaseModel` instances used in a Vizro app."""
+
 from __future__ import annotations
 
 import random
@@ -65,6 +66,9 @@ class ModelManager:
         model = self[model_id]
         if hasattr(model, "components"):
             for child_model in model.components:
+                self._get_model_children(child_model.id, all_model_ids)
+        if hasattr(model, "tabs"):
+            for child_model in model.tabs:
                 self._get_model_children(child_model.id, all_model_ids)
         return all_model_ids
 

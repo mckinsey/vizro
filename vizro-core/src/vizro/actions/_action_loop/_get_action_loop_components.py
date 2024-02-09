@@ -11,8 +11,9 @@ from vizro.actions._action_loop._action_loop_utils import (
 def _get_action_loop_components() -> html.Div:
     """Gets all required components for the action loop.
 
-    Returns:
+    Returns
         List of dcc or html components.
+
     """
     actions_chains = _get_actions_chains_on_registered_pages()
     actions = _get_actions_on_registered_pages()
@@ -47,12 +48,7 @@ def _get_action_loop_components() -> html.Div:
     components.extend([dcc.Store(id={"type": "action_trigger", "action_name": action.id}) for action in actions])
 
     # Additional store with all action_triggers ids.
-    components.append(
-        dcc.Store(
-            id="action_trigger_actions_id",
-            data=[action.id for action in actions],
-        )
-    )
+    components.append(dcc.Store(id="action_trigger_actions_id", data=[action.id for action in actions]))
 
     # Additional store that maps the actions chain trigger id and the list of action ids that should be executed.
     components.append(

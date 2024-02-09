@@ -29,6 +29,7 @@ class Action(VizroBaseModel):
             Defaults to `[]`.
         outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
             Defaults to `[]`.
+
     """
 
     function: CapturedCallable = Field(..., import_path=vizro.actions)
@@ -102,11 +103,7 @@ class Action(VizroBaseModel):
         inputs: Union[Dict[str, Any], List[Any]],
         outputs: Union[Dict[str, Output], List[Output], Output, None],
     ) -> Any:
-        logger.debug(
-            "===== Running action with id %s, function %s =====",
-            self.id,
-            self.function._function.__name__,
-        )
+        logger.debug("===== Running action with id %s, function %s =====", self.id, self.function._function.__name__)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=2, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
@@ -151,8 +148,9 @@ class Action(VizroBaseModel):
     def build(self):
         """Builds a callback for the Action model and returns required components for the callback.
 
-        Returns:
+        Returns
             List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
+
         """
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {

@@ -21,6 +21,7 @@ class VizroBaseModel(BaseModel):
     Args:
         id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
             When no ID is chosen, ID will be automatically generated.
+
     """
 
     id: str = Field(
@@ -48,6 +49,7 @@ class VizroBaseModel(BaseModel):
         Args:
             field_name: Field that new type will be added to
             new_type: New type to add to discriminated union
+
         """
 
         def _add_to_discriminated_union(union):

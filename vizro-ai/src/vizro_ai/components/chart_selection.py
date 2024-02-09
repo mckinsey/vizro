@@ -1,4 +1,5 @@
 """Chart Type Selection Component."""
+
 from typing import Dict, Tuple
 
 import pandas as pd
@@ -40,8 +41,9 @@ chart_type_prompt = "choose a best chart types for this df info:{df_schema}, {df
 class GetChartSelection(VizroAiComponentBase):
     """Get Chart Types.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt chart selection chains.
+
     """
 
     prompt: str = chart_type_prompt

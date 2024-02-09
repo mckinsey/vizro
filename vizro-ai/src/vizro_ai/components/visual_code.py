@@ -1,4 +1,5 @@
 """Visual Code Component."""
+
 from typing import Dict, Tuple
 
 try:
@@ -35,8 +36,9 @@ visual_code_prompt = (
 class GetVisualCode(VizroAiComponentBase):
     """Get Visual code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt visual code.
+
     """
 
     prompt: str = visual_code_prompt

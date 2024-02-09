@@ -1,14 +1,11 @@
 import pytest
-from dash._callback_context import context_value
-from dash._utils import AttributeDict
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash._callback_context import context_value
+from dash._utils import AttributeDict
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro._themes import dark, light
-from vizro.actions._actions_utils import (
-    CallbackTriggerDict,
-)
+from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 
@@ -111,11 +108,7 @@ class TestOnPageLoad:
         indirect=["ctx_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
     )
     def test_multiple_controls_one_target(
-        self,
-        ctx_on_page_load,
-        target_scatter_filtered_continent_and_pop_parameter_y_and_x,
-        template,
-        box_chart,
+        self, ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template, box_chart
     ):
         # Creating and adding a Filter objects to the existing Page
         continent_filter = vm.Filter(

@@ -29,6 +29,7 @@ class Graph(VizroBaseModel):
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["graph"] = "graph"
@@ -87,11 +88,7 @@ class Graph(VizroBaseModel):
                         "yaxis": {"visible": False},
                     }
                 ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
+                config={"autosizable": True, "frameMargins": 0, "responsive": True},
                 className="chart_container",
             ),
             color="grey",

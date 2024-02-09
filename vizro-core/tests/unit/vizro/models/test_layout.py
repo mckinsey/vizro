@@ -6,10 +6,9 @@ except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 import numpy as np
+import vizro.models as vm
 from asserts import assert_component_equal
 from dash import html
-
-import vizro.models as vm
 from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
 
 
@@ -151,7 +150,14 @@ class TestWorkingGrid:
 
 
 class TestSharedLayoutHelpers:
-    @pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[0, -1], [1, 2]],
+            [[0, -1, 1, 2]],
+            [[-1, -1, -1], [0, 1, 2]],
+        ],
+    )
     def test_get_unique_grid_component_ids(self, grid):
         result = _get_unique_grid_component_ids(grid)
         expected = np.array([0, 1, 2])

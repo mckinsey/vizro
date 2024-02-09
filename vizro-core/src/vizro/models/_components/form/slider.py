@@ -34,6 +34,7 @@ class Slider(VizroBaseModel):
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["slider"] = "slider"
@@ -87,7 +88,7 @@ class Slider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 html.Div(
                     [
                         dcc.Slider(

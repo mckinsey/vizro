@@ -1,7 +1,6 @@
 import pytest
-from asserts import assert_component_equal
-
 import vizro.models as vm
+from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.managers import model_manager
 
@@ -87,11 +86,7 @@ navbar_flat_cases = [
     (
         lambda: vm.Navigation(pages=["Page 1"], nav_selector=vm.NavBar()),
         lambda: vm.Navigation(
-            nav_selector=vm.NavBar(
-                items=[
-                    vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1"),
-                ]
-            )
+            nav_selector=vm.NavBar(items=[vm.NavLink(label="Page 1", pages=["Page 1"], icon="filter_1")])
         ),
     ),
 ]
@@ -144,9 +139,7 @@ navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
 
 
 @pytest.mark.parametrize(
-    "dashboard_result, dashboard_expected",
-    accordion_cases + navbar_flat_cases + navbar_grouped_cases,
-    indirect=True,
+    "dashboard_result, dashboard_expected", accordion_cases + navbar_flat_cases + navbar_grouped_cases, indirect=True
 )
 def test_navigation_build(dashboard_result, dashboard_expected):
     result = dashboard_result.navigation.build()

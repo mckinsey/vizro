@@ -20,6 +20,7 @@ class Card(VizroBaseModel):
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
+
     """
 
     type: Literal["card"] = "card"
@@ -36,8 +37,7 @@ class Card(VizroBaseModel):
         text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
         button = html.Div(
             dbc.Button(
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-                className="card_button",
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href, className="card_button"
             ),
             className="button_container",
         )

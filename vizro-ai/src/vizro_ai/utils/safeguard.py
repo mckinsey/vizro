@@ -1,15 +1,11 @@
 """Safeguard Code Execution."""
+
 import ast
 import builtins
 import re
 from typing import Union
 
-from ._constants import (
-    REDLISTED_CLASS_METHODS,
-    REDLISTED_DATA_HANDLING,
-    WHITELISTED_BUILTINS,
-    WHITELISTED_PACKAGES,
-)
+from ._constants import REDLISTED_CLASS_METHODS, REDLISTED_DATA_HANDLING, WHITELISTED_BUILTINS, WHITELISTED_PACKAGES
 
 
 def _check_imports(node: Union[ast.Import, ast.ImportFrom]):

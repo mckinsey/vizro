@@ -63,6 +63,7 @@ class Filter(VizroBaseModel):
         targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`.
         selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+
     """
 
     type: Literal["filter"] = "filter"
@@ -165,11 +166,7 @@ class Filter(VizroBaseModel):
             filter_function = self._set_filter_function()
             self.selector.actions = [
                 Action(
-                    function=_filter(
-                        filter_column=self.column,
-                        targets=self.targets,
-                        filter_function=filter_function,
-                    ),
+                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 )
             ]

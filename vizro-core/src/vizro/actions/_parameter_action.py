@@ -4,9 +4,7 @@ from typing import Any, Dict, List
 
 from dash import ctx
 
-from vizro.actions._actions_utils import (
-    _get_modified_page_figures,
-)
+from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
 
@@ -22,6 +20,7 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+
     """
     target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 

@@ -1,4 +1,5 @@
 """Light themed plotly template."""
+
 from plotly import graph_objects as go
 from plotly.graph_objs.layout._template import Template
 
@@ -9,9 +10,10 @@ from vizro._themes._templates.common_values import create_template_common
 def create_template_light() -> Template:
     """Create light themed plotly template.
 
-    Returns:
+    Returns
     -------
         A plotly template object containing the light theme
+
     """
     template_light = create_template_common()
 

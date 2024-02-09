@@ -39,6 +39,7 @@
   --surfaces-bg-03: var(--surfaces-dark-mode-bg-03);
   --surfaces-bg-card: var(--surfaces-dark-mode-bg-card);
   --tags-bg-color: #181b26;
+  --tooltip-bg-color: var(--primary-dark-500);
   --main-container-bg-color: rgba(20, 23, 33, 1);
   --fill-contrast-hover-selected: rgba(20, 23, 33, 1);
   --text-contrast-primary: rgba(20, 23, 33, 0.88);
@@ -72,10 +73,10 @@
   --text-secondary: var(--text-dark-mode-secondary);
   --background-selected: rgba(0, 0, 0, 0.12);
   --border-selected: var(--border-dark-mode-selected);
-  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.3),
-    0 0 1px 0 rgba(20, 23, 33, 0.88);
-  --box-shadow-elevation-1: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
-    0px 2px 6px -1px rgba(20, 23, 33, 0.16);
+  --box-shadow-elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.12),
+    0px 0px 1px 1px rgba(20, 23, 33, 0.08);
+  --box-shadow-elevation-1: 0px 2px 4px -1px rgba(20, 23, 33, 0.38),
+    0px 1px 2px -1px rgba(20, 23, 33, 0.88);
   --box-shadow-elevation-card: 0px 2px 2px -1px rgba(20, 23, 33, 0.38),
     0px 2px 6px -1px rgba(20, 23, 33, 0.16);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
@@ -88,7 +89,6 @@
   --tags-text-color: var(--tags-dark-mode-text-color);
   --tooltip-text-primary: rgba(20, 23, 33, 0.88);
   --status-warning: var(--status-dark-mode-warning);
-  --tooltip-bg-color: var(--primary-dark-500);
 }
 
 .vizro_light {
@@ -101,6 +101,7 @@
   --surfaces-bg-03: var(--surfaces-light-mode-bg-03);
   --surfaces-bg-card: var(--surfaces-light-mode-bg-card);
   --tags-bg-color: var(--primary-light-300);
+  --tooltip-bg-color: var(--primary-light-100);
   --main-container-bg-color: rgba(255, 255, 255, 1);
   --fill-contrast-hover-selected: rgba(255, 255, 255, 1);
   --text-contrast-primary: rgba(255, 255, 255, 0.88);
@@ -136,8 +137,10 @@
   --text-secondary: var(--text-light-mode-secondary);
   --background-selected: var(--overlays-on-light-ui-high-contrast);
   --border-selected: var(--border-light-mode-selected);
-  --box-shadow-elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.08),
-    0 0 1px 0 rgba(20, 23, 33, 0.38);
+  --box-shadow-elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.12),
+    0px 0px 1px 1px rgba(20, 23, 33, 0.08);
+  --box-shadow-elevation-1: 0px 2px 4px -1px rgba(20, 23, 33, 0.12),
+    0px 1px 2px -1px rgba(20, 23, 33, 0.08);
   --box-shadow-elevation-card: 0px 1px 1px 0px rgba(20, 23, 33, 0.08),
     0px 0px 1px 0px rgba(20, 23, 33, 0.38);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
@@ -150,5 +153,4 @@
   --tags-text-color: var(--tags-light-mode-text-color);
   --tooltip-text-primary: rgba(255, 255, 255, 0.88);
   --status-warning: var(--status-light-mode-warning);
-  --tooltip-bg-color: var(--primary-light-100);
 }

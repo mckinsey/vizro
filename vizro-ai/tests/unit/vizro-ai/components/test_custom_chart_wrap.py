@@ -83,7 +83,7 @@ def some_chart_name(data_frame):
 
 @pytest.fixture
 def fake_llm(output_custom_chart_LLM_1):
-    """This is to simulate the response of LLM."""
+    """Simulate the response of LLM."""
     response = ['{{"custom_chart_code": "{}"}}'.format(output_custom_chart_LLM_1)]
     return FakeListLLM(responses=response)
 

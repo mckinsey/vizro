@@ -1,4 +1,5 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+
 from typing import Callable, Dict, Union
 
 import pandas as pd
@@ -15,7 +16,7 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
-    Examples:
+    Examples
         >>> import plotly.express as px
         >>> data_manager["iris"] = px.data.iris()
 
