@@ -113,38 +113,6 @@ def variable_bar(x: str, data_frame: pd.DataFrame = None):
 
 
 @capture("graph")
-def bar_relation_2007(x: str, y: str, data_frame: pd.DataFrame = None):
-    """Custom bar figure that needs post update calls."""
-    fig = px.box(
-        data_frame.query("year == 2007"),
-        x=x,
-        y=y,
-        color="continent",
-        hover_name="continent",
-        title="Relationship in 2007",
-        labels={
-            "gdpPercap": "GDP per capita",
-            "pop": "Population",
-            "lifeExp": "Life expectancy",
-            "continent": "Continent",
-        },
-        color_discrete_map={
-            "Africa": "#00b4ff",
-            "Americas": "#ff9222",
-            "Asia": "#3949ab",
-            "Europe": "#ff5267",
-            "Oceania": "#08bdba",
-        },
-        custom_data=["continent"],
-    )
-
-    fig.update_layout(showlegend=False)
-    fig.update_yaxes(automargin=True)
-    fig.update_xaxes(automargin=True)
-    return fig
-
-
-@capture("graph")
 def scatter_relation(x: str, y: str, size: str, data_frame: pd.DataFrame = None):
     """Custom scatter figure that needs post update calls."""
     fig = px.scatter(
@@ -305,7 +273,7 @@ def create_relation_analysis():
         title="Relationship Analysis",
         description="Investigating the interconnection between population, GDP per capita and life expectancy",
         layout=vm.Layout(
-            grid=[[0, 0, 0, 0, 0]] + [[1, 1, 1, 1, 1]] * 4 + [[2, 2, 2, 2, 2]] * 5,
+            grid=[[0, 0, 0, 0, 0]] + [[1, 1, 1, 1, 1]] * 4,
             row_min_height="100px",
             row_gap="24px",
         ),
@@ -320,10 +288,6 @@ def create_relation_analysis():
             """
             ),
             vm.Graph(
-                id="bar_relation_2007",
-                figure=bar_relation_2007(data_frame=gapminder, x="continent", y="lifeExp"),
-            ),
-            vm.Graph(
                 id="scatter_relation",
                 figure=scatter_relation(data_frame=gapminder, x="gdpPercap", y="lifeExp", size="pop"),
             ),
@@ -336,7 +300,7 @@ def create_relation_analysis():
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation.y", "bar_relation_2007.y"],
+                targets=["scatter_relation.y"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
                 ),
@@ -458,7 +422,7 @@ def create_benchmark_analysis():
                     id="dash_data_table_country",
                     data_frame=gapminder,
                     columns=columns,
-                    page_size=30,
+                    page_size=10,
                     style_data_conditional=[
                         {
                             "if": {"filter_query": "{gdpPercap} < 1045", "column_id": "gdpPercap"},
