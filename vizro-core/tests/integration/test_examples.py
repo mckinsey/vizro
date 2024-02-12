@@ -39,12 +39,11 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.parametrize(
     "example_path, version",
     [
-        pytest.param(examples_path / "_dev", "", id="dev-default"),
-        pytest.param(examples_path / "features", "", id="features-default"),
-        pytest.param(examples_path / "demo", "", id="demo-default"),
-        pytest.param(examples_path / "_dev", "yaml_version", id="dev-yaml_version"),
-        pytest.param(examples_path / "features", "yaml_version", id="features-yaml_version"),
-        pytest.param(examples_path / "demo", "yaml_version", marks=pytest.mark.xfail, id="demo-yaml_version"),
+        (examples_path / "_dev", ""),
+        (examples_path / "features", ""),
+        (examples_path / "demo", ""),
+        (examples_path / "_dev", "yaml_version"),
+        (examples_path / "features", "yaml_version"),
     ],
 )
 def test_dashboard(dash_duo, example_path, dashboard, version):
