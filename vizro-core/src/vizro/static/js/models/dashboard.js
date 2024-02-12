@@ -1,6 +1,3 @@
-var maxWidth = screen.availWidth;
-var maxHeight = screen.availHeight;
-
 export function _update_dashboard_theme(checked) {
   return checked ? "vizro_light" : "vizro_dark";
 }
@@ -8,7 +5,7 @@ export function _update_dashboard_theme(checked) {
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (maxWidth < 576 || maxHeight < 576) {
+    if (window.innerWidth < 576 || window.innerHeight < 576) {
       return [
         false,
         {
