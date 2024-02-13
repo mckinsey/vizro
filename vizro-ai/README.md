@@ -8,7 +8,6 @@
 [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
-
 <img src="./docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
 <p>
@@ -19,8 +18,6 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 </p>
 
 </div>
-
-
 
 ## Why Vizro-AI?
 
