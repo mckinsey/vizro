@@ -10,7 +10,7 @@
 
 </div>
 
-![Animation](./docs/assets/tutorials/chart/readme_animation.gif)
+![Animation](./docs/assets/readme/readme_animation.gif)
 
 <p align="center">
 <font size="+1">

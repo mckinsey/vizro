@@ -120,4 +120,4 @@ Now, upon closer inspection, two challenges emerge. Firstly, the legend overlaps
 Congratulations! You've now gained insights into harnessing the power of Vizro-AI for crafting advanced charts and elevating formatting. Don't forget, enabling `explain=True` is a good way of learning more about how a chart can be further improved and formatted.
 
 Those advanced charts are well-suited for `vizro` dashboard applications. Try to create a chart by `vizro-ai` and plug it in your `vizro` in seconds!
-![chart-into-dashboard](../../assets/user_guides/chart_into_dashboard.gif)
+![chart-into-dashboard](../../assets/tutorials/chart_into_dashboard.gif)
