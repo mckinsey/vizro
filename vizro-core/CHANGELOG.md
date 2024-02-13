@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.11'></a>
+
+# 0.1.11 — 2024-02-13
+
+## Fixed
+
+- Improve layouts for small devices. ([#302](https://github.com/mckinsey/vizro/pull/302))
+
 <a id='changelog-0.1.10'></a>
 
 # 0.1.10 — 2024-01-31
