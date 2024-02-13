@@ -118,3 +118,6 @@ Now, upon closer inspection, two challenges emerge. Firstly, the legend overlaps
     [AnimatedChart3]: ../../assets/tutorials/chart/animated_bar_chart_3.png
 
 Congratulations! You've now gained insights into harnessing the power of Vizro-AI for crafting advanced charts and elevating formatting. Don't forget, enabling `explain=True` is a good way of learning more about how a chart can be further improved and formatted.
+
+Those advanced charts are well-suited for `vizro` dashboard applications. Try to create a chart by `vizro-ai` and plug it in your `vizro` in seconds!
+![chart-into-dashboard](../../assets/user_guides/chart_into_dashboard.gif)
