@@ -26,7 +26,7 @@ class VizroAI:
             temperature: Temperature parameter for LLM.
 
         """
-        self.llm_to_use = self.model_constructor.get_llm_model(model_name, temperature)
+        self.llm = self.model_constructor.get_llm_model(model_name, temperature)
         self.components_instances = {}
         logger.info(
             f"You have selected {model_name},"
@@ -38,13 +38,13 @@ class VizroAI:
         self._set_task_pipeline_llm()
 
     def _set_task_pipeline_llm(self) -> None:
-        self.pipeline_manager.llm = self.llm_to_use
+        self.pipeline_manager.llm = self.llm
 
     # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+            self.components_instances[component_class] = component_class(llm=self.llm)
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
