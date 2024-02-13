@@ -1,4 +1,4 @@
-# <center>Vizro-AI</center>
+<h1 align="center">Vizro-AI</h1>
 
 <div align="center" markdown="1">
 
