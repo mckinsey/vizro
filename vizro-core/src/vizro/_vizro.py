@@ -28,8 +28,8 @@ class Vizro:
         self.dash.config.external_stylesheets.extend(
             [
                 "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-                # Bootstrap styling has no effect as we currently overwrite it for the dbc components present.
-                # It is included here for the proper functioning of the dash-bootstrap-components.
+                # Bootstrap theme has no effect on styling as it gets overwritten by our CSS. However, it is
+                # necessary to add a default theme here so that added dbc components work properly.
                 dbc.themes.BOOTSTRAP,
             ]
         )
