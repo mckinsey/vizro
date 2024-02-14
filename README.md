@@ -107,8 +107,8 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 <p align="center">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
-<em>Live demo</em>
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">
+<em>Live demo</em></a>
 </p>
 
 [vizro-core](https://vizro.readthedocs.io/en/stable/) is a high-level framework built on top of Dash, Plotly and Pydantic, which makes it easier to build advanced dashboards since it automates many of the otherwise complex and time-consuming tasks traditionally associated with designing, building and deploying front-end applications.
