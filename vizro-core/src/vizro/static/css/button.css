@@ -1,5 +1,7 @@
-.button_primary {
+#page-container .button_primary, .button_secondary, .button_tertiary {
   background: var(--fill-high-emphasis);
+  border: none;
+  border-radius: 0;
   box-shadow: var(--box-shadow-elevation-0);
   color: var(--text-contrast-primary);
   font-size: var(--text-size-02);
@@ -8,10 +10,17 @@
   letter-spacing: var(--letter-spacing-body-link-02);
   line-height: var(--text-size-05);
   padding: var(--spacing-01) var(--spacing-03);
+  text-transform: none;
+}
+
+#page-container .button_primary, .button_primary:active, .button_primary:visited, .button_primary:focus-visible{
+  background: var(--fill-high-emphasis);
+  color: var(--text-contrast-primary);
 }
 
 .button_primary:hover {
   background: var(--fill-medium-emphasis);
+  color: var(--text-contrast-primary);
   text-decoration-line: underline;
 }
 
@@ -23,25 +32,12 @@
 .button_secondary {
   background: var(--surfaces-bg-03);
   border: 1px solid var(--border-enabled);
-  box-shadow: var(--box-shadow-elevation-0);
   color: var(--text-primary);
-  font-size: var(--text-size-02);
-  font-weight: var(--text-weight-semibold);
-  height: 32px;
-  letter-spacing: var(--letter-spacing-body-link-02);
-  line-height: var(--text-size-05);
-  padding: var(--spacing-01) var(--spacing-03);
 }
 
 .button_tertiary {
   background: var(--surfaces-bg-03);
   color: var(--text-primary);
-  font-size: var(--text-size-02);
-  font-weight: var(--text-weight-semibold);
-  height: 32px;
-  letter-spacing: var(--letter-spacing-body-link-02);
-  line-height: var(--text-size-05);
-  padding: var(--spacing-01) var(--spacing-03);
   text-decoration-line: underline;
 }
 

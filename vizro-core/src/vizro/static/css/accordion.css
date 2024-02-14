@@ -89,6 +89,7 @@
   height: 40px;
   line-height: var(--text-size-03);
   padding: var(--spacing-02);
+  text-transform: none;
   width: 100%;
 }
 
