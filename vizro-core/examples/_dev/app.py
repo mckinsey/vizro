@@ -5,6 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
+import dash_bootstrap_components as dbc
 
 iris = px.data.iris()
 
@@ -33,4 +34,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
