@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List
 
 import dash
+import dash_bootstrap_components as dbc
 import flask
 
 from vizro._constants import STATIC_URL_PREFIX
@@ -24,8 +25,13 @@ class Vizro:
 
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
-        self.dash.config.external_stylesheets.append(
-            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        self.dash.config.external_stylesheets.extend(
+            [
+                "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
+                # Bootstrap styling has no effect as we currently overwrite it for the dbc components present.
+                # It is included here for the proper functioning of the dash-bootstrap-components.
+                dbc.themes.BOOTSTRAP,
+            ]
         )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
