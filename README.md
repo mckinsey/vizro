@@ -78,9 +78,6 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 (Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases)
 
-Vizro also offers extensions.
-[Vizro-AI](#vizro-ai-the-innovative-extension-of-vizro) is an extension that is specifically designed to enrich existing suite of tools of Vizro,
-introducing advanced artificial intelligence features for generating, analyzing, and manipulating visuals.
 <br/>
 
 ### Key benefits
@@ -99,14 +96,24 @@ introducing advanced artificial intelligence features for generating, analyzing,
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
 </p>
 
-### Live demo
+## Packages
 
-<p align="left">
+|           Folder           |                                           Version                                           |                        Documentation                        |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |    [Vizro Docs](https://vizro.readthedocs.io/en/stable/)    |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro-ai.readthedocs.io/en/latest/) |
+
+### vizro-core
+
+<p align="center">
 <a href="http://vizro.mckinsey.com/">
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+<em>Live demo</em>
 </p>
 
-## Installation
+[vizro-core](https://vizro.readthedocs.io/en/stable/) is a high-level framework built on top of Dash, Plotly and Pydantic, which makes it easier to build advanced dashboards since it automates many of the otherwise complex and time-consuming tasks traditionally associated with designing, building and deploying front-end applications.
+
+#### Installation
 
 ```console
 pip install vizro
@@ -116,20 +123,22 @@ See the [Installation guide](https://vizro.readthedocs.io/en/stable/pages/user_g
 
 Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
 
-## Getting started
+#### Getting started
 
 See the [Tutorials](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) for creating your first dashboard
 
-## Documentation
+#### Documentation
 
 See the [Documentation](https://vizro.readthedocs.io/en/stable/) for more details
 
-## Vizro-AI: The Innovative Extension of Vizro
+### vizro-ai
 
-<img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
+<p align="center">
+<img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai", width="525" height="296">
+<p>
 
-Vizro-AI is a tool designed for generating data visualizations.
-It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly.
+[vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is an extension to [vizro-core](https://vizro.readthedocs.io/en/stable/) that is specifically designed to enrich the existing suite of tools of Vizro, introducing advanced artificial intelligence features for generating, analyzing, and manipulating visuals.
+`vizro-ai` leverages natural language capabilities to empower users in creating charts effortlessly.
 
 See [Vizro-AI Documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
 
