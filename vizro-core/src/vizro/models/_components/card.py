@@ -1,6 +1,5 @@
 from typing import Literal
 
-import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
 
 try:
@@ -36,8 +35,8 @@ class Card(VizroBaseModel):
     def build(self):
         text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
         button = html.Div(
-            dbc.Button(
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href, className="card_button"
+            dcc.Link(
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href, className="card-link"
             ),
             className="button_container",
         )
