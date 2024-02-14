@@ -1,12 +1,12 @@
-from typing import Any, List, Literal, Optional
+from typing import List, Literal, Optional
 
 import dash_mantine_components as dmc
 from dash import html
 
 try:
-    from pydantic.v1 import Field, PrivateAttr, validator
+    from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import validator
+    from pydantic import Field, validator
 
 
 from vizro.models import VizroBaseModel
@@ -22,23 +22,22 @@ class DatePicker(VizroBaseModel):
     [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker).
 
     Args:
-        value (List[str]): Default date value for date picker. Defaults to `None`.
+        value (List[str]): Default date value for date picker. Defaults to `min_date`.
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min_date (Optional[str]): Minimum possible date. Defaults to `None`.
         max_date (Optional[str]): Maximum possible date. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        label(Optional[str]):
+        description (str): Description to be displayed above the component.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_picker"] = "date_picker"
-    title: Optional[str]
-    min_date: Optional[Any]
-    max_date: Optional[Any]
-    value: Optional[List[Any]]
-    label: Optional[str]
-    description: Optional[str]
+    title: str = Field("", description="Title to be displayed.")
+    min_date: Optional[str] = Field(None, description="Start date value for date picker.")
+    max_date: Optional[str] = Field(None, description="End date value for date picker.")
+    description: str = Field("", description="Description to be displayed above the component.")
+    value: Optional[List[str]] = Field(None, description="Default date value for date picker", min_items=1, max_items=1)
 
     actions = []
 
@@ -50,15 +49,15 @@ class DatePicker(VizroBaseModel):
     _validate_max_date = validator("max_date", allow_reuse=True)(validate_max_date)
 
     def build(self):
+        init_value = self.value or self.min_date
         return html.Div(
             [
                 html.P(self.title) if self.title else None,
                 dmc.DatePicker(
                     id=self.id,
-                    label=self.label,
                     description=self.description,
                     minDate=self.min_date,
-                    value=self.value,
+                    value=init_value,
                     maxDate=self.max_date,
                 ),
             ],
