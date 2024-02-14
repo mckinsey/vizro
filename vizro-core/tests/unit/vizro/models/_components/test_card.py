@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Card."""
 
-import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -52,9 +51,7 @@ class TestBuildMethod:
         expected_card = html.Div(
             [
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
-                html.Div(
-                    dbc.Button(href="https://www.google.com", className="card_button"), className="button_container"
-                ),
+                html.Div(dcc.Link(href="https://www.google.com", className="card-link"), className="button_container"),
             ],
             className="nav_card_container",
             id="card_id_outer",

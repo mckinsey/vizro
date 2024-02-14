@@ -1,11 +1,11 @@
 """Rough example used by developers."""
 
+import dash_bootstrap_components as dbc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
-import dash_bootstrap_components as dbc
 
 iris = px.data.iris()
 
