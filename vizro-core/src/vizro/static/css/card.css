@@ -22,7 +22,8 @@
   top: -8px;
 }
 
-.card_button {
+.card-link {
+  color: transparent;
   height: 100%;
   left: 0;
   position: absolute;
