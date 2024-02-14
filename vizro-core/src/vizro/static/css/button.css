@@ -1,4 +1,6 @@
-#page-container .button_primary, .button_secondary, .button_tertiary {
+#page-container .button_primary,
+.button_secondary,
+.button_tertiary {
   background: var(--fill-high-emphasis);
   border: none;
   border-radius: 0;
@@ -13,7 +15,10 @@
   text-transform: none;
 }
 
-#page-container .button_primary, .button_primary:active, .button_primary:visited, .button_primary:focus-visible{
+#page-container .button_primary,
+.button_primary:active,
+.button_primary:visited,
+.button_primary:focus-visible {
   background: var(--fill-high-emphasis);
   color: var(--text-contrast-primary);
 }

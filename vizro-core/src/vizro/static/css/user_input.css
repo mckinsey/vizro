@@ -1,4 +1,5 @@
-.user_input, .text-area,
+.user_input,
+.text-area,
 textarea {
   background-color: var(--field-enabled);
   border: none;
@@ -23,22 +24,26 @@ textarea {
   color: var(--text-placeholder);
 }
 
-.user_input:enabled, .text-area:enabled,
+.user_input:enabled,
+.text-area:enabled,
 textarea:enabled {
   color: var(--text-primary);
 }
 
-textarea, .text-area {
+textarea,
+.text-area {
   padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
-.user_input:hover, .text-area:hover,
+.user_input:hover,
+.text-area:hover,
 textarea:hover {
   background: var(--field-hover);
   box-shadow: var(--box-shadow-elevation-1);
 }
 
-.user_input:focus, .text-area:focus,
+.user_input:focus,
+.text-area:focus,
 textarea:focus {
   background: var(--field-enabled);
   box-shadow: 0 0 0 2px var(--focus-focus) inset;
