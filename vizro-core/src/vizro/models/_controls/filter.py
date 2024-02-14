@@ -15,19 +15,27 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import Checklist, DateRangePicker, Dropdown, RadioItems, RangeSlider, Slider
+from vizro.models._components.form import (
+    Checklist,
+    DatePicker,
+    DateRangePicker,
+    Dropdown,
+    RadioItems,
+    RangeSlider,
+    Slider,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
 # TODO: Add temporal when relevant component is available
-SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "temporal": DateRangePicker}
+SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "temporal": DatePicker}
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
-    "temporal": (DateRangePicker),
+    "temporal": (DateRangePicker, DatePicker),
 }
 
 
@@ -41,14 +49,17 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
 def _filter_date_between(series: pd.Series, value: List[str]) -> pd.Series:
     series = pd.to_datetime(series)
-    start_date = value[0]
-    end_date = value[1]
+    start_date, end_date = value
 
     return series.between(start_date, end_date, inclusive="both")
 
 
 def _filter_date_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
-    return series
+    series = pd.to_datetime(series)
+    return series.isin(value)
+
+
+FILTER_FUNCTIONS = {RangeSlider: _filter_between, DateRangePicker: _filter_date_between, DatePicker: _filter_date_isin}
 
 
 class Filter(VizroBaseModel):
@@ -152,13 +163,8 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_filter_function(self):
-        if isinstance(self.selector, RangeSlider):
-            filter_function = _filter_between
-        elif isinstance(self.selector, DateRangePicker):
-            filter_function = _filter_date_between
-        else:
-            filter_function = _filter_isin
-
+        default_filter_function = _filter_isin
+        filter_function = FILTER_FUNCTIONS.get(type(self.selector), default_filter_function)
         return filter_function
 
     def _set_actions(self):

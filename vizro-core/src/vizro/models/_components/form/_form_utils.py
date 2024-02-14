@@ -1,5 +1,6 @@
 """Helper functions for models inside form folder."""
 
+from datetime import datetime
 from typing import Union
 
 from vizro._constants import ALL_OPTION
@@ -100,3 +101,37 @@ def set_default_marks(cls, marks, values):
     if not marks and values.get("step") is None:
         marks = None
     return marks
+
+
+def parse_date(date_str):
+    """Parse date string to datetime object."""
+    return datetime.strptime(date_str, "%Y-%m-%d")
+
+
+def validate_date_picker_value(cls, value, values):
+    """Reusable validator for the "value" argument for sliders."""
+    if value is None:
+        return value
+
+    start_date, end_date = (value[0], value[1]) if isinstance(value, list) else (value, value)
+    start_date, end_date = parse_date(start_date), parse_date(end_date)
+
+    if start_date >= end_date:
+        raise ValueError("Please provide a valid date range for value.")
+
+    if (values["min_date"] is not None and not start_date >= parse_date(values["min_date"])) or (
+        values["max_date"] is not None and not end_date <= parse_date(values["max_date"])
+    ):
+        raise ValueError("Please provide a valid value between the min and max value.")
+
+    return value
+
+
+def validate_max_date(cls, max_date, values):
+    """Reusable validator for the "max_date" argument for date picker."""
+    if max_date is None:
+        return max_date
+
+    if values["min_date"] is not None and parse_date(max_date) < parse_date(values["min_date"]):
+        raise ValueError("Maximum value of date picker is required to be larger than min_date value.")
+    return max_date

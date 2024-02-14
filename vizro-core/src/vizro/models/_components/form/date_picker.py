@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Any, List, Literal, Optional
 
 import dash_mantine_components as dmc
 from dash import html
@@ -14,16 +14,16 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_value, validate_max_date
 
 
-class DateRangePicker(VizroBaseModel):
-    """Temporal multi-selector `DateRangePicker`.
+class DatePicker(VizroBaseModel):
+    """Temporal multi-selector `DatePicker`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
+    [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker).
 
     Args:
-         value (List[str]): Default start and end date value for date picker. Must be 2 items.
-        type (Literal["date_range_picker"]): Defaults to `"date_range_picker"`.
+        value (List[str]): Default date value for date picker. Defaults to `None`.
+        type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min_date (Optional[str]): Minimum possible date. Defaults to `None`.
         max_date (Optional[str]): Maximum possible date. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
@@ -32,11 +32,11 @@ class DateRangePicker(VizroBaseModel):
 
     """
 
-    type: Literal["date_range_picker"] = "date_range_picker"
-    value: List[str]
-    min_date: Optional[str]
-    max_date: Optional[str]
+    type: Literal["date_picker"] = "date_picker"
     title: Optional[str]
+    min_date: Optional[Any]
+    max_date: Optional[Any]
+    value: Optional[List[Any]]
     label: Optional[str]
     description: Optional[str]
 
@@ -53,13 +53,12 @@ class DateRangePicker(VizroBaseModel):
         return html.Div(
             [
                 html.P(self.title) if self.title else None,
-                dmc.DateRangePicker(
+                dmc.DatePicker(
                     id=self.id,
                     label=self.label,
                     description=self.description,
                     minDate=self.min_date,
                     value=self.value,
-                    allowSingleDateInRange=False,
                     maxDate=self.max_date,
                 ),
             ],
