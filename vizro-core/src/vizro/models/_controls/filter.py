@@ -119,10 +119,10 @@ class Filter(VizroBaseModel):
 
     def _set_column_type(self):
         data_frame = data_manager._get_component_data(self.targets[0])
-        if is_numeric_dtype(data_frame[self.column]):
-            self._column_type = "numerical"
-        elif pd.api.types.is_datetime64_any_dtype(pd.to_datetime(data_frame[self.column], errors="coerce")):
+        if isinstance(data_frame[self.column], pd.PeriodDtype):
             self._column_type = "temporal"
+        elif is_numeric_dtype(data_frame[self.column]):
+            self._column_type = "numerical"
         else:
             self._column_type = "categorical"
 

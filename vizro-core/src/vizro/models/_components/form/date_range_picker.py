@@ -4,15 +4,15 @@ import dash_mantine_components as dmc
 from dash import html
 
 try:
-    from pydantic.v1 import Field, validator
+    from pydantic.v1 import Field, validator, PrivateAttr
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+    from pydantic import Field, validator, PrivateAttr
 
 
-from vizro.models import VizroBaseModel
+from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_date_picker_value, validate_max_date
-
+from vizro.models._components.form._form_utils import validate_max, validate_range_value
+from datetime import date
 
 class DateRangePicker(VizroBaseModel):
     """Temporal multi-selector `DateRangePicker`.
@@ -22,35 +22,32 @@ class DateRangePicker(VizroBaseModel):
     [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
-        value (Optional[List[str]]):
-            Default start and end date for date picker. Must be 2 items. Defaults to `[min_date, max_date]`.
         type (Literal["date_range_picker"]): Defaults to `"date_range_picker"`.
-        min_date (Optional[str]): Minimum possible date. Defaults to `None`.
-        max_date (Optional[str]): Maximum possible date. Defaults to `None`.
+        min (Optional[date]): Start date for date picker. Defaults to `None`.
+        max (Optional[date]): End date for date picker. Defaults to `None`.
+        value (Optional[List[date]]):
+            Default start and end date for date picker. Must be 2 items. Defaults to `[min, max]`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (str): Description to be displayed above the component.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_range_picker"] = "date_range_picker"
-
-    min_date: Optional[str] = Field(None, description="Start date value for date range picker.")
-    max_date: Optional[str] = Field(None, description="End date value for date range picker.")
-    title: str = Field("", description="Title to be displayed.")
-    description: str = Field("", description="Description to be displayed above the component.")
-    value: Optional[List[str]] = Field(
+    min: Optional[date] = Field(None, description="Start date value for date range picker.")
+    max: Optional[date] = Field(None, description="End date value for date range picker.")
+    value: Optional[List[date]] = Field(
         [], description="Default start and end date for date picker.", min_items=2, max_items=2
     )
+    title: str = Field("", description="Title to be displayed.")
 
-    actions = []
+    actions: List[Action] = []
 
-    _input_property: str = "value"
+    _input_property: str = PrivateAttr("value")
     _set_actions = _action_validator_factory("value")
 
     # Re-used validators
-    _validate_value = validator("value", allow_reuse=True)(validate_date_picker_value)
-    _validate_max_date = validator("max_date", allow_reuse=True)(validate_max_date)
+    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
 
     def build(self):
         init_value = self.value or [self.min_date, self.max_date]  # type: ignore[list-item]
@@ -59,11 +56,12 @@ class DateRangePicker(VizroBaseModel):
                 html.P(self.title) if self.title else None,
                 dmc.DateRangePicker(
                     id=self.id,
-                    description=self.description,
-                    minDate=self.min_date,
+                    minDate=self.min,
                     value=init_value,
                     allowSingleDateInRange=False,
-                    maxDate=self.max_date,
+                    maxDate=self.max,
+                    persistence=True,
+                    persistence_type="session",
                 ),
             ],
             className="selector_container",

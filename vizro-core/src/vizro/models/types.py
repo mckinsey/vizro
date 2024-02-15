@@ -334,10 +334,11 @@ OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictTy
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider", "DateRangePicker", "DatePicker"],
+    Union["Checklist", "DatePicker", "Dropdown", "DateRangePicker", "RadioItems", "RangeSlider", "Slider"],
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
+[`DatePicker`][vizro.models.DatePicker], [`DateRangePicker`][vizro.models.DateRangePicker],
 [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider] or [`Slider`][vizro.models.Slider]."""
 

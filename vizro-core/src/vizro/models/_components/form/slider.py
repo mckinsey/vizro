@@ -12,7 +12,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,
     validate_max,
-    validate_slider_value,
+    validate_range_value,
     validate_step,
 )
 from vizro.models._models_utils import _log_call
@@ -51,7 +51,7 @@ class Slider(VizroBaseModel):
 
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_step = validator("step", allow_reuse=True)(validate_step)
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
