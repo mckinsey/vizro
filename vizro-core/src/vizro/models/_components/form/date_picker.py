@@ -13,7 +13,7 @@ from datetime import date
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_max, validate_value
+from vizro.models._components.form._form_utils import validate_max, validate_range_value
 
 
 class DatePicker(VizroBaseModel):
@@ -44,19 +44,19 @@ class DatePicker(VizroBaseModel):
     _set_actions = _action_validator_factory("value")
 
     # Re-used validators
-    _validate_value = validator("value", allow_reuse=True)(validate_value)
+    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_max_date = validator("max", allow_reuse=True)(validate_max)
 
     def build(self):
-        init_value = self.value or self.min_date
+        init_value = self.value or self.min
         return html.Div(
             [
                 html.P(self.title) if self.title else None,
                 dmc.DatePicker(
                     id=self.id,
-                    minDate=self.min_date,
+                    minDate=self.min,
                     value=init_value,
-                    maxDate=self.max_date,
+                    maxDate=self.max,
                     persistence=True,
                     persistence_type="session",
                 ),
