@@ -92,7 +92,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.vizro-svc-pat }}
+          token: ${{ secrets.VIZRO_SVC_PAT }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -111,4 +111,4 @@ jobs:
           git config user.name "Vizro Team"
           git add -A
           git commit -m "version bump after ${{needs.check-version.outputs.package_name}}-${{needs.check-version.outputs.package_version}} [skip ci]"
-          git push -f -u origin main
+          git push origin main
