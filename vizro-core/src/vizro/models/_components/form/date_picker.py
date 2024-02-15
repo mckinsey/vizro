@@ -4,15 +4,17 @@ import dash_mantine_components as dmc
 from dash import html
 
 try:
-    from pydantic.v1 import Field, validator, PrivateAttr
+    from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator, PrivateAttr
+    from pydantic import Field, PrivateAttr, validator
 
+
+from datetime import date
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_value, validate_max
-from datetime import date
+from vizro.models._components.form._form_utils import validate_max, validate_value
+
 
 class DatePicker(VizroBaseModel):
     """Temporal single-selector `DatePicker`.

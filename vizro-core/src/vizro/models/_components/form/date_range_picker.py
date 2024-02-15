@@ -4,15 +4,17 @@ import dash_mantine_components as dmc
 from dash import html
 
 try:
-    from pydantic.v1 import Field, validator, PrivateAttr
+    from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator, PrivateAttr
+    from pydantic import Field, PrivateAttr, validator
 
+
+from datetime import date
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_max, validate_range_value
-from datetime import date
+
 
 class DateRangePicker(VizroBaseModel):
     """Temporal multi-selector `DateRangePicker`.
@@ -50,7 +52,7 @@ class DateRangePicker(VizroBaseModel):
     _validate_max = validator("max", allow_reuse=True)(validate_max)
 
     def build(self):
-        init_value = self.value or [self.min_date, self.max_date]  # type: ignore[list-item]
+        init_value = self.value or [self.min, self.max]  # type: ignore[list-item]
         return html.Div(
             [
                 html.P(self.title) if self.title else None,

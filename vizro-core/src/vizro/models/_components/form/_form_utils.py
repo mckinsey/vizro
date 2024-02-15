@@ -1,6 +1,5 @@
 """Helper functions for models inside form folder."""
 
-from datetime import datetime
 from typing import Union
 
 from vizro._constants import ALL_OPTION
