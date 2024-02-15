@@ -221,3 +221,48 @@ div.dashboard_container .custom-tooltip {
   height: 24px;
   width: 0 !important;
 }
+
+/* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+/* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+/* Applies to device size x-small and small */
+@media (max-width: 576px) {
+  .grid-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .collapse-button-tooltip {
+    top: 28px;
+  }
+
+  #page-header {
+    zoom: 80%;
+  }
+
+  #left-side {
+    zoom: 80%;
+  }
+
+  #right-side {
+    zoom: 80%;
+  }
+}
+
+@media (max-height: 576px) {
+  .collapse-button-tooltip {
+    top: 28px;
+  }
+
+  #page-header {
+    zoom: 80%;
+  }
+
+  #left-side {
+    zoom: 80%;
+  }
+
+  #right-side {
+    zoom: 80%;
+  }
+}
