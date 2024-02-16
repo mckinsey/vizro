@@ -42,4 +42,11 @@ For more details, kindly refer to the documentation of the underlying dash compo
     To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and
     [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size accordingly.
 
-To enhance existing selectors, please see our How-to-guide on creating [custom components](custom-components.md)
+## Temporal Selectors
+
+For more details, kindly refer to the documentation of the underlying dash components:
+
+- [dmc.DateRangePicker](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
+- [dmc.DatePicker](https://www.dash-mantine-components.com/components/datepicker)
+
+To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md)
