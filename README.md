@@ -96,6 +96,13 @@ Optional high-code extensions allow almost infinite customization in a modular w
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
 </p>
 
+### Live demo
+
+<p align="left">
+<a href="http://vizro.mckinsey.com/">
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+</p>
+
 ### Installation
 
 ```console
