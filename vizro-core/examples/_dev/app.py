@@ -72,7 +72,17 @@ cards = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[homepage, cards])
+graph = vm.Page(
+    title="Graph",
+    components=[
+        vm.Graph(
+            id="scatter_relation",
+            figure=px.scatter(data_frame=px.data.gapminder(), x="gdpPercap", y="lifeExp", size="pop"),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[homepage, cards], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
