@@ -4,16 +4,17 @@ This guide shows you how to use themes. Themes are pre-designed collections of s
 The themes provided by Vizro are induced with our design best practices that make charts and dashboards look visually consistent and professional.
 
 ## Themes in dashboards
+
 The [`Dashboard`][vizro.models.Dashboard] model accepts the `theme` argument, where you can currently choose between
 a `vizro_dark` and a `vizro_light` theme. This theme will be applied on the entire dashboard and its charts/components. During run-time
 you can still switch between the themes via the toggle button in the upper-right corner of the dashboard.
 
 !!! example "Change theme"
-    === "app.py"
-        ```py hl_lines="18"
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py hl_lines="18"
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         df = px.data.iris()
 
@@ -60,13 +61,14 @@ you can still switch between the themes via the toggle button in the upper-right
 
     [Dark]: ../../assets/user_guides/themes/dark.png
 
-
 ## Themes in plotly charts
+
 You can also use our templates for plotly charts outside the dashboard.
 Our `vizro_dark` and `vizro_light` theme are automatically registered to `plotly.io.templates` when importing Vizro.
 You can find more details on how templates work in plotly.express [here](https://plotly.com/python/templates/#theming-and-templates).
 
 ### Set themes for all charts
+
 The default plotly.io template is set to be `vizro_dark` as soon as you `import vizro`:
 
 ```py
@@ -74,7 +76,6 @@ import plotly.io as pio
 import vizro
 pio.templates
 ```
-
 
 ```text title="Result"
 Templates configuration
@@ -85,7 +86,6 @@ Templates configuration
          'plotly_white', 'plotly_dark', 'presentation', 'xgridoff',
          'ygridoff', 'gridon', 'none', 'vizro_dark', 'vizro_light']
 ```
-
 
 All plotly charts run after the `import vizro` command will therefore have the `vizro_dark` template automatically
 applied without further configuration.
@@ -99,6 +99,7 @@ pio.templates.default = "vizro_light"
 ```
 
 ### Set themes for selected charts
+
 To change the template for a selected chart only, use the `template` parameter and run:
 
 ```python

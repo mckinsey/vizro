@@ -5,11 +5,11 @@ This guide shows you how to launch your dashboard in different ways. By default,
 ## Default built-in Flask web server
 
 !!! example "Default built-in Flask web server"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -24,9 +24,11 @@ This guide shows you how to launch your dashboard in different ways. By default,
 
         Vizro().build(dashboard).run()
         ```
+
 - create a python file named app.py.
 - type the command `python app.py` into your terminal.
 - information below will be displayed in your terminal, go to the http link.
+
 ```
 Dash is running on http://127.0.0.1:8050/
 
@@ -35,13 +37,14 @@ Dash is running on http://127.0.0.1:8050/
 ```
 
 ## Jupyter
+
 The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
 !!! example "Run in jupyter notebook in inline mode"
-    === "app.ipynb"
-        ```py linenums="1"
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.ipynb"
+```py linenums="1"
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -55,20 +58,22 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run(jupyter_mode="external")
         ```
+
 - by default, the mode is set to `inline` in `run()` and the dashboard will be displayed inside your jupyter environment.
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
 ## Gunicorn
+
 !!!warning "In production"
-    In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
+In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
 
 !!! example "Use Gunicorn"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -91,9 +96,11 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         2. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
 
 To run using Gunicorn with four worker processes, execute
+
 ```bash
 gunicorn app:server --workers 4
 ```
+
 in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
 ## Deployment

@@ -17,11 +17,11 @@ In the `targets` argument, you can specify the component and function argument t
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
 !!! example "Basic Parameter"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -78,18 +78,18 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
     [Parameter]: ../../assets/user_guides/control/control4.png
 
 !!! tip
-    If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
+If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
 ## Nested Parameters
 
 If you want to modify nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
 
 !!! example "Nested Parameters for multiple targets"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 

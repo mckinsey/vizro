@@ -11,6 +11,7 @@
     Users are also recommended to review the third party API key section of the [disclaimer](../explanation/disclaimer.md) documentation.
 
 ## Supported parameters
+
 Currently, Vizro-AI supports the following parameters:
 
 - `temperature`: A parameter for tuning the randomness of the output. It is set to 0 by
@@ -21,16 +22,15 @@ Currently, Vizro-AI supports the following parameters:
   model options.
 
 !!! example "Config and construct Vizro-AI"
-    === "python"
-        ```py linenums="1"
-        from vizro_ai import VizroAI
+=== "python"
+```py linenums="1"
+from vizro_ai import VizroAI
 
         vizro_ai = VizroAI(model_name="gpt-3.5-turbo-0613", temperature=0)
         ```
 
-
-
 ## Supported models
+
 Vizro-AI currently supports the following LLMs:
 
 ### OpenAI models

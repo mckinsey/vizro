@@ -1,6 +1,6 @@
 # How to use tabs
 
-[`Tabs`][vizro.models.Tabs]  organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+[`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
 They are essentially a way of putting multiple [`Containers`][vizro.models.Container] in the same screen space, and letting the user switch between them.
 `Containers` enable the grouping of page components into sections and subsections; see our [user guide on `Containers`](container.md) for more information.
 
@@ -17,18 +17,16 @@ This guide shows you how to use tabs to organize your `Containers` into subsecti
 By using [`Tabs`][vizro.models.Tabs], the following applies:
 
 - [`Filters`][vizro.models.Filter] affect all components on all tabs (opened and closed) of the page if not specified otherwise inside `Filter.targets`
-- The `title` of the  [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
-
+- The `title` of the [`Container`][vizro.models.Container] inserted into `Tabs.tabs` will be displayed as a tab label, and the title will be removed from the `Container`
 
 To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
 2. Insert your [`Containers`][vizro.models.Container] into the `tabs` argument of the [`Tabs`][vizro.models.Tabs]
 
-
 !!! example "Tabs"
-    === "app.py"
-        ```py
+=== "app.py"
+```py
 
         import vizro.models as vm
         import vizro.plotly.express as px

@@ -7,7 +7,7 @@ The [`Graph`][vizro.models.Graph] model is the most used component in many dashb
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
 - insert the [`Graph`][vizro.models.Graph] model into the `components` argument of the
-[`Page`][vizro.models.Page] model
+  [`Page`][vizro.models.Page] model
 - enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
@@ -15,14 +15,12 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     In order to use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`.
     This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched, but allows _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
-
-
 !!! example "Graph"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         df = px.data.iris()
 
@@ -68,7 +66,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     [Graph]: ../../assets/user_guides/components/graph.png
 
 Note that in the above example we directly inserted the chart into the `figure` argument for the `.py` version. This is also the simplest way to connect your chart to a Pandas `DataFrame` - for other connections, please refer to [this guide on data connections](data.md). For the `yaml` version, we simply referred to the [`plotly.express`](https://plotly.com/python/plotly-express/) name by string.
-
 
 ??? info "Vizro automatically sets the plotly default template"
 

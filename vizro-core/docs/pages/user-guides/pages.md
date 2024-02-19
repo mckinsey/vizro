@@ -1,4 +1,5 @@
 # How to use pages
+
 This guide shows you how to add pages to your dashboard and customize the URL paths if needed.
 A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (e.g., chart/components, tables, and text)
 and configure your dashboard interactions (e.g. filters and parameters).
@@ -10,14 +11,14 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, wh
 A [`Page`][vizro.models.Page] is split up into four main containers:
 
 1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
-2. The **control container**  where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
+2. The **control container** where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 3. The **page header** that contains the page title and the theme toggle switch button
 4. The **component container** where you can add your [components](components.md) to visualize your data
 
 ![Page Container](../../assets/user_guides/pages/page_containers.png)
 
 !!! note
-    Note that the navigation container needs to be configured via the Dashboard.
+Note that the navigation container needs to be configured via the Dashboard.
 
 To create and add a page to your dashboard, do the following steps:
 
@@ -28,11 +29,11 @@ To create and add a page to your dashboard, do the following steps:
 5. (optional) Provide a `description` of your `Page` for the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         gapminder = px.data.gapminder().query("year == 2007")
 
@@ -97,8 +98,8 @@ To create and add a page to your dashboard, do the following steps:
 
     You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
-
 ## Customizing the page URL
+
 By default, the page URL is automatically generated based on the `id` of the page e.g., if `id="This is my first page"`
 the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
@@ -110,11 +111,11 @@ The first page always has the URL prefix `/` assigned. A custom URL can, therefo
 To customize the page URL, provide a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
 
 !!! example "Page"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         gapminder = px.data.gapminder().query("year == 2007")
 

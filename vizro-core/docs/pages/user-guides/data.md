@@ -9,11 +9,11 @@ Vizro provides two ways to connect your charts to data. This section shows you h
 You can directly feed a Pandas DataFrame to your chart. This is the simplest way to connect your charts to data.
 
 !!! example "Feed a Pandas DataFrame"
-    === "app.py"
-        ```py linenums="1"
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py linenums="1"
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -41,8 +41,6 @@ Here `px.data.iris()` returns a Pandas DataFrame. We then pass this DataFrame to
     If you are using JSON or YAML to define your dashboard, you can only use the
     data connector approach to connect your data.
 
-
-
 ## Use a data connector
 
 You can also connect your charts with a data connector. To use a data connector with
@@ -57,13 +55,12 @@ Vizro, you need:
    in your dashboard.
 
 !!! example "Use a Data Connector"
-    === "app.py"
-        ```py linenums="1"  hl_lines="18"
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-        from vizro.managers import data_manager
-
+=== "app.py"
+```py linenums="1" hl_lines="18"
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
+from vizro.managers import data_manager
 
         # define a data connector
         def retrieve_iris():
@@ -115,7 +112,6 @@ Vizro, you need:
     the data. The string `"iris"` is the dataset name registered in Data Manager. This is
     how Vizro knows which data connector to use.
 
-
 ### Data connector with arguments
 
 You can also define a data connector with arguments. This is useful when you want to
@@ -124,13 +120,12 @@ retrieve data from different tables in a database, you can define a data connect
 that accepts different SQL queries as arguments.
 
 !!! example "Use a Data Connector with Arguments"
-    === "app.py (use lambda)"
-        ```py linenums="1"
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-        from vizro.managers import data_manager
-
+=== "app.py (use lambda)"
+```py linenums="1"
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
+from vizro.managers import data_manager
 
         def retrieve_one_species(species):
             df = px.data.iris()
@@ -186,7 +181,6 @@ that accepts different SQL queries as arguments.
         [![DataConnector]][DataConnector]
 
     [DataConnector]: ../../assets/user_guides/data/data_selected_from_source.png
-
 
 ### Kedro data catalog
 

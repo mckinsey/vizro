@@ -35,20 +35,18 @@ Building on the above, there are several routes one can take. The following exam
 
     Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.
 
-
 ## Enhanced `plotly.express` chart with reference line
 
 The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then
 add a `Parameter` that allows the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.models.types import capture
-
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.models.types import capture
 
         @capture("graph")
         def scatter_with_line(data_frame, x, y, color=None, size=None, hline=None): # (1)!
@@ -95,16 +93,15 @@ add a `Parameter` that allows the dashboard user to interact with the argument, 
 
     [Graph2]: ../../assets/user_guides/custom_charts/custom_chart_showcase_parameter.gif
 
-
 ## New Waterfall chart based on `go.Figure()`
 
 The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [this](https://plotly.com/python/waterfall-charts/) tutorial.
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
-    === "app.py"
-        ```py
-        import pandas as pd
-        import plotly.graph_objects as go
+=== "app.py"
+```py
+import pandas as pd
+import plotly.graph_objects as go
 
         import vizro.models as vm
         from vizro import Vizro

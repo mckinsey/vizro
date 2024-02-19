@@ -3,47 +3,46 @@
 The [`Page`][vizro.models.Page] model accepts the `components` argument, where you can enter any of the components
 listed below to fill your dashboard with visuals.
 
-
 <div class="grid cards" markdown>
 
-- :octicons-graph-16:{ .lg .middle } __Graph__
+- :octicons-graph-16:{ .lg .middle } **Graph**
 
-    ---
+  ***
 
-    Use graphs to visualize your data with any Plotly chart.
+  Use graphs to visualize your data with any Plotly chart.
 
-    [:octicons-arrow-right-24: View User Guide](graph.md)
+  [:octicons-arrow-right-24: View User Guide](graph.md)
 
-- :material-table-large:{ .lg .middle } __Table__
+- :material-table-large:{ .lg .middle } **Table**
 
-    ---
+  ***
 
-    Use tables to visualize your tabular data.
+  Use tables to visualize your tabular data.
 
-    [:octicons-arrow-right-24: View User Guide](table.md)
+  [:octicons-arrow-right-24: View User Guide](table.md)
 
-- :material-cards-outline:{ .lg .middle } __Card & Button__
+- :material-cards-outline:{ .lg .middle } **Card & Button**
 
-    ---
+  ***
 
-    Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
+  Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
 
-    [:octicons-arrow-right-24: View User Guide](card_button.md)
+  [:octicons-arrow-right-24: View User Guide](card_button.md)
 
-- :octicons-table-16:{ .lg .middle } __Container__
+- :octicons-table-16:{ .lg .middle } **Container**
 
-    ---
+  ***
 
-    Use containers to group your page components into sections and subsections.
+  Use containers to group your page components into sections and subsections.
 
-    [:octicons-arrow-right-24: View User Guide](container.md)
+  [:octicons-arrow-right-24: View User Guide](container.md)
 
-- :material-tab-plus:{ .lg .middle } __Tabs__
+- :material-tab-plus:{ .lg .middle } **Tabs**
 
-    ---
+  ***
 
-    Use tabs to group your containers and navigate between them.
+  Use tabs to group your containers and navigate between them.
 
-    [:octicons-arrow-right-24: View User Guide](tabs.md)
+  [:octicons-arrow-right-24: View User Guide](tabs.md)
 
 </div>

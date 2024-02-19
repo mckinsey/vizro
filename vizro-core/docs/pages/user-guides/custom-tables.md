@@ -4,18 +4,17 @@ If you want to use the [`Table`][vizro.models.Table] model to and to create a cu
 
 For this, similar to how one would create a [custom chart](../user_guides/custom_charts.md), simply do the following:
 
-- define a function that returns a  `dash_table.DataTable` object
+- define a function that returns a `dash_table.DataTable` object
 - decorate it with the `@capture("table")` decorator
 - the function must accept a `data_frame` argument (of type `pandas.DataFrame`)
 - the table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
 
-
 The following example shows a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 
 ??? example "Custom Dash DataTable"
-    === "app.py"
-        ```py
-        from typing import List
+=== "app.py"
+```py
+from typing import List
 
         from dash import dash_table
 

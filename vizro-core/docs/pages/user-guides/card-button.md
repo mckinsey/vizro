@@ -9,12 +9,11 @@ For a basic guide on markdown text, please refer to the documentation [here](htt
 
 You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
 
-
 !!! example "Card"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
             title="Card",
@@ -62,10 +61,10 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
 - Links
 
 !!! example "Card with custom text"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
             title="Customizing Text",
@@ -194,14 +193,14 @@ accessibility of your app. Providing an image ALT text is optional.
 
 1. To use a relative Image URL, place an image of your choice into your `assets` folder first
 2. Use markdown to render your image by using one of the following syntax:
-    - Relative Image URL: `![Image ALT text](/path/to/image.png)`
-    - Absolute Image URL: `![Image ALT text](https://XXXXXX)`
+   - Relative Image URL: `![Image ALT text](/path/to/image.png)`
+   - Absolute Image URL: `![Image ALT text](https://XXXXXX)`
 
 !!! example "Card with image"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
                 title="Placing Images",
@@ -265,17 +264,17 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 and provide an attribute selector to select images with that matching URL hash.
 
 !!! example "Card with styled image"
-    === "images.css"
-    ```css
+=== "images.css"
+`css
     img[src*="#my-image"] {
       width: 120px;
       height: 120px;
     }
-    ```
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+    `
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
                 title="Styling Images",
@@ -332,10 +331,10 @@ and provide an attribute selector to select images with that matching URL hash.
     - floating-center: `![](my_image.png#floating-center)`
 
 !!! example "Card with floating image"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
                 title="Floating Images",
@@ -403,7 +402,6 @@ and provide an attribute selector to select images with that matching URL hash.
     card. To configure the navigation panel on the left hand side of the screen, refer to the
     [guide on navigation](navigation.md).
 
-
 A navigation card allows you to navigate to a different page via a click on the card area.
 To create a navigation card, do the following:
 
@@ -412,11 +410,11 @@ To create a navigation card, do the following:
 - Provide the `href` parameter (relative or absolute URL)
 
 !!! example "Navigation Card"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         iris = px.data.iris()
 
@@ -498,15 +496,16 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href provided is an absolute link, it should start with `https://` or an equivalent protocol.
 
 ### Adding an icon
+
 If you want to add an icon to your card, just add your image as described in the [previous section](#placing-images)
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
 !!! example "Navigation Card with Icon"
-    === "app.py"
-        ```py hl_lines="12 23"
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py hl_lines="12 23"
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         iris = px.data.iris()
 
@@ -605,14 +604,13 @@ You can configure the `text` argument to alter the display text of the [`Button`
 In the below example we show how to configure a button to export the filtered data of a target chart using
 [export_data][vizro.actions.export_data], a pre-defined action function.
 
-
 !!! example "Button"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
 
         df = px.data.iris()
 

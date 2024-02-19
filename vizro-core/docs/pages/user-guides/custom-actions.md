@@ -15,15 +15,14 @@ Custom actions enable you to implement your own action function. Simply do the f
 The following example shows how to create a custom action that postpones execution of the next action in the chain for `t` seconds.
 
 !!! example "Simple custom action"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
-        from vizro.models.types import capture
-        from time import sleep
-
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
+from vizro.models.types import capture
+from time import sleep
 
         @capture("action")
         def my_custom_action(t: int):
@@ -62,8 +61,8 @@ The following example shows how to create a custom action that postpones executi
         # Custom actions are currently only possible via python configuration
         ```
 
-
 ### Interacting with dashboard inputs and outputs
+
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
 - `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`").
@@ -72,14 +71,13 @@ When a custom action needs to interact with the dashboard, it is possible to def
 The following example shows how to create a custom action that shows the clicked chart data in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
 !!! example "Custom action with dashboard inputs and outputs"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import filter_interaction
-        from vizro.models.types import capture
-
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction
+from vizro.models.types import capture
 
         @capture("action")
         def my_custom_action(show_species: bool, points_data: dict): # (1)!
@@ -147,18 +145,18 @@ The following example shows how to create a custom action that shows the clicked
     [CustomAction]: ../../assets/user_guides/custom_actions/custom_action_inputs_outputs.png
 
 ### Multiple return values
+
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
 If there is a single `output` defined then the function return value is directly assigned to the component property.
 If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's normal flexibility in managing multiple return values.
 
 !!! example "Custom action with multiple return values"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.models.types import capture
-
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.models.types import capture
 
         @capture("action")
         def my_custom_action(points_data: dict):

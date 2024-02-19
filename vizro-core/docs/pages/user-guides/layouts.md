@@ -4,17 +4,17 @@ This guide shows you how to use the [`Layout`][vizro.models.Layout] to arrange c
 
 The [`Page`][vizro.models.Page] model accepts the `layout` argument, where you can input your [`Layout`][vizro.models.Layout] with a custom grid.
 
-
 ## Using the default layout
+
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components
 will automatically be [**vertically stacked**](layouts.md#stacking-components) down the page in one column.
 If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
 
 !!! example "Default Layout"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.models as vm
 
         page = vm.Page(
             title="two_left",
@@ -45,9 +45,8 @@ If that is your desired layout, you can create your charts/components without pr
 
     [Layout]: ../../assets/user_guides/layout/two_left.png
 
-
-
 ## Configuring the grid
+
 To customize the grid arrangement, you can configure the `grid` parameter of the [`Layout`][vizro.models.Layout] model.
 The example below shows how the grid works and how to specify a valid one:
 
@@ -72,22 +71,24 @@ grid=[[0, 1, 3, 4],
 ```
 
 ### Stacking components
+
 - When no `Layout` is specified, components will automatically be **stacked vertically** down the page in one column.
-For instance, if you have three components, the default `Layout.grid` will be `grid = [[0], [1], [2]]`.
-This means three equally sized rows, each containing a component spanning the entire width.
+  For instance, if you have three components, the default `Layout.grid` will be `grid = [[0], [1], [2]]`.
+  This means three equally sized rows, each containing a component spanning the entire width.
 - To **stack components horizontally**, set the grid as `grid = [[0, 1, 2]]`.
-This defines a single row that occupies the entire width and height, divided into three equal columns.
+  This defines a single row that occupies the entire width and height, divided into three equal columns.
 
 <figure markdown>
   ![Stacking components](../../assets/user_guides/layout/stacking.png){ width="680" }
 </figure>
 
 ### Grid - Basic Example
+
 !!! example "Grid Arrangement - Basic Example"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
             title="one_left_two_right",
@@ -127,6 +128,7 @@ This defines a single row that occupies the entire width and height, divided int
     [Grid]: ../../assets/user_guides/layout/one_left_two_right.png
 
 ### Grid - Advanced Example
+
 Generally, the `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.
 
@@ -134,11 +136,11 @@ If you want to divide the grid into subgrids with finer control over these, you 
 See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
 
 !!! example "Grid Arrangement - Advanced Example"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
         gapminder = px.data.gapminder()
 
@@ -258,25 +260,26 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
     [GridAdv]: ../../assets/user_guides/layout/grid_advanced.png
 
 ## Using custom layout examples
+
 Below is a table of examples you can take as a reference to create some selected layouts:
 
-| Configuration                                              | Description            | Image                                                                                |
-|------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
-| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left               | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left               | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0,1]])`                              | two_top                | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
-| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left             | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
-| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right     | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom     | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom     | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right   | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right     | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right   | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
-| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
-
+| Configuration                                              | Description          | Image                                                                                |
+| ---------------------------------------------------------- | :------------------- | :----------------------------------------------------------------------------------- |
+| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         | one_left             | <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     | two_left             | <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
+| `layout=Layout(grid=[[0,1]])`                              | two_top              | <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
+| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` | three_left           | <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
+| `layout=Layout(grid=[[0,1],[0,2]])`                        | one_left_two_right   | <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,0],[1,2]])`                        | one_top_two_bottom   | <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[2,2]])`                        | two_top_one_bottom   | <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
+| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  | one_left_three_right | <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,1],[2,3]])`                        | two_left_two_right   | <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
+| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  | three_left_one_right | <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
+| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
+| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
 
 ## Adding empty spaces to the grid
+
 One approach to organize the dashboard's layout involves integrating empty spaces.
 This can be achieved by specifying `-1` within your grid layout.
 
@@ -286,10 +289,10 @@ grid = [[0, 1, -1],
 ```
 
 !!! example "Adding Empty Spaces"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
             title="Adding empty spaces",
@@ -329,6 +332,7 @@ grid = [[0, 1, -1],
     [GridEmpty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 
 ## Controlling the scroll behavior
+
 By default, the grid will try to fit all charts/components on the screen. This can lead to distortions of the chart/component looking
 squeezed in. You can control the scroll behavior of the grid by specifying the following:
 
@@ -336,10 +340,10 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 - `col_min_width`: Sets a chart/component's minimum width. Defaults to 0px.
 
 !!! example "Activate Scrolling"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        from vizro import Vizro
+=== "app.py"
+```py
+import vizro.models as vm
+from vizro import Vizro
 
         page = vm.Page(
             title="Activate scrolling",
@@ -399,12 +403,13 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 
     [GridScroll]: ../../assets/user_guides/layout/grid_scroll.png
 
-
 ## Further customizations
+
 For further customizations, such as changing the gap between row and column, please refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
 
 ## Alternative layout approaches
+
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 

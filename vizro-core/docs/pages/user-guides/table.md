@@ -7,7 +7,7 @@ The [`Table`][vizro.models.Table] model allows you to visualize data in a tabula
 To add a [`Table`][vizro.models.Table] to your page, do the following:
 
 - insert the [`Table`][vizro.models.Table] model into the `components` argument of the
-[`Page`][vizro.models.Page] model
+  [`Page`][vizro.models.Page] model
 - enter any of the currently available table functions
 
 See below for an overview of currently supported table functions.
@@ -17,21 +17,23 @@ See below for an overview of currently supported table functions.
 The [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table component designed for viewing, editing, and exploring large datasets.
 
 You can use the [Dash DataTable](https://dash.plotly.com/datatable) in Vizro by importing
+
 ```py
 from vizro.tables import dash_data_table
 ```
+
 The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are
 setting some defaults for some of the arguments to help with styling.
 
 !!! example "Dash DataTable"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_data_table
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.tables import dash_data_table
 
         df = px.data.gapminder().query("year == 2007")
 
@@ -69,12 +71,12 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
 
 ??? example "Styled Dash DataTable"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_data_table
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.tables import dash_data_table
 
         df = px.data.gapminder().query("year == 2007")
 

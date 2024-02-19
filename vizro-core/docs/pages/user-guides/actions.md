@@ -17,7 +17,7 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
-    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (e.g. for the `Button` it is `n_click`).
+Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (e.g. for the `Button` it is `n_click`).
 
 The below sections are guides on how to leverage pre-defined action functions.
 
@@ -27,12 +27,12 @@ In order to enable downloading data, you can add the [`export_data`][vizro.actio
 a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
 
         iris = px.data.iris()
 
@@ -105,28 +105,30 @@ To enable filtering when clicking on data in a source chart, you can add the [`f
 To configure this chart interaction follow the steps below:
 
 1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
+
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
+
 2. If the source chart is [`Graph`][vizro.models.Graph], enter the filter columns in the `custom_data` argument of the underlying source chart `function`.
+
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
+
 Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
-!!! tip
-    - You can reset your chart interaction filters by refreshing the page
-    - You can create a "self-interaction" by providing the source chart id as its own `target`
+!!! tip - You can reset your chart interaction filters by refreshing the page - You can create a "self-interaction" by providing the source chart id as its own `target`
 
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "Graph `filter_interaction`"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import filter_interaction
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction
 
         df_gapminder = px.data.gapminder().query("year == 2007")
 
@@ -205,13 +207,13 @@ Here is an example of how to configure a chart interaction when the source is a 
 Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
 
 !!! example "Table `filter_interaction`"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import filter_interaction
-        from vizro.tables import dash_data_table
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction
+from vizro.tables import dash_data_table
 
         df_gapminder = px.data.gapminder().query("year == 2007")
 
@@ -280,22 +282,23 @@ Here is an example of how to configure a chart interaction when the source is a 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
 ## Pre-defined actions customization
+
 Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
 refer to the [API reference][vizro.actions] on this topic.
 
 ## Actions chaining
+
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
 This means that it's possible to set a list of actions that will be executed by triggering only one component.
 The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
 
-
 !!! example "Actions chaining"
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
+=== "app.py"
+```py
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
 
         iris = px.data.iris()
 

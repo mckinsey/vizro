@@ -31,8 +31,8 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 
 [^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API_reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
-
 ## Extend an existing component
+
 ??? info "When to choose this strategy"
 
     You may want to use this strategy to:
@@ -40,7 +40,6 @@ or if you would like to use additional `args` or `kwargs` of those components, t
     - extend an existing component (e.g. adding a button to [`Card`][vizro.models.Card])
     - change configurations we have set by default (e.g. setting `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
     - change any fields of any models (e.g. changing the title field from `Optional` to have a default)
-
 
 You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
 you have access to all fields of all parent models, but you can choose to overwrite any field or method, or define new ones.
@@ -52,29 +51,33 @@ such as the `build` method in the below example instead of attempting to write i
 In this case, the general three steps translate into:
 
 1. Sub-class existing [`RangeSlider`][vizro.models.RangeSlider]:
+
 ```py
 class TooltipNonCrossRangeSlider(vm.RangeSlider):
 ```
 
 2. Enhance the component by changing the underlying parent `dcc.RangeSlider`:
+
 ```py
 allowCross=False,
 tooltip={"placement": "bottom", "always_visible": True}
 ```
+
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
 3. Since the new model will be inserted into the `selectors` argument of the [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`SelectorType`][vizro.models.types.SelectorType]. Hence we must:
-    - define a new type:
+   - define a new type:
+
 ```py
 type: Literal["other_range_slider"] = "other_range_slider"
 ```
+
     - register the type with the parent model(s):
+
 ```py
 vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
 vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ```
-
-
 
 ??? example "Example based on existing component"
 
@@ -150,7 +153,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
-
 ## Entirely new component
 
 ??? info "When to choose this strategy"
@@ -166,7 +168,7 @@ using `VizroBaseModel` is mandatory if you want the new component to work in the
 The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/jumbotron/), a component that currently does not exist in Vizro's existing component range. It is a lightweight container to call attention to featured content or information.
 
 ???note "Note on `build` and `pre_build` methods"
-    Note that when creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
+Note that when creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
 
     - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], etc.
     - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card], etc.
@@ -179,11 +181,13 @@ The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-compo
 In this case, the general steps translate for this example into:
 
 1. Create new component, by sub-classing [VizroBaseModel][vizro.models.VizroBaseModel]:
+
 ```py
 class Jumbotron(vm.VizroBaseModel):
 ```
 
 2. Build the component using existing `dash` components.
+
 ```py
 return html.Div(
         ...
@@ -191,16 +195,19 @@ return html.Div(
     ...
 )
 ```
+
 3. Since the new model will be inserted into the `components` argument of the [`Page`][vizro.models.Page], it will be part of the discriminated union describing the allowed types for that argument, in this case the [`ComponentType`][vizro.models.types.ComponentType]. Hence we must:
-    - define a new type:
+   - define a new type:
+
 ```py
 type: Literal["jumbotron"] = "jumbotron"
 ```
+
     - register the type with the parent model(s):
+
 ```py
 vm.Page.add_type("components", Jumbotron)
 ```
-
 
 ??? example "Example of entirely new component"
 
@@ -268,8 +275,6 @@ vm.Page.add_type("components", Jumbotron)
         [![CustomComponent2]][CustomComponent2]
 
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
-
-
 
 ???+ warning
 

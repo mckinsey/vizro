@@ -3,7 +3,7 @@
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
 A [`Container`][vizro.models.Container] complements the concept of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
- [`Page.layout`](layouts.md) provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
+[`Page.layout`](layouts.md) provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
 
 While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
 enhancing the ability to manage related components.
@@ -17,9 +17,8 @@ enhancing the ability to manage related components.
 
     ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
-
-
 ## When to use containers
+
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
 recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
 
@@ -34,8 +33,8 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want different row and column spacing between subgrids
 - If you want to apply controls to selected subgrids (will be supported soon)
 
-
 ## Basic Containers
+
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
@@ -44,8 +43,8 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 4. (optional) Configure your `layout` , see our guide on [`Layout`](layouts.md)
 
 !!! example "Container"
-    === "app.py"
-        ```py
+=== "app.py"
+```py
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -160,6 +159,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
     e.g. by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
 
 ## Nested Containers
+
 Containers can be nested, providing a hierarchical structure for organizing components.
 This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
 

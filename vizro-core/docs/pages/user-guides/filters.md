@@ -5,7 +5,6 @@ This guide shows you how to add filters to your dashboard. One main way to inter
 The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
 This model allows the automatic creation of selectors (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user filter with the charts/components on the screen.
 
-
 ## Basic Filters
 
 To add a filter to your page, do the following:
@@ -17,11 +16,11 @@ By default, all components on a page with such a `column` present will be filter
 automatically based on the target column, e.g. a dropdown for categorical data or a range slider for numerical data.
 
 !!! example "Basic Filter"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -68,11 +67,11 @@ If you want to have a different selector for your filter, you can provide the `s
 Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider] and [`Slider`][vizro.models.Slider].
 
 !!! example "Filter with custom Selector"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -125,11 +124,11 @@ For further customizations, you can always refer to the [`Filter`][vizro.models.
 Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
 
 !!! example "Advanced Filter"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 

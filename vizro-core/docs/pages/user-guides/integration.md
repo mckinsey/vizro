@@ -9,6 +9,7 @@ modular data science code. For Pandas datasets registered in a Kedro data catalo
 Vizro provides a convenient way to visualize them.
 
 ### Installation
+
 To install Vizro with Kedro support, run:
 
 ```bash
@@ -16,7 +17,9 @@ pip install vizro[kedro]
 ```
 
 ### Using datasets from the Kedro Data Catalog
+
 `vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the [Vizro Data Manager][vizro.managers._data_manager] is:
+
 ```python
 from vizro.integrations import kedro as kedro_integration
 from vizro.managers import data_manager
@@ -37,11 +40,10 @@ The `catalog` variable may have been created in a number of different ways:
 The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog to the Vizro Data Manager"
-    === "app.py (Kedro project path)"
-        ```py
-        from vizro.integrations import kedro as kedro_integration
-        from vizro.managers import data_manager
-
+=== "app.py (Kedro project path)"
+```py
+from vizro.integrations import kedro as kedro_integration
+from vizro.managers import data_manager
 
         catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
 

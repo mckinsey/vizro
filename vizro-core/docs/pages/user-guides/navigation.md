@@ -10,11 +10,11 @@ The dashboard includes a collapsible side panel that users can easily minimize o
 By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title "SELECT PAGE".
 
 !!! example "Default navigation"
-    === "app.py"
-        ```py
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
+=== "app.py"
+```py
+from vizro import Vizro
+import vizro.plotly.express as px
+import vizro.models as vm
 
         iris = px.data.iris()
 
@@ -79,14 +79,14 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), e.g. we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
 !!! example "Navigation with only some pages"
-    === "app.py"
-        ```py
+=== "app.py"
+`py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3], navigation=vm.Navigation(pages=["My first page", "My second page"])
         )
         Vizro().build(dashboard).run()
-        ```
+        `
 
     === "app.yaml"
         ```yaml
@@ -108,15 +108,15 @@ If you wish to include only some of your dashboard pages in your navigation then
 You can also group your pages together by specifying `pages` as a dictionary:
 
 !!! example "Grouping pages"
-    === "app.py"
-        ```py
+=== "app.py"
+`py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(pages={"Group A": ["My first page", "My second page"], "Group B": ["My third page"]}),
         )
         Vizro().build(dashboard).run()
-        ```
+        `
 
     === "app.yaml"
         ```yaml
@@ -136,14 +136,13 @@ You can also group your pages together by specifying `pages` as a dictionary:
 
     [GroupedNavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
 
-
 ## Navigation bar with icons
 
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 
 !!! example "Using `NavBar`"
-    === "app.py"
-        ```py
+=== "app.py"
+`py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
@@ -152,7 +151,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
             ),
         )
         Vizro().build(dashboard).run()
-        ```
+        `
 
     === "app.yaml"
         ```yaml
@@ -174,7 +173,6 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
 
     [NavBar]: ../../assets/user_guides/navigation/nav_bar.png
 
-
 Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
 By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
 
@@ -187,8 +185,8 @@ Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.Na
 The same configuration for [grouping pages](#grouping-your-pages) applies inside a `NavLink`:
 
 !!! example "Accordions inside a `Navlink`"
-    === "app.py"
-        ```py
+=== "app.py"
+`py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
@@ -204,7 +202,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
             ),
         )
         Vizro().build(dashboard).run()
-        ```
+        `
 
     === "app.yaml"
         ```yaml
@@ -231,8 +229,8 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
 
 !!! example "Custom icon"
-    === "app.py"
-        ```py
+=== "app.py"
+`py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
@@ -249,7 +247,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                 )
             ),
         )
-        ```
+        `
 
     === "app.yaml"
         ```yaml
