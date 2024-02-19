@@ -103,23 +103,41 @@ Optional high-code extensions allow almost infinite customization in a modular w
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
-## Installation
+### Installation
 
 ```console
 pip install vizro
 ```
 
-See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information
+See the [Installation guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information
 
 Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
 
-## Getting started
+### Getting started
 
 See the [Tutorials](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) for creating your first dashboard
 
-## Documentation
+### Documentation
 
 See the [Documentation](https://vizro.readthedocs.io/en/stable/) for more details
+
+## Packages
+
+|           Folder           |                                           Version                                           |                        Documentation                        |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |    [Vizro Docs](https://vizro.readthedocs.io/en/stable/)    |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro-ai.readthedocs.io/en/latest/) |
+
+### Vizro-AI
+
+[vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is an extension to [vizro-core](https://vizro.readthedocs.io/en/stable/) that is specifically designed to enrich the existing suite of tools of Vizro, introducing advanced artificial intelligence features for generating, analyzing, and manipulating visuals.
+`vizro-ai` leverages natural language capabilities to empower users in creating charts effortlessly.
+
+<p align="center">
+<img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai", width="525" height="296">
+<p>
+
+See [Vizro-AI Documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
 
 ## Community and Development
 
