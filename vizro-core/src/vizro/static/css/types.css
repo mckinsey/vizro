@@ -8,3 +8,8 @@ blockquote {
   margin: 0 0 var(--spacing-02);
   padding-left: var(--spacing-01);
 }
+
+img,
+svg {
+  vertical-align: unset;
+}

@@ -7,43 +7,6 @@ from vizro import Vizro
 
 iris = px.data.iris()
 
-homepage = vm.Page(
-    title="Homepage",
-    description="Vizro demo app for studying gapminder data",
-    layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
-    components=[
-        vm.Card(
-            text="""
-                ![](assets/images/icons/hypotheses.svg#icon-top)
-
-                Analyzing population, GDP per capita and life expectancy on country and continent level.
-                """,
-        ),
-        vm.Card(
-            text="""
-                ![](assets/images/icons/hypotheses.svg#icon-top)
-
-                Investigating the interconnection between population, GDP per capita and life expectancy.
-                """,
-        ),
-        vm.Card(
-            text="""
-                ![](assets/images/icons/collections.svg#icon-top)
-
-                Summarizing the main findings for each continent.
-                """,
-        ),
-        vm.Card(
-            text="""
-                ![](assets/images/icons/features.svg#icon-top)
-
-                Discovering how the metrics differ for each country compared to the continent average
-                and export data for further investigation.
-                """,
-        ),
-    ],
-)
-
 cards = vm.Page(
     title="Cards",
     components=[
@@ -82,7 +45,7 @@ graph = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[homepage, cards], navigation=vm.Navigation(nav_selector=vm.NavBar()))
+dashboard = vm.Dashboard(pages=[cards, graph], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
