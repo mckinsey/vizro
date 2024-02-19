@@ -63,7 +63,7 @@ class DateRangePicker(VizroBaseModel):
                     maxDate=self.max,
                     persistence=True,
                     persistence_type="session",
-                    dropdownPosition='bottom-start',
+                    dropdownPosition="bottom-start",
                     clearable=False,
                 ),
             ],
