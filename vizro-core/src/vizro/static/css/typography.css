@@ -54,7 +54,6 @@ h5,
 h6,
 ul,
 li,
-span,
 .body-ui-02,
 .body-ui-link-02 {
   color: var(--text-secondary);
@@ -111,5 +110,9 @@ code,
 .hljs-quote,
 .hljs-bullet,
 .hljs-name {
+  color: var(--text-secondary);
+}
+
+.card_text span {
   color: var(--text-secondary);
 }
