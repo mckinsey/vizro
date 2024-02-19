@@ -83,6 +83,8 @@ class TestBuildMethod:
                     value="2023-01-05",
                     persistence=True,
                     persistence_type="session",
+                    dropdownPosition="bottom-start",
+                    clearable=False,
                 ),
             ],
             className="selector_container",
