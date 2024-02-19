@@ -80,9 +80,9 @@ page_1 = vm.Page(
             column="DATE_TIME",
             selector=vm.DateRangePicker(
                 title="Pick a date",
-                min_date="2023-01-01",
+                min="2023-01-01",
                 value=["2024-01-01", "2024-03-01"],
-                max_date="2024-07-07",
+                max="2024-07-07",
             ),
             # selector=vm.DatePicker(title="Pick a date", min_date='2023-01-01', value=['2024-01-01']),
         )

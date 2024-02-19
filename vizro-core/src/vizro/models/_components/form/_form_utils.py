@@ -60,7 +60,7 @@ def validate_value(cls, value, values):
 
 
 def validate_max(cls, max, values):
-    """Reusable validator for the "max" argument for sliders."""
+    """Reusable validator for the "max" argument for range components."""
     if max is None:
         return max
 
@@ -70,7 +70,7 @@ def validate_max(cls, max, values):
 
 
 def validate_range_value(cls, value, values):
-    """Reusable validator for the "value" argument for sliders."""
+    """Reusable validator for the "value" argument for range components."""
     if value is None:
         return value
 
