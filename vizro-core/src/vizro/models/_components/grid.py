@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 
 class Grid(VizroBaseModel):
-    """Wrapper for table components to visualize in dashboard.
+    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
     Args:
         type (Literal["grid"]): Defaults to `"grid"`.
-        figure (CapturedCallable): Grid like object to be displayed. Current choices include:
+        figure (CapturedCallable): Grid like object to be displayed. For more information see:
             [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -59,17 +59,17 @@ class Grid(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self):
-        """Requiried properties when using pre-defined `filter_interaction`"""
+    def _get_figure_interaction_input(self) -> Dict[str, State]:
+        """Required properties when using pre-defined `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
-            "modelID": State(component_id=self.id, component_property="id"),
+            "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`"""
+        """Function to be carried out for pre-defined `filter_interaction`."""
         ctd_cellClicked = ctd_filter_interaction["cellClicked"]
         if not ctd_cellClicked["value"]:
             return data_frame

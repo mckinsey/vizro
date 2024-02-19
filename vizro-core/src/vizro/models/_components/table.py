@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 
 class Table(VizroBaseModel):
-    """Wrapper for table components to visualize in dashboard.
+    """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Table like object to be displayed. Current choices include:
+        figure (CapturedCallable): Table like object to be displayed. For more information see:
             [`dash_table.DataTable`](https://dash.plotly.com/datatable).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -60,15 +60,15 @@ class Table(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self):
-        """Requiried properties when using pre-defined `filter_interaction`"""
+    def _get_figure_interaction_input(self) -> Dict[str, State]:
+        """Required properties when using pre-defined `filter_interaction`."""
         return {
             "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
             "derived_viewport_data": State(
                 component_id=self._callable_object_id,
                 component_property="derived_viewport_data",
             ),
-            "modelID": State(component_id=self.id, component_property="id"),
+            "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
     def _filter_interaction(

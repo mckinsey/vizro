@@ -293,7 +293,6 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
-        # TODO: should we have "grid" - also add this
         elif self._mode == "table":
 
             @functools.wraps(func)
@@ -310,8 +309,25 @@ class capture:
                 return captured_callable
 
             return wrapped
+        elif self._mode == "grid":
+
+            @functools.wraps(func)
+            def wrapped(*args, **kwargs):
+                if "data_frame" not in inspect.signature(func).parameters:
+                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('grid').")
+
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+
+                try:
+                    captured_callable["data_frame"]
+                except KeyError as exc:
+                    raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
+                return captured_callable
+
+            return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action') or @capture('table')."
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
+            "@capture('grid')."
         )
 
 

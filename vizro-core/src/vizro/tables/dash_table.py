@@ -1,21 +1,9 @@
 """Module containing the standard implementation of `dash_table.DataTable`."""
-from collections import defaultdict
-from typing import Any, Dict, Mapping
-
 import pandas as pd
 from dash import dash_table
 
 from vizro.models.types import capture
-
-
-def _set_defaults_nested(supplied: Mapping[str, Any], defaults: Mapping[str, Any]) -> Dict[str, Any]:
-    supplied = defaultdict(dict, supplied)
-    for default_key, default_value in defaults.items():
-        if isinstance(default_value, Mapping):
-            supplied[default_key] = _set_defaults_nested(supplied[default_key], default_value)
-        else:
-            supplied.setdefault(default_key, default_value)
-    return dict(supplied)
+from vizro.tables._utils import _set_defaults_nested
 
 
 @capture("table")

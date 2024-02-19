@@ -75,17 +75,17 @@ class Graph(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self):
-        """Requiried properties when using pre-defined `filter_interaction`"""
+    def _get_figure_interaction_input(self) -> Dict[str, State]:
+        """Required properties when using pre-defined `filter_interaction`."""
         return {
             "clickData": State(component_id=self.id, component_property="clickData"),
-            "modelID": State(component_id=self.id, component_property="id"),
+            "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`"""
+        """Function to be carried out for pre-defined `filter_interaction`."""
         ctd_click_data = ctd_filter_interaction["clickData"]
         if not ctd_click_data["value"]:
             return data_frame
