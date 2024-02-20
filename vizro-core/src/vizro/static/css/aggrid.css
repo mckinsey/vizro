@@ -21,6 +21,7 @@
 #page-container .ag-theme-alpine .ag-header-cell {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
   padding-left: 0px;
+  padding-right: 12px;
 }
 /*Border at bottom when hovering more solid*/
 #page-container .ag-theme-alpine .ag-header-cell:hover {
@@ -37,9 +38,10 @@
   /*height: 48px; !* This does not seem to set it to 48px due to element style *!*/
 }
 #page-container .ag-theme-alpine .ag-cell {
-  display: flex;
+  /*display: flex;*/ /*This breaks AGGrid side right alignment of numerical columns*/
   align-items: center;
-  padding: 0px;
+  padding-left: 0px;
+  padding-right: 12px;
   font-size: 14px;
 }
 /* Changes header on click, this has the advantage of not remaining when cell is not sorted, but still "clicked" */

@@ -50,6 +50,7 @@ DATA_TYPE_DEFINITIONS = {
 def dash_ag_grid(data_frame=None, **kwargs):
     """Implementation of `dash-ag-grid.AgGrid` with sensible defaults."""
     defaults = {
+        "className": "ag-theme-alpine vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
