@@ -52,7 +52,7 @@ def dash_ag_grid(data_frame=None, **kwargs):
     defaults = {
         # "className": "ag-theme-alpine vizro",
         "className": "ag-theme-quartz vizro",
-        "columnDefs": [{"field": col} for col in data_frame.columns],
+        "columnDefs": [{"field": col, "flex":1, "minWidth": 70} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
                 x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AGGrid filtering to function
