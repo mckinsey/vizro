@@ -69,31 +69,6 @@ def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerD
     return data_frame
 
 
-def _apply_graph_filter_interaction(
-    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-) -> pd.DataFrame:
-    ctd_click_data = ctd_filter_interaction["clickData"]
-    if not ctd_click_data["value"]:
-        return data_frame
-
-    source_graph_id: ModelID = ctd_click_data["id"]
-    source_graph_actions = _get_component_actions(model_manager[source_graph_id])
-    try:
-        custom_data_columns = model_manager[source_graph_id]["custom_data"]
-    except KeyError as exc:
-        raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
-
-    customdata = ctd_click_data["value"]["points"][0]["customdata"]
-
-    for action in source_graph_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
-            continue
-        for custom_data_idx, column in enumerate(custom_data_columns):
-            data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
-
-    return data_frame
-
-
 def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseModel:
     from vizro.models import VizroBaseModel
 
@@ -106,28 +81,6 @@ def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseMod
     raise KeyError(
         f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
     )
-
-
-def _apply_table_filter_interaction(
-    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-) -> pd.DataFrame:
-    ctd_active_cell = ctd_filter_interaction["active_cell"]
-    ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
-    if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
-        return data_frame
-
-    # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-    source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
-
-    for action in source_table_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
-            continue
-        column = ctd_active_cell["value"]["column_id"]
-        derived_viewport_data_row = ctd_active_cell["value"]["row"]
-        clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
-        data_frame = data_frame[data_frame[column].isin([clicked_data])]
-
-    return data_frame
 
 
 def _apply_filter_interaction(
