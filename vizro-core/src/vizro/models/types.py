@@ -36,7 +36,8 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
-    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md) to see available choices.
+    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md) 
+    to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
     custom charts](../user-guides/custom-charts.md),
