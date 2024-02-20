@@ -27,7 +27,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Changed filenames to replace underscores with hyphens and fix resulting internal link breaks ([#321](https://github.com/mckinsey/vizro/pull/321))
 
-
 <!--
 ### Deprecated
 
