@@ -21,21 +21,21 @@ from vizro.models.types import CapturedCallable
 logger = logging.getLogger(__name__)
 
 
-class Table(VizroBaseModel):
-    """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
+class Grid(VizroBaseModel):
+    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
     Args:
-        type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Table like object to be displayed. For more information see:
-            [`dash_table.DataTable`](https://dash.plotly.com/datatable).
+        type (Literal["grid"]): Defaults to `"grid"`.
+        figure (CapturedCallable): Grid like object to be displayed. For more information see:
+            [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
-    type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
-    title: str = Field("", description="Title of the table")
+    type: Literal["grid"] = "grid"
+    figure: CapturedCallable = Field(..., import_path=vt, description="Grid to be visualized on dashboard")
+    title: str = Field("", description="Title of the grid")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -44,7 +44,7 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    set_actions = _action_validator_factory("active_cell")
+    set_actions = _action_validator_factory("cellClicked")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
@@ -54,8 +54,7 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
-        # pydantic discriminated union validation seems to try Table["type"], which throws an error unless we
-        # explicitly redirect it to the correct attribute.
+        # See table implementation for more details.
         if arg_name == "type":
             return self.type
         return self.figure[arg_name]
@@ -64,11 +63,7 @@ class Table(VizroBaseModel):
     def _get_figure_interaction_input(self) -> Dict[str, State]:
         """Required properties when using pre-defined `filter_interaction`."""
         return {
-            "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
-            "derived_viewport_data": State(
-                component_id=self._callable_object_id,
-                component_property="derived_viewport_data",
-            ),
+            "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
@@ -76,20 +71,18 @@ class Table(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
-        ctd_active_cell = ctd_filter_interaction["active_cell"]
-        ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
-        if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
+        ctd_cellClicked = ctd_filter_interaction["cellClicked"]
+        if not ctd_cellClicked["value"]:
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
+        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
             if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
                 continue
-            column = ctd_active_cell["value"]["column_id"]
-            derived_viewport_data_row = ctd_active_cell["value"]["row"]
-            clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
+            column = ctd_cellClicked["value"]["colId"]
+            clicked_data = ctd_cellClicked["value"]["value"]
             data_frame = data_frame[data_frame[column].isin([clicked_data])]
 
         return data_frame
@@ -99,19 +92,17 @@ class Table(VizroBaseModel):
         if self.actions:
             kwargs = self.figure._arguments.copy()
 
-            # This workaround is needed because the underlying table object requires a data_frame
+            # taken from table implementation - see there for details
             kwargs["data_frame"] = pd.DataFrame()
+            underlying_grid_object = self.figure._function(**kwargs)
 
-            # The underlying table object is pre-built, so we can fetch its ID.
-            underlying_table_object = self.figure._function(**kwargs)
-
-            if not hasattr(underlying_table_object, "id"):
+            if not hasattr(underlying_grid_object, "id"):
                 raise ValueError(
-                    "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
-                    " a valid 'id' has to be provided to the `Table` callable."
+                    "Underlying `Grid` callable has no attribute 'id'. To enable actions triggered by the `Grid`"
+                    " a valid 'id' has to be provided to the `Grid` callable."
                 )
 
-            self._callable_object_id = underlying_table_object.id
+            self._callable_object_id = underlying_grid_object.id
 
     def build(self):
         return dcc.Loading(
