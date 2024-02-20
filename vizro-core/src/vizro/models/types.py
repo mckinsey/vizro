@@ -39,7 +39,7 @@ class CapturedCallable:
     Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md) to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
-    custom charts](../user-guides/custom-charts.md), 
+    custom charts](../user-guides/custom-charts.md),
     [custom tables](../user-guides/custom-tables.md) or
     [custom actions](../user-guides/custom-actions.md).
     """
