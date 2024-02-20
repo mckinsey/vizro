@@ -28,7 +28,7 @@ listed below to fill your dashboard with visuals.
 
     Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
 
-    [:octicons-arrow-right-24: View User Guide](card_button.md)
+    [:octicons-arrow-right-24: View User Guide](card-button.md)
 
 - :octicons-table-16:{ .lg .middle } __Container__
 

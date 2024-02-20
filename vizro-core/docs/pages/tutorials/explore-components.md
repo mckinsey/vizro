@@ -708,7 +708,7 @@ and how to bring them together.
 
 For future dashboard creations, you can explore more about the available dashboard `components` by going through our overview page for
 [components](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration
-details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user-guides/parameters.md)
+details of `controls`, check out the user guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md)
 and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head
 to [Navigation](../user-guides/navigation.md).
 
