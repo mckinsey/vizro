@@ -8,7 +8,7 @@
   --ag-icon-font-family: agGridQuartz;
   --ag-icon-size: 14px;
   --ag-row-height: 48px; /* This determines the row height, but not header */
-  --ag-header-height: 40px
+  --ag-header-height: 40px;
 }
 /* General setting header row*/
 #page-container .ag-theme-quartz .ag-header-row {
