@@ -1,5 +1,4 @@
 import plotly.express as px
-
 import vizro.plotly.express as hpx
 
 

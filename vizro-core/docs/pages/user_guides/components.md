@@ -38,4 +38,12 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View User Guide](container.md)
 
+- :material-tab-plus:{ .lg .middle } __Tabs__
+
+    ---
+
+    Use tabs to group your containers and navigate between them.
+
+    [:octicons-arrow-right-24: View User Guide](tabs.md)
+
 </div>

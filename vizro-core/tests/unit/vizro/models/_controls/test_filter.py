@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
@@ -17,11 +16,7 @@ class TestFilterFunctions:
             ([1, 2, 3, 4, 5], [1, 5], [True, True, True, True, True]),  # Test for inclusive all
             ([1, 2, 3, 4, 5], [4, 2], [False, False, False, False, False]),  # Test for inverted values
             ([], [2, 4], pd.Series([], dtype=bool)),  # Test for empty series
-            (
-                [1.1, 2.2, 3.3, 4.4, 5.5],
-                [2.1, 4.5],
-                [False, True, True, True, False],
-            ),  # Test with float data
+            ([1.1, 2.2, 3.3, 4.4, 5.5], [2.1, 4.5], [False, True, True, True, False]),  # Test with float data
         ],
     )
     def test_filter_between(self, data, value, expected):
@@ -35,11 +30,7 @@ class TestFilterFunctions:
         [
             ([1, 2, 3, 4, 5], [2, 4], [False, True, False, True, False]),  # Test for integers
             (["apple", "banana", "orange"], ["banana", "grape"], [False, True, False]),  # Test for strings
-            (
-                [1.1, 2.2, 3.3, 4.4, 5.5],
-                [2.2, 4.4],  # Test for float values
-                [False, True, False, True, False],
-            ),
+            ([1.1, 2.2, 3.3, 4.4, 5.5], [2.2, 4.4], [False, True, False, True, False]),  # Test for float values
             ([1, 2, 3, 4, 5], [], [False, False, False, False, False]),  # Test for empty value list
         ],
     )

@@ -1,4 +1,5 @@
 """Custom Chart Component."""
+
 import logging
 from typing import Dict, Tuple
 
@@ -40,8 +41,9 @@ class GetCustomChart(VizroAiComponentBase):
     # TODO Explore if it is possible to create CustomChart without LLM
     """Get custom chart code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt custom chart code.
+
     """
 
     prompt: str = custom_chart_prompt
@@ -121,7 +123,5 @@ if __name__ == "__main__":
 
     test_custom_chart = GetCustomChart(llm=llm_to_use)
 
-    res = test_custom_chart.run(
-        chain_input=outcome_visual_tool,
-    )
+    res = test_custom_chart.run(chain_input=outcome_visual_tool)
     print(res)  # noqa: T201

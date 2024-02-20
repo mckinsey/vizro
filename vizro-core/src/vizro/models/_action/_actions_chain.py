@@ -23,10 +23,7 @@ class ActionsChain(VizroBaseModel):
 def _set_actions(actions: List[Action], values: Dict[str, Any], trigger_property: str) -> List[ActionsChain]:
     return [
         ActionsChain(
-            trigger=Trigger(
-                component_id=values["id"],
-                component_property=trigger_property,
-            ),
+            trigger=Trigger(component_id=values["id"], component_property=trigger_property),
             actions=actions,
         )
     ]

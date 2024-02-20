@@ -28,6 +28,7 @@ class CallbackTriggerDict(TypedDict):
         value: The value of the component property at the time the callback was fired.
         str_id: For pattern matching IDs, it's the stringified dict ID without white spaces.
         triggered: A boolean indicating whether this input triggered the callback.
+
     """
 
     id: ModelID
@@ -46,11 +47,7 @@ def _get_component_actions(component) -> List[Action]:
     )
 
 
-def _apply_filters(
-    data_frame: pd.DataFrame,
-    ctds_filters: List[CallbackTriggerDict],
-    target: str,
-) -> pd.DataFrame:
+def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerDict], target: str) -> pd.DataFrame:
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -134,9 +131,7 @@ def _apply_table_filter_interaction(
 
 
 def _apply_filter_interaction(
-    data_frame: pd.DataFrame,
-    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
-    target: str,
+    data_frame: pd.DataFrame, ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]], target: str
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
         if "modelID" in ctd_filter_interaction:
@@ -228,15 +223,9 @@ def _get_filtered_data(
     for target in targets:
         data_frame = data_manager._get_component_data(target)
 
-        data_frame = _apply_filters(
-            data_frame=data_frame,
-            ctds_filters=ctds_filters,
-            target=target,
-        )
+        data_frame = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filters, target=target)
         data_frame = _apply_filter_interaction(
-            data_frame=data_frame,
-            ctds_filter_interaction=ctds_filter_interaction,
-            target=target,
+            data_frame=data_frame, ctds_filter_interaction=ctds_filter_interaction, target=target
         )
 
         filtered_data[target] = data_frame
@@ -253,15 +242,10 @@ def _get_modified_page_figures(
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
-        targets=targets,
-        ctds_filters=ctds_filter,
-        ctds_filter_interaction=ctds_filter_interaction,
+        targets=targets, ctds_filters=ctds_filter, ctds_filter_interaction=ctds_filter_interaction
     )
 
-    parameterized_config = _get_parametrized_config(
-        targets=targets,
-        parameters=ctds_parameters,
-    )
+    parameterized_config = _get_parametrized_config(targets=targets, parameters=ctds_parameters)
 
     outputs: Dict[str, Any] = {}
     for target in targets:

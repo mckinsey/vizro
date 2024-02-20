@@ -1,13 +1,3 @@
-textarea {
-  background-color: var(--field-enabled);
-  padding: var(--spacing-02);
-}
-
-textarea:focus {
-  box-shadow: 0 0 0 2px var(--focus-focus) inset;
-  outline: none;
-}
-
 hr {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   width: 100%;

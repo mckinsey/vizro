@@ -14,43 +14,42 @@ from vizro.models._models_utils import _log_call
 
 
 class UserInput(VizroBaseModel):
-    """Component provided to `Form` to allow user text input.
+    """Component provided to `Form` to allow single-line user input.
 
     Args:
         type (Literal["user_input"]): Defaults to `"user_input"`.
+        title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
         actions (Optional[List[Action]]): Defaults to `[]`.
-        title (str): Title to be displayed. Defaults to `""`.
-        input_type (Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"]):
-            Type of value to validate user input against. Defaults to `"text"`.
+
     """
 
     type: Literal["user_input"] = "user_input"
+    # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field("", description="Title to be displayed")
     placeholder: str = Field("", description="Default text to display in input field")
-    input_type: Literal["text", "number", "password", "email", "search", "tel", "url", "range", "hidden"] = Field(
-        "text", description="Type of value to validate user input against."
-    )
     actions: List[Action] = []
 
     # Re-used validators
+    # TODO: Before making public, consider how actions should be triggered and what the default property should be
+    # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     _set_actions = _action_validator_factory("value")
 
     @_log_call
     def build(self):
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,
-                    type=self.input_type,
+                    type="text",
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
                     className="user_input",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

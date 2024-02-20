@@ -1,4 +1,5 @@
 """Determine if new package should be release (based on version) and consequently write information to env."""
+
 import os
 import subprocess
 import sys

@@ -1,4 +1,5 @@
 """Unit tests for vizro.models.NavLink."""
+
 import re
 
 import dash_bootstrap_components as dbc

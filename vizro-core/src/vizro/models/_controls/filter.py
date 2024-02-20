@@ -15,13 +15,7 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
@@ -53,6 +47,7 @@ class Filter(VizroBaseModel):
         targets (List[ModelID]): Target component to be affected by filter. If none are given then target all components
             on the page that use `column`.
         selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+
     """
 
     type: Literal["filter"] = "filter"
@@ -143,11 +138,7 @@ class Filter(VizroBaseModel):
             filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
             self.selector.actions = [
                 Action(
-                    function=_filter(
-                        filter_column=self.column,
-                        targets=self.targets,
-                        filter_function=filter_function,
-                    ),
+                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 )
             ]
