@@ -1,4 +1,5 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+
 from typing import Callable, Dict, Union
 
 import pandas as pd
@@ -15,7 +16,7 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
-    Examples:
+    Examples
         >>> import plotly.express as px
         >>> data_manager["iris"] = px.data.iris()
 
@@ -73,13 +74,6 @@ class DataManager:
         # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
         # to not do any inplace=True operations, but probably safest to leave it here.
         return self.__original_data[dataset_name].copy()
-
-    def _has_registered_data(self, component_id: ComponentID) -> bool:
-        try:
-            self._get_component_data(component_id)
-            return True
-        except KeyError:
-            return False
 
     def _clear(self):
         self.__init__()  # type: ignore[misc]

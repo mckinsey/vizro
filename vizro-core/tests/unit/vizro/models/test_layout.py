@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 try:
@@ -6,9 +5,11 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
+import numpy as np
 import vizro.models as vm
-from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines
-from vizro.models._models_utils import get_unique_grid_component_ids
+from asserts import assert_component_equal
+from dash import html
+from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
 
 
 class TestLayoutInstantiation:
@@ -148,10 +149,45 @@ class TestWorkingGrid:
             assert False, f"{grid} raised a value error {ve}."
 
 
-@pytest.mark.parametrize("grid", [[[0, -1], [1, 2]], [[0, -1, 1, 2]], [[-1, -1, -1], [0, 1, 2]]])
-def test_get_unique_grid_component_ids(grid):
-    result = get_unique_grid_component_ids(grid)
-    expected = np.array([0, 1, 2])
+class TestSharedLayoutHelpers:
+    @pytest.mark.parametrize(
+        "grid",
+        [
+            [[0, -1], [1, 2]],
+            [[0, -1, 1, 2]],
+            [[-1, -1, -1], [0, 1, 2]],
+        ],
+    )
+    def test_get_unique_grid_component_ids(self, grid):
+        result = _get_unique_grid_component_ids(grid)
+        expected = np.array([0, 1, 2])
 
-    assert isinstance(result, np.ndarray)
-    assert (result == expected).all()
+        np.testing.assert_array_equal(result, expected)
+
+    def test_set_layout_valid(self, model_with_layout):
+        model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+
+    def test_set_layout_invalid(self, model_with_layout):
+        with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
+            model_with_layout(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+
+
+class TestLayoutBuild:
+    def test_layout_build(self):
+        result = vm.Layout(grid=[[0, 1], [0, 2]], id="layout_id").build()
+        expected = html.Div(
+            [
+                html.Div(id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3"}),
+                html.Div(id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2"}),
+                html.Div(id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3"}),
+            ],
+            style={
+                "gridRowGap": "12px",
+                "gridColumnGap": "12px",
+                "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
+                "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
+            },
+            className="grid-layout",
+            id="layout_id",
+        )
+        assert_component_equal(result, expected)

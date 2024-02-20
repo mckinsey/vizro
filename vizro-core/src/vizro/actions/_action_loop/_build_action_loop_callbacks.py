@@ -1,4 +1,5 @@
 """Contains utilities to create required dash callbacks for the action loop."""
+
 import logging
 from typing import List
 

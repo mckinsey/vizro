@@ -11,10 +11,12 @@ except ImportError:  # pragma: no cov
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
-from vizro.managers._model_manager import DuplicateIDError
+from vizro.managers import model_manager
+from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._models_utils import _log_call, get_unique_grid_component_ids
+from vizro.models._layout import set_layout
+from vizro.models._models_utils import _log_call, _validate_min_length
 
 from .types import ComponentType, ControlType
 
@@ -22,7 +24,7 @@ from .types import ComponentType, ControlType
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "components": html.Div})
+_PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
 class Page(VizroBaseModel):
@@ -37,8 +39,6 @@ class Page(VizroBaseModel):
         controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
-    Raises:
-        ValueError: If number of page and grid components is not the same
     """
 
     components: List[ComponentType]
@@ -51,6 +51,10 @@ class Page(VizroBaseModel):
     # TODO: Remove default on page load action if possible
     actions: List[ActionsChain] = []
 
+    # Re-used validators
+    _validate_components = validator("components", allow_reuse=True, always=True)(_validate_min_length)
+    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+
     @root_validator(pre=True)
     def set_id(cls, values):
         if "title" not in values:
@@ -58,26 +62,6 @@ class Page(VizroBaseModel):
 
         values.setdefault("id", values["title"])
         return values
-
-    @validator("components", always=True)
-    def set_components(cls, components):
-        if not components:
-            raise ValueError("Ensure this value has at least 1 item.")
-        return components
-
-    @validator("layout", always=True)
-    def set_layout(cls, layout, values) -> Layout:
-        if "components" not in values:
-            return layout
-
-        if layout is None:
-            grid = [[i] for i in range(len(values["components"]))]
-            return Layout(grid=grid)
-
-        unique_grid_idx = get_unique_grid_component_ids(layout.grid)
-        if len(unique_grid_idx) != len(values["components"]):
-            raise ValueError("Number of page and grid components need to be the same.")
-        return layout
 
     @validator("path", always=True)
     def set_path(cls, path, values) -> str:
@@ -106,17 +90,17 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        if any(hasattr(component, "figure") for component in self.components):
+        targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
+        if targets:
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
                     trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}",
-                        component_property="data",
+                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(page_id=self.id)
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
                         )
                     ],
                 )
@@ -126,23 +110,16 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
-        control_panel = (
-            html.Div(children=[*controls_content], id="control-panel")
-            if controls_content
-            else html.Div(hidden=True, id="control-panel")
-        )
-        components_content = [
-            html.Div(
-                component.build(),
-                style={
-                    "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
-                    "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
-                },
-            )
-            for component, grid_coord in zip(self.components, self.layout.component_grid_lines)
-        ]
-        components_container = self._create_component_container(components_content)
-        return html.Div([control_panel, components_container])
+        control_panel = html.Div(children=controls_content, id="control-panel", hidden=not controls_content)
+
+        components_container = self.layout.build()
+        for component_idx, component in enumerate(self.components):
+            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+
+        # Page specific CSS ID and Stores
+        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.id = "page-components"
+        return html.Div([control_panel, components_container], id=self.id)
 
     def _update_graph_theme(self):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
@@ -158,7 +135,11 @@ class Page(VizroBaseModel):
         # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
-        themed_components = [component for component in self.components if hasattr(component, "_update_theme")]
+        themed_components = [
+            model_manager[model_id]
+            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
+            if hasattr(model_manager[model_id], "_update_theme")
+        ]
         if themed_components:
 
             @callback(
@@ -168,24 +149,3 @@ class Page(VizroBaseModel):
             )
             def update_graph_theme(theme_selector: bool):
                 return [component._update_theme(Patch(), theme_selector) for component in themed_components]
-
-    def _create_component_container(self, components_content):
-        component_container = html.Div(
-            children=[
-                html.Div(
-                    components_content,
-                    style={
-                        "gridRowGap": self.layout.row_gap,
-                        "gridColumnGap": self.layout.col_gap,
-                        "gridTemplateColumns": f"repeat({len(self.layout.grid[0])},"
-                        f"minmax({self.layout.col_min_width}, 1fr))",
-                        "gridTemplateRows": f"repeat({len(self.layout.grid)},"
-                        f"minmax({self.layout.row_min_height}, 1fr))",
-                    },
-                    className="component_container_grid",
-                ),
-                dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
-            ],
-            id="components",
-        )
-        return component_container

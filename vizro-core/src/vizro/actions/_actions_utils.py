@@ -28,6 +28,7 @@ class CallbackTriggerDict(TypedDict):
         value: The value of the component property at the time the callback was fired.
         str_id: For pattern matching IDs, it's the stringified dict ID without white spaces.
         triggered: A boolean indicating whether this input triggered the callback.
+
     """
 
     id: ModelID
@@ -46,11 +47,7 @@ def _get_component_actions(component) -> List[Action]:
     )
 
 
-def _apply_filters(
-    data_frame: pd.DataFrame,
-    ctds_filters: List[CallbackTriggerDict],
-    target: str,
-) -> pd.DataFrame:
+def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerDict], target: str) -> pd.DataFrame:
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -72,31 +69,6 @@ def _apply_filters(
     return data_frame
 
 
-def _apply_graph_filter_interaction(
-    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-) -> pd.DataFrame:
-    ctd_click_data = ctd_filter_interaction["clickData"]
-    if not ctd_click_data["value"]:
-        return data_frame
-
-    source_graph_id: ModelID = ctd_click_data["id"]
-    source_graph_actions = _get_component_actions(model_manager[source_graph_id])
-    try:
-        custom_data_columns = model_manager[source_graph_id]["custom_data"]
-    except KeyError as exc:
-        raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
-
-    customdata = ctd_click_data["value"]["points"][0]["customdata"]
-
-    for action in source_graph_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
-            continue
-        for custom_data_idx, column in enumerate(custom_data_columns):
-            data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
-
-    return data_frame
-
-
 def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseModel:
     from vizro.models import VizroBaseModel
 
@@ -111,70 +83,13 @@ def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseMod
     )
 
 
-def _apply_dashtable_filter_interaction(
-    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-) -> pd.DataFrame:
-    ctd_active_cell = ctd_filter_interaction["active_cell"]
-    ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
-    if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
-        return data_frame
-
-    # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-    source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
-
-    for action in source_table_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
-            continue
-        column = ctd_active_cell["value"]["column_id"]
-        derived_viewport_data_row = ctd_active_cell["value"]["row"]
-        clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
-        data_frame = data_frame[data_frame[column].isin([clicked_data])]
-
-    return data_frame
-
-
-def _apply_aggrid_filter_interaction(
-    data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
-) -> pd.DataFrame:
-    ctd_cellClicked = ctd_filter_interaction["cellClicked"]
-    if not ctd_cellClicked["value"]:
-        return data_frame
-
-    # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-    source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_cellClicked["id"]))
-
-    for action in source_table_actions:
-        if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
-            continue
-        column = ctd_cellClicked["value"]["colId"]
-        clicked_data = ctd_cellClicked["value"]["value"]
-        data_frame = data_frame[data_frame[column].isin([clicked_data])]
-
-    return data_frame
-
-
 def _apply_filter_interaction(
-    data_frame: pd.DataFrame,
-    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
-    target: str,
+    data_frame: pd.DataFrame, ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]], target: str
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
-        if "clickData" in ctd_filter_interaction:
-            data_frame = _apply_graph_filter_interaction(
-                data_frame=data_frame,
-                target=target,
-                ctd_filter_interaction=ctd_filter_interaction,
-            )
-
-        if "active_cell" in ctd_filter_interaction and "derived_viewport_data" in ctd_filter_interaction:
-            data_frame = _apply_dashtable_filter_interaction(
-                data_frame=data_frame,
-                target=target,
-                ctd_filter_interaction=ctd_filter_interaction,
-            )
-
-        if "cellClicked" in ctd_filter_interaction:
-            data_frame = _apply_aggrid_filter_interaction(
+        if "modelID" in ctd_filter_interaction:
+            triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
+            data_frame = triggered_model._filter_interaction(
                 data_frame=data_frame,
                 target=target,
                 ctd_filter_interaction=ctd_filter_interaction,
@@ -261,15 +176,9 @@ def _get_filtered_data(
     for target in targets:
         data_frame = data_manager._get_component_data(target)
 
-        data_frame = _apply_filters(
-            data_frame=data_frame,
-            ctds_filters=ctds_filters,
-            target=target,
-        )
+        data_frame = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filters, target=target)
         data_frame = _apply_filter_interaction(
-            data_frame=data_frame,
-            ctds_filter_interaction=ctds_filter_interaction,
-            target=target,
+            data_frame=data_frame, ctds_filter_interaction=ctds_filter_interaction, target=target
         )
 
         filtered_data[target] = data_frame
@@ -286,15 +195,10 @@ def _get_modified_page_figures(
     if not targets:
         targets = []
     filtered_data = _get_filtered_data(
-        targets=targets,
-        ctds_filters=ctds_filter,
-        ctds_filter_interaction=ctds_filter_interaction,
+        targets=targets, ctds_filters=ctds_filter, ctds_filter_interaction=ctds_filter_interaction
     )
 
-    parameterized_config = _get_parametrized_config(
-        targets=targets,
-        parameters=ctds_parameters,
-    )
+    parameterized_config = _get_parametrized_config(targets=targets, parameters=ctds_parameters)
 
     outputs: Dict[str, Any] = {}
     for target in targets:

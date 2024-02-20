@@ -1,7 +1,7 @@
 """Unit tests for vizro.managers.data_manager."""
+
 import pandas as pd
 import pytest
-
 from vizro.managers._data_manager import DataManager
 
 

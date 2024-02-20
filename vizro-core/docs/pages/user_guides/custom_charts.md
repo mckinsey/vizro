@@ -1,7 +1,7 @@
 # How to create custom charts
 
 This guide shows you how to create custom charts and how to add them to your dashboard.
-The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the user guide on [components][graph].
+The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs][graph.md].
 
 ## Overview of custom charts
 
@@ -145,7 +145,6 @@ The below examples shows a more involved use-case. We create and style a waterfa
             title="Custom chart",
             components=[
                 vm.Graph(
-                    id="waterfall",
                     figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
                 ),
             ],

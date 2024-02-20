@@ -15,7 +15,7 @@
   --border-dark-mode-disabled: rgba(255, 255, 255, 0.3);
   --field-dark-mode-disabled: rgba(240, 241, 242, 1);
   --fill-dark-mode-disabled: rgba(255, 255, 255, 0.3);
-  --text-dark-mode-disabled: rgba(255, 255, 255, 1);
+  --text-dark-mode-disabled: rgba(255, 255, 255, 0.3);
   --border-dark-mode-enabled: rgba(255, 255, 255, 0.6);
   --field-dark-mode-enabled: rgba(43, 46, 57, 1);
   --status-dark-mode-error: rgba(245, 101, 101, 1);

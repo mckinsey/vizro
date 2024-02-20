@@ -36,7 +36,7 @@ class VizroBaseChain(ABC):
 class FunctionCallChain(VizroBaseChain, ABC):
     """LLM Chain with Function Calling."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         llm: LLM_MODELS,
         raw_prompt: str,
@@ -53,11 +53,7 @@ class FunctionCallChain(VizroBaseChain, ABC):
 
     def _construct_prompt(self, raw_prompt, partial_vars_map) -> str:
         """Construct the prompt from partial variables input."""
-        prompt = PromptTemplate(
-            input_variables=["input"],
-            template=raw_prompt,
-            partial_variables=partial_vars_map,
-        )
+        prompt = PromptTemplate(input_variables=["input"], template=raw_prompt, partial_variables=partial_vars_map)
 
         vars_set = set(re.findall(r"\{([^}]*)\}", raw_prompt))
         vars_set -= {"input"}
@@ -111,6 +107,7 @@ class FunctionCallChain(VizroBaseChain, ABC):
 
         Returns:
             args as a dictionary
+
         """
         raw_ans = self.chain.generate([{"input": input_str}])
         args = self._custom_parse(raw_ans.generations[0])

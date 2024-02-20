@@ -11,6 +11,56 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.11'></a>
+
+# 0.1.11 — 2024-02-13
+
+## Fixed
+
+- Improve layouts for small devices. ([#302](https://github.com/mckinsey/vizro/pull/302))
+
+<a id='changelog-0.1.10'></a>
+
+# 0.1.10 — 2024-01-31
+
+## Highlights ✨
+
+- Introduce `Tabs` model as a new `Page` component. ([#280](https://github.com/mckinsey/vizro/pull/280))
+
+## Changed
+
+- Replace `html.P` with `html.Label` in form components. ([#293](https://github.com/mckinsey/vizro/pull/293))
+
+## Fixed
+
+- Fix bug on accordion group not opening properly when re-directing to active page via navigation card or URL path. ([#276](https://github.com/mckinsey/vizro/pull/276))
+
+<a id='changelog-0.1.9'></a>
+
+# 0.1.9 — 2024-01-25
+
+## Highlights ✨
+
+- Introduce `Container` model as a new `Page` component. Visit the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user_guides/container/) to learn more. ([#254](https://github.com/mckinsey/vizro/pull/254))
+
+## Added
+
+- Enable automatic logo insertion into `page-header` container. ([#248](https://github.com/mckinsey/vizro/pull/248))
+
+- Enable the side panel to collapse/expand with a button. ([#225](https://github.com/mckinsey/vizro/pull/225))
+
+## Changed
+
+- Move `dashboard-title` to top header container `page-header`. ([#238](https://github.com/mckinsey/vizro/pull/238))
+
+## Fixed
+
+- Add CSS for `dmc.Switch` and fix CSS when toggle-switch is turned on. ([#244](https://github.com/mckinsey/vizro/pull/244))
+
+- Fix bug of `value` argument not properly being evaluated in `Slider` and `RangeSlider`. ([#266](https://github.com/mckinsey/vizro/pull/266))
+
+- Fix bug on scrolling and viewport on Safari. ([#277](https://github.com/mckinsey/vizro/pull/277))
+
 <a id='changelog-0.1.8'></a>
 
 # 0.1.8 — 2024-01-04

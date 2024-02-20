@@ -108,7 +108,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         page = vm.Page(
             title="Custom Component",
-            path="custom-component",
             components=[
                 vm.Graph(
                     id="for_custom_chart",
@@ -144,7 +143,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
     === "yaml"
         ```yaml
-        # TBD
+        # Custom components are currently only possible via python configuration
         ```
     === "Result"
         [![CustomComponent1]][CustomComponent1]
@@ -239,7 +238,6 @@ vm.Page.add_type("components", Jumbotron)
 
         page = vm.Page(
             title="Custom Component",
-            path="custom-component",
             components=[
                 Jumbotron(  # (6)!
                     id="my_jumbotron",
@@ -264,7 +262,7 @@ vm.Page.add_type("components", Jumbotron)
         6.  The new component can now be inserted into a regular dashboard.
     === "yaml"
         ```yaml
-        # TBD
+        # Custom components are currently only possible via python configuration
         ```
     === "Result"
         [![CustomComponent2]][CustomComponent2]

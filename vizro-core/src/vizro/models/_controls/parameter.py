@@ -9,13 +9,7 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import (
-    Checklist,
-    Dropdown,
-    RadioItems,
-    RangeSlider,
-    Slider,
-)
+from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
 
@@ -32,9 +26,6 @@ class Parameter(VizroBaseModel):
         targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.
         selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value
             `"NONE"` into `None` to allow optional parameters.
-
-    Raises:
-        ValueError: If targets are invalid and not of the form `<target_component>.<target_argument>`.
 
     """
 
@@ -97,10 +88,5 @@ class Parameter(VizroBaseModel):
     def _set_actions(self):
         if not self.selector.actions:
             self.selector.actions = [
-                Action(
-                    id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
-                    function=_parameter(
-                        targets=self.targets,
-                    ),
-                )
+                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
             ]

@@ -1,7 +1,7 @@
 import logging
-from typing import List, Literal
+from typing import Dict, List, Literal
 
-from dash import ctx, dcc
+from dash import State, ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -10,9 +10,13 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
+import pandas as pd
+
 import vizro.plotly.express as px
 from vizro import _themes as themes
-from vizro.managers import data_manager
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -29,6 +33,7 @@ class Graph(VizroBaseModel):
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["graph"] = "graph"
@@ -70,6 +75,39 @@ class Graph(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
+    # Interaction methods
+    def _get_figure_interaction_input(self) -> Dict[str, State]:
+        """Required properties when using pre-defined `filter_interaction`."""
+        return {
+            "clickData": State(component_id=self.id, component_property="clickData"),
+            "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
+        }
+
+    def _filter_interaction(
+        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+    ) -> pd.DataFrame:
+        """Function to be carried out for pre-defined `filter_interaction`."""
+        ctd_click_data = ctd_filter_interaction["clickData"]
+        if not ctd_click_data["value"]:
+            return data_frame
+
+        source_graph_id: ModelID = ctd_click_data["id"]
+        source_graph_actions = _get_component_actions(model_manager[source_graph_id])
+        try:
+            custom_data_columns = model_manager[source_graph_id]["custom_data"]
+        except KeyError as exc:
+            raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
+
+        customdata = ctd_click_data["value"]["points"][0]["customdata"]
+
+        for action in source_graph_actions:
+            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+                continue
+            for custom_data_idx, column in enumerate(custom_data_columns):
+                data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
+
+        return data_frame
+
     @_log_call
     def build(self):
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
@@ -87,11 +125,7 @@ class Graph(VizroBaseModel):
                         "yaxis": {"visible": False},
                     }
                 ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
+                config={"autosizable": True, "frameMargins": 0, "responsive": True},
                 className="chart_container",
             ),
             color="grey",

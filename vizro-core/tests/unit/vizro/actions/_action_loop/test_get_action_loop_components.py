@@ -4,10 +4,9 @@ import json
 
 import plotly
 import pytest
-from dash import dcc, html
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
@@ -29,10 +28,7 @@ def gateway_components(request):
     components = request.param
     actions_chain_ids = [model_manager[component].actions[0].id for component in components]
     return [
-        dcc.Store(
-            id={"type": "gateway_input", "trigger_id": actions_chain_id},
-            data=f"{actions_chain_id}",
-        )
+        dcc.Store(id={"type": "gateway_input", "trigger_id": actions_chain_id}, data=f"{actions_chain_id}")
         for actions_chain_id in actions_chain_ids
     ]
 
@@ -48,10 +44,7 @@ def action_trigger_components(request):
 def action_trigger_actions_id_component(request):
     components = request.param
     actions_ids = [model_manager[component].actions[0].actions[0].id for component in components]
-    return dcc.Store(
-        id="action_trigger_actions_id",
-        data=actions_ids,
-    )
+    return dcc.Store(id="action_trigger_actions_id", data=actions_ids)
 
 
 @pytest.fixture
@@ -86,13 +79,9 @@ def managers_one_page_two_components_two_controls(vizro_app, dash_data_table_wit
                             )
                         ],
                     ),
-                    vm.Graph(
-                        id="scatter_chart",
-                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap"),
-                    ),
+                    vm.Graph(id="scatter_chart", figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap")),
                     vm.Button(
-                        id="export_data_button",
-                        actions=[vm.Action(id="export_data_action", function=export_data())],
+                        id="export_data_button", actions=[vm.Action(id="export_data_action", function=export_data())]
                     ),
                 ],
                 controls=[
@@ -102,10 +91,7 @@ def managers_one_page_two_components_two_controls(vizro_app, dash_data_table_wit
                     vm.Parameter(
                         id="parameter_x",
                         targets=["scatter_chart.x"],
-                        selector=vm.Dropdown(
-                            id="parameter_x_selector",
-                            options=["lifeExp", "gdpPercap", "pop"],
-                        ),
+                        selector=vm.Dropdown(id="parameter_x_selector", options=["lifeExp", "gdpPercap", "pop"]),
                     ),
                 ],
             )
@@ -123,8 +109,10 @@ def managers_one_page_no_actions(vizro_app):
             vm.Page(
                 id="test_page_no_actions",
                 title="Second page",
-                components=[vm.Card(text="")],
-            )
+                components=[
+                    vm.Card(text=""),
+                ],
+            ),
         ]
     )
 
@@ -159,7 +147,7 @@ class TestGetActionLoopComponents:
         ],
         indirect=True,
     )
-    def test_all_action_loop_components(  # pylint: disable=too-many-arguments
+    def test_all_action_loop_components(  # pylint: disable=too-many-arguments  # noqa: PLR0913
         self,
         fundamental_components,
         gateway_components,

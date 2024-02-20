@@ -1,0 +1,58 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.tabs__list {
+  align-items: flex-start;
+  align-self: stretch;
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  display: flex;
+  gap: 16px;
+  height: 32px;
+}
+
+.tabs__panel {
+  height: calc(100% - 60px);
+}
+
+.tab__content {
+  height: 100%;
+}
+
+.tab__title {
+  align-items: flex-start;
+  border-bottom: 1px solid transparent;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 16px;
+  height: 32px;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.tab__title:hover {
+  background-color: transparent;
+  border-bottom: 1px solid var(--text-active);
+}
+
+.tab__title[data-active] {
+  border-bottom: 1px solid var(--text-active);
+  color: var(--text-active);
+}
+
+.tab__title[data-active]:hover {
+  background-color: transparent;
+  border-color: 1px solid var(--text-active);
+}
+
+.tab__title[data-active] .mantine-Tabs-tabLabel {
+  color: var(--text-active);
+}
+
+.tab__content > .page-component-container > .container__title {
+  display: none;
+}

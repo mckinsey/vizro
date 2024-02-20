@@ -1,0 +1,47 @@
+pages:
+  - components:
+      - figure:
+          _target_: line
+          data_frame: gapminder
+          x: year
+          y: lifeExp
+          color: continent
+          title: Graph 1
+        type: graph
+      - figure:
+          _target_: scatter
+          data_frame: gapminder
+          x: gdpPercap
+          y: lifeExp
+          size: pop
+          color: continent
+          title: Graph 2
+        type: graph
+      - figure:
+          _target_: box
+          data_frame: gapminder
+          x: continent
+          y: lifeExp
+          color: continent
+          title: Graph 3
+        type: graph
+      - figure:
+          _target_: line
+          data_frame: gapminder
+          x: year
+          y: lifeExp
+          color: continent
+          title: Graph 4
+        type: graph
+      - figure:
+          _target_: scatter
+          data_frame: gapminder
+          x: gdpPercap
+          y: lifeExp
+          size: pop
+          color: continent
+          title: Graph 5
+        type: graph
+    layout:
+      grid: [[0, 1, 3, 4], [2, 2, 3, 4]]
+    title: Custom Layout - Advanced Example
