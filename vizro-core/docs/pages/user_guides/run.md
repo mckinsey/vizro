@@ -34,24 +34,27 @@ Dash is running on http://127.0.0.1:8050/
  * Debug mode: on
 ```
 
-??? info "Debugging and Re-loading"
+??? info "Automatic reloading and debugging"
 
-    #### Debugging
+    #### Reloading the dashboard
 
-    Dash dev tools debug mode is turned off by default in Vizro apps. Dash dev tools debug mode can be turned on by using `debug=True` in the `run()` method, eg.
+    You can set up the front-end to automatically refresh whenever dashboard configuration updates are made, as described in the 
+    ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading). 
+    It is turned off by default in Vizro apps but can be enabled by using `debug=True` in the `run()` method, eg.
 
     `Vizro().build(dashboard).run(debug=True)`
 
-    (Note: this is the equivalent of enabling Dash dev tools via the `app.run()` method as described in [Dash documentation](https://dash.plotly.com/devtools))
+    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method as described in the [Dash documentation](https://dash.plotly.com/devtools)).
 
-    In additon, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`)
+    #### Debugging
 
-    #### Re-loading the dashboard
+    Dash dev tools debug mode is turned on as described above, by using `debug=True` in the `run()` method.
 
-    [Code reloading and hot reloading](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading) can be enabled by turning on debug mode (as described above)
+    `Vizro().build(dashboard).run(debug=True)`
 
-    This can improve the developer experience by allowing the front-end to automatically refresh from the code, whenever dashboard configuration updates are made
+    In additon, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
+    
 ## Jupyter
 The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
 !!! example "Run in jupyter notebook in inline mode"
