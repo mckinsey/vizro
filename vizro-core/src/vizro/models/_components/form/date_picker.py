@@ -26,18 +26,17 @@ class DatePicker(VizroBaseModel):
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (List[date]): Default date value for date picker. Defaults to `None`.
+        value (List[date]): Default date for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: Optional[date] = Field(None, description="Start date value for date picker.")
-    max: Optional[date] = Field(None, description="End date value for date picker.")
-    value: Optional[date] = Field(None, description="Default date value for date picker")
+    min: Optional[date] = Field(None, description="Start date for date picker.")
+    max: Optional[date] = Field(None, description="End date for date picker.")
+    value: Optional[date] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
-
     actions: List[Action] = []
 
     _input_property: str = PrivateAttr("value")
@@ -45,13 +44,13 @@ class DatePicker(VizroBaseModel):
 
     # Re-used validators
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
-    _validate_max_date = validator("max", allow_reuse=True)(validate_max)
+    _validate_max = validator("max", allow_reuse=True)(validate_max)
 
     def build(self):
         init_value = self.value or self.min
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dmc.DatePicker(
                     id=self.id,
                     minDate=self.min,
@@ -59,8 +58,8 @@ class DatePicker(VizroBaseModel):
                     maxDate=self.max,
                     persistence=True,
                     persistence_type="session",
-                    dropdownPosition="bottom-start",
-                    clearable=False,
+                    dropdownPosition="bottom-start",  # dropdownPosition must be set to bottom-start as a workaround
+                    # for issue: https://github.com/snehilvj/dash-mantine-components/issues/219
                 ),
             ],
             className="selector_container",

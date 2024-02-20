@@ -23,9 +23,7 @@ Page.update_forward_refs(
     Graph=Graph,
     Parameter=Parameter,
     Table=Table,
-    DateRangePicker=DateRangePicker,
     Tabs=Tabs,
-    DatePicker=DatePicker,
 )
 Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLink)
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)

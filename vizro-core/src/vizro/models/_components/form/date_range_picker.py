@@ -25,23 +25,22 @@ class DateRangePicker(VizroBaseModel):
 
     Args:
         type (Literal["date_range_picker"]): Defaults to `"date_range_picker"`.
-        min (Optional[date]): Start date for date picker. Defaults to `None`.
-        max (Optional[date]): End date for date picker. Defaults to `None`.
+        min (Optional[date]): Start date for date range picker. Defaults to `None`.
+        max (Optional[date]): End date for date  range picker. Defaults to `None`.
         value (Optional[List[date]]):
-            Default start and end date for date picker. Must be 2 items. Defaults to `[min, max]`.
+            Default start and end date for date  range picker. Defaults to `[min, max]`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_range_picker"] = "date_range_picker"
-    min: Optional[date] = Field(None, description="Start date value for date range picker.")
-    max: Optional[date] = Field(None, description="End date value for date range picker.")
+    min: Optional[date] = Field(None, description="Start date for date range picker.")
+    max: Optional[date] = Field(None, description="End date for date range picker.")
     value: Optional[List[date]] = Field(
         [], description="Default start and end date for date picker.", min_items=2, max_items=2
     )
     title: str = Field("", description="Title to be displayed.")
-
     actions: List[Action] = []
 
     _input_property: str = PrivateAttr("value")
@@ -55,7 +54,7 @@ class DateRangePicker(VizroBaseModel):
         init_value = self.value or [self.min, self.max]  # type: ignore[list-item]
         return html.Div(
             [
-                html.P(self.title) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dmc.DateRangePicker(
                     id=self.id,
                     minDate=self.min,
@@ -63,8 +62,8 @@ class DateRangePicker(VizroBaseModel):
                     maxDate=self.max,
                     persistence=True,
                     persistence_type="session",
-                    dropdownPosition="bottom-start",
-                    clearable=False,
+                    dropdownPosition="bottom-start",  # dropdownPosition must be set to bottom-start as a workaround
+                    # for issue: https://github.com/snehilvj/dash-mantine-components/issues/219
                 ),
             ],
             className="selector_container",

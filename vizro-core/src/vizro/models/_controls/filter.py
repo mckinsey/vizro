@@ -27,7 +27,6 @@ from vizro.models._components.form import (
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
-# TODO: Add temporal when relevant component is available
 SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "temporal": DatePicker}
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
@@ -49,9 +48,12 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
 def _filter_date_between(series: pd.Series, value: List[str]) -> pd.Series:
     series = pd.to_datetime(series)
-    start_date, end_date = value
+    if len(value) == 2:
+        start_date, end_date = value
 
-    return series.between(start_date, end_date, inclusive="both")
+        return series.between(start_date, end_date, inclusive="both")
+    else:
+        return pd.Series(False, index=series.index)
 
 
 def _filter_date_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
@@ -163,8 +165,7 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_filter_function(self):
-        default_filter_function = _filter_isin
-        filter_function = FILTER_FUNCTIONS.get(type(self.selector), default_filter_function)
+        filter_function = FILTER_FUNCTIONS.get(type(self.selector), _filter_isin)
         return filter_function
 
     def _set_actions(self):
