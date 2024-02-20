@@ -100,7 +100,6 @@ class TestBuildMethod:
                     persistence=True,
                     persistence_type="session",
                     dropdownPosition="bottom-start",
-                    clearable=False,
                 ),
             ],
             className="selector_container",

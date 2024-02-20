@@ -11,7 +11,7 @@ For instance, the [`Checklist`][vizro.models.Checklist] functions as a multi-opt
 the [`RadioItem`][vizro.models.RadioItems] serves as a single-option selector by default. However, the
 [`Dropdown`][vizro.models.Dropdown] can function as both a multi-option or single-option selector.
 
-For more details, kindly refer to the documentation of the underlying dash components:
+For more details, refer to the documentation of the underlying dash components:
 
 - [dcc.Dropdown](https://dash.plotly.com/dash-core-components/dropdown)
 - [dcc.Checklist](https://dash.plotly.com/dash-core-components/checklist)
@@ -30,7 +30,7 @@ For more details, kindly refer to the documentation of the underlying dash compo
 
 ## Numerical selectors
 
-For more details, kindly refer to the documentation of the underlying dash components:
+For more details, refer to the documentation of the underlying dash components:
 
 - [dcc.Slider](https://dash.plotly.com/dash-core-components/slider])
 - [dcc.RangeSlider](https://dash.plotly.com/dash-core-components/rangeslider])
@@ -44,7 +44,7 @@ For more details, kindly refer to the documentation of the underlying dash compo
 
 ## Temporal Selectors
 
-For more details, kindly refer to the documentation of the underlying dash components:
+For more details, refer to the documentation of the underlying dash components:
 
 - [dmc.DateRangePicker](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
 - [dmc.DatePicker](https://www.dash-mantine-components.com/components/datepicker)
