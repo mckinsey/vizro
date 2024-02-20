@@ -4,11 +4,11 @@ It is a step-by-step guide to help you experiment and create your initial Vizro 
 
 ## Let's get started!
 ### 1. Install Vizro-AI and its dependencies
-If you haven't already installed `vizro_ai` package, follow the [installation guide](../user_guides/install.md)
+If you haven't already installed `vizro_ai` package, follow the [installation guide](../user-guides/install.md)
 to do so inside a virtual environment.
 
 ??? tip "Beginners/Code novices"
-    If you consider yourself a beginner to python and/or virtual environments, there is also a section in the [installation guide](../user_guides/install.md) that avoids any use of terminals and relies only upon a graphical user interface.
+    If you consider yourself a beginner to python and/or virtual environments, there is also a section in the [installation guide](../user-guides/install.md) that avoids any use of terminals and relies only upon a graphical user interface.
 
 ### 2. Set up jupyter notebook
 A good way to initially explore Vizro-AI is from a Jupyter notebook.
@@ -26,7 +26,7 @@ jupyter notebook
 This opens a browser tab, and you can navigate to your preferred folder for this new project. Create a new notebook Python 3 (ipykernel) notebook from the "New" dropdown. Make sure that you select your environment as kernel.
 
 ??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the [installation guide](../user_guides/install.md), you should already be set, and you can continue below.
+    If you followed the beginners steps in the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
 
 Confirm that `vizro_ai` is installed by typing the following into a jupyter cell in your notebook and running it.
 
@@ -39,7 +39,7 @@ You should see a return output of the version.
 
 ### 3. Large Language Model (LLM) API KEY
 
-A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user_guides/api_setup.md) on how to set up the API.
+A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user-guides/api-setup.md) on how to set up the API.
 
 ### 4. Ask your first question using Vizro-AI
 
@@ -87,4 +87,4 @@ Let's create another example and read through the additional information.
 
 Now, you have created your first charts with Vizro-AI and are ready to explore the documentation further.
 
-A good place to start would be to go through the [model configuration](../user_guides/model_config.md) or different [run options](../user_guides/run_vizro_ai.md) including application integration.
+A good place to start would be to go through the [model configuration](../user-guides/model-config.md) or different [run options](../user-guides/run-vizro-ai.md) including application integration.
