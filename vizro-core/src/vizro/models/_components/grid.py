@@ -92,19 +92,17 @@ class Grid(VizroBaseModel):
         if self.actions:
             kwargs = self.figure._arguments.copy()
 
-            # This workaround is needed because the underlying table object requires a data_frame
+            # taken from table implementation - see there for details
             kwargs["data_frame"] = pd.DataFrame()
+            underlying_grid_object = self.figure._function(**kwargs)
 
-            # The underlying table object is pre-built, so we can fetch its ID.
-            underlying_table_object = self.figure._function(**kwargs)
-
-            if not hasattr(underlying_table_object, "id"):
+            if not hasattr(underlying_grid_object, "id"):
                 raise ValueError(
-                    "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
-                    " a valid 'id' has to be provided to the `Table` callable."
+                    "Underlying `Grid` callable has no attribute 'id'. To enable actions triggered by the `Grid`"
+                    " a valid 'id' has to be provided to the `Grid` callable."
                 )
 
-            self._callable_object_id = underlying_table_object.id
+            self._callable_object_id = underlying_grid_object.id
 
     def build(self):
         return dcc.Loading(
