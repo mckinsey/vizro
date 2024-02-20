@@ -38,8 +38,8 @@ Dash is running on http://127.0.0.1:8050/
 
     #### Reloading the dashboard
 
-    You can set up the front-end to automatically refresh whenever dashboard configuration updates are made, as described in the 
-    ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading). 
+    You can set up the front-end to automatically refresh whenever dashboard configuration updates are made, as described in the
+    ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading).
     It is turned off by default in Vizro apps but can be enabled by using `debug=True` in the `run()` method, eg.
 
     `Vizro().build(dashboard).run(debug=True)`
@@ -54,7 +54,7 @@ Dash is running on http://127.0.0.1:8050/
 
     In additon, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
-    
+
 ## Jupyter
 The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
 !!! example "Run in jupyter notebook in inline mode"
