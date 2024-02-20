@@ -1,4 +1,5 @@
 """Contains utilities for the implementation of table callables."""
+
 from collections import defaultdict
 from typing import Any, Dict, Mapping
 

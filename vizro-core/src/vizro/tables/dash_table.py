@@ -1,4 +1,5 @@
 """Module containing the standard implementation of `dash_table.DataTable`."""
+
 import pandas as pd
 from dash import dash_table
 

@@ -50,9 +50,11 @@ def dash_ag_grid(data_frame=None, **kwargs):
     defaults = {
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
-            lambda x: x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AGGrid filtering to function
-            if pd.api.types.is_datetime64_any_dtype(x)
-            else x
+            lambda x: (
+                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AGGrid filtering to function
+                if pd.api.types.is_datetime64_any_dtype(x)
+                else x
+            )
         ).to_dict("records"),
         "defaultColDef": {
             # "editable": True, #do not set, as this may confuse some users

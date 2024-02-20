@@ -30,6 +30,7 @@ class Grid(VizroBaseModel):
             [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["grid"] = "grid"
