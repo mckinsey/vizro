@@ -73,7 +73,6 @@ def dash_ag_grid(data_frame=None, **kwargs):
         "dashGridOptions": {
             "dataTypeDefinitions": DATA_TYPE_DEFINITIONS,
             "animateRows": False,
-            "pagination": True,
         },
     }
     kwargs = _set_defaults_nested(kwargs, defaults)

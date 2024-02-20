@@ -1,12 +1,12 @@
 .ag-theme-quartz.vizro {
-  --ag-background-color: var(--main-container-bg-color); /* confirmed */
-  --ag-foreground-color: var(--text-primary); /* confirmed */
-  --ag-odd-row-background-color: var(--main-container-bg-color); /* confirmed */
-  --ag-header-background-color: var(--main-container-bg-color); /* confirmed */
-  --ag-header-column-resize-handle-display: none; /* confirmed */
-  --ag-borders: none; /* confirmed */
-  --ag-icon-font-family: agGridQuartz; /* confirmed, but hardly visible */
-  --ag-icon-size: 14px; /* confirmed */
+  --ag-background-color: var(--main-container-bg-color);
+  --ag-foreground-color: var(--text-primary);
+  --ag-odd-row-background-color: var(--main-container-bg-color);
+  --ag-header-background-color: var(--main-container-bg-color);
+  --ag-header-column-resize-handle-display: none;
+  --ag-borders: none;
+  --ag-icon-font-family: agGridQuartz;
+  --ag-icon-size: 14px;
   --ag-row-height: 48px; /* This determines the row height, but not header */
 }
 /* General setting header row*/
@@ -71,9 +71,6 @@
 }
 
 /*TODO: fix the color of the background images in the filter menu*/
-/*#page-container .ag-theme-quartz .ag-ltr .ag-filter-filter .ag-input-wrapper::before {*/
-/*    color: deeppink;*/
-/*}*/
 
 /*Buttons*/
 #page-container .ag-theme-quartz .ag-standard-button {
@@ -88,13 +85,3 @@
   background-color: var(--field-enabled);
   color: var(--text-primary);
 }
-
-/* Changes header on click, this has the advantage of not remaining when cell is not sorted, but still "clicked" */
-/* Ie after clicking a third time, it should probably go back to the initial state*/
-/* However the line appearing is not in extended enough*/
-/* Alternative currently used: .ag-header-cell:focus*/
-/*#page-container .ag-theme-quartz .ag-header-cell-sorted-asc,*/
-/*#page-container .ag-theme-quartz .ag-header-cell-sorted-desc {*/
-/*    border-bottom: 1px solid var(--border-selected);*/
-/*    color: var(--text-primary);*/
-/*}*/
