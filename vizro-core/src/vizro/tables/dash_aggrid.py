@@ -1,3 +1,5 @@
+"""Module containing the standard implementation of `dash-ag-grid.AgGrid`."""
+
 import dash_ag_grid as dag
 import pandas as pd
 

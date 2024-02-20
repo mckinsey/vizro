@@ -242,8 +242,8 @@ class capture:
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table"]):
-        """Instantiates the decorator to capture a function call. Valid modes are "graph", "table" and "action"."""
+    def __init__(self, mode: Literal["graph", "action", "table", "grid"]):
+        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "grid"."""
         self._mode = mode
 
     def __call__(self, func, /):
