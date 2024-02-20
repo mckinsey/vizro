@@ -1,4 +1,4 @@
-.ag-theme-alpine.vizro {
+.ag-theme-quartz.vizro {
   --ag-background-color: var(--main-container-bg-color); /* confirmed */
   --ag-foreground-color: var(--text-primary); /* confirmed */
   --ag-odd-row-background-color: var(--main-container-bg-color); /* confirmed */
@@ -10,7 +10,7 @@
   --ag-row-height: 48px; /* This determines the row height, but not header */
 }
 /* General setting header row*/
-#page-container .ag-theme-alpine .ag-header-row {
+#page-container .ag-theme-quartz .ag-header-row {
   color: var(--text-secondary);
   font-weight: normal;
   font-size: 14px;
@@ -18,26 +18,26 @@
 }
 
 /* Border at the bottom and padding*/
-#page-container .ag-theme-alpine .ag-header-cell {
+#page-container .ag-theme-quartz .ag-header-cell {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
   padding-left: 0px;
   padding-right: 12px;
 }
 /*Border at bottom when hovering more solid*/
-#page-container .ag-theme-alpine .ag-header-cell:hover {
+#page-container .ag-theme-quartz .ag-header-cell:hover {
   border-bottom: 1px solid var(--border-hover);
 }
 /*Border bolder when clicking on header, text now primary color*/
-#page-container .ag-theme-alpine .ag-header-cell:focus {
+#page-container .ag-theme-quartz .ag-header-cell:focus {
   border-bottom: 1px solid var(--border-selected);
   color: var(--text-primary);
 }
 
-#page-container .ag-theme-alpine .ag-row {
+#page-container .ag-theme-quartz .ag-row {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
   /*height: 48px; !* This does not seem to set it to 48px due to element style *!*/
 }
-#page-container .ag-theme-alpine .ag-cell {
+#page-container .ag-theme-quartz .ag-cell {
   /*display: flex;*/ /*This breaks AGGrid side right alignment of numerical columns*/
   align-items: center;
   padding-left: 0px;
@@ -48,8 +48,8 @@
 /* Ie after clicking a third time, it should probably go back to the initial state*/
 /* However the line appearing is not in extended enough*/
 /* Alternative currently used: .ag-header-cell:focus*/
-/*#page-container .ag-theme-alpine .ag-header-cell-sorted-asc,*/
-/*#page-container .ag-theme-alpine .ag-header-cell-sorted-desc {*/
+/*#page-container .ag-theme-quartz .ag-header-cell-sorted-asc,*/
+/*#page-container .ag-theme-quartz .ag-header-cell-sorted-desc {*/
 /*    border-bottom: 1px solid var(--border-selected);*/
 /*    color: var(--text-primary);*/
 /*}*/
