@@ -1,9 +1,11 @@
+from datetime import date
+
 import pandas as pd
 import pytest
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
-from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
+from vizro.models._controls.filter import Filter, _filter_between, _filter_date_between, _filter_date_isin, _filter_isin
 from vizro.models.types import CapturedCallable
 
 
@@ -38,6 +40,65 @@ class TestFilterFunctions:
         series = pd.Series(data)
         expected = pd.Series(expected)
         result = _filter_isin(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            (
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                ["2024-02-01"],
+                [False, True, False, False, False],
+            ),  # Standard test
+            ([], ["2024-04-01"], pd.Series([], dtype=bool)),  # Test for empty series
+            (
+                [date(2024, 1, 1), date(2024, 2, 1), date(2024, 3, 1), date(2024, 4, 1), date(2024, 5, 1)],
+                ["2024-02-01"],
+                [False, True, False, False, False],
+            ),  # Test with date data
+        ],
+    )
+    def test_filter_date_isin(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_date_isin(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            (
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                ["2024-01-01", "2024-03-01"],
+                [True, True, True, False, False],
+            ),  # Standard test
+            (
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                ["2024-02-01", "2024-04-01"],
+                [False, True, True, True, False],
+            ),  # Test for inclusive both ends
+            (
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                ["2024-01-01", "2024-05-01"],
+                [True, True, True, True, True],
+            ),  # Test for inclusive all
+            (
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                ["2024-04-01", "2024-01-01"],
+                [False, False, False, False, False],
+            ),  # Test for inverted values
+            ([], ["2024-04-01", "2024-01-01"], pd.Series([], dtype=bool)),  # Test for empty series
+            (
+                [date(2024, 1, 1), date(2024, 2, 1), date(2024, 3, 1), date(2024, 4, 1), date(2024, 5, 1)],
+                ["2024-02-01", "2024-04-01"],
+                [False, True, True, True, False],
+            ),  # Test with date data
+        ],
+    )
+    def test_filter_date_between(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_date_between(series, value)
         pd.testing.assert_series_equal(result, expected)
 
 

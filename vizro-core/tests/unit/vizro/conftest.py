@@ -14,6 +14,11 @@ def gapminder():
 
 
 @pytest.fixture
+def stocks():
+    return px.data.stocks()
+
+
+@pytest.fixture
 def standard_px_chart(gapminder):
     return px.scatter(
         data_frame=gapminder,
@@ -54,6 +59,11 @@ def dash_data_table_with_id(gapminder):
 @pytest.fixture
 def standard_go_chart(gapminder):
     return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
+
+
+@pytest.fixture
+def chart_with_temporal_data(stocks):
+    return go.Figure(data=go.Scatter(x=stocks["Date"], y=stocks["AAPL.High"], mode="markers"))
 
 
 @pytest.fixture()
