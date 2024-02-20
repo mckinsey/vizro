@@ -35,7 +35,6 @@
 
 #page-container .ag-theme-quartz .ag-row {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
-  /*height: 48px; !* This does not seem to set it to 48px due to element style *!*/
 }
 #page-container .ag-theme-quartz .ag-cell {
   /*display: flex;*/ /*This breaks AGGrid side right alignment of numerical columns*/
