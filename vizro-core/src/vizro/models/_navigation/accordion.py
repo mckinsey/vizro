@@ -93,7 +93,7 @@ class Accordion(VizroBaseModel):
                 dbc.NavLink(
                     children=[page["name"]],
                     className="accordion-item-link",
-                    active="partial",
+                    active="exact",
                     href=page["relative_path"],
                 )
             )
