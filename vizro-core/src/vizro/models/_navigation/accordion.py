@@ -94,7 +94,6 @@ class Accordion(VizroBaseModel):
                     className="accordion-item-button",
                     active=page_id == active_page_id,
                     href=page["relative_path"],
-                    color="link"
                 )
             )
         return accordion_buttons
