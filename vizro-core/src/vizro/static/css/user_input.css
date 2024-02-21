@@ -14,7 +14,8 @@ textarea {
   text-overflow: ellipsis;
 }
 
-textarea {
+textarea,
+.text-area {
   padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
@@ -32,11 +33,6 @@ textarea {
 .text-area:enabled,
 textarea:enabled {
   color: var(--text-primary);
-}
-
-textarea,
-.text-area {
-  padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
 .user_input:hover,

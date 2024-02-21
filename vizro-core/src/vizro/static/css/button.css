@@ -1,7 +1,5 @@
-#page-container .button_primary,
-.button_secondary,
-.button_tertiary {
-  background: var(--fill-high-emphasis);
+#page-container .button_primary {
+  background: var(--fill-active);
   border: none;
   border-radius: 0;
   box-shadow: var(--box-shadow-elevation-0);
@@ -15,35 +13,25 @@
   text-transform: none;
 }
 
-#page-container .button_primary,
-.button_primary:active,
-.button_primary:visited,
-.button_primary:focus-visible {
-  background: var(--fill-high-emphasis);
+#page-container .button_primary:hover {
+  background: linear-gradient(
+      var(--state-overlays-contrast-hover),
+      var(--state-overlays-contrast-hover)
+    ),
+    var(--fill-active);
+  color: var(--text-contrast-primary);
+  margin: 0;
+  text-decoration-line: underline;
+}
+
+#page-container .button_primary:active {
+  background: var(--fill-active);
   color: var(--text-contrast-primary);
 }
 
-.button_primary:hover {
-  background: var(--fill-medium-emphasis);
+#page-container .button_primary:visited {
+  background: var(--fill-active);
   color: var(--text-contrast-primary);
-  text-decoration-line: underline;
-}
-
-.button_primary:focus {
-  box-shadow: 0 0 0 2px var(--focus-focus) inset;
-  text-decoration-line: underline;
-}
-
-.button_secondary {
-  background: var(--surfaces-bg-03);
-  border: 1px solid var(--border-enabled);
-  color: var(--text-primary);
-}
-
-.button_tertiary {
-  background: var(--surfaces-bg-03);
-  color: var(--text-primary);
-  text-decoration-line: underline;
 }
 
 .button_container {
