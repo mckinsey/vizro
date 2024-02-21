@@ -67,9 +67,9 @@
 }
 
 #nav-panel {
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 #nav-panel:not(:empty) {
