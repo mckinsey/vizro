@@ -1,4 +1,4 @@
-# How to use AGGrids
+# How to use tables
 
 This guide shows you how to use the [Dash DataTable](https://dash.plotly.com/datatable) to visualize your tabular data in the dashboard. It is an
 interactive table component designed for viewing, editing, and exploring large datasets.
