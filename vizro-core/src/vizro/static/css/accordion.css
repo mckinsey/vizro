@@ -116,7 +116,7 @@
 }
 
 .accordion-item-link.active {
-  background-color: var(--state-overlays-active);
+  background-color: var(--state-overlays-selected);
   color: var(--text-primary);
 }
 
