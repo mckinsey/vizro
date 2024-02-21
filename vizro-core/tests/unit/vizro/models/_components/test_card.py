@@ -49,10 +49,11 @@ class TestBuildMethod:
         card = card.build()
 
         expected_card = html.Div(
-            [
+            dcc.Link(
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
-                html.Div(dcc.Link(href="https://www.google.com", className="card-link"), className="button_container"),
-            ],
+                href="https://www.google.com",
+                className="card-link",
+            ),
             className="nav_card_container",
             id="card_id_outer",
         )

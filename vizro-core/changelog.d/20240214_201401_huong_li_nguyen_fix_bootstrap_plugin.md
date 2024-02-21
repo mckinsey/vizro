@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Added default Bootstrap theme to external stylesheets and fix any visually incompatible CSS declarations. ([#311](https://github.com/mckinsey/vizro/pull/311))
 
-
 <!--
 ### Security
 
