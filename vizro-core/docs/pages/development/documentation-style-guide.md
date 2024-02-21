@@ -46,7 +46,7 @@ Boxes can be made collapsible, and if you choose this option, prefer to add them
 ## Capitalization
 * Only capitalize proper nouns e.g. names of technology products, other tools and services.
 * Don't capitalize cloud, internet, machine learning, or advanced analytics. Take a look at the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/accessibility-terms) if you're unsure.
-* Follow sentence case, which capitalizes only the first word of a title/subtitle. We prefer this "An introduction to data visualization" to this "An Introduction to Data Visualization".
+* Follow sentence case, which capitalizes only the first word of a title/subtitle. We prefer "An introduction to data visualization" to "An Introduction to Data Visualization".
 
 
 ## Code formatting
