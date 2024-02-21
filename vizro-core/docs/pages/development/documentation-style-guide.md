@@ -52,7 +52,7 @@ Boxes can be made collapsible, and if you choose this option, prefer to add them
 ## Code formatting
 * Mark code blocks with the appropriate language to enable syntax highlighting.
 * We use a `bash` lexer for all codeblocks that represent the terminal, and we don't include the prompt.
-* Use the code format for Python package names such as `pandas` or `pylint`.
+* Use the code format for Python package names such as `pandas` or `pydantic`.
 
 ## Instructions
 
