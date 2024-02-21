@@ -88,6 +88,16 @@ repos:
         entry: gitleaks detect --verbose --redact --baseline-path .gitleaks-report.json
         language: golang
 
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: "0.0.2"
+    hooks:
+      - id: stylelint
+        additional_dependencies:
+          - stylelint@16.2.1
+          - stylelint-config-standard@36.0.0
+          - stylelint-order@4.1.0
+        args: ["--fix"]
+
 # Configuration for https://pre-commit.ci/.
 ci:
   autoupdate_schedule: monthly
