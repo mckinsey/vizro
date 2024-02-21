@@ -30,7 +30,7 @@ Keep the amount of text, and the number and variety of callouts used, to a minim
 
 !!!note "note"
 
-     For notable information
+     For notable information.
 
 !!!warning "warning"
 
