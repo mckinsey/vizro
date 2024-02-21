@@ -42,4 +42,4 @@ For more details, kindly refer to the documentation of the underlying dash compo
     To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and
     [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size accordingly.
 
-To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md)
+To enhance existing selectors, please see our How-to-guide on creating [custom components](custom-components.md)

@@ -1,6 +1,6 @@
 # Disclaimer
 
-Users must select one of the [supported Large Language Models (LLMs)](../user_guides/model_config.md) in order to use the `vizro_ai` package,
+Users must select one of the [supported Large Language Models (LLMs)](../user-guides/model-config.md) in order to use the `vizro_ai` package,
 and are responsible for obtaining their own suitable API key for the relevant model.
 
 ## Third Party API
