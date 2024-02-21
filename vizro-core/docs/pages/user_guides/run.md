@@ -44,7 +44,7 @@ Dash is running on http://127.0.0.1:8050/
 
     `Vizro().build(dashboard).run(debug=True)`
 
-    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method as described in the [Dash documentation](https://dash.plotly.com/devtools)).
+    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method. See the [Dash documentation](https://dash.plotly.com/devtools) for more information).
 
     #### Debugging
 
@@ -52,7 +52,7 @@ Dash is running on http://127.0.0.1:8050/
 
     `Vizro().build(dashboard).run(debug=True)`
 
-    In additon, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
+    In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
 
 ## Jupyter
@@ -82,20 +82,23 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 
 ??? info "Debugging and Re-loading"
 
+
+    #### Reloading the dashboard
+
+    Code reloading and hot reloading do not work from a Jupyter notebook, even if Dash Dev Tools debug mode is enabled.
+    You must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
+
     #### Debugging
 
-    Dash dev tools debug mode is turned off by default in Vizro apps. Dash dev tools debug mode can be turned on by using `debug=True` in the `run()` method, eg.
+    Dash dev tools debug mode is turned on as described above, by using `debug=True` in the `run()` method.
 
     `Vizro().build(dashboard).run(debug=True)`
 
-    (Note: this is the equivalent of enabling Dash dev tools via the `app.run()` method as described in [Dash documentation](https://dash.plotly.com/devtools)).
-    Code reloading and hot reloading does not work from a Jupyter notebook, even if Dash dev tools debug mode is enabled
 
-    In additon, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`)
+    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method as described in the [Dash documentation](https://dash.plotly.com/devtools)).
 
-    #### Re-loading the dashboard
+    In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
-    When reloading the dashboard to reflect changes in the dashboard configuration in Jupyter, the entire Jupyter kernel must currently be re-started and re-run
 
 ## Gunicorn
 !!!warning "In production"
