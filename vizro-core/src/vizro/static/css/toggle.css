@@ -3,12 +3,12 @@
 }
 
 #page-container .mantine-Switch-track {
+  background-color: var(--fill-subtle);
+  border: 1px solid var(--border-enabled);
+  border-radius: 16px;
+  height: 16px;
   min-width: 32px;
   width: 32px;
-  height: 16px;
-  background-color: var(--fill-subtle);
-  border-radius: 16px;
-  border: 1px solid var(--border-enabled);
 }
 
 #page-container .mantine-Switch-track:focus {
@@ -20,21 +20,21 @@
 }
 
 #page-container .mantine-Switch-trackLabel {
+  height: 16px;
   margin: 0;
   width: 32px;
-  height: 16px;
 }
 
 #page-container .mantine-Switch-thumb {
-  border: none;
-  width: 10px;
-  height: 10px;
   background-color: var(--fill-medium-emphasis);
+  border: none;
+  height: 10px;
+  width: 10px;
 }
 
 #page-container input:checked + * > .mantine-11dx59s {
-  left: calc(100% - 12px);
   background: var(--text-contrast-primary);
+  left: calc(100% - 12px);
 }
 
 #page-container input:checked + * > .mantine-69c9zd {
