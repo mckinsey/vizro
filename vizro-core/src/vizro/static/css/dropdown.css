@@ -130,11 +130,6 @@
   width: 100%;
 }
 
-#nav-panel a {
-  font-weight: var(--text-weight-regular);
-  line-height: var(--text-size-07);
-}
-
 #page-container .Select--multi .Select-clear-zone {
   width: 16px;
   color: var(--text-secondary);

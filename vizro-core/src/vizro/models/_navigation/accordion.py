@@ -48,7 +48,7 @@ class Accordion(VizroBaseModel):
 
         accordion_items = []
         for page_group, page_members in self.pages.items():
-            accordion_buttons = self._create_accordion_buttons(pages=page_members, active_page_id=active_page_id)
+            accordion_buttons = self._create_accordion_buttons(pages=page_members)
             accordion_items.append(
                 dbc.AccordionItem(
                     children=accordion_buttons,
@@ -77,7 +77,7 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_accordion_buttons(self, pages, active_page_id):
+    def _create_accordion_buttons(self, pages):
         """Creates a button for each provided page that is registered."""
         accordion_buttons = []
         for page_id in pages:
@@ -88,11 +88,11 @@ class Accordion(VizroBaseModel):
                     f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
                 ) from exc
             accordion_buttons.append(
-                dbc.Button(
+                dbc.NavLink(
                     children=[page["name"]],
                     key=page["relative_path"],
-                    className="accordion-item-button",
-                    active=page_id == active_page_id,
+                    className="accordion-item-link",
+                    active="partial",
                     href=page["relative_path"],
                 )
             )

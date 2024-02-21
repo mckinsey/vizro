@@ -67,7 +67,7 @@
 }
 
 #nav-panel {
-  align-self: stretch;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
