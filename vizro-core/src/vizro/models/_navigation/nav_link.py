@@ -51,6 +51,8 @@ class NavLink(VizroBaseModel):
     @_log_call
     def build(self, *, active_page_id=None):
         # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be Dict[str, List[str]].
+        # `active_page_id` is still required here for the automatic opening of the Accordion when navigating
+        # from homepage to a page within the Accordion.
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
@@ -62,7 +64,7 @@ class NavLink(VizroBaseModel):
                 f"Page with ID {first_page_id} cannot be found. Please add the page to `Dashboard.pages`"
             ) from exc
 
-        button = dbc.Button(
+        nav_link = dbc.NavLink(
             [
                 dmc.Tooltip(
                     label=self.label,
@@ -73,13 +75,13 @@ class NavLink(VizroBaseModel):
                 )
             ],
             id=self.id,
-            className="icon-button",
+            className="nav-bar-icon-link",
             href=first_page["relative_path"],
-            active=item_active,
+            active="partial",
         )
 
         # Only build the nav_selector (id="nav-panel") if the item is active.
         if item_active:
-            return html.Div([button, self._nav_selector.build(active_page_id=active_page_id)])
+            return html.Div([nav_link, self._nav_selector.build(active_page_id=active_page_id)])
 
-        return html.Div(button)
+        return nav_link

@@ -126,7 +126,7 @@
   flex-direction: column;
 }
 
-.icon-button {
+.nav-bar-icon-link {
   align-items: center;
   display: flex;
   height: 80px;
@@ -142,7 +142,7 @@ div.dashboard_container .custom-tooltip {
   color: var(--text-primary);
 }
 
-.icon-button.btn.btn-primary.active .material-symbols-outlined {
+.nav-bar-icon-link.active .material-symbols-outlined {
   color: var(--text-active);
 }
 .loading-container {
