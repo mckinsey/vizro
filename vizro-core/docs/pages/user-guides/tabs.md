@@ -10,7 +10,7 @@ They are essentially a way of putting multiple [`Containers`][vizro.models.Conta
 </figure>
 
 Both `Tabs` and `Containers` are a more advanced technique for customizing your page layout. If you simply want to arrange components on a page,
-we recommend reading our [user guide on `Layout`](layout.md) first.
+we recommend reading our [user guide on `Layout`](layouts.md) first.
 
 This guide shows you how to use tabs to organize your `Containers` into subsections inside the dashboard.
 

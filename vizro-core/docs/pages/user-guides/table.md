@@ -193,4 +193,4 @@ an example of a styled table where some conditional formatting is applied. There
 
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
-To enhance existing tables, please see our How-to-guide on creating [custom tables](custom_tables.md).
+To enhance existing tables, please see our How-to-guide on creating [custom tables](custom-tables.md).

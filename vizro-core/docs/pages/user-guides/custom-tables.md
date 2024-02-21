@@ -2,7 +2,7 @@
 
 If you want to use the [`Table`][vizro.models.Table] model to and to create a custom [table](table.md) you can create your own custom table, e.g. when requiring computations that can be controlled by parameters.
 
-For this, similar to how one would create a [custom chart](../user_guides/custom_charts.md), simply do the following:
+For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), simply do the following:
 
 - define a function that returns a  `dash_table.DataTable` object
 - decorate it with the `@capture("table")` decorator
