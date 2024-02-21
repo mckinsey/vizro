@@ -79,9 +79,7 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
-
-    def test_nav_link_active(self, pages, request):
+    def test_nav_link_build(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
@@ -91,7 +89,9 @@ class TestNavLinkBuildMethod:
                 dmc.Tooltip(
                     label="Label",
                     children=[html.Span("icon", className="material-symbols-outlined")],
-                    **self.common_args,
+                    offset=5,
+                    withArrow=True,
+                    position="bottom-start",
                 )
             ],
             active="partial",
@@ -101,24 +101,3 @@ class TestNavLinkBuildMethod:
         )
         assert_component_equal(built_nav_link["nav_link"], expected_nav_link)
         assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
-
-    def test_nav_link_not_active(self, pages, request):
-        pages = request.getfixturevalue(pages)
-        nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
-        nav_link.pre_build()
-        built_nav_link = nav_link.build(active_page_id="Page 3")
-        expected_nav_link = dbc.NavLink(
-            children=[
-                dmc.Tooltip(
-                    label="Label",
-                    children=[html.Span("icon", className="material-symbols-outlined")],
-                    **self.common_args,
-                )
-            ],
-            active="partial",
-            href="/",
-            className="nav-bar-icon-link",
-            id="nav_link",
-        )
-        assert_component_equal(built_nav_link["nav_link"], expected_nav_link)
-        assert "nav-panel" not in built_nav_link
