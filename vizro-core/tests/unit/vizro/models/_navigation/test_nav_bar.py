@@ -89,7 +89,7 @@ class TestNavBarBuildMethod:
             [
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
-                    active="partial",
+                    active=True,
                     href="/",
                 )
             ]
@@ -106,12 +106,12 @@ class TestNavBarBuildMethod:
             [
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
-                    active="partial",
+                    active=True,
                     href="/",
                 ),
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
-                    active="partial",
+                    active=False,
                     href="/page-2",
                 ),
             ]
@@ -127,7 +127,7 @@ class TestNavBarBuildMethod:
             [
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
-                    active="partial",
+                    active=False,
                     href="/",
                 )
             ]
@@ -143,12 +143,12 @@ class TestNavBarBuildMethod:
             [
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
-                    active="partial",
+                    active=False,
                     href="/",
                 ),
                 dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
-                    active="partial",
+                    active=False,
                     href="/page-2",
                 ),
             ]

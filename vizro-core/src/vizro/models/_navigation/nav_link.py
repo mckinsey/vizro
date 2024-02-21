@@ -76,11 +76,13 @@ class NavLink(VizroBaseModel):
             id=self.id,
             className="nav-bar-icon-link",
             href=first_page["relative_path"],
-            active="partial",
+            # `active` is required to keep the icon highlighted when navigating through different pages inside
+            # the nested accordion
+            active=item_active,
         )
 
         # Only build the nav_selector (id="nav-panel") if the item is active.
         if item_active:
             return html.Div([nav_link, self._nav_selector.build(active_page_id=active_page_id)])
 
-        return nav_link
+        return html.Div(nav_link)  # html.Div required to access the nav_link via ID

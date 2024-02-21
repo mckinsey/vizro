@@ -79,7 +79,9 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    def test_nav_link_build(self, pages, request):
+    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
+
+    def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
@@ -89,15 +91,34 @@ class TestNavLinkBuildMethod:
                 dmc.Tooltip(
                     label="Label",
                     children=[html.Span("icon", className="material-symbols-outlined")],
-                    offset=4,
-                    withArrow=True,
-                    position="bottom-start",
+                    **self.common_args,
                 )
             ],
-            active="partial",
+            active=True,
             href="/",
             className="nav-bar-icon-link",
             id="nav-link",
         )
         assert_component_equal(built_nav_link["nav-link"], expected_nav_link)
         assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
+
+    def test_nav_link_not_active(self, pages, request):
+        pages = request.getfixturevalue(pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
+        nav_link.pre_build()
+        built_nav_link = nav_link.build(active_page_id="Page 3")
+        expected_button = dbc.NavLink(
+            children=[
+                dmc.Tooltip(
+                    label="Label",
+                    children=[html.Span("icon", className="material-symbols-outlined")],
+                    **self.common_args,
+                )
+            ],
+            active=False,
+            href="/",
+            className="nav-bar-icon-link",
+            id="nav-link",
+        )
+        assert_component_equal(built_nav_link["nav-link"], expected_button)
+        assert "nav-panel" not in built_nav_link
