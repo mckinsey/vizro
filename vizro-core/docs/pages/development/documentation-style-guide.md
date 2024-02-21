@@ -10,7 +10,7 @@ What follows is a set of lightweight guidelines rather than rules. There are alw
 
 The names of our products are **Vizro** and **Vizro-AI**.
 
-We refer to other products using their preferred capitalization. For example, Dash and Plotly are always capitalized, except where given as Python package names `dash` and `plotly`.
+We refer to other products using their preferred capitalization. For example, Dash and Pydantic are always capitalized, except where given as Python package names `dash` and `pydantic`.
 
 Vizro components are named using lower case:
 
