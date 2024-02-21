@@ -41,7 +41,7 @@ Keep the amount of text, and the number and variety of callouts used, to a minim
      For example code
 
 
-Boxes can be made collapsible, and rendered initially collapsed or expanded.
+Boxes can be made collapsible, and if you choose this option, prefer to add them to the page so they are initially collapsed, to avoid crowding.
 
 ## Capitalization
 * Only capitalize proper nouns e.g. names of technology products, other tools and services.
