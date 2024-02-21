@@ -77,7 +77,7 @@ class NavLink(VizroBaseModel):
             className="icon-button",
             href=first_page["relative_path"],
             active=item_active,
-            color="link"
+            color="link",
         )
 
         # Only build the nav_selector (id="nav-panel") if the item is active.
