@@ -109,7 +109,7 @@ Keep your sentences short and easy to read. Your tone of voice should be simple,
 
 Simple is clear, concise and direct:
 
-> We build new skills within your team.
+> We build new skills in your team.
 
 Simple is not vague, verbose or full of jargon:
 
