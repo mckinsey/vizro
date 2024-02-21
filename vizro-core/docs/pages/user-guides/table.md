@@ -1,25 +1,18 @@
-# How to use tables
+# How to use AGGrids
 
-This guide shows you how to use tables to visualize your data in the dashboard.
+This guide shows you how to use the [Dash DataTable](https://dash.plotly.com/datatable) to visualize your tabular data in the dashboard. It is an
+interactive table component designed for viewing, editing, and exploring large datasets.
 
-The [`Table`][vizro.models.Table] model allows you to visualize data in a tabular format.
+The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
+
+## Basic usage
 
 To add a [`Table`][vizro.models.Table] to your page, do the following:
 
 - insert the [`Table`][vizro.models.Table] model into the `components` argument of the
 [`Page`][vizro.models.Page] model
-- enter any of the currently available table functions
+- enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`)
 
-See below for an overview of currently supported table functions.
-
-### Dash DataTable
-
-The [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table component designed for viewing, editing, and exploring large datasets.
-
-You can use the [Dash DataTable](https://dash.plotly.com/datatable) in Vizro by importing
-```py
-from vizro.tables import dash_data_table
-```
 The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are
@@ -63,7 +56,7 @@ setting some defaults for some of the arguments to help with styling.
 
     [Table]: ../../assets/user_guides/table/table.png
 
-#### Styling/Modifying the Dash DataTable
+## Styling/Modifying the Dash DataTable
 
 As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
@@ -193,4 +186,4 @@ an example of a styled table where some conditional formatting is applied. There
 
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
-To enhance existing tables, please see our How-to-guide on creating [custom tables](custom-tables.md).
+If the available arguments are not sufficient, there is always the possibility to create a [custom Dash DataTable](custom-tables.md).

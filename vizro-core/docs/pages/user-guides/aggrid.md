@@ -4,7 +4,7 @@ This guide shows you how to use the [AG Grid](https://www.ag-grid.com/) to visua
 It is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
 and Vizro's recommended table implementation.
 
-The [`AGGrid`][vizro.models.AGGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the
+The Vizro [`AGGrid`][vizro.models.AGGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the
 original [Javascript implementation](https://www.ag-grid.com/).
 
 ## Basic usage
@@ -278,4 +278,4 @@ There are many more ways to alter the grid beyond this showcase.
 
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
-If the acvailable arguments are not sufficient, there is always the possibility to create a [custom AG Grid callable](custom_tables.md).
+If the available arguments are not sufficient, there is always the possibility to create a [custom AG Grid callable](custom_tables.md).
