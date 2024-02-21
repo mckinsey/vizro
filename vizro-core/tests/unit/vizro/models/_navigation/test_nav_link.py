@@ -89,7 +89,7 @@ class TestNavLinkBuildMethod:
                 dmc.Tooltip(
                     label="Label",
                     children=[html.Span("icon", className="material-symbols-outlined")],
-                    offset=5,
+                    offset=4,
                     withArrow=True,
                     position="bottom-start",
                 )
