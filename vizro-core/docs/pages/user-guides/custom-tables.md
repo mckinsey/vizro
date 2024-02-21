@@ -1,14 +1,16 @@
-# How to create custom tables
+# How to create custom Dash Datatables and Dash AGGrids
 
-If you want to use the [`Table`][vizro.models.Table] model to and to create a custom [table](table.md) you can create your own custom table, e.g. when requiring computations that can be controlled by parameters.
+In case that the available arguments for the [`Table`][vizro.models.Table] or [`AGGrid`][vizro.models.AGGrid] models are not sufficient,
+there is always the possibility to create a custom Dash DataTable or Dash AGGrid.
+
+One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see below example).
 
 For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), simply do the following:
 
-- define a function that returns a  `dash_table.DataTable` object
-- decorate it with the `@capture("table")` decorator
+- define a function that returns a  `dash_table.DataTable` or `dash_ag_grid.AgGrid` object
+- decorate it with the `@capture("table")` or `@capture("grid")` decorator respectively
 - the function must accept a `data_frame` argument (of type `pandas.DataFrame`)
 - the table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
-
 
 The following example shows a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 

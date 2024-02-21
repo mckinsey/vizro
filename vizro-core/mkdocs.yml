@@ -36,7 +36,7 @@ nav:
           - Integrations: pages/user-guides/integration.md
       - EXTENSIONS:
           - Custom Charts: pages/user-guides/custom-charts.md
-          - Custom Tables: pages/user-guides/custom-tables.md
+          - Custom AGGrids/Tables: pages/user-guides/custom-tables.md
           - Custom Components: pages/user-guides/custom-components.md
           - Custom Actions: pages/user-guides/custom-actions.md
   - API Reference:
