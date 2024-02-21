@@ -5,19 +5,19 @@ By the end of this tutorial, you will have gained an understanding of different 
 
 ## Let's get started!
 ### 1. Install Vizro-AI and get ready to run your code
-Before proceeding, ensure the installation of the `vizro_ai` package by following the steps outlined in the [installation guide](../user_guides/install.md). Once installed, you can execute your code either by pasting it into a Jupyter notebook cell or running it from a Python script.
+Before proceeding, ensure the installation of the `vizro_ai` package by following the steps outlined in the [installation guide](../user-guides/install.md). Once installed, you can execute your code either by pasting it into a Jupyter notebook cell or running it from a Python script.
 
 
 ??? tip "Beginners/Code novices"
-    For those new to Python or virtual environments, a user-friendly alternative is available in the [installation guide](../user_guides/install.md), offering a graphical user interface without the need for terminal commands.
+    For those new to Python or virtual environments, a user-friendly alternative is available in the [installation guide](../user-guides/install.md), offering a graphical user interface without the need for terminal commands.
 
-A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user_guides/api_setup.md) for instructions on setting up the API.
+A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user-guides/api-setup.md) for instructions on setting up the API.
 
 Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`.
 
 If you would like to customize the `.env` file location and name, you can set it manually.
 You can override the default import of the `.env` file by specifying the path and name of your custom `.env` file.
-Please refer to [API setup](../user_guides/api_setup.md) for instructions on customizing the `.env` file location and name.
+Please refer to [API setup](../user-guides/api-setup.md) for instructions on customizing the `.env` file location and name.
 
 ### 2. Create your visualization using different languages
 

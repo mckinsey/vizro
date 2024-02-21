@@ -8,7 +8,7 @@ functionality, and configuring layouts to suit your specific needs.
 This step-by-step guide is designed to equip you
 with the knowledge and skills required to create your own dashboards using Vizro.
 
-In case you are completely new, you may want to review our [Get started](../tutorials/first_dashboard.md) tutorial first.
+In case you are completely new, you may want to review our [Get started](../tutorials/first-dashboard.md) tutorial first.
 
 ## Let's get started!
 
@@ -102,7 +102,7 @@ insert text into your dashboard and can be configured using markdown syntax. For
 bar chart that visualizes the GDP development per continent since 1952.
 
 Remember, you can combine and arrange various types of `components` on a dashboard page.
-To see which components are available, refer to our [components](../user_guides/components.md) overview page.
+To see which components are available, refer to our [components](../user-guides/components.md) overview page.
 The user guides of the components serve as a detailed resource to learn how to make the most of them in your dashboards.
 
 ??? info "Further information for `components`"
@@ -220,7 +220,7 @@ text card occupies one-quarter of it.
 ![image3](../../assets/tutorials/dashboard/dashboard232.png)
 
 Let's see how it is looks on the dashboard when applied to the three components. If you like to learn more about how to
-configure layouts, check out the [user guide](../user_guides/layouts.md)
+configure layouts, check out the [user guide](../user-guides/layouts.md)
 
 !!! example "Configure layout"
     === "Code"
@@ -287,8 +287,8 @@ By incorporating `controls` into your dashboard, you enhance its interactivity a
 to have greater control and customization over the displayed data and components.
 
 ??? info "Further information for `controls`"
-    The user guides for [Filters](../user_guides/filters.md) and [Parameters](../user_guides/parameters.md) provide a comprehensive overview on how to apply
-    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [user guide on selectors](../user_guides/selectors.md).
+    The user guides for [Filters](../user-guides/filters.md) and [Parameters](../user-guides/parameters.md) provide a comprehensive overview on how to apply
+    [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [user guide on selectors](../user-guides/selectors.md).
 
 In order to link the `controls` to your two charts, it's important to understand the unique
 id assigned to each `component`. This id is unique across all dashboard pages and serves as a reference for
@@ -379,7 +379,7 @@ general, `targets` for [`Parameters`][vizro.models.Parameter] are set following 
 `scatter_iris.color_discrete_map.virginica`.  This nested structure allows you to target a specific attribute within a
 component. In this particular example, it specifies that only the color of the virginica flower type should be changed.
 More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [user guide
-for parameters](../user_guides/parameters.md).
+for parameters](../user-guides/parameters.md).
 
 !!! example "Second page"
     === "Code"
@@ -707,14 +707,14 @@ After completing the tutorial you now have a solid understanding of the main ele
 and how to bring them together.
 
 For future dashboard creations, you can explore more about the available dashboard `components` by going through our overview page for
-[components](../user_guides/components.md). To gain more in-depth knowledge about the usage and configuration
-details of `controls`, check out the user guides dedicated to [Filters](../user_guides/filters.md), [Parameters](../user_guides/parameters.md)
-and [Selectors](../user_guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head
-to [Navigation](../user_guides/navigation.md).
+[components](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration
+details of `controls`, check out the user guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md)
+and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head
+to [Navigation](../user-guides/navigation.md).
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
-- How to create you own components under [custom components](../user_guides/custom_components.md)
-- How to add custom styling using [custom css](../user_guides/assets.md)
-- How to use [Actions](../user_guides/actions.md) for e.g. chart interaction or custom controls
-- How to create dashboards from `yaml`, `dict` or `json` following the [user guide](../user_guides/dashboard.md)
+- How to create you own components under [custom components](../user-guides/custom-components.md)
+- How to add custom styling using [custom css](../user-guides/assets.md)
+- How to use [Actions](../user-guides/actions.md) for e.g. chart interaction or custom controls
+- How to create dashboards from `yaml`, `dict` or `json` following the [user guide](../user-guides/dashboard.md)

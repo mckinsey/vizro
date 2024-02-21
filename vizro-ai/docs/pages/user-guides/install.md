@@ -15,7 +15,7 @@ export OPENAI_API_KEY="..."
 ```
 
 
-More details can be found in the [environment setup guide](../user_guides/api_setup.md).
+More details can be found in the [environment setup guide](../user-guides/api-setup.md).
 
 ??? tip "Beginners/Code novices"
     If you are a beginner or new to coding and wish to avoid using the terminal, you can follow these steps:
