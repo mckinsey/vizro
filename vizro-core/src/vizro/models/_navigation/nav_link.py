@@ -20,7 +20,7 @@ from vizro.models.types import NavPagesType
 
 
 class NavLink(VizroBaseModel):
-    """Icon to be used in Navigation Bar of Dashboard.
+    """Icon that serves as a navigation link to be used in navigation bar of Dashboard.
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
@@ -32,7 +32,6 @@ class NavLink(VizroBaseModel):
     pages: NavPagesType = []
     label: str = Field(..., description="Text description of the icon for use in tooltip.")
     icon: str = Field("", description="Icon name from Google Material icons library.")
-
     _nav_selector: Accordion = PrivateAttr()
 
     # Re-used validators
@@ -52,7 +51,7 @@ class NavLink(VizroBaseModel):
     def build(self, *, active_page_id=None):
         # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be Dict[str, List[str]].
         # `active_page_id` is still required here for the automatic opening of the Accordion when navigating
-        # from homepage to a page within the Accordion.
+        # from homepage to a page within the Accordion and there are several Accordions within the page.
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids

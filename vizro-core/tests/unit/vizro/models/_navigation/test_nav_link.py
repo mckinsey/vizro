@@ -81,7 +81,7 @@ class TestNavLinkBuildMethod:
 
     def test_nav_link_build(self, pages, request):
         pages = request.getfixturevalue(pages)
-        nav_link = vm.NavLink(id="nav_link", label="Label", icon="icon", pages=pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
         nav_link.pre_build()
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_nav_link = dbc.NavLink(
@@ -97,7 +97,7 @@ class TestNavLinkBuildMethod:
             active="partial",
             href="/",
             className="nav-bar-icon-link",
-            id="nav_link",
+            id="nav-link",
         )
-        assert_component_equal(built_nav_link["nav_link"], expected_nav_link)
+        assert_component_equal(built_nav_link["nav-link"], expected_nav_link)
         assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
