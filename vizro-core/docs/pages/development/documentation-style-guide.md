@@ -38,7 +38,7 @@ Keep the amount of text, and the number and variety of callouts used, to a minim
 
 !!!example "example"
 
-     For example code
+     For example code.
 
 
 Boxes can be made collapsible, and if you choose this option, prefer to add them to the page so they are initially collapsed, to avoid crowding.
