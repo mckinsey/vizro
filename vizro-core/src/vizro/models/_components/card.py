@@ -34,13 +34,14 @@ class Card(VizroBaseModel):
     @_log_call
     def build(self):
         text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
-        button = html.Div(
+        card_content = (
             dcc.Link(
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href, className="card-link"
-            ),
-            className="button_container",
+                text,
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+                className="card-link",
+            )
+            if self.href is not None
+            else text
         )
-
         card_container = "nav_card_container" if self.href else "card_container"
-
-        return html.Div([text, button if self.href else None], className=card_container, id=f"{self.id}_outer")
+        return html.Div(card_content, className=card_container, id=f"{self.id}_outer")
