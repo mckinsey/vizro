@@ -65,8 +65,8 @@ class TestAccordionBuild:
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.NavLink(children=["Page 1"], active="partial", href="/", key="/"),
-                            dbc.NavLink(children=["Page 2"], active="partial", href="/page-2", key="/page-2"),
+                            dbc.NavLink(children=["Page 1"], active="partial", href="/"),
+                            dbc.NavLink(children=["Page 2"], active="partial", href="/page-2"),
                         ],
                         title="GROUP",
                         item_id="Group",
@@ -81,12 +81,12 @@ class TestAccordionBuild:
             dbc.Accordion(
                 children=[
                     dbc.AccordionItem(
-                        children=[dbc.NavLink(children=["Page 1"], active="partial", href="/", key="/")],
+                        children=[dbc.NavLink(children=["Page 1"], active="partial", href="/")],
                         title="GROUP 1",
                         item_id="Group 1",
                     ),
                     dbc.AccordionItem(
-                        children=[dbc.NavLink(children=["Page 2"], active="partial", href="/page-2", key="/page-2")],
+                        children=[dbc.NavLink(children=["Page 2"], active="partial", href="/page-2")],
                         title="GROUP 2",
                         item_id="Group 2",
                     ),
@@ -101,8 +101,8 @@ class TestAccordionBuild:
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.NavLink(children=["Page 1"], active="partial", href="/", key="/"),
-                            dbc.NavLink(children=["Page 2"], active="partial", href="/page-2", key="/page-2"),
+                            dbc.NavLink(children=["Page 1"], active="partial", href="/"),
+                            dbc.NavLink(children=["Page 2"], active="partial", href="/page-2"),
                         ],
                         title=ACCORDION_DEFAULT_TITLE,
                         item_id="SELECT PAGE",

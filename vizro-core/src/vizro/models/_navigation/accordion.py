@@ -48,10 +48,10 @@ class Accordion(VizroBaseModel):
 
         accordion_items = []
         for page_group, page_members in self.pages.items():
-            accordion_buttons = self._create_accordion_buttons(pages=page_members)
+            nav_links = self._create_nav_links(pages=page_members)
             accordion_items.append(
                 dbc.AccordionItem(
-                    children=accordion_buttons,
+                    children=nav_links,
                     title=page_group.upper(),
                     class_name="accordion-item-header",
                     item_id=page_group,
@@ -71,15 +71,17 @@ class Accordion(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     always_open=True,
+                    # `active_item` is required to open the accordion automatically when navigating from a homepage
+                    # to any of the pages in the accordion.
                     active_item=active_item,
                 )
             ],
             id="nav-panel",
         )
 
-    def _create_accordion_buttons(self, pages):
-        """Creates a button for each provided page that is registered."""
-        accordion_buttons = []
+    def _create_nav_links(self, pages):
+        """Creates a `NavLink` for each provided page that is registered."""
+        nav_links = []
         for page_id in pages:
             try:
                 page = dash.page_registry[page_id]
@@ -87,13 +89,12 @@ class Accordion(VizroBaseModel):
                 raise KeyError(
                     f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
                 ) from exc
-            accordion_buttons.append(
+            nav_links.append(
                 dbc.NavLink(
                     children=[page["name"]],
-                    key=page["relative_path"],
                     className="accordion-item-link",
                     active="partial",
                     href=page["relative_path"],
                 )
             )
-        return accordion_buttons
+        return nav_links
