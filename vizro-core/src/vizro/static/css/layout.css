@@ -81,7 +81,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  padding: 4px 0 24px 0;
+  padding: 4px 0 24px;
 }
 
 #control-panel:not(:empty) {
@@ -148,6 +148,7 @@ div.dashboard_container .custom-tooltip {
 .icon-button.btn.btn-primary.active .material-symbols-outlined {
   color: var(--text-active);
 }
+
 .loading-container {
   height: 100%;
   width: 100%;
@@ -158,7 +159,7 @@ div.dashboard_container .custom-tooltip {
   border-radius: 0;
   box-shadow: var(--box-shadow-elevation-tooltip-hover);
   color: var(--tooltip-text-primary);
-  filter: drop-shadow(0px 2px 2px #141721);
+  filter: drop-shadow(0 2px 2px #141721);
   font-size: var(--text-size-01);
   font-weight: var(--text-weight-light);
   letter-spacing: var(--letter-spacing-help-text);
@@ -226,9 +227,11 @@ div.dashboard_container .custom-tooltip {
 }
 
 /* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+
 /* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+
 /* Applies to device size x-small and small */
-@media (max-width: 576px) {
+@media (width <= 576px) {
   .grid-layout {
     display: flex;
     flex: 1;
@@ -252,7 +255,7 @@ div.dashboard_container .custom-tooltip {
   }
 }
 
-@media (max-height: 576px) {
+@media (height <= 576px) {
   .collapse-button-tooltip {
     top: 28px;
   }

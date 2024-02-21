@@ -22,6 +22,7 @@
   .dash-spreadsheet-inner
   table {
   --hover: var(--main-container-bg-color);
+
   width: 100%;
 }
 
@@ -47,8 +48,8 @@
 }
 
 #right-side .dash-table-container .previous-next-container {
-  padding: 4px 0;
   font-size: 14px;
+  padding: 4px 0;
 }
 
 .table-container {
