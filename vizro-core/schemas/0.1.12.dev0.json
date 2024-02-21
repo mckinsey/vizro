@@ -131,7 +131,6 @@
         "href": {
           "title": "Href",
           "description": "URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
-          "default": "",
           "type": "string"
         }
       },

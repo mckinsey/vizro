@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from dash import dcc, get_relative_path, html
 
@@ -26,8 +26,8 @@ class Card(VizroBaseModel):
     text: str = Field(
         ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
     )
-    href: str = Field(
-        "",
+    href: Optional[str] = Field(
+        None,
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
 
