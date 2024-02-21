@@ -46,7 +46,7 @@ DATA_TYPE_DEFINITIONS = {
 }
 
 
-@capture("grid")
+@capture("aggrid")
 def dash_ag_grid(data_frame=None, **kwargs):
     """Implementation of `dash-ag-grid.AgGrid` with sensible defaults."""
     defaults = {
