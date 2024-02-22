@@ -21,9 +21,9 @@ df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(
 
 
 grid_interaction = vm.Page(
-    title="AGGrid and Table Interaction",
+    title="AG Grid and Table Interaction",
     components=[
-        vm.AGGrid(
+        vm.AgGrid(
             id="table_country_new",
             title="Click on a cell",
             figure=dash_ag_grid(
@@ -89,9 +89,9 @@ df2["perc_from_float"] = np.random.rand(len(df2))
 df2["random"] = np.random.uniform(-100000.000, 100000.000, len(df2))
 
 grid_standard = vm.Page(
-    title="AGGrid Default",
+    title="AG Grid Default",
     components=[
-        vm.AGGrid(
+        vm.AgGrid(
             figure=dash_ag_grid(
                 id="dash_ag_grid_2",
                 data_frame=df2,
@@ -101,9 +101,9 @@ grid_standard = vm.Page(
 )
 
 grid_custom = vm.Page(
-    title="AGGrid Custom",
+    title="AG Grid Custom",
     components=[
-        vm.AGGrid(
+        vm.AgGrid(
             figure=dash_ag_grid(
                 id="dash_ag_grid_3",
                 data_frame=df2,

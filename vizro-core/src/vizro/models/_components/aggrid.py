@@ -21,21 +21,21 @@ from vizro.models.types import CapturedCallable
 logger = logging.getLogger(__name__)
 
 
-class AGGrid(VizroBaseModel):
+class AgGrid(VizroBaseModel):
     """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
     Args:
-        type (Literal["grid"]): Defaults to `"grid"`.
-        figure (CapturedCallable): AGGrid like object to be displayed. For more information see:
+        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
+        figure (CapturedCallable): AgGrid like object to be displayed. For more information see:
             [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
-    type: Literal["aggrid"] = "aggrid"
-    figure: CapturedCallable = Field(..., import_path=vt, description="AGGrid to be visualized on dashboard")
-    title: str = Field("", description="Title of the AGGrid")
+    type: Literal["ag_grid"] = "ag_grid"
+    figure: CapturedCallable = Field(..., import_path=vt, description="AgGrid to be visualized on dashboard")
+    title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -60,7 +60,8 @@ class AGGrid(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self) -> Dict[str, State]:
+    @property
+    def _figure_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
@@ -98,8 +99,8 @@ class AGGrid(VizroBaseModel):
 
             if not hasattr(underlying_aggrid_object, "id"):
                 raise ValueError(
-                    "Underlying `AGGrid` callable has no attribute 'id'. To enable actions triggered by the `AGGrid`"
-                    " a valid 'id' has to be provided to the `AGGrid` callable."
+                    "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
+                    " a valid 'id' has to be provided to the `AgGrid` callable."
                 )
 
             self._callable_object_id = underlying_aggrid_object.id

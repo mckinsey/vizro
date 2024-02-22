@@ -47,8 +47,8 @@ def _get_inputs_of_figure_interactions(
     inputs = []
     for action in figure_interactions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
-        if hasattr(triggered_model, "_get_figure_interaction_input"):
-            inputs.append(triggered_model._get_figure_interaction_input())
+        if hasattr(triggered_model, "_figure_interaction_input"):
+            inputs.append(triggered_model._figure_interaction_input)
     return inputs
 
 
