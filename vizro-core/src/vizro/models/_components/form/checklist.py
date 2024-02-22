@@ -53,9 +53,9 @@ class Checklist(VizroBaseModel):
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_checklist",
+                    className="checkboxes-list",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

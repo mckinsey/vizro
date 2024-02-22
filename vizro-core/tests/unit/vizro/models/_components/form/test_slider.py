@@ -49,7 +49,7 @@ def expected_slider():
                 className="slider_inner_container",
             ),
         ],
-        className="selector_container",
+        className="input-container",
         id="slider_id_outer",
     )
 

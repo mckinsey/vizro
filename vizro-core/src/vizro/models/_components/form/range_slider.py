@@ -138,6 +138,6 @@ class RangeSlider(VizroBaseModel):
                     className="range_slider_inner_container",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

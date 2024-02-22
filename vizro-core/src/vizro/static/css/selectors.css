@@ -1,30 +1,27 @@
-.selector_body_checklist,
-.selector_body_radio_items {
+.checkboxes-list,
+.radio-items-list {
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   font-size: var(--text-size-02);
-  gap: var(--spacing-01);
+  gap: var(--spacing-02);
   letter-spacing: var(--letter-spacing-body-ui-02);
-  line-height: var(--text-size-03);
+  line-height: var(--text-size-04);
+  padding: var(--spacing-01) 0;
+  align-self: stretch;
 }
 
-/* TODO: Consolidate gaps between all the containers. Check latest Figma design. */
+.checkboxes-list label , .radio-items-list label {
+  display: flex !important;
+height: 24px;
+align-items: center;
+gap: var(--spacing-01);
+align-self: stretch;
+}
 
-/* Eventually remove the need for all the different containers afterwards. */
-.selector_container,
-.selector_dropdown_container,
 .input-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-05);
-  width: 100%;
-}
-
-.selector_dropdown_container {
-  gap: var(--spacing-04);
-}
-
-.input-container {
   gap: var(--spacing-02);
+  width: 100%;
 }

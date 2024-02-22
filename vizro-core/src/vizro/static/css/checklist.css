@@ -4,8 +4,7 @@ input[type="checkbox" i] {
   border: 1px solid var(--text-secondary);
   display: inline-flex;
   height: 16px;
-  margin: 4px 8px 4px 4px;
-  vertical-align: middle;
+  margin: 4px;
   width: 16px;
 }
 

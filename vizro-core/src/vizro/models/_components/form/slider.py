@@ -120,6 +120,6 @@ class Slider(VizroBaseModel):
                     className="slider_inner_container",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )
