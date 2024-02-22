@@ -1,21 +1,21 @@
-# How to use AGGrids
+# How to use AG Grids
 
-This guide shows you how to use the [AG Grid](https://www.ag-grid.com/) to visualize your tabular data in the dashboard.
+This guide shows you how to use [AG Grid](https://www.ag-grid.com/) to visualize your tabular data in the dashboard.
 It is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
 and Vizro's recommended table implementation.
 
-The Vizro [`AGGrid`][vizro.models.AGGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the
+The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the
 original [Javascript implementation](https://www.ag-grid.com/).
 
 ## Basic usage
 
-To add a [`AGGrid`][vizro.models.AGGrid] to your page, do the following:
+To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 
-- insert the [`AGGrid`][vizro.models.AGGrid] model into the `components` argument of the
+- insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the
 [`Page`][vizro.models.Page] model
 - enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`)
 
-The Vizro version of this AGGrid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
+The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`. All other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
 Note that some defaults are set for some of the arguments (e.g. for `columnDefs`) to help with styling and usability.
 
@@ -81,7 +81,7 @@ columnDefs = [{"field": "<COLUMN>", "cellDataType": "euro"}]
 
 In the below example we select and format some columns of the gapminder dataset.
 
-??? example "AGGrid with formatted columns"
+??? example "AG Grid with formatted columns"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -95,10 +95,10 @@ In the below example we select and format some columns of the gapminder dataset.
                       {"field": "gdpPercap", "cellDataType": "dollar"}, {"field": "pop", "cellDataType": "numeric"}]
 
         page = vm.Page(
-            title="Example of AGGrid with formatted columns",
+            title="Example of AG Grid with formatted columns",
             components=[
                 vm.Table(
-                    title="AGGrid with formatted columns",
+                    title="AG Grid with formatted columns",
                     figure=dash_ag_grid(
                         data_frame=df,
                         columnDefs=columnDefs,
@@ -129,9 +129,9 @@ In the below example we select and format some columns of the gapminder dataset.
                       cellDataType: dollar
                     - field: pop
                       cellDataType: numeric
-                title: AGGrid with formatted columns
+                title: AG Grid with formatted columns
                 type: table
-            title: Example of AGGrid with formatted columns
+            title: Example of AG Grid with formatted columns
         ```
     === "Result"
         [![Table2]][Table2]
@@ -140,8 +140,8 @@ In the below example we select and format some columns of the gapminder dataset.
 
 ### Dates
 
-In order for the [`AGGrid`][vizro.models.AGGrid] model to sort and filter dates correctly, the date must either be of
-string format `yyyy-mm-dd` (see [Dash AGGrid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter))
+In order for the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly, the date must either be of
+string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter))
 or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
 
 ### Objects/Strings
