@@ -1,5 +1,5 @@
 input[type="radio" i] {
-  -webkit-appearance: none;
+  appearance: none;
   border: 1px solid var(--text-secondary);
   border-radius: 50%;
   height: 16px;
@@ -17,7 +17,7 @@ input[type="radio"]:focus {
   box-shadow: 0 0 0 2px var(--text-secondary);
 }
 
-input[type="radio"]:checked:before {
+input[type="radio"]:checked::before {
   background-color: var(--text-primary);
   border-radius: 50%;
   content: "";
