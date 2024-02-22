@@ -10,6 +10,7 @@
 }
 
 /* TODO: Consolidate gaps between all the containers. Check latest Figma design. */
+
 /* Eventually remove the need for all the different containers afterwards. */
 .selector_container,
 .selector_dropdown_container,
