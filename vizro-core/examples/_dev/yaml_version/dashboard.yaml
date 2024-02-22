@@ -1,47 +1,42 @@
+# Still requires a .py to register data connector in Data Manager and parse yaml configuration
+# See from_yaml example
 pages:
   - components:
       - figure:
-          _target_: line
+          _target_: dash_ag_grid
           data_frame: gapminder
-          x: year
-          y: lifeExp
-          color: continent
-          title: Graph 1
-        type: graph
-      - figure:
-          _target_: scatter
-          data_frame: gapminder
-          x: gdpPercap
-          y: lifeExp
-          size: pop
-          color: continent
-          title: Graph 2
-        type: graph
-      - figure:
-          _target_: box
-          data_frame: gapminder
-          x: continent
-          y: lifeExp
-          color: continent
-          title: Graph 3
-        type: graph
-      - figure:
-          _target_: line
-          data_frame: gapminder
-          x: year
-          y: lifeExp
-          color: continent
-          title: Graph 4
-        type: graph
-      - figure:
-          _target_: scatter
-          data_frame: gapminder
-          x: gdpPercap
-          y: lifeExp
-          size: pop
-          color: continent
-          title: Graph 5
-        type: graph
-    layout:
-      grid: [[0, 1, 3, 4], [2, 2, 3, 4]]
-    title: Custom Layout - Advanced Example
+          columnDefs:
+            - field: country
+            - field: continent
+            - field: year
+            - field: lifeExp
+              valueFormatter:
+                function: "d3.format('.1f')(params.value)"
+            - field: gdpPercap
+              valueFormatter:
+                function: "d3.format('$,.1f')(params.value)"
+              cellStyle:
+                styleConditions:
+                  - condition: params.value < 1045
+                    style:
+                      backgroundColor: "#ff9222"
+                  - condition: params.value >= 1045 && params.value <= 4095
+                    style:
+                      backgroundColor: "#de9e75"
+                  - condition: params.value > 4095 && params.value <= 12695
+                    style:
+                      backgroundColor: "#aaa9ba"
+                  - condition: params.value > 12695
+                    style:
+                      backgroundColor: "#00b4ff"
+            - field: pop
+              type: rightAligned
+              valueFormatter:
+                function: "d3.format(',.0f')(params.value)"
+          defaultColDef:
+            resizable: false
+            filter: false
+            editable: true
+        title: Dash AG Grid
+        type: ag_grid
+    title: Example of a Dash AG Grid

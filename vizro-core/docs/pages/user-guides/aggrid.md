@@ -2,7 +2,7 @@
 
 This guide shows you how to use [AG Grid](https://www.ag-grid.com/) to visualize your tabular data in the dashboard.
 It is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
-and Vizro's recommended table implementation.
+AG Grid is Vizro's recommended table implementation.
 
 The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the
 original [Javascript implementation](https://www.ag-grid.com/).
@@ -33,7 +33,7 @@ Note that some defaults are set for some of the arguments (e.g. for `columnDefs`
         page = vm.Page(
             title="Example of a Dash AG Grid",
             components=[
-                vm.Grid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
+                vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
             ],
             controls=[vm.Filter(column="continent")],
         )
@@ -51,7 +51,7 @@ Note that some defaults are set for some of the arguments (e.g. for `columnDefs`
               _target_: dash_ag_grid
               data_frame: gapminder
             title: Dash AG Grid
-            type: grid
+            type: ag_grid
           controls:
             - column: continent
               type: filter
@@ -88,16 +88,16 @@ In the below example we select and format some columns of the gapminder dataset.
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
-
+        
         df = px.data.gapminder()
-
+        
         columnDefs = [{"field": "country"}, {"field": "year"}, {"field": "lifeExp", "cellDataType": "numeric"},
                       {"field": "gdpPercap", "cellDataType": "dollar"}, {"field": "pop", "cellDataType": "numeric"}]
-
+        
         page = vm.Page(
             title="Example of AG Grid with formatted columns",
             components=[
-                vm.Table(
+                vm.AgGrid(
                     title="AG Grid with formatted columns",
                     figure=dash_ag_grid(
                         data_frame=df,
@@ -106,9 +106,9 @@ In the below example we select and format some columns of the gapminder dataset.
                 )
             ],
         )
-
+        
         dashboard = vm.Dashboard(pages=[page])
-
+        
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
@@ -130,7 +130,7 @@ In the below example we select and format some columns of the gapminder dataset.
                     - field: pop
                       cellDataType: numeric
                 title: AG Grid with formatted columns
-                type: table
+                type: ag_grid
             title: Example of AG Grid with formatted columns
         ```
     === "Result"
@@ -153,7 +153,7 @@ in order to format e.g. displayed strings automatically.
 ## Further styling and customization
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find
-an example of a styled table where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
+an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
 There are many more ways to alter the grid beyond this showcase.
 
 ??? example "Styled and modified Dash AG Grid"
@@ -209,7 +209,7 @@ There are many more ways to alter the grid beyond this showcase.
         page = vm.Page(
             title="Example of Modified Dash AG Grid",
             components=[
-                vm.Table(
+                vm.AgGrid(
                     title="Modified Dash AG Grid",
                     figure=dash_ag_grid(
                         data_frame=df,
@@ -261,16 +261,12 @@ There are many more ways to alter the grid beyond this showcase.
                       type: rightAligned
                       valueFormatter:
                         function: "d3.format(',.0f')(params.value)"
-                defaultColDef:
+                  defaultColDef:
                     resizable: false
                     filter: false
                     editable: true
                 title: Dash AG Grid
-                id: table
-                type: table
-            controls:
-              - column: continent
-                type: filter
+                type: ag_grid
             title: Example of a Dash AG Grid
         ```
     === "Result"
