@@ -11,7 +11,7 @@ Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Ta
 They both visualize tabular data in similar ways.
 
 The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component
-(which is in turn based on the [AG Grid](https://www.ag-grid.com/) library), 
+(which is in turn based on the [AG Grid](https://www.ag-grid.com/) library),
 while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
 
 Both approaches have similar base features, and are configurable in similar ways. However, the AG Grid offers more advanced features out-of-the-box, is more customizable
@@ -108,12 +108,12 @@ In the below example we select and format some columns of the gapminder dataset.
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
-        
+
         df = px.data.gapminder()
-        
+
         columnDefs = [{"field": "country"}, {"field": "year"}, {"field": "lifeExp", "cellDataType": "numeric"},
                       {"field": "gdpPercap", "cellDataType": "dollar"}, {"field": "pop", "cellDataType": "numeric"}]
-        
+
         page = vm.Page(
             title="Example of AG Grid with formatted columns",
             components=[
@@ -126,9 +126,9 @@ In the below example we select and format some columns of the gapminder dataset.
                 )
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
