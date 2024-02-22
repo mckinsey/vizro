@@ -2,8 +2,11 @@
   --ag-background-color: var(--main-container-bg-color);
   --ag-foreground-color: var(--text-primary);
   --ag-odd-row-background-color: var(--main-container-bg-color);
-  --ag-header-foreground-color: var(--text-secondary);  /*Colour of text and icons in the header*/
-  --ag-data-color: var(--text-primary); /*Colour of text in grid cells*/
+  --ag-header-foreground-color: var(
+    --text-secondary
+  ); /* Colour of text and icons in the header */
+
+  --ag-data-color: var(--text-primary); /* Colour of text in grid cells */
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-header-column-resize-handle-display: none;
   --ag-icon-font-family: aggridquartz;
@@ -11,51 +14,48 @@
   --ag-row-height: 48px;
   --ag-header-height: 40px;
 
-  /*Borders*/
+  /* Borders */
   --ag-borders: none;
   --ag-row-border-style: solid;
   --ag-row-border-color: var(--border-subtle-alpha-01);
   --ag-row-border-width: 1px;
 
-  /*Bg Color*/
+  /* Bg Color */
   --ag-selected-row-background-color: var(--state-overlays-selected);
   --ag-active-color: var(--state-overlays-selected-hover);
-
 }
 
 #page-container .ag-theme-quartz .ag-header-row {
-  display: flex;
   align-items: flex-start;
+  border-bottom: 1px solid var(--border-subtle-alpha-02);
+  display: flex;
   font-weight: 400;
   padding: var(--spacing-03) 0 0 0;
-  border-bottom: 1px solid var(--border-subtle-alpha-02);
 }
 
 /* Header */
 #page-container .ag-theme-quartz .ag-header-cell {
+  align-items: center;
   display: flex;
   padding: 0 var(--spacing-03);
-  align-items: center;
 }
 
-#page-container .ag-header-cell-text{
+#page-container .ag-header-cell-text {
+  letter-spacing: -0.112px;
+  line-height: var(--spacing-04);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  letter-spacing: -0.112px;
-  line-height: var(--spacing-04);
 }
 
 #page-container .ag-theme-quartz .ag-header-cell:hover {
-  color: var(--text-primary);
   border-bottom: 1px solid var(--border-hover);
+  color: var(--text-primary);
 }
-
 
 /* Rows */
 #page-container .ag-theme-quartz .ag-cell {
-  padding: 0 var(--spacing-03)
-
+  padding: 0 var(--spacing-03);
 }
 
 /* Filter menu styling */
