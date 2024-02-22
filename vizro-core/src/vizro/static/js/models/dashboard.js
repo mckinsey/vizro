@@ -1,4 +1,8 @@
 export function _update_dashboard_theme(checked) {
+  document.documentElement.setAttribute(
+    "data-bs-theme",
+    checked ? "light" : "dark",
+  );
   return checked ? "vizro_light" : "vizro_dark";
 }
 
