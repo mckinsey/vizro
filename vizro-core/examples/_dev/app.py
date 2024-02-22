@@ -11,24 +11,40 @@ from vizro.tables import dash_data_table
 
 iris = px.data.iris()
 
-# Only added to container.components directly for dev example
-vm.Container.add_type("components", UserInput)
-vm.Container.add_type("components", TextArea)
-
-page = vm.Page(
-    title="User Text Inputs",
-    layout=vm.Layout(grid=[[0, 1]], col_gap="40px"),
+cards = vm.Page(
+    title="Cards",
     components=[
-        vm.Container(
-            title="Input Components",
-            components=[
-                UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
-                TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
-            ],
-        ),
+        vm.Card(
+            text="""
+                # This is an <h1> tag
+                ## This is an <h2> tag
+                ###### This is an <h6> tag
+
+                >
+                > Block quotes are used to highlight text.
+                >
+
+                * Item 1
+                * Item 2
+
+                *This text will be italic*
+
+                _This will also be italic_
+
+                **This text will be bold**
+
+                _You **can** combine them_
+            """
+        )
+    ],
+)
+
+graph = vm.Page(
+    title="Graph",
+    components=[
         vm.Graph(
-            id="for_custom_chart",
-            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+            id="scatter_relation",
+            figure=px.scatter(data_frame=px.data.gapminder(), x="gdpPercap", y="lifeExp", size="pop"),
         ),
     ],
 )
@@ -124,4 +140,4 @@ page_2 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()

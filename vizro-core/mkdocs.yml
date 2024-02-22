@@ -3,50 +3,51 @@ site_url: https://mckinsey.github.io/vizro/
 nav:
   - Vizro: index.md
   - Get started:
-      - Quickstart: pages/tutorials/first_dashboard.md
-      - Explore Vizro: pages/tutorials/explore_components.md
+      - Quickstart: pages/tutorials/first-dashboard.md
+      - Explore Vizro: pages/tutorials/explore-components.md
   - User Guides:
       - FUNDAMENTALS:
-          - Install: pages/user_guides/install.md
-          - Dashboards: pages/user_guides/dashboard.md
-          - Pages: pages/user_guides/pages.md
-          - Run Methods: pages/user_guides/run.md
+          - Install: pages/user-guides/install.md
+          - Dashboards: pages/user-guides/dashboard.md
+          - Pages: pages/user-guides/pages.md
+          - Run Methods: pages/user-guides/run.md
       - COMPONENTS:
-          - Overview: pages/user_guides/components.md
-          - Graphs: pages/user_guides/graph.md
-          - Tables: pages/user_guides/table.md
-          - Cards & Buttons: pages/user_guides/card_button.md
-          - Containers: pages/user_guides/container.md
-          - Tabs: pages/user_guides/tabs.md
+          - Overview: pages/user-guides/components.md
+          - Graphs: pages/user-guides/graph.md
+          - Tables: pages/user-guides/table.md
+          - Cards & Buttons: pages/user-guides/card-button.md
+          - Containers: pages/user-guides/container.md
+          - Tabs: pages/user-guides/tabs.md
       - CONTROLS:
-          - Filters: pages/user_guides/filters.md
-          - Parameters: pages/user_guides/parameters.md
-          - Selectors: pages/user_guides/selectors.md
+          - Filters: pages/user-guides/filters.md
+          - Parameters: pages/user-guides/parameters.md
+          - Selectors: pages/user-guides/selectors.md
       - NAVIGATION:
-          - Navigation: pages/user_guides/navigation.md
+          - Navigation: pages/user-guides/navigation.md
       - VISUAL FORMATTING:
-          - Layouts: pages/user_guides/layouts.md
-          - Themes: pages/user_guides/themes.md
-          - Assets: pages/user_guides/assets.md
+          - Layouts: pages/user-guides/layouts.md
+          - Themes: pages/user-guides/themes.md
+          - Assets: pages/user-guides/assets.md
       - ACTIONS:
-          - Actions: pages/user_guides/actions.md
+          - Actions: pages/user-guides/actions.md
       - DATA CONNECTIONS:
-          - Data: pages/user_guides/data.md
-          - Integrations: pages/user_guides/integration.md
+          - Data: pages/user-guides/data.md
+          - Integrations: pages/user-guides/integration.md
       - EXTENSIONS:
-          - Custom Charts: pages/user_guides/custom_charts.md
-          - Custom Tables: pages/user_guides/custom_tables.md
-          - Custom Components: pages/user_guides/custom_components.md
-          - Custom Actions: pages/user_guides/custom_actions.md
+          - Custom Charts: pages/user-guides/custom-charts.md
+          - Custom Tables: pages/user-guides/custom-tables.md
+          - Custom Components: pages/user-guides/custom-components.md
+          - Custom Actions: pages/user-guides/custom-actions.md
   - API Reference:
-      - Vizro: pages/API_reference/vizro.md
-      - Models: pages/API_reference/models.md
-      - Data Manager: pages/API_reference/manager.md
-      - Actions: pages/API_reference/actions.md
+      - Vizro: pages/API-reference/vizro.md
+      - Models: pages/API-reference/models.md
+      - Data Manager: pages/API-reference/manager.md
+      - Actions: pages/API-reference/actions.md
   - Explanation:
-      - Why Vizro: pages/explanation/why_vizro.md
+      - Why Vizro: pages/explanation/why-vizro.md
   - Contribute:
       - Contributing: pages/development/contributing.md
+      - Documentation style: pages/development/documentation-style-guide.md
       - Authors: pages/development/authors.md
 
 repo_url: https://github.com/mckinsey/vizro

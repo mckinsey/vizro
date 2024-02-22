@@ -36,11 +36,13 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
-    Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
+    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md)
+    to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
-    custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
-    [custom actions][custom-actions].
+    custom charts](../user-guides/custom-charts.md),
+    [custom tables](../user-guides/custom-tables.md) or
+    [custom actions](../user-guides/custom-actions.md).
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -231,11 +233,11 @@ class capture:
         >>>     ...
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
-    [custom graphs](../user_guides/custom_charts.md).
+    [custom graphs](../user-guides/custom-charts.md).
     For further help on the use of `@capture("table")`, you can refer to the guide on
-    [custom tables](../user_guides/table#custom-table).
+    [custom tables](../user-guides/custom-tables.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
-    [custom actions](../user_guides/actions/#custom-actions).
+    [custom actions](../user-guides/custom-actions.md).
 
     """
 

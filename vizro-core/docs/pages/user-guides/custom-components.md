@@ -9,10 +9,6 @@ This guide shows you how to create custom components that are completely new, or
 In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
 
-!!! warning "Adding a dash-bootstrap component"
-
-    When adding a custom component based on [dash-bootstrap components](https://dash-bootstrap-components.opensource.faculty.ai/)
-    it’s necessary to add custom CSS to ensure proper styling and functionality.
 
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
 or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
@@ -29,7 +25,7 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 
     We will refer back to these three steps in the two examples below.
 
-[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API_reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
+[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
 ## Extend an existing component
