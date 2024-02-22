@@ -140,4 +140,4 @@ page_2 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
-    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
+    Vizro().build(dashboard).run()
