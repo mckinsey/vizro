@@ -5,5 +5,11 @@ hr {
 
 blockquote {
   border-left: var(--spacing-01) var(--text-secondary) solid;
+  margin: 0 0 var(--spacing-02);
   padding-left: var(--spacing-01);
+}
+
+img,
+svg {
+  vertical-align: unset;
 }
