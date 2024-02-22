@@ -105,7 +105,6 @@
   margin-right: 4px;
   max-width: 54px;
   min-width: 40px;
-  padding-bottom: var(--spacing-08);
   text-decoration: underline;
   text-decoration-color: var(--border-subtle-alpha-01);
 }
@@ -134,10 +133,22 @@
 
 .slider_input_container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: flex-end;
   width: 100%;
 }
 
 input.dash-input:invalid {
   outline: none;
+}
+
+
+.slider-label-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.slider-label-input label {
+  width: 100%;
 }
