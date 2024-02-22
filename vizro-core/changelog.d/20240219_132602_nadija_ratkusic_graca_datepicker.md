@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Enable temporal selectors `DatePicker` and `DateRangePicker` in `Filter` and `Parameter`. ([#309](https://github.com/mckinsey/vizro/pull/309))
+- Enable temporal selector `DatePicker` in `Filter` and `Parameter`. ([#309](https://github.com/mckinsey/vizro/pull/309))
 
 <!--
 ### Removed
