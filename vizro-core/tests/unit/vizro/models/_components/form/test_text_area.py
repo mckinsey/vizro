@@ -42,6 +42,7 @@ class TestUserInputBuild:
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
+                    className="text-area",
                 ),
             ],
             className="input-container",

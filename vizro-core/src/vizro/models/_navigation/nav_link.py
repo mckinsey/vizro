@@ -70,6 +70,7 @@ class NavLink(VizroBaseModel):
                     withArrow=True,
                     children=[html.Span(self.icon, className="material-symbols-outlined")],
                     position="bottom-start",
+                    className="nav-icon-tooltip",
                 )
             ],
             id=self.id,

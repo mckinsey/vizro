@@ -43,7 +43,7 @@
 #page-container .ag-theme-quartz .ag-cell {
   /* display: flex; */
 
- /* This breaks AGGrid side right alignment of numerical columns */
+  /* This breaks AGGrid side right alignment of numerical columns */
   align-items: center;
   font-size: 14px;
   padding-left: 0;

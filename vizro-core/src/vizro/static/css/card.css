@@ -22,9 +22,11 @@
   top: -8px;
 }
 
-.card_button {
+.card-link {
+  color: transparent;
   height: 100%;
   left: 0;
+  padding: var(--spacing-04);
   position: absolute;
   top: 0;
   width: 100%;
@@ -36,10 +38,7 @@ h3,
 h4,
 h5,
 h6,
-p {
+p,
+ul {
   margin-bottom: var(--spacing-02);
-}
-
-.card_text ul {
-  color: var(--text-secondary);
 }
