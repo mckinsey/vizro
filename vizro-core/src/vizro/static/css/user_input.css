@@ -10,6 +10,10 @@ textarea {
   text-overflow: ellipsis;
 }
 
+textarea {
+  padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
+}
+
 .user_input {
   gap: var(--spacing-02);
   height: 32px;
@@ -23,10 +27,6 @@ textarea {
 .user_input:enabled,
 textarea:enabled {
   color: var(--text-primary);
-}
-
-textarea {
-  padding: var(--spacing-03) var(--spacing-03) var(--spacing-04);
 }
 
 .user_input:hover,
@@ -43,7 +43,7 @@ textarea:focus {
   outline: none;
 }
 
-/* Should be replaced by a custom icon at some point*/
+/* Should be replaced by a custom icon at some point */
 input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+  appearance: none;
 }

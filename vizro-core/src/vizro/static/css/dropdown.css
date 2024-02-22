@@ -47,6 +47,10 @@
   margin-left: unset;
 }
 
+.Select-input > input {
+  padding: 0 !important; /* Required so tags don't jump caused by adding table */
+}
+
 #page-container.Select-input > input {
   height: 100%;
   padding: 0;
@@ -72,7 +76,7 @@
   ) !important; /* Required so text color don't change caused by adding table */
 }
 
-/* Tags ---------------------------*/
+/* Tags --------------------------- */
 #page-container .Select--multi .Select-value {
   background-color: var(--tags-bg-color);
   border: 0;
@@ -96,9 +100,9 @@
 
 /* Tag: Cross */
 #page-container .Select--multi .Select-value-icon {
-  color: var(--text-secondary);
   background: inherit;
   border: none;
+  color: var(--text-secondary);
   line-height: inherit;
   margin: 0;
   padding: 0;
@@ -116,6 +120,11 @@
   width: 16px;
 }
 
+#nav-panel a {
+  font-weight: var(--text-weight-regular);
+  line-height: var(--text-size-07);
+}
+
 /* Page Selector Dropdown */
 #page-container
   .dash-dropdown
@@ -130,14 +139,9 @@
   width: 100%;
 }
 
-#nav-panel a {
-  font-weight: var(--text-weight-regular);
-  line-height: var(--text-size-07);
-}
-
 #page-container .Select--multi .Select-clear-zone {
-  width: 16px;
   color: var(--text-secondary);
+  width: 16px;
 }
 
 /** spacing for tag elements only when elements are present inside
@@ -147,8 +151,4 @@ wrapper **/
   flex-wrap: wrap;
   gap: 4px;
   padding: 4px 8px;
-}
-
-.Select-input > input {
-  padding: 0 !important; /* Required so tags don't jump caused by adding table */
 }
