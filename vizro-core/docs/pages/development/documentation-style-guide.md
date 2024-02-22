@@ -14,11 +14,11 @@ We refer to other products using their preferred capitalization. For example, Da
 
 Vizro components are named using lower case:
 
-> "Here is a guide to using containers..."
+> Here is a guide to using containers...
 
 Use code font when referring to the component as a class or object:
 
-> "To add a `Container` to your page..."
+> To add a `Container` to your page...
 
 ## Bullets
 * Capitalize the first word, and end the bullet with a period.
@@ -41,7 +41,11 @@ Keep the amount of text, and the number and variety of callouts used, to a minim
      For example code.
 
 
-Boxes can be made collapsible, and if you choose this option, prefer to add them to the page so they are initially collapsed, to avoid crowding.
+Callout boxes can be made collapsible: if you use them, add them to the page so they are initially collapsed.
+
+???+ note "Limit the use of collapsible callouts to secondary information only"
+
+    Don't use expanded-on-load collapsibles. If the callout contains important information and needs to be shown as expanded on page load, it should simply be non-collapsible.
 
 ## Capitalization
 * Only capitalize proper nouns e.g. names of technology products, other tools and services.
@@ -57,15 +61,15 @@ Boxes can be made collapsible, and if you choose this option, prefer to add them
 ## Instructions
 
 Prefer to use imperatives to make instructions. For example:
-> "Complete the configuration steps"
+> Complete the configuration steps
 
 You don't need to use the word "please" -- readers want less to read and don't think it's rude if you omit it.
 
 You can also use second person:
-> "You should complete the configuration steps". Don't use the passive "The configuration steps should be completed" (see next bullet).
+> You should complete the configuration steps.
 
-
-Avoid using the passive tense where possible.
+Don't use the passive tense:
+> The configuration steps should be completed.
 
 !!!note "What is passive tense?"
 
@@ -91,6 +95,14 @@ This is less helpful:
 Don't write this:
 
 > To learn how to contribute to Vizro, see [here](https://vizro.readthedocs.io/en/stable/pages/development/contributing/).
+
+### Internal cross-referencing
+We use internal cross-references as follows:
+
+* For each documentation page, if it helps the reader, we link to narrative documentation (non-API documentation) about each Vizro concept where it is first introduced.
+* On any single page, we limit the repetition of links: do not re-link to the same page again unless there is good reason to do so (for example, linking to a specific sub-section to illustrate a point).
+* Add links to relevant API documentation where it is useful for the reader, and consider how they will navigate from where they land in the API documentation back to the narrative content. Consider adding a link in the relevant docstring back to your page.
+
 
 ## Oxford commas
 Use these in lists to avoid confusion. This is confusing:
@@ -136,7 +148,7 @@ Functional is not try-hard, cliched or hyperbolic:
 
 ## Things to avoid
 
-* **Gerunds in headings**. What are these? They are the "-ing" forms of verbs. If you find yourself writing "Getting started" in a heading, then consider "Get started" or "How to get started" instead.
+* **Gerunds in headings**. What are these? They are the "-ing" forms of verbs. If you find yourself writing "Getting started" in a heading, then consider "Get started" or "How to get started" instead. In fact, in general, it's better to avoid gerund-forms of verbs where you can.
 * **Plagiarism**. Link to their text and credit them.
 * **Colloquialisms**. Avoid them "like the plague" because they may not translate to other regions/languages.
 * **Technical terminology**. This applies particularly to acronyms that do not pass the "Google test". If it is not possible to find their meaning from a simple Google search, don't use them, or explain them with a link or some text.
