@@ -1,13 +1,12 @@
 """Rough example used by developers."""
 
-from datetime import datetime
-
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
+from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
 iris = px.data.iris()
@@ -37,7 +36,7 @@ page = vm.Page(
 # CREATE FAKE DATA
 column = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
 row = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5]
-value = [1, 7, 3, 5, 2, 10, 9, 1, 3, 7, 5, 8, 2, 9, 1, 2, 7, 5, 3, 2]
+value = ["1", "7", "3", "5", "2", "10", "9", "1", "3", "7", "5", "8", "2", "9", "1", "2", "7", "5", "3", "2"]
 group = ["A", "B", "C", "D", "E", "E", "D", "C", "B", "A", "A", "E", "C", "B", "D", "A", "D", "B", "C", "E"]
 date_time = [
     "2023-01-01",
@@ -64,13 +63,15 @@ date_time = [
 
 data = pd.DataFrame()
 
-date_time_new = [datetime.strptime(date, "%Y-%m-%d").date() for date in date_time]
+# date_time_new = [datetime.strptime(date, "%Y-%m-%d") for date in date_time]
 
 data["COLUMN1"] = column
 data["ROW1"] = row
 data["VALUE"] = value
 data["GROUP"] = group
-data["DATE_TIME"] = date_time_new
+data["DATE_TIME"] = date_time
+
+# data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
 page_1 = vm.Page(
     title="Datepicker page",
@@ -78,18 +79,49 @@ page_1 = vm.Page(
     controls=[
         vm.Filter(
             column="DATE_TIME",
-            selector=vm.DateRangePicker(
+            selector=vm.DatePicker(
                 title="Pick a date",
                 min="2023-01-01",
                 value=["2024-01-01", "2024-03-01"],
                 max="2024-07-07",
             ),
-            # selector=vm.DatePicker(title="Pick a date", min_date='2023-01-01', value=['2024-01-01']),
+            # selector=vm.DatePicker(title="Pick a date", min_date='2023-01-01', value=['2024-01-01'], multi=False),
         )
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_1])
+# test for DatePicker use in Parameter
+
+
+@capture("graph")
+def bar_with_highlight(data_frame, x, highlight_bar=None):
+    """Custom chart to test using DatePicker with Parameter."""
+    fig = px.bar(data_frame=data_frame, x=x)
+
+    fig["data"][0]["marker"]["color"] = ["orange" if c == highlight_bar else "blue" for c in fig["data"][0]["x"]]
+    return fig
+
+
+page_2 = vm.Page(
+    title="Custom chart",
+    components=[
+        vm.Graph(
+            id="enhanced_bar",
+            figure=bar_with_highlight(
+                x="date",
+                data_frame=px.data.stocks(),
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["enhanced_bar.highlight_bar"],
+            selector=vm.DatePicker(min="2018-01-01", max="2023-01-01", value="2018-04-01", multi=False),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

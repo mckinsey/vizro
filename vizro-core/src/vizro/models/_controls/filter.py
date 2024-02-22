@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Literal
 
 import pandas as pd
-from pandas.api.types import is_numeric_dtype
+from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype, is_string_dtype
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -18,7 +18,6 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
-    DateRangePicker,
     Dropdown,
     RadioItems,
     RangeSlider,
@@ -34,34 +33,19 @@ SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "tempora
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
-    "temporal": (DateRangePicker, DatePicker),
+    "temporal": DatePicker,
 }
 
 
 def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
+    if len(value) != 2:
+        return pd.Series(False, index=series.index)
+
     return series.between(value[0], value[1], inclusive="both")
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
-
-
-def _filter_date_between(series: pd.Series, value: List[str]) -> pd.Series:
-    series = pd.to_datetime(series)
-    if len(value) == 2:
-        start_date, end_date = value
-
-        return series.between(start_date, end_date, inclusive="both")
-    else:
-        return pd.Series(False, index=series.index)
-
-
-def _filter_date_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
-    series = pd.to_datetime(series)
-    return series.isin(value)
-
-
-FILTER_FUNCTIONS = {RangeSlider: _filter_between, DateRangePicker: _filter_date_between, DatePicker: _filter_date_isin}
 
 
 class Filter(VizroBaseModel):
@@ -101,6 +85,7 @@ class Filter(VizroBaseModel):
         self._set_column_type()
         self._set_selector()
         self._set_slider_values()
+        self._set_date_picker_values()
         self._set_categorical_selectors_options()
         self._set_actions()
 
@@ -119,9 +104,16 @@ class Filter(VizroBaseModel):
             if not self.targets:
                 raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
 
+    def _convert_column_type(self, data_frame):
+        if is_string_dtype(data_frame[self.column]):
+            data_frame[self.column] = pd.to_datetime(data_frame[self.column], errors="ignore")
+        return data_frame
+
     def _set_column_type(self):
         data_frame = data_manager._get_component_data(self.targets[0])
-        if isinstance(data_frame[self.column], pd.PeriodDtype):
+        data_frame = self._convert_column_type(data_frame=data_frame)
+
+        if is_datetime64_any_dtype(data_frame[self.column]):
             self._column_type = "temporal"
         elif is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
@@ -155,6 +147,31 @@ class Filter(VizroBaseModel):
             if self.selector.max is None:
                 self.selector.max = max(max_values)
 
+    def _set_date_picker_values(self):
+        if isinstance(self.selector, SELECTORS["temporal"]):
+            if self._column_type != "temporal":
+                raise ValueError(
+                    f"Chosen selector {self.selector.type} is not compatible "
+                    f"with {self._column_type} column '{self.column}'."
+                )
+
+            min_values = []
+            max_values = []
+            for target_id in self.targets:
+                data_frame = data_manager._get_component_data(target_id)
+                data_frame = self._convert_column_type(data_frame=data_frame)
+                min_values.append(data_frame[self.column].min())
+                max_values.append(data_frame[self.column].max())
+            if not is_datetime64_any_dtype(pd.Series(min_values)) or not is_datetime64_any_dtype(pd.Series(max_values)):
+                raise ValueError(
+                    f"Non-temporal values detected in the shared data column '{self.column}' for targeted charts. "
+                    f"Please ensure that the data column contains the same data type across all targeted charts."
+                )
+            if self.selector.min is None:
+                self.selector.min = min(min_values)
+            if self.selector.max is None:
+                self.selector.max = max(max_values)
+
     def _set_categorical_selectors_options(self):
         if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
             options = set()
@@ -165,7 +182,13 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_filter_function(self):
-        filter_function = FILTER_FUNCTIONS.get(type(self.selector), _filter_isin)
+        if isinstance(self.selector, RangeSlider) or (
+            isinstance(self.selector, DatePicker) and self.selector.multi is True
+        ):
+            filter_function = _filter_between
+        else:
+            filter_function = _filter_isin
+
         return filter_function
 
     def _set_actions(self):
