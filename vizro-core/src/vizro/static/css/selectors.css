@@ -7,7 +7,6 @@
   gap: var(--spacing-02);
   letter-spacing: var(--letter-spacing-body-ui-02);
   line-height: var(--text-size-04);
-  padding: var(--spacing-01) 0;
   align-self: stretch;
 }
 
