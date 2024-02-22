@@ -32,18 +32,6 @@ grid_interaction = vm.Page(
             ),
             actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
         ),
-        vm.Table(
-            id="table_country",
-            title="Click on a cell",
-            figure=dash_data_table(
-                id="dash_data_table_country",
-                data_frame=df,
-                columns=[{"id": col, "name": col} for col in df.columns],
-                sort_action="native",
-                style_cell={"textAlign": "left"},
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
-        ),
         vm.Graph(
             id="line_country",
             figure=px.line(

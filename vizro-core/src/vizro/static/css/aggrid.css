@@ -2,52 +2,58 @@
   --ag-background-color: var(--main-container-bg-color);
   --ag-foreground-color: var(--text-primary);
   --ag-odd-row-background-color: var(--main-container-bg-color);
+  --ag-header-foreground-color: var(--text-secondary);  /*Colour of text and icons in the header*/
+  --ag-data-color: var(--text-primary); /*Colour of text in grid cells*/
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-header-column-resize-handle-display: none;
-  --ag-borders: none;
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 14px;
-  --ag-row-height: 48px; /* This determines the row height, but not header */
+  --ag-row-height: 48px;
   --ag-header-height: 40px;
+
+  /*Borders*/
+  --ag-borders: none;
+  --ag-row-border-style: solid;
+  --ag-row-border-color: var(--border-subtle-alpha-01);
+  --ag-row-border-width: 1px;
+
+  /*Bg Color*/
+  --ag-selected-row-background-color: var(--state-overlays-selected);
+  --ag-active-color: var(--state-overlays-selected-hover);
+
 }
 
-/* General setting header row */
 #page-container .ag-theme-quartz .ag-header-row {
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: normal;
+  display: flex;
+  align-items: flex-start;
+  font-weight: 400;
+  padding: 12px 0 0 0;
+  border-bottom: 1px solid var(--border-subtle-alpha-02);
 }
 
-/* Border at the bottom and padding */
 #page-container .ag-theme-quartz .ag-header-cell {
-  border-bottom: 1px solid var(--border-subtle-alpha-02);
-  padding-left: 0;
-  padding-right: 12px;
+  display: flex;
+  padding: 0;
+  align-items: center;
+}
+
+#page-container .ag-header-cell-text{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.112px;
+  line-height: 16px;
 }
 
 /* Border at bottom when hovering more solid */
 #page-container .ag-theme-quartz .ag-header-cell:hover {
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-hover);
 }
 
-/* Border bolder when clicking on header, text now primary color */
-#page-container .ag-theme-quartz .ag-header-cell:focus {
-  border-bottom: 1px solid var(--border-selected);
-  color: var(--text-primary);
-}
-
-#page-container .ag-theme-quartz .ag-row {
-  border-bottom: 1px solid var(--border-subtle-alpha-02);
-}
-
 #page-container .ag-theme-quartz .ag-cell {
-  /* display: flex; */
+  padding: 0;
 
-  /* This breaks AGGrid side right alignment of numerical columns */
-  align-items: center;
-  font-size: 14px;
-  padding-left: 0;
-  padding-right: 12px;
 }
 
 /* Filter menu styling */
