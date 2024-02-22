@@ -48,6 +48,7 @@ nav:
       - Why Vizro: pages/explanation/why-vizro.md
   - Contribute:
       - Contributing: pages/development/contributing.md
+      - Documentation style: pages/development/documentation-style-guide.md
       - Authors: pages/development/authors.md
 
 repo_url: https://github.com/mckinsey/vizro

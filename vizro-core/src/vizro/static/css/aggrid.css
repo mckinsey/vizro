@@ -5,29 +5,32 @@
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-header-column-resize-handle-display: none;
   --ag-borders: none;
-  --ag-icon-font-family: agGridQuartz;
+  --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 14px;
   --ag-row-height: 48px; /* This determines the row height, but not header */
-}
-/* General setting header row*/
-#page-container .ag-theme-quartz .ag-header-row {
-  color: var(--text-secondary);
-  font-weight: normal;
-  font-size: 14px;
-  height: 40px; /* this is not overwritten but has no effect */
+  --ag-header-height: 40px;
 }
 
-/* Border at the bottom and padding*/
+/* General setting header row */
+#page-container .ag-theme-quartz .ag-header-row {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Border at the bottom and padding */
 #page-container .ag-theme-quartz .ag-header-cell {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 12px;
 }
-/*Border at bottom when hovering more solid*/
+
+/* Border at bottom when hovering more solid */
 #page-container .ag-theme-quartz .ag-header-cell:hover {
   border-bottom: 1px solid var(--border-hover);
 }
-/*Border bolder when clicking on header, text now primary color*/
+
+/* Border bolder when clicking on header, text now primary color */
 #page-container .ag-theme-quartz .ag-header-cell:focus {
   border-bottom: 1px solid var(--border-selected);
   color: var(--text-primary);
@@ -36,50 +39,56 @@
 #page-container .ag-theme-quartz .ag-row {
   border-bottom: 1px solid var(--border-subtle-alpha-02);
 }
+
 #page-container .ag-theme-quartz .ag-cell {
-  /*display: flex;*/ /*This breaks AGGrid side right alignment of numerical columns*/
+  /* display: flex; */
+
+  /* This breaks AGGrid side right alignment of numerical columns */
   align-items: center;
-  padding-left: 0px;
-  padding-right: 12px;
   font-size: 14px;
+  padding-left: 0;
+  padding-right: 12px;
 }
 
-/*Filter menu styling*/
+/* Filter menu styling */
 #page-container .ag-theme-quartz .ag-menu {
   background-color: var(--surfaces-bg-02);
-  color: var(--text-primary);
   border: 1px solid var(--border-subtle-alpha-02);
+  color: var(--text-primary);
 }
 
-/*Selector for different filtering conditions*/
+/* Selector for different filtering conditions */
 #page-container .ag-filter-select .ag-picker-field-wrapper {
   background-color: var(--field-enabled);
   border: 1px solid var(--border-subtle-alpha-01);
 }
+
 #page-container .ag-select-list {
   background-color: var(--field-enabled);
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
 }
 
-/*Text/number input*/
+/* Text/number input */
 #page-container .ag-theme-quartz .ag-ltr .ag-filter-filter input {
   background-color: var(--field-enabled);
-  color: var(--text-primary);
   border: 1px solid var(--border-enabled);
+  color: var(--text-primary);
 }
 
-/*TODO: fix the color of the background images in the filter menu*/
+/* TODO: fix the color of the background images in the filter menu */
 
-/*Buttons*/
+/* Buttons */
 #page-container .ag-theme-quartz .ag-standard-button {
   background-color: var(--state-overlays-selected);
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
 }
+
 #page-container .ag-theme-quartz .ag-standard-button:hover {
   background-color: var(--state-overlays-selected-hover);
 }
+
 #page-container .ag-radio-button-input-wrapper {
   background-color: var(--field-enabled);
   color: var(--text-primary);

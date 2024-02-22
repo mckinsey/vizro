@@ -1,28 +1,28 @@
 .card-section-wrapper {
-  display: flex;
   align-items: center;
+  display: flex;
 }
 
 .responsive-grid {
   display: grid;
-  width: 100%;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows: auto;
   gap: 1.5rem;
+  grid-auto-rows: auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  width: 100%;
 }
 
 .card-section-wrapper .responsive-grid a {
+  background: none;
+  color: black;
+  padding: 0;
   text-decoration: none;
   transition: none;
-  background: none;
-  padding: 0;
-  color: black;
 }
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
   height: 100%;
+  transition: 0.3s;
 }
 
 .card:hover {
@@ -45,18 +45,20 @@ td:not([class]):not(:last-child) {
 :root {
   --md-admonition-icon--details: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z"/></svg>');
 }
+
 .md-typeset .admonition.details,
 .md-typeset details.details {
   border-color: rgb(158, 158, 158);
 }
+
 .md-typeset .details > .admonition-title,
 .md-typeset .details > summary {
   background-color: rgba(245, 245, 245, 0.3);
   opacity: 0.5;
 }
+
 .md-typeset .details > .admonition-title::before,
 .md-typeset .details > summary::before {
   background-color: rgb(3, 3, 3);
-  -webkit-mask-image: var(--md-admonition-icon--details);
   mask-image: var(--md-admonition-icon--details);
 }

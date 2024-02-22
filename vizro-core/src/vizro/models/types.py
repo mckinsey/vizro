@@ -218,8 +218,8 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`, `"grid"`
-    and `"action"`.
+    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`,
+    `"ag_grid"` and `"action"`.
 
     Examples
         >>> @capture("graph")
@@ -228,8 +228,8 @@ class capture:
         >>> @capture("table")
         >>> def table_function():
         >>>     ...
-        >>> @capture("grid")
-        >>> def grid_function():
+        >>> @capture("ag_grid")
+        >>> def ag_grid_function():
         >>>     ...
         >>> @capture("action")
         >>> def action_function():
@@ -244,8 +244,8 @@ class capture:
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "grid"]):
-        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "grid"."""
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid"]):
+        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
         self._mode = mode
 
     def __call__(self, func, /):
@@ -299,7 +299,7 @@ class capture:
                 return CapturedCallable(func, *args, **kwargs)
 
             return wrapped
-        elif self._mode == "table":
+        elif self._mode in ["table", "ag_grid"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
@@ -315,25 +315,9 @@ class capture:
                 return captured_callable
 
             return wrapped
-        elif self._mode == "grid":
-
-            @functools.wraps(func)
-            def wrapped(*args, **kwargs):
-                if "data_frame" not in inspect.signature(func).parameters:
-                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('grid').")
-
-                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
-
-                try:
-                    captured_callable["data_frame"]
-                except KeyError as exc:
-                    raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
-                return captured_callable
-
-            return wrapped
         raise ValueError(
             "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
-            "@capture('grid')."
+            "@capture('ag_grid')."
         )
 
 
@@ -376,7 +360,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Container", "Graph", "Grid", "Table", "Tabs"],
+    Union["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -384,7 +368,7 @@ ComponentType = Annotated[
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
-[`Graph`][vizro.models.Graph] or [`Grid`][vizro.models.Grid]."""
+[`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."

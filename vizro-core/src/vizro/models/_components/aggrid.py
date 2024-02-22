@@ -21,21 +21,21 @@ from vizro.models.types import CapturedCallable
 logger = logging.getLogger(__name__)
 
 
-class Grid(VizroBaseModel):
+class AgGrid(VizroBaseModel):
     """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
     Args:
-        type (Literal["grid"]): Defaults to `"grid"`.
-        figure (CapturedCallable): Grid like object to be displayed. For more information see:
+        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
+        figure (CapturedCallable): AgGrid like object to be displayed. For more information see:
             [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
-    type: Literal["grid"] = "grid"
-    figure: CapturedCallable = Field(..., import_path=vt, description="Grid to be visualized on dashboard")
-    title: str = Field("", description="Title of the grid")
+    type: Literal["ag_grid"] = "ag_grid"
+    figure: CapturedCallable = Field(..., import_path=vt, description="AgGrid to be visualized on dashboard")
+    title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -60,7 +60,8 @@ class Grid(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self) -> Dict[str, State]:
+    @property
+    def _figure_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
@@ -94,15 +95,15 @@ class Grid(VizroBaseModel):
 
             # taken from table implementation - see there for details
             kwargs["data_frame"] = pd.DataFrame()
-            underlying_grid_object = self.figure._function(**kwargs)
+            underlying_aggrid_object = self.figure._function(**kwargs)
 
-            if not hasattr(underlying_grid_object, "id"):
+            if not hasattr(underlying_aggrid_object, "id"):
                 raise ValueError(
-                    "Underlying `Grid` callable has no attribute 'id'. To enable actions triggered by the `Grid`"
-                    " a valid 'id' has to be provided to the `Grid` callable."
+                    "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
+                    " a valid 'id' has to be provided to the `AgGrid` callable."
                 )
 
-            self._callable_object_id = underlying_grid_object.id
+            self._callable_object_id = underlying_aggrid_object.id
 
     def build(self):
         return dcc.Loading(

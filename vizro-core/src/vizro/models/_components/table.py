@@ -61,7 +61,8 @@ class Table(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
-    def _get_figure_interaction_input(self) -> Dict[str, State]:
+    @property
+    def _figure_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
