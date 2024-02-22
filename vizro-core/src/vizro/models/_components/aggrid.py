@@ -1,8 +1,9 @@
 import logging
 from typing import Dict, List, Literal
 
+import dash_ag_grid as dag
 import pandas as pd
-from dash import State, dash_table, dcc, html
+from dash import State, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -110,9 +111,7 @@ class AgGrid(VizroBaseModel):
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(
-                        dash_table.DataTable(**({"id": self._callable_object_id} if self.actions else {})), id=self.id
-                    ),
+                    html.Div(dag.AgGrid(**({"id": self._callable_object_id} if self.actions else {})), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
