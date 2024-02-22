@@ -88,12 +88,12 @@ In the below example we select and format some columns of the gapminder dataset.
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
-        
+
         df = px.data.gapminder()
-        
+
         columnDefs = [{"field": "country"}, {"field": "year"}, {"field": "lifeExp", "cellDataType": "numeric"},
                       {"field": "gdpPercap", "cellDataType": "dollar"}, {"field": "pop", "cellDataType": "numeric"}]
-        
+
         page = vm.Page(
             title="Example of AG Grid with formatted columns",
             components=[
@@ -106,9 +106,9 @@ In the below example we select and format some columns of the gapminder dataset.
                 )
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
