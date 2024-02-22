@@ -4,8 +4,6 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models._components.form._text_area import TextArea
-from vizro.models._components.form._user_input import UserInput
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
