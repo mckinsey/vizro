@@ -69,7 +69,7 @@ def dash_ag_grid(data_frame, **kwargs):
                 "closeOnApply": True,
             },
             "flex": 1,
-            "minWidth": 70
+            "minWidth": 70,
         },
         "dashGridOptions": {
             "dataTypeDefinitions": DATA_TYPE_DEFINITIONS,
