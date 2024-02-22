@@ -27,13 +27,14 @@
   display: flex;
   align-items: flex-start;
   font-weight: 400;
-  padding: 12px 0 0 0;
+  padding: var(--spacing-03) 0 0 0;
   border-bottom: 1px solid var(--border-subtle-alpha-02);
 }
 
+/* Header */
 #page-container .ag-theme-quartz .ag-header-cell {
   display: flex;
-  padding: 0;
+  padding: 0 var(--spacing-03);
   align-items: center;
 }
 
@@ -42,17 +43,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   letter-spacing: -0.112px;
-  line-height: 16px;
+  line-height: var(--spacing-04);
 }
 
-/* Border at bottom when hovering more solid */
 #page-container .ag-theme-quartz .ag-header-cell:hover {
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-hover);
 }
 
+
+/* Rows */
 #page-container .ag-theme-quartz .ag-cell {
-  padding: 0;
+  padding: 0 var(--spacing-03)
 
 }
 
