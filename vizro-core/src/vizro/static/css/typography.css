@@ -107,7 +107,7 @@ code,
   background: var(--surfaces-bg-card);
   border-radius: 2px;
   color: var(--text-primary);
-  font-family: RobotoMono, Inter, Sans-Serif, Arial, serif;
+  font-family: RobotoMono, Inter, sans-serif, Arial, serif;
   font-size: var(--text-size-01);
   font-weight: var(--text-weight-regular);
   line-height: var(--text-size-03);

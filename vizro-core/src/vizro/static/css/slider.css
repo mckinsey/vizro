@@ -1,7 +1,7 @@
 .rc-slider {
   flex: auto;
   height: 24px;
-  margin: 4px -12px 0 -12px;
+  margin: 4px -12px 0;
 }
 
 .rc-slider-rail,
@@ -35,7 +35,7 @@
   border-color: var(--fill-on-active);
   border-radius: 100%;
   height: 16px;
-  margin: -8px 0 0 0;
+  margin: -8px 0 0;
   position: absolute;
   width: 16px;
 }
@@ -86,11 +86,12 @@
 }
 
 .range_slider_control_no_space {
-  margin: 2px 8px -4px 0px;
-  padding: 0 30px 25px 30px !important;
+  margin: 2px 8px -4px 0;
+  padding: 0 30px 25px !important;
 }
+
 .range_slider_control {
-  padding: 0 30px 25px 30px !important;
+  padding: 0 30px 25px !important;
 }
 
 .slider_input_field_left,

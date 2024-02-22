@@ -1,4 +1,4 @@
-"""Module containing the standard implementation of `dash-ag-grid.AgGrid`."""
+"""Module containing the standard implementation of `dash_ag_grid.AgGrid`."""
 
 import dash_ag_grid as dag
 import pandas as pd
@@ -46,15 +46,15 @@ DATA_TYPE_DEFINITIONS = {
 }
 
 
-@capture("grid")
-def dash_ag_grid(data_frame=None, **kwargs):
-    """Implementation of `dash-ag-grid.AgGrid` with sensible defaults."""
+@capture("ag_grid")
+def dash_ag_grid(data_frame, **kwargs):
+    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults."""
     defaults = {
         "className": "ag-theme-quartz vizro",
         "columnDefs": [{"field": col, "flex": 1, "minWidth": 70} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
-                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AGGrid filtering to function
+                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AG Grid filtering to function
                 if pd.api.types.is_datetime64_any_dtype(x)
                 else x
             )

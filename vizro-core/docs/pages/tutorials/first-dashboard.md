@@ -2,14 +2,14 @@
 
 This tutorial introduces Vizro. It is a step-by-step guide to create a first dashboard and is designed to equip you with the knowledge to explore the documentation further.
 
-If you want a more complete tutorial exploring more of the available features, please see the [Explore Vizro tutorial](../tutorials/explore_components.md).
+If you want a more complete tutorial exploring more of the available features, please see the [Explore Vizro tutorial](../tutorials/explore-components.md).
 
 
 ## Let's get started!
 
 ### 1. Install Vizro and its dependencies
 
-If you haven't already installed Vizro, follow the [installation guide](../user_guides/install.md) to do so inside a virtual environment.
+If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md) to do so inside a virtual environment.
 
 If you consider yourself a beginner to python and/or virtual environments, there is also a section that avoids any use of terminals and relies only upon a graphical user interface.
 
@@ -30,7 +30,7 @@ jupyter notebook
 The command opens a browser tab and you can navigate to your preferred folder for this new project. Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown.
 
 ??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the the [installation guide](../user_guides/install.md), you should already be set, and you can continue below.
+    If you followed the beginners steps in the the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
 
 
 Confirm that Vizro is installed by typing the following into a cell in the notebook and running it.
@@ -82,4 +82,4 @@ After running the dashboard, you can access the dashboard by typing `localhost:8
 
 You are now ready to explore our documentation further, as you can now easily evaluate all examples.
 
-One place to start would be the more complete [Explore Vizro tutorial](../tutorials/explore_components.md).
+One place to start would be the more complete [Explore Vizro tutorial](../tutorials/explore-components.md).
