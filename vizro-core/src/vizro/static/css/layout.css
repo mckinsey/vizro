@@ -126,8 +126,11 @@
   flex-direction: column;
 }
 
-.icon-button {
+#left-sidebar .icon-button {
   align-items: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   display: flex;
   height: 80px;
   justify-content: center;
