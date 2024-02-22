@@ -14,7 +14,6 @@ nav:
       - COMPONENTS:
           - Overview: pages/user-guides/components.md
           - Graphs: pages/user-guides/graph.md
-          - AGGrids: pages/user-guides/aggrid.md
           - Tables: pages/user-guides/table.md
           - Cards & Buttons: pages/user-guides/card-button.md
           - Containers: pages/user-guides/container.md
