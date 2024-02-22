@@ -86,4 +86,5 @@ class NavLink(VizroBaseModel):
         if item_active:
             return html.Div([nav_link, self._nav_selector.build(active_page_id=active_page_id)])
 
-        return html.Div(nav_link)  # html.Div required to access the nav_link via ID
+        # html.Div required to access the nav_link via ID
+        return html.Div(nav_link)

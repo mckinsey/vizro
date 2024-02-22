@@ -1,4 +1,4 @@
-#dashboard_container_outer .button_primary {
+#dashboard-container .button_primary {
   background: var(--fill-active);
   border: none;
   border-radius: 0;
@@ -13,7 +13,7 @@
   text-transform: none;
 }
 
-#dashboard_container_outer .button_primary:hover {
+#dashboard-container .button_primary:hover {
   background: linear-gradient(
       var(--state-overlays-contrast-hover),
       var(--state-overlays-contrast-hover)
@@ -24,12 +24,12 @@
   text-decoration-line: underline;
 }
 
-#dashboard_container_outer .button_primary:active {
+#dashboard-container .button_primary:active {
   background: var(--fill-active);
   color: var(--text-contrast-primary);
 }
 
-#dashboard_container_outer .button_primary:visited {
+#dashboard-container .button_primary:visited {
   background: var(--fill-active);
   color: var(--text-contrast-primary);
 }
