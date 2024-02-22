@@ -186,4 +186,4 @@ an example of a styled table where some conditional formatting is applied. There
 
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
-If the available arguments are not sufficient, there is always the possibility to create a [custom Dash DataTable](custom-tables.md).
+If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
