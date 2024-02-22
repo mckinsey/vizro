@@ -55,9 +55,9 @@ jobs:
           sudo apt-get install -y --allow-downgrades ./google-chrome-stable_$chrome_version-1_amd64.deb
           rm google-chrome-stable_$chrome_version-1_amd64.deb
 
-          wget https://storage.googleapis.com/chrome-for-testing-public/$chrome_version/linux64/chrome-linux64.zip
-          unzip chrome-linux64.zip
-          cd chrome-linux64
+          wget https://storage.googleapis.com/chrome-for-testing-public/$chrome_version/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          cd chromedriver-linux64
           sudo mv chromedriver /usr/bin/chromedriver
           sudo chown root:root /usr/bin/chromedriver
           sudo chmod +x /usr/bin/chromedriver
