@@ -29,7 +29,7 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 
     We will refer back to these three steps in the two examples below.
 
-[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API_reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
+[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
 ## Extend an existing component

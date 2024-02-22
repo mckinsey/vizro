@@ -18,7 +18,7 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
     before using the `vizro-ai` package.
 
     Since users must connect to Large Language Models (LLMs) in order to use Vizro-AI,
-    please also ensure that you review our guides on the [usage of LLMs](pages/explanation/safety_in_vizro_ai.md)
+    please also ensure that you review our guides on the [usage of LLMs](pages/explanation/safety-in-vizro-ai.md)
     and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
 
 
@@ -36,7 +36,7 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/user_guides/install/">
+<a class="card-wrapper" href="pages/user-guides/install/">
   <div class="card">
     <div class="card-content">
       <h5>User Guides</h5>
