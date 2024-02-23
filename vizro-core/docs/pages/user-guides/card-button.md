@@ -5,7 +5,7 @@ This guide shows you how to use cards and buttons to visualize and interact with
 ## Cards
 
 The [`Card`][vizro.models.Card] is a flexible and extensible component, allowing for customization via Markdown text.
-For a basic guide on markdown text, please refer to the documentation [here](https://markdown-guide.readthedocs.io/en/latest/).
+Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/).
 
 You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
 
@@ -52,7 +52,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 ### How to customize card text
 
 The [`Card`][vizro.models.Card] utilizes the `dcc.Markdown` component from Dash as its underlying text component.
-For more details on customizing the markdown text, refer to the `dcc.Markdown` component documentation [here](https://dash.plotly.com/dash-core-components/markdown).
+For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown).
 Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
 - Headers

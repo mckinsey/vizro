@@ -40,8 +40,8 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
 2. Provide a `title` to your `Container`
-3. Configure your `components`, see our overview page on the various options [here](components.md)
-4. (optional) Configure your `layout` , see our guide on [`Layout`](layouts.md)
+3. Configure your `components`, see [the overview page on the various options](components.md)
+4. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
 
 !!! example "Container"
     === "app.py"

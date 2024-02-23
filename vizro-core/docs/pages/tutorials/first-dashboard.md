@@ -30,7 +30,7 @@ jupyter notebook
 The command opens a browser tab and you can navigate to your preferred folder for this new project. Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown.
 
 ??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
+    If you followed the beginners steps in the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
 
 
 Confirm that Vizro is installed by typing the following into a cell in the notebook and running it.
