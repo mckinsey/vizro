@@ -11,7 +11,7 @@ from vizro.tables._utils import _set_defaults_nested
 def dash_data_table(data_frame: pd.DataFrame, **kwargs):
     """Standard `dash_table.DataTable`."""
     defaults = {
-        "columns": [{"name": i, "id": i} for i in data_frame.columns],
+        "columns": [{"name": col, "id": col} for col in data_frame.columns],
         "style_as_list_view": True,
         "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
         "style_header": {
