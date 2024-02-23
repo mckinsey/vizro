@@ -291,7 +291,7 @@ class TestExportData:
 
         assert result == expected
 
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")
     @pytest.mark.parametrize(
         "ctx_export_data, target_scatter_filter_and_filter_interaction, target_box_filtered_pop",
         [
