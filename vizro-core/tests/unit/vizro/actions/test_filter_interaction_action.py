@@ -271,6 +271,7 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # to not overcrowd these tests with duplication, we use one general case here for the AG Grid
+        # Functionality should be similar enough to the Dash Datatable that this should suffice
         model_manager["box_chart"].actions = [
             vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
