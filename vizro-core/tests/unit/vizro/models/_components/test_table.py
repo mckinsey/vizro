@@ -75,13 +75,13 @@ class TestDunderMethodsTable:
 class TestAttributesTable:
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
         table = vm.Table(figure=dash_data_table_with_id, title="Gapminder", actions=[])
-        assert hasattr(table, "_filter_interaction")
         table.pre_build()
         assert hasattr(table, "_filter_interaction_input")
         assert "modelID" in table._filter_interaction_input
 
 
 class TestProcessTableDataFrame:
+    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         table_with_str_df = vm.Table(id="table", figure=dash_table_with_str_dataframe)

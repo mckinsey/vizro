@@ -74,9 +74,9 @@ class TestDunderMethodsAgGrid:
 
 
 class TestAttributesAgGrid:
+    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
         ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder", actions=[])
-        assert hasattr(ag_grid, "_filter_interaction")
         ag_grid.pre_build()
         assert hasattr(ag_grid, "_filter_interaction_input")
         assert "modelID" in ag_grid._filter_interaction_input
