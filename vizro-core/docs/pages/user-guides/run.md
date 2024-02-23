@@ -43,7 +43,7 @@ Dash is running on http://127.0.0.1:8050/
 
     `Vizro().build(dashboard).run(debug=True)`
 
-    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method. See the [Dash documentation](https://dash.plotly.com/devtools) for more information).
+    Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools). In addition to hot reloading, this enables several other features that are useful during development, such as detailed in-app error reporting.
 
     #### Debugging
 
