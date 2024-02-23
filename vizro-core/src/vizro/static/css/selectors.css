@@ -16,7 +16,7 @@
   align-self: stretch;
   display: flex !important;
   gap: var(--spacing-01);
-  height: 24px;
+  height: var(--spacing-05);
 }
 
 .input-container {
