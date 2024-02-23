@@ -85,16 +85,16 @@ class TestNavBarBuildMethod:
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_button = html.Div(
+        expected_navigation = html.Div(
             [
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
                     active=True,
                     href="/",
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav-bar"], expected_button, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-bar"], expected_navigation, keys_to_strip={"id", "className"})
         assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_nav_bar["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
@@ -102,56 +102,56 @@ class TestNavBarBuildMethod:
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_buttons = html.Div(
+        expected_nav_bar = html.Div(
             [
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
                     active=True,
                     href="/",
                 ),
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
                     active=False,
                     href="/page-2",
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav-bar"], expected_buttons, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
         assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))
 
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_button = html.Div(
+        expected_nav_bar = html.Div(
             [
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
                     active=False,
                     href="/",
                 )
             ]
         )
-        assert_component_equal(built_nav_bar["nav-bar"], expected_button, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
         assert_component_equal(built_nav_bar["nav-panel"], html.Div(hidden=True, id="nav-panel"))
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_buttons = html.Div(
+        expected_nav_bar = html.Div(
             [
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
                     active=False,
                     href="/",
                 ),
-                dbc.Button(
+                dbc.NavLink(
                     children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
                     active=False,
                     href="/page-2",
                 ),
             ]
         )
-        assert_component_equal(built_nav_bar["nav-bar"], expected_buttons, keys_to_strip={"id", "className"})
+        assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
         assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))
