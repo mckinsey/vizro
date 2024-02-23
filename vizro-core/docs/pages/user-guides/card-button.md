@@ -2,7 +2,7 @@
 
 This guide shows you how to use cards and buttons to visualize and interact with your data in the dashboard.
 
-## Card
+## Cards
 
 The [`Card`][vizro.models.Card] is a flexible and extensible component, allowing for customization via Markdown text.
 For a basic guide on markdown text, please refer to the documentation [here](https://markdown-guide.readthedocs.io/en/latest/).
@@ -49,7 +49,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     [Card]: ../../assets/user_guides/components/card.png
 
-### Customizing text
+### How to customize card text
 
 The [`Card`][vizro.models.Card] utilizes the `dcc.Markdown` component from Dash as its underlying text component.
 For more details on customizing the markdown text, refer to the `dcc.Markdown` component documentation [here](https://dash.plotly.com/dash-core-components/markdown).
@@ -183,7 +183,7 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
 
     [CardText]: ../../assets/user_guides/components/card_text.png
 
-### Placing images
+### How to place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
 
@@ -255,7 +255,7 @@ accessibility of your app. Providing an image ALT text is optional.
 
 You might notice that the image is quite large, find out how to style images (e.g. position and size) in the next section!
 
-### Styling images
+### How to style a card image
 
 To change the styling of the image (e.g. size or position), add a URL hash to your image like this:
 
@@ -395,7 +395,7 @@ and provide an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-### Creating navigation
+### How to create a navigation card
 
 !!! note
 
@@ -497,7 +497,7 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href provided is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href provided is an absolute link, it should start with `https://` or an equivalent protocol.
 
-### Adding an icon
+### How to add an icon
 If you want to add an icon to your card, just add your image as described in the [previous section](#placing-images)
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
@@ -590,7 +590,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
 
-## Button
+## Buttons
 
 To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
 action functions such as e.g. exporting chart data. Please refer to the [user guide][vizro.actions] on

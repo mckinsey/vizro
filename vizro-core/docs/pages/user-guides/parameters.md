@@ -4,7 +4,7 @@ This guide shows you how to add parameters to your dashboard. One main way to in
 
 The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. If e.g. the charting function has a `title` argument, you could configure a parameter that allows the user to select the chart title via e.g. a dropdown.
 
-## Basic Parameters
+## Basic parameters
 
 To add a parameter to your page, do the following:
 
@@ -80,7 +80,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 !!! tip
     If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
-## Nested Parameters
+## Nested parameters
 
 If you want to modify nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
 

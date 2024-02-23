@@ -6,7 +6,7 @@ The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you
 This model allows the automatic creation of selectors (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user filter with the charts/components on the screen.
 
 
-## Basic Filters
+## Basic filters
 
 To add a filter to your page, do the following:
 
@@ -62,7 +62,7 @@ automatically based on the target column, e.g. a dropdown for categorical data o
 
     [Filter]: ../../assets/user_guides/control/control1.png
 
-## Changing Selectors
+## Changing selectors
 
 If you want to have a different selector for your filter, you can provide the `selector` argument of the [`Filter`][vizro.models.Filter] with a different selector model.
 Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider] and [`Slider`][vizro.models.Slider].

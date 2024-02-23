@@ -22,7 +22,7 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View User Guide](table.md)
 
-- :material-cards-outline:{ .lg .middle } __Card & Button__
+- :material-cards-outline:{ .lg .middle } __Card & button__
 
     ---
 

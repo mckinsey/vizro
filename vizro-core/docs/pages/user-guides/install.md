@@ -16,7 +16,7 @@ This guide shows you how to install Vizro. It will provide detailed explanation 
     - install the [Anaconda Navigator](https://www.anaconda.com/download)
     - create a new environment as [outlined here](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/), choose a Python version `>=3.8`
 
-## Install
+## Installation
 
 To install Vizro from the Python Package Index (PyPI), use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 

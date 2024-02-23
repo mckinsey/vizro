@@ -5,17 +5,17 @@ nav:
   - Get started:
       - Quickstart: pages/tutorials/first-dashboard.md
       - Explore Vizro: pages/tutorials/explore-components.md
-  - User Guides:
+  - User guides:
       - FUNDAMENTALS:
           - Install: pages/user-guides/install.md
           - Dashboards: pages/user-guides/dashboard.md
           - Pages: pages/user-guides/pages.md
-          - Run Methods: pages/user-guides/run.md
+          - Run methods: pages/user-guides/run.md
       - COMPONENTS:
           - Overview: pages/user-guides/components.md
           - Graphs: pages/user-guides/graph.md
           - Tables: pages/user-guides/table.md
-          - Cards & Buttons: pages/user-guides/card-button.md
+          - Cards & buttons: pages/user-guides/card-button.md
           - Containers: pages/user-guides/container.md
           - Tabs: pages/user-guides/tabs.md
       - CONTROLS:
@@ -34,19 +34,19 @@ nav:
           - Data: pages/user-guides/data.md
           - Integrations: pages/user-guides/integration.md
       - EXTENSIONS:
-          - Custom Charts: pages/user-guides/custom-charts.md
-          - Custom Tables: pages/user-guides/custom-tables.md
-          - Custom Components: pages/user-guides/custom-components.md
-          - Custom Actions: pages/user-guides/custom-actions.md
+          - Custom charts: pages/user-guides/custom-charts.md
+          - Custom tables: pages/user-guides/custom-tables.md
+          - Custom components: pages/user-guides/custom-components.md
+          - Custom actions: pages/user-guides/custom-actions.md
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Data Manager: pages/API-reference/manager.md
+      - Data manager: pages/API-reference/manager.md
       - Actions: pages/API-reference/actions.md
   - Explanation:
-      - Why Vizro: pages/explanation/why-vizro.md
+      - Why Vizro?: pages/explanation/why-vizro.md
   - Contribute:
-      - Contributing: pages/development/contributing.md
+      - Contribute to Vizro: pages/development/contributing.md
       - Documentation style: pages/development/documentation-style-guide.md
       - Authors: pages/development/authors.md
 

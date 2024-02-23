@@ -18,7 +18,7 @@ In order to get started with this tutorial, you should have Vizro installed, and
 pasting it into a Jupyter notebook cell, or by running it from a python script.
 
 
-### 2. Create first dashboard page
+### 2. Create a first dashboard page
 
 At the core of every dashboard is a [`Page`][vizro.models.Page] object,
 which serves as its foundation. Think of it as a blank canvas where you can arrange and customize elements like charts and text.
@@ -26,7 +26,7 @@ which serves as its foundation. Think of it as a blank canvas where you can arra
 In this first section, you will explore how to create a page with different elements and delve into the layout
 configuration.
 
-#### 2.1. Add first component
+#### 2.1. Add the first component
 First, let's define the structure of your dashboard page. Create a new [`Page`][vizro.models.Page] called
 `first_page` and assign a title. Each [`Page`][vizro.models.Page] allows you to define a list of
 `components`. These `components` are responsible for the content displayed on the page and can include a wide range of
@@ -191,7 +191,7 @@ As you explore the added `components`, you may notice that the
 current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused
 space. In the next section, we will learn how to configure the layout and effectively arrange the `components`.
 
-#### 2.3. Configure layout
+#### 2.3. Configure the layout
 To configure the appearance for your [`Page`][vizro.models.Page], the [`Layout`][vizro.models.Layout] object is
 utilized. It allows you to specify the placement and size of `components` on the grid. By default, each element is
 placed in the order they are added to the `components` list with equal space, as observed in the previous section.
@@ -274,7 +274,7 @@ configure layouts, check out the [user guide](../user-guides/layouts.md)
     [FirstPage3]: ../../assets/tutorials/dashboard/dashboard23.png
 
 
-#### 2.4. Configure filter
+#### 2.4. Add and configure a filter
 
 The next thing you will learn is how to add functionality to your first dashboard page. This is achieved by adding
 `controls` to the [`Page`][vizro.models.Page]. `Controls` enable interaction with the `components` and empower users
@@ -360,13 +360,13 @@ Fantastic job! By completing your first dashboard page, you have gained valuable
 [`Page`][vizro.models.Page] with multiple `components`, arranging them using layout  configuration, and adding
 functionality to your dashboard.
 
-### 3. Create second dashboard page
+### 3. Create a second dashboard page
 
 Moving forward, you will add your second dashboard page to delve deeper into `controls` and explore different types
 of `selectors`. The structure is similar to the page you just created, and you configure two charts to visualize
 the iris data set.
 
-#### 3.1. Configure parameter
+#### 3.1. Configure parameters
 
 Next, you add two [`Parameters`][vizro.models.Parameter] to the `controls`. The first parameter will allow for
 changing the color of the virginica data, targeting both charts. The second parameter will adjust the opacity of the
@@ -526,7 +526,7 @@ suit your specific needs.
     - [`RangeSlider`][vizro.models.RangeSlider]
     - [`Slider`][vizro.models.Slider]
 
-### 4. Create final dashboard
+### 4. Create the final dashboard
 
 Finally, it's time to put everything together and create a cohesive dashboard. In this section, we will focus on
 creating a homepage for your dashboard and provide seamless navigation to the previously built pages.
