@@ -1087,7 +1087,7 @@
     },
     "NavLink": {
       "title": "NavLink",
-      "description": "Icon to be used in Navigation Bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
+      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
       "type": "object",
       "properties": {
         "id": {
