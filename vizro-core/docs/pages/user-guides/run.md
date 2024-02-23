@@ -83,23 +83,8 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 ??? info "Reloading and debugging"
 
 
-    #### Reloading the dashboard
-
-    Code reloading and hot reloading do not work from a Jupyter notebook, even if Dash Dev Tools debug mode is enabled.
-    You must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
-
-    #### Debugging
-
-    Dash dev tools debug mode is turned on as described above, by using `debug=True` in the `run()` method.
-
-    `Vizro().build(dashboard).run(debug=True)`
-
-
-    (Note: this is the equivalent of enabling Dash Dev Tools via the `app.run()` method as described in the [Dash documentation](https://dash.plotly.com/devtools)).
-
-    In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
-
-
+     When working in a Jupyter notebook, only some of the [Dash Dev Tools](https://dash.plotly.com/devtools) functionality is enabled by using `run(debug=True)`.
+     In particular, code reloading and hot reloading do not work from a Jupyter notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
 ## Gunicorn
 !!!warning "In production"
     In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
