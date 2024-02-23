@@ -36,7 +36,6 @@ Dash is running on http://127.0.0.1:8050/
 
 ??? info "Automatic reloading and debugging"
 
-    #### Reloading the dashboard
 
     You can set up the front-end to automatically refresh whenever dashboard configuration updates are made, as described in the
     ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading).
