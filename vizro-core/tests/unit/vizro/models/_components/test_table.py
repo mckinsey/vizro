@@ -26,7 +26,7 @@ def dash_table_with_str_dataframe():
     return dash_data_table(data_frame="gapminder")
 
 
-class TestDunderMethodsTable:
+class TestTableInstantiation:
     def test_create_graph_mandatory_only(self, standard_dash_table):
         table = vm.Table(figure=standard_dash_table)
 
@@ -56,6 +56,13 @@ class TestDunderMethodsTable:
         with pytest.raises(ValidationError, match="must provide a valid table function vm.Table"):
             vm.Table(figure=standard_px_chart)
 
+    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
+        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
+        actions_chain = table.actions[0]
+        assert actions_chain.trigger.component_property == "active_cell"
+
+
+class TestDunderMethodsTable:
     def test_getitem_known_args(self, dash_table_with_arguments):
         table = vm.Table(figure=dash_table_with_arguments)
         assert table["style_header"] == {"border": "1px solid green"}
@@ -65,11 +72,6 @@ class TestDunderMethodsTable:
         table = vm.Table(figure=standard_dash_table)
         with pytest.raises(KeyError):
             table["unknown_args"]
-
-    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
-        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
-        actions_chain = table.actions[0]
-        assert actions_chain.trigger.component_property == "active_cell"
 
 
 class TestAttributesTable:
@@ -100,7 +102,7 @@ class TestPreBuildTable:
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
-        assert hasattr(table, "_callable_object_id") is False
+        assert not hasattr(table, "_callable_object_id")
 
     def test_pre_build_actions_no_underlying_table_id_exception(self, standard_dash_table, filter_interaction_action):
         table = vm.Table(id="text_table", figure=standard_dash_table, actions=[filter_interaction_action])

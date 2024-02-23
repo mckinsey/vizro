@@ -27,7 +27,7 @@ def dash_ag_grid_with_str_dataframe():
     return dash_ag_grid(data_frame="gapminder")
 
 
-class TestDunderMethodsAgGrid:
+class TestAgGridInstantiation:
     def test_create_graph_mandatory_only(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
 
@@ -57,6 +57,13 @@ class TestDunderMethodsAgGrid:
         with pytest.raises(ValidationError, match="must provide a valid ag_grid function vm.AgGrid"):
             vm.AgGrid(figure=standard_px_chart)
 
+    def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])
+        actions_chain = ag_grid.actions[0]
+        assert actions_chain.trigger.component_property == "cellClicked"
+
+
+class TestDunderMethodsAgGrid:
     def test_getitem_known_args(self, dash_ag_grid_with_arguments):
         ag_grid = vm.AgGrid(figure=dash_ag_grid_with_arguments)
         assert ag_grid["defaultColDef"] == {"resizable": False, "sortable": False}
@@ -66,11 +73,6 @@ class TestDunderMethodsAgGrid:
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         with pytest.raises(KeyError):
             ag_grid["unknown_args"]
-
-    def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])
-        actions_chain = ag_grid.actions[0]
-        assert actions_chain.trigger.component_property == "cellClicked"
 
 
 class TestAttributesAgGrid:
@@ -101,7 +103,7 @@ class TestPreBuildAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
 
-        assert hasattr(ag_grid, "_callable_object_id") is False
+        assert not hasattr(ag_grid, "_callable_object_id")
 
     def test_pre_build_actions_no_underlying_ag_grid_id_exception(self, standard_ag_grid, filter_interaction_action):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid, actions=[filter_interaction_action])
