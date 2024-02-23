@@ -72,6 +72,40 @@
       },
       "additionalProperties": false
     },
+    "AgGrid": {
+      "title": "AgGrid",
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): AgGrid like object to be displayed. For more information see:\n        [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "default": "",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "ag_grid",
+          "enum": ["ag_grid"],
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the AgGrid",
+          "default": "",
+          "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "Button": {
       "title": "Button",
       "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
@@ -168,7 +202,7 @@
     },
     "Table": {
       "title": "Table",
-      "description": "Wrapper for table components to visualize in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. Current choices include:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. For more information see:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -306,6 +340,7 @@
             "discriminator": {
               "propertyName": "type",
               "mapping": {
+                "ag_grid": "#/definitions/AgGrid",
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "container": "#/definitions/Container",
@@ -315,6 +350,9 @@
               }
             },
             "oneOf": [
+              {
+                "$ref": "#/definitions/AgGrid"
+              },
               {
                 "$ref": "#/definitions/Button"
               },
@@ -969,6 +1007,7 @@
             "discriminator": {
               "propertyName": "type",
               "mapping": {
+                "ag_grid": "#/definitions/AgGrid",
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "container": "#/definitions/Container",
@@ -978,6 +1017,9 @@
               }
             },
             "oneOf": [
+              {
+                "$ref": "#/definitions/AgGrid"
+              },
               {
                 "$ref": "#/definitions/Button"
               },
