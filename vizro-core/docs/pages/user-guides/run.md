@@ -45,12 +45,6 @@ Dash is running on http://127.0.0.1:8050/
 
     Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools). In addition to hot reloading, this enables several other features that are useful during development, such as detailed in-app error reporting.
 
-    #### Debugging
-
-    Dash dev tools debug mode is turned on as described above, by using `debug=True` in the `run()` method.
-
-    `Vizro().build(dashboard).run(debug=True)`
-
     In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
 
