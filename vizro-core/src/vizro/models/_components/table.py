@@ -77,6 +77,7 @@ class Table(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
+        # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_active_cell = ctd_filter_interaction["active_cell"]
         ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
         if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
