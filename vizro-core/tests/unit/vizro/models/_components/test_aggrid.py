@@ -73,6 +73,15 @@ class TestDunderMethodsAgGrid:
         assert actions_chain.trigger.component_property == "cellClicked"
 
 
+class TestAttributesAgGrid:
+    def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder", actions=[])
+        assert hasattr(ag_grid, "_filter_interaction")
+        ag_grid.pre_build()
+        assert hasattr(ag_grid, "_filter_interaction_input")
+        assert "modelID" in ag_grid._filter_interaction_input
+
+
 class TestProcessAgGridDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_ag_grid_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder

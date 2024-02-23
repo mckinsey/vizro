@@ -72,6 +72,15 @@ class TestDunderMethodsTable:
         assert actions_chain.trigger.component_property == "active_cell"
 
 
+class TestAttributesTable:
+    def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder", actions=[])
+        assert hasattr(table, "_filter_interaction")
+        table.pre_build()
+        assert hasattr(table, "_filter_interaction_input")
+        assert "modelID" in table._filter_interaction_input
+
+
 class TestProcessTableDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
