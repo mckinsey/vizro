@@ -11,7 +11,6 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import filter_interaction
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
@@ -25,11 +24,6 @@ def dash_table_with_arguments():
 @pytest.fixture
 def dash_table_with_str_dataframe():
     return dash_data_table(data_frame="gapminder")
-
-
-@pytest.fixture
-def filter_interaction_action():
-    return vm.Action(function=filter_interaction())
 
 
 class TestDunderMethodsTable:
