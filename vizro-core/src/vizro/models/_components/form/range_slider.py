@@ -86,42 +86,46 @@ class RangeSlider(VizroBaseModel):
             [
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
-                    [html.Label(self.title, htmlFor=self.id) if self.title else None,
-                    html.Div(
-                        [
-                            dcc.Input(
-                                id=f"{self.id}_start_value",
-                                type="number",
-                                placeholder="start",
-                                min=self.min,
-                                max=self.max,
-                                step=self.step,
-                                value=init_value[0],
-                                size="24px",
-                                persistence=True,
-                                persistence_type="session",
-                                className=(
-                                    "slider_input_field_left" if self.step else "slider_input_field_no_space_left"
+                    [
+                        html.Label(self.title, htmlFor=self.id) if self.title else None,
+                        html.Div(
+                            [
+                                dcc.Input(
+                                    id=f"{self.id}_start_value",
+                                    type="number",
+                                    placeholder="start",
+                                    min=self.min,
+                                    max=self.max,
+                                    step=self.step,
+                                    value=init_value[0],
+                                    size="24px",
+                                    persistence=True,
+                                    persistence_type="session",
+                                    className=(
+                                        "slider_input_field_left" if self.step else "slider_input_field_no_space_left"
+                                    ),
                                 ),
-                            ),
-                            dcc.Input(
-                                id=f"{self.id}_end_value",
-                                type="number",
-                                placeholder="end",
-                                min=self.min,
-                                max=self.max,
-                                step=self.step,
-                                value=init_value[1],
-                                persistence=True,
-                                persistence_type="session",
-                                className=(
-                                    "slider_input_field_right" if self.step else "slider_input_field_no_space_right"
+                                dcc.Input(
+                                    id=f"{self.id}_end_value",
+                                    type="number",
+                                    placeholder="end",
+                                    min=self.min,
+                                    max=self.max,
+                                    step=self.step,
+                                    value=init_value[1],
+                                    persistence=True,
+                                    persistence_type="session",
+                                    className=(
+                                        "slider_input_field_right" if self.step else "slider_input_field_no_space_right"
+                                    ),
                                 ),
-                            ),
-                            dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
-                        ],
-                        className="slider_input_container",
-                    )], className="slider-label-input"),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
+                            ],
+                            className="slider_input_container",
+                        ),
+                    ],
+                    className="slider-label-input",
+                ),
                 html.Div(
                     [
                         dcc.RangeSlider(

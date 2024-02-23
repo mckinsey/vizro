@@ -1,5 +1,6 @@
 .checkboxes-list,
 .radio-items-list {
+  align-self: stretch;
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
@@ -7,15 +8,15 @@
   gap: var(--spacing-02);
   letter-spacing: var(--letter-spacing-body-ui-02);
   line-height: var(--text-size-04);
-  align-self: stretch;
 }
 
-.checkboxes-list label , .radio-items-list label {
+.checkboxes-list label,
+.radio-items-list label {
+  align-items: center;
+  align-self: stretch;
   display: flex !important;
-height: 24px;
-align-items: center;
-gap: var(--spacing-01);
-align-self: stretch;
+  gap: var(--spacing-01);
+  height: 24px;
 }
 
 .input-container {

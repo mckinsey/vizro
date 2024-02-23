@@ -32,7 +32,6 @@ inputs = vm.Page(
 )
 
 
-
 graph = vm.Page(
     title="Graph",
     components=[
@@ -62,7 +61,7 @@ graph = vm.Page(
             column="year",
             selector=vm.Slider(title="Slider Label"),
         ),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[inputs, graph])

@@ -132,16 +132,15 @@
 }
 
 .slider_input_container {
+  align-items: flex-end;
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
   width: 100%;
 }
 
 input.dash-input:invalid {
   outline: none;
 }
-
 
 .slider-label-input {
   display: flex;
