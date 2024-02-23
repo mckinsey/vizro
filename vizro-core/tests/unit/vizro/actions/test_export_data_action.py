@@ -51,8 +51,11 @@ def ctx_export_data(request):
                     value={"points": [{"customdata": [continent_filter_interaction]}]},
                     str_id="box_chart",
                     triggered=False,
-                )
-            }
+                ),
+                "modelID": CallbackTriggerDict(
+                    id="box_chart", property="id", value="box_chart", str_id="box_chart", triggered=False
+                ),
+            },
         )
     if country_table_filter_interaction:
         args_grouping_filter_interaction.append(
@@ -73,6 +76,9 @@ def ctx_export_data(request):
                     ],
                     str_id="underlying_table_id",
                     triggered=False,
+                ),
+                "modelID": CallbackTriggerDict(
+                    id="vizro_table", property="id", value="vizro_table", str_id="vizro_table", triggered=False
                 ),
             }
         )
