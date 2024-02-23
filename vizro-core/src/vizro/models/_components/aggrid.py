@@ -62,7 +62,7 @@ class AgGrid(VizroBaseModel):
 
     # Interaction methods
     @property
-    def _figure_interaction_input(self):
+    def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),

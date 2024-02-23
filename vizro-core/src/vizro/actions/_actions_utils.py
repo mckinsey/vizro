@@ -87,13 +87,12 @@ def _apply_filter_interaction(
     data_frame: pd.DataFrame, ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]], target: str
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
-        if "modelID" in ctd_filter_interaction:
-            triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-            data_frame = triggered_model._filter_interaction(
-                data_frame=data_frame,
-                target=target,
-                ctd_filter_interaction=ctd_filter_interaction,
-            )
+        triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
+        data_frame = triggered_model._filter_interaction(
+            data_frame=data_frame,
+            target=target,
+            ctd_filter_interaction=ctd_filter_interaction,
+        )
 
     return data_frame
 

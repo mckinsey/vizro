@@ -77,7 +77,7 @@ class Graph(VizroBaseModel):
 
     # Interaction methods
     @property
-    def _figure_interaction_input(self):
+    def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "clickData": State(component_id=self.id, component_property="clickData"),
