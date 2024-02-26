@@ -23,18 +23,17 @@
 
 .card-link {
   color: transparent;
-  display: contents;
+  display: flex;
   height: 100%;
   left: 0;
-  padding: var(--spacing-04);
-  position: absolute;
+  position: relative;
   top: 0;
   width: 100%;
 }
 
 .card_text {
-  height: 100%;
   padding: var(--spacing-04);
+  height: 100%;
   width: 100%;
 }
 
