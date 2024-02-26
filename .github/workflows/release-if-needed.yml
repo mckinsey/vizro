@@ -110,5 +110,5 @@ jobs:
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
           git add -A
-          git commit -m "Bump ${{needs.check-version.outputs.package_name}} to $(hatch version) [skip ci]"
+          git commit -m "[Release] Bump ${{needs.check-version.outputs.package_name}} to $(hatch version) [skip ci]"
           git push origin main
