@@ -3,11 +3,11 @@ site_url: https://mckinsey.github.io/vizro/
 nav:
   - Vizro: index.md
   - Get started:
-      - Quickstart: pages/tutorials/first-dashboard.md
+      - Install Vizro: pages/user-guides/install.md
+      - Dashboard quickstart: pages/tutorials/first-dashboard.md
       - Explore Vizro: pages/tutorials/explore-components.md
   - User guides:
       - FUNDAMENTALS:
-          - Install: pages/user-guides/install.md
           - Dashboards: pages/user-guides/dashboard.md
           - Pages: pages/user-guides/pages.md
           - Run methods: pages/user-guides/run.md

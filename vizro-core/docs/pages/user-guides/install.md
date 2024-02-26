@@ -1,46 +1,127 @@
 # How to install Vizro
 
-This guide shows you how to install Vizro. It will provide detailed explanation on how to install, update and verify the current version of vizro.
+This guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
 
 ## Prerequisites
 
-- **Python**: Vizro supports macOS, Linux, and Windows. It is designed to work with Python 3.8 and above. The python
-  version can be specified when setting up your virtual environment.
-- **Virtual environment**: We suggest to create a new virtual environment for each new Vizro project you work on to
-  isolate its Python dependencies from those of other projects. See the following references to learn more about [python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
+**Python**: Vizro supports macOS, Linux, and Windows. It is designed to work with Python 3.8 and above. You specify the version of Python to use with Vizro when you set up your virtual environment.
 
 
-??? tip "Beginners/Code novices"
-    If you consider yourself a beginner or coding novice, you can follow the steps in these boxes to completely avoid the terminal usage
+**Virtual environment**: You should create a virtual environment for each Vizro project you work on to
+  isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M). 
 
-    - install the [Anaconda Navigator](https://www.anaconda.com/download)
-    - create a new environment as [outlined here](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/), choose a Python version `>=3.8`
+!!! tip "Prefer to use Vizro without opening a terminal window?"
+    
+    If you are a beginner or coding novice, you may prefer to avoid using a terminal to work with Vizro. Skip to the ["Use Vizro inside Anaconda" section](#use-vizro-inside-anaconda-navigator) below.
 
-## Installation
+    
 
-To install Vizro from the Python Package Index (PyPI), use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
+??? information "How to create a virtual environment for your Vizro project"
+
+    ### Using `conda`
+    We strongly recommend [installing `conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) if you don't already use it. Once installed, create a virtual environment from the terminal as follows:
+
+    ```bash
+    conda create --name vizro-environment python=3.10 -y
+    ```
+
+    (The example above uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8 and <3.12), and name it anything you choose).
+
+    Activate your virtual environment from any directory:
+
+    ```bash
+    conda activate kedro-environment
+    ```
+
+    To confirm that a valid version of Python is installed in your virtual environment, type the following in your terminal (macOS and Linux):
+
+    ```bash
+    python3 --version
+    ```
+
+    On Windows:
+
+    ```bash
+    python --version
+    ```
+
+    ??? information "How to create a virtual environment without using conda"
+
+        ### How to create a new virtual environment without using `conda`
+
+        You can alternatively create virtual environments using `venv` or `pipenv` instead of `conda`.
+
+        #### `venv`
+    
+        You should already have the `venv` module installed with the Python 3 standard library. Create a directory for working with your project and navigate to it. For example:
+
+        ```bash
+        mkdir vizro-environment && cd vizro-environment
+        ```
+
+        Next, create a new virtual environment in this directory with `venv`:
+
+        ```bash
+        python -m venv .venv
+        ```
+
+        To activate:
+
+        ```bash
+        source .venv/bin/activate # macOS / Linux
+        .\.venv\Scripts\activate  # Windows
+        ```
+
+
+        ####`pipenv`
+
+        From any directory:
+    
+        ```bash
+        pip install pipenv
+        ```
+
+        Create a directory for working with your project and navigate to it. For example:
+
+        ```bash
+        mkdir vizro-environment && cd vizro-environment
+        ```
+
+        To start a session with the correct virtual environment activated:
+
+        ```bash
+        pipenv shell
+        ```
+
+
+
+## Install vizro
+
+To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 
 ```bash
 pip install vizro
 ```
 
-You can run any code from the tutorials and user guides using a python script, but it is arguably more convenient to use a Jupyter notebook. In this case you can optionally install `jupyter`:
-```bash
-pip install jupyter
-```
+## Use Vizro inside Anaconda Navigator
 
-??? tip "Beginners/Code novices"
-    If you consider yourself a beginner or coding novice, you can follow the steps in these boxes to completely avoid the terminal usage
+To completely avoid terminal usage, follow these steps to work with Vizro:
+    
+    
+1. Install [Anaconda Navigator](https://www.anaconda.com/download).
 
-    - search `vizro` and subsequently install it [using the Anaconda Navigator package manager](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/ )
-    - search `jupyter` and subsequently install it following the same procedure
-    - it should now be easy to [launch a jupyter notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator)
-    - you can paste any of the examples into a notebook cell, evaluate the cell and inspect the results - happy vizro'ing!
+2. Create a new environment as [outlined in the Anaconda documentation](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/). Choose a Python version `>=3.8`.
+
+3. Search `vizro` and install it [using the Anaconda Navigator package manager](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/).
+ 
+4. Similarly, search `jupyter` and install it.
+
+5. [Launch a Jupyter notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro.
 
 
-## Verify version
+## Confirm a successful installation
 
-Once Vizro is installed, if you would like to verify the version of Vizro or check if everything worked, simply run the following code from a python script or a Jupyter notebook cell:
+To confirm the installation above was successful, and verify the version of Vizro installed, call the following from within a Jupyter notebook cell (or run the following as a Python script):
 
 ```py
 import vizro
@@ -48,14 +129,16 @@ import vizro
 print(vizro.__version__)
 ```
 
-You should see a return output of the form `0.1.0`.
+You should see a return output of the form `x.y.z`.
 
 ## Upgrade
 
-To later upgrade Vizro to a different version, simply run:
-```
+To change the version of Vizro installed:
+
+```bash
 pip install vizro -U
 ```
 
-The best way to safely upgrade is to check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any notable breaking changes before migrating an
-existing project.
+!!! tip Check the Vizro release notes
+    
+    To upgrade safely, check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
