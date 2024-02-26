@@ -50,8 +50,15 @@ home = vm.Page(
 
                 ### Controls
 
-                Vizro has two different control types **filters** and **parameters**.
+                Vizro has two different control types **Filter** and **Parameter**.
 
+                You can use any pre-existing selector inside the **Filter** or **Parameter**:
+
+                * Dropdown
+                * Checklist
+                * RadioItems
+                * RangeSlider
+                * Slider
                 """,
             href="/filters",
         ),
@@ -337,18 +344,18 @@ parameters = vm.Page(
 
 selectors = vm.Page(
     title="Selectors",
-    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2]], row_min_height="200px", row_gap="24px"),
+    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2]], row_min_height="170px", row_gap="24px"),
     components=[
         vm.Card(text="""
         A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
-        
+
         The following selectors are available:
         * Dropdown (**categorical** multi and single option selector)
         * Checklist (**categorical** multi option selector only)
         * RadioItems (**categorical** single option selector only)
         * RangeSlider (**numerical** multi option selector only)
         * Slider (**numerical** single option selector only)
-        
+
         """),
         vm.Table(id="table-gapminder", figure=dash_data_table(data_frame=gapminder, page_size=10), title="Gapminder Data"),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
@@ -382,7 +389,7 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-tips"],
             column="smoker",
-            selector=vm.Slider(title="Slider (Tips - smoker)", step=1),
+            selector=vm.Slider(title="Slider (Tips - smoker)", step=1, value=1),
         ),
     ],
 )
