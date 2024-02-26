@@ -4,7 +4,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
 ## Prerequisites
 
-**Python**: Vizro supports macOS, Linux, and Windows. It is designed to work with Python 3.8 and above. You specify the version of Python to use with Vizro when you set up your virtual environment.
+**Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.8 and later. You can specify the version of Python to use with Vizro when you set up a virtual environment.
 
 
 **Virtual environment**: You should create a virtual environment for each Vizro project you work on to
@@ -25,7 +25,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
     conda create --name vizro-environment python=3.10 -y
     ```
 
-    (The example above uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8 and <3.12), and name it anything you choose).
+    (This example uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8 and <3.12), and name it anything you choose).
 
     Activate your virtual environment from any directory:
 
@@ -102,9 +102,11 @@ To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal w
 ```bash
 pip install vizro
 ```
+<!-- vale off -->
 
 ## Use Vizro inside Anaconda Navigator
 
+<!-- vale on -->
 To completely avoid terminal usage, follow these steps to work with Vizro:
     
     
@@ -121,7 +123,7 @@ To completely avoid terminal usage, follow these steps to work with Vizro:
 
 ## Confirm a successful installation
 
-To confirm the installation above was successful, and verify the version of Vizro installed, call the following from within a Jupyter notebook cell (or run the following as a Python script):
+To confirm the installation was successful, and verify the version of Vizro installed, call the following. You can do this from within a Jupyter notebook cell, or run the following as a Python script:
 
 ```py
 import vizro
