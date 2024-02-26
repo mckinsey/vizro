@@ -52,6 +52,37 @@
   padding: 4px 0;
 }
 
+#right-side .dash-table-container .previous-next-container button,
+#right-side
+  .dash-table-container
+  .previous-next-container
+  .page-number
+  .current-page-container
+  .current-page-shadow,
+.dash-table-container
+  .previous-next-container
+  .page-number
+  .current-page-container
+  input.current-page {
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+#right-side
+  .dash-table-container
+  .previous-next-container
+  .page-number
+  .current-page-container
+  .current-page-shadow::placeholder,
+.dash-table-container
+  .previous-next-container
+  .page-number
+  .current-page-container
+  input.current-page::placeholder {
+  color: var(--text-primary) !important;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;
