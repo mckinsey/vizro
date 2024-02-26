@@ -3,6 +3,7 @@
 from time import sleep
 from typing import List, Literal, Optional
 
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
@@ -12,12 +13,11 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
-import numpy as np
 
 iris = px.data.iris()
 gapminder = px.data.gapminder()
 tips = px.data.tips()
-tips["smoker"] = np.where(tips["smoker"] == 'Yes', 1, 0)
+tips["smoker"] = np.where(tips["smoker"] == "Yes", 1, 0)
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -346,7 +346,8 @@ selectors = vm.Page(
     title="Selectors",
     layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2]], row_min_height="170px", row_gap="24px"),
     components=[
-        vm.Card(text="""
+        vm.Card(
+            text="""
         A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
 
         The following selectors are available:
@@ -356,8 +357,11 @@ selectors = vm.Page(
         * RangeSlider (**numerical** multi option selector only)
         * Slider (**numerical** single option selector only)
 
-        """),
-        vm.Table(id="table-gapminder", figure=dash_data_table(data_frame=gapminder, page_size=10), title="Gapminder Data"),
+        """
+        ),
+        vm.Table(
+            id="table-gapminder", figure=dash_data_table(data_frame=gapminder, page_size=10), title="Gapminder Data"
+        ),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
     ],
     controls=[
@@ -394,7 +398,7 @@ selectors = vm.Page(
     ],
 )
 
-    # ACTIONS ---------------------------------------------------------------------
+# ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
     title="Export data",
     components=[
