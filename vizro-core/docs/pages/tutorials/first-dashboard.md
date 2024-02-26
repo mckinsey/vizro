@@ -13,18 +13,18 @@ If you haven't already installed Vizro, follow the [installation guide](../user-
 
 ### 2. Open a Jupyter notebook
 
-A good way to initially explore Vizro is from inside a Jupyter Notebook. 
+A good way to initially explore Vizro is from inside a Jupyter Notebook.
 
 ??? "Install and run Jupyter"
 
     If you haven't used Jupyter before, you may need to install the Jupyter package. From the terminal window:
-    
+
     ```bash
     pip install jupyter
     ```
 
     Alternatively, you can [work within Anaconda Navigator](../user-guides/install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
-    
+
 
 Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
 
@@ -32,7 +32,7 @@ Activate the virtual environment you used to install Vizro, and start a new Note
 jupyter notebook
 ```
 
-The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard. 
+The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard.
 
 Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
@@ -80,4 +80,4 @@ Paste the following example into a notebook cell, run it, and view the generated
 
 ### 4. Explore further
 
-You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or consulting the [user guide documentation](../first-dashboard/). 
+You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or consulting the [user guide documentation](../first-dashboard/).
