@@ -1,39 +1,40 @@
-# Get started with Vizro
+# A first dashboard
 
-This tutorial introduces Vizro. It is a step-by-step guide to create a first dashboard and is designed to equip you with the knowledge to explore the documentation further.
+This is a quickstart guide to create your first dashboard and set you up to explore Vizro further.
 
-If you want a more complete tutorial exploring more of the available features, please see the [Explore Vizro tutorial](../tutorials/explore-components.md).
+The [Explore Vizro tutorial](../tutorials/explore-components.md) is a more complete exploration of Vizro's features.
 
 
-## Let's get started!
+## Get started
 
 ### 1. Install Vizro and its dependencies
 
-If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md) to do so inside a virtual environment.
-
-If you consider yourself a beginner to python and/or virtual environments, there is also a section that avoids any use of terminals and relies only upon a graphical user interface.
+If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md).
 
 ### 2. Open a Jupyter notebook
 
-A good way to initially explore Vizro is from inside a Jupyter notebook. If you haven't used one of these before, you may need to install the Jupyter package:
+A good way to initially explore Vizro is from inside a Jupyter Notebook. 
 
-```console
-pip install jupyter
-```
+??? "Install and run Jupyter"
 
-From the terminal window, with the virtual environment you installed Vizro in active, start a new notebook as follows:
+    If you haven't used Jupyter before, you may need to install the Jupyter package. From the terminal window:
+    
+    ```bash
+    pip install jupyter
+    ```
 
-```console
+    Alternatively, you can [work within Anaconda Navigator](../user-guides/install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
+    
+
+Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
+
+```bash
 jupyter notebook
 ```
 
-The command opens a browser tab and you can navigate to your preferred folder for this new project. Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown.
+The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard. 
 
-??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
-
-
-Confirm that Vizro is installed by typing the following into a cell in the notebook and running it.
+Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
 ```py
 import vizro
@@ -41,11 +42,11 @@ import vizro
 print(vizro.__version__)
 ```
 
-You should see a return output of the form `0.1.0`.
+You should see a return output of the form `x.y.z`.
 
 ### 3. Create your first dashboard
 
-You can now paste the below example into a jupyter notebook cell (or a python script), run it, and see the results.
+Paste the following example into a notebook cell, run it, and view the generated dashboard by typing `localhost:8050` into your browser.
 
 !!! example "Dashboard Configuration Syntaxes"
     === "Code for the cell"
@@ -76,10 +77,7 @@ You can now paste the below example into a jupyter notebook cell (or a python sc
 
     [Dashboard]: ../../assets/user_guides/dashboard/dashboard.png
 
-After running the dashboard, you can access the dashboard by typing `localhost:8050` in the browser of your choice.
 
 ### 4. Explore further
 
-You are now ready to explore our documentation further, as you can now easily evaluate all examples.
-
-One place to start would be the more complete [Explore Vizro tutorial](../tutorials/explore-components.md).
+You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or consulting the [user guide documentation](../first-dashboard/). 

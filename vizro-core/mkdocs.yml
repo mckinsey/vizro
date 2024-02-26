@@ -4,7 +4,7 @@ nav:
   - Vizro: index.md
   - Get started:
       - Install Vizro: pages/user-guides/install.md
-      - Dashboard quickstart: pages/tutorials/first-dashboard.md
+      - A first dashboard: pages/tutorials/first-dashboard.md
       - Explore Vizro: pages/tutorials/explore-components.md
   - User guides:
       - FUNDAMENTALS:

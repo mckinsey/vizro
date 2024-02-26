@@ -95,7 +95,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
 
 
-## Install vizro
+## Install `vizro`
 
 To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 
