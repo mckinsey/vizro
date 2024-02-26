@@ -1,41 +1,29 @@
-# Get started with your first dashboard
+# Explore Vizro
 
-This tutorial guides you step-by-step through the process of creating a dashboard.
+This tutorial walks through the process of creating a sophisticated dashboard. It introduces Vizro components and explains how to configure a layout to suit the functionality you need. The example uses the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.data.html#plotly.data.gapminder).
 
-By the end of this tutorial, you will have gained a deep understanding of Vizro dashboards: their structure, adding
-functionality, and configuring layouts to suit your specific needs.
+If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
-This step-by-step guide is designed to equip you
-with the knowledge and skills required to create your own dashboards using Vizro.
+## 1. Install Vizro and get ready to run your code
 
-In case you are completely new, you may want to review our [Get started](../tutorials/first-dashboard.md) tutorial first.
+To get started with this tutorial, make sure you have [installed Vizro](../user_guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first_dashboard/#2-open-a-jupyter-notebook), or from a Python script.
 
-## Let's get started!
+## 2. Create a first dashboard page
 
-### 1. Install Vizro and get ready to run your code
+In this section we create a new [`Page`][vizro.models.Page] called `first_page`.  
 
-In order to get started with this tutorial, you should have Vizro installed, and be ready to evaluate your code, either by
-pasting it into a Jupyter notebook cell, or by running it from a python script.
+The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page contains a set of component types to display the content of the page. Components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
 
+### 2.1. Add the first figure
 
-### 2. Create a first dashboard page
+Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](https://plotly.com/python-api-reference/plotly.express.html) to build different types of [figures](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html). 
 
-At the core of every dashboard is a [`Page`][vizro.models.Page] object,
-which serves as its foundation. Think of it as a blank canvas where you can arrange and customize elements like charts and text.
+For example, to add a box plot to the page:
 
-In this first section, you will explore how to create a page with different elements and delve into the layout
-configuration.
+1. Add a Vizro [`Graph`](vizro.models.Graph) to the `components` list.
+2. Assign it a unique id (`box_cont`).
+3. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
 
-#### 2.1. Add the first component
-First, let's define the structure of your dashboard page. Create a new [`Page`][vizro.models.Page] called
-`first_page` and assign a title. Each [`Page`][vizro.models.Page] allows you to define a list of
-`components`. These `components` are responsible for the content displayed on the page and can include a wide range of
-elements such as charts, text boxes, buttons, and more.
-
-Let's begin by adding a box plot showing the life expectancy per continent to the page. This can be done by including a
-[`Graph`][vizro.models.Graph] in the `components` list and assigning it a unique id.
-[`Graphs`][vizro.models.Graph] are utilized to incorporate charts to your page by specifying `figure` using the
-plotly express standard.
 
 !!! example "First component"
     === "app.py"
@@ -69,48 +57,42 @@ plotly express standard.
 
     [FirstPage1]: ../../assets/tutorials/dashboard/dashboard21.png
 
-Let's give it a try and see your dashboard in action! Either paste the above code into a Jupyter notebook cell and evaluate it, or create a new Python script called `app.py` and copy the code from
-above into the script. Next, navigate to the directory where the `app.py` file is located using your terminal or command
-prompt. Run the script by executing the command:
+!!! tip "To see the dashboard in action"
+   
+    Paste the above code into a Notebook cell, run the Notebook, and evaluate it. 
+    
+    ??? tip "Prefer Python scripts to Notebooks?"
+        
+        1. Create a new script called `app.py`. 
+        2. Copy the code above into the script. 
+        3. Navigate to the directory where `app.py` file is located using your terminal
+        4. Run the script by executing the command:
 
-```python
-python app.py
-```
+        ```python
+        python app.py
+        ```
 
-Once the script is running, open your web browser and go to `localhost:8050`. You should now see your dashboard page
-with the gapminder data displayed.
+Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page
+with the gapminder data displayed, as shown in the `Result` tab above. 
 
-If everything worked correctly, you should be able to see your first dashboard page as shown in the `Result` tab above. Congratulations on creating your very first dashboard
-page!
+!!! note "Note the following:"
 
-You may notice a couple of additions in the `app.py` script:
+    1. The import statement `import vizro.plotly.express as px` integrates Plotly Express for building figures.
 
-1. The import statement
-`import vizro.plotly.express as px` allows the use of plotly express and facilitates seamless integration into Vizro
-by defining figures with px.
+    2. The `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`. 
+    It's important to note that every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
 
-2. The `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before
-building and running it with `Vizro().build(dashboard).run()`. It's important to note that every
-[`Page`][vizro.models.Page] that you want to display needs to be added to the
-[`Dashboard`][vizro.models.Dashboard] object.
+### 2.2. Add further components
 
-#### 2.2. Add further components
+You can combine and arrange various types of `components` on a dashboard page. The `components` currently available are [`Card`][vizro.models.Card], [`Graph`][vizro.models.Graph], and [`Button`][vizro.models.Button]. For more information, refer to the [components](../user-guides/components.md) overview page to find the user guide for each type.
 
-To further enhance your first dashboard page, let's add a [`Card`][vizro.models.Card] and another chart using
-[`Graph`][vizro.models.Graph] to the `components` list. The [`Card`][vizro.models.Card] allows you to
-insert text into your dashboard and can be configured using markdown syntax. For the second chart, we will incorporate a
-bar chart that visualizes the GDP development per continent since 1952.
+To further enhance the dashboard, add two further components to the page:
 
-Remember, you can combine and arrange various types of `components` on a dashboard page.
-To see which components are available, refer to our [components](../user-guides/components.md) overview page.
-The user guides of the components serve as a detailed resource to learn how to make the most of them in your dashboards.
+* A [`Card`][vizro.models.Card], used to insert text into the dashboard, which can be configured using Markdown syntax.
+* A [`Graph`][vizro.models.Graph], which illusrates GDP development per continent since 1952 as a bar chart.
 
-??? info "Further information for `components`"
-    Currently available types of `components`:
-
-    - [`Card`][vizro.models.Card]
-    - [`Graph`][vizro.models.Graph]
-    - [`Button`][vizro.models.Button]
+!!! warning "Before you run this code in a Jupyter notebook"
+    If you are following this tutorial in a Jupyter notebook, you should restart the kernel before re-evaluating the code. This avoids error messages about components already existing in the `model_manager`.
 
 !!! example "Add components"
     === "Code first component"
@@ -181,46 +163,42 @@ The user guides of the components serve as a detailed resource to learn how to m
 
     [FirstPage2]: ../../assets/tutorials/dashboard/dashboard22.png
 
-Let's run the code and take a look at our dashboard.
+As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
 
-!!! note "If using a Jupyter notebook..."
-    If you are following this tutorial using a Jupyter notebook, we recommend restarting the kernel before re-evaluating your notebook. This avoids error messages about components already existing in the `model_manager`.
+### 2.3. Configure the layout
+By default, each element is placed in the order it was added to `components` list with equal space, as observed in the previous section.
 
+The [`Layout`][vizro.models.Layout] object is used to specify the placement and size of components on the page. To learn more about how to
+configure layouts, check out the [How to use layouts](../user-guides/layouts.md) in the user guide.
 
-As you explore the added `components`, you may notice that the
-current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused
-space. In the next section, we will learn how to configure the layout and effectively arrange the `components`.
+We can optimize the layout by positioning the text at the top and the two charts side
+by side, giving them more space relative to the text component. This can be achieved using the following
+configuration: 
 
-#### 2.3. Configure the layout
-To configure the appearance for your [`Page`][vizro.models.Page], the [`Layout`][vizro.models.Layout] object is
-utilized. It allows you to specify the placement and size of `components` on the grid. By default, each element is
-placed in the order they are added to the `components` list with equal space, as observed in the previous section.
+```python
+grid=[ [0, 0], 
+       [1, 2], 
+       [1, 2], 
+       [1, 2] ]
+```
 
-To improve the current layout, we aim to optimize the space by positioning the text at the top and the two charts side
-by side while giving the charts more space relative to the text component. This can be achieved using the following
-configuration: `grid=[[0, 0], [1, 2], [1, 2], [1, 2]]`.
-
-Let's go through one-by-one. Firstly, the configuration divides the available space into two columns and
-four rows. Each element in the list represents one row of the grid layout. An example of the generated grid is shown in
-below.
+These values are interpreted as follows. First, the configuration divides the available space into two columns and
+four rows. Each element in the list (such as `[0,0]`) represents one row of the grid layout:
 
 ![image1](../../assets/tutorials/dashboard/dashboard231.png)
 
-Secondly, the `components` are placed on the grid as visualized with the white frames. The text
-card, referenced by 0 as the first element in the `components` list, is placed in the first row and spans across both
-columns (`[0, 0]`). The two charts, referenced by 1 and 2, are positioned next to each other and span across two columns
-(`[1, 2]`).
+Each element in the `components` list is reference with a unique number, and placed on the grid as visualized with the white frames. The `Card`, reference by 0 as the first element in the `components` list, is placed in the first row and spans across both
+columns (`[0, 0]`). The two `Graph` objects, referenced by 1 and 2, are positioned next to each other and span across two columns.
 
 ![image2](../../assets/tutorials/dashboard/dashboard233.png)
 
-It's important to note that the charts span over three rows, denoted by `[1, 2], [1, 2], [1, 2]`, while the
-text card only occupies one row `[0, 0]`. As a result, the charts occupy three-quarters of the vertical space, while the
-text card occupies one-quarter of it.
+The `Graph` objects occupy three rows, denoted by `[1, 2], [1, 2], [1, 2]`, while the
+`Card` only occupies one row `[0, 0]`. As a result, the `Graph` objects occupy three-quarters of the vertical space, while the
+`Card` occupies one-quarter of it.
 
 ![image3](../../assets/tutorials/dashboard/dashboard232.png)
 
-Let's see how it is looks on the dashboard when applied to the three components. If you like to learn more about how to
-configure layouts, check out the [user guide](../user-guides/layouts.md)
+Run the code below to apply the layout to the dashboard page:
 
 !!! example "Configure layout"
     === "Code"
@@ -274,7 +252,7 @@ configure layouts, check out the [user guide](../user-guides/layouts.md)
     [FirstPage3]: ../../assets/tutorials/dashboard/dashboard23.png
 
 
-#### 2.4. Add and configure a filter
+### 2.4. Add and configure a filter
 
 The next thing you will learn is how to add functionality to your first dashboard page. This is achieved by adding
 `controls` to the [`Page`][vizro.models.Page]. `Controls` enable interaction with the `components` and empower users
@@ -360,13 +338,13 @@ Fantastic job! By completing your first dashboard page, you have gained valuable
 [`Page`][vizro.models.Page] with multiple `components`, arranging them using layout  configuration, and adding
 functionality to your dashboard.
 
-### 3. Create a second dashboard page
+## 3. Create a second dashboard page
 
 Moving forward, you will add your second dashboard page to delve deeper into `controls` and explore different types
 of `selectors`. The structure is similar to the page you just created, and you configure two charts to visualize
 the iris data set.
 
-#### 3.1. Configure parameters
+### 3.1. Configure parameters
 
 Next, you add two [`Parameters`][vizro.models.Parameter] to the `controls`. The first parameter will allow for
 changing the color of the virginica data, targeting both charts. The second parameter will adjust the opacity of the
@@ -501,7 +479,7 @@ for parameters](../user-guides/parameters.md).
 
     [SecondPage]: ../../assets/tutorials/dashboard/dashboard3.png
 
-#### 3.2. Customize with selectors
+### 3.2. Customize with selectors
 
 When examining the code, you will notice the usage of two different types of `selectors`, namely
 [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider], within the
@@ -526,7 +504,7 @@ suit your specific needs.
     - [`RangeSlider`][vizro.models.RangeSlider]
     - [`Slider`][vizro.models.Slider]
 
-### 4. Create the final dashboard
+## 4. Create the final dashboard
 
 Finally, it's time to put everything together and create a cohesive dashboard. In this section, we will focus on
 creating a homepage for your dashboard and provide seamless navigation to the previously built pages.
@@ -701,7 +679,7 @@ Congratulations on completing this tutorial! You have acquired skills in configu
 implementing functionality in Vizro dashboards. By building your own dashboard with multiple pages, you have gained
 hands-on experience in creating dynamic and interactive data visualizations.
 
-## Further reference
+## Find out more
 
 After completing the tutorial you now have a solid understanding of the main elements required to build dashboard pages
 and how to bring them together.
