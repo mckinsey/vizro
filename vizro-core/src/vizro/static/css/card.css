@@ -6,13 +6,11 @@
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  position: relative;
 }
 
 .nav_card_container {
   height: 98%;
   margin-top: 4px;
-  position: relative;
 }
 
 .nav_card_container:hover {
