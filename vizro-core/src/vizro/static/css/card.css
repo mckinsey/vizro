@@ -6,7 +6,6 @@
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  padding: var(--spacing-04);
   position: relative;
 }
 
@@ -34,6 +33,7 @@
 }
 
 .card_text {
+  padding: var(--spacing-04);
   height: 100%;
   width: 100%;
 }
