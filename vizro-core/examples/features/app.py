@@ -12,8 +12,12 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
+import numpy as np
 
 iris = px.data.iris()
+gapminder = px.data.gapminder()
+tips = px.data.tips()
+tips["smoker"] = np.where(tips["smoker"] == 'Yes', 1, 0)
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -331,7 +335,59 @@ parameters = vm.Page(
     ],
 )
 
-# ACTIONS ---------------------------------------------------------------------
+selectors = vm.Page(
+    title="Selectors",
+    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2]], row_min_height="200px", row_gap="24px"),
+    components=[
+        vm.Card(text="""
+        A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
+        
+        The following selectors are available:
+        * Dropdown (**categorical** multi and single option selector)
+        * Checklist (**categorical** multi option selector only)
+        * RadioItems (**categorical** single option selector only)
+        * RangeSlider (**numerical** multi option selector only)
+        * Slider (**numerical** single option selector only)
+        
+        """),
+        vm.Table(id="table-gapminder", figure=dash_data_table(data_frame=gapminder, page_size=10), title="Gapminder Data"),
+        vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
+    ],
+    controls=[
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="year",
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - year)"),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="continent",
+            selector=vm.Checklist(title="Checklist (Gapminder - continent)"),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="country",
+            selector=vm.Dropdown(title="Dropdown (Gapminder - country)"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="day",
+            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="sex",
+            selector=vm.RadioItems(title="Radio Items (Tips - sex)"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="smoker",
+            selector=vm.Slider(title="Slider (Tips - smoker)", step=1),
+        ),
+    ],
+)
+
+    # ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
     title="Export data",
     components=[
@@ -571,7 +627,7 @@ custom_actions = vm.Page(
 
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, table, cards, button, containers, tabs]
-controls = [filters, parameters]
+controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
 
@@ -586,7 +642,7 @@ dashboard = vm.Dashboard(
                     label="Features",
                     pages={
                         "Components": ["Graphs", "Table", "Cards", "Button", "Containers", "Tabs"],
-                        "Controls": ["Filters", "Parameters"],
+                        "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
                     },
