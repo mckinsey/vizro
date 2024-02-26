@@ -33,6 +33,11 @@
   width: 100%;
 }
 
+.card-text {
+  height: 100%;
+  width: 100%;
+}
+
 .card_text h1,
 h2,
 h3,
