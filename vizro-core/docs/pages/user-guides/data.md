@@ -123,7 +123,7 @@ use the same data connector to load different data. For example, when you want t
 retrieve data from different tables in a database, you can define a data connector
 that accepts different SQL queries as arguments.
 
-!!! example "Use a Data Connector with arguments"
+!!! example "Use a data connector with arguments"
     === "app.py (use lambda)"
         ```py linenums="1"
         from vizro import Vizro
