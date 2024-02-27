@@ -95,17 +95,11 @@
   padding: 0 30px 25px !important;
 }
 
-.slider_input_container {
-  align-items: flex-end;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
 input.dash-input:invalid {
   outline: none;
 }
 
+/* Slider Label + Input Container ---------------------- */
 .slider-label-input {
   align-items: center;
   display: flex;

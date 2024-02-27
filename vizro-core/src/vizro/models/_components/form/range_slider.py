@@ -122,17 +122,17 @@ class RangeSlider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                        dcc.RangeSlider(
-                            id=self.id,
-                            min=self.min,
-                            max=self.max,
-                            step=self.step,
-                            marks=self.marks,
-                            value=init_value,
-                            persistence=True,
-                            persistence_type="session",
-                            className="range_slider_control" if self.step else "range_slider_control_no_space"
-                        )
+                dcc.RangeSlider(
+                    id=self.id,
+                    min=self.min,
+                    max=self.max,
+                    step=self.step,
+                    marks=self.marks,
+                    value=init_value,
+                    persistence=True,
+                    persistence_type="session",
+                    className="range_slider_control" if self.step else "range_slider_control_no_space",
+                ),
             ],
             className="input-container",
             id=f"{self.id}_outer",
