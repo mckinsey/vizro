@@ -22,6 +22,6 @@
 .input-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-02);
+  gap: var(--spacing-03);
   width: 100%;
 }
