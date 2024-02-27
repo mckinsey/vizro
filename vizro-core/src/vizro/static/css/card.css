@@ -6,14 +6,11 @@
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  padding: var(--spacing-04);
-  position: relative;
 }
 
 .nav_card_container {
   height: 98%;
   margin-top: 4px;
-  position: relative;
 }
 
 .nav_card_container:hover {
@@ -24,11 +21,17 @@
 
 .card-link {
   color: transparent;
+  display: flex;
   height: 100%;
   left: 0;
-  padding: var(--spacing-04);
-  position: absolute;
+  position: relative;
   top: 0;
+  width: 100%;
+}
+
+.card_text {
+  height: 100%;
+  padding: var(--spacing-04);
   width: 100%;
 }
 
