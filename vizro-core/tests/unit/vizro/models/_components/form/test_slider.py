@@ -15,48 +15,48 @@ import vizro.models as vm
 @pytest.fixture()
 def expected_slider():
     return html.Div(
-            [
-                dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
-                html.Div(
-                    [
-                        html.Label("Test title", htmlFor="slider_id"),
-                        html.Div(
-                            [
-                                dcc.Input(
-                                    id="slider_id_end_value",
-                                    type="number",
-                                    placeholder="max",
-                                    min=0.0,
-                                    max=10.0,
-                                    step=1.0,
-                                    value=5.0,
-                                    persistence=True,
-                                    persistence_type="session",
-                                    className="slider-text-input-field",
-                                ),
-                                dcc.Store(id="slider_id_input_store", storage_type="session", data=5.0),
-                            ],
-                            className="slider-text-input-container",
-                        ),
-                    ],
-                    className="slider-label-input",
-                ),
-                dcc.Slider(
-                    id="slider_id",
-                    min=0.0,
-                    max=10.0,
-                    step=1.0,
-                    marks={},
-                    value=5.0,
-                    included=False,
-                    persistence=True,
-                    persistence_type="session",
-                    className="slider-track-with-marks",
-                ),
-            ],
-            className="input-container",
-            id="slider_id_outer",
-        )
+        [
+            dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    html.Label("Test title", htmlFor="slider_id"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="slider_id_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=1.0,
+                                value=5.0,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="slider_id_input_store", storage_type="session", data=5.0),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={},
+                value=5.0,
+                included=False,
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+            ),
+        ],
+        className="input-container",
+        id="slider_id_outer",
+    )
 
 
 class TestSliderInstantiation:
