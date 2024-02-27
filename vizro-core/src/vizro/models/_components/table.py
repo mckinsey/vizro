@@ -109,14 +109,14 @@ class Table(VizroBaseModel):
         if hasattr(underlying_table_object, "id"):
             self._callable_object_id = underlying_table_object.id
 
-        if self.actions and not hasattr(self,"_callable_object_id"):
+        if self.actions and not hasattr(self, "_callable_object_id"):
             raise ValueError(
                 "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
                 " a valid 'id' has to be provided to the `Table` callable."
             )
 
     def build(self):
-        dash_table_conf = {"id": self._callable_object_id} if hasattr(self,"_callable_object_id") else {}
+        dash_table_conf = {"id": self._callable_object_id} if hasattr(self, "_callable_object_id") else {}
         return dcc.Loading(
             html.Div(
                 [

@@ -141,9 +141,16 @@ grid_long = vm.Page(
     ],
 )
 
+table_long = vm.Page(
+    title="Table Long",
+    components=[
+        vm.Table(figure=dash_data_table(id="dash_table_5", data_frame=df_long)),
+    ],
+)
+
 
 dashboard = vm.Dashboard(
-    pages=[grid_interaction, grid_standard, grid_custom, grid_long],
+    pages=[grid_interaction, grid_standard, grid_custom, grid_long, table_long],
 )
 
 if __name__ == "__main__":

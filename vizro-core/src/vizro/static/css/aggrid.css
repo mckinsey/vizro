@@ -111,9 +111,9 @@
   text-overflow: ellipsis;
 }
 
-/* TODO: fix the color of the background images in the filter menu */
+/* TODO: fix the color+positioning of the background images in the filter menu */
 
-/* TODO: hover over filter items */
+/* TODO: change background color when hovering over filter menu */
 
 /* Buttons */
 #page-container .ag-theme-quartz .ag-standard-button {
@@ -141,20 +141,10 @@
   text-decoration-line: underline;
 }
 
-#page-container .ag-theme-quartz .ag-standard-button:active {
-  background: var(--fill-active);
-  color: var(--text-contrast-primary);
-}
-
-#page-container .ag-theme-quartz .ag-standard-button:visited {
-  background: var(--fill-active);
-  color: var(--text-contrast-primary);
-}
-
 /* TODO: radio button remove blue */
+
 #page-container .ag-radio-button-input-wrapper {
   background-color: var(--field-enabled);
-  color: var(--text-primary);
 }
 
 #page-container .ag-radio-button-input-wrapper:focus-within {
