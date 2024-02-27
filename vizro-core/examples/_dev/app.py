@@ -77,9 +77,7 @@ grid_interaction = vm.Page(
         vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
         vm.Parameter(
             targets=["line_country.y"],
-            selector=vm.Dropdown(
-                options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose y-axis"
-            ),
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], value="gdpPercap", title="Choose y-axis"),
         ),
     ],
 )
