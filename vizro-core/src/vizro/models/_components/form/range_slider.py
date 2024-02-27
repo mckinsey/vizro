@@ -131,7 +131,7 @@ class RangeSlider(VizroBaseModel):
                     value=init_value,
                     persistence=True,
                     persistence_type="session",
-                    className="range_slider_control" if self.step else "range_slider_control_no_space",
+                    className="slider-track-with-marks" if self.step else "slider-track-without-marks",
                 ),
             ],
             className="input-container",

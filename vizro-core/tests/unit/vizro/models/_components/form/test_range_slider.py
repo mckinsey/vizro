@@ -22,7 +22,7 @@ def expected_range_slider_default():
                 [
                     dcc.RangeSlider(
                         id="range_slider",
-                        className="range_slider_control_no_space",
+                        className="slider-track-without-marks",
                         persistence=True,
                         persistence_type="session",
                         min=None,
@@ -85,7 +85,7 @@ def expected_range_slider_with_optional():
                         max=10,
                         step=2,
                         marks={1: "1", 5: "5", 10: "10"},
-                        className="range_slider_control",
+                        className="slider-track-with-marks",
                         value=[0, 10],
                         persistence=True,
                         persistence_type="session",

@@ -30,7 +30,7 @@ def expected_slider():
                         included=False,
                         persistence=True,
                         persistence_type="session",
-                        className="slider_control",
+                        className="slider-track-with-marks",
                     ),
                     dcc.Input(
                         id="slider_id_text_value",

@@ -115,7 +115,7 @@ class Slider(VizroBaseModel):
                     included=False,
                     persistence=True,
                     persistence_type="session",
-                    className="slider_control" if self.step else "slider_control_no_space",
+                    className="slider-track-with-marks" if self.step else "slider-track-without-marks",
                 ),
             ],
             className="input-container",
