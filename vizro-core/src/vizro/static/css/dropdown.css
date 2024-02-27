@@ -63,7 +63,7 @@
 
 /* Single-select dropdown only ------------------- */
 #page-container .Select--single .Select-value {
-  padding-left: 8px;
+  padding-left: var(--spacing-02);
 }
 
 .has-value.Select--single > .Select-control .Select-value .Select-value-label,

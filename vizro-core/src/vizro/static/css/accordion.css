@@ -9,7 +9,7 @@
   font-size: var(--text-size-02);
   height: 56px;
   letter-spacing: -0.014px;
-  line-height: 16px;
+  line-height: var(--text-size-03);
   overflow-anchor: none;
   padding: 16px 8px;
   position: relative;
@@ -116,5 +116,5 @@
 }
 
 .accordion-body .accordion-item-link:last-child {
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-03);
 }
