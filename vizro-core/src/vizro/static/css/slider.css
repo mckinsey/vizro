@@ -95,17 +95,6 @@
   padding: 0 30px 25px !important;
 }
 
-.slider_inner_container,
-.range_slider_inner_container {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.range_slider_inner_container {
-  flex-direction: column;
-}
-
 .slider_input_container {
   align-items: flex-end;
   display: flex;

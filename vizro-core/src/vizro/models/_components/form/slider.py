@@ -105,9 +105,7 @@ class Slider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                html.Div(
-                    [
-                        dcc.Slider(
+                dcc.Slider(
                             id=self.id,
                             min=self.min,
                             max=self.max,
@@ -118,10 +116,7 @@ class Slider(VizroBaseModel):
                             persistence=True,
                             persistence_type="session",
                             className="slider_control" if self.step else "slider_control_no_space",
-                        ),
-                    ],
-                    className="slider_inner_container",
-                ),
+                        )
             ],
             className="input-container",
             id=f"{self.id}_outer",

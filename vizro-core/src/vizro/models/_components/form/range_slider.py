@@ -122,8 +122,6 @@ class RangeSlider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                html.Div(
-                    [
                         dcc.RangeSlider(
                             id=self.id,
                             min=self.min,
@@ -133,11 +131,8 @@ class RangeSlider(VizroBaseModel):
                             value=init_value,
                             persistence=True,
                             persistence_type="session",
-                            className="range_slider_control" if self.step else "range_slider_control_no_space",
-                        ),
-                    ],
-                    className="range_slider_inner_container",
-                ),
+                            className="range_slider_control" if self.step else "range_slider_control_no_space"
+                        )
             ],
             className="input-container",
             id=f"{self.id}_outer",
