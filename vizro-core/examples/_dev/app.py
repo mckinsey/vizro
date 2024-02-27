@@ -1,5 +1,8 @@
 """Example to show dashboard configuration."""
 
+import random
+import string
+
 import numpy as np
 import pandas as pd
 import vizro.models as vm
@@ -118,14 +121,31 @@ grid_custom = vm.Page(
                         "valueFormatter": {"function": "d3.format('.^30')(params.value)"},
                     },
                 ],
+                defaultColDef={"editable": True},
+                # dashGridOptions = {"pagination": False},
             ),
         ),
     ],
 )
 
+num_rows = 10
+num_columns = 20
+column_names = ["Column_" + str(i) for i in range(num_columns)]
+data = {}
+for column in column_names:
+    data[column] = ["".join(random.choices(string.ascii_letters, k=random.randint(5, 15))) for _ in range(num_rows)]
+df_long = pd.DataFrame(data)
+
+grid_long = vm.Page(
+    title="AG Grid Long",
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(id="dash_ag_grid_4", data_frame=df_long)),
+    ],
+)
+
 
 dashboard = vm.Dashboard(
-    pages=[grid_interaction, grid_standard, grid_custom],
+    pages=[grid_interaction, grid_standard, grid_custom, grid_long],
 )
 
 if __name__ == "__main__":
