@@ -1,7 +1,6 @@
 import logging
 from typing import Dict, List, Literal
 
-import dash_ag_grid as dag
 import pandas as pd
 from dash import State, dcc, html
 
@@ -109,12 +108,17 @@ class AgGrid(VizroBaseModel):
             )
 
     def build(self):
-        dash_ag_grid_conf = {"id": self._callable_object_id} if hasattr(self, "_callable_object_id") else {}
+        # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
+        # setting as the object that is built on-page-load and rendered finally.
+        dash_ag_grid_conf = self.figure._arguments.copy()
+        dash_ag_grid_conf["data_frame"] = pd.DataFrame()
+        if hasattr(self, "_callable_object_id"):
+            dash_ag_grid_conf["id"] = self._callable_object_id
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dag.AgGrid(**dash_ag_grid_conf), id=self.id),
+                    html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",

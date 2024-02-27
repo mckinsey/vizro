@@ -95,6 +95,7 @@ grid_standard = vm.Page(
             figure=dash_ag_grid(
                 id="dash_ag_grid_2",
                 data_frame=df2,
+                dashGridOptions={"pagination": True},
             ),
         ),
     ],
