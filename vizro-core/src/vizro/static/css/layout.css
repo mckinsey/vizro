@@ -189,6 +189,7 @@ div.dashboard_container .custom-tooltip {
   flex: 1 1 0;
   flex-direction: row;
   height: calc(100vh - 64px);
+  overflow: auto;
 }
 
 #dashboard-title {
