@@ -6,13 +6,13 @@ If you haven't yet done so, you may want to review the [first dashboard tutorial
 
 ## 1. Install Vizro and get ready to run your code
 
-To get started with this tutorial, make sure you have [installed Vizro](../user_guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first_dashboard/#2-open-a-jupyter-notebook), or from a Python script.
+To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first-dashboard/#2-open-a-jupyter-notebook), or from a Python script.
 
 ## 2. Create a first dashboard page
 
 In this section we create a new [`Page`][vizro.models.Page] called `first_page`.
 
-The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of component types to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
+The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components/) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
 
 ### 2.1. Add the first figure
 
@@ -21,8 +21,7 @@ Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](
 The code below shows the steps necessary to add a box plot to the page:
 
 1. Add a Vizro [`Graph`](vizro.models.Graph) to the `components` list.
-2. Assign it a unique id (`box_cont`).
-3. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
+2. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
 
 
 !!! example "First component"

@@ -18,7 +18,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
 ??? information "How to create a virtual environment for your Vizro project"
 
-    ### Using `conda`
+    **Using `conda`**
     We strongly recommend [installing `conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) if you don't already use it. Once installed, create a virtual environment from the terminal as follows:
 
     ```bash
@@ -47,11 +47,12 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
     ??? information "How to create a virtual environment without using conda"
 
-        ### How to create a new virtual environment without using `conda`
+        **How to create a new virtual environment without using `conda`**
 
         You can alternatively create virtual environments using `venv` or `pipenv` instead of `conda`.
 
-        #### `venv`
+        ---
+        **`venv`**
 
         You should already have the `venv` module installed with the Python 3 standard library. Create a directory for working with your project and navigate to it. For example:
 
@@ -72,8 +73,8 @@ This guide shows you how to install Vizro, how to verify the installation succee
         .\.venv\Scripts\activate  # Windows
         ```
 
-
-        ####`pipenv`
+        ---
+        **`pipenv`**
 
         From any directory:
 
@@ -95,7 +96,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
 
 
-## Install `vizro`
+## Install Vizro
 
 To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 
