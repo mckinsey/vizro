@@ -147,7 +147,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
-## Create a new component
+## How to create a new component
 
 ??? info "When to choose this strategy"
 
