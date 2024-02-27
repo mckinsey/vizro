@@ -81,11 +81,11 @@
 }
 
 .slider-track-without-marks {
-  padding: 0 24px 0 24px !important;
+  padding: 0 24px !important;
 }
 
 .slider-track-with-marks {
-  padding: 0 24px 40px 24px !important;
+  padding: 0 24px 40px !important;
 }
 
 input.dash-input:invalid {
