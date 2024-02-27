@@ -95,39 +95,6 @@
   padding: 0 30px 25px !important;
 }
 
-.slider-text-input-container {
-  display: flex;
-  flex-direction: row;
-  line-height: 16px;
-}
-.slider-text-input-field {
-  background-color: inherit;
-  color: var(--text-secondary);
-  font-size: var(--text-size-02);
-  text-decoration: underline;
-  text-decoration-color: var(--border-subtle-alpha-01);
-  text-align: right;
-  padding: 0;
-}
-
-.slider-text-input-separator {
-  padding-left: 4px;
-  margin: 0;
-}
-
-/* To remove number input spin box */
-.slider-text-input-field input[type=number] {
-    -moz-appearance:textfield;
-}
-
-.slider-text-input-field input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-
-
 .slider_inner_container,
 .range_slider_inner_container {
   align-items: center;
@@ -151,12 +118,46 @@ input.dash-input:invalid {
 }
 
 .slider-label-input {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  line-height: 16px;
 }
 
 .slider-label-input label {
   width: 100%;
+}
+
+/* Slider Text Input ---------------------- */
+.slider-text-input-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.slider-text-input-field {
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-size-02);
+  padding: 0;
+  text-align: right;
+  text-decoration: underline;
+  text-decoration-color: var(--border-subtle-alpha-01);
+}
+
+.slider-text-input-range-separator {
+  color: var(--text-secondary);
+  font-size: var(--text-size-02);
+  padding-left: 4px;
+}
+
+/* To remove number input spin box */
+.slider-text-input-field input[type="number"] {
+  appearance: textfield;
+}
+
+.slider-text-input-field input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
 }
