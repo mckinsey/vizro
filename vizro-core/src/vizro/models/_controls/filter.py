@@ -26,21 +26,17 @@ from vizro.models._components.form import (
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
 
-SELECTOR_DEFAULTS = {"numerical": RangeSlider, "categorical": Dropdown, "temporal": DatePicker}
-
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
+# First entry of each tuple is the default selector for that key
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
-    "categorical": (Checklist, Dropdown, RadioItems),
+    "categorical": (Dropdown, Checklist, RadioItems),
     "temporal": DatePicker,
 }
 
 
 def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
-    if len(value) != 2:
-        return pd.Series(False, index=series.index)
-
     return series.between(value[0], value[1], inclusive="both")
 
 
@@ -121,7 +117,7 @@ class Filter(VizroBaseModel):
             self._column_type = "categorical"
 
     def _set_selector(self):
-        self.selector = self.selector or SELECTOR_DEFAULTS[self._column_type]()
+        self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
 
     def _set_slider_values(self):
@@ -162,11 +158,7 @@ class Filter(VizroBaseModel):
                 data_frame = self._convert_column_type(data_frame=data_frame)
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
-            if not is_datetime64_any_dtype(pd.Series(min_values)) or not is_datetime64_any_dtype(pd.Series(max_values)):
-                raise ValueError(
-                    f"Non-temporal values detected in the shared data column '{self.column}' for targeted charts. "
-                    f"Please ensure that the data column contains the same data type across all targeted charts."
-                )
+
             if self.selector.min is None:
                 self.selector.min = min(min_values)
             if self.selector.max is None:
@@ -181,19 +173,13 @@ class Filter(VizroBaseModel):
 
             self.selector.options = sorted(options)
 
-    def _set_filter_function(self):
-        if isinstance(self.selector, RangeSlider) or (
-            isinstance(self.selector, DatePicker) and self.selector.multi is True
-        ):
-            filter_function = _filter_between
-        else:
-            filter_function = _filter_isin
-
-        return filter_function
-
     def _set_actions(self):
         if not self.selector.actions:
-            filter_function = self._set_filter_function()
+            if isinstance(self.selector, RangeSlider) or isinstance(self.selector, DatePicker) and self.selector.range:
+                filter_function = _filter_between
+            else:
+                filter_function = _filter_isin
+
             self.selector.actions = [
                 Action(
                     function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),

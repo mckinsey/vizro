@@ -9,7 +9,7 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
 from vizro.models import Action, VizroBaseModel
-from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
 
@@ -63,6 +63,7 @@ class Parameter(VizroBaseModel):
     def pre_build(self):
         self._set_slider_values()
         self._set_categorical_selectors_options()
+        self._set_date_picker_values()
         self._set_selector()
         self._set_actions()
 
@@ -80,6 +81,13 @@ class Parameter(VizroBaseModel):
     def _set_categorical_selectors_options(self):
         if isinstance(self.selector, (Checklist, Dropdown, RadioItems)) and not self.selector.options:
             raise TypeError(f"{self.selector.type} requires the argument 'options' when used within Parameter.")
+
+    def _set_date_picker_values(self):
+        if isinstance(self.selector, DatePicker):
+            if self.selector.min is None or self.selector.max is None:
+                raise TypeError(
+                    f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter."
+                )
 
     def _set_selector(self):
         if not self.selector.title:

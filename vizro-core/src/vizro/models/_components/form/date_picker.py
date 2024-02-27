@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional, Union
 
 import dash_mantine_components as dmc
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -9,18 +9,20 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 
+import datetime
 from datetime import date
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_max, validate_range_value
+from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 
 
 class DatePicker(VizroBaseModel):
-    """Temporal selector `DatePicker`.
+    """Temporal single/range option selector `DatePicker`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
-    Based on the underlying [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker).
+    Based on the underlying [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker) or
+    [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
@@ -28,7 +30,7 @@ class DatePicker(VizroBaseModel):
         max (Optional[date]): End date for date picker. Defaults to `None`.
         value (Union[List[date], date]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        multi (bool): Boolean flag for displaying range picker. Default to `True`.
+        range (bool): Boolean flag for displaying range picker. Default to `True`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -38,7 +40,7 @@ class DatePicker(VizroBaseModel):
     max: Optional[date] = Field(None, description="End date for date picker.")
     value: Optional[Union[List[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
-    multi: bool = Field(True, description="Boolean flag for displaying range picker.")
+    range: bool = Field(True, description="Boolean flag for displaying range picker.")
     actions: List[Action] = []
 
     _input_property: str = PrivateAttr("value")
@@ -47,27 +49,54 @@ class DatePicker(VizroBaseModel):
     # Re-used validators
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_max = validator("max", allow_reuse=True)(validate_max)
+    _validate_range = validator("range", allow_reuse=True)(validate_date_picker_range)
 
     def build(self):
-        init_value = self.value or ([self.min, self.max] if self.multi else self.min)  # type: ignore[list-item]
-        if self.multi:
-            date_picker = dmc.DateRangePicker
-        else:
-            date_picker = dmc.DatePicker
+        init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
+        additional_kwargs = {"allowSingleDateInRange": True} if self.range else {}
 
-        date_picker = date_picker(
+        output = [
+            Output(self.id, "value"),
+            Output(f"{self.id}_input_store", "data"),
+        ]
+        inputs = [
+            Input(self.id, "value"),
+            State(f"{self.id}_input_store", "data"),
+        ]
+
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_date_picker_values"),
+            output=output,
+            inputs=inputs,
+        )
+
+        date_picker_class = dmc.DateRangePicker if self.range else dmc.DatePicker
+
+        # dropdownPosition must be set to bottom-start as a workaround for issue:
+        # https://github.com/snehilvj/dash-mantine-components/issues/219
+        # clearable must be set to False as a workaround for issue:
+        # https://github.com/snehilvj/dash-mantine-components/issues/212
+        # maxDate must be increased by one day, and later on disabledDates must be set as maxDate + 1 day
+        # as a workaround for issue: https://github.com/snehilvj/dash-mantine-components/issues/230
+        date_picker = date_picker_class(
             id=self.id,
             minDate=self.min,
             value=init_value,
-            maxDate=self.max,
+            maxDate=self.max + datetime.timedelta(days=1) if self.max else None,
             persistence=True,
             persistence_type="session",
-            dropdownPosition="bottom-start",  # dropdownPosition must be set to bottom-start as a workaround
-            # for issue: https://github.com/snehilvj/dash-mantine-components/issues/219
+            dropdownPosition="bottom-start",
+            clearable=False,
+            disabledDates=self.max + datetime.timedelta(days=1) if self.max else None,
+            **additional_kwargs,
         )
 
         return html.Div(
-            [html.Label(self.title, htmlFor=self.id) if self.title else None, date_picker],
+            [
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
+                date_picker,
+                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
+            ],
             className="selector_container",
             id=f"{self.id}_outer",
         )

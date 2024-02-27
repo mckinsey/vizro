@@ -71,8 +71,8 @@ date_time = [
     "2024-04-04",
     "2024-05-05",
     "2024-06-06",
-    "2024-07-07",
-    "2024-08-08",
+    "2024-07-01",
+    "2024-07-02",
 ]
 
 data = pd.DataFrame()
@@ -87,7 +87,7 @@ data["DATE_TIME"] = date_time
 
 # data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
-page_1 = vm.Page(
+date_picker_page = vm.Page(
     title="Datepicker page",
     components=[vm.Table(id="table", figure=dash_data_table(data_frame=data))],
     controls=[
@@ -97,10 +97,12 @@ page_1 = vm.Page(
                 title="Pick a date",
                 min="2023-01-01",
                 value=["2024-01-01", "2024-03-01"],
-                max="2024-07-07",
+                max="2024-07-01",
             ),
-            # selector=vm.DatePicker(title="Pick a date", min_date='2023-01-01', value=['2024-01-01'], multi=False),
-        )
+        ),
+        vm.Filter(
+            column="GROUP",
+        ),
     ],
 )
 
@@ -116,7 +118,7 @@ def bar_with_highlight(data_frame, x, highlight_bar=None):
     return fig
 
 
-page_2 = vm.Page(
+date_picker_parameter = vm.Page(
     title="Custom chart",
     components=[
         vm.Graph(
@@ -130,12 +132,12 @@ page_2 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["enhanced_bar.highlight_bar"],
-            selector=vm.DatePicker(min="2018-01-01", max="2023-01-01", value="2018-04-01", multi=False),
+            selector=vm.DatePicker(min="2018-01-01", max="2024-07-01", value="2018-04-01", range=False),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2])
+dashboard = vm.Dashboard(pages=[date_picker_page, date_picker_parameter])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
