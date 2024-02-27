@@ -11,11 +11,11 @@ from vizro.models import Dashboard
 
 tips = px.data.tips()
 tips["smoker"] = np.where(tips["smoker"] == "Yes", 1, 0)
-data_manager["iris"] = px.data.iris()
-data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
-data_manager["gapminder"] = px.data.gapminder()
 data_manager["tips"] = tips
-
+gapminder = px.data.gapminder()
+data_manager["gapminder"] = gapminder
+data_manager["gapminder_2007"] = gapminder.query("year == 2007")
+data_manager["iris"] = px.data.iris()
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
