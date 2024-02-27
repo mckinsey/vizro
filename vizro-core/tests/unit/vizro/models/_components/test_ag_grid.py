@@ -1,6 +1,6 @@
 """Unit tests for vizro.models.AgGrid."""
 
-import dash_ag_grid as dag
+import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -126,7 +126,7 @@ class TestBuildAgGrid:
             html.Div(
                 [
                     None,
-                    html.Div(dag.AgGrid(), id="text_ag_grid"),
+                    html.Div(dash_ag_grid(data_frame=pd.DataFrame())(), id="text_ag_grid"),
                 ],
                 className="table-container",
                 id="text_ag_grid_outer",
@@ -137,8 +137,8 @@ class TestBuildAgGrid:
 
         assert_component_equal(ag_grid, expected_ag_grid)
 
-    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id, filter_interaction_action):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id, actions=[filter_interaction_action])
+    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action):
+        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
 
@@ -146,7 +146,12 @@ class TestBuildAgGrid:
             html.Div(
                 [
                     None,
-                    html.Div(dag.AgGrid(id="underlying_ag_grid_id"), id="text_ag_grid"),
+                    html.Div(
+                        dash_ag_grid(
+                            id="underlying_ag_grid_id", data_frame=pd.DataFrame(), dashGridOptions={"pagination": True}
+                        )(),
+                        id="text_ag_grid",
+                    ),
                 ],
                 className="table-container",
                 id="text_ag_grid_outer",
