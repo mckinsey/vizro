@@ -3,8 +3,7 @@
   margin-left: -8px;
 }
 
-
-#container-id .grid-layout{
+#container-id .grid-layout {
   display: flex;
   flex-direction: column;
   gap: 24px !important;

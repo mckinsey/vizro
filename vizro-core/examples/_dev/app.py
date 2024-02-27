@@ -79,7 +79,7 @@ form_components = vm.Page(
                 vm.Slider(title="Slider with marks", min=0, max=10, step=1),
                 vm.RangeSlider(title="Range Slider without marks", min=0, max=10),
                 vm.RangeSlider(title="Range Slider with marks", min=0, max=10, step=1),
-                vm.Button()
+                vm.Button(),
             ],
         ),
     ],
