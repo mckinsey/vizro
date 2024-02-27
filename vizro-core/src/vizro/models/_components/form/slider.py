@@ -88,7 +88,32 @@ class Slider(VizroBaseModel):
                         "max": self.max,
                     },
                 ),
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+                html.Div(
+                    [
+                        html.Label(self.title, htmlFor=self.id) if self.title else None,
+                        html.Div(
+                            [
+                                dcc.Input(
+                                    id=f"{self.id}_text_value",
+                                    type="number",
+                                    placeholder="end",
+                                    min=self.min,
+                                    max=self.max,
+                                    step=self.step,
+                                    value=init_value,
+                                    persistence=True,
+                                    persistence_type="session",
+                                    className=(
+                                        "slider_input_field_right" if self.step else "slider_input_field_no_space_right"
+                                    ),
+                                ),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
+                            ],
+                            className="slider-input-field",
+                        ),
+                    ],
+                    className="slider-label-input",
+                ),
                 html.Div(
                     [
                         dcc.Slider(
@@ -103,19 +128,6 @@ class Slider(VizroBaseModel):
                             persistence_type="session",
                             className="slider_control" if self.step else "slider_control_no_space",
                         ),
-                        dcc.Input(
-                            id=f"{self.id}_text_value",
-                            type="number",
-                            placeholder="end",
-                            min=self.min,
-                            max=self.max,
-                            step=self.step,
-                            value=init_value,
-                            persistence=True,
-                            persistence_type="session",
-                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
-                        ),
-                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                     ],
                     className="slider_inner_container",
                 ),

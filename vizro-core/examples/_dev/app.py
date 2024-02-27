@@ -1,6 +1,5 @@
 """Rough example used by developers."""
 
-import dash_bootstrap_components as dbc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
