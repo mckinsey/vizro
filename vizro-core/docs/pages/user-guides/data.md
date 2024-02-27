@@ -56,7 +56,7 @@ Vizro, you need:
    This allows you to use this data connector
    in your dashboard.
 
-!!! example "Use a Data connector"
+!!! example "Use a data connector"
     === "app.py"
         ```py linenums="1"  hl_lines="18"
         from vizro import Vizro
