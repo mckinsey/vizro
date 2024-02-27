@@ -6,7 +6,7 @@ import pandas as pd
 from vizro.models.types import capture
 from vizro.tables._utils import _set_defaults_nested
 
-FORMAT_CURRENCY_EU = """d3.formatLocale({
+_FORMAT_CURRENCY_EU = """d3.formatLocale({
   "decimal": ",",
   "thousands": "\u00a0",
   "grouping": [3],
@@ -15,7 +15,7 @@ FORMAT_CURRENCY_EU = """d3.formatLocale({
   "nan": ""
 })"""
 
-DATA_TYPE_DEFINITIONS = {
+_DATA_TYPE_DEFINITIONS = {
     "number": {
         "baseDataType": "number",
         "extendsDataType": "number",
@@ -31,7 +31,7 @@ DATA_TYPE_DEFINITIONS = {
     "euro": {
         "baseDataType": "number",
         "extendsDataType": "number",
-        "valueFormatter": {"function": f"{FORMAT_CURRENCY_EU}.format('$,.2f')(params.value)"},
+        "valueFormatter": {"function": f"{_FORMAT_CURRENCY_EU}.format('$,.2f')(params.value)"},
     },
     "percent": {
         "baseDataType": "number",
@@ -72,7 +72,7 @@ def dash_ag_grid(data_frame, **kwargs):
             "minWidth": 70,
         },
         "dashGridOptions": {
-            "dataTypeDefinitions": DATA_TYPE_DEFINITIONS,
+            "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
         },
     }

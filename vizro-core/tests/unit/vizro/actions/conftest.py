@@ -59,8 +59,10 @@ def managers_one_page_two_graphs_one_button(box_chart, scatter_chart):
 
 
 @pytest.fixture
-def managers_one_page_two_graphs_one_table_one_button(box_chart, scatter_chart, dash_data_table_with_id):
-    """Instantiates a simple model_manager and data_manager with a page, two graph models and the button component."""
+def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
+    box_chart, scatter_chart, dash_data_table_with_id, ag_grid_with_id
+):
+    """Instantiates a simple model_manager and data_manager with: page, two graph, table, aggrid and a button component."""
     vm.Page(
         id="test_page",
         title="My first dashboard",
@@ -68,6 +70,7 @@ def managers_one_page_two_graphs_one_table_one_button(box_chart, scatter_chart, 
             vm.Graph(id="box_chart", figure=box_chart),
             vm.Graph(id="scatter_chart", figure=scatter_chart),
             vm.Table(id="vizro_table", figure=dash_data_table_with_id),
+            vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
             vm.Button(id="button"),
         ],
     )

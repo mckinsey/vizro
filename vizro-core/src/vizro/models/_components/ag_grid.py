@@ -62,7 +62,7 @@ class AgGrid(VizroBaseModel):
 
     # Interaction methods
     @property
-    def _figure_interaction_input(self):
+    def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
@@ -73,6 +73,7 @@ class AgGrid(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
+        # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_cellClicked = ctd_filter_interaction["cellClicked"]
         if not ctd_cellClicked["value"]:
             return data_frame
@@ -91,27 +92,26 @@ class AgGrid(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        if self.actions:
-            kwargs = self.figure._arguments.copy()
+        kwargs = self.figure._arguments.copy()
 
-            # taken from table implementation - see there for details
-            kwargs["data_frame"] = pd.DataFrame()
-            underlying_aggrid_object = self.figure._function(**kwargs)
+        # taken from table implementation - see there for details
+        kwargs["data_frame"] = pd.DataFrame()
+        underlying_aggrid_object = self.figure._function(**kwargs)
 
-            if not hasattr(underlying_aggrid_object, "id"):
-                raise ValueError(
-                    "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
-                    " a valid 'id' has to be provided to the `AgGrid` callable."
-                )
+        if not hasattr(underlying_aggrid_object, "id"):
+            raise ValueError(
+                "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
+                " a valid 'id' has to be provided to the `AgGrid` callable."
+            )
 
-            self._callable_object_id = underlying_aggrid_object.id
+        self._callable_object_id = underlying_aggrid_object.id
 
     def build(self):
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dag.AgGrid(**({"id": self._callable_object_id} if self.actions else {})), id=self.id),
+                    html.Div(dag.AgGrid(id=self._callable_object_id), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
