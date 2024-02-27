@@ -25,7 +25,6 @@ class TestDashAgGrid:
                     {"cat": "b", "int": 5, "float": 8.2, "date": "2021-01-02"},
                     {"cat": "c", "int": 6, "float": 9.1, "date": "2021-01-03"},
                 ],
-                # defaultColDef={"resizable": True, "sortable": True},
             ),
             keys_to_strip={"defaultColDef", "dashGridOptions"},
         )

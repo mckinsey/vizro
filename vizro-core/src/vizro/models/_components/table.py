@@ -98,31 +98,28 @@ class Table(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        if self.actions:
-            kwargs = self.figure._arguments.copy()
+        kwargs = self.figure._arguments.copy()
 
-            # This workaround is needed because the underlying table object requires a data_frame
-            kwargs["data_frame"] = pd.DataFrame()
+        # This workaround is needed because the underlying table object requires a data_frame
+        kwargs["data_frame"] = pd.DataFrame()
 
-            # The underlying table object is pre-built, so we can fetch its ID.
-            underlying_table_object = self.figure._function(**kwargs)
+        # The underlying table object is pre-built, so we can fetch its ID.
+        underlying_table_object = self.figure._function(**kwargs)
 
-            if not hasattr(underlying_table_object, "id"):
-                raise ValueError(
-                    "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
-                    " a valid 'id' has to be provided to the `Table` callable."
-                )
+        if not hasattr(underlying_table_object, "id"):
+            raise ValueError(
+                "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
+                " a valid 'id' has to be provided to the `Table` callable."
+            )
 
-            self._callable_object_id = underlying_table_object.id
+        self._callable_object_id = underlying_table_object.id
 
     def build(self):
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(
-                        dash_table.DataTable(**({"id": self._callable_object_id} if self.actions else {})), id=self.id
-                    ),
+                    html.Div(dash_table.DataTable(id=self._callable_object_id), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",

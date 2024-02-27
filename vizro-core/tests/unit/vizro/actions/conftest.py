@@ -62,7 +62,7 @@ def managers_one_page_two_graphs_one_button(box_chart, scatter_chart):
 def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
     box_chart, scatter_chart, dash_data_table_with_id, ag_grid_with_id
 ):
-    """Instantiates a simple model_manager and data_manager with a page, two graph models and the button component."""
+    """Instantiates a simple model_manager and data_manager with: page, two graph, table, aggrid and a button component."""
     vm.Page(
         id="test_page",
         title="My first dashboard",

@@ -270,8 +270,8 @@ class TestFilterInteraction:
     def test_aggrid_filter_interaction_with_two_targets(
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
-        # to not overcrowd these tests with duplication, we use one general case here for the AG Grid
-        # Functionality should be similar enough to the Dash Datatable that this should suffice
+        # To not overcrowd these tests with duplication, we use one general case here for the AG Grid
+        # Functionality should be similar enough to the Dash Datatable that this suffices
         model_manager["box_chart"].actions = [
             vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
