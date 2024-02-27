@@ -4,12 +4,14 @@
   background-image: none;
   border-radius: 0;
   box-shadow: none;
+  color: var(--text-secondary);
   display: flex;
   font-size: var(--text-size-02);
+  height: 56px;
   letter-spacing: -0.014px;
   line-height: 16px;
   overflow-anchor: none;
-  padding: 0;
+  padding: 16px 8px;
   position: relative;
   text-align: left;
   width: 100%;
@@ -49,6 +51,7 @@
 #page-container .accordion {
   display: flex;
   flex-direction: column;
+  margin-top: -10px;
   overflow-x: hidden;
 }
 
@@ -58,7 +61,7 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-03);
+  gap: var(--spacing-01);
   width: 100%;
 }
 
@@ -110,4 +113,8 @@
 
 .nav-icon-tooltip {
   height: 24px;
+}
+
+.accordion-body .accordion-item-link:last-child {
+  margin-bottom: 12px;
 }

@@ -74,7 +74,6 @@
 
 #nav-panel:not(:empty) {
   border-bottom: 1px solid var(--border-subtle-alpha-01);
-  padding-bottom: var(--spacing-06);
 }
 
 #control-panel {
