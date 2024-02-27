@@ -30,7 +30,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
     Activate your virtual environment from any directory:
 
     ```bash
-    conda activate kedro-environment
+    conda activate vizro-environment
     ```
 
     To confirm that a valid version of Python is installed in your virtual environment, type the following in your terminal (macOS and Linux):

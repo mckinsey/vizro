@@ -56,7 +56,7 @@ Vizro, you need:
    This allows you to use this data connector
    in your dashboard.
 
-!!! example "Use a Data connector"
+!!! example "Use a data connector"
     === "app.py"
         ```py linenums="1"  hl_lines="18"
         from vizro import Vizro
@@ -123,7 +123,7 @@ use the same data connector to load different data. For example, when you want t
 retrieve data from different tables in a database, you can define a data connector
 that accepts different SQL queries as arguments.
 
-!!! example "Use a Data Connector with arguments"
+!!! example "Use a data connector with arguments"
     === "app.py (use lambda)"
         ```py linenums="1"
         from vizro import Vizro
