@@ -96,22 +96,25 @@ class AgGrid(VizroBaseModel):
 
         # taken from table implementation - see there for details
         kwargs["data_frame"] = pd.DataFrame()
+
         underlying_aggrid_object = self.figure._function(**kwargs)
 
-        if not hasattr(underlying_aggrid_object, "id"):
+        if hasattr(underlying_aggrid_object, "id"):
+            self._callable_object_id = underlying_aggrid_object.id
+
+        if self.actions and not hasattr(self,"_callable_object_id"):
             raise ValueError(
                 "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
                 " a valid 'id' has to be provided to the `AgGrid` callable."
             )
 
-        self._callable_object_id = underlying_aggrid_object.id
-
     def build(self):
+        dash_ag_grid_conf = {"id": self._callable_object_id} if hasattr(self, "_callable_object_id") else {}
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dag.AgGrid(id=self._callable_object_id), id=self.id),
+                    html.Div(dag.AgGrid(**dash_ag_grid_conf), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
