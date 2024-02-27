@@ -17,10 +17,7 @@ export function _update_slider_values(start, slider, input_store, self_data) {
     end_value = input_store !== null ? input_store : self_data["min"];
   }
 
-  end_value = Math.min(
-    Math.max(self_data["min"], end_value),
-    self_data["max"],
-  );
+  end_value = Math.min(Math.max(self_data["min"], end_value), self_data["max"]);
 
   return [end_value, end_value, end_value];
 }
