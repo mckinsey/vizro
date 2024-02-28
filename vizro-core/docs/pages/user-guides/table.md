@@ -166,7 +166,7 @@ or a pandas datetime object. Any pandas datetime column will be transformed into
 #### Objects/Strings
 
 No specific formatting is available for custom objects and strings, however you can make use of [Value Formatters](https://dash.plotly.com/dash-ag-grid/value-formatters)
-in order to format e.g. displayed strings automatically.
+to format e.g. displayed strings automatically.
 
 
 ### Styling/Modifying the AG Grid
