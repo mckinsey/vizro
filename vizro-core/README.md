@@ -22,7 +22,7 @@
 <div align="center" markdown="1">
 
 <a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
-<a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
+<a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/" target="_blank">Get Started </a> |
 <a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
 
 </div>
@@ -43,7 +43,13 @@ Visual Intelligence. Beautifully engineered
 
 <p align="center">
 <font size="+1">
-Vizro is a toolkit for creating modular data visualization applications
+<ul>
+<li><s>Vizro is a toolkit for creating modular data visualization applications.</s></li>
+<li>Create data visualization dashboards with just a few lines of code.</li>
+<li>Use Vizro to create data visualization dashboards without advanced code or design know-how.
+<li>Vizro helps you build flexible data visualizations in Python.</li>
+<li> etc </li>
+</ul>
 </font>
 </p>
 
@@ -55,7 +61,10 @@ Vizro is a toolkit for creating modular data visualization applications
 
 <p align="left">
 <font size="+1">
-Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications
+<s>Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications</s>
+
+Vizro helps you create beautiful Python-enabled data visualizations in minutes - without the need for advanced coding or design experience. 
+
 </font>
 </p>
 
@@ -63,20 +72,18 @@ Rapidly self-serve the assembly of customized dashboards in minutes - without th
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
 </p>
 
-Use a few lines of simple configuration to create complex dashboards, which are automatically assembled utilizing libraries such as [**Plotly**](https://github.com/plotly/plotly.py) and [**Dash**](https://github.com/plotly/dash), with inbuilt coding and design best practices
+Using a few lines of simple configuration code, create complex dashboards that build on the power of [**Plotly**](https://github.com/plotly/plotly.py) and [**Dash**](https://github.com/plotly/dash).
 
-Define high level categories within the configuration, including:
+Vizro offers you the flexibility to create dashboards to your specification while following inbuilt coding and design best practices:
 
 - **components:** create charts, tables, input/output interfaces, and more
 - **controls**: create filters, parameter inputs, and custom action controllers
 - **pages, layouts and navigation**: create multiple pages, with customizable layouts and flexible navigation across them
-- **actions and interactions**: create interactions between charts, and use pre-defined or customized actions (such as exporting)
+- **actions and interactions**: add interactivity to your charts, and use pre-defined or customized actions (such as exporting)
 
-Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation
+Dashboard configuration can be written in several different formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
 
-Optional high-code extensions allow almost infinite customization in a modular way, combining the best of low-code and high-code - for flexible and scalable, Python enabled data visualization applications
-
-(Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases)
+(Visit ["Why Vizro?"](https://vizro.readthedocs.io/en/latest/pages/explanation/why-vizro/) in our documentation for a more detailed explanation of Vizro use cases)
 
 <br/>
 
@@ -109,30 +116,30 @@ Optional high-code extensions allow almost infinite customization in a modular w
 pip install vizro
 ```
 
-See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information
+See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for more information
 
-Please note this repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)
+Note that this repository is a monorepo comprising a [core `vizro` package at /vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core) and the [`vizro-ai` package at /vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai).
 
-## Getting started
+## Get started
 
-See the [Tutorials](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) for creating your first dashboard
+See the [Tutorials](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/) for creating your first dashboard
 
 ## Documentation
 
 See the [Documentation](https://vizro.readthedocs.io/en/stable/) for more details
 
-## Community and Development
+## Community and development
 
 We encourage you to ask and answer technical questions via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). This is also the place where you can submit bug reports or request new features.
 
-## Contributing
+## Contribute to Vizro
 
 To learn more about making a contribution,
 please see the [Contributing Guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/development/authors/)
 
-## Reporting a Security Vulnerability
+## Report a security vulnerability
 
 Please see our [security policy](https://github.com/mckinsey/vizro/security/policy)
 
