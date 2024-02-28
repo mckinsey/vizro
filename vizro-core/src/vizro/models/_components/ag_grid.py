@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Literal
 
 import pandas as pd
-from dash import State, dash_table, dcc, html
+from dash import State, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -21,21 +21,21 @@ from vizro.models.types import CapturedCallable
 logger = logging.getLogger(__name__)
 
 
-class Table(VizroBaseModel):
-    """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
+class AgGrid(VizroBaseModel):
+    """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
 
     Args:
-        type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Table like object to be displayed. For more information see:
-            [`dash_table.DataTable`](https://dash.plotly.com/datatable).
+        type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
+        figure (CapturedCallable): AgGrid like object to be displayed. For more information see:
+            [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
-    type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
-    title: str = Field("", description="Title of the table")
+    type: Literal["ag_grid"] = "ag_grid"
+    figure: CapturedCallable = Field(..., import_path=vt, description="AgGrid to be visualized on dashboard")
+    title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
 
     _callable_object_id: str = PrivateAttr()
@@ -44,7 +44,7 @@ class Table(VizroBaseModel):
     _output_property: str = PrivateAttr("children")
 
     # validator
-    set_actions = _action_validator_factory("active_cell")
+    set_actions = _action_validator_factory("cellClicked")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
@@ -54,8 +54,7 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
-        # pydantic discriminated union validation seems to try Table["type"], which throws an error unless we
-        # explicitly redirect it to the correct attribute.
+        # See table implementation for more details.
         if arg_name == "type":
             return self.type
         return self.figure[arg_name]
@@ -65,11 +64,7 @@ class Table(VizroBaseModel):
     def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
-            "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
-            "derived_viewport_data": State(
-                component_id=self._callable_object_id,
-                component_property="derived_viewport_data",
-            ),
+            "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
@@ -78,20 +73,18 @@ class Table(VizroBaseModel):
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
-        ctd_active_cell = ctd_filter_interaction["active_cell"]
-        ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
-        if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
+        ctd_cellClicked = ctd_filter_interaction["cellClicked"]
+        if not ctd_cellClicked["value"]:
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
+        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
             if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
                 continue
-            column = ctd_active_cell["value"]["column_id"]
-            derived_viewport_data_row = ctd_active_cell["value"]["row"]
-            clicked_data = ctd_derived_viewport_data["value"][derived_viewport_data_row][column]
+            column = ctd_cellClicked["value"]["colId"]
+            clicked_data = ctd_cellClicked["value"]["value"]
             data_frame = data_frame[data_frame[column].isin([clicked_data])]
 
         return data_frame
@@ -100,28 +93,32 @@ class Table(VizroBaseModel):
     def pre_build(self):
         kwargs = self.figure._arguments.copy()
 
-        # This workaround is needed because the underlying table object requires a data_frame
+        # taken from table implementation - see there for details
         kwargs["data_frame"] = pd.DataFrame()
 
-        # The underlying table object is pre-built, so we can fetch its ID.
-        underlying_table_object = self.figure._function(**kwargs)
+        underlying_aggrid_object = self.figure._function(**kwargs)
 
-        if hasattr(underlying_table_object, "id"):
-            self._callable_object_id = underlying_table_object.id
+        if hasattr(underlying_aggrid_object, "id"):
+            self._callable_object_id = underlying_aggrid_object.id
 
         if self.actions and not hasattr(self, "_callable_object_id"):
             raise ValueError(
-                "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
-                " a valid 'id' has to be provided to the `Table` callable."
+                "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
+                " a valid 'id' has to be provided to the `AgGrid` callable."
             )
 
     def build(self):
-        dash_table_conf = {"id": self._callable_object_id} if hasattr(self, "_callable_object_id") else {}
+        # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
+        # setting as the object that is built on-page-load and rendered finally.
+        dash_ag_grid_conf = self.figure._arguments.copy()
+        dash_ag_grid_conf["data_frame"] = pd.DataFrame()
+        if hasattr(self, "_callable_object_id"):
+            dash_ag_grid_conf["id"] = self._callable_object_id
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dash_table.DataTable(**dash_table_conf), id=self.id),
+                    html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
