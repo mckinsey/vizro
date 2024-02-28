@@ -176,7 +176,9 @@ class Filter(VizroBaseModel):
 
     def _set_actions(self):
         if not self.selector.actions:
-            if isinstance(self.selector, RangeSlider) or (isinstance(self.selector, DatePicker) and self.selector.range):
+            if isinstance(self.selector, RangeSlider) or (
+                isinstance(self.selector, DatePicker) and self.selector.range
+            ):
                 filter_function = _filter_between
             else:
                 filter_function = _filter_isin
