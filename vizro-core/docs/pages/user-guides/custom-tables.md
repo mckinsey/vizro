@@ -10,7 +10,7 @@ For this, similar to how one would create a [custom chart](../user-guides/custom
 - Define a function that returns a `dash_ag_grid.AgGrid` or `dash_table.DataTable` object.
 - Decorate it with the `@capture("ag_grid")` or `@capture("table")` decorator respectively.
 - The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
-- the table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
+- The table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`).
 
 The following example shows a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 
