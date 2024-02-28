@@ -135,10 +135,11 @@ def action_callback_inputs_expected():
             dash.State("parameter_table_row_selectable", "value"),
         ],
         "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData")},
+            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
+                "modelID": dash.State("vizro_table", "id"),
             },
         ],
         "theme_selector": dash.State("theme_selector", "checked"),
@@ -162,10 +163,11 @@ def export_data_inputs_expected():
         ],
         "parameters": [],
         "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData")},
+            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
+                "modelID": dash.State("vizro_table", "id"),
             },
         ],
         "theme_selector": [],
