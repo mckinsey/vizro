@@ -48,6 +48,7 @@ Visual Intelligence. Beautifully engineered
 <li>Create data visualization dashboards with just a few lines of code.</li>
 <li>Use Vizro to create data visualization dashboards without advanced code or design know-how.
 <li>Vizro helps you build flexible data visualizations in Python.</li>
+<li>Use Vizro for quick and easy creation of beautiful multi-page data dashboards.</li>
 <li> etc </li>
 </ul>
 </font>
@@ -62,11 +63,33 @@ Visual Intelligence. Beautifully engineered
 <p align="left">
 <font size="+1">
 <s>Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications</s>
-
-Vizro helps you create beautiful Python-enabled data visualizations in minutes - without the need for advanced coding or design experience.
-
 </font>
 </p>
+
+Vizro helps you create beautiful high-level data dashboards in minutes - without the need for advanced coding or design experience.
+
+What does that mean?
+
+**...beautiful high-level data dashboards**: Vizro has built in dark and light themes that follow design best practices. You don’t need to know any HTML or CSS to make a nice looking dashboard. Vizro abstracts away the code you need for common dashboard elements, and uses pydantic 3 to parse and validate a simple configuration according to a declarative “grammar of dashboards”.
+
+**...without the need for advanced coding or design experience**: There's no need to write hundreds of lines or code nor to design a layout for the dashboard. Vizro is built on top of Dash, so users benefit from the underlying power of the Dash framework: scalability, flexibility, customisability and so on. While Vizro aims to simplify the creation of dashboards for beginner users, it also allows advanced users to extend functionality by writing pure Dash code. You don’t actually need to know any Dash to make a Vizro dashboard, since the relevant code is generated for you using a simple configuration.
+
+---
+OR, another version (Antony's)
+
+Vizro is a high-level framework built on top of Dash for quick and easy creation of beautiful multi-page dashboards” 
+
+What does that mean?
+
+High-level: Vizro abstracts away common elements you see in dashboards, e.g. filter a pandas DataFrame and update a graph is encapsulated by a Filter 5. Vizro uses pydantic 3 to parse and validate configuration according to a declarative “grammar of dashboards”.
+
+Quick and easy: no need to write any callbacks or lay things out on the screen yourself. You don’t actually need to know any Dash to make a Vizro dashboard, since the relevant code is generated for you by simple configuration.
+
+Multi-page: a page is a first-class citizen in Vizro 6. Thanks to the underlying Dash Pages functionality, creation of complex multi-page apps is easy.
+
+Beautiful: Vizro has built in dark and light themes that follow design best practices. You don’t need to know any HTML or CSS to make a nice looking dashboard.
+
+Built on top of Dash: users benefit from all the underlying power of the Dash framework: scalability, flexibility, customisability and so on. While Vizro aims to simplify the creation of dashboards for beginner users, it also allows advanced users to extend functionality by writing pure Dash code.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
