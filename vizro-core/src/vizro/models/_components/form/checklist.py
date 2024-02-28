@@ -15,7 +15,11 @@ from vizro.models.types import MultiValueType, OptionsType
 
 
 class Checklist(VizroBaseModel):
-    """Categorical multi-selector `Checklist` to be provided to [`Filter`][vizro.models.Filter].
+    """Categorical multi-option selector `Checklist`.
+
+    Can be provided to [`Filter`][vizro.models.Filter] or
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist).
 
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
