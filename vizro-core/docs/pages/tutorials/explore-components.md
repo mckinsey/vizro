@@ -20,7 +20,7 @@ Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](
 
 The code below shows the steps necessary to add a box plot to the page:
 
-1. Add a Vizro [`Graph`](vizro.models.Graph) to the `components` list.
+1. Add a Vizro [`Graph`][vizro.models.Graph] to the `components` list.
 2. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
 
 !!! example "First component"
