@@ -8,7 +8,7 @@ One reason could be that you want to create a table/grid that requires computati
 For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), simply do the following:
 
 - Define a function that returns a `dash_ag_grid.AgGrid` or `dash_table.DataTable` object.
-- decorate it with the `@capture("ag_grid")` or `@capture("table")` decorator respectively
+- Decorate it with the `@capture("ag_grid")` or `@capture("table")` decorator respectively.
 - the function must accept a `data_frame` argument (of type `pandas.DataFrame`)
 - the table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
 
