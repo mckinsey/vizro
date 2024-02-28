@@ -1,8 +1,8 @@
 # A first dashboard
 
-This is a quickstart guide to create your first dashboard and set you up to explore Vizro further.
+This is a short tutorial for you to create your first dashboard, showing you the basic setup so you can explore Vizro further.
 
-The [Explore Vizro tutorial](../tutorials/explore-components.md) is a more complete exploration of Vizro's features.
+Once you've completed this tutorial, the following [Explore Vizro tutorial](../tutorials/explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
 
 
 ## Get started
@@ -11,7 +11,7 @@ The [Explore Vizro tutorial](../tutorials/explore-components.md) is a more compl
 
 If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md).
 
-### 2. Open a Jupyter notebook
+### 2. Open a Jupyter Notebook
 
 A good way to initially explore Vizro is from inside a Jupyter Notebook.
 
@@ -34,7 +34,7 @@ jupyter notebook
 
 The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard.
 
-Create a new notebook `Python 3 (ipykernel)` notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
+Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
 ```py
 import vizro
@@ -44,9 +44,13 @@ print(vizro.__version__)
 
 You should see a return output of the form `x.y.z`.
 
+!!! warning "What could go wrong?"
+
+    If you are following this tutorial in a Jupyter Notebook, you need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
+
 ### 3. Create your first dashboard
 
-Paste the following example into a notebook cell, run it, and view the generated dashboard by typing `localhost:8050` into your browser.
+Paste the following example into a Notebook cell, run it, and view the generated dashboard by typing `localhost:8050` into your browser.
 
 !!! example "Dashboard Configuration Syntaxes"
     === "Code for the cell"
@@ -80,4 +84,4 @@ Paste the following example into a notebook cell, run it, and view the generated
 
 ### 4. Explore further
 
-You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or consulting the [user guide documentation](../first-dashboard/).
+You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or by consulting the [how-to guides](../first-dashboard/).

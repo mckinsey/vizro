@@ -1,6 +1,6 @@
 # Explore Vizro
 
-This tutorial walks through the process of creating a sophisticated dashboard. It introduces Vizro components and explains how to configure a layout to suit the functionality you need. The example uses the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
+In this tutorial, we walk through the process of creating a sophisticated dashboard. You'll be introduced to some Vizro components and learn how to create a pair of dashboard pages and configure their layout to suit the functionality you need. The example uses the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
@@ -79,19 +79,20 @@ with the gapminder data displayed, as shown in the `Result` tab above.
     1. The import statement `import vizro.plotly.express as px` integrates Plotly Express for building figures.
 
     2. The `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`.
-    It's important to note that every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
+    Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
 
 ### 2.2. Add further components
 
-You can combine and arrange various types of `components` on a dashboard page. The `components` currently available are [`Card`][vizro.models.Card], [`Graph`][vizro.models.Graph], and [`Button`][vizro.models.Button]. For more information, refer to the [components](../user-guides/components.md) overview page to find the user guide for each type.
+You can combine and arrange various types of `components` on a dashboard page. The `components` currently available are [`Card`][vizro.models.Card], [`Graph`][vizro.models.Graph], and [`Button`][vizro.models.Button]. For more information, refer to the [components](../user-guides/components.md) overview page to find the guide for each type.
 
-To further enhance the dashboard, the code below adds two further components to the page:
+The code below adds two components to the page:
 
 * A [`Card`][vizro.models.Card] to insert Markdown text into the dashboard.
 * A [`Graph`][vizro.models.Graph] to illusrate GDP development per continent since 1952 as a bar chart.
 
 !!! warning "Before you run this code in a Jupyter Notebook"
-    If you are following this tutorial in a Jupyter Notebook, you should restart the kernel before re-evaluating the code. This avoids error messages about components already existing in the `model_manager`.
+
+    If you are following this tutorial in a Jupyter Notebook, you need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
 
 !!! example "Add components"
     === "Code first component"
@@ -169,7 +170,7 @@ As you explore the dashboard, you may notice that the current layout could be fu
 By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
 
 You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to
-configure layouts, check out the [How to use layouts](../user-guides/layouts.md) in the user guide.
+configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
 The following layout configuration positions the text at the top and the two charts side
 by side, giving them more space relative to the text component:
@@ -259,17 +260,17 @@ to have greater control and customization over the displayed data and components
 There are two types of control:
 
 * [`Filters`][vizro.models.Filter] enable users to filter a column of the underlying data.
-* [`Parameters`][vizro.models.Parameter] enable users to modify arguments or properties of the components, such as adjusting colors.
+* [`Parameters`][vizro.models.Parameter] enable users to change arguments or properties of the components, such as adjusting colors.
 
 
-The user guides for [Filters](../user-guides/filters.md) and [Parameters](../user-guides/parameters.md) give a comprehensive overview on how to apply [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [user guide on selectors](../user-guides/selectors.md).
+The guides for [Filters](../user-guides/filters.md) and [Parameters](../user-guides/parameters.md) explain how to apply [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [guide on selectors](../user-guides/selectors.md).
 
-To link a control to a component you use the id assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
+To link a control to a component, use the id assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
 
 To illustrate, let's add a [`Filter`][vizro.models.Filter] on specific
 continents of the underlying gapminder data. The [`Filter`][vizro.models.Filter] requires the `column` argument, that denotes
 the target column to be filtered. Each `control` also has a `targets` parameter, to specify the
-datasets and components affected by the `control`. For this dashboard, both charts
+datasets and components targeted by the `control`. For this dashboard, both charts
 are listed in the `targets` parameter, meaning that the filter is be applied to both charts. However, you can apply the [`Filter`][vizro.models.Filter] to only one specific chart if required.
 
 !!! example "Configure filter"
@@ -342,10 +343,10 @@ In creating a [`Parameter`][vizro.models.Parameter] object, you define the `targ
 
 
 In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of
-`component_id.argument`. In certain cases, you may encounter a nested structure for the `targets`. An example of this is
+`component_id.argument`. In certain cases, you may see a nested structure for the `targets`. An example of this is
 `scatter_iris.color_discrete_map.virginica`.  A nested structure targets a specific attribute within a
 component. In this particular example, it specifies that only the color of the virginica flower type should be changed.
-More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [user guide
+More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide
 for parameters](../user-guides/parameters.md).
 
 !!! example "Second page"
@@ -493,9 +494,9 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and
 ## 4. The final touches
 
 This section puts everything together by adding a
-homepage to the previous example that offers navigation between the two separate pages.
+homepage to the example for navigation between the two separate pages.
 
-To enable easy navigation within your dashboard, we create a page that serves as the entry point for the user.
+For easy navigation within your dashboard, we'll create a page that serves as the entry point for the user.
 On this homepage are two [`Cards`][vizro.models.Card] which serve as tiles that can be customized with a title, some text, and an
 image. These cards link to the subpages within your dashboard using their `href` attributes as `href="/first-page"` and `href="/second-page"`. This
 establishes the navigation links from the homepage to each of the subpages.
@@ -663,7 +664,7 @@ implement interactivity in Vizro dashboards, working across two navigable pages.
 
 After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
-You can find out more about the Vizro by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the user guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md)
+You can find out more about the Vizro by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md)
 and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head
 to [Navigation](../user-guides/navigation.md).
 
@@ -672,4 +673,4 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 - How to create you own components under [custom components](../user-guides/custom-components.md).
 - How to add custom styling using [custom css](../user-guides/assets.md).
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
-- How to create dashboards from `yaml`, `dict` or `json` following the [user guide](../user-guides/dashboard.md).
+- How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
