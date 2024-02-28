@@ -45,54 +45,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
     python --version
     ```
 
-    ??? information "How to create a virtual environment without using conda"
-
-        **How to create a new virtual environment without using `conda`**
-
-        You can alternatively create virtual environments using `venv` or `pipenv` instead of `conda`.
-
-        ---
-        **`venv`**
-
-        You should already have the `venv` module installed with the Python 3 standard library. Create a directory for working with your project and navigate to it. For example:
-
-        ```bash
-        mkdir vizro-environment && cd vizro-environment
-        ```
-
-        Next, create a new virtual environment in this directory with `venv`:
-
-        ```bash
-        python -m venv .venv
-        ```
-
-        To activate:
-
-        ```bash
-        source .venv/bin/activate # macOS / Linux
-        .\.venv\Scripts\activate  # Windows
-        ```
-
-        ---
-        **`pipenv`**
-
-        From any directory:
-
-        ```bash
-        pip install pipenv
-        ```
-
-        Create a directory for working with your project and navigate to it. For example:
-
-        ```bash
-        mkdir vizro-environment && cd vizro-environment
-        ```
-
-        To start a session with the correct virtual environment activated:
-
-        ```bash
-        pipenv shell
-        ```
+    You can alternatively create virtual environments using [`venv`](https://docs.python.org/3/library/venv.html) or [`pipenv`](https://pipenv.pypa.io/en/latest/) instead of `conda`.
 
 
 
@@ -103,11 +56,9 @@ To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal w
 ```bash
 pip install vizro
 ```
-<!-- vale off -->
 
 ## Use Vizro inside Anaconda Navigator
 
-<!-- vale on -->
 To completely avoid terminal usage, follow these steps to work with Vizro:
 
 
