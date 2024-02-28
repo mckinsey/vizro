@@ -383,7 +383,7 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-tips"],
             column="day",
-            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False),
+            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
         ),
         vm.Filter(
             targets=["table-tips"],
@@ -392,8 +392,8 @@ selectors = vm.Page(
         ),
         vm.Filter(
             targets=["table-tips"],
-            column="smoker",
-            selector=vm.Slider(title="Slider (Tips - smoker)", step=1, value=1),
+            column="size",
+            selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
         ),
     ],
 )
