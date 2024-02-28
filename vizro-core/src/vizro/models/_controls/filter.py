@@ -28,11 +28,11 @@ from vizro.models.types import MultiValueType, SelectorType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
-# First entry of each tuple is the default selector for that key
+# First entry in each tuple is the default selector for that column type.
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
-    "temporal": DatePicker,
+    "temporal": (DatePicker,),
 }
 
 
@@ -102,7 +102,8 @@ class Filter(VizroBaseModel):
 
     def _convert_column_type(self, data_frame):
         if is_string_dtype(data_frame[self.column]):
-            data_frame[self.column] = pd.to_datetime(data_frame[self.column], errors="ignore")
+            if data_frame[self.column].str.contains(r"^\d{4}-\d{2}-\d{2}", regex=True).all():
+                data_frame[self.column] = pd.to_datetime(data_frame[self.column])
         return data_frame
 
     def _set_column_type(self):
