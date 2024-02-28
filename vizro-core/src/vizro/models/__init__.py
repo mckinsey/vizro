@@ -2,7 +2,7 @@
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
 from ._components import Card, Container, Graph, Table, Tabs
-from ._components import Card, Container, Graph, AgGrid, Table, Tabs
+from ._components import AgGrid
 from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion

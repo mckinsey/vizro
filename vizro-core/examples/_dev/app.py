@@ -5,11 +5,9 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-
 from vizro.actions import export_data, filter_interaction
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
-
 
 df = px.data.gapminder()
 df_mean = (
