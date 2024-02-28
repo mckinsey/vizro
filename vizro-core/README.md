@@ -63,7 +63,7 @@ Visual Intelligence. Beautifully engineered
 <font size="+1">
 <s>Rapidly self-serve the assembly of customized dashboards in minutes - without the need for advanced coding or design experience - to create flexible and scalable, Python enabled data visualization applications</s>
 
-Vizro helps you create beautiful Python-enabled data visualizations in minutes - without the need for advanced coding or design experience. 
+Vizro helps you create beautiful Python-enabled data visualizations in minutes - without the need for advanced coding or design experience.
 
 </font>
 </p>
@@ -87,7 +87,7 @@ Dashboard configuration can be written in several different formats including **
 
 <br/>
 
-### Key benefits
+### Key benefits of Vizro
 
 <br/>
 
@@ -97,7 +97,7 @@ Dashboard configuration can be written in several different formats including **
 
 <br/>
 
-### Examples
+### Vizro dashboard examples
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
@@ -110,7 +110,7 @@ Dashboard configuration can be written in several different formats including **
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
-## Installation
+## Install Vizro
 
 ```console
 pip install vizro
@@ -118,7 +118,12 @@ pip install vizro
 
 See the [Install guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for more information
 
-Note that this repository is a monorepo comprising a [core `vizro` package at /vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core) and the [`vizro-ai` package at /vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai).
+Note that this repository is a monorepo comprising two packages.
+
+|           Folder           |                                           Version                                           |                        Documentation                        |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |    [Vizro Docs](https://vizro.readthedocs.io/en/stable/)    |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro-ai.readthedocs.io/en/latest/) |
 
 ## Get started
 
