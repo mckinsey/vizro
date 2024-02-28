@@ -399,6 +399,7 @@ pages:
           title: Dropdown (Tips - day)
           type: dropdown
           multi: False
+          value: Sat
         targets:
           - table-tips
         type: filter
@@ -411,10 +412,10 @@ pages:
         type: filter
       - column: smoker
         selector:
-          title: Slider (Tips - smoker)
+          title: Slider (Tips - size)
           type: slider
           step: 1
-          value: 1
+          value: 2
         targets:
           - table-tips
         type: filter

@@ -3,7 +3,6 @@
 from time import sleep
 from typing import List, Literal, Optional
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
@@ -17,7 +16,6 @@ from vizro.tables import dash_data_table
 iris = px.data.iris()
 gapminder = px.data.gapminder()
 tips = px.data.tips()
-tips["smoker"] = np.where(tips["smoker"] == "Yes", 1, 0)
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
