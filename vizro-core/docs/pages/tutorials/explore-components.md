@@ -328,7 +328,7 @@ The code below illustrates how to add the page, titled `second_page` to the dash
 
 In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In the code below:
 
-* The first parameter enables the user to change the color mapping for the `virginica` category of the iris data set , targeting both charts.
+* The first parameter enables the user to change the color mapping for the `virginica` category of the iris data set, targeting both charts.
 * The second parameter adjusts the opacity of the first chart alone, through `scatter_iris.opacity`.
 
 
@@ -371,7 +371,7 @@ for parameters](../user-guides/parameters.md).
                         options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
                     ),
                 vm.Parameter(
-                    targets=["scatter_iris.opacity", "hist_iris.opacity"],
+                    targets=["scatter_iris.opacity"],
                     selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
                 ),
             ],
