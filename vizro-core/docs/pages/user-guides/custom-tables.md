@@ -3,7 +3,7 @@
 In cases where the available arguments for the [`AgGrid`][vizro.models.AgGrid] or [`Table`][vizro.models.Table] models are not sufficient,
 you can create a custom Dash AG Grid or Dash DataTable.
 
-One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see below example).
+One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
 
 For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), simply do the following:
 
