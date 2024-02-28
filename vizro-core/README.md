@@ -75,9 +75,10 @@ What does that mean?
 **...without the need for advanced coding or design experience**: There's no need to write hundreds of lines or code nor to design a layout for the dashboard. Vizro is built on top of Dash, so users benefit from the underlying power of the Dash framework: scalability, flexibility, customisability and so on. While Vizro aims to simplify the creation of dashboards for beginner users, it also allows advanced users to extend functionality by writing pure Dash code. You don’t actually need to know any Dash to make a Vizro dashboard, since the relevant code is generated for you using a simple configuration.
 
 ---
+
 OR, another version (Antony's)
 
-Vizro is a high-level framework built on top of Dash for quick and easy creation of beautiful multi-page dashboards” 
+Vizro is a high-level framework built on top of Dash for quick and easy creation of beautiful multi-page dashboards”
 
 What does that mean?
 
