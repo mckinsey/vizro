@@ -1,5 +1,6 @@
 """Helper functions for models inside form folder."""
 
+from datetime import date
 from typing import Union
 
 from vizro._constants import ALL_OPTION
@@ -100,3 +101,13 @@ def set_default_marks(cls, marks, values):
     if not marks and values.get("step") is None:
         marks = None
     return marks
+
+
+def validate_date_picker_range(cls, range, values):
+    if range and (isinstance(values["value"], (date, str)) or len(values["value"]) == 1):
+        raise ValueError("Please set range=False if providing single date value.")
+
+    if not range and isinstance(values["value"], list):
+        raise ValueError("Please set range=True if providing list of date values.")
+
+    return range

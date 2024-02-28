@@ -14,7 +14,7 @@ from datetime import date
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import validate_max, validate_range_value
+from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 
 
 class DatePicker(VizroBaseModel):
@@ -49,21 +49,7 @@ class DatePicker(VizroBaseModel):
     # Re-used validators
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-
-    @validator("range", always=True)
-    def validate_range(cls, range, values):
-        # model return date range picker and value needs to be of type list
-        if range and isinstance(values["value"], list):
-            return range
-        # model returns date picker and value needs to be a date
-        if not range and isinstance(values["value"], date):
-            return range
-
-        if range and (isinstance(values["value"], (date, str)) or len(values["value"]) == 1):
-            raise ValueError("Please set range=False if providing single date value.")
-
-        if not range and isinstance(values["value"], list):
-            raise ValueError("Please set range=True if providing list of date values.")
+    _validate_range = validator("range", allow_reuse=True, pre=True)(validate_date_picker_range)
 
     def build(self):
         init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
