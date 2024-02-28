@@ -19,7 +19,7 @@ from vizro.models._models_utils import _log_call
 
 
 class Slider(VizroBaseModel):
-    """Numeric single-selector `Slider`.
+    """Numeric single-option selector `Slider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter]. Based on the underlying
