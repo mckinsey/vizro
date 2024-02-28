@@ -85,7 +85,7 @@ instance/
 # Scrapy
 .scrapy
 
-# mkdocs and docs
+# mkdocs
 vizro-core/docs/.vale
 vizro-core/site
 vizro-ai/site
