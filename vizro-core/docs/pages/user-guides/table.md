@@ -32,7 +32,7 @@ To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 
 - Insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the
 [`Page`][vizro.models.Page] model.
-- enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`)
+- Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`. All other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
