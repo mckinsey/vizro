@@ -49,10 +49,9 @@ class DatePicker(VizroBaseModel):
     # Re-used validators
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-    # _validate_range = validator("range", allow_reuse=True)(validate_date_picker_range)
 
     @validator("range", always=True)
-    def validate_date_picker_range(cls, range, values):
+    def validate_range(cls, range, values):
         # model return date range picker and value needs to be of type list
         if range and isinstance(values["value"], list):
             return range
