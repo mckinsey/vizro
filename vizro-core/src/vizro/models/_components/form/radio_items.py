@@ -15,7 +15,11 @@ from vizro.models.types import OptionsType, SingleValueType
 
 
 class RadioItems(VizroBaseModel):
-    """Categorical single-selector `RadioItems` to be provided to `Filter`.
+    """Categorical single-option selector `RadioItems`.
+
+    Can be provided to [`Filter`][vizro.models.Filter] or
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems).
 
     Args:
         type (Literal["radio_items"]): Defaults to `"radio_items"`.
