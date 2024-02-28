@@ -10,7 +10,7 @@ In general, [AG Grid](#ag-grid) is Vizro's recommended table implementation, but
 Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the above two approaches respectively.
 They both visualize tabular data in similar ways.
 
-The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component,
+The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component,
 while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
 
 Both approaches have similar base features, and are configurable in similar ways. However, the AG Grid offers more advanced features out-of-the-box, is more customizable
