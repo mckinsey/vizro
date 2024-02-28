@@ -8,8 +8,11 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
 
+data_manager["tips"] = px.data.tips()
+gapminder = px.data.gapminder()
+data_manager["gapminder"] = gapminder
+data_manager["gapminder_2007"] = gapminder.query("year == 2007")
 data_manager["iris"] = px.data.iris()
-data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)
