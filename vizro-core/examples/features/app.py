@@ -11,7 +11,7 @@ from dash import dash_table, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
@@ -88,6 +88,17 @@ graphs = vm.Page(
         )
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+)
+
+ag_grid = vm.Page(
+    title="AG Grid",
+    components=[
+        vm.AgGrid(
+            title="Dash AG Grid",
+            figure=dash_ag_grid(data_frame=gapminder_2007),
+        )
+    ],
+    controls=[vm.Filter(column="continent")],
 )
 
 table = vm.Page(
@@ -570,7 +581,7 @@ custom_actions = vm.Page(
 )
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, table, cards, button, containers, tabs]
+components = [graphs, ag_grid, table, cards, button, containers, tabs]
 controls = [filters, parameters]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
@@ -585,7 +596,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "Table", "Cards", "Button", "Containers", "Tabs"],
+                        "Components": ["Graphs", "AG Grid", "Table", "Cards", "Button", "Containers", "Tabs"],
                         "Controls": ["Filters", "Parameters"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
