@@ -307,9 +307,9 @@ The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](h
 
 To add a [`Table`][vizro.models.Table] to your page, do the following:
 
-- insert the [`Table`][vizro.models.Table] model into the `components` argument of the
-[`Page`][vizro.models.Page] model
-- enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`)
+- Insert the [`Table`][vizro.models.Table] model into the `components` argument of the
+[`Page`][vizro.models.Page] model.
+- Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
 
 The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
 This must be entered under the argument `data_frame`.
