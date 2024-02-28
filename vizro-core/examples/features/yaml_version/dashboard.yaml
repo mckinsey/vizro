@@ -410,7 +410,7 @@ pages:
         targets:
           - table-tips
         type: filter
-      - column: smoker
+      - column: size
         selector:
           title: Slider (Tips - size)
           type: slider
