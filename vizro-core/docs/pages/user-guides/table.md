@@ -159,7 +159,7 @@ In the example below we select and format some columns of the gapminder dataset.
 
 #### Dates
 
-In order for the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly, the date must either be of
+For the [`AgGrid`][vizro.models.AgGrid] model to sort and filter dates correctly, the date must either be of
 string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter))
 or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
 
