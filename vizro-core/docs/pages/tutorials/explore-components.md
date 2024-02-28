@@ -21,8 +21,7 @@ Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](
 The code below shows the steps necessary to add a box plot to the page:
 
 1. Add a Vizro [`Graph`](vizro.models.Graph) to the `components` list.
-2. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
-
+2. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components. 
 
 !!! example "First component"
     === "app.py"
@@ -60,26 +59,17 @@ The code below shows the steps necessary to add a box plot to the page:
 
     Paste the above code into a Notebook cell, run the Notebook, and evaluate it.
 
-    ??? tip "Prefer Python scripts to Notebooks?"
+    ---
+    If you prefer to use Python scripts to Notebooks, here's how to try out the dashboard:
 
-        1. Create a new script called `app.py`.
-        2. Copy the code above into the script.
-        3. Navigate to the directory where `app.py` file is located using your terminal
-        4. Run the script by executing the command:
+    1. Create a new script called `app.py`.
+    2. Copy the code above into the script.
+    3. Navigate to the directory where `app.py` file is located using your terminal.
+    4. Run the script by executing the command `python app.py`.
 
-        ```python
-        python app.py
-        ```
+    Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
-Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page
-with the gapminder data displayed, as shown in the `Result` tab above.
-
-!!! note "Note the following:"
-
-    1. The import statement `import vizro.plotly.express as px` integrates Plotly Express for building figures.
-
-    2. The `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`.
-    Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
+As you can see from the code, the `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`. Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
 
 ### 2.2. Add further components
 
