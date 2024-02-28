@@ -31,7 +31,7 @@ original [Javascript implementation](https://www.ag-grid.com/).
 To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 
 - Insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the
-[`Page`][vizro.models.Page] model
+[`Page`][vizro.models.Page] model.
 - enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`)
 
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
