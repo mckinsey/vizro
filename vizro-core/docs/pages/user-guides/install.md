@@ -25,7 +25,7 @@ This guide shows you how to install Vizro, how to verify the installation succee
     conda create --name vizro-environment python=3.10 -y
     ```
 
-    (This example uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8 and <3.12), and name it anything you choose).
+    (This example uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8), and name it anything you choose).
 
     Activate your virtual environment from any directory:
 
