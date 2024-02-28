@@ -98,7 +98,7 @@ the `columnDefs` argument of your `dash_ag_grid` function:
 columnDefs = [{"field": "<COLUMN>", "cellDataType": "euro"}]
 ```
 
-In the below example we select and format some columns of the gapminder dataset.
+In the example below we select and format some columns of the gapminder dataset.
 
 ??? example "AG Grid with formatted columns"
     === "app.py"
