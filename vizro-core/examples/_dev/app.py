@@ -126,7 +126,7 @@ grid_custom = vm.Page(
     ],
 )
 
-num_rows = 10
+num_rows = 100
 num_columns = 20
 column_names = ["Column_" + str(i) for i in range(num_columns)]
 data = {}
