@@ -67,7 +67,6 @@ hatch run test
 
 To run only python unit tests, run `hatch run test-unit`, and for python integration tests only run `hatch run test-integration`.
 
-For integration tests, [all examples are executed in separate testing sessions](https://github.com/mckinsey/vizro/issues/10) by providing the `-k` tag per example.
 
 Arguments are passed through to the underlying `pytest` command, e.g.
 
