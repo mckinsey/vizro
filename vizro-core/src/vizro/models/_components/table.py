@@ -38,10 +38,10 @@ class Table(VizroBaseModel):
     title: str = Field("", description="Title of the table")
     actions: List[Action] = []
 
-    _callable_object_id: str = PrivateAttr()
+    _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _output_property: str = PrivateAttr("children")
+    _output_component_property: str = PrivateAttr("children")
 
     # validator
     set_actions = _action_validator_factory("active_cell")
@@ -51,7 +51,7 @@ class Table(VizroBaseModel):
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
         figure = self.figure(**kwargs)
-        figure.id = self._callable_object_id
+        figure.id = self._input_component_id
         return figure
 
     # Convenience wrapper/syntactic sugar.
@@ -67,9 +67,9 @@ class Table(VizroBaseModel):
     def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
-            "active_cell": State(component_id=self._callable_object_id, component_property="active_cell"),
+            "active_cell": State(component_id=self._input_component_id, component_property="active_cell"),
             "derived_viewport_data": State(
-                component_id=self._callable_object_id,
+                component_id=self._input_component_id,
                 component_property="derived_viewport_data",
             ),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
@@ -100,15 +100,14 @@ class Table(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        kwargs = self.figure._arguments.copy()
-        self._callable_object_id = kwargs["id"] if "id" in kwargs else self.id + "_figure_callable"
+        self._input_component_id = self.figure._arguments.get("id",f"__input_{self.id}")
 
     def build(self):
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dash_table.DataTable(**{"id": self._callable_object_id}), id=self.id),
+                    html.Div(dash_table.DataTable(**{"id": self._input_component_id}), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",

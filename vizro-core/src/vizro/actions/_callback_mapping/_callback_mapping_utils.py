@@ -106,7 +106,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 
     return {
         target: Output(
-            component_id=target, component_property=model_manager[target]._output_property, allow_duplicate=True
+            component_id=target, component_property=model_manager[target]._output_component_property, allow_duplicate=True
         )
         for target in targets
     }

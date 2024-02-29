@@ -39,10 +39,10 @@ class AgGrid(VizroBaseModel):
     title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
 
-    _callable_object_id: str = PrivateAttr()
+    _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _output_property: str = PrivateAttr("children")
+    _output_component_property: str = PrivateAttr("children")
 
     # validator
     set_actions = _action_validator_factory("cellClicked")
@@ -52,7 +52,7 @@ class AgGrid(VizroBaseModel):
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
         figure = self.figure(**kwargs)
-        figure.id = self._callable_object_id
+        figure.id = self._input_component_id
         return figure
 
     # Convenience wrapper/syntactic sugar.
@@ -67,7 +67,7 @@ class AgGrid(VizroBaseModel):
     def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
         return {
-            "cellClicked": State(component_id=self._callable_object_id, component_property="cellClicked"),
+            "cellClicked": State(component_id=self._input_component_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
@@ -94,19 +94,18 @@ class AgGrid(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        kwargs = self.figure._arguments.copy()
-        self._callable_object_id = kwargs["id"] if "id" in kwargs else self.id + "_figure_callable"
+        self._input_component_id = self.figure._arguments.get("id",f"__input_{self.id}")
 
     def build(self):
         # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
         # setting as the object that is built on-page-load and rendered finally.
         dash_ag_grid_conf = self.figure._arguments.copy()
         dash_ag_grid_conf["data_frame"] = pd.DataFrame()
-        dash_ag_grid_conf["id"] = self._callable_object_id
+        dash_ag_grid_conf["id"] = self._input_component_id
 
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),
-            Output(self._callable_object_id, "className"),
+            Output(self._input_component_id, "className"),
             Input("theme_selector", "checked"),
         )
 
