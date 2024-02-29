@@ -8,6 +8,7 @@ try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
+from dash import ClientsideFunction, Input, Output, clientside_callback
 
 import vizro.tables as vt
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
@@ -112,8 +113,13 @@ class AgGrid(VizroBaseModel):
         # setting as the object that is built on-page-load and rendered finally.
         dash_ag_grid_conf = self.figure._arguments.copy()
         dash_ag_grid_conf["data_frame"] = pd.DataFrame()
-        if hasattr(self, "_callable_object_id"):
-            dash_ag_grid_conf["id"] = self._callable_object_id
+
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),
+            Output(self._callable_object_id, "className"),
+            Input("theme_selector", "checked"),
+        )
+
         return dcc.Loading(
             html.Div(
                 [
