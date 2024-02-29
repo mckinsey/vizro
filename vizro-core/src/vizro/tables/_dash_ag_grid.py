@@ -74,6 +74,7 @@ def dash_ag_grid(data_frame, **kwargs):
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
+            "pagination": True,
         },
         "style": {"height": "100%"},
     }
