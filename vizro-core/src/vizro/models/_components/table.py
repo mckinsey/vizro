@@ -50,7 +50,9 @@ class Table(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
-        return self.figure(**kwargs)
+        figure = self.figure(**kwargs)
+        figure.id = self._callable_object_id
+        return figure
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
@@ -99,29 +101,14 @@ class Table(VizroBaseModel):
     @_log_call
     def pre_build(self):
         kwargs = self.figure._arguments.copy()
-
-        # This workaround is needed because the underlying table object requires a data_frame
-        kwargs["data_frame"] = pd.DataFrame()
-
-        # The underlying table object is pre-built, so we can fetch its ID.
-        underlying_table_object = self.figure._function(**kwargs)
-
-        if hasattr(underlying_table_object, "id"):
-            self._callable_object_id = underlying_table_object.id
-
-        if self.actions and not hasattr(self, "_callable_object_id"):
-            raise ValueError(
-                "Underlying `Table` callable has no attribute 'id'. To enable actions triggered by the `Table`"
-                " a valid 'id' has to be provided to the `Table` callable."
-            )
+        self._callable_object_id = kwargs["id"] if "id" in kwargs else self.id + "_figure_callable"
 
     def build(self):
-        dash_table_conf = {"id": self._callable_object_id} if hasattr(self, "_callable_object_id") else {}
         return dcc.Loading(
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dash_table.DataTable(**dash_table_conf), id=self.id),
+                    html.Div(dash_table.DataTable(**{"id": self._callable_object_id}), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",

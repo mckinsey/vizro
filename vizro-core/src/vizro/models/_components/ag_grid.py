@@ -51,7 +51,9 @@ class AgGrid(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
-        return self.figure(**kwargs)
+        figure = self.figure(**kwargs)
+        figure.id = self._callable_object_id
+        return figure
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
@@ -93,26 +95,14 @@ class AgGrid(VizroBaseModel):
     @_log_call
     def pre_build(self):
         kwargs = self.figure._arguments.copy()
-
-        # taken from table implementation - see there for details
-        kwargs["data_frame"] = pd.DataFrame()
-
-        underlying_aggrid_object = self.figure._function(**kwargs)
-
-        if hasattr(underlying_aggrid_object, "id"):
-            self._callable_object_id = underlying_aggrid_object.id
-
-        if self.actions and not hasattr(self, "_callable_object_id"):
-            raise ValueError(
-                "Underlying `AgGrid` callable has no attribute 'id'. To enable actions triggered by the `AgGrid`"
-                " a valid 'id' has to be provided to the `AgGrid` callable."
-            )
+        self._callable_object_id = kwargs["id"] if "id" in kwargs else self.id + "_figure_callable"
 
     def build(self):
         # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
         # setting as the object that is built on-page-load and rendered finally.
         dash_ag_grid_conf = self.figure._arguments.copy()
         dash_ag_grid_conf["data_frame"] = pd.DataFrame()
+        dash_ag_grid_conf["id"] = self._callable_object_id
 
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),

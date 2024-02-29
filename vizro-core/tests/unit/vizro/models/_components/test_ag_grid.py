@@ -103,17 +103,11 @@ class TestPreBuildAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
 
-        assert not hasattr(ag_grid, "_callable_object_id")
-
-    def test_pre_build_actions_no_underlying_ag_grid_id_exception(self, standard_ag_grid, filter_interaction_action):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid, actions=[filter_interaction_action])
-        with pytest.raises(ValueError, match="Underlying `AgGrid` callable has no attribute 'id'"):
-            ag_grid.pre_build()
+        assert ag_grid._callable_object_id == "text_ag_grid_figure_callable"
 
     def test_pre_build_actions_underlying_ag_grid_id(self, ag_grid_with_id, filter_interaction_action):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id, actions=[filter_interaction_action])
         ag_grid.pre_build()
-
         assert ag_grid._callable_object_id == "underlying_ag_grid_id"
 
 
@@ -125,7 +119,11 @@ class TestBuildAgGrid:
         expected_ag_grid = dcc.Loading(
             [
                 None,
-                html.Div(dash_ag_grid(data_frame=pd.DataFrame())(), id="text_ag_grid", className="table-container"),
+                html.Div(
+                    dash_ag_grid(data_frame=pd.DataFrame(), id="text_ag_grid_figure_callable")(),
+                    id="text_ag_grid",
+                    className="table-container",
+                ),
             ],
             id="text_ag_grid_outer",
             color="grey",

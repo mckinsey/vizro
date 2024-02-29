@@ -102,12 +102,7 @@ class TestPreBuildTable:
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
-        assert not hasattr(table, "_callable_object_id")
-
-    def test_pre_build_actions_no_underlying_table_id_exception(self, standard_dash_table, filter_interaction_action):
-        table = vm.Table(id="text_table", figure=standard_dash_table, actions=[filter_interaction_action])
-        with pytest.raises(ValueError, match="Underlying `Table` callable has no attribute 'id'"):
-            table.pre_build()
+        assert table._callable_object_id == "text_table_figure_callable"
 
     def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
@@ -125,7 +120,7 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(), id="text_table"),
+                    html.Div(dash_table.DataTable(id="text_table_figure_callable"), id="text_table"),
                 ],
                 className="table-container",
                 id="text_table_outer",
