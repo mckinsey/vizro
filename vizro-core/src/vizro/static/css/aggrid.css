@@ -55,7 +55,7 @@
 
 /* Rows */
 #page-container .ag-theme-quartz-dark .ag-cell {
-  padding-left: 0 var(--spacing-03);
+  padding: 0 var(--spacing-03);
 }
 
 /* Eliminates border on cell click */

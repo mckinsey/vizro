@@ -75,6 +75,7 @@ def dash_ag_grid(data_frame, **kwargs):
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
         },
+        "style": {"height": "100%"},
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dag.AgGrid(**kwargs)
