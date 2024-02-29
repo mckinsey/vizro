@@ -1,21 +1,16 @@
-# How to integrate Vizro with other tools
+# How to integrate Vizro with Kedro
 
-This page describes how to integrate Vizro with other tools.
-
-## Kedro
-
-[Kedro](https://docs.kedro.org/en/stable/index.html) is an open-source Python framework to create reproducible, maintainable, and
-modular data science code. For Pandas datasets registered in a Kedro data catalog,
+This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. For Pandas datasets registered in a Kedro data catalog,
 Vizro provides a convenient way to visualize them.
 
-### Installation
+## Installation
 To install Vizro with Kedro support, run:
 
 ```bash
 pip install vizro[kedro]
 ```
 
-### Using datasets from the Kedro Data Catalog
+## Using datasets from the Kedro Data Catalog
 `vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the [Vizro Data Manager][vizro.managers._data_manager] is:
 ```python
 from vizro.integrations import kedro as kedro_integration
@@ -36,7 +31,7 @@ The `catalog` variable may have been created in a number of different ways:
 
 The full code for these different cases is given below.
 
-!!! example "Import a Kedro Data Catalog to the Vizro Data Manager"
+!!! example "Import a Kedro Data Catalog into the Vizro Data Manager"
     === "app.py (Kedro project path)"
         ```py
         from vizro.integrations import kedro as kedro_integration
