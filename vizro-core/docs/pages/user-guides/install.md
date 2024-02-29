@@ -2,6 +2,11 @@
 
 This guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
 
+If you already have a virtual environment setup in Python then you can skip this page and just install Vizro straight away by running: 
+```bash
+pip install vizro
+```
+
 ## Prerequisites
 
 **Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.8 and later. You can specify the version of Python to use with Vizro when you set up a virtual environment.
@@ -18,35 +23,25 @@ This guide shows you how to install Vizro, how to verify the installation succee
 
 ??? information "How to create a virtual environment for your Vizro project"
 
-    **Using `conda`**
-    We strongly recommend [installing `conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) if you don't already use it. Once installed, create a virtual environment from the terminal as follows:
-
+    The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
+    
     ```bash
-    conda create --name vizro-environment python=3.10 -y
+    mkdir vizro-project
+    cd vizro-project
+    ``` 
+    
+    Next, create and activate a new virtual environment in this directory with `venv`:
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
     ```
-
-    (This example uses Python 3.10, and creates a virtual environment called `vizro-environment`. You can opt for a different version of Python (any version >= 3.8), and name it anything you choose).
-
-    Activate your virtual environment from any directory:
-
+    
+    Alternatively, you might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
+    
     ```bash
+    conda create --name vizro-environment
     conda activate vizro-environment
     ```
-
-    To confirm that a valid version of Python is installed in your virtual environment, type the following in your terminal (macOS and Linux):
-
-    ```bash
-    python3 --version
-    ```
-
-    On Windows:
-
-    ```bash
-    python --version
-    ```
-
-    You can alternatively create virtual environments using [`venv`](https://docs.python.org/3/library/venv.html) or [`pipenv`](https://pipenv.pypa.io/en/latest/) instead of `conda`.
-
 
 
 ## Install Vizro
@@ -90,7 +85,7 @@ You should see a return output of the form `x.y.z`.
 To change the version of Vizro installed:
 
 ```bash
-pip install vizro -U
+pip install -U vizro
 ```
 
 !!! tip Check the Vizro release notes
