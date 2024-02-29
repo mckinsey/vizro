@@ -150,11 +150,3 @@
 #page-container .ag-radio-button-input-wrapper:focus-within {
   box-shadow: none;
 }
-
-.ag-subcontainer {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: auto;
-  width: 100%;
-}

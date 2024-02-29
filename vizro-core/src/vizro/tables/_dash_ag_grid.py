@@ -68,13 +68,13 @@ def dash_ag_grid(data_frame, **kwargs):
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
             },
-            "columnSize": "responsiveSizeToFit",
+            "flex": 1,
+            "minWidth": 70,
         },
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
         },
-        "style": {"height": "100%"},
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dag.AgGrid(**kwargs)

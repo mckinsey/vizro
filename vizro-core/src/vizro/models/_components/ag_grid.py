@@ -115,14 +115,11 @@ class AgGrid(VizroBaseModel):
         if hasattr(self, "_callable_object_id"):
             dash_ag_grid_conf["id"] = self._callable_object_id
         return dcc.Loading(
-            html.Div(
-                [
-                    html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id, className="ag-subcontainer"),
-                ],
-                className="table-container",
-                id=f"{self.id}_outer",
-            ),
+            [
+                html.H3(self.title, className="table-title") if self.title else None,
+                html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id, className="table-container"),
+            ],
+            id=f"{self.id}_outer",
             color="grey",
             parent_className="loading-container",
         )

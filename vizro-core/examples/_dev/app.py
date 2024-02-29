@@ -93,6 +93,7 @@ grid_standard = vm.Page(
     title="AG Grid Default",
     components=[
         vm.AgGrid(
+            title="AG Grid - Default",
             figure=dash_ag_grid(
                 id="dash_ag_grid_2",
                 data_frame=df2,
@@ -105,6 +106,7 @@ grid_custom = vm.Page(
     title="AG Grid Custom",
     components=[
         vm.AgGrid(
+            title="Custom AG Grid",
             figure=dash_ag_grid(
                 id="dash_ag_grid_3",
                 data_frame=df2,
@@ -137,7 +139,7 @@ df_long = pd.DataFrame(data)
 grid_long = vm.Page(
     title="AG Grid Long",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(id="dash_ag_grid_4", data_frame=df_long)),
+        vm.AgGrid(figure=dash_ag_grid(id="dash_ag_grid_4", data_frame=df_long), title="AG Grid - long"),
     ],
 )
 
