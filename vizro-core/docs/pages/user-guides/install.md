@@ -2,7 +2,7 @@
 
 This guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
 
-If you already have a virtual environment setup in Python then you can skip this page and just install Vizro straight away by running: 
+If you already have a virtual environment setup in Python then you can skip this page and just install Vizro straight away by running:
 ```bash
 pip install vizro
 ```
@@ -24,20 +24,20 @@ pip install vizro
 ??? information "How to create a virtual environment for your Vizro project"
 
     The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
-    
+
     ```bash
     mkdir vizro-project
     cd vizro-project
-    ``` 
-    
+    ```
+
     Next, create and activate a new virtual environment in this directory with `venv`:
     ```bash
     python3 -m venv .venv
     source .venv/bin/activate
     ```
-    
+
     Alternatively, you might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
-    
+
     ```bash
     conda create --name vizro-environment
     conda activate vizro-environment
