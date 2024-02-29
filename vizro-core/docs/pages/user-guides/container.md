@@ -35,13 +35,13 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want to apply controls to selected subgrids (will be supported soon)
 
 
-## Basic Containers
+## Basic containers
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
 2. Provide a `title` to your `Container`
-3. Configure your `components`, see our overview page on the various options [here](components.md)
-4. (optional) Configure your `layout` , see our guide on [`Layout`](layouts.md)
+3. Configure your `components`, see [the overview page on the various options](components.md)
+4. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
 
 !!! example "Container"
     === "app.py"
@@ -159,7 +159,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
     Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md)
     e.g. by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
 
-## Nested Containers
+## Nested containers
 Containers can be nested, providing a hierarchical structure for organizing components.
 This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
 

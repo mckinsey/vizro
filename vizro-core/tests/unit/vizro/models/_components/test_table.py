@@ -11,7 +11,6 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import filter_interaction
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
@@ -27,12 +26,7 @@ def dash_table_with_str_dataframe():
     return dash_data_table(data_frame="gapminder")
 
 
-@pytest.fixture
-def filter_interaction_action():
-    return vm.Action(function=filter_interaction())
-
-
-class TestDunderMethodsTable:
+class TestTableInstantiation:
     def test_create_graph_mandatory_only(self, standard_dash_table):
         table = vm.Table(figure=standard_dash_table)
 
@@ -62,6 +56,13 @@ class TestDunderMethodsTable:
         with pytest.raises(ValidationError, match="must provide a valid table function vm.Table"):
             vm.Table(figure=standard_px_chart)
 
+    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
+        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
+        actions_chain = table.actions[0]
+        assert actions_chain.trigger.component_property == "active_cell"
+
+
+class TestDunderMethodsTable:
     def test_getitem_known_args(self, dash_table_with_arguments):
         table = vm.Table(figure=dash_table_with_arguments)
         assert table["style_header"] == {"border": "1px solid green"}
@@ -72,13 +73,17 @@ class TestDunderMethodsTable:
         with pytest.raises(KeyError):
             table["unknown_args"]
 
-    def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
-        table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
-        actions_chain = table.actions[0]
-        assert actions_chain.trigger.component_property == "active_cell"
+
+class TestAttributesTable:
+    def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder", actions=[])
+        table.pre_build()
+        assert hasattr(table, "_filter_interaction_input")
+        assert "modelID" in table._filter_interaction_input
 
 
 class TestProcessTableDataFrame:
+    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         table_with_str_df = vm.Table(id="table", figure=dash_table_with_str_dataframe)
@@ -97,7 +102,7 @@ class TestPreBuildTable:
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
-        assert hasattr(table, "_callable_object_id") is False
+        assert not hasattr(table, "_callable_object_id")
 
     def test_pre_build_actions_no_underlying_table_id_exception(self, standard_dash_table, filter_interaction_action):
         table = vm.Table(id="text_table", figure=standard_dash_table, actions=[filter_interaction_action])

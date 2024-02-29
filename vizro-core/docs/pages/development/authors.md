@@ -1,16 +1,19 @@
 ## Current team members
 
-[Chiara Pullem](https://github.com/chiara-sophie),
-[Antony Milne](https://github.com/antonymilne),
+[Alexey Snigir](https://github.com/l0uden),
 [Anna Xiong](https://github.com/Anna-Xiong),
+[Antony Milne](https://github.com/antonymilne),
+[Chiara Pullem](https://github.com/chiara-sophie),
+[Dan Dumitriu](https://github.com/dandumitriu1),
+[Huong Li Nguyen](https://github.com/huong-li-nguyen),
+[Jo Stichbury](https://github.com/stichbury),
+[Joseph Perkins](https://github.com/Joseph-Perkins),
 [Lingyi Zhang](https://github.com/lingyielia),
+[Maximilian Schulz](https://github.com/maxschulz-COL),
 [Nadija Graca](https://github.com/nadijagraca),
 [Petar Pejovic](https://github.com/petar-qb)
-[Alexey Snigir](https://github.com/l0uden),
-[Maximilian Schulz](https://github.com/maxschulz-COL),
-[Huong Li Nguyen](https://github.com/huong-li-nguyen),
-[Dan Dumitriu](https://github.com/dandumitriu1),
-[Joseph Perkins](https://github.com/Joseph-Perkins),
+
+
 
 ## Previous team members and code contributors
 
@@ -19,7 +22,6 @@
 Natalia Kurakina,
 [Leon Nallamuthu](https://github.com/leonnallamuthu),
 [axa99](https://github.com/axa99),
-[Jo Stichbury](https://github.com/stichbury),
 [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
 [Qiuyi Chen](https://github.com/Qiuyi-Chen),
