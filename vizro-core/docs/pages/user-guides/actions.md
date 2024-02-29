@@ -1,4 +1,4 @@
-# How to use Actions
+# How to use actions
 
 This guide shows you how to use actions, a concept that is similar, but not identical, to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
 Many components of a dashboard (e.g. [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
@@ -279,11 +279,11 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
-## Pre-defined actions customization
+## How to customize pre-defined actions
 Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
 refer to the [API reference][vizro.actions] on this topic.
 
-## Actions chaining
+### Chaining actions
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
 This means that it's possible to set a list of actions that will be executed by triggering only one component.
 The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.

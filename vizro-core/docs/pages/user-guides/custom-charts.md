@@ -98,7 +98,7 @@ add a `Parameter` that allows the dashboard user to interact with the argument, 
 
 ## New Waterfall chart based on `go.Figure()`
 
-The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [this](https://plotly.com/python/waterfall-charts/) tutorial.
+The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [a plotly waterfall chart tutorial](https://plotly.com/python/waterfall-charts/).
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
     === "app.py"

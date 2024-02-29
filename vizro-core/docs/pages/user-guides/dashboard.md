@@ -183,12 +183,12 @@ To create a dashboard:
 
 After running the dashboard, you can access the dashboard via `localhost:8050`.
 
-## Adding a dashboard title
+## How to add a dashboard title
 
 If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
 
-## Adding a dashboard logo
+## How to add a dashboard logo
 
 Vizro will automatically incorporate the dashboard [logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 

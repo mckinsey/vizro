@@ -31,7 +31,7 @@ Users can configure Vizro dashboards without needing to know advanced software d
     This removes most of the "glue code" that would otherwise need to be written. Thousands of lines of code are reduced to tens of lines of configuration.
     Users can configure Vizro dashboards without needing to know any advanced software development principles of how to build front-end applications.
 
-### 2) Extend & customize infinitely
+### 2) Extend and customize infinitely
 
 Users benefit from the power of the Dash framework and the flexibility of React.
 

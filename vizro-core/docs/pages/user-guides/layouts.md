@@ -82,7 +82,7 @@ This defines a single row that occupies the entire width and height, divided int
   ![Stacking components](../../assets/user_guides/layout/stacking.png){ width="680" }
 </figure>
 
-### Grid - Basic Example
+### Grid - basic example
 !!! example "Grid Arrangement - Basic Example"
     === "app.py"
         ```py
@@ -126,7 +126,7 @@ This defines a single row that occupies the entire width and height, divided int
 
     [Grid]: ../../assets/user_guides/layout/one_left_two_right.png
 
-### Grid - Advanced Example
+### Grid - advanced example
 Generally, the `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.
 
