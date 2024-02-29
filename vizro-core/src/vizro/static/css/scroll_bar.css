@@ -33,10 +33,10 @@
 }
 
 /* Can't control thumb color so hover is turned off */
-.ag-root::-webkit-scrollbar {
+.ag-root ::-webkit-scrollbar {
   width: 4px;
 }
 
-.ag-root::-webkit-scrollbar-thumb:hover {
+.ag-root ::-webkit-scrollbar-thumb:hover {
   background: var(--field-enabled);
 }
