@@ -1,6 +1,7 @@
 import {
   _update_dashboard_theme,
   _collapse_nav_panel,
+  _update_ag_grid_theme,
 } from "./models/dashboard.js";
 import { _update_range_slider_values } from "./models/range_slider.js";
 import { _update_slider_values } from "./models/slider.js";
@@ -19,5 +20,6 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     gateway: _gateway,
     after_action_cycle_breaker: _after_action_cycle_breaker,
     collapse_nav_panel: _collapse_nav_panel,
+    update_ag_grid_theme: _update_ag_grid_theme,
   },
 });

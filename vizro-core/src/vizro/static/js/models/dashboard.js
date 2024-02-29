@@ -6,6 +6,10 @@ export function _update_dashboard_theme(checked) {
   return checked ? "vizro_light" : "vizro_dark";
 }
 
+export function _update_ag_grid_theme(checked) {
+  return checked ? "ag-theme-quartz vizro" : "ag-theme-quartz-dark vizro";
+}
+
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs and s-devices are detected*/

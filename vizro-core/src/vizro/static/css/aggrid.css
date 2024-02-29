@@ -1,3 +1,4 @@
+.ag-theme-quartz.vizro,
 .ag-theme-quartz-dark.vizro {
   --ag-background-color: var(--main-container-bg-color);
   --ag-foreground-color: var(--text-primary);
@@ -26,6 +27,7 @@
 }
 
 /* Header */
+#page-container .ag-theme-quartz .ag-header-row,
 #page-container .ag-theme-quartz-dark .ag-header-row {
   align-items: flex-start;
   border-bottom: 1px solid var(--border-subtle-alpha-02);
@@ -34,12 +36,14 @@
   padding: var(--spacing-03) 0 0 0;
 }
 
+#page-container .ag-theme-quartz .ag-header-cell,
 #page-container .ag-theme-quartz-dark .ag-header-cell {
   align-items: center;
   display: flex;
   padding: 0 var(--spacing-03);
 }
 
+#page-container .ag-theme-quartz .ag-header-cell-text,
 #page-container .ag-theme-quartz-dark .ag-header-cell-text {
   letter-spacing: -0.112px;
   line-height: var(--spacing-04);
@@ -48,17 +52,22 @@
   white-space: nowrap;
 }
 
+#page-container .ag-theme-quartz .ag-header-cell:hover,
 #page-container .ag-theme-quartz-dark .ag-header-cell:hover {
   border-bottom: 1px solid var(--border-hover);
   color: var(--text-primary);
 }
 
 /* Rows */
+#page-container .ag-theme-quartz .ag-cell,
 #page-container .ag-theme-quartz-dark .ag-cell {
   padding: 0 var(--spacing-03);
 }
 
 /* Eliminates border on cell click */
+#page-container
+  .ag-theme-quartz
+  .ag-cell-focus:not(.ag-cell-range-selected):focus-within,
 #page-container
   .ag-theme-quartz-dark
   .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
@@ -66,6 +75,7 @@
 }
 
 /* Filter menu styling */
+#page-container .ag-theme-quartz .ag-menu,
 #page-container .ag-theme-quartz-dark .ag-menu {
   background-color: var(--surfaces-bg-02);
   border: 1px solid var(--border-subtle-alpha-02);
@@ -97,6 +107,7 @@
 }
 
 /* Text/number input */
+#page-container .ag-theme-quartz .ag-ltr .ag-filter-filter input,
 #page-container .ag-theme-quartz-dark .ag-ltr .ag-filter-filter input {
   background-color: var(--field-enabled);
   border: none;
@@ -116,6 +127,7 @@
 /* TODO: change background color when hovering over filter menu */
 
 /* Buttons */
+#page-container .ag-theme-quartz .ag-standard-button,
 #page-container .ag-theme-quartz-dark .ag-standard-button {
   background: var(--fill-active);
   border: none;
@@ -131,6 +143,7 @@
   text-transform: none;
 }
 
+#page-container .ag-theme-quartz .ag-standard-button:hover,
 #page-container .ag-theme-quartz-dark .ag-standard-button:hover {
   background: linear-gradient(
       var(--state-overlays-contrast-hover),
