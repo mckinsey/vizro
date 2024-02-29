@@ -19,7 +19,7 @@ from vizro.models._models_utils import _log_call
 
 
 class RangeSlider(VizroBaseModel):
-    """Numeric multi-selector `RangeSlider`.
+    """Numeric multi-option selector `RangeSlider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter]. Based on the underlying
