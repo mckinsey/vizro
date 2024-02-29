@@ -123,14 +123,11 @@ class TestBuildAgGrid:
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(dash_ag_grid(data_frame=pd.DataFrame())(), id="text_ag_grid"),
-                ],
-                className="table-container",
-                id="text_ag_grid_outer",
-            ),
+            [
+                None,
+                html.Div(dash_ag_grid(data_frame=pd.DataFrame())(), id="text_ag_grid", className="table-container"),
+            ],
+            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
         )
@@ -143,19 +140,17 @@ class TestBuildAgGrid:
         ag_grid = ag_grid.build()
 
         expected_ag_grid = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(
-                        dash_ag_grid(
-                            id="underlying_ag_grid_id", data_frame=pd.DataFrame(), dashGridOptions={"pagination": True}
-                        )(),
-                        id="text_ag_grid",
-                    ),
-                ],
-                className="table-container",
-                id="text_ag_grid_outer",
-            ),
+            [
+                None,
+                html.Div(
+                    dash_ag_grid(
+                        data_frame=pd.DataFrame(), id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
+                    )(),
+                    id="text_ag_grid",
+                    className="table-container",
+                ),
+            ],
+            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
         )
