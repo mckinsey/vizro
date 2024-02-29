@@ -68,7 +68,7 @@ def dash_ag_grid(data_frame, **kwargs):
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
             },
-            "columnSize":"responsiveSizeToFit",
+            "columnSize": "responsiveSizeToFit",
         },
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,

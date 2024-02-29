@@ -118,7 +118,7 @@ class AgGrid(VizroBaseModel):
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id,className="ag-subcontainer")
+                    html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id, className="ag-subcontainer"),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
