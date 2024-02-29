@@ -6,7 +6,6 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.gapminder()
@@ -180,18 +179,6 @@ date_picker_page = vm.Page(
         ),
     ],
 )
-
-# test for DatePicker use in Parameter
-
-
-@capture("graph")
-def bar_with_highlight(data_frame, x, highlight_bar=None):
-    """Custom chart to test using DatePicker with Parameter."""
-    fig = px.bar(data_frame=data_frame, x=x)
-
-    fig["data"][0]["marker"]["color"] = ["orange" if c == highlight_bar else "blue" for c in fig["data"][0]["x"]]
-    return fig
-
 
 dashboard = vm.Dashboard(
     pages=[grid_interaction, grid_standard, grid_custom, date_picker_page],
