@@ -94,7 +94,7 @@ class AgGrid(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id",f"__input_{self.id}")
+        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
         # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
