@@ -47,13 +47,13 @@ class DatePicker(VizroBaseModel):
     _set_actions = _action_validator_factory("value")
 
     # Re-used validators
+    _validate_range = validator("range", allow_reuse=True, always=True, pre=True)(validate_date_picker_range)
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_range = validator("range", allow_reuse=True, pre=True)(validate_date_picker_range)
 
     def build(self):
         init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
-        additional_kwargs = {"allowSingleDateInRange": True} if self.range else {}
+        date_range_picker_kwargs = {"allowSingleDateInRange": True} if self.range else {}
 
         output = [
             Output(self.id, "value"),
@@ -89,7 +89,7 @@ class DatePicker(VizroBaseModel):
             dropdownPosition="bottom-start",
             clearable=False,
             disabledDates=self.max + datetime.timedelta(days=1) if self.max else None,
-            **additional_kwargs,
+            **date_range_picker_kwargs,
         )
 
         return html.Div(

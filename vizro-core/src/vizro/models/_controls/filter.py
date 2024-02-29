@@ -103,7 +103,8 @@ class Filter(VizroBaseModel):
     def _convert_column_type(self, data_frame):
         if is_string_dtype(data_frame[self.column]):
             if data_frame[self.column].str.contains(r"^\d{4}-\d{2}-\d{2}", regex=True).all():
-                data_frame[self.column] = pd.to_datetime(data_frame[self.column])
+                data_frame[self.column] = pd.to_datetime(data_frame[self.column], format="mixed")
+
         return data_frame
 
     def _set_column_type(self):

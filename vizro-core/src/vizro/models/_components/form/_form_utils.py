@@ -72,10 +72,15 @@ def validate_max(cls, max, values):
 
 def validate_range_value(cls, value, values):
     """Validates a value or range of values to ensure they lie within specified bounds (min/max)."""
+    EXPECTED_VALUE_LENGTH = 2
     if value is None:
         return value
 
-    lvalue, hvalue = (value[0], value[1]) if isinstance(value, list) else (value, value)
+    lvalue, hvalue = (
+        (value[0], value[1])
+        if isinstance(value, list) and len(value) == EXPECTED_VALUE_LENGTH
+        else (value[0], value[0]) if isinstance(value, list) and len(value) == 1 else (value, value)
+    )
 
     if (values["min"] is not None and not lvalue >= values["min"]) or (
         values["max"] is not None and not hvalue <= values["max"]
