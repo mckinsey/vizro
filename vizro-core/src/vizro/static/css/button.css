@@ -20,7 +20,6 @@
     ),
     var(--fill-active);
   color: var(--text-contrast-primary);
-  margin: 0;
   text-decoration-line: underline;
 }
 
