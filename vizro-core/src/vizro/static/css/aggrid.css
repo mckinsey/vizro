@@ -3,11 +3,9 @@
   --ag-background-color: var(--main-container-bg-color);
   --ag-foreground-color: var(--text-primary);
   --ag-odd-row-background-color: var(--main-container-bg-color);
-  --ag-header-foreground-color: var(
-    --text-secondary
-  ); /* Color of text and icons in the header */
-
-  --ag-data-color: var(--text-primary); /* Color of text in grid cells */
+  /* Text color for header */
+  --ag-header-foreground-color: var(--text-secondary);
+  --ag-data-color: var(--text-primary);
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-header-column-resize-handle-display: none;
   --ag-icon-font-family: aggridquartz;
@@ -126,34 +124,6 @@
 
 /* TODO: change background color when hovering over filter menu */
 
-/* Buttons */
-#page-container .ag-theme-quartz .ag-standard-button,
-#page-container .ag-theme-quartz-dark .ag-standard-button {
-  background: var(--fill-active);
-  border: none;
-  border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
-  color: var(--text-contrast-primary);
-  font-size: var(--text-size-02);
-  font-weight: var(--text-weight-semibold);
-  height: 32px;
-  letter-spacing: var(--letter-spacing-body-link-02);
-  line-height: var(--text-size-05);
-  padding: var(--spacing-01) var(--spacing-03);
-  text-transform: none;
-}
-
-#page-container .ag-theme-quartz .ag-standard-button:hover,
-#page-container .ag-theme-quartz-dark .ag-standard-button:hover {
-  background: linear-gradient(
-      var(--state-overlays-contrast-hover),
-      var(--state-overlays-contrast-hover)
-    ),
-    var(--fill-active);
-  color: var(--text-contrast-primary);
-  text-decoration-line: underline;
-}
-
 /* TODO: radio button remove blue */
 
 #page-container .ag-radio-button-input-wrapper {
@@ -162,4 +132,9 @@
 
 #page-container .ag-radio-button-input-wrapper:focus-within {
   box-shadow: none;
+}
+
+
+#page-container .ag-text-field-input::placeholder {
+  color: var(--text-secondary);
 }
