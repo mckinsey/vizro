@@ -1,29 +1,27 @@
 .ag-theme-quartz.vizro,
 .ag-theme-quartz-dark.vizro {
+  /* All variables with current important tag have no effect - need to understand why */
+  --ag-quartz-icon-hover-color: var(--main-container-bg-color) !important;
   --ag-active-color: var(--state-overlays-selected-hover);
   --ag-background-color: var(--main-container-bg-color);
   --ag-foreground-color: var(--text-primary);
   --ag-odd-row-background-color: var(--main-container-bg-color);
-  --ag-header-foreground-color: var(
-    --text-secondary
-  ); /* Text color for header */
-
+  --ag-header-foreground-color: var(--text-secondary);
   --ag-data-color: var(--text-primary);
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-header-column-resize-handle-display: none;
   --ag-icon-font-family: aggridquartz;
-  --ag-quartz-icon-hover-color: blue;
   --ag-icon-size: var(--text-size-02);
   --ag-row-height: 48px;
   --ag-header-height: 40px;
   --ag-borders: none;
+  --ag-border-radius: 0 !important;
+  --ag-border-color: transparent;
   --ag-row-border-style: solid;
   --ag-row-border-color: var(--border-subtle-alpha-01);
   --ag-row-border-width: 1px;
   --ag-selected-row-background-color: var(--state-overlays-selected);
-  --ag-checkbox-checked-color: var(
-    --text-primary
-  ); /* Has no effect - not sure why */
+  --ag-checkbox-checked-color: var(--text-primary) !important;
 }
 
 /* Header ------- */
@@ -85,12 +83,17 @@
   text-overflow: ellipsis;
 }
 
-#page-container .ag-filter-select .ag-picker-field-wrapper {
-  background-color: var(--field-enabled);
+/* Affects pagination */
+#page-container .ag-picker-field-wrapper {
   border: none;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
+  box-shadow: none;
   font-size: var(--text-size-02);
+}
+
+#page-container .ag-filter-select .ag-picker-field-wrapper {
+  background-color: var(--field-enabled);
+  box-shadow: var(--box-shadow-elevation-0);
 }
 
 #page-container .ag-select-list {
