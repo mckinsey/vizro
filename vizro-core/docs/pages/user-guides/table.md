@@ -77,9 +77,9 @@ Note that some defaults are set for some of the arguments (e.g. for `columnDefs`
           title: Example of a Dash AG Grid
         ```
     === "Result"
-        [![Table]][Table]
+        [![AGGrid]][AGGrid]
 
-    [Table]: ../../assets/user_guides/table/table.png
+    [AGGrid]: ../../assets/user_guides/table/aggrid.png
 
 ### Formatting columns
 
@@ -153,9 +153,9 @@ In the example below we select and format some columns of the gapminder dataset.
             title: Example of AG Grid with formatted columns
         ```
     === "Result"
-        [![Table2]][Table2]
+        [![AGGrid2]][AGGrid2]
 
-    [Table2]: ../../assets/user_guides/table/styled_table.png
+    [AGGrid2]: ../../assets/user_guides/table/formatted_aggrid.png
 
 #### Dates
 
@@ -169,7 +169,7 @@ No specific formatting is available for custom objects and strings, however you 
 to format e.g. displayed strings automatically.
 
 
-### Styling/Modifying the AG Grid
+### Styling and modifying the AG Grid
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find
 an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
@@ -289,9 +289,9 @@ There are many more ways to alter the grid beyond this showcase.
             title: Example of a Dash AG Grid
         ```
     === "Result"
-        [![Table2]][Table2]
+        [![AGGrid3]][AGGrid3]
 
-    [Table2]: ../../assets/user_guides/table/styled_table.png
+    [AGGrid3]: ../../assets/user_guides/table/styled_aggrid.png
 
 If the available arguments are not sufficient, there is always the option to create a [custom AG Grid callable](custom-tables.md).
 
