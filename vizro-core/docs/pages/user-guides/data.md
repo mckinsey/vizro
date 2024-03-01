@@ -43,7 +43,7 @@ Here `px.data.iris()` returns a Pandas DataFrame. We then pass this DataFrame to
 
 
 
-## Use a data connector
+## How to use a data connector
 
 You can also connect your charts with a data connector. To use a data connector with
 Vizro, you need:
@@ -56,7 +56,7 @@ Vizro, you need:
    This allows you to use this data connector
    in your dashboard.
 
-!!! example "Use a Data Connector"
+!!! example "Use a data connector"
     === "app.py"
         ```py linenums="1"  hl_lines="18"
         from vizro import Vizro
@@ -116,14 +116,14 @@ Vizro, you need:
     how Vizro knows which data connector to use.
 
 
-### Data connector with arguments
+### How to use a data connector with arguments
 
 You can also define a data connector with arguments. This is useful when you want to
 use the same data connector to load different data. For example, when you want to
 retrieve data from different tables in a database, you can define a data connector
 that accepts different SQL queries as arguments.
 
-!!! example "Use a Data Connector with Arguments"
+!!! example "Use a data connector with arguments"
     === "app.py (use lambda)"
         ```py linenums="1"
         from vizro import Vizro
@@ -188,11 +188,11 @@ that accepts different SQL queries as arguments.
     [DataConnector]: ../../assets/user_guides/data/data_selected_from_source.png
 
 
-### Kedro data catalog
+### Kedro integration
 
 If the data you are visualizing is a [`kedro_datasets.pandas`](https://docs.kedro.
-org/en/stable/kedro_datasets.html) type from a Kedro data catalog, you can leverage
-Vizro's [Kedro integration](integration.md#kedro) to connect your charts to the data catalog.
+org/en/stable/kedro_datasets.html) type from a Kedro data catalog, you can use
+Vizro's [Kedro integration](integration.md#kedro) to connect your charts to [Kedro's Data Catalog](https://docs.kedro.org/en/stable/data/index.html).
 
 If it is not a `kedro_datasets.pandas` type, you need to build a
 data connector to load the data from the data catalog and convert it to a Pandas

@@ -94,7 +94,11 @@ This is less helpful:
 
 Don't write this:
 
+<!-- vale off -->
+
 > To learn how to contribute to Vizro, see [here](https://vizro.readthedocs.io/en/stable/pages/development/contributing/).
+
+<!-- vale on -->
 
 ### Internal cross-referencing
 We use internal cross-references as follows:
