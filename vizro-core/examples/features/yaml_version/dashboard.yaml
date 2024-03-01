@@ -72,6 +72,16 @@ pages:
         type: filter
     title: Table
   - components:
+      - figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder_2007
+        title: Dash AG Grid
+        type: ag_grid
+    controls:
+      - column: continent
+        type: filter
+    title: AG Grid
+  - components:
       - text: |
           # Header level 1 <h1>
 
@@ -444,6 +454,7 @@ navigation:
         pages:
           Components:
             - Graphs
+            - AG Grid
             - Table
             - Cards
             - Button
