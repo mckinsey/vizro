@@ -76,6 +76,14 @@
   text-overflow: ellipsis;
 }
 
+/* Filter fields and pagination */
+#page-container .ag-picker-field-wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: var(--text-size-02);
+}
+
 #page-container .ag-filter-select .ag-picker-field-wrapper {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-0);
@@ -120,14 +128,6 @@
   height: 4px !important;
   max-height: 4px !important;
   min-height: 4px !important;
-}
-
-/* Filter fields and pagination */
-#page-container .ag-picker-field-wrapper {
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  font-size: var(--text-size-02);
 }
 
 .ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
