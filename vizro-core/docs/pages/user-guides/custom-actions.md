@@ -4,7 +4,7 @@ This guide demonstrates the usage of custom actions, a concept that shares simil
 If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [pre-defined action functions][vizro.actions], you can create your own custom action.
 Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#actions-chaining), and it can be triggered with one of many dashboard components.
 
-### Simple custom actions
+## Simple custom actions
 
 Custom actions enable you to implement your own action function. Simply do the following:
 
@@ -63,7 +63,7 @@ The following example shows how to create a custom action that postpones executi
         ```
 
 
-### Interacting with dashboard inputs and outputs
+## Interacting with dashboard inputs and outputs
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
 - `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`").
@@ -146,7 +146,7 @@ The following example shows how to create a custom action that shows the clicked
 
     [CustomAction]: ../../assets/user_guides/custom_actions/custom_action_inputs_outputs.png
 
-### Multiple return values
+## Multiple return values
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
 If there is a single `output` defined then the function return value is directly assigned to the component property.
 If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's normal flexibility in managing multiple return values.

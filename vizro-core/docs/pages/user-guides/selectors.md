@@ -4,7 +4,7 @@ This guide highlights different selectors that can be used in a dashboard. Selec
 
 The [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model accept the `selector` argument, where a selector model can be entered to choose how the user should input their choices for the respective models.
 
-## Categorical Selectors
+## Categorical selectors
 
 Within the categorical selectors, a clear distinction exists between multi-option and single-option selectors.
 For instance, the [`Checklist`][vizro.models.Checklist] functions as a multi-option selector by default while
@@ -28,7 +28,7 @@ For more details, kindly refer to the documentation of the underlying dash compo
     provide boolean values as options. In this case, you need to provide a string label for your boolean values as
     boolean values cannot be displayed properly as labels in the underlying dash components.
 
-## Numerical Selectors
+## Numerical selectors
 
 For more details, kindly refer to the documentation of the underlying dash components:
 

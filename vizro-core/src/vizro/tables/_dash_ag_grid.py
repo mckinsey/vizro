@@ -50,7 +50,7 @@ _DATA_TYPE_DEFINITIONS = {
 def dash_ag_grid(data_frame, **kwargs):
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults."""
     defaults = {
-        "className": "ag-theme-quartz vizro",
+        "className": "ag-theme-quartz-dark ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
         "rowData": data_frame.apply(
             lambda x: (
@@ -74,9 +74,9 @@ def dash_ag_grid(data_frame, **kwargs):
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
-            "domLayout": "autoHeight",
+            "pagination": True,
         },
-        "style": {"height": None},
+        "style": {"height": "100%"},
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dag.AgGrid(**kwargs)

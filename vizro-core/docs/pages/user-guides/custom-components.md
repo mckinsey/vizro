@@ -28,7 +28,7 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 [^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
-## Extend an existing component
+## How to extend an existing component
 ??? info "When to choose this strategy"
 
     You may want to use this strategy to:
@@ -147,7 +147,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
-## Entirely new component
+## How to create a new component
 
 ??? info "When to choose this strategy"
 
@@ -198,7 +198,7 @@ vm.Page.add_type("components", Jumbotron)
 ```
 
 
-??? example "Example of entirely new component"
+??? example "Example of new component creation"
 
     === "app.py"
         ``` py

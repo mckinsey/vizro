@@ -354,7 +354,7 @@ setting some defaults for some of the arguments to help with styling.
 
     [Table]: ../../assets/user_guides/table/table.png
 
-### Styling/Modifying the Dash DataTable
+### Styling and modifying the Dash DataTable
 
 As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
