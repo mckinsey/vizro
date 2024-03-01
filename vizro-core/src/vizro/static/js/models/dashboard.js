@@ -7,7 +7,9 @@ export function _update_dashboard_theme(checked) {
 }
 
 export function _update_ag_grid_theme(checked) {
-  return checked ? "ag-theme-quartz ag-theme-vizro" : "ag-theme-quartz-dark ag-theme-vizro";
+  return checked
+    ? "ag-theme-quartz ag-theme-vizro"
+    : "ag-theme-quartz-dark ag-theme-vizro";
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
