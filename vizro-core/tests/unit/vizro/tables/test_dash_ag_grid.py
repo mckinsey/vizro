@@ -26,7 +26,7 @@ class TestDashAgGrid:
                     {"cat": "c", "int": 6, "float": 9.1, "date": "2021-01-03"},
                 ],
             ),
-            keys_to_strip={"defaultColDef", "dashGridOptions"},
+            keys_to_strip={"className", "defaultColDef", "dashGridOptions", "style"},
         )
         # we could test other properties such as defaultColDef,
         # but this would just test our chosen defaults, and no functionality really

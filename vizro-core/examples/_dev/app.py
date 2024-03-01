@@ -1,11 +1,13 @@
 """Example to show dashboard configuration."""
 
+import random
+import string
+
 import numpy as np
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.gapminder()
@@ -30,53 +32,6 @@ grid_interaction = vm.Page(
                 id="dash_ag_grid_1",
                 data_frame=px.data.gapminder(),
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
-        ),
-        vm.Table(
-            id="table_country",
-            title="Click on a cell",
-            figure=dash_data_table(
-                id="dash_data_table_country",
-                data_frame=df,
-                columns=[{"id": col, "name": col} for col in df.columns],
-                sort_action="native",
-                style_cell={"textAlign": "left"},
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
-        ),
-        vm.Graph(
-            id="line_country",
-            figure=px.line(
-                df_concat,
-                title="Country vs. Continent",
-                x="year",
-                y="gdpPercap",
-                color="color",
-                labels={"year": "Year", "data": "Data", "gdpPercap": "GDP per capita"},
-                color_discrete_map={"Country": "#afe7f9", "Continent": "#003875"},
-                markers=True,
-                hover_name="country",
-            ),
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(
-                    function=export_data(
-                        targets=["line_country"],
-                    )
-                ),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False, title="Select continent")),
-        vm.Filter(column="year", selector=vm.RangeSlider(title="Select timeframe", step=1, marks=None)),
-        vm.Parameter(
-            targets=["line_country.y"],
-            selector=vm.Dropdown(
-                options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose y-axis"
-            ),
         ),
     ],
 )
@@ -92,10 +47,10 @@ grid_standard = vm.Page(
     title="AG Grid Default",
     components=[
         vm.AgGrid(
+            title="AG Grid - Default",
             figure=dash_ag_grid(
-                id="dash_ag_grid_2",
+                # id="dash_ag_grid_2",
                 data_frame=df2,
-                dashGridOptions={"pagination": True},
             ),
         ),
     ],
@@ -105,6 +60,7 @@ grid_custom = vm.Page(
     title="AG Grid Custom",
     components=[
         vm.AgGrid(
+            title="Custom AG Grid",
             figure=dash_ag_grid(
                 id="dash_ag_grid_3",
                 data_frame=df2,
@@ -119,15 +75,39 @@ grid_custom = vm.Page(
                         "valueFormatter": {"function": "d3.format('.^30')(params.value)"},
                     },
                 ],
+                defaultColDef={"editable": True},
+                # dashGridOptions = {"pagination": False},
             ),
         ),
     ],
 )
 
+num_rows = 100
+num_columns = 20
+column_names = ["Column_" + str(i) for i in range(num_columns)]
+data = {}
+for column in column_names:
+    data[column] = ["".join(random.choices(string.ascii_letters, k=random.randint(5, 15))) for _ in range(num_rows)]
+df_long = pd.DataFrame(data)
+
+grid_long = vm.Page(
+    title="AG Grid Long",
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(id="dash_ag_grid_4", data_frame=df_long), title="AG Grid - long"),
+    ],
+)
+
+table_long = vm.Page(
+    title="Table Long",
+    components=[
+        vm.Table(figure=dash_data_table(id="dash_table_5", data_frame=df_long)),
+    ],
+)
+
 
 dashboard = vm.Dashboard(
-    pages=[grid_interaction, grid_standard, grid_custom],
+    pages=[grid_interaction, grid_standard, grid_custom, grid_long, table_long],
 )
 
 if __name__ == "__main__":
-    Vizro(assets_folder="../assets").build(dashboard).run()
+    Vizro().build(dashboard).run()

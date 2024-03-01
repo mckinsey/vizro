@@ -86,6 +86,7 @@
     0px 2px 4px -1px rgba(20, 23, 33, 0.88);
   --fill-subtle: var(--fill-dark-mode-subtle);
   --border-subtle-alpha-01: var(--border-dark-mode-subtle-alpha-01);
+  --border-subtle-alpha-02: var(--border-dark-mode-subtle-alpha-02);
   --status-success: var(--status-dark-mode-success);
   --tags-text-color: var(--tags-dark-mode-text-color);
   --tooltip-text-primary: rgba(20, 23, 33, 0.88);
@@ -151,6 +152,7 @@
     0px 2px 4px -1px rgba(20, 23, 33, 0.08);
   --fill-subtle: var(--fill-light-mode-subtle);
   --border-subtle-alpha-01: var(--border-light-mode-subtle-alpha-01);
+  --border-subtle-alpha-02: var(--border-light-mode-subtle-alpha-02);
   --status-success: var(--status-light-mode-success);
   --tags-text-color: var(--tags-light-mode-text-color);
   --tooltip-text-primary: rgba(255, 255, 255, 0.88);
