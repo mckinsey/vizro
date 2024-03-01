@@ -127,7 +127,7 @@ column = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
 row = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5]
 value = ["1", "7", "3", "5", "2", "10", "9", "1", "3", "7", "5", "8", "2", "9", "1", "2", "7", "5", "3", "2"]
 group = ["A", "B", "C", "D", "E", "E", "D", "C", "B", "A", "A", "E", "C", "B", "D", "A", "D", "B", "C", "E"]
-date_time = [
+date_time_str = [
     "2023-01-01 20:04:01",
     "2023-02-02",
     "2023-03-03",
@@ -149,7 +149,7 @@ date_time = [
     "2024-07-01",
     "2024-07-02",
 ]
-date_time_new = [
+date_time_date = [
     datetime.datetime(2023, 1, 1).date(),
     datetime.datetime(2023, 2, 2).date(),
     datetime.datetime(2023, 3, 3).date(),
@@ -171,8 +171,30 @@ date_time_new = [
     datetime.datetime(2024, 7, 1).date(),
     datetime.datetime(2024, 7, 2).date(),
 ]
+date_time_time = [
+    datetime.datetime(2023, 1, 1),
+    datetime.datetime(2023, 2, 2),
+    datetime.datetime(2023, 3, 3),
+    datetime.datetime(2023, 4, 4),
+    datetime.datetime(2023, 5, 5),
+    datetime.datetime(2023, 6, 6),
+    datetime.datetime(2023, 7, 7),
+    datetime.datetime(2023, 8, 8),
+    datetime.datetime(2023, 9, 9),
+    datetime.datetime(2023, 10, 10),
+    datetime.datetime(2023, 11, 11),
+    datetime.datetime(2023, 12, 12),
+    datetime.datetime(2024, 1, 1),
+    datetime.datetime(2024, 2, 2),
+    datetime.datetime(2024, 3, 3),
+    datetime.datetime(2024, 4, 4),
+    datetime.datetime(2024, 5, 5),
+    datetime.datetime(2024, 6, 6),
+    datetime.datetime(2024, 7, 1),
+    datetime.datetime(2024, 7, 2),
+]
 
-date_time_2 = [
+date_time_iso = [
     datetime.date(2023, 1, 1).isoformat(),
     datetime.date(2023, 2, 2).isoformat(),
     datetime.date(2023, 3, 3).isoformat(),
@@ -201,7 +223,7 @@ data["COLUMN1"] = column
 data["ROW1"] = row
 data["VALUE"] = value
 data["GROUP"] = group
-data["DATE_TIME"] = date_time_new
+data["DATE_TIME"] = date_time_date
 
 # data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
