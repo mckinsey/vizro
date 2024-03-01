@@ -1,10 +1,7 @@
-.ag-theme-quartz.vizro,
-.ag-theme-quartz-dark.vizro {
-  /* All variables with current important tag have no effect - need to understand why */
-  --ag-quartz-icon-hover-color: var(--main-container-bg-color) !important;
+.ag-theme-quartz.ag-theme-vizro,
+.ag-theme-quartz-dark.ag-theme-vizro {
   --ag-active-color: var(--state-overlays-selected-hover);
   --ag-background-color: var(--main-container-bg-color);
-  --ag-foreground-color: var(--text-primary);
   --ag-odd-row-background-color: var(--main-container-bg-color);
   --ag-header-foreground-color: var(--text-secondary);
   --ag-data-color: var(--text-primary);
@@ -21,7 +18,7 @@
   --ag-row-border-color: var(--border-subtle-alpha-01);
   --ag-row-border-width: 1px;
   --ag-selected-row-background-color: var(--state-overlays-selected);
-  --ag-checkbox-checked-color: var(--text-primary) !important;
+  --ag-checkbox-checked-color: var(--text-primary);
 }
 
 /* Header ------- */
@@ -83,14 +80,6 @@
   text-overflow: ellipsis;
 }
 
-/* Affects pagination */
-#page-container .ag-picker-field-wrapper {
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  font-size: var(--text-size-02);
-}
-
 #page-container .ag-filter-select .ag-picker-field-wrapper {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-0);
@@ -132,7 +121,22 @@
   padding: var(--spacing-02) var(--spacing-01);
 }
 
-/* Can be controlled via --ag-checkbox-checked-color, but somehow the line below is also required */
-#page-container .ag-radio-button-input-wrapper.ag-checked::after {
-  color: var(--text-primary);
+/* Scroll Bar */
+#page-container .ag-body-horizontal-scroll-viewport {
+  height: 4px !important;
+  max-height: 4px !important;
+  min-height: 4px !important;
+}
+
+/* Pagination */
+#page-container .ag-picker-field-wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: var(--text-size-02);
+}
+
+.ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
+.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button {
+  --ag-quartz-icon-hover-color: transparent;
 }
