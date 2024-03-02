@@ -100,6 +100,16 @@ class TestPreBuildMethod:
         ):
             parameter.pre_build()
 
+    def test_set_datepicker_values_invalid(self):
+        parameter = Parameter(targets=["scatter_chart.x"], selector=vm.DatePicker())
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        with pytest.raises(
+            TypeError,
+            match=f"{vm.DatePicker().type} requires the arguments 'min' and 'max' when used within Parameter.",
+        ):
+            parameter.pre_build()
+
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestParameterBuild:

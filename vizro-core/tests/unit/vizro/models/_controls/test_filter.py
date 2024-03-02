@@ -1,3 +1,5 @@
+from datetime import date
+
 import pandas as pd
 import pytest
 import vizro.models as vm
@@ -98,7 +100,7 @@ class TestPreBuildMethod:
             filter.pre_build()
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", "categorical"), ("year", "numerical"), ("lifeExp", "numerical")]
+        "test_input,expected", [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")]
     )
     def test_set_column_type(self, test_input, expected, managers_one_page_two_graphs):
         filter = vm.Filter(column=test_input)
@@ -107,7 +109,7 @@ class TestPreBuildMethod:
         assert filter._column_type == expected
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", vm.Dropdown), ("year", vm.RangeSlider), ("lifeExp", vm.RangeSlider)]
+        "test_input,expected", [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)]
     )
     def test_set_selector(self, test_input, expected, managers_one_page_two_graphs):
         filter = vm.Filter(column=test_input)
@@ -123,6 +125,16 @@ class TestPreBuildMethod:
         with pytest.raises(
             ValueError,
             match=f"Chosen selector {test_input.type} is not compatible with categorical column '{filter.column}'.",
+        ):
+            filter.pre_build()
+
+    def test_set_datepicker_values_incompatible_column_type(self, managers_one_page_two_graphs):
+        filter = vm.Filter(column="country", selector=vm.DatePicker())
+        model_manager["test_page"].controls = [filter]
+        with pytest.raises(
+            ValueError,
+            match=f"Chosen selector {vm.DatePicker().type} "
+            f"is not compatible with categorical column '{filter.column}'.",
         ):
             filter.pre_build()
 
@@ -147,6 +159,13 @@ class TestPreBuildMethod:
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
+    def test_set_datepicker_values_defaults_min_max_none(self, gapminder_with_datetime, managers_one_page_two_graphs):
+        filter = vm.Filter(column="year", selector=vm.DatePicker())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == gapminder_with_datetime.year.min().to_pydatetime().date()
+        assert filter.selector.max == gapminder_with_datetime.year.max().to_pydatetime().date()
+
     @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
     def test_set_slider_values_defaults_min_max_fix(self, test_input, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=test_input)
@@ -154,6 +173,13 @@ class TestPreBuildMethod:
         filter.pre_build()
         assert filter.selector.min == 3
         assert filter.selector.max == 5
+
+    def test_set_datepicker_values_defaults_min_max_fix(self, managers_one_page_two_graphs):
+        filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == date(1952, 1, 1)
+        assert filter.selector.max == date(2007, 1, 1)
 
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
     def test_set_categorical_selectors_options_defaults_options_none(
@@ -201,6 +227,7 @@ class TestFilterBuild:
             ("continent", vm.RadioItems()),
             ("pop", vm.RangeSlider()),
             ("pop", vm.Slider()),
+            ("year", vm.DatePicker()),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
