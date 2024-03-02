@@ -109,10 +109,11 @@ def set_default_marks(cls, marks, values):
 
 
 def validate_date_picker_range(cls, range, values):
-    if range and values["value"] and (isinstance(values["value"], (date, str)) or len(values["value"]) == 1):
+    #
+    if range and values.get("value") and (isinstance(values["value"], (date, str)) or len(values["value"]) == 1):
         raise ValueError("Please set range=False if providing single date value.")
 
-    if not range and isinstance(values["value"], list):
+    if not range and isinstance(values.get("value"), list):
         raise ValueError("Please set range=True if providing list of date values.")
 
     return range
