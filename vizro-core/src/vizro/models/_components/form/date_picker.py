@@ -62,7 +62,6 @@ class DatePicker(VizroBaseModel):
         inputs = [
             Input(self.id, "value"),
             State(f"{self.id}_input_store", "data"),
-            State(f"{self.id}_callback_data", "data"),
         ]
 
         clientside_callback(
@@ -94,7 +93,6 @@ class DatePicker(VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Store(f"{self.id}_callback_data", data=init_value),
                 html.Label(self.title, htmlFor=self.id) if self.title else None,
                 date_picker,
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),

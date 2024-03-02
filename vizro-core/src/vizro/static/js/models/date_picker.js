@@ -1,4 +1,4 @@
-export function _update_date_picker_values(value, input_store, self_data) {
+export function _update_date_picker_values(value, input_store) {
   if (
     value === null ||
     dash_clientside.callback_context.triggered.length === 0
