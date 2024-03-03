@@ -15,6 +15,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 gapminder = px.data.gapminder()
+gapminder_with_dt = px.data.gapminder(datetimes=True)
 tips = px.data.tips()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
@@ -365,19 +366,22 @@ selectors = vm.Page(
         * RadioItems (**categorical** single option selector only)
         * RangeSlider (**numerical** multi option selector only)
         * Slider (**numerical** single option selector only)
+        * DatePicker(**temporal** multi and single option selector)
 
         """
         ),
         vm.Table(
-            id="table-gapminder", figure=dash_data_table(data_frame=gapminder, page_size=10), title="Gapminder Data"
+            id="table-gapminder",
+            figure=dash_data_table(data_frame=gapminder_with_dt, page_size=10),
+            title="Gapminder Data",
         ),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
     ],
     controls=[
         vm.Filter(
             targets=["table-gapminder"],
-            column="year",
-            selector=vm.RangeSlider(title="Range Slider (Gapminder - year)"),
+            column="lifeExp",
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)"),
         ),
         vm.Filter(
             targets=["table-gapminder"],
@@ -403,6 +407,9 @@ selectors = vm.Page(
             targets=["table-tips"],
             column="size",
             selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"], column="year", selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
         ),
     ],
 )

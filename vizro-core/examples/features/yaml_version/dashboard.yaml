@@ -22,6 +22,7 @@ pages:
           * RadioItems
           * RangeSlider
           * Slider
+          * DatePicker
         href: /filters
         type: card
       - text: |
@@ -367,10 +368,11 @@ pages:
           * RadioItems (**categorical** single option selector only)
           * RangeSlider (**numerical** multi option selector only)
           * Slider (**numerical** single option selector only)
+          * DatePicker(**temporal** multi and single option selector)
         type: card
       - figure:
           _target_: dash_data_table
-          data_frame: gapminder
+          data_frame: gapminder_with_dt
           page_size: 10
         id: table-gapminder
         title: Gapminder Data
@@ -383,9 +385,9 @@ pages:
         title: Tips Data
         type: table
     controls:
-      - column: year
+      - column: lifeExp
         selector:
-          title: Range Slider (Gapminder - year)
+          title: Range Slider (Gapminder - lifeExp)
           type: range_slider
         targets:
           - table-gapminder
@@ -428,6 +430,13 @@ pages:
           value: 2
         targets:
           - table-tips
+        type: filter
+      - column: year
+        selector:
+          title: Date Picker (Gapminder - year)
+          type: date_picker
+        targets:
+          - table-gapminder
         type: filter
     layout:
       row_min_height: 170px
