@@ -202,26 +202,26 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
 
-Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
+Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
-!!! example "Table `filter_interaction`"
+!!! example "AgGrid `filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.actions import filter_interaction
-        from vizro.tables import dash_data_table
-
+        from vizro.tables import dash_ag_grid
+        
         df_gapminder = px.data.gapminder().query("year == 2007")
-
+        
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
                     title="Filter interaction",
                     components=[
-                        vm.Table(
-                            figure=dash_data_table(id="dash_datatable_id", data_frame=df_gapminder),
+                        vm.AgGrid(
+                            figure=dash_ag_grid(data_frame=df_gapminder),
                             actions=[
                                 vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
                             ],
@@ -241,7 +241,7 @@ Here is an example of how to configure a chart interaction when the source is a 
                 ),
             ]
         )
-
+        
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
@@ -250,11 +250,10 @@ Here is an example of how to configure a chart interaction when the source is a 
         # See yaml_version example
         pages:
           - components:
-            - type: table
+            - type: ag_grid
               figure:
-                _target_: dash_data_table
+                _target_: dash_ag_grid
                 data_frame: gapminder_2007
-                id: dash_datatable_id
               actions:
                - function:
                     _target_: filter_interaction
