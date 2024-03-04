@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def _process_callable_data_frame(captured_callable, values):
+    raise ValueError("This function should not be called. It should be overridden in the child class.")
     data_frame = captured_callable["data_frame"]
 
     # Enable running e.g. px.scatter("iris") from the Python API and specification of "data_frame": "iris" through JSON.

@@ -43,16 +43,16 @@ class Table(VizroBaseModel):
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
-    # Re-used validators
-    set_actions = _action_validator_factory("active_cell")
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
-
+    # Validators
     @validator("figure")
     def check_callable_mode(cls, figure):
         mode = "table"
         if mode != figure._mode:
             raise ValueError(f"CapturedCallable mode mismatch. Expected {mode} but got {figure._mode}.")
         return figure
+
+    set_actions = _action_validator_factory("active_cell")
+    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

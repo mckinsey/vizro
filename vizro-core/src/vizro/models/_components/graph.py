@@ -43,16 +43,16 @@ class Graph(VizroBaseModel):
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
 
-    # Re-used validators
-    _set_actions = _action_validator_factory("clickData")
-    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
-
+    # Validators
     @validator("figure")
     def check_callable_mode(cls, figure):
         mode = "graph"
         if mode != figure._mode:
             raise ValueError(f"CapturedCallable mode mismatch. Expected {mode} but got {figure._mode}.")
         return figure
+
+    _set_actions = _action_validator_factory("clickData")
+    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
