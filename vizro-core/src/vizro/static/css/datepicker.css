@@ -1,10 +1,10 @@
 .datepicker .mantine-Input-wrapper {
-  height: 32px;
+  height: var(--spacing-08);
   font-family: unset;
 }
 
 .datepicker .mantine-DateRangePicker-input {
-  height: 32px;
+  height: var(--spacing-08);
   border-radius: 0;
   border: none;
   box-shadow: var(--box-shadow-elevation-0);
@@ -12,6 +12,8 @@
   background-color: var(--field-enabled);
   color: var(--text-secondary);
   padding: 0 var(--spacing-02);
+  line-height: var(--spacing-04);
+  min-height: var(--spacing-08);
 }
 
 .datepicker .mantine-DateRangePicker-input:hover {
@@ -21,7 +23,7 @@
 .datepicker .mantine-DateRangePicker-dropdown {
   border-radius: 0;
   border: none;
-  padding: 16px 12px;
+  padding: var(--spacing-04) var(--spacing-03);
   background: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-1);
 
