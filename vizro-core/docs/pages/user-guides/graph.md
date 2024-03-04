@@ -18,7 +18,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without
     a `data_frame` argument (e.g. the [`imshow` chart](https://plotly.com/python/imshow/)), please refer to our
     [guide on custom charts](custom-charts.md).
-    . 
+    .
 
 
 
