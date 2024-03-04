@@ -1,4 +1,4 @@
-.datepicker-body .mantine-DateRangePicker-input {
+.datepicker .mantine-DateRangePicker-input {
   font-family: unset;
   border-radius: 0;
   border: none;
@@ -7,7 +7,7 @@
   font-size: var(--text-size-02);
 }
 
-.datepicker-body .mantine-DateRangePicker-dropdown {
+.datepicker .mantine-DateRangePicker-dropdown {
   border-radius: 0;
   border: none;
   padding: 16px 12px;
@@ -16,11 +16,11 @@
 
 }
 
-.datepicker-body .mantine-DateRangePicker-cell {
+.datepicker .mantine-DateRangePicker-cell {
   border: none;
 }
 
-.datepicker-body .mantine-DateRangePicker-day {
+.datepicker .mantine-DateRangePicker-day {
   background: var(--field-enabled);
   border-radius: 0;
   color: var(--text-secondary);
@@ -28,17 +28,17 @@
 }
 
 
-.datepicker-body .mantine-DateRangePicker-day[data-in-range] {
+.datepicker .mantine-DateRangePicker-day[data-in-range] {
   background: var(--state-overlays-selected);
   color: var(--text-primary);
 }
 
-.datepicker-body .mantine-DateRangePicker-day[data-selected] {
+.datepicker .mantine-DateRangePicker-day[data-selected] {
   background: var(--state-overlays-selected-inverse);
   color: var(--text-contrast-primary);
   text-decoration: underline;
 }
 
-.datepicker-body .mantine-DateRangePicker-day[data-outside] {
+.datepicker .mantine-DateRangePicker-day[data-outside] {
   color: var(--text-disabled);
 }
