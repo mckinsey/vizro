@@ -44,7 +44,7 @@ _PageDivsType = TypedDict(
     "_PageDivsType",
     {
         "dashboard-title": html.Div,
-        "settings": html.Div,
+     #   "settings": html.Div,
         "page-title": html.H2,
         "nav-bar": html.Div,
         "nav-panel": html.Div,
@@ -174,7 +174,9 @@ class Dashboard(VizroBaseModel):
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+            [dashboard_title,
+     #        settings,
+             page_title, nav_bar, nav_panel, control_panel, page_components, logo]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
@@ -185,10 +187,10 @@ class Dashboard(VizroBaseModel):
         right_header_divs = [page_divs["page-title"]]
 
         # Apply different container position logic based on condition
-        if _all_hidden(page_header_divs):
-            right_header_divs.append(page_divs["settings"])
-        else:
-            page_header_divs.append(page_divs["settings"])
+       # if _all_hidden(page_header_divs):
+       #     right_header_divs.append(page_divs["settings"])
+       # else:
+       #     page_header_divs.append(page_divs["settings"])
 
         collapsable_icon = (
             dmc.Tooltip(
