@@ -1,15 +1,13 @@
 """Example to show dashboard configuration."""
 
 import datetime
-import random
-import string
 
 import numpy as np
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 df = px.data.gapminder()
 df_mean = (
@@ -23,16 +21,11 @@ df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("s
 df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
 
 
-
 df2 = px.data.stocks()
 df2["date_as_datetime"] = pd.to_datetime(df2["date"])
 df2["date_str"] = df2["date"].astype("str")
 df2["perc_from_float"] = np.random.rand(len(df2))
 df2["random"] = np.random.uniform(-100000.000, 100000.000, len(df2))
-
-
-
-
 
 
 # CREATE FAKE DATA
@@ -158,8 +151,6 @@ date_picker_page = vm.Page(
         ),
     ],
 )
-
-
 
 
 dashboard = vm.Dashboard(pages=[date_picker_page])

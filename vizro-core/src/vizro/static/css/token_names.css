@@ -78,7 +78,7 @@
   --state-overlays-dark-mode-enable: rgba(255, 255, 255, 0);
   --state-overlays-dark-mode-hover: rgba(255, 255, 255, 0.04);
   --state-overlays-dark-mode-selected: rgba(255, 255, 255, 0.1);
-  --state-overlays-dark-mode-selected-inverse: #fff;
+  --state-overlays-dark-mode-selected-inverse: #ffffff;
   --state-overlays-dark-mode-selected-hover: rgba(255, 255, 255, 0.16);
   --state-overlays-light-mode-active: rgba(20, 23, 33, 0.12);
   --state-overlays-light-mode-enable: rgba(20, 23, 33, 0);
