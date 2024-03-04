@@ -16,6 +16,10 @@
 
 }
 
+.datepicker .mantine-DateRangePicker-weekdayCell {
+  padding: var(--spacing-02);
+}
+
 .datepicker .mantine-DateRangePicker-cell {
   border: none;
 }
