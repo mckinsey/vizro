@@ -15,7 +15,8 @@ classifiers = [
   "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
-  "dash>=2.14.1",  # 2.14.1 needed for compatibility with werkzeug
+  # Temporarily set an upper limit on dash: https://github.com/plotly/dash/issues/2778
+  "dash>=2.14.1, <2.16.0",  # 2.14.1 needed for compatibility with werkzeug
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas",
