@@ -35,7 +35,7 @@ selectors = vm.Page(
         ),
         vm.Filter(
             column="year",
-            selector=vm.RangeSlider(title="Range Slider Label"),
+            selector=vm.RangeSlider(title="Range Slider Label", step=1, marks=None),
         ),
         vm.Filter(
             column="year",
@@ -43,11 +43,11 @@ selectors = vm.Page(
         ),
         vm.Filter(
             column="year",
-            selector=vm.RangeSlider(title="Range Slider Label", step=5),
+            selector=vm.RangeSlider(title="Range Slider Label", step=10),
         ),
         vm.Filter(
             column="year",
-            selector=vm.Slider(title="Slider Label", step=5),
+            selector=vm.Slider(title="Slider Label", step=10),
         ),
         vm.Filter(
             column="continent",
