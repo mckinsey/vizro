@@ -1,3 +1,5 @@
+"""Dev example of filter interaction with AgGrid and Graph components."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
