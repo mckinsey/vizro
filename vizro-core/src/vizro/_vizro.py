@@ -106,6 +106,11 @@ class Vizro:
             if hasattr(model, "pre_build"):
                 model.pre_build()
 
+        for model_id in set(model_manager):
+            model = model_manager[model_id]
+            if hasattr(model, "pre_build_action"):
+                model.pre_build_action()
+
     @staticmethod
     def _reset():
         """Private method that clears all state in the `Vizro` app."""

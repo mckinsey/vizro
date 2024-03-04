@@ -12,6 +12,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 import vizro.actions
+from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -49,18 +50,18 @@ class Action(VizroBaseModel):
     # require, and make the code here look up the appropriate validation using the function as key
     # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
     # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    @validator("function")
-    def validate_predefined_actions(cls, function):
-        if function._function.__name__ == "export_data":
-            file_format = function._arguments.get("file_format")
-            if file_format not in [None, "csv", "xlsx"]:
-                raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
-            if file_format == "xlsx":
-                if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-                    raise ModuleNotFoundError(
-                        "You must install either openpyxl or xlsxwriter to export to xlsx format."
-                    )
-        return function
+    # @validator("function")
+    # def validate_predefined_actions(cls, function):
+    #     if function._function.__name__ == "export_data":
+    #         file_format = function._arguments.get("file_format")
+    #         if file_format not in [None, "csv", "xlsx"]:
+    #             raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
+    #         if file_format == "xlsx":
+    #             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
+    #                 raise ModuleNotFoundError(
+    #                     "You must install either openpyxl or xlsxwriter to export to xlsx format."
+    #                 )
+    #     return function
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
@@ -77,8 +78,14 @@ class Action(VizroBaseModel):
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         callback_inputs: Union[List[State], Dict[str, State]]
+        # TODO: Refactor the following lines to:
+        #       `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
+        # TODO: After refactoring that's mentioned above, test overwriting of the predefined action.
+        #       (by adding a new inputs/outputs to the overwritten action and check if it's working as expected)
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
+        elif hasattr(self.function, "inputs") and self.function.inputs:
+            callback_inputs = self.function.inputs
         else:
             callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
@@ -91,10 +98,15 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
+        elif hasattr(self.function, "outputs") and self.function.outputs:
+            callback_outputs = self.function.outputs
         else:
             callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
-        action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
+        if hasattr(self.function, "components") and self.function.components:
+            action_components = self.function.components
+        else:
+            action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
 
@@ -152,6 +164,11 @@ class Action(VizroBaseModel):
             List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
 
         """
+        # Consider sending the entire action object
+        self.function._action_id = self.id
+        if hasattr(self.function, "_post_init"):
+            self.function._post_init()
+
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {
             "external": external_callback_inputs,
