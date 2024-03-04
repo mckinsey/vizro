@@ -1,10 +1,21 @@
-.datepicker .mantine-DateRangePicker-input {
+.datepicker .mantine-Input-wrapper {
+  height: 32px;
   font-family: unset;
+}
+
+.datepicker .mantine-DateRangePicker-input {
+  height: 32px;
   border-radius: 0;
   border: none;
-  color: var(--text-primary);
   box-shadow: var(--box-shadow-elevation-0);
   font-size: var(--text-size-02);
+  background-color: var(--field-enabled);
+  color: var(--text-secondary);
+  padding: 0 var(--spacing-02);
+}
+
+.datepicker .mantine-DateRangePicker-input:hover {
+  color: var(--text-primary);
 }
 
 .datepicker .mantine-DateRangePicker-dropdown {
@@ -15,9 +26,28 @@
   box-shadow: var(--box-shadow-elevation-1);
 
 }
+.datepicker .mantine-UnstyledButton-root {
+  color: var(--text-secondary);
+  font-family: unset;
+  font-weight: 400;
+  border-radius: 0;
+}
 
-.datepicker .mantine-DateRangePicker-weekdayCell {
+.datepicker .mantine-UnstyledButton-root:hover {
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.datepicker .mantine-DateRangePicker-monthPickerControl:hover {
+  background: var(--state-overlays-hover);
+  color: var(--text-primary);
+}
+
+
+.datepicker .mantine-DateRangePicker-weekday {
+  font-family: unset;
   padding: var(--spacing-02);
+  color: var(--text-secondary);
 }
 
 .datepicker .mantine-DateRangePicker-cell {
@@ -31,18 +61,25 @@
   font-family: unset;
 }
 
+.datepicker .mantine-DateRangePicker-day:hover, .datepicker .mantine-DateRangePicker-day:focus-visible {
+  background: var(--state-overlays-hover);
+}
+
+ .datepicker .mantine-DateRangePicker-day:focus-visible {
+  border: 2px solid var(--focus-focus);
+}
+
+.datepicker .mantine-DateRangePicker-day[data-outside] {
+  color: var(--text-disabled);
+}
 
 .datepicker .mantine-DateRangePicker-day[data-in-range] {
   background: var(--state-overlays-selected);
   color: var(--text-primary);
 }
 
-.datepicker .mantine-DateRangePicker-day[data-selected] {
+.datepicker .mantine-DateRangePicker-day[data-selected], .datepicker .mantine-DateRangePicker-monthPickerControlActive {
   background: var(--state-overlays-selected-inverse);
   color: var(--text-contrast-primary);
   text-decoration: underline;
-}
-
-.datepicker .mantine-DateRangePicker-day[data-outside] {
-  color: var(--text-disabled);
 }
