@@ -23,7 +23,7 @@
 .datepicker .mantine-DateRangePicker-dropdown {
   border-radius: 0;
   border: none;
-  padding: var(--spacing-04) var(--spacing-03);
+  padding: var(--spacing-04) 11px;  /*11px otherwise not aligned with controls*/
   background: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-1);
 
@@ -36,11 +36,6 @@
 }
 
 .datepicker .mantine-UnstyledButton-root:hover {
-  color: var(--text-primary);
-  background: transparent;
-}
-
-.datepicker .mantine-DateRangePicker-monthPickerControl:hover {
   background: var(--state-overlays-hover);
   color: var(--text-primary);
 }
@@ -65,10 +60,8 @@
 
 .datepicker .mantine-DateRangePicker-day:hover, .datepicker .mantine-DateRangePicker-day:focus-visible {
   background: var(--state-overlays-hover);
-}
-
- .datepicker .mantine-DateRangePicker-day:focus-visible {
-  border: 2px solid var(--focus-focus);
+  border: none;
+  outline: none;
 }
 
 .datepicker .mantine-DateRangePicker-day[data-outside] {
@@ -80,8 +73,13 @@
   color: var(--text-primary);
 }
 
-.datepicker .mantine-DateRangePicker-day[data-selected], .datepicker .mantine-DateRangePicker-monthPickerControlActive {
+.datepicker .mantine-DateRangePicker-day[data-selected], .datepicker .mantine-DateRangePicker-yearPickerControlActive, .datepicker .mantine-DateRangePicker-monthPickerControlActive {
   background: var(--state-overlays-selected-inverse);
   color: var(--text-contrast-primary);
   text-decoration: underline;
+}
+
+.datepicker .mantine-DateRangePicker-calendarHeader .mantine-UnstyledButton-root:hover {
+  color: var(--text-primary);
+  background: transparent;
 }
