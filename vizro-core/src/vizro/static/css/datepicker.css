@@ -1,0 +1,44 @@
+.datepicker-body .mantine-DateRangePicker-input {
+  font-family: unset;
+  border-radius: 0;
+  border: none;
+  color: var(--text-primary);
+  box-shadow: var(--box-shadow-elevation-0);
+  font-size: var(--text-size-02);
+}
+
+.datepicker-body .mantine-DateRangePicker-dropdown {
+  border-radius: 0;
+  border: none;
+  padding: 16px 12px;
+  background: var(--field-enabled);
+  box-shadow: var(--box-shadow-elevation-1);
+
+}
+
+.datepicker-body .mantine-DateRangePicker-cell {
+  border: none;
+}
+
+.datepicker-body .mantine-DateRangePicker-day {
+  background: var(--field-enabled);
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-family: unset;
+}
+
+
+.datepicker-body .mantine-DateRangePicker-day[data-in-range] {
+  background: var(--state-overlays-selected);
+  color: var(--text-primary);
+}
+
+.datepicker-body .mantine-DateRangePicker-day[data-selected] {
+  background: var(--state-overlays-selected-inverse);
+  color: var(--text-contrast-primary);
+  text-decoration: underline;
+}
+
+.datepicker-body .mantine-DateRangePicker-day[data-outside] {
+  color: var(--text-disabled);
+}
