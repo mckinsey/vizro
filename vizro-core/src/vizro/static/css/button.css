@@ -1,4 +1,5 @@
-#dashboard-container .button_primary {
+#dashboard-container .button_primary,
+#dashboard-container .ag-standard-button {
   background: var(--fill-active);
   border: none;
   border-radius: 0;
@@ -13,14 +14,14 @@
   text-transform: none;
 }
 
-#dashboard-container .button_primary:hover {
+#dashboard-container .button_primary:hover,
+#dashboard-container .ag-standard-button:hover {
   background: linear-gradient(
       var(--state-overlays-contrast-hover),
       var(--state-overlays-contrast-hover)
     ),
     var(--fill-active);
   color: var(--text-contrast-primary);
-  margin: 0;
   text-decoration-line: underline;
 }
 
