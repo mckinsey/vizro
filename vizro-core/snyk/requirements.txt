@@ -7,7 +7,7 @@ dash_mantine_components
 numpy>=1.22.2
 setuptools>=65.5.1
 werkzeug>=3.0.1
-kedro>=0.17.3
+kedro>=0.19.3
 kedro-datasets
 wheel>=0.38.0
 ipython>=8.10.0
