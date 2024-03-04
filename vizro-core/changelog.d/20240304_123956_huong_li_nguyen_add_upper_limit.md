@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Set upper limit on `dash` temporarily ([#341](https://github.com/mckinsey/vizro/pull/341))
+- Temporarily exclude `dash==2.16.0` ([#341](https://github.com/mckinsey/vizro/pull/341))
 
 <!--
 ### Deprecated
