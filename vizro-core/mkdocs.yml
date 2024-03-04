@@ -45,6 +45,7 @@ nav:
       - Actions: pages/API-reference/actions.md
   - Explanation:
       - Why Vizro?: pages/explanation/why-vizro.md
+      - Compatibility: pages/explanation/compatibility.md
   - Contribute:
       - Contribute to Vizro: pages/development/contributing.md
       - Documentation style: pages/development/documentation-style-guide.md
