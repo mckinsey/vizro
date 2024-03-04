@@ -3,7 +3,8 @@
   height: var(--spacing-08);
 }
 
-.datepicker .mantine-DateRangePicker-input {
+.datepicker .mantine-DateRangePicker-input,
+.datepicker .mantine-DatePicker-input {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -16,11 +17,13 @@
   padding: 0 var(--spacing-02);
 }
 
-.datepicker .mantine-DateRangePicker-input:hover {
+.datepicker .mantine-DateRangePicker-input:hover,
+.datepicker .mantine-DatePicker-input:hover {
   color: var(--text-primary);
 }
 
-.datepicker .mantine-DateRangePicker-dropdown {
+.datepicker .mantine-DateRangePicker-dropdown,
+.datepicker .mantine-DatePicker-dropdown {
   background: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -40,32 +43,38 @@
   color: var(--text-primary);
 }
 
-.datepicker .mantine-DateRangePicker-weekday {
+.datepicker .mantine-DateRangePicker-weekday,
+.datepicker .mantine-DatePicker-weekday {
   color: var(--text-secondary);
   font-family: unset;
   padding: var(--spacing-02);
 }
 
-.datepicker .mantine-DateRangePicker-cell {
+.datepicker .mantine-DateRangePicker-cell,
+.datepicker .mantine-DatePicker-cell {
   border: none;
 }
 
-.datepicker .mantine-DateRangePicker-day {
+.datepicker .mantine-DateRangePicker-day,
+.datepicker .mantine-DatePicker-day {
   background: var(--field-enabled);
   border-radius: 0;
   color: var(--text-secondary);
   font-family: unset;
 }
 
-.datepicker .mantine-DateRangePicker-day:hover,
-.datepicker .mantine-DateRangePicker-day:focus-visible {
-  background: var(--state-overlays-hover);
-  border: none;
-  outline: none;
-}
-
 .datepicker .mantine-DateRangePicker-day[data-outside] {
   color: var(--text-disabled);
+}
+
+.datepicker .mantine-DateRangePicker-day:hover,
+.datepicker .mantine-DateRangePicker-day:focus-visible,
+.datepicker .mantine-DatePicker-day:hover,
+.datepicker .mantine-DatePicker-day:focus-visible {
+  background: var(--state-overlays-hover);
+  border: none;
+  color: var(--text-primary);
+  outline: none;
 }
 
 .datepicker .mantine-DateRangePicker-day[data-in-range] {
@@ -75,7 +84,10 @@
 
 .datepicker .mantine-DateRangePicker-day[data-selected],
 .datepicker .mantine-DateRangePicker-yearPickerControlActive,
-.datepicker .mantine-DateRangePicker-monthPickerControlActive {
+.datepicker .mantine-DateRangePicker-monthPickerControlActive,
+.datepicker .mantine-DatePicker-day[data-selected],
+.datepicker .mantine-DatePicker-yearPickerControlActive,
+.datepicker .mantine-DatePicker-monthPickerControlActive {
   background: var(--state-overlays-selected-inverse);
   color: var(--text-contrast-primary);
   text-decoration: underline;
@@ -83,6 +95,9 @@
 
 .datepicker
   .mantine-DateRangePicker-calendarHeader
+  .mantine-UnstyledButton-root:hover,
+.datepicker
+  .mantine-DatePicker-calendarHeader
   .mantine-UnstyledButton-root:hover {
   background: transparent;
   color: var(--text-primary);

@@ -133,8 +133,8 @@ data["DATE_TIME"] = date_time_str
 
 # data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
-date_picker_page = vm.Page(
-    title="Datepicker page",
+date_range_picker = vm.Page(
+    title="DateRangePicker",
     components=[vm.AgGrid(id="table", figure=dash_ag_grid(data_frame=data))],
     controls=[
         vm.Filter(
@@ -152,8 +152,28 @@ date_picker_page = vm.Page(
     ],
 )
 
+date_picker = vm.Page(
+    title="Datepicker",
+    components=[vm.AgGrid(id="table two", figure=dash_ag_grid(data_frame=data))],
+    controls=[
+        vm.Filter(
+            column="DATE_TIME",
+            selector=vm.DatePicker(
+                range=False,
+                title="Pick a date",
+                min="2023-01-01",
+                value="2024-01-01",
+                max="2024-07-01",
+            ),
+        ),
+        vm.Filter(
+            column="GROUP",
+        ),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[date_picker_page])
+
+dashboard = vm.Dashboard(pages=[date_range_picker, date_picker])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
