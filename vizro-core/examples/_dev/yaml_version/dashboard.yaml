@@ -2,24 +2,24 @@
 # See yaml_version example
 pages:
   - components:
-    - type: ag_grid
-      figure:
-        _target_: dash_ag_grid
-        data_frame: gapminder_2007
-      actions:
-       - function:
-            _target_: filter_interaction
-            targets:
-              - scatter_relation_2007
-    - type: graph
-      id: scatter_relation_2007
-      figure:
-        _target_: scatter
-        data_frame: gapminder_2007
-        color: continent
-        x: gdpPercap
-        y: lifeExp
-        size: pop
+      - type: ag_grid
+        figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder_2007
+        actions:
+          - function:
+              _target_: filter_interaction
+              targets:
+                - scatter_relation_2007
+      - type: graph
+        id: scatter_relation_2007
+        figure:
+          _target_: scatter
+          data_frame: gapminder_2007
+          color: continent
+          x: gdpPercap
+          y: lifeExp
+          size: pop
     controls:
       - column: continent
         type: filter

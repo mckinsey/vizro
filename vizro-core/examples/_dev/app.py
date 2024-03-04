@@ -13,9 +13,7 @@ dashboard = vm.Dashboard(
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(data_frame=df_gapminder),
-                    actions=[
-                        vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
-                    ],
+                    actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
                 ),
                 vm.Graph(
                     id="scatter_relation_2007",
@@ -28,7 +26,7 @@ dashboard = vm.Dashboard(
                     ),
                 ),
             ],
-            controls=[vm.Filter(column='continent')]
+            controls=[vm.Filter(column="continent")],
         ),
     ]
 )

@@ -212,9 +212,9 @@ Here is an example of how to configure a chart interaction when the source is an
         from vizro import Vizro
         from vizro.actions import filter_interaction
         from vizro.tables import dash_ag_grid
-        
+
         df_gapminder = px.data.gapminder().query("year == 2007")
-        
+
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
@@ -241,7 +241,7 @@ Here is an example of how to configure a chart interaction when the source is an
                 ),
             ]
         )
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
