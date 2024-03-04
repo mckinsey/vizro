@@ -100,11 +100,16 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 ### Filter data by clicking on chart
 
-To enable filtering when clicking on data in a source chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+To enable filtering when clicking on data in a source chart, you can add the
+[`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph],
+[`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] components.
+The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured
+to be triggered on click only.
 
 To configure this chart interaction follow the steps below:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
+1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]
+component and a list of IDs of the target charts into `targets`.
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
