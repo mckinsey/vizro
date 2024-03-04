@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.12'></a>
+
+# 0.1.12 — 2024-03-04
+
+## Changed
+
+- Temporarily exclude `dash==2.16.0` ([#341](https://github.com/mckinsey/vizro/pull/341))
+
+## Fixed
+
+- Added default Bootstrap theme to external stylesheets and fix any visually incompatible CSS declarations. ([#311](https://github.com/mckinsey/vizro/pull/311))
+
+- Fix CSS bug on `page-main` overflowing `page-container` in mobile layouts. ([#331](https://github.com/mckinsey/vizro/pull/331))
+
 <a id='changelog-0.1.11'></a>
 
 # 0.1.11 — 2024-02-13
