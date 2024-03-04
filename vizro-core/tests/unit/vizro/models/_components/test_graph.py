@@ -53,6 +53,10 @@ class TestDunderMethodsGraph:
         with pytest.raises(ValidationError, match="field required"):
             vm.Graph()
 
+    def test_wrong_captured_callable(self, standard_ag_grid):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
+            vm.Graph(figure=standard_ag_grid)
+
     def test_failed_graph_with_wrong_figure(self, standard_go_chart):
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.Graph(figure=standard_go_chart)
