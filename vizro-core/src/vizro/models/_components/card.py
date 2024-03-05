@@ -34,7 +34,7 @@ class Card(VizroBaseModel):
 
     @validator("href", always=True)
     def set_href(cls, href) -> str:
-        if len(href) > 0 and _is_relative_url(href):
+        if href and _is_relative_url(href):
             return _clean_url(href, "-_/")
         return href
 
