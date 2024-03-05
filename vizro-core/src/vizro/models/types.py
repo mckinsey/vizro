@@ -94,6 +94,9 @@ class CapturedCallable:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
 
+        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        self._mode = None
+
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
 
@@ -237,7 +240,7 @@ class capture:
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
     [custom graphs](../user-guides/custom-charts.md).
-    For further help on the use of `@capture("table")`, you can refer to the guide on
+    For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
     [custom tables](../user-guides/custom-tables.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user-guides/custom-actions.md).
@@ -269,6 +272,7 @@ class capture:
                 # We need to capture function upfront in order to find value of data_frame argument: since it could be
                 # positional or keyword, this is much more robust than trying to get it out of arg or kwargs ourselves.
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
@@ -296,7 +300,9 @@ class capture:
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 # Note this is basically the same as partial(func, *args, **kwargs)
-                return CapturedCallable(func, *args, **kwargs)
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
+                return captured_callable
 
             return wrapped
         elif self._mode in ["table", "ag_grid"]:
@@ -307,6 +313,7 @@ class capture:
                     raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
