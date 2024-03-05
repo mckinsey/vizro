@@ -1,14 +1,15 @@
 from typing import Literal
 
+import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
 
 try:
-    from pydantic.v1 import Field
+    from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field
+    from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _clean_url, _is_relative_url, _log_call
 
 
 class Card(VizroBaseModel):
@@ -31,13 +32,19 @@ class Card(VizroBaseModel):
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
 
+    @validator("href", always=True)
+    def set_href(cls, href) -> str:
+        if len(href) > 0 and _is_relative_url(href):
+            return _clean_url(href, "-_/")
+        return href
+
     @_log_call
     def build(self):
         text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
         card_content = (
-            dcc.Link(
+            dbc.NavLink(
                 text,
-                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+                href=get_relative_path(self.href) if _is_relative_url(self.href) else self.href,
                 className="card-link",
             )
             if self.href
