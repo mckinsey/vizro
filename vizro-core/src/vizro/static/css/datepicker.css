@@ -63,7 +63,8 @@
   font-family: unset;
 }
 
-.datepicker .mantine-DateRangePicker-day[data-outside] {
+.datepicker .mantine-DateRangePicker-day[data-outside],
+.datepicker .mantine-UnstyledButton-root:disabled {
   color: var(--text-disabled);
 }
 
@@ -75,6 +76,7 @@
   border: none;
   color: var(--text-primary);
   outline: none;
+  text-decoration: none;
 }
 
 .datepicker .mantine-DateRangePicker-day[data-in-range] {
