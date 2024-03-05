@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Card."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -23,14 +24,14 @@ class TestCardInstantiation:
         assert card.text == "Text to test card"
         assert card.href == ""
 
-    @pytest.mark.parametrize("id, href", [("id_1", "/page_1_reference"), ("id_2", "https://www.google.de/")])
-    def test_create_card_mandatory_and_optional(self, id, href):
-        card = vm.Card(text="Text to test card", id=id, href=href)
 
+    def test_create_card_mandatory_and_optional(self):
+        card = vm.Card(text="Text to test card", id="card-id", href="Page 1")
+
+        assert card.id == "card-id"
         assert card.type == "card"
         assert card.text == "Text to test card"
-        assert card.id == id
-        assert card.href == href
+        assert card.href == "/page-1"
 
     def test_mandatory_text_missing(self):
         with pytest.raises(ValidationError, match="field required"):
@@ -40,6 +41,27 @@ class TestCardInstantiation:
         with pytest.raises(ValidationError, match="none is not an allowed value"):
             vm.Card(text=None)
 
+    @pytest.mark.parametrize(
+        "test_href, expected",
+        [
+            ("", ""),
+            ("/this path works", "/this-path-works"),
+            ("/this-path-works", "/this-path-works"),
+            ("this path works", "/this-path-works"),
+            ("this-path-works", "/this-path-works"),
+            ("this_path_works", "/this_path_works"),
+            ("this/path/works", "/this/path/works"),
+            ("2147abc", "/2147abc"),
+            ("https://google.com", "https://google.com"),
+            ("http://google.com", "http://google.com"),
+            # Note: www.google.com is not considered an absolute path (from the urlparse function and the dbc.NavLink)
+            # and will therefore be converted.
+            ("www.google.com", "/wwwgooglecom"),
+        ],
+    )
+    def test_set_href_validator(self, test_href, expected):
+        card = vm.Card(text="Some Text", href =test_href)
+        assert card.href == expected
 
 class TestBuildMethod:
     """Tests build method."""
@@ -49,7 +71,7 @@ class TestBuildMethod:
         card = card.build()
 
         expected_card = html.Div(
-            dcc.Link(
+            dbc.NavLink(
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
                 href="https://www.google.com",
                 className="card-link",
