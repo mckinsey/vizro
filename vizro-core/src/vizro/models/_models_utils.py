@@ -42,4 +42,7 @@ def _clean_url(url, allowed_characters):
     """
     url = url.strip().lower().replace(" ", "-")
     url = "".join(character for character in url if character.isalnum() or character in allowed_characters)
+
+    if url.startswith("/"):
+        return url
     return "/" + url
