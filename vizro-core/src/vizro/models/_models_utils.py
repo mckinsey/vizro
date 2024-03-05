@@ -23,7 +23,7 @@ def _validate_min_length(cls, field):
     return field
 
 
-def _is_relative_url(url):
+def _is_relative_url(url: str) -> bool:
     """Checks if the URL is relative.
 
     Absolute URLs: https://www.google.com, http://www.google.com
@@ -34,7 +34,7 @@ def _is_relative_url(url):
     return not bool(parsed_url.netloc)
 
 
-def _clean_url(url, allowed_characters):
+def _clean_url(url: str, allowed_characters: str) -> str:
     """Cleans the URL and returns it in a format suitable for use as an anchor link.
 
     Based on how Github generates anchor links - see:
