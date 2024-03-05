@@ -486,7 +486,7 @@ def create_home_page():
 
                     Analyzing population, GDP per capita and life expectancy on country and continent level.
                 """,
-                href="/variable-analysis",
+                href="Variable Analysis",
             ),
             vm.Card(
                 text="""
@@ -496,7 +496,7 @@ def create_home_page():
 
                         Investigating the interconnection between population, GDP per capita and life expectancy.
                     """,
-                href="/relationship-analysis",
+                href="Relationship Analysis",
             ),
             vm.Card(
                 text="""
@@ -506,7 +506,7 @@ def create_home_page():
 
                     Summarizing the main findings for each continent.
                 """,
-                href="/continent-summary",
+                href="Continent Summary",
             ),
             vm.Card(
                 text="""
@@ -517,7 +517,7 @@ def create_home_page():
                     Discovering how the metrics differ for each country compared to the continent average
                     and export data for further investigation.
                 """,
-                href="/benchmark-analysis",
+                href="Benchmark Analysis",
             ),
         ],
     )

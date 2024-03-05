@@ -40,7 +40,7 @@ home = vm.Page(
                 Main components of Vizro include **charts**, **tables**, **cards**, **containers**,
                 **buttons** and **tabs**.
                 """,
-            href="/graphs",
+            href="Graphs",
         ),
         vm.Card(
             text="""
@@ -58,7 +58,7 @@ home = vm.Page(
                 * RangeSlider
                 * Slider
                 """,
-            href="/filters",
+            href="Filters",
         ),
         vm.Card(
             text="""
@@ -68,7 +68,7 @@ home = vm.Page(
 
                 Standard predefined actions are made available including **export data** and **filter interactions**.
                 """,
-            href="/export-data",
+            href="Export data",
         ),
         vm.Card(
             text="""
@@ -79,7 +79,7 @@ home = vm.Page(
                 Vizro enables customization of **plotly express** and **graph object charts** as well as
                 creating custom components based on Dash.
             """,
-            href="/custom-charts",
+            href="Custom Charts",
         ),
     ],
 )

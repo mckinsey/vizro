@@ -409,7 +409,7 @@ To create a navigation card, do the following:
 
 - Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page]
 - Provide the `text` parameter with a title and some description
-- Provide the `href` parameter (relative or absolute URL)
+- Provide the `href` parameter (relative or absolute URL). In case it refers to a `Page` inside the `Dashboard`, you can insert the `Page.title` directly.
 
 !!! example "Navigation Card"
     === "app.py"
@@ -429,7 +429,7 @@ To create a navigation card, do the following:
 
                     Leads to the first page on click.
                     """,
-                    href="/filters-and-parameters",
+                    href="Filters and parameters",
                 ),
                 vm.Card(
                     text="""
@@ -463,7 +463,7 @@ To create a navigation card, do the following:
                 ### Filters and parameters
 
                 Leads to the first page on click
-              href: /filters-and-parameters
+              href: Filters and parameters
               type: card
             - text: |
                 ### Google - External Link
@@ -521,7 +521,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
                     Leads to the first page on click.
                     """,
-                    href="/filters-and-parameters",
+                    href="Filters and parameters",
                 ),
 
                 vm.Card(
@@ -560,7 +560,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
                 ### Filters and parameters
 
                 Leads to the first page on click
-              href: /filters-and-parameters
+              href: Filters and parameters
               type: card
             - text: |
                 ![](assets/images/icons/content/features.svg#icon-top)

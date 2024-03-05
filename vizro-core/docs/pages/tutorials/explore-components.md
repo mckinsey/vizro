@@ -488,7 +488,7 @@ homepage to the example for navigation between the two separate pages.
 
 For easy navigation within your dashboard, we'll create a page that serves as the entry point for the user.
 On this homepage are two [`Cards`][vizro.models.Card] which serve as tiles that can be customized with a title, some text, and an
-image. These cards link to the subpages within your dashboard using their `href` attributes as `href="/first-page"` and `href="/second-page"`. This
+image. These cards link to the subpages within your dashboard using their `href` attributes as `href="First Page"` and `href="Second Page"`. This
 establishes the navigation links from the homepage to each of the subpages.
 
 Each page is added to the dashboard using the following line of code:
@@ -511,7 +511,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
 
                     Exemplary first dashboard page.
                     """,
-                    href="/first-page",
+                    href="First Page",
                 ),
                 vm.Card(
                     text="""
@@ -521,7 +521,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
 
                     Exemplary second dashboard page.
                     """,
-                    href="/second-page",
+                    href="Second Page",
                 ),
             ],
         )
@@ -546,7 +546,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
 
                     Exemplary first dashboard page.
                     """,
-                    href="/first-page",
+                    href="First Page",
                 ),
                 vm.Card(
                     text="""
@@ -556,7 +556,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
 
                     Exemplary second dashboard page.
                     """,
-                    href="/second-page",
+                    href="Second Page",
                 ),
             ],
         )

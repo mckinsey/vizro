@@ -6,7 +6,7 @@ pages:
           ### Components
 
           Main components of vizro include **charts**, **tables**, **cards**, **containers**, **buttons** and **tabs**.
-        href: /graphs
+        href: Graphs
         type: card
       - text: |
           ![](assets/images/icons/filters.svg#icon-top)
@@ -22,7 +22,7 @@ pages:
           * RadioItems
           * RangeSlider
           * Slider
-        href: /filters
+        href: Filters
         type: card
       - text: |
           ![](assets/images/icons/download.svg#icon-top)
@@ -30,7 +30,7 @@ pages:
           ### Actions
 
           Standard predefined actions are made available including **export data** and **filter interactions**.
-        href: /export-data
+        href: Export data
         type: card
       - text: |
           ![](assets/images/icons/use-case.svg#icon-top)
@@ -39,7 +39,7 @@ pages:
 
           Vizro enables customization of **plotly express** and **graph object charts** as well as
           creating custom components based on Dash.
-        href: /custom-charts
+        href: Custom Charts
         type: card
     layout:
       grid: [[0, 1], [2, 3]]
