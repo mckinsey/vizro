@@ -19,7 +19,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components._components_utils import _process_callable_data_frame
+from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -44,14 +44,8 @@ class Graph(VizroBaseModel):
     _output_component_property: str = PrivateAttr("figure")
 
     # Validators
-    @validator("figure")
-    def check_callable_mode(cls, figure):
-        mode = "graph"
-        if mode != figure._mode:
-            raise ValueError(f"CapturedCallable mode mismatch. Expected {mode} but got {figure._mode}.")
-        return figure
-
     _set_actions = _action_validator_factory("clickData")
+    _validate_callable_mode = _callable_mode_validator_factory("graph")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
