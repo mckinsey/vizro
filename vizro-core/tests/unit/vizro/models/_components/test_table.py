@@ -47,6 +47,10 @@ class TestTableInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.Table()
 
+    def test_wrong_captured_callable(self, standard_ag_grid):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
+            vm.Table(figure=standard_ag_grid)
+
     def test_failed_table_with_no_captured_callable(self, standard_go_chart):
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.Table(figure=standard_go_chart)

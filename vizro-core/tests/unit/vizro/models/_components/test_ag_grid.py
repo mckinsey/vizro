@@ -48,6 +48,10 @@ class TestAgGridInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.AgGrid()
 
+    def test_wrong_captured_callable(self, standard_dash_table):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
+            vm.AgGrid(figure=standard_dash_table)
+
     def test_failed_ag_grid_with_no_captured_callable(self, standard_go_chart):
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.AgGrid(figure=standard_go_chart)
