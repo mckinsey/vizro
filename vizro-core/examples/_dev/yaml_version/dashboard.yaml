@@ -1,42 +1,26 @@
 # Still requires a .py to register data connector in Data Manager and parse yaml configuration
-# See from_yaml example
+# See yaml_version example
 pages:
   - components:
-      - figure:
+      - type: ag_grid
+        figure:
           _target_: dash_ag_grid
-          data_frame: gapminder
-          columnDefs:
-            - field: country
-            - field: continent
-            - field: year
-            - field: lifeExp
-              valueFormatter:
-                function: "d3.format('.1f')(params.value)"
-            - field: gdpPercap
-              valueFormatter:
-                function: "d3.format('$,.1f')(params.value)"
-              cellStyle:
-                styleConditions:
-                  - condition: params.value < 1045
-                    style:
-                      backgroundColor: "#ff9222"
-                  - condition: params.value >= 1045 && params.value <= 4095
-                    style:
-                      backgroundColor: "#de9e75"
-                  - condition: params.value > 4095 && params.value <= 12695
-                    style:
-                      backgroundColor: "#aaa9ba"
-                  - condition: params.value > 12695
-                    style:
-                      backgroundColor: "#00b4ff"
-            - field: pop
-              type: rightAligned
-              valueFormatter:
-                function: "d3.format(',.0f')(params.value)"
-          defaultColDef:
-            resizable: false
-            filter: false
-            editable: true
-        title: Dash AG Grid
-        type: ag_grid
-    title: Example of a Dash AG Grid
+          data_frame: gapminder_2007
+        actions:
+          - function:
+              _target_: filter_interaction
+              targets:
+                - scatter_relation_2007
+      - type: graph
+        id: scatter_relation_2007
+        figure:
+          _target_: scatter
+          data_frame: gapminder_2007
+          color: continent
+          x: gdpPercap
+          y: lifeExp
+          size: pop
+    controls:
+      - column: continent
+        type: filter
+    title: Filter interaction

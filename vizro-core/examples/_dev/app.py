@@ -49,7 +49,6 @@ grid_standard = vm.Page(
         vm.AgGrid(
             title="AG Grid - Default",
             figure=dash_ag_grid(
-                # id="dash_ag_grid_2",
                 data_frame=df2,
             ),
         ),
