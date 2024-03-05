@@ -100,11 +100,16 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 ### Filter data by clicking on chart
 
-To enable filtering when clicking on data in a source chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+To enable filtering when clicking on data in a source chart, you can add the
+[`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph],
+[`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] components.
+The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured
+to be triggered on click only.
 
 To configure this chart interaction follow the steps below:
 
-1. Add the action function to the source [`Graph`][vizro.models.Graph] or [`Table`][vizro.models.Table] component and a list of IDs of the target charts into `targets`.
+1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]
+component and a list of IDs of the target charts into `targets`.
 ```py
 actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))]
 ```
@@ -202,16 +207,16 @@ Here is an example of how to configure a chart interaction when the source is a 
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
 
-Here is an example of how to configure a chart interaction when the source is a [`Table`][vizro.models.Table] component.
+Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
-!!! example "Table `filter_interaction`"
+!!! example "AgGrid `filter_interaction`"
     === "app.py"
         ```py
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.actions import filter_interaction
-        from vizro.tables import dash_data_table
+        from vizro.tables import dash_ag_grid
 
         df_gapminder = px.data.gapminder().query("year == 2007")
 
@@ -220,8 +225,8 @@ Here is an example of how to configure a chart interaction when the source is a 
                 vm.Page(
                     title="Filter interaction",
                     components=[
-                        vm.Table(
-                            figure=dash_data_table(id="dash_datatable_id", data_frame=df_gapminder),
+                        vm.AgGrid(
+                            figure=dash_ag_grid(data_frame=df_gapminder),
                             actions=[
                                 vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
                             ],
@@ -250,11 +255,10 @@ Here is an example of how to configure a chart interaction when the source is a 
         # See yaml_version example
         pages:
           - components:
-            - type: table
+            - type: ag_grid
               figure:
-                _target_: dash_data_table
+                _target_: dash_ag_grid
                 data_frame: gapminder_2007
-                id: dash_datatable_id
               actions:
                - function:
                     _target_: filter_interaction
