@@ -64,6 +64,9 @@
 }
 
 .datepicker .mantine-DateRangePicker-day[data-outside],
+.datepicker .mantine-DateRangePicker-day:disabled,
+.datepicker .mantine-DatePicker-day[data-outside],
+.datepicker .mantine-DatePicker-day:disabled,
 .datepicker .mantine-UnstyledButton-root:disabled {
   color: var(--text-disabled);
 }
