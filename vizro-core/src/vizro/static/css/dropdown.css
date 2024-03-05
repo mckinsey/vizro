@@ -93,7 +93,7 @@
 
 /* Tag: Label */
 #page-container .Select--multi .Select-value-label {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   line-height: var(--text-size-05);
   padding: 0 4px;
 }
