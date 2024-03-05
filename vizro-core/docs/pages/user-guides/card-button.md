@@ -409,7 +409,7 @@ To create a navigation card, do the following:
 
 - Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page]
 - Provide the `text` parameter with a title and some description
-- Provide the `href` parameter (relative or absolute URL). In case it refers to a `Page` inside the `Dashboard`, you can insert the `Page.title` directly.
+- Provide the `href` parameter (relative or absolute URL). If it refers to a `Page` inside the `Dashboard`, you can insert the `Page.title` directly.
 
 !!! example "Navigation Card"
     === "app.py"
