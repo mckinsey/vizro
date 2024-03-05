@@ -7,7 +7,9 @@ from vizro import Vizro
 first_page = vm.Page(
     title="First Page",
     components=[
-        vm.Graph(id="scatter_chart", figure=px.scatter(px.data.iris(), x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(
+            id="scatter_chart", figure=px.scatter(px.data.iris(), x="sepal_length", y="petal_width", color="species")
+        ),
         vm.Graph(id="hist_chart", figure=px.histogram(px.data.iris(), x="sepal_width", color="species")),
     ],
     controls=[
