@@ -24,7 +24,6 @@ class TestCardInstantiation:
         assert card.text == "Text to test card"
         assert card.href == ""
 
-
     def test_create_card_mandatory_and_optional(self):
         card = vm.Card(text="Text to test card", id="card-id", href="Page 1")
 
@@ -60,8 +59,9 @@ class TestCardInstantiation:
         ],
     )
     def test_set_href_validator(self, test_href, expected):
-        card = vm.Card(text="Some Text", href =test_href)
+        card = vm.Card(text="Some Text", href=test_href)
         assert card.href == expected
+
 
 class TestBuildMethod:
     """Tests build method."""
