@@ -6,7 +6,6 @@
   --ag-header-foreground-color: var(--text-secondary);
   --ag-data-color: var(--text-primary);
   --ag-header-background-color: var(--main-container-bg-color);
-  --ag-header-column-resize-handle-display: none;
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: var(--text-size-02);
   --ag-row-height: 48px;
