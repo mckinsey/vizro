@@ -311,10 +311,6 @@ def create_relation_analysis():
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
                 ),
             ),
-            vm.Filter(
-                column="continent",
-                selector=vm.Checklist(title="Choose bubble size"),
-            ),
         ],
     )
     return page_relation_analysis
