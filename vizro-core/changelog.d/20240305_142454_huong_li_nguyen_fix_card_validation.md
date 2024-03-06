@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Allow `Page.title` to be inserted directly into `Card.href` as a relative link. ([#347](https://github.com/mckinsey/vizro/pull/347))
+- Allow `Page.title` to be inserted directly into `Card.href`. ([#347](https://github.com/mckinsey/vizro/pull/347))
 
 <!--
 ### Deprecated
@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Align validators for `Card.href` and `Page.path` to ensure consistent navigation linking. ([#347](https://github.com/mckinsey/vizro/pull/347))
+- Fix [bug](https://github.com/mckinsey/vizro/issues/285) where navigating from a `Card` to `Page` failed when an unformatted `Page.path` was used in `Card.href`. ([#347](https://github.com/mckinsey/vizro/pull/347))
 
 <!--
 ### Security
