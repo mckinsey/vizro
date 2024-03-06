@@ -1,6 +1,5 @@
 .rc-slider {
   flex: auto;
-  height: 24px;
   margin: 4px -12px 0;
 }
 
@@ -75,17 +74,16 @@
 .slider-track-with-marks,
 .slider-track-without-marks {
   display: flex;
-  height: 20px;
   margin: 0;
   width: 100%;
 }
 
 .slider-track-without-marks {
-  padding: 0 24px !important;
+  padding: 4px 24px 4px !important;
 }
 
 .slider-track-with-marks {
-  padding: 0 24px 40px !important;
+  padding: 4px 24px 24px !important;
 }
 
 input.dash-input:invalid {
