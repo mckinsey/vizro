@@ -19,6 +19,10 @@
   --ag-row-border-width: 1px;
   --ag-selected-row-background-color: var(--state-overlays-selected);
   --ag-checkbox-checked-color: var(--text-primary);
+  --ag-header-column-resize-handle-display: block;
+  --ag-header-column-resize-handle-height: 30%;
+  --ag-header-column-resize-handle-width: 1px;
+  --ag-header-column-resize-handle-color: var(--border-subtle-alpha-02);
 }
 
 /* Header ------- */
