@@ -5,7 +5,7 @@ import itertools
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import html
+from dash import html, get_relative_path
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -71,7 +71,7 @@ class NavLink(VizroBaseModel):
             ],
             id=self.id,
             className="nav-bar-icon-link",
-            href=first_page.path,
+            href=get_relative_path(first_page.path),
             # `active` is required to keep the icon highlighted when navigating through different pages inside
             # the nested accordion
             active=item_active,
