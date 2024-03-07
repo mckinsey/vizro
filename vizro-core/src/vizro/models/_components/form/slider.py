@@ -115,11 +115,7 @@ class Slider(VizroBaseModel):
                     included=False,
                     persistence=True,
                     persistence_type="session",
-                    className=(
-                        "slider-track-with-marks"
-                        if self.step and self.marks is not None
-                        else "slider-track-without-marks"
-                    ),
+                    className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
             className="input-container",
