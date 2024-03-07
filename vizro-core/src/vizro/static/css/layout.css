@@ -10,7 +10,7 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: var(--spacing-08);
+  gap: var(--spacing-06);
   overflow: auto;
   padding: 32px 32px 0;
   width: 352px;
@@ -81,7 +81,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  padding: 4px 0 24px;
+  padding-bottom: var(--spacing-06);
+  padding-top: var(--spacing-02);
 }
 
 #control-panel:not(:empty) {
@@ -163,7 +164,7 @@ div.dashboard_container .custom-tooltip {
   font-size: var(--text-size-01);
   font-weight: var(--text-weight-light);
   letter-spacing: var(--letter-spacing-help-text);
-  line-height: 16px;
+  line-height: var(--text-size-03);
   max-width: 180px;
   overflow-wrap: break-word;
   padding: var(--spacing-01) var(--spacing-02);

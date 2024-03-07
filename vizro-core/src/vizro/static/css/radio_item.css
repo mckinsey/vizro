@@ -3,8 +3,7 @@ input[type="radio" i] {
   border: 1px solid var(--text-secondary);
   border-radius: 50%;
   height: 16px;
-  margin: 4px 8px 4px 4px;
-  vertical-align: middle;
+  margin: var(--spacing-01);
   width: 16px;
 }
 
