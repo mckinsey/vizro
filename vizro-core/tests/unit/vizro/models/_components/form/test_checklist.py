@@ -136,12 +136,12 @@ class TestChecklistBuild:
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
                     value=["ALL"],
-                    className="selector_body_checklist",
+                    className="checkboxes-list",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id="checklist_id_outer",
         )
         assert_component_equal(checklist, expected_checklist)
