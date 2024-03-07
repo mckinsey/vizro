@@ -19,6 +19,13 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs):
             "border_top": "1px solid var(--main-container-bg-color)",
             "height": "32px",
         },
+        "style_data_conditional": [
+            {
+                "if": {"state": "active"},
+                "backgroundColor": "var(--state-overlays-selected)",
+                "border": "1px solid var(--state-overlays-selected)",
+            }
+        ],
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dash_table.DataTable(data=data_frame.to_dict("records"), **kwargs)
