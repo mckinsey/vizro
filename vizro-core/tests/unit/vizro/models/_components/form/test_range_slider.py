@@ -179,7 +179,7 @@ class TestRangeSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
+            ValidationError, match="Maximum value of component is required to be larger than minimum value."
         ):
             vm.RangeSlider(min=10, max=0)
 

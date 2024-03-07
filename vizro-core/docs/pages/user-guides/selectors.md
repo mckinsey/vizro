@@ -54,6 +54,6 @@ For more details, refer to the documentation of the underlying dash components:
     [`DatePicker`][vizro.models.DatePicker] component is based on 2 underlying components dmc.DatePicker and dmc.DateRangePicker.
     When [`DatePicker`][vizro.models.DatePicker] is configured with `range=False` argument, underlying component is dmc.DatePicker. Default value of `range` is `True`,
     meaning [`DatePicker`][vizro.models.DatePicker] by default uses dmc.DateRangePicker.
-    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"YYY-mm-dd"` format or as datetime type.
+    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as datetime type.
 
 To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md)

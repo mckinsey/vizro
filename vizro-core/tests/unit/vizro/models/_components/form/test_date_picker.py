@@ -1,8 +1,10 @@
 """Unit tests for DatePicker."""
 
 from datetime import date, datetime
+from typing import Collection
 
 import dash_mantine_components as dmc
+import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -44,44 +46,6 @@ class TestDatePickerInstantiation:
         assert date_picker.actions == []
         assert date_picker.range is True
 
-    @pytest.mark.parametrize("min, max", [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")])
-    def test_valid_min_max(self, min, max):
-        date_picker = vm.DatePicker(min=min, max=max)
-
-        assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
-        assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
-
-    def test_validate_max_invalid(self):
-        with pytest.raises(
-            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
-        ):
-            vm.DatePicker(min="2024-02-01", max="2024-01-01")
-
-    @pytest.mark.parametrize(
-        "value, range",
-        [
-            ("2024-01-01", False),
-            (date(2024, 1, 1), False),
-            (["2024-01-01", "2024-02-01"], True),
-        ],
-    )
-    def test_validate_datepicker_value_valid(self, value, range):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", value=value, range=range)
-        value_to_date = (
-            [datetime.strptime(value[0], "%Y-%m-%d").date(), datetime.strptime(value[1], "%Y-%m-%d").date()]
-            if isinstance(value, list)
-            else datetime.strptime(value, "%Y-%m-%d").date() if isinstance(value, str) else value
-        )
-
-        assert date_picker.value == value_to_date
-
-    @pytest.mark.parametrize(
-        "value, range", [("2023-01-01", False), (date(2023, 1, 1), False), (["2024-02-01", "2024-03-01"], True)]
-    )
-    def test_validate_datepicker_value_invalid(self, value, range):
-        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
-            vm.DatePicker(min="2024-01-01", max="2024-02-01", value=value, range=range)
-
     @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):
         date_picker = vm.DatePicker(title=title)
@@ -94,15 +58,64 @@ class TestDatePickerInstantiation:
 
         assert actions_chain.trigger.component_property == "value"
 
-    @pytest.mark.parametrize("range, value", [(True, ["2024-01-01", "2024-03-01"]), (False, "2024-01-01")])
-    def test_validate_datepicker_range_valid(self, range, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-04-01", value=value, range=range)
-        value_to_date = (
-            [datetime.strptime(value[0], "%Y-%m-%d").date(), datetime.strptime(value[1], "%Y-%m-%d").date()]
-            if isinstance(value, list)
-            else datetime.strptime(value, "%Y-%m-%d").date()
-        )
+    @pytest.mark.parametrize("min, max", [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")])
+    def test_valid_min_max(self, min, max):
+        date_picker = vm.DatePicker(min=min, max=max)
+
+        assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
+        assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
+
+    def test_validate_max_invalid(self):
+        with pytest.raises(
+            ValidationError, match="Maximum value of component is required to be larger than minimum value."
+        ):
+            vm.DatePicker(min="2024-02-01", max="2024-01-01")
+
+    @pytest.mark.parametrize(
+        "range, value",
+        [
+            (False, "2024-01-01"),
+            (False, date(2024, 1, 1)),
+            (True, ["2024-01-01", "2024-02-01"]),
+            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
+        ],
+    )
+    def test_validate_datepicker_value_valid(self, range, value):
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=range, value=value)
+
+        value_to_date = pd.to_datetime(value).to_pydatetime()
+        if isinstance(value_to_date, Collection):
+            value_to_date = [v.date() for v in value_to_date]
+        else:
+            value_to_date = value_to_date.date()
+
         assert date_picker.value == value_to_date
+
+    @pytest.mark.parametrize(
+        "range, value",
+        [
+            (False, "2024-01-01"),
+            (False, date(2024, 1, 1)),
+            (True, ["2024-01-01", "2024-02-01"]),
+            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
+        ],
+    )
+    def test_validate_datepicker_value_invalid(self, range, value):
+        with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
+            vm.DatePicker(min="2023-01-01", max="2023-02-01", range=range, value=value)
+
+    @pytest.mark.parametrize(
+        "range, value",
+        [
+            (False, "2024-01-01"),
+            (False, date(2024, 1, 1)),
+            (True, ["2024-01-01", "2024-02-01"]),
+            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
+        ],
+    )
+    def test_validate_datepicker_range_valid(self, range, value):
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-04-01", range=range, value=value)
+        assert date_picker.range == range
 
     @pytest.mark.parametrize(
         "range, value",
@@ -115,22 +128,22 @@ class TestDatePickerInstantiation:
     )
     def test_validate_datepicker_range_invalid(self, range, value):
         with pytest.raises(ValidationError):
-            vm.DatePicker(min="2024-01-01", max="2024-04-01", value=value, range=range)
+            vm.DatePicker(min="2024-01-01", max="2024-04-01", range=range, value=value)
 
 
 class TestBuildMethod:
     @pytest.mark.parametrize(
-        "value, range",
+        "range, value",
         [
-            ("2023-01-05", False),
-            (date(2023, 1, 5), False),
-            (["2023-01-05", "2023-01-07"], True),
-            ([date(2023, 1, 5), date(2023, 1, 7)], True),
+            (False, "2023-01-05"),
+            (False, date(2023, 1, 5)),
+            (True, ["2023-01-05", "2023-01-07"]),
+            (True, [date(2023, 1, 5), date(2023, 1, 7)]),
         ],
     )
-    def test_datepicker_build(self, value, range):
+    def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
-            min="2023-01-01", max="2023-07-01", value=value, id="datepicker_id", title="Test title", range=range
+            min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
         ).build()
 
         date_picker_class = dmc.DateRangePicker if range else dmc.DatePicker

@@ -58,6 +58,7 @@ home = vm.Page(
                 * RadioItems
                 * RangeSlider
                 * Slider
+                * DatePicker
                 """,
             href="/filters",
         ),
