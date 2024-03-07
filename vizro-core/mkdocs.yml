@@ -1,5 +1,5 @@
 site_name: Vizro
-site_url: https://mckinsey.github.io/vizro/
+site_url: https://vizro.readthedocs.io/en/stable/
 nav:
   - Vizro: index.md
   - Get started:

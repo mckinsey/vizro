@@ -377,7 +377,7 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-gapminder"],
             column="year",
-            selector=vm.RangeSlider(title="Range Slider (Gapminder - year)"),
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - year)", step=1, marks=None),
         ),
         vm.Filter(
             targets=["table-gapminder"],

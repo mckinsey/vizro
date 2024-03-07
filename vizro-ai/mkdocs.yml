@@ -1,5 +1,5 @@
 site_name: Vizro-AI
-site_url: https://mckinsey.github.io/vizro-ai/
+site_url: https://vizro-ai.readthedocs.io/en/latest/
 nav:
   - Vizro-AI: index.md
   - Get started:
