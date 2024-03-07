@@ -21,7 +21,7 @@ vm.Container.add_type("components", UserInput)
 
 
 selectors = vm.Page(
-    title="Selectors - Controls",
+    title="Page 1",
     components=[
         vm.Graph(
             id="scatter_relation",
@@ -63,7 +63,7 @@ selectors = vm.Page(
 )
 
 form_components = vm.Page(
-    title="Selectors - Components",
+    title="Page 2",
     components=[
         vm.Container(
             id="container-id",
@@ -87,7 +87,7 @@ form_components = vm.Page(
 
 
 slider_marks = vm.Page(
-    title="Sliders - drawn marks",
+    title="Page 3",
     layout=vm.Layout(grid=[[0, 1]], col_gap="100px"),
     components=[
         vm.Container(
@@ -143,7 +143,18 @@ slider_marks = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[selectors, form_components, slider_marks])
+dashboard = vm.Dashboard(
+    pages=[selectors, form_components, slider_marks],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(pages=["Page 3"]),
+                vm.NavLink(pages=["Page 1"]),
+                vm.NavLink(pages=["Page 2"]),
+            ]
+        )
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
