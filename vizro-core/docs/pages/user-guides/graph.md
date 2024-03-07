@@ -15,6 +15,11 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     In order to use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`.
     This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched, but allows _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
+    Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without
+    a `data_frame` argument (e.g. the [`imshow` chart](https://plotly.com/python/imshow/)), please refer to our
+    [guide on custom charts](custom-charts.md).
+    .
+
 
 
 !!! example "Graph"

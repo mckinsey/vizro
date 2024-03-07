@@ -136,12 +136,12 @@ class TestRadioItemsBuild:
                     id="radio_items_id",
                     options=["A", "B", "C"],
                     value="A",
-                    className="selector_body_radio_items",
+                    className="radio-items-list",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id="radio_items_id_outer",
         )
 

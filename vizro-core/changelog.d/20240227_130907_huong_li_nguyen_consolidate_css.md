@@ -22,23 +22,24 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Apply new design to `Slider` and `RangeSlider` ([#336](https://github.com/mckinsey/vizro/pull/336))
+- Consolidate gaps between selectors ([#336](https://github.com/mckinsey/vizro/pull/336))
 
--->
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Fixed
 
-- Fix CSS bug on `page-main` overflowing `page-container` in mobile layouts. ([#331](https://github.com/mckinsey/vizro/pull/331))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 

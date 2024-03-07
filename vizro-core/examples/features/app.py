@@ -381,8 +381,8 @@ selectors = vm.Page(
     controls=[
         vm.Filter(
             targets=["table-gapminder"],
-            column="lifeExp",
-            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)"),
+            column="year",
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - year)", step=1, marks=None),
         ),
         vm.Filter(
             targets=["table-gapminder"],
