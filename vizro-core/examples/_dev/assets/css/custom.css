@@ -3,9 +3,16 @@
   margin-left: -8px;
 }
 
-#container-id .grid-layout {
+#container-id .grid-layout,
+#container-id-2 .grid-layout,
+#container-id-3 .grid-layout{
   display: flex;
   flex-direction: column;
   gap: 24px !important;
-  width: 30%;
+  width: 40%;
+}
+
+#container-id-2 .grid-layout,
+#container-id-3 .grid-layout{
+  width: 70%;
 }

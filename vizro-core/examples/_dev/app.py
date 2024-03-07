@@ -85,7 +85,67 @@ form_components = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[selectors, form_components])
+
+slider_marks = vm.Page(
+    title="Sliders - drawn marks",
+    layout=vm.Layout(grid=[[0, 1]], col_gap="100px"),
+    components=[
+        vm.Container(
+            id="container-id-2",
+            title="Range Slider",
+            components=[
+                vm.RangeSlider(title="Range Slider | step = None and marks = {}", min=0, max=10),
+                vm.RangeSlider(
+                    title="Range Slider | step = None and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=None,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.RangeSlider(
+                    title="Range Slider | step = None and marks = None", min=0, max=10, step=None, marks=None
+                ),
+                vm.RangeSlider(title="Range Slider | step = 1 and marks = {}", min=0, max=10, step=1),
+                vm.RangeSlider(
+                    title="Range Slider | step = 1 and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=1,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.RangeSlider(title="Range Slider | step = 1 and marks = None", min=0, max=10, step=1, marks=None),
+            ],
+        ),
+        vm.Container(
+            id="container-id-3",
+            title="Slider",
+            components=[
+                vm.Slider(title="Slider | step = None and marks = {}", min=0, max=10),
+                vm.Slider(
+                    title="Slider | step = None and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=None,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.Slider(
+                    title="Slider | step = None and marks = None", min=0, max=10, step=None, marks=None
+                ),
+                vm.Slider(title="Slider | step = 1 and marks = {}", min=0, max=10, step=1),
+                vm.Slider(
+                    title="Slider | step = 1 and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=1,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.Slider(title="Slider | step = 1 and marks = None", min=0, max=10, step=1, marks=None),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[selectors, form_components, slider_marks])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
