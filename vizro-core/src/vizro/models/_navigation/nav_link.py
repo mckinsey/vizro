@@ -17,6 +17,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
+from vizro.managers import model_manager
 
 
 class NavLink(VizroBaseModel):
@@ -55,13 +56,7 @@ class NavLink(VizroBaseModel):
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
-
-        try:
-            first_page = dash.page_registry[first_page_id]
-        except KeyError as exc:
-            raise KeyError(
-                f"Page with ID {first_page_id} cannot be found. Please add the page to `Dashboard.pages`"
-            ) from exc
+        first_page = model_manager[first_page_id]
 
         nav_link = dbc.NavLink(
             [
@@ -76,7 +71,7 @@ class NavLink(VizroBaseModel):
             ],
             id=self.id,
             className="nav-bar-icon-link",
-            href=first_page["relative_path"],
+            href=first_page.path,
             # `active` is required to keep the icon highlighted when navigating through different pages inside
             # the nested accordion
             active=item_active,
