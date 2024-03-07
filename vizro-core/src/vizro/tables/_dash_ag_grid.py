@@ -19,7 +19,7 @@ _DATA_TYPE_DEFINITIONS = {
     "number": {
         "baseDataType": "number",
         "extendsDataType": "number",
-        "columnTypes": ["numberColumn", "rightAligned"],
+        "columnTypes": "rightAligned",
         "appendColumnTypes": True,
         "valueFormatter": {"function": "params.value == null ? 'NaN' : String(params.value)"},
     },
