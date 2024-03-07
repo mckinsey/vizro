@@ -1,112 +1,149 @@
-"""Example to show dashboard configuration."""
+"""Rough example used by developers."""
 
-import random
-import string
-
-import numpy as np
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.models._components.form._text_area import TextArea
+from vizro.models._components.form._user_input import UserInput
 
-df = px.data.gapminder()
-df_mean = (
-    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
+iris = px.data.iris()
+
+# Only added to container.components directly for dev example
+vm.Page.add_type("controls", UserInput)
+vm.Page.add_type("controls", TextArea)
+vm.Container.add_type("components", vm.Dropdown)
+vm.Container.add_type("components", vm.Checklist)
+vm.Container.add_type("components", vm.RadioItems)
+vm.Container.add_type("components", vm.Slider)
+vm.Container.add_type("components", vm.RangeSlider)
+vm.Container.add_type("components", TextArea)
+vm.Container.add_type("components", UserInput)
+
+
+selectors = vm.Page(
+    title="Selectors - Controls",
+    components=[
+        vm.Graph(
+            id="scatter_relation",
+            figure=px.scatter(data_frame=px.data.gapminder(), x="gdpPercap", y="lifeExp", size="pop"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="continent",
+            selector=vm.Dropdown(title="Dropdown Label"),
+        ),
+        vm.Filter(
+            column="year",
+            selector=vm.RangeSlider(title="Range Slider Label", step=1, marks=None),
+        ),
+        vm.Filter(
+            column="year",
+            selector=vm.Slider(title="Slider Label"),
+        ),
+        vm.Filter(
+            column="year",
+            selector=vm.RangeSlider(title="Range Slider Label", step=10),
+        ),
+        vm.Filter(
+            column="year",
+            selector=vm.Slider(title="Slider Label", step=10),
+        ),
+        vm.Filter(
+            column="continent",
+            selector=vm.Checklist(title="Checklist Label"),
+        ),
+        vm.Filter(
+            column="continent",
+            selector=vm.RadioItems(title="Radio Items Label"),
+        ),
+        UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
+        TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
+    ],
 )
 
-df_transformed = df.copy()
-df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
-df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
-
-
-grid_interaction = vm.Page(
-    title="AG Grid and Table Interaction",
+form_components = vm.Page(
+    title="Selectors - Components",
     components=[
-        vm.AgGrid(
-            id="table_country_new",
-            title="Click on a cell",
-            figure=dash_ag_grid(
-                id="dash_ag_grid_1",
-                data_frame=px.data.gapminder(),
-            ),
+        vm.Container(
+            id="container-id",
+            title="Form",
+            components=[
+                UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
+                TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
+                vm.Dropdown(title="Dropdown - Single", options=["Option 1", "Option 2", "Option 3"], multi=False),
+                vm.Dropdown(title="Dropdown - Multi", options=["Option 1", "Option 2", "Option 3"], multi=True),
+                vm.Checklist(title="Checklist", options=["Option 1", "Option 2", "Option 3"]),
+                vm.RadioItems(title="Radio Items", options=["Option 1", "Option 2", "Option 3"]),
+                vm.Slider(title="Slider without marks", min=0, max=10),
+                vm.Slider(title="Slider with marks", min=0, max=10, step=1),
+                vm.RangeSlider(title="Range Slider without marks", min=0, max=10),
+                vm.RangeSlider(title="Range Slider with marks", min=0, max=10, step=1),
+                vm.Button(),
+            ],
         ),
     ],
 )
 
 
-df2 = px.data.stocks()
-df2["date_as_datetime"] = pd.to_datetime(df2["date"])
-df2["date_str"] = df2["date"].astype("str")
-df2["perc_from_float"] = np.random.rand(len(df2))
-df2["random"] = np.random.uniform(-100000.000, 100000.000, len(df2))
-
-grid_standard = vm.Page(
-    title="AG Grid Default",
+slider_marks = vm.Page(
+    title="Sliders - drawn marks",
+    layout=vm.Layout(grid=[[0, 1]], col_gap="100px"),
     components=[
-        vm.AgGrid(
-            title="AG Grid - Default",
-            figure=dash_ag_grid(
-                data_frame=df2,
-            ),
+        vm.Container(
+            id="container-id-2",
+            title="Range Slider",
+            components=[
+                vm.RangeSlider(title="Range Slider | step = None and marks = {}", min=0, max=10),
+                vm.RangeSlider(
+                    title="Range Slider | step = None and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=None,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.RangeSlider(
+                    title="Range Slider | step = None and marks = None", min=0, max=10, step=None, marks=None
+                ),
+                vm.RangeSlider(title="Range Slider | step = 1 and marks = {}", min=0, max=10, step=1),
+                vm.RangeSlider(
+                    title="Range Slider | step = 1 and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=1,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.RangeSlider(title="Range Slider | step = 1 and marks = None", min=0, max=10, step=1, marks=None),
+            ],
+        ),
+        vm.Container(
+            id="container-id-3",
+            title="Slider",
+            components=[
+                vm.Slider(title="Slider | step = None and marks = {}", min=0, max=10),
+                vm.Slider(
+                    title="Slider | step = None and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=None,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.Slider(title="Slider | step = None and marks = None", min=0, max=10, step=None, marks=None),
+                vm.Slider(title="Slider | step = 1 and marks = {}", min=0, max=10, step=1),
+                vm.Slider(
+                    title="Slider | step = 1 and marks = {''}",
+                    min=0,
+                    max=10,
+                    step=1,
+                    marks={0: "0", 5: "5", 10: "10"},
+                ),
+                vm.Slider(title="Slider | step = 1 and marks = None", min=0, max=10, step=1, marks=None),
+            ],
         ),
     ],
 )
 
-grid_custom = vm.Page(
-    title="AG Grid Custom",
-    components=[
-        vm.AgGrid(
-            title="Custom AG Grid",
-            figure=dash_ag_grid(
-                id="dash_ag_grid_3",
-                data_frame=df2,
-                columnDefs=[
-                    {"field": "AAPL", "headerName": "Format Dollar", "cellDataType": "dollar"},
-                    {"field": "AAPL", "headerName": "Format Euro", "cellDataType": "euro"},
-                    {"field": "random", "headerName": "Format Numeric", "cellDataType": "numeric"},
-                    {"field": "perc_from_float", "headerName": "Format Percent", "cellDataType": "percent"},
-                    {
-                        "field": "perc_from_float",
-                        "headerName": "custom format",
-                        "valueFormatter": {"function": "d3.format('.^30')(params.value)"},
-                    },
-                ],
-                defaultColDef={"editable": True},
-                # dashGridOptions = {"pagination": False},
-            ),
-        ),
-    ],
-)
-
-num_rows = 100
-num_columns = 20
-column_names = ["Column_" + str(i) for i in range(num_columns)]
-data = {}
-for column in column_names:
-    data[column] = ["".join(random.choices(string.ascii_letters, k=random.randint(5, 15))) for _ in range(num_rows)]
-df_long = pd.DataFrame(data)
-
-grid_long = vm.Page(
-    title="AG Grid Long",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(id="dash_ag_grid_4", data_frame=df_long), title="AG Grid - long"),
-    ],
-)
-
-table_long = vm.Page(
-    title="Table Long",
-    components=[
-        vm.Table(figure=dash_data_table(id="dash_table_5", data_frame=df_long)),
-    ],
-)
-
-
-dashboard = vm.Dashboard(
-    pages=[grid_interaction, grid_standard, grid_custom, grid_long, table_long],
-)
+dashboard = vm.Dashboard(pages=[selectors, form_components, slider_marks])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
