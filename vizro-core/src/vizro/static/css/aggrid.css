@@ -22,6 +22,7 @@
   --ag-header-column-resize-handle-height: 30%;
   --ag-header-column-resize-handle-width: 1px;
   --ag-header-column-resize-handle-color: var(--border-subtle-alpha-02);
+  --ag-range-selection-border-color: transparent;
 }
 
 /* Header ------- */
@@ -57,8 +58,7 @@
 }
 
 #page-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  /* Eliminates border on cell click */
-  border-color: transparent;
+  background: var(--state-overlays-selected);
 }
 
 /* Pop up menu ----- */
