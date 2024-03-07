@@ -141,17 +141,22 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
-        "step, marks, expected",
+        "step, marks, expected_marks, expected_class",
         [
-            (1, None, None),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (None, {}, None),
+            (1, None, None, "slider-track-without-marks"),
+            (None, {}, None, "slider-track-without-marks"),
+            (None, None, None, "slider-track-without-marks"),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
+            # be drawn by the dash component, so we need to check for the className here on top.
+            (1, {}, {}, "slider-track-with-marks"),
         ],
     )
-    def test_set_step_and_marks(self, step, marks, expected):
-        slider = vm.Slider(min=0, max=10, step=step, marks=marks)
-        assert slider.marks == expected
+    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
+        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
+        assert slider["slider-id"].marks == expected_marks
+        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):
