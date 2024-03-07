@@ -30,19 +30,19 @@ class TestDashDataTable:
                     {"cat": "b", "int": 5, "float": 8.2, "date": pd.Timestamp("2021-01-02 00:00:00")},
                     {"cat": "c", "int": 6, "float": 9.1, "date": pd.Timestamp("2021-01-03 00:00:00")},
                 ],
+                style_as_list_view=True,
+                style_data={"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
+                style_header={
+                    "border_bottom": "1px solid var(--state-overlays-selected-hover)",
+                    "border_top": "1px solid var(--main-container-bg-color)",
+                    "height": "32px",
+                },
+                style_data_conditional=[
+                    {
+                        "if": {"state": "active"},
+                        "backgroundColor": "var(--state-overlays-selected)",
+                        "border": "1px solid var(--state-overlays-selected)",
+                    }
+                ],
             ),
-            style_as_list_view=True,
-            style_data={"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
-            style_header={
-                "border_bottom": "1px solid var(--state-overlays-selected-hover)",
-                "border_top": "1px solid var(--main-container-bg-color)",
-                "height": "32px",
-            },
-            style_data_conditional=[
-                {
-                    "if": {"state": "active"},
-                    "backgroundColor": "var(--state-overlays-selected)",
-                    "border": "1px solid var(--state-overlays-selected)",
-                }
-            ],
         )
