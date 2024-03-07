@@ -5,7 +5,7 @@
 
 #container-id .grid-layout,
 #container-id-2 .grid-layout,
-#container-id-3 .grid-layout{
+#container-id-3 .grid-layout {
   display: flex;
   flex-direction: column;
   gap: 24px !important;
@@ -13,6 +13,6 @@
 }
 
 #container-id-2 .grid-layout,
-#container-id-3 .grid-layout{
+#container-id-3 .grid-layout {
   width: 70%;
 }

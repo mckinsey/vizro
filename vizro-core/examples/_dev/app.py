@@ -128,9 +128,7 @@ slider_marks = vm.Page(
                     step=None,
                     marks={0: "0", 5: "5", 10: "10"},
                 ),
-                vm.Slider(
-                    title="Slider | step = None and marks = None", min=0, max=10, step=None, marks=None
-                ),
+                vm.Slider(title="Slider | step = None and marks = None", min=0, max=10, step=None, marks=None),
                 vm.Slider(title="Slider | step = 1 and marks = {}", min=0, max=10, step=1),
                 vm.Slider(
                     title="Slider | step = 1 and marks = {''}",
