@@ -31,8 +31,18 @@ class TestDashDataTable:
                     {"cat": "c", "int": 6, "float": 9.1, "date": pd.Timestamp("2021-01-03 00:00:00")},
                 ],
             ),
-            keys_to_strip={"style_as_list_view", "style_data", "style_header"},
+            style_as_list_view=True,
+            style_data={"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
+            style_header={
+                "border_bottom": "1px solid var(--state-overlays-selected-hover)",
+                "border_top": "1px solid var(--main-container-bg-color)",
+                "height": "32px",
+            },
+            style_data_conditional=[
+                {
+                    "if": {"state": "active"},
+                    "backgroundColor": "var(--state-overlays-selected)",
+                    "border": "1px solid var(--state-overlays-selected)",
+                }
+            ],
         )
-
-        # we could test other properties such as style_header,
-        # but this would just test our chosen defaults, and no functionality really
