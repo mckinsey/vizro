@@ -12,7 +12,7 @@ df = px.data.gapminder().query("year == 2007")
 
 
 @capture("ag_grid")
-def my_custom_aggrid(data_frame=None, chosen_columns: List[str] = None):
+def my_custom_aggrid(data_frame=None, chosen_columns: List[str] = []):
     """Custom ag_grid."""
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",

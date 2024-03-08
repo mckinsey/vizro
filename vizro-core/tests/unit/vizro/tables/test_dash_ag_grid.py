@@ -1,6 +1,8 @@
 import dash_ag_grid as dag
 import pandas as pd
+import vizro.models as vm
 from asserts import assert_component_equal
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 data = pd.DataFrame(
@@ -30,3 +32,21 @@ class TestDashAgGrid:
         )
         # we could test other properties such as defaultColDef,
         # but this would just test our chosen defaults, and no functionality really
+
+
+class TestCustomDashAgGrid:
+    def test_custom_dash_ag_grid(self):
+        @capture("ag_grid")
+        def custom_ag_grid(data_frame):
+            return dag.AgGrid(
+                columnDefs=[{"field": col} for col in data_frame.columns],
+                rowData=data_frame.to_dict("records"),
+            )
+
+        grid_model = vm.AgGrid(
+            id="custom_ag_grid",
+            title="Custom Dash AgGrid",
+            figure=custom_ag_grid(data_frame=data),
+        )
+        grid_model.pre_build()
+        grid_model.build()
