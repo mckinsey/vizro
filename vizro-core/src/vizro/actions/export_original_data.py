@@ -16,64 +16,16 @@ import importlib
 from vizro.managers._model_manager import ModelID
 import vizro.models as vm
 
+from vizro.actions._callback_mapping._callback_mapping_utils import _get_inputs_of_filters, _get_inputs_of_figure_interactions
 from vizro.actions._actions_utils import _get_filtered_data
 
 
-def _get_matching_actions_by_function(
-    page_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[Action]:
-    """Gets list of `Actions` on triggered `Page` that match the provided `action_function`."""
-    return [
-        action
-        for actions_chain in model_manager._get_page_actions_chains(page_id=page_id)
-        for action in actions_chain.actions
-        if action.function._function == action_function
-    ]
 
 
-def _get_inputs_of_filters(page: Page, action_function:  Callable[[Any], Dict[str, Any]]) -> List[State]:
-    """Gets list of `States` for selected `control_type` of triggered `Page`."""
-    filter_actions_on_page = _get_matching_actions_by_function(
-        page_id=ModelID(str(page.id)), action_function=action_function
-    )
-    inputs = []
-    for action in filter_actions_on_page:
-        triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
-        inputs.append(
-            State(component_id=triggered_model.id, component_property=triggered_model._input_property)
-        )
-
-    return inputs
 
 
-def _get_inputs_of_figure_interactions(
-    page: Page, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[Dict[str, State]]:
-    """Gets list of `States` for selected chart interaction `action_function` of triggered `Page`."""
-    figure_interactions_on_page = _get_matching_actions_by_function(
-        page_id=ModelID(str(page.id)), action_function=action_function
-    )
-    inputs = []
-    for action in figure_interactions_on_page:
-        triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
-        if isinstance(triggered_model, vm.Table):
-            inputs.append(
-                {
-                    "active_cell": State(
-                        component_id=triggered_model._callable_object_id, component_property="active_cell"
-                    ),
-                    "derived_viewport_data": State(
-                        component_id=triggered_model._callable_object_id, component_property="derived_viewport_data"
-                    ),
-                }
-            )
-        else:
-            inputs.append({"clickData": State(component_id=triggered_model.id, component_property="clickData")})
 
-    return inputs
-
-
-class ExportOriginalData(CapturedActionCallable):
+class ExportDataClassAction(CapturedActionCallable):
     def __init__(self, *args, **kwargs):
         self._args = args
         self._kwargs = kwargs
@@ -134,7 +86,7 @@ class ExportOriginalData(CapturedActionCallable):
 
     @property
     def inputs(self):
-        # TODO: Go with _get_inputs_of_figure_interactions for every input. It fetched filter/parameters inputs from every components.
+        # TODO: fetch inputs by function on a page
         # TODO: Do more refactoring: Take the _actions_info into account,
 
         page = model_manager[self._page_id]
@@ -171,5 +123,5 @@ class ExportOriginalData(CapturedActionCallable):
         ]
 
 
-# Alias for ExportOriginalData
-export_original_data = ExportOriginalData
+# Alias for ExportDataClassAction
+export_data_class_action = ExportDataClassAction

@@ -19,7 +19,7 @@ from vizro.models._models_utils import _log_call
 
 
 class Slider(VizroBaseModel):
-    """Numeric single-selector `Slider`.
+    """Numeric single-option selector `Slider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter]. Based on the underlying
@@ -61,12 +61,12 @@ class Slider(VizroBaseModel):
         init_value = self.value or self.min
 
         output = [
-            Output(f"{self.id}_text_value", "value"),
+            Output(f"{self.id}_end_value", "value"),
             Output(self.id, "value"),
             Output(f"{self.id}_input_store", "data"),
         ]
         inputs = [
-            Input(f"{self.id}_text_value", "value"),
+            Input(f"{self.id}_end_value", "value"),
             Input(self.id, "value"),
             State(f"{self.id}_input_store", "data"),
             State(f"{self.id}_callback_data", "data"),
@@ -80,46 +80,44 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Store(
-                    f"{self.id}_callback_data",
-                    data={
-                        "id": self.id,
-                        "min": self.min,
-                        "max": self.max,
-                    },
-                ),
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
                     [
-                        dcc.Slider(
-                            id=self.id,
-                            min=self.min,
-                            max=self.max,
-                            step=self.step,
-                            marks=self.marks,
-                            value=init_value,
-                            included=False,
-                            persistence=True,
-                            persistence_type="session",
-                            className="slider_control" if self.step else "slider_control_no_space",
+                        html.Label(self.title, htmlFor=self.id) if self.title else None,
+                        html.Div(
+                            [
+                                dcc.Input(
+                                    id=f"{self.id}_end_value",
+                                    type="number",
+                                    placeholder="max",
+                                    min=self.min,
+                                    max=self.max,
+                                    step=self.step,
+                                    value=init_value,
+                                    persistence=True,
+                                    persistence_type="session",
+                                    className="slider-text-input-field",
+                                ),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
+                            ],
+                            className="slider-text-input-container",
                         ),
-                        dcc.Input(
-                            id=f"{self.id}_text_value",
-                            type="number",
-                            placeholder="end",
-                            min=self.min,
-                            max=self.max,
-                            step=self.step,
-                            value=init_value,
-                            persistence=True,
-                            persistence_type="session",
-                            className="slider_input_field_right" if self.step else "slider_input_field_no_space_right",
-                        ),
-                        dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                     ],
-                    className="slider_inner_container",
+                    className="slider-label-input",
+                ),
+                dcc.Slider(
+                    id=self.id,
+                    min=self.min,
+                    max=self.max,
+                    step=self.step,
+                    marks=self.marks,
+                    value=init_value,
+                    included=False,
+                    persistence=True,
+                    persistence_type="session",
+                    className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

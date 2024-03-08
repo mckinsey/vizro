@@ -5,7 +5,7 @@ import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid, dash_data_table
 
 
 @pytest.fixture
@@ -24,6 +24,21 @@ def standard_px_chart(gapminder):
         hover_name="country",
         size_max=60,
     )
+
+
+@pytest.fixture
+def standard_ag_grid(gapminder):
+    return dash_ag_grid(data_frame=gapminder)
+
+
+@pytest.fixture
+def ag_grid_with_id(gapminder):
+    return dash_ag_grid(id="underlying_ag_grid_id", data_frame=gapminder)
+
+
+@pytest.fixture
+def ag_grid_with_id_and_conf(gapminder):
+    return dash_ag_grid(id="underlying_ag_grid_id", data_frame=gapminder, dashGridOptions={"pagination": True})
 
 
 @pytest.fixture

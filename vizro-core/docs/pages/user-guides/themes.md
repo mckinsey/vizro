@@ -64,7 +64,7 @@ you can still switch between the themes via the toggle button in the upper-right
 ## Themes in plotly charts
 You can also use our templates for plotly charts outside the dashboard.
 Our `vizro_dark` and `vizro_light` theme are automatically registered to `plotly.io.templates` when importing Vizro.
-You can find more details on how templates work in plotly.express [here](https://plotly.com/python/templates/#theming-and-templates).
+Consult the plotly documentation for [more details on how templates work in plotly.express](https://plotly.com/python/templates/#theming-and-templates).
 
 ### Set themes for all charts
 The default plotly.io template is set to be `vizro_dark` as soon as you `import vizro`:

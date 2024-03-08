@@ -15,7 +15,11 @@ from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
 class Dropdown(VizroBaseModel):
-    """Categorical multi-selector `Dropdown` to be provided to [`Filter`][vizro.models.Filter].
+    """Categorical single/multi-option selector `Dropdown`.
+
+    Can be provided to [`Filter`][vizro.models.Filter] or
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown).
 
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
@@ -69,6 +73,6 @@ class Dropdown(VizroBaseModel):
                     className="selector_body_dropdown",
                 ),
             ],
-            className="selector_dropdown_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

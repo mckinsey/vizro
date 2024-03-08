@@ -1,44 +1,62 @@
 """Rough example used by developers."""
 
-import dash_bootstrap_components as dbc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, export_original_data, filter_interaction
+from vizro.actions import filter_interaction, export_data_class_action
+from vizro.tables import dash_ag_grid, dash_data_table
 
-iris = px.data.iris()
+df_gapminder = px.data.gapminder().query("year == 2007")
 
-page = vm.Page(
-    title="Page Example",
-    components=[
-        vm.Graph(
-            id="scatter_1",
-            figure=px.scatter(data_frame=iris, x="sepal_length", y="petal_length", color="species", custom_data=["species"]),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["scatter_2"])),
-            ]
-        ),
-        vm.Graph(
-            id="scatter_2",
-            figure=px.scatter(data_frame=iris, x="sepal_length", y="petal_length", color="species"),
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(
-                    function=export_original_data(targets=["scatter_2"])
+
+dashboard = vm.Dashboard(
+    pages=[
+        vm.Page(
+            title="Ag Grid - Filter interaction",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(data_frame=df_gapminder),
+                    actions=[vm.Action(function=filter_interaction(targets=["scatter"]))],
+                ),
+                vm.Graph(
+                    id="scatter",
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Button(
+                    text="Export data",
+                    actions=[vm.Action(function=export_data_class_action(targets=["scatter"]))],
                 )
-            ]
-        )
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        # vm.Filter(column="species"),
-        # vm.Filter(column="species"),
+            ],
+            controls=[vm.Filter(column="continent")],
+        ),
+        vm.Page(
+            title="Data Table - Filter interaction",
+            components=[
+                vm.Table(
+                    figure=dash_data_table(data_frame=df_gapminder),
+                    actions=[vm.Action(function=filter_interaction(targets=["scatter_2"]))],
+                ),
+                vm.Graph(
+                    id="scatter_2",
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+            ],
+            controls=[vm.Filter(column="continent")],
+        ),
     ]
 )
 
-dashboard = vm.Dashboard(pages=[page])
-
 if __name__ == "__main__":
-    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
+    Vizro().build(dashboard).run()

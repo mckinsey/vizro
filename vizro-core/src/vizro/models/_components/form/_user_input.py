@@ -14,7 +14,9 @@ from vizro.models._models_utils import _log_call
 
 
 class UserInput(VizroBaseModel):
-    """Component provided to `Form` to allow single-line user input.
+    """Single-line text input component `UserInput`.
+
+    Based on the underlying [`dcc.Input`](https://dash.plotly.com/dash-core-components/input).
 
     Args:
         type (Literal["user_input"]): Defaults to `"user_input"`.

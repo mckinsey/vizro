@@ -31,6 +31,7 @@
   --border-dark-mode-selected: #ffffff;
   --fill-dark-mode-subtle: rgba(255, 255, 255, 0.1);
   --border-dark-mode-subtle-alpha-01: rgba(255, 255, 255, 0.1);
+  --border-dark-mode-subtle-alpha-02: rgba(255, 255, 255, 0.16);
   --status-dark-mode-success: rgba(64, 216, 110, 1);
   --tags-dark-mode-text-color: rgba(255, 255, 255, 0.6);
   --status-dark-mode-warning: rgba(255, 193, 7, 1);
@@ -67,6 +68,7 @@
   --border-light-mode-selected: #141721;
   --fill-light-mode-subtle: rgba(0, 0, 0, 0.1);
   --border-light-mode-subtle-alpha-01: rgba(20, 23, 33, 0.1);
+  --border-light-mode-subtle-alpha-02: rgba(20, 23, 33, 0.16);
   --status-light-mode-success: rgba(38, 191, 86, 1);
   --tags-light-mode-text-color: rgba(255, 255, 255, 0.6);
   --status-light-mode-warning: rgba(241, 124, 2, 1);

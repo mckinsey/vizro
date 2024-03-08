@@ -74,7 +74,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
     [DefaultNavigation]: ../../assets/user_guides/navigation/default_navigation.png
 
-## Including only some pages
+## Including a subset of pages
 
 If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), e.g. we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
@@ -103,7 +103,7 @@ If you wish to include only some of your dashboard pages in your navigation then
 
     [OnlySomePages]: ../../assets/user_guides/navigation/only_some_pages.png
 
-## Grouping your pages
+## Grouping pages
 
 You can also group your pages together by specifying `pages` as a dictionary:
 
@@ -137,7 +137,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
     [GroupedNavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
 
 
-## Navigation bar with icons
+## Using a navigation bar with icons
 
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 

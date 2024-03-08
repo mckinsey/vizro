@@ -1,5 +1,5 @@
 """Contains utilities to create the action_callback_mapping."""
-
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Union
 
 from dash import Output, State, dcc
@@ -7,10 +7,11 @@ from dash import Output, State, dcc
 from vizro.actions import _parameter, export_data, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, Page, Table
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
 
+if TYPE_CHECKING:
+    from vizro.models import Action, Page
 
 # This function can also be reused for all other inputs (filters, parameters).
 # Potentially this could be a way to reconcile predefined with custom actions,
@@ -37,6 +38,26 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State
     ]
 
 
+
+def _get_inputs_of_filters(page: Page, action_function:  Callable[[Any], Dict[str, Any]]) -> List[State]:
+    """Gets list of `States` for selected `control_type` of triggered `Page`."""
+    filter_actions_on_page = _get_matching_actions_by_function(
+        page_id=ModelID(str(page.id)), action_function=action_function
+    )
+    inputs = []
+    for action in filter_actions_on_page:
+        triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
+        inputs.append(
+            State(component_id=triggered_model.id, component_property=triggered_model._input_property)
+        )
+
+    return inputs
+
+
+
+
+
+
 def _get_inputs_of_figure_interactions(
     page: Page, action_function: Callable[[Any], Dict[str, Any]]
 ) -> List[Dict[str, State]]:
@@ -47,20 +68,15 @@ def _get_inputs_of_figure_interactions(
     inputs = []
     for action in figure_interactions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
-        if isinstance(triggered_model, Table):
-            inputs.append(
-                {
-                    "active_cell": State(
-                        component_id=triggered_model._callable_object_id, component_property="active_cell"
-                    ),
-                    "derived_viewport_data": State(
-                        component_id=triggered_model._callable_object_id, component_property="derived_viewport_data"
-                    ),
-                }
+        required_attributes = ["_filter_interaction_input", "_filter_interaction"]
+        for attribute in required_attributes:
+            if not hasattr(triggered_model, attribute):
+                raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
+        if "modelID" not in triggered_model._filter_interaction_input:
+            raise ValueError(
+                f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
             )
-        else:
-            inputs.append({"clickData": State(component_id=triggered_model.id, component_property="clickData")})
-
+        inputs.append(triggered_model._filter_interaction_input)
     return inputs
 
 
@@ -111,7 +127,9 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
 
     return {
         target: Output(
-            component_id=target, component_property=model_manager[target]._output_property, allow_duplicate=True
+            component_id=target,
+            component_property=model_manager[target]._output_component_property,
+            allow_duplicate=True,
         )
         for target in targets
     }

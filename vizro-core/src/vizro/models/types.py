@@ -3,7 +3,7 @@
 # ruff: noqa: F821
 from __future__ import annotations
 
-import abc
+from abc import ABCMeta, abstractmethod
 import functools
 import inspect
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
@@ -94,6 +94,9 @@ class CapturedCallable:
         if var_keyword_param in self.__bound_arguments:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
+
+        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        self._mode = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -215,14 +218,14 @@ class CapturedCallable:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
 
 
-class CapturedActionCallable(CapturedCallable, abc.ABC):
+class CapturedActionCallable(CapturedCallable, metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
         super().__init__(self.pure_function, *args, **kwargs)
 
     @staticmethod
-    @abc.abstractmethod
+    @abstractmethod
     # TODO-actions: Rename to "function"
-    def pure_function():
+    def pure_function(*args, **kwargs):
         """This is the function that will be called when the action is triggered."""
 
     @property
@@ -242,8 +245,8 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
-    `"action"`.
+    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`,
+    `"ag_grid"` and `"action"`.
 
     Examples
         >>> @capture("graph")
@@ -252,21 +255,24 @@ class capture:
         >>> @capture("table")
         >>> def table_function():
         >>>     ...
+        >>> @capture("ag_grid")
+        >>> def ag_grid_function():
+        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
     [custom graphs](../user-guides/custom-charts.md).
-    For further help on the use of `@capture("table")`, you can refer to the guide on
+    For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
     [custom tables](../user-guides/custom-tables.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user-guides/custom-actions.md).
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table"]):
-        """Instantiates the decorator to capture a function call. Valid modes are "graph", "table" and "action"."""
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid"]):
+        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
         self._mode = mode
 
     def __call__(self, func, /):
@@ -290,6 +296,7 @@ class capture:
                 # We need to capture function upfront in order to find value of data_frame argument: since it could be
                 # positional or keyword, this is much more robust than trying to get it out of arg or kwargs ourselves.
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
@@ -317,10 +324,12 @@ class capture:
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 # Note this is basically the same as partial(func, *args, **kwargs)
-                return CapturedCallable(func, *args, **kwargs)
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
+                return captured_callable
 
             return wrapped
-        elif self._mode == "table":
+        elif self._mode in ["table", "ag_grid"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
@@ -328,6 +337,7 @@ class capture:
                     raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
@@ -337,7 +347,8 @@ class capture:
 
             return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action') or @capture('table')."
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
+            "@capture('ag_grid')."
         )
 
 
@@ -380,15 +391,15 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Container", "Graph", "Table", "Tabs"],
+    Union["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
-[`Graph`][vizro.models.Graph]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
+[`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."

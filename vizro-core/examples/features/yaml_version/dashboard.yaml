@@ -13,7 +13,15 @@ pages:
 
           ### Controls
 
-          Vizro has two different control types **filters** and **parameters.
+          Vizro has two different control types **Filter** and **Parameter**.
+
+          You can use any pre-existing selector inside the **Filter** or **Parameter**:
+
+          * Dropdown
+          * Checklist
+          * RadioItems
+          * RangeSlider
+          * Slider
         href: /filters
         type: card
       - text: |
@@ -63,6 +71,16 @@ pages:
       - column: continent
         type: filter
     title: Table
+  - components:
+      - figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder_2007
+        title: Dash AG Grid
+        type: ag_grid
+    controls:
+      - column: continent
+        type: filter
+    title: AG Grid
   - components:
       - text: |
           # Header level 1 <h1>
@@ -339,6 +357,90 @@ pages:
       - type: filter
         column: continent
     title: Tabs
+  - components:
+      - text: |
+          A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
+
+          The following selectors are available:
+          * Dropdown (**categorical** multi and single option selector)
+          * Checklist (**categorical** multi option selector only)
+          * RadioItems (**categorical** single option selector only)
+          * RangeSlider (**numerical** multi option selector only)
+          * Slider (**numerical** single option selector only)
+        type: card
+      - figure:
+          _target_: dash_data_table
+          data_frame: gapminder
+          page_size: 10
+        id: table-gapminder
+        title: Gapminder Data
+        type: table
+      - figure:
+          _target_: dash_data_table
+          data_frame: tips
+          page_size: 10
+        id: table-tips
+        title: Tips Data
+        type: table
+    controls:
+      - column: year
+        selector:
+          title: Range Slider (Gapminder - year)
+          type: range_slider
+        targets:
+          - table-gapminder
+        type: filter
+      - column: continent
+        selector:
+          title: Checklist (Gapminder - continent)
+          type: checklist
+        targets:
+          - table-gapminder
+        type: filter
+      - column: country
+        selector:
+          title: Dropdown (Gapminder - country)
+          type: dropdown
+        targets:
+          - table-gapminder
+        type: filter
+      - column: day
+        selector:
+          title: Dropdown (Tips - day)
+          type: dropdown
+          multi: False
+          value: Sat
+        targets:
+          - table-tips
+        type: filter
+      - column: sex
+        selector:
+          title: Radio Items (Tips - sex)
+          type: radio_items
+        targets:
+          - table-tips
+        type: filter
+      - column: size
+        selector:
+          title: Slider (Tips - size)
+          type: slider
+          step: 1
+          value: 2
+        targets:
+          - table-tips
+        type: filter
+    layout:
+      row_min_height: 170px
+      row_gap: 24px
+      grid:
+        - [0]
+        - [1]
+        - [1]
+        - [1]
+        - [2]
+        - [2]
+        - [2]
+    title: Selectors
 navigation:
   nav_selector:
     type: nav_bar
@@ -352,6 +454,7 @@ navigation:
         pages:
           Components:
             - Graphs
+            - AG Grid
             - Table
             - Cards
             - Button
@@ -360,6 +463,7 @@ navigation:
           Controls:
             - Filters
             - Parameters
+            - Selectors
           Actions:
             - Export data
             - Chart interaction
