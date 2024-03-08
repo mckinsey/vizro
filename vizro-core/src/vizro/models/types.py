@@ -3,6 +3,7 @@
 # ruff: noqa: F821
 from __future__ import annotations
 
+import abc
 import functools
 import inspect
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
@@ -212,6 +213,29 @@ class CapturedCallable:
             return captured_callable._captured_callable
         else:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
+
+
+class CapturedActionCallable(CapturedCallable, abc.ABC):
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.pure_function, *args, **kwargs)
+
+    @staticmethod
+    @abc.abstractmethod
+    # TODO-actions: Rename to "function"
+    def pure_function():
+        """This is the function that will be called when the action is triggered."""
+
+    @property
+    def inputs(self):
+        return []
+
+    @property
+    def outputs(self):
+        return []
+
+    @property
+    def components(self):
+        return []
 
 
 class capture:
