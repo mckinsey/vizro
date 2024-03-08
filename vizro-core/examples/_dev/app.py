@@ -39,7 +39,7 @@ page = vm.Page(
     components=[
         vm.AgGrid(
             id="custom_ag_grid",
-            title="Custom Dash DataTable",
+            title="Custom Dash AgGrid",
             figure=my_custom_aggrid(
                 data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
             ),
