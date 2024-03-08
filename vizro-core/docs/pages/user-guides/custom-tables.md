@@ -80,16 +80,16 @@ The following examples shows a possible version of a custom table. In this case 
     === "app.py"
         ```py
         from typing import List
-        
+
         import vizro.models as vm
         import vizro.plotly.express as px
         from dash_ag_grid import AgGrid
         from vizro import Vizro
         from vizro.models.types import capture
-        
+
         df = px.data.gapminder().query("year == 2007")
-        
-        
+
+
         @capture("ag_grid")
         def my_custom_aggrid(data_frame=None, chosen_columns: List[str] = None):
             """Custom ag_grid."""
@@ -111,8 +111,8 @@ The following examples shows a possible version of a custom table. In this case 
             return AgGrid(
                 columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
             )
-        
-        
+
+
         page = vm.Page(
             title="Example of a custom Dash AgGrid",
             components=[
@@ -132,7 +132,7 @@ The following examples shows a possible version of a custom table. In this case 
             ],
         )
         dashboard = vm.Dashboard(pages=[page])
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
