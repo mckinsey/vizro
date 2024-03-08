@@ -4,7 +4,7 @@ from typing import Dict, List, Literal
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import html, get_relative_path
 
 try:
     from pydantic.v1 import Field, validator
@@ -82,19 +82,13 @@ class Accordion(VizroBaseModel):
     def _create_nav_links(self, pages):
         """Creates a `NavLink` for each provided page that is registered."""
         nav_links = []
-        for page_id in pages:
-            try:
-                page = dash.page_registry[page_id]
-            except KeyError as exc:
-                raise KeyError(
-                    f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
-                ) from exc
+        for page in pages:
             nav_links.append(
                 dbc.NavLink(
-                    children=[page["name"]],
+                    children=page.name,
                     className="accordion-item-link",
                     active="exact",
-                    href=page["relative_path"],
+                    href=get_relative_path(page),
                 )
             )
         return nav_links
