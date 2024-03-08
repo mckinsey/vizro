@@ -1,7 +1,10 @@
+from contextlib import suppress
 from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path, html
+
+from vizro.managers import model_manager
 
 try:
     from pydantic.v1 import Field, validator
@@ -32,11 +35,13 @@ class Card(VizroBaseModel):
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
 
-    @validator("href", always=True)
-    def set_href(cls, href) -> str:
-        if href and _is_relative_url(href):
-            return _clean_url(href, "-_/")
-        return href
+    @_log_call
+    def pre_build(self):
+        # TODO: comment
+        with suppress(KeyError, AttributeError):
+            self.href = model_manager[self.href].path
+            # TODO: in future remove possibility of supplying relative path entirely and only allow page ID or complete href?
+            # Then would put get_relative_path in here.
 
     @_log_call
     def build(self):
@@ -44,7 +49,7 @@ class Card(VizroBaseModel):
         card_content = (
             dbc.NavLink(
                 text,
-                href=get_relative_path(self.href) if _is_relative_url(self.href) else self.href,
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
                 className="card-link",
             )
             if self.href

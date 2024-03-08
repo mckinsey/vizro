@@ -12,6 +12,8 @@ def _validate_pages(pages):
     """Reusable validator to check if provided Page IDs exist as registered pages."""
     from vizro.models import Page
 
+    # TODO:  add comment about moving this
+
     pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
     # Ideally we would use dash.page_registry or maybe dashboard.pages here, but we only register pages in
     # dashboard.pre_build and model manager cannot find a Dashboard at validation time.
