@@ -56,7 +56,7 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
-def _filter_between_date(series: pd.Series, value: List[float]) -> pd.Series:
+def _filter_between_date(series: pd.Series, value: List[str]) -> pd.Series:
     date_series, date_value = [_convert_to_date(value=elem) for elem in (series, value)]
     return _filter_between(series=date_series, value=date_value)
 

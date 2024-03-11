@@ -17,7 +17,7 @@ For more details, refer to the documentation of the underlying dash components:
 - [dcc.Checklist](https://dash.plotly.com/dash-core-components/checklist)
 - [dcc.RadioItems](https://dash.plotly.com/dash-core-components/radioitems)
 
-???+ note
+!!! note
 
     When configuring the `options` of the categorical selectors, you can either provide:
 
@@ -35,7 +35,7 @@ For more details, refer to the documentation of the underlying dash components:
 - [dcc.Slider](https://dash.plotly.com/dash-core-components/slider])
 - [dcc.RangeSlider](https://dash.plotly.com/dash-core-components/rangeslider])
 
-???+ note
+!!! note
 
     When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice
     unexpected behavior, such as the drag value being outside its indicated marks.
@@ -49,11 +49,11 @@ For more details, refer to the documentation of the underlying dash components:
 - [dmc.DateRangePicker](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
 - [dmc.DatePicker](https://www.dash-mantine-components.com/components/datepicker)
 
-???+ note
+!!! note
 
     [`DatePicker`][vizro.models.DatePicker] component is based on 2 underlying components dmc.DatePicker and dmc.DateRangePicker.
     When [`DatePicker`][vizro.models.DatePicker] is configured with `range=False` argument, underlying component is dmc.DatePicker. Default value of `range` is `True`,
     meaning [`DatePicker`][vizro.models.DatePicker] by default uses dmc.DateRangePicker.
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as datetime type.
 
-To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md)
+To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md).

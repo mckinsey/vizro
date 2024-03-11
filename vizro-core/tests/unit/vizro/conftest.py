@@ -15,7 +15,6 @@ def gapminder():
 
 @pytest.fixture
 def gapminder_with_datetime():
-    #  If datetimes is True, the 'year' column will be a datetime column
     return px.data.gapminder(datetimes=True)
 
 

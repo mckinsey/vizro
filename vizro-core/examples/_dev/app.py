@@ -26,7 +26,7 @@ df = pd.DataFrame(
     }
 )
 
-df["year"] = pd.to_datetime(df["year"], format="mixed")
+# df["year"] = pd.to_datetime(df["year"], format="mixed")
 
 gapminder_df = px.data.gapminder()
 gapminder_df["year"] = pd.to_datetime(gapminder_df["year"], format="%Y")
