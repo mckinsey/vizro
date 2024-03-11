@@ -73,6 +73,6 @@ class Dropdown(VizroBaseModel):
                     className="selector_body_dropdown",
                 ),
             ],
-            className="selector_dropdown_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )
