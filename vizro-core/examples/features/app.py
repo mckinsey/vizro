@@ -383,7 +383,9 @@ selectors = vm.Page(
             targets=["table-gapminder"],
             column="lifeExp",
             selector=vm.RangeSlider(
-                title="Range Slider (Gapminder - lifeExp)", step=1, marks=None,
+                title="Range Slider (Gapminder - lifeExp)",
+                step=1,
+                marks=None,
                 min=int(gapminder["lifeExp"].min()),
                 max=int(gapminder["lifeExp"].max()) + 1,
             ),
@@ -414,9 +416,7 @@ selectors = vm.Page(
             selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
         ),
         vm.Filter(
-            targets=["table-gapminder"],
-            column="year",
-            selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
+            targets=["table-gapminder"], column="year", selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
         ),
     ],
 )
