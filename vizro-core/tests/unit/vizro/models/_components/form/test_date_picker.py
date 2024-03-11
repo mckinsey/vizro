@@ -65,11 +65,15 @@ class TestDatePickerInstantiation:
         assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
         assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
 
-    def test_validate_max_invalid(self):
+    def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(
             ValidationError, match="Maximum value of component is required to be larger than minimum value."
         ):
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
+
+    def test_validate_max_invalid_date_format(self):
+        with pytest.raises(ValidationError, match="invalid date format"):
+            vm.DatePicker(min="50-50-50", max="50-50-50")
 
     @pytest.mark.parametrize(
         "range, value",
