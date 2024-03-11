@@ -2,6 +2,7 @@ import dash_ag_grid as dag
 import pandas as pd
 import vizro.models as vm
 from asserts import assert_component_equal
+from dash import dcc, html
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -36,6 +37,9 @@ class TestDashAgGrid:
 
 class TestCustomDashAgGrid:
     def test_custom_dash_ag_grid(self):
+        """Tests whether a custom created grid callable can be correctly be built in vm.AgGrid."""
+        id = "custom_ag_grid"
+
         @capture("ag_grid")
         def custom_ag_grid(data_frame):
             return dag.AgGrid(
@@ -44,9 +48,24 @@ class TestCustomDashAgGrid:
             )
 
         grid_model = vm.AgGrid(
-            id="custom_ag_grid",
-            title="Custom Dash AgGrid",
+            id=id,
             figure=custom_ag_grid(data_frame=data),
         )
         grid_model.pre_build()
-        grid_model.build()
+        custom_grid = grid_model.build()
+
+        expected_grid = dcc.Loading(
+            [
+                None,
+                html.Div(
+                    dag.AgGrid(id="__input_custom_ag_grid", columnDefs=[], rowData=[]),
+                    id=id,
+                    className="table-container",
+                ),
+            ],
+            id=f"{id}_outer",
+            color="grey",
+            parent_className="loading-container",
+        )
+
+        assert_component_equal(custom_grid, expected_grid)
