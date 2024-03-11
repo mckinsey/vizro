@@ -12,24 +12,6 @@ from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown
 logger = logging.getLogger(__name__)
 
 
-VizroAI()  # uses the default -> ChatOpenAI(model_name="...", temperature=0) OR ChatOpenAI(temperature=0)
-VizroAI(ChatOpenAI(model_name="gpt-4", temperature=0))  # temperature = 0.7 here
-VizroAI("gpt-4")  # VizroAI(ChatOpenAI(model_name="gpt-4", temperature=0))
-VizroAI(gpt4)  # VizroAI(ChatOpenAI(model_name="gpt-4", temperature=0))
-VizroAI(AzureOpenAI(...))  # full spec of model works
-
-
-# 1. Should there be a default? Probably yes.
-#   If no then we need a shortcut that maps onto ChatOpenAI(model_name="gpt-4", temperature=0)
-#   If yes then:
-#       * what is that default? Do we use ChatOpenAI's default or set our own model_name manually? We would need to
-#          set temperature=0 either way. Probably use ChatOpenAI's default so ChatOpenAI(temperature=0).
-#       * we may or may not want a shortcut. Probably do not want any shortcuts.
-# 2. If we want a shortcut, should it be string or something else?
-# VizroAI()  # uses the default -> ChatOpenAI(temperature=0)
-# VizroAI(model=X)  # uses model = X
-
-
 class VizroAI:
     """Vizro-AI main class."""
 
@@ -37,7 +19,7 @@ class VizroAI:
     pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model):
+    def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
         """Initialization of VizroAI.
 
         Args:
@@ -45,10 +27,9 @@ class VizroAI:
             temperature: Temperature parameter for LLM.
 
         """
-        self._model = model
         self.model_name = model_name
         self.temperature = temperature
-        self._components_instances = {}
+        self.components_instances = {}
         self._llm_to_use = None
         # TODO add pending URL link to docs
         logger.info(
