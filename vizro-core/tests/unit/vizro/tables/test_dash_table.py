@@ -1,6 +1,8 @@
 import pandas as pd
+import vizro.models as vm
 from asserts import assert_component_equal
 from dash import dash_table
+from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
 data = pd.DataFrame(
@@ -46,3 +48,21 @@ class TestDashDataTable:
                 ],
             ),
         )
+
+
+class TestCustomDashDataTable:
+    def test_custom_dash_data_table(self):
+        @capture("table")
+        def custom_dash_data_table(data_frame):
+            return dash_table.DataTable(
+                columnDefs=[{"name": col, "id": col} for col in data_frame.columns],
+                data=data_frame.to_dict("records"),
+            )
+
+        table = vm.Table(
+            id="custom_dash_data_table",
+            title="Custom Dash DataTable",
+            figure=custom_dash_data_table(data_frame=data),
+        )
+        table.pre_build()
+        table.build()
