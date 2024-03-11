@@ -47,8 +47,8 @@ _DATA_TYPE_DEFINITIONS = {
 
 
 @capture("ag_grid")
-def dash_ag_grid(data_frame, **kwargs):
-    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults."""
+def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
+    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid]."""
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
