@@ -11,6 +11,26 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.13'></a>
+
+# 0.1.13 — 2024-03-12
+
+### Highlights ✨
+
+- Introduce `AgGrid` as a new `Page` component, allowing the usage of
+  [AG Grid](https://www.ag-grid.com/) in
+  `Vizro`. See the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/)
+  for more information. ([#289](https://github.com/mckinsey/vizro/pull/289),[#268](https://github.com/mckinsey/vizro/pull/268),[#324](https://github.com/mckinsey/vizro/pull/324))
+
+## Changed
+
+- Apply new design to `Slider` and `RangeSlider`. ([#336](https://github.com/mckinsey/vizro/pull/336))
+- Consolidate gaps between selectors. ([#336](https://github.com/mckinsey/vizro/pull/336))
+
+## Fixed
+
+- Fix path to built-in Vizro assets when `requests_pathname_prefix` is not the same as `routes_pathname_prefix`. ([#358](https://github.com/mckinsey/vizro/pull/358))
+
 <a id='changelog-0.1.12'></a>
 
 # 0.1.12 — 2024-03-04

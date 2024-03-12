@@ -1,6 +1,8 @@
 import pandas as pd
+import vizro.models as vm
 from asserts import assert_component_equal
-from dash import dash_table
+from dash import dash_table, dcc, html
+from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
 data = pd.DataFrame(
@@ -46,3 +48,39 @@ class TestDashDataTable:
                 ],
             ),
         )
+
+
+class TestCustomDashDataTable:
+    def test_custom_dash_data_table(self):
+        """Tests whether a custom created table callable can be correctly be built in vm.Table."""
+        id = "custom_dash_data_table"
+
+        @capture("table")
+        def custom_dash_data_table(data_frame):
+            return dash_table.DataTable(
+                columns=[{"name": col, "id": col} for col in data_frame.columns],
+                data=data_frame.to_dict("records"),
+            )
+
+        table = vm.Table(
+            id=id,
+            figure=custom_dash_data_table(data_frame=data),
+        )
+        table.pre_build()
+
+        custom_table = table.build()
+
+        expected_table = dcc.Loading(
+            html.Div(
+                [
+                    None,
+                    html.Div(dash_table.DataTable(id="__input_custom_dash_data_table"), id=id),
+                ],
+                className="table-container",
+                id=f"{id}_outer",
+            ),
+            color="grey",
+            parent_className="loading-container",
+        )
+
+        assert_component_equal(custom_table, expected_table)
