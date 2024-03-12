@@ -219,7 +219,14 @@
   left: -12px;
   position: relative;
   top: 36px;
-  width: 0 !important;
+  width: max-content !important;
+}
+
+.collapse-icon-div {
+  display: flex;
+  justify-content: center;
+  padding-top: 36px;
+  width: 0;
 }
 
 /* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
@@ -238,6 +245,10 @@
     top: 28px;
   }
 
+  .collapse-icon-div {
+    padding-top: 28px;
+  }
+
   #page-header {
     zoom: 80%;
   }
@@ -254,6 +265,10 @@
 @media (height <= 576px) {
   .collapse-button-tooltip {
     top: 28px;
+  }
+
+  .collapse-icon-div {
+    padding-top: 28px;
   }
 
   #page-header {
