@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Literal
 
 from dash import Output, State, ctx, dcc
 
-from vizro.actions.filter_interaction_action import filter_interaction
 from vizro.actions._filter_action import _filter
+from vizro.actions.filter_interaction_action import filter_interaction
 from vizro.managers import model_manager
 from vizro.models.types import CapturedActionCallable
 
