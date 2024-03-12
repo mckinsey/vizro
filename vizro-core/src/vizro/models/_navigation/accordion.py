@@ -84,12 +84,13 @@ class Accordion(VizroBaseModel):
         nav_links = []
 
         for page_id in pages:
+            page = model_manager[ModelID(str(page_id))]
             nav_links.append(
                 dbc.NavLink(
-                    children=page_id,
+                    children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=model_manager[ModelID(str(page_id))].path,
+                    href=page.path,
                 )
             )
         return nav_links
