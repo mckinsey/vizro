@@ -11,6 +11,19 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.13'></a>
+
+# 0.1.13 — 2024-03-12
+
+## Changed
+
+- Apply new design to `Slider` and `RangeSlider` ([#336](https://github.com/mckinsey/vizro/pull/336))
+- Consolidate gaps between selectors ([#336](https://github.com/mckinsey/vizro/pull/336))
+
+## Fixed
+
+- Fix path to built-in Vizro assets when `requests_pathname_prefix` is not the same as `routes_pathname_prefix` ([#358](https://github.com/mckinsey/vizro/pull/358))
+
 <a id='changelog-0.1.12'></a>
 
 # 0.1.12 — 2024-03-04
