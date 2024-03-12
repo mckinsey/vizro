@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import filter_interaction, export_data_class_action
+from vizro.actions import export_data_class_action, filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df_gapminder = px.data.gapminder().query("year == 2007")
@@ -31,7 +31,7 @@ dashboard = vm.Dashboard(
                 vm.Button(
                     text="Export data",
                     actions=[vm.Action(function=export_data_class_action(targets=["scatter"]))],
-                )
+                ),
             ],
             controls=[vm.Filter(column="continent")],
         ),

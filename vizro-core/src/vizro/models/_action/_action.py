@@ -1,4 +1,3 @@
-import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
@@ -9,10 +8,9 @@ from dash import Input, Output, State, callback, html
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+    from pydantic import Field
 
 import vizro.actions
-from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -50,18 +48,9 @@ class Action(VizroBaseModel):
     # require, and make the code here look up the appropriate validation using the function as key
     # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
     # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
+    #
     # @validator("function")
     # def validate_predefined_actions(cls, function):
-    #     if function._function.__name__ == "export_data":
-    #         file_format = function._arguments.get("file_format")
-    #         if file_format not in [None, "csv", "xlsx"]:
-    #             raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
-    #         if file_format == "xlsx":
-    #             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-    #                 raise ModuleNotFoundError(
-    #                     "You must install either openpyxl or xlsxwriter to export to xlsx format."
-    #                 )
-    #     return function
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
@@ -78,10 +67,10 @@ class Action(VizroBaseModel):
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
         callback_inputs: Union[List[State], Dict[str, State]]
-        # TODO: Refactor the following lines to:
-        #       `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
-        # TODO: After refactoring that's mentioned above, test overwriting of the predefined action.
-        #       (by adding a new inputs/outputs to the overwritten action and check if it's working as expected)
+        # TODO-actions: Refactor the following lines to:
+        #     `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
+        #     After refactoring that's mentioned above, test overwriting of the predefined action.
+        #     (by adding a new inputs/outputs to the overwritten action and check if it's working as expected)
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif hasattr(self.function, "inputs") and self.function.inputs:
