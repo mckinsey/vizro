@@ -102,7 +102,8 @@ class AgGrid(VizroBaseModel):
         # setting as the object that is built on-page-load and rendered finally.
         dash_ag_grid_conf = self.figure._arguments.copy()
         dash_ag_grid_conf["data_frame"] = pd.DataFrame()
-        dash_ag_grid_conf["id"] = self._input_component_id
+        grid = self.figure._function(**dash_ag_grid_conf)
+        grid.id = self._input_component_id
 
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),
@@ -113,7 +114,7 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
-                html.Div(self.figure._function(**dash_ag_grid_conf), id=self.id, className="table-container"),
+                html.Div(grid, id=self.id, className="table-container"),
             ],
             id=f"{self.id}_outer",
             color="grey",
