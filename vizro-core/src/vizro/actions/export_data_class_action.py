@@ -1,38 +1,27 @@
-from __future__ import annotations
+import importlib
 
 from vizro.models.types import CapturedActionCallable
-from typing import TYPE_CHECKING, Any, Callable, Dict, Literal, List, Optional
+from typing import Any, Dict, Literal, List
 from dash import ctx, dcc, Output, State
 
 from vizro.actions import filter_interaction
 from vizro.actions._filter_action import _filter
-from vizro.managers import data_manager, model_manager
-
-if TYPE_CHECKING:
-    from vizro.models import Page
-    from vizro.models._table import Table
-
-import importlib
-from vizro.managers._model_manager import ModelID
-import vizro.models as vm
-
-from vizro.actions._callback_mapping._callback_mapping_utils import _get_inputs_of_filters, _get_inputs_of_figure_interactions
-from vizro.actions._actions_utils import _get_filtered_data
-
-
-
-
-
+from vizro.managers import model_manager
 
 
 class ExportDataClassAction(CapturedActionCallable):
     def __init__(self, *args, **kwargs):
         self._args = args
         self._kwargs = kwargs
-        # Fake initialization
+        # Fake initialization - to let other actions see that this one exists.
         super().__init__(*args, **kwargs)
 
     def _post_init(self):
+        """Post initialization is called in the vm.Action build phase, and it is used to validate and calculate the
+        properties of the CapturedActionCallable. With this, we can validate the properties and raise errors before
+        the action is built. Also, "input"/"output"/"components" properties and "pure_function" can use these validated
+        and the calculated arguments.
+        """
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
@@ -56,7 +45,7 @@ class ExportDataClassAction(CapturedActionCallable):
                 )
         self._kwargs["file_format"] = self.file_format = file_format
 
-        # post initialization
+        # Post initialization - to enable pure_function to use calculated input arguments like "targets".
         super().__init__(*self._args, **self._kwargs)
 
     @staticmethod
@@ -65,6 +54,8 @@ class ExportDataClassAction(CapturedActionCallable):
         file_format: Literal["csv", "xlsx"] = "csv",
         **inputs: Dict[str, Any]
     ):
+        from vizro.actions._actions_utils import _get_filtered_data
+
         data_frames = _get_filtered_data(
             targets=targets,
             ctds_filters=ctx.args_grouping["external"]["filters"],
@@ -86,8 +77,11 @@ class ExportDataClassAction(CapturedActionCallable):
 
     @property
     def inputs(self):
-        # TODO: fetch inputs by function on a page
-        # TODO: Do more refactoring: Take the _actions_info into account,
+        # TODO-actions: Take the "actions_info" into account once it's implemented.
+        from vizro.actions._callback_mapping._callback_mapping_utils import (
+            _get_inputs_of_filters,
+            _get_inputs_of_figure_interactions,
+        )
 
         page = model_manager[self._page_id]
         return {
@@ -99,13 +93,13 @@ class ExportDataClassAction(CapturedActionCallable):
                 page=page,
                 action_function=filter_interaction.__wrapped__
             ),
-            # TODO: Try not to propagate this if theme_selector is overwritten and not the part of the page.
+            # TODO-actions: Propagate theme_selector only if it exists on the page (could be overwritten by the user)
             "theme_selector": State("theme_selector", "checked"),
         }
 
     @property
     def outputs(self) -> Dict[str, Output]:
-        """Gets mapping of relevant output target name and `Outputs` for `export_data` action."""
+        # TODO-actions: Take the "actions_info" into account once it's implemented.
         return {
             f"download_dataframe_{target}": Output(
                 component_id={"type": "download_dataframe", "action_id": self._action_id, "target_id": target},
@@ -116,7 +110,7 @@ class ExportDataClassAction(CapturedActionCallable):
 
     @property
     def components(self):
-        """Creates dcc.Downloads for target components of the `export_data` action."""
+        # TODO-actions: Take the "actions_info" into account once it's implemented.
         return [
             dcc.Download(id={"type": "download_dataframe", "action_id": self._action_id, "target_id": target})
             for target in self.targets
