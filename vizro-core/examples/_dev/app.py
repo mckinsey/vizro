@@ -145,15 +145,7 @@ slider_marks = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[selectors, form_components, slider_marks],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(pages=["Page 3"]),
-                vm.NavLink(pages=["Page 1"]),
-                vm.NavLink(pages=["Page 2"]),
-            ]
-        )
-    ),
+    navigation=vm.Navigation(nav_selector=vm.NavBar(pages=["Page 3", "Page 2", "Page 1"]))
 )
 
 if __name__ == "__main__":
