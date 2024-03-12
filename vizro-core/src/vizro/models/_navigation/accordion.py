@@ -2,9 +2,8 @@ import itertools
 from collections.abc import Mapping
 from typing import Dict, List, Literal
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import html, get_relative_path
+from dash import get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
