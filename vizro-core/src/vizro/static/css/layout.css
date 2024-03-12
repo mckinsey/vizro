@@ -138,14 +138,6 @@
   width: 100%;
 }
 
-div.dashboard_container .tooltip-inner {
-  color: var(--text-primary);
-}
-
-div.dashboard_container .custom-tooltip {
-  color: var(--text-primary);
-}
-
 .nav-bar-icon-link.active .material-symbols-outlined {
   color: var(--text-active);
 }

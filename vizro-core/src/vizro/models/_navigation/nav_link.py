@@ -4,7 +4,6 @@ import itertools
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 from dash import html
 
 try:
@@ -71,8 +70,7 @@ class NavLink(VizroBaseModel):
                     placement="right",
                     class_name="nav-icon-tooltip",
                     target=f"{self.id}-tooltip-target",
-                    is_open=True, # Set to customise CSS better, should be removed after
-                )
+                ),
             ],
             id=self.id,
             className="nav-bar-icon-link",
