@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Card."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
