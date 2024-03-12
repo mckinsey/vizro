@@ -1,12 +1,13 @@
 """Contains utilities to create the action_callback_mapping."""
+
 from typing import Any, Callable, Dict, List, Union
 
 from dash import Output, State, dcc
 
 from vizro.actions import _parameter, export_data, filter_interaction
 from vizro.managers import model_manager
-from vizro.models import Action, Page
 from vizro.managers._model_manager import ModelID
+from vizro.models import Action, Page
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
 
@@ -36,7 +37,7 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State
     ]
 
 
-def _get_inputs_of_filters(page: Page, action_function:  Callable[[Any], Dict[str, Any]]) -> List[State]:
+def _get_inputs_of_filters(page: Page, action_function: Callable[[Any], Dict[str, Any]]) -> List[State]:
     """Gets list of `States` for selected `control_type` of triggered `Page`."""
     filter_actions_on_page = _get_matching_actions_by_function(
         page_id=ModelID(str(page.id)), action_function=action_function
@@ -44,9 +45,7 @@ def _get_inputs_of_filters(page: Page, action_function:  Callable[[Any], Dict[st
     inputs = []
     for action in filter_actions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
-        inputs.append(
-            State(component_id=triggered_model.id, component_property=triggered_model._input_property)
-        )
+        inputs.append(State(component_id=triggered_model.id, component_property=triggered_model._input_property))
 
     return inputs
 

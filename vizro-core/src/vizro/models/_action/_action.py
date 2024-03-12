@@ -1,4 +1,3 @@
-import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
@@ -9,10 +8,9 @@ from dash import Input, Output, State, callback, html
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+    from pydantic import Field
 
 import vizro.actions
-from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call

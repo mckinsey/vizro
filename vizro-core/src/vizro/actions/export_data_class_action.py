@@ -1,12 +1,12 @@
 import importlib
+from typing import Any, Dict, List, Literal
 
-from vizro.models.types import CapturedActionCallable
-from typing import Any, Dict, Literal, List
-from dash import ctx, dcc, Output, State
+from dash import Output, State, ctx, dcc
 
 from vizro.actions import filter_interaction
 from vizro.actions._filter_action import _filter
 from vizro.managers import model_manager
+from vizro.models.types import CapturedActionCallable
 
 
 class ExportDataClassAction(CapturedActionCallable):
@@ -40,20 +40,14 @@ class ExportDataClassAction(CapturedActionCallable):
             raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
         if file_format == "xlsx":
             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-                raise ModuleNotFoundError(
-                    "You must install either openpyxl or xlsxwriter to export to xlsx format."
-                )
+                raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
         self._kwargs["file_format"] = self.file_format = file_format
 
         # Post initialization - to enable pure_function to use calculated input arguments like "targets".
         super().__init__(*self._args, **self._kwargs)
 
     @staticmethod
-    def pure_function(
-        targets: List[str],
-        file_format: Literal["csv", "xlsx"] = "csv",
-        **inputs: Dict[str, Any]
-    ):
+    def pure_function(targets: List[str], file_format: Literal["csv", "xlsx"] = "csv", **inputs: Dict[str, Any]):
         from vizro.actions._actions_utils import _get_filtered_data
 
         data_frames = _get_filtered_data(
@@ -79,19 +73,15 @@ class ExportDataClassAction(CapturedActionCallable):
     def inputs(self):
         # TODO-actions: Take the "actions_info" into account once it's implemented.
         from vizro.actions._callback_mapping._callback_mapping_utils import (
-            _get_inputs_of_filters,
             _get_inputs_of_figure_interactions,
+            _get_inputs_of_filters,
         )
 
         page = model_manager[self._page_id]
         return {
-            "filters": _get_inputs_of_filters(
-                page=page,
-                action_function=_filter.__wrapped__
-            ),
+            "filters": _get_inputs_of_filters(page=page, action_function=_filter.__wrapped__),
             "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page,
-                action_function=filter_interaction.__wrapped__
+                page=page, action_function=filter_interaction.__wrapped__
             ),
             # TODO-actions: Propagate theme_selector only if it exists on the page (could be overwritten by the user)
             "theme_selector": State("theme_selector", "checked"),
