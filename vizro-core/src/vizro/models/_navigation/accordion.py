@@ -3,7 +3,7 @@ from collections.abc import Mapping
 from typing import Dict, List, Literal
 
 import dash_bootstrap_components as dbc
-from dash import get_relative_path, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, validator
@@ -12,7 +12,7 @@ except ImportError:  # pragma: no cov
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _log_call, clean_path
 from vizro.models._navigation._navigation_utils import _validate_pages
 
 
@@ -78,16 +78,17 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_nav_links(self, pages):
-        """Creates a `NavLink` for each provided page that is registered."""
+    def _create_nav_links(self, pages: List[str]):
+        """Creates a `NavLink` for each provided page."""
         nav_links = []
+
         for page in pages:
             nav_links.append(
                 dbc.NavLink(
-                    children=page.name,
+                    children=page,
                     className="accordion-item-link",
                     active="exact",
-                    href=get_relative_path(page),
+                    href=clean_path(page, "-_"),
                 )
             )
         return nav_links
