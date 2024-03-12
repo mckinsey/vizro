@@ -68,7 +68,6 @@ class NavLink(VizroBaseModel):
                 dbc.Tooltip(
                     self.label,
                     placement="right",
-                    class_name="nav-icon-tooltip",
                     target=f"{self.id}-tooltip-target",
                 ),
             ],

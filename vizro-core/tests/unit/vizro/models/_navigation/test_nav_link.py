@@ -3,7 +3,6 @@
 import re
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
@@ -79,8 +78,6 @@ class TestNavLinkPreBuildMethod:
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start", "className": "nav-icon-tooltip"}
-
     def test_nav_link_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="icon", pages=pages)
@@ -88,11 +85,12 @@ class TestNavLinkBuildMethod:
         built_nav_link = nav_link.build(active_page_id="Page 1")
         expected_nav_link = dbc.NavLink(
             children=[
-                dmc.Tooltip(
-                    label="Label",
-                    children=[html.Span("icon", className="material-symbols-outlined")],
-                    **self.common_args,
-                )
+                html.Span("icon", className="material-symbols-outlined", id="nav-link-tooltip-target"),
+                dbc.Tooltip(
+                    "Label",
+                    placement="right",
+                    target="nav-link-tooltip-target",
+                ),
             ],
             active=True,
             href="/",
@@ -109,11 +107,12 @@ class TestNavLinkBuildMethod:
         built_nav_link = nav_link.build(active_page_id="Page 3")
         expected_button = dbc.NavLink(
             children=[
-                dmc.Tooltip(
-                    label="Label",
-                    children=[html.Span("icon", className="material-symbols-outlined")],
-                    **self.common_args,
-                )
+                html.Span("icon", className="material-symbols-outlined", id="nav-link-tooltip-target"),
+                dbc.Tooltip(
+                    "Label",
+                    placement="right",
+                    target="nav-link-tooltip-target",
+                ),
             ],
             active=False,
             href="/",
