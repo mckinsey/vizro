@@ -16,7 +16,7 @@ from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, _validate_min_length, clean_path
+from vizro.models._models_utils import _log_call, _validate_min_length
 
 from .types import ComponentType, ControlType
 
@@ -65,6 +65,13 @@ class Page(VizroBaseModel):
 
     @validator("path", always=True)
     def set_path(cls, path, values) -> str:
+        # Based on how Github generates anchor links - see:
+        # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
+        def clean_path(path: str, allowed_characters: str) -> str:
+            path = path.strip().lower().replace(" ", "-")
+            path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
+            return path if path.startswith("/") else "/" + path
+
         # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
         if path:
             return clean_path(path, "-_/")

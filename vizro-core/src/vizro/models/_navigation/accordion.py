@@ -11,8 +11,9 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
+from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, clean_path
+from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 
 
@@ -82,13 +83,13 @@ class Accordion(VizroBaseModel):
         """Creates a `NavLink` for each provided page."""
         nav_links = []
 
-        for page in pages:
+        for page_id in pages:
             nav_links.append(
                 dbc.NavLink(
-                    children=page,
+                    children=page_id,
                     className="accordion-item-link",
                     active="exact",
-                    href=clean_path(page, "-_"),
+                    href=model_manager[ModelID(str(page_id))].path,
                 )
             )
         return nav_links
