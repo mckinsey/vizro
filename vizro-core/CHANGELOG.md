@@ -18,7 +18,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ### Highlights ✨
 
 - Introduce `AgGrid` as a new `Page` component, allowing the usage of
-  [AG Grid](https://www.ag-grid.com/javascript-data-grid/scrolling-scenarios/) in
+  [AG Grid](https://www.ag-grid.com/) in
   `Vizro`. See the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/)
   for more information. ([#289](https://github.com/mckinsey/vizro/pull/289),[#268](https://github.com/mckinsey/vizro/pull/268),[#324](https://github.com/mckinsey/vizro/pull/324))
 
