@@ -1,6 +1,6 @@
 # How to create custom Dash AG Grids and Dash DataTables
 
-In cases where the available arguments for the [`AgGrid`][vizro.models.AgGrid] or [`Table`][vizro.models.Table] models are not sufficient,
+In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are not sufficient,
 you can create a custom Dash AG Grid or Dash DataTable.
 
 One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
@@ -12,7 +12,7 @@ For this, similar to how one would create a [custom chart](../user-guides/custom
 - The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 - The table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`).
 
-The following example shows a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
+The following examples show a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 
 ??? example "Custom Dash DataTable"
     === "app.py"
@@ -30,7 +30,7 @@ The following example shows a possible version of a custom table. In this case t
 
 
         @capture("table")
-        def my_custom_table(data_frame=None, chosen_columns: List[str] = None):
+        def my_custom_table(chosen_columns: List[str], data_frame=None):
             """Custom table."""
             columns = [{"name": i, "id": i} for i in chosen_columns]
             defaults = {
@@ -75,3 +75,71 @@ The following example shows a possible version of a custom table. In this case t
         [![Table3]][Table3]
 
     [Table3]: ../../assets/user_guides/table/custom_table.png
+
+??? example "Custom Dash AgGrid"
+    === "app.py"
+        ```py
+        from typing import List
+
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from dash_ag_grid import AgGrid
+        from vizro import Vizro
+        from vizro.models.types import capture
+
+        df = px.data.gapminder().query("year == 2007")
+
+
+        @capture("ag_grid")
+        def my_custom_aggrid(chosen_columns: List[str], data_frame=None):
+            """Custom ag_grid."""
+            defaults = {
+                "className": "ag-theme-quartz-dark ag-theme-vizro",
+                "defaultColDef": {
+                    "resizable": True,
+                    "sortable": True,
+                    "filter": True,
+                    "filterParams": {
+                        "buttons": ["apply", "reset"],
+                        "closeOnApply": True,
+                    },
+                    "flex": 1,
+                    "minWidth": 70,
+                },
+                "style": {"height": "100%"},
+            }
+            return AgGrid(
+                columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
+            )
+
+
+        page = vm.Page(
+            title="Example of a custom Dash AgGrid",
+            components=[
+                vm.AgGrid(
+                    id="custom_ag_grid",
+                    title="Custom Dash AgGrid",
+                    figure=my_custom_aggrid(
+                        data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
+                    ),
+                ),
+            ],
+            controls=[
+                vm.Parameter(
+                    targets=["custom_ag_grid.chosen_columns"],
+                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list(), multi=True),
+                )
+            ],
+        )
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Custom Ag Grids are currently only possible via python configuration
+        ```
+    === "Result"
+        [![GridCustom]][GridCustom]
+
+    [GridCustom]: ../../assets/user_guides/table/custom_grid.png
