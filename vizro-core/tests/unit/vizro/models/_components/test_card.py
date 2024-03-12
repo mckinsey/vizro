@@ -50,7 +50,7 @@ class TestBuildMethod:
         card = card.build()
 
         expected_card = html.Div(
-            dbc.Link(
+            dbc.NavLink(
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
                 href="https://www.google.com",
                 className="card-link",
