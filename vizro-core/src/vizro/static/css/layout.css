@@ -155,11 +155,9 @@ div.dashboard_container .custom-tooltip {
   width: 100%;
 }
 
-.mantine-Tooltip-tooltip {
-  background-color: var(--border-selected);
+.tooltip-inner {
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-tooltip-hover);
-  color: var(--tooltip-text-primary);
+  box-shadow: var(--box-shadow-elevation-0);
   filter: drop-shadow(0 2px 2px #141721);
   font-size: var(--text-size-01);
   font-weight: var(--text-weight-light);
@@ -169,6 +167,10 @@ div.dashboard_container .custom-tooltip {
   overflow-wrap: break-word;
   padding: var(--spacing-01) var(--spacing-02);
   white-space: pre-wrap;
+}
+
+.bs-tooltip-end .tooltip-arrow::before {
+  right: -3px;
 }
 
 #left-sidebar {
