@@ -8,6 +8,7 @@ from vizro.managers import model_manager
 @pytest.fixture
 def dashboard_result(request):
     # Inject the navigation into the dashboard. Note we need to call request.param since they are all lambda functions.
+    Vizro._reset()
     dashboard = vm.Dashboard(
         pages=[
             vm.Page(title="Page 1", components=[vm.Button()]),
@@ -20,7 +21,6 @@ def dashboard_result(request):
     # indirectly and needs to be reset immediately after it's used rather than after running the test.
     # We can't do Vizro._reset since current implementation of navigation uses dash.page_registry to look up a page,
     # so that must remain populated.
-    model_manager._clear()
     return dashboard
 
 
