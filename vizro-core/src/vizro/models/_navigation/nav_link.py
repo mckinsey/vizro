@@ -65,13 +65,13 @@ class NavLink(VizroBaseModel):
 
         nav_link = dbc.NavLink(
             [
-                dmc.Tooltip(
-                    label=self.label,
-                    offset=4,
-                    withArrow=True,
-                    children=[html.Span(self.icon, className="material-symbols-outlined")],
-                    position="bottom-start",
-                    className="nav-icon-tooltip",
+                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-tooltip-target"),
+                dbc.Tooltip(
+                    self.label,
+                    placement="right",
+                    class_name="nav-icon-tooltip",
+                    target=f"{self.id}-tooltip-target",
+                    is_open=True, # Set to customise CSS better, should be removed after
                 )
             ],
             id=self.id,
