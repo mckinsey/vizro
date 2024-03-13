@@ -107,8 +107,10 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
-                # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
-                # setting as the object that is built on-page-load and rendered finally.
+                # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
+                # here) must have the same setting as the object that is built by the on-page-load mechanism using
+                # with the user settings and rendered finally. Otherwise the grid is not rendered correctly.
+                # Hence be careful when editing the line below.
                 html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
             ],
             id=f"{self.id}_outer",
