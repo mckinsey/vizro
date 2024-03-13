@@ -6,6 +6,8 @@
   flex-direction: column;
   height: 100%;
   overflow: auto;
+  border: none;
+  border-radius: 0;
 }
 
 .nav_card_container {

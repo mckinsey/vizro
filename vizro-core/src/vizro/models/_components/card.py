@@ -45,4 +45,4 @@ class Card(VizroBaseModel):
             else text
         )
         card_container = "nav_card_container" if self.href else "card_container"
-        return html.Div(card_content, className=card_container, id=f"{self.id}_outer")
+        return dbc.Card(card_content, className=card_container, id=f"{self.id}_outer")
