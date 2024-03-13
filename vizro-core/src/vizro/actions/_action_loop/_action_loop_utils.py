@@ -1,8 +1,10 @@
 """Contains utilities to extract the Action and ActionsChain models from registered pages only."""
 
 from __future__ import annotations
-import dash
+
 from typing import TYPE_CHECKING, List
+
+import dash
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
@@ -14,8 +16,6 @@ if TYPE_CHECKING:
 
 def _get_actions_chains_on_all_pages() -> List[ActionsChain]:
     """Gets list of ActionsChain models for registered pages."""
-    from vizro.models import Page
-
     actions_chains: List[ActionsChain] = []
     # TODO: once dash.page_registry matches up with model_manager, change this to use purely model_manager.
     # Making the change now leads to problems since there can be Action models defined that aren't used in the
