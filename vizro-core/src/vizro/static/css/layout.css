@@ -165,6 +165,10 @@
   right: -3px;
 }
 
+.tooltip.show {
+  opacity: 1;
+}
+
 #left-sidebar {
   border-right: 1px solid var(--border-subtle-alpha-01);
   display: flex;
@@ -219,7 +223,6 @@
   left: -12px;
   position: relative;
   top: 36px;
-  width: max-content !important;
 }
 
 .collapse-icon-div {
