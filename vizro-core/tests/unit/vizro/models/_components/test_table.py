@@ -1,8 +1,9 @@
 """Unit tests for vizro.models.Table."""
 
+import pandas as pd
 import pytest
 from asserts import assert_component_equal
-from dash import dash_table, dcc, html
+from dash import dcc, html
 
 try:
     from pydantic.v1 import ValidationError
@@ -124,7 +125,7 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="__input_text_table"), id="text_table"),
+                    html.Div(dash_data_table(id="__input_text_table", data_frame=pd.DataFrame())(), id="text_table"),
                 ],
                 className="table-container",
                 id="text_table_outer",
@@ -144,7 +145,7 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
+                    html.Div(dash_data_table(id="underlying_table_id", data_frame=pd.DataFrame())(), id="text_table"),
                 ],
                 className="table-container",
                 id="text_table_outer",
