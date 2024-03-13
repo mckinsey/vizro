@@ -1,11 +1,11 @@
-from datetime import date
+from datetime import date, datetime
 
 import pandas as pd
 import pytest
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
-from vizro.models._controls.filter import Filter, _filter_between, _filter_between_date, _filter_isin, _filter_isin_date
+from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 from vizro.models.types import CapturedCallable
 
 
@@ -30,6 +30,62 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-02-01", "2024-03-01"],
+                [False, True, True, False, False],
+            ),  # Standard test
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-01-01", "2024-05-01"],
+                [True, True, True, True, True],
+            ),  # Test with dates for inclusive both ends
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-06-01", "2024-07-01"],
+                [False, False, False, False, False],
+            ),  # Test with no result
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-03-01", "2024-02-01"],
+                [False, False, False, False, False],
+            ),  # Test for inverted values
+            ([], ["2024-02-01", "2024-03-01"], pd.Series([], dtype=bool)),  # Test for empty series
+        ],
+    )
+    def test_filter_between_date(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_between(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
             ([1, 2, 3, 4, 5], [2, 4], [False, True, False, True, False]),  # Test for integers
             (["apple", "banana", "orange"], ["banana", "grape"], [False, True, False]),  # Test for strings
             ([1.1, 2.2, 3.3, 4.4, 5.5], [2.2, 4.4], [False, True, False, True, False]),  # Test for float values
@@ -46,53 +102,55 @@ class TestFilterFunctions:
         "data, value, expected",
         [
             (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
-                ["2024-02-01", "2024-03-01"],
-                [False, True, True, False, False],
-            ),  # Standard test
-            (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
-                ["2024-01-01", "2024-05-01"],
-                [True, True, True, True, True],
-            ),  # Test with dates for inclusive both ends
-            (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
-                ["2024-03-01", "2024-02-01"],
-                [False, False, False, False, False],
-            ),  # Test for inverted values
-            ([], ["2024-03-01", "2024-02-01"], pd.Series([], dtype=bool)),  # Test for empty series
-        ],
-    )
-    def test_filter_between_date(self, data, value, expected):
-        series = pd.Series(data)
-        expected = pd.Series(expected)
-        result = _filter_between_date(series, value)
-        pd.testing.assert_series_equal(result, expected)
-
-    @pytest.mark.parametrize(
-        "data, value, expected",
-        [
-            (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
                 ["2024-02-01"],
                 [False, True, False, False, False],
             ),  # Standard test
             (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-02-01", "2024-02-01"],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 2, 1),
+                ],
                 ["2024-02-01"],
                 [False, True, False, True, True],
             ),  # Multiple values
             (
-                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
                 ["2024-06-01"],
                 [False, False, False, False, False],
             ),  # Test with no result
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                [],
+                [False, False, False, False, False],
+            ),  # Test for empty value list
         ],
     )
     def test_filter_isin_date(self, data, value, expected):
         series = pd.Series(data)
         expected = pd.Series(expected)
-        result = _filter_isin_date(series, value)
+        result = _filter_isin(series, value)
         pd.testing.assert_series_equal(result, expected)
 
 
@@ -245,10 +303,10 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "test_input, selector, filter_function",
         [
-            ("country", None, _filter_isin),
             ("lifeExp", None, _filter_between),
-            ("year", None, _filter_between_date),
-            ("year", vm.DatePicker(range=False), _filter_isin_date),
+            ("country", None, _filter_isin),
+            ("year", None, _filter_between),
+            ("year", vm.DatePicker(range=False), _filter_isin),
         ],
     )
     def test_set_actions(self, test_input, selector, filter_function, managers_one_page_two_graphs):

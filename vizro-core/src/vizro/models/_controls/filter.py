@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import List, Literal
+from typing import List, Literal, Union
 
 import pandas as pd
-from pandas.api.types import is_numeric_dtype
+from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -36,34 +36,16 @@ SELECTORS = {
 }
 
 
-def _convert_to_date(value):
-    return pd.to_datetime(value, format="mixed")
-
-
-def _is_convertible_to_date(pd_series: pd.Series) -> bool:
-    try:
-        _convert_to_date(value=pd_series)
-        return True
-    except ValueError:
-        return False
-
-
-def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
+def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
+    if is_datetime64_any_dtype(series):
+        value = pd.to_datetime(value)
     return series.between(value[0], value[1], inclusive="both")
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    if is_datetime64_any_dtype(series):
+        value = pd.to_datetime(value)
     return series.isin(value)
-
-
-def _filter_between_date(series: pd.Series, value: List[str]) -> pd.Series:
-    date_series, date_value = [_convert_to_date(value=elem) for elem in (series, value)]
-    return _filter_between(series=date_series, value=date_value)
-
-
-def _filter_isin_date(series: pd.Series, value: MultiValueType) -> pd.Series:
-    date_series, date_value = [_convert_to_date(value=elem) for elem in (series, value)]
-    return _filter_isin(series=date_series, value=date_value)
 
 
 class Filter(VizroBaseModel):
@@ -127,7 +109,7 @@ class Filter(VizroBaseModel):
 
         if is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
-        elif _is_convertible_to_date(pd_series=data_frame[self.column]):
+        elif is_datetime64_any_dtype(data_frame[self.column]):
             self._column_type = "temporal"
         else:
             self._column_type = "categorical"
@@ -171,8 +153,6 @@ class Filter(VizroBaseModel):
             max_values = []
             for target_id in self.targets:
                 data_frame = data_manager._get_component_data(target_id)
-                data_frame[self.column] = _convert_to_date(value=data_frame[self.column])
-
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
 
@@ -192,13 +172,10 @@ class Filter(VizroBaseModel):
 
     def _set_actions(self):
         if not self.selector.actions:
-            if isinstance(self.selector, RangeSlider):
+            if isinstance(self.selector, RangeSlider) or (
+                isinstance(self.selector, DatePicker) and self.selector.range
+            ):
                 filter_function = _filter_between
-            elif isinstance(self.selector, DatePicker):
-                if self.selector.range:
-                    filter_function = _filter_between_date
-                else:
-                    filter_function = _filter_isin_date
             else:
                 filter_function = _filter_isin
 

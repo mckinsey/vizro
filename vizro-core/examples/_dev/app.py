@@ -5,6 +5,7 @@ import datetime
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from pandas.api.types import is_datetime64_any_dtype
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
@@ -13,20 +14,154 @@ from vizro.tables import dash_ag_grid, dash_data_table
 df = pd.DataFrame(
     {
         "year": [
-            "1-1-1952",
-            "1/1/1952",
-            "1952-1-1",
-            "1952-01-01",
-            "1952-01-01 20:20:20",
             datetime.datetime(1952, 1, 1),
-            datetime.datetime(1952, 1, 1, 20, 20, 20),
-            datetime.date(1952, 1, 1),
-            datetime.date(1952, 1, 1).isoformat(),
+            datetime.datetime(1952, 1, 2),
+            datetime.datetime(1952, 1, 3),
+            datetime.datetime(1952, 1, 4),
+            datetime.datetime(1952, 1, 5),
+            datetime.datetime(1952, 1, 6),
+            datetime.datetime(1952, 1, 7),
+            datetime.datetime(1952, 1, 8),
+            datetime.datetime(1952, 1, 9),
         ],
-    }
+        # "year_1": [
+        #     "1-1-1952",
+        #     "1/1/1952",
+        #     "1952-1-1",
+        #     "1952-01-01",
+        #     "1952-01-01 20:20:20",
+        #     datetime.datetime(1952, 1, 1),
+        #     datetime.datetime(1952, 1, 1, 20, 20, 20),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        # ],
+        # "year_2": [
+        #     datetime.datetime(1952, 1, 1),
+        #     datetime.datetime(1952, 1, 1, 20, 20, 20),
+        #     datetime.datetime(1952, 1, 1),
+        #     datetime.datetime(1952, 1, 1, 20, 20, 20),
+        #     datetime.datetime(1952, 1, 1),
+        #     datetime.datetime(1952, 1, 1, 20, 20, 20),
+        #     datetime.datetime(1952, 1, 1),
+        #     datetime.datetime(1952, 1, 1, 20, 20, 20),
+        #     datetime.datetime(1952, 1, 1),
+        # ],
+        # "year_3": [
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        #     datetime.date(1952, 1, 1),
+        # ],
+        # "year_4": [
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        #     datetime.date(1952, 1, 1).isoformat(),
+        # ],
+        #     "year_5": [
+        #         datetime.date(1952, 1, 1),
+        #         datetime.date(1952, 1, 1).isoformat(),
+        #         datetime.date(1952, 1, 1),
+        #         datetime.date(1952, 1, 1).isoformat(),
+        #         datetime.date(1952, 1, 1),
+        #         datetime.date(1952, 1, 1).isoformat(),
+        #         datetime.date(1952, 1, 1),
+        #         datetime.date(1952, 1, 1).isoformat(),
+        #         datetime.date(1952, 1, 1),
+        #     ],
+        #     "year_6": [
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #         "1952-1-1",
+        #     ],
+        #     "year_7": [
+        #         "1-1-1952",
+        #         "1-1-1952",
+        #         "1-1-1952",
+        #         "1-1-1952",
+        #         "1-1-1952",
+        #         "1/1/1952",
+        #         "1952-1-1",
+        #         "1952-01-01",
+        #         "1952-01-01 20:20:20",
+        #     ],
+        #     "year_8": [
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1),
+        #         datetime.datetime(1952, 1, 1).isoformat()
+        #     ],
+        #     "year_9": [
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #         "1952-01-01",
+        #     ],
+        #     "year_10": [
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #         np.datetime64("1952-01-01"),
+        #     ],
+        #     "year_11": [
+        #         np.datetime64("1952-01-01"),
+        #         datetime.datetime(1952, 1, 1),
+        #         np.datetime64("1952-01-01"),
+        #         datetime.datetime(1952, 1, 1),
+        #         np.datetime64("1952-01-01"),
+        #         datetime.datetime(1952, 1, 1),
+        #         np.datetime64("1952-01-01"),
+        #         datetime.datetime(1952, 1, 1),
+        #         np.datetime64("1952-01-01"),
+        #     ],
+        #     "year_12": [
+        #         1, 2, 3, 4, 5, 6, 7, 8, 9
+        #     ],
+        #     "year_13": [
+        #         1, 2, 3, 4, 5, 6, 7, 8, "9"
+        #     ]
+    },
 )
 
-# df["year"] = pd.to_datetime(df["year"], format="mixed")
+# for col in df.columns:
+#     df[col] = pd.to_datetime(df[col], format="mixed", errors="ignore")
+
+# for col in df.columns:
+#     df[col] = df[col].astype('datetime64[ns]', errors="ignore")
+
+df_columns_is_date = [is_datetime64_any_dtype(df[col]) for col in df.columns]
+
 
 gapminder_df = px.data.gapminder()
 gapminder_df["year"] = pd.to_datetime(gapminder_df["year"], format="%Y")
@@ -76,7 +211,7 @@ page_date = vm.Page(
         vm.DatePicker(),
     ],
     controls=[
-        vm.Filter(column="year"),
+        vm.Filter(column="year", selector=vm.DatePicker(range=False)),
         # vm.Filter(
         #     column="year",
         #     selector=vm.DatePicker()
