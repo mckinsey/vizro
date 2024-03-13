@@ -169,6 +169,8 @@
   opacity: 1;
 }
 
+.tooltip { pointer-events: none; }
+
 #left-sidebar {
   border-right: 1px solid var(--border-subtle-alpha-01);
   display: flex;
