@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
+
 from vizro.managers import model_manager
 
 if TYPE_CHECKING:
