@@ -2,9 +2,8 @@ import itertools
 from collections.abc import Mapping
 from typing import Dict, List, Literal
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -12,6 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
+from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
@@ -79,22 +79,18 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_nav_links(self, pages):
-        """Creates a `NavLink` for each provided page that is registered."""
+    def _create_nav_links(self, pages: List[str]):
+        """Creates a `NavLink` for each provided page."""
         nav_links = []
+
         for page_id in pages:
-            try:
-                page = dash.page_registry[page_id]
-            except KeyError as exc:
-                raise KeyError(
-                    f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
-                ) from exc
+            page = model_manager[ModelID(str(page_id))]
             nav_links.append(
                 dbc.NavLink(
-                    children=[page["name"]],
+                    children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=page["relative_path"],
+                    href=get_relative_path(page.path),
                 )
             )
         return nav_links
