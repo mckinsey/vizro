@@ -66,6 +66,9 @@
   --state-overlays-enable: var(--state-overlays-dark-mode-enable);
   --state-overlays-hover: var(--state-overlays-dark-mode-hover);
   --state-overlays-selected: var(--state-overlays-dark-mode-selected);
+  --state-overlays-selected-inverse: var(
+    --state-overlays-dark-mode-selected-inverse
+  );
   --state-overlays-selected-hover: var(
     --state-overlays-dark-mode-selected-hover
   );
@@ -132,6 +135,9 @@
   --state-overlays-enable: var(--state-overlays-light-mode-enable);
   --state-overlays-hover: var(--state-overlays-light-mode-hover);
   --state-overlays-selected: var(--state-overlays-light-mode-selected);
+  --state-overlays-selected-inverse: var(
+    --state-overlays-light-mode-selected-inverse
+  );
   --state-overlays-selected-hover: var(
     --state-overlays-light-mode-selected-hover
   );
