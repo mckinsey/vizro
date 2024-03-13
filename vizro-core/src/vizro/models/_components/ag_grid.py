@@ -98,13 +98,6 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
-        # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
-        # setting as the object that is built on-page-load and rendered finally.
-        dash_ag_grid_conf = self.figure._arguments.copy()
-        dash_ag_grid_conf["data_frame"] = pd.DataFrame()
-        grid = self.figure._function(**dash_ag_grid_conf)
-        grid.id = self._input_component_id
-
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),
             Output(self._input_component_id, "className"),
@@ -114,7 +107,11 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
-                html.Div(grid, id=self.id, className="table-container"),
+                # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
+                # here) must have the same setting as the object that is built by the on-page-load mechanism using
+                # with the user settings and rendered finally. Otherwise the grid is not rendered correctly.
+                # Hence be careful when editing the line below.
+                html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
             ],
             id=f"{self.id}_outer",
             color="grey",

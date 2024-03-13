@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import itertools
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import html, get_relative_path
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
+
+from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
@@ -54,13 +55,7 @@ class NavLink(VizroBaseModel):
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
-
-        try:
-            first_page = dash.page_registry[first_page_id]
-        except KeyError as exc:
-            raise KeyError(
-                f"Page with ID {first_page_id} cannot be found. Please add the page to `Dashboard.pages`"
-            ) from exc
+        first_page = model_manager[ModelID(str(first_page_id))]
 
         nav_link = dbc.NavLink(
             [
@@ -73,7 +68,7 @@ class NavLink(VizroBaseModel):
             ],
             id=self.id,
             className="nav-bar-icon-link",
-            href=first_page["relative_path"],
+            href=get_relative_path(first_page.path),
             # `active` is required to keep the icon highlighted when navigating through different pages inside
             # the nested accordion
             active=item_active,

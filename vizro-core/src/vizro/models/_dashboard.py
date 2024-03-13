@@ -96,6 +96,8 @@ class Dashboard(VizroBaseModel):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
+        self.pages[0].path = "/"
+
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
@@ -103,7 +105,7 @@ class Dashboard(VizroBaseModel):
                 description=page.description,
                 image=meta_image,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
-                path=page.path if order else "/",
+                path=page.path,
                 order=order,
                 layout=partial(self._make_page_layout, page),
             )

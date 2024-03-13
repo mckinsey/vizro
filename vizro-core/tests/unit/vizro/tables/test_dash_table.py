@@ -70,11 +70,14 @@ class TestCustomDashDataTable:
 
         custom_table = table.build()
 
+        expected_table_object = custom_dash_data_table(data_frame=pd.DataFrame())()
+        expected_table_object.id = "__input_" + id
+
         expected_table = dcc.Loading(
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="__input_custom_dash_data_table"), id=id),
+                    html.Div(expected_table_object, id=id),
                 ],
                 className="table-container",
                 id=f"{id}_outer",

@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Literal
 
 import pandas as pd
-from dash import State, dash_table, dcc, html
+from dash import State, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -108,7 +108,7 @@ class Table(VizroBaseModel):
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(dash_table.DataTable(**{"id": self._input_component_id}), id=self.id),
+                    html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
