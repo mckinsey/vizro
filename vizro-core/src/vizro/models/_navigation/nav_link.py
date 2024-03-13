@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 
 import dash_bootstrap_components as dbc
-from dash import html, get_relative_path
+from dash import get_relative_path, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
