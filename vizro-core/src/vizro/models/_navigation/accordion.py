@@ -3,7 +3,7 @@ from collections.abc import Mapping
 from typing import Dict, List, Literal
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import get_relative_path, html
 
 try:
     from pydantic.v1 import Field, validator
@@ -90,7 +90,7 @@ class Accordion(VizroBaseModel):
                     children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=page.path,
+                    href=get_relative_path(page.path),
                 )
             )
         return nav_links
