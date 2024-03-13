@@ -1,6 +1,6 @@
 from typing import Callable, Dict, List, Union
 
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 try:
     from pydantic.v1 import BaseModel, Field
