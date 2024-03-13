@@ -17,9 +17,9 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- - Added `max_debug_retry` parameter to `VizroAI.plot` to allow users to determine the maximum number of debugging attempts desired ([#261](https://github.com/mckinsey/vizro/pull/261))
+- Add `max_debug_retry` parameter to `VizroAI.plot` to allow users to determine the maximum number of debugging attempts desired. ([#261](https://github.com/mckinsey/vizro/pull/261))
 
-- Enable automatic loading of environment variables in a `.env` file ([#270](https://github.com/mckinsey/vizro/pull/270))
+- Enable automatic loading of environment variables in a `.env` file. ([#270](https://github.com/mckinsey/vizro/pull/270))
 
 ## Changed
 
@@ -27,7 +27,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
+- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function. ([#256](https://github.com/mckinsey/vizro/pull/256))
 
 <a id='changelog-0.1.1'></a>
 
