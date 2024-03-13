@@ -7,3 +7,15 @@ export function _update_date_picker_values(value, input_store) {
   }
   return [value, value];
 }
+
+export function _update_date_picker_position(clicks) {
+  var element_id = window.dash_clientside.callback_context.inputs_list[0]["id"];
+  var windowHeight = window.innerHeight;
+
+  var element = document.getElementById(element_id);
+  var rect = element.getBoundingClientRect();
+
+  var position = rect.y + 360 > windowHeight ? "top-start" : "bottom-start";
+
+  return position;
+}

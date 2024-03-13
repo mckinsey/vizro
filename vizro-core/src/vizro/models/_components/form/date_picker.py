@@ -70,6 +70,12 @@ class DatePicker(VizroBaseModel):
             inputs=inputs,
         )
 
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_date_picker_position"),
+            output=Output(self.id, "dropdownPosition"),
+            inputs=Input(self.id, "n_clicks"),
+        )
+
         date_picker_class = dmc.DateRangePicker if self.range else dmc.DatePicker
 
         # dropdownPosition must be set to bottom-start as a workaround for issue:
