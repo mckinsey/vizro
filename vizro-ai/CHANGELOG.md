@@ -11,6 +11,24 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.2'></a>
+
+# 0.1.2 — 2024-03-13
+
+## Added
+
+- - Added `max_debug_retry` parameter to `VizroAI.plot` to allow users to determine the maximum number of debugging attempts desired ([#261](https://github.com/mckinsey/vizro/pull/261))
+
+- Enable automatic loading of environment variables in a `.env` file ([#270](https://github.com/mckinsey/vizro/pull/270))
+
+## Changed
+
+- Remove upper bound for `langchain` and `openai` dependencies. ([#369](https://github.com/mckinsey/vizro/pull/369))
+
+## Fixed
+
+- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
+
 <a id='changelog-0.1.1'></a>
 
 # 0.1.1 — 2024-01-04
