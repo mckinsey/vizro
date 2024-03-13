@@ -1,13 +1,14 @@
 """Contains utilities to extract the Action and ActionsChain models from registered pages only."""
 
 from __future__ import annotations
-
+import dash
 from typing import TYPE_CHECKING, List
 
 from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelID
 
 if TYPE_CHECKING:
-    from vizro.models import Action
+    from vizro.models import Action, Page
     from vizro.models._action._actions_chain import ActionsChain
 
 
@@ -16,8 +17,16 @@ def _get_actions_chains_on_all_pages() -> List[ActionsChain]:
     from vizro.models import Page
 
     actions_chains: List[ActionsChain] = []
-    for page_id, _ in model_manager._items_with_type(Page):
-        actions_chains.extend(model_manager._get_page_actions_chains(page_id=page_id))
+    # TODO: once dash.page_registry matches up with model_manager, change this to use purely model_manager.
+    # Making the change now leads to problems since there can be Action models defined that aren't used in the
+    # dashboard.
+    # See https://github.com/mckinsey/vizro/pull/366.
+    for registered_page in dash.page_registry.values():
+        try:
+            page: Page = model_manager[registered_page["module"]]
+        except KeyError:
+            continue
+        actions_chains.extend(model_manager._get_page_actions_chains(page_id=ModelID(str(page.id))))
     return actions_chains
 
 
