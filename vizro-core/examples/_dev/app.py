@@ -8,6 +8,8 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
+vm.Page.add_type("components", vm.DatePicker)
+
 date_data_frame = pd.DataFrame(
     {
         "type": [random.choice(["A", "B", "C"]) for _ in range(31)],
@@ -20,6 +22,7 @@ page = vm.Page(
     title="My first page",
     components=[
         vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
+        vm.DatePicker(min=datetime.datetime(2024, 1, 1), max=datetime.datetime(2026, 1, 1)),
     ],
     controls=[
         vm.Filter(column="type"),
