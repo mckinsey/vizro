@@ -27,7 +27,7 @@
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-06);
+  gap: var(--spacing-04);
   padding: 32px;
   width: 100%;
 }
@@ -58,6 +58,7 @@
 
 #page-components {
   overflow: auto;
+  padding-top: var(--spacing-02);
 }
 
 .grid-layout {

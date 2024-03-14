@@ -1,7 +1,7 @@
 from typing import Literal
 
 import dash_bootstrap_components as dbc
-from dash import dcc, get_relative_path, html
+from dash import dcc, get_relative_path
 
 try:
     from pydantic.v1 import Field
@@ -44,5 +44,5 @@ class Card(VizroBaseModel):
             if self.href
             else text
         )
-        card_container = "nav_card_container" if self.href else "card_container"
-        return html.Div(card_content, className=card_container, id=f"{self.id}_outer")
+        card_class = "nav-card" if self.href else "card"
+        return dbc.Card(card_content, className=card_class, id=f"{self.id}_outer")
