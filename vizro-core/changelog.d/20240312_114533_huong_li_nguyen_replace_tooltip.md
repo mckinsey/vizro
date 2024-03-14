@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Replace `dmc.Tooltip` with `dbc.Tooltip`. ([#361](https://github.com/mckinsey/vizro/pull/361)
+- Replace `dmc.Tooltip` with `dbc.Tooltip` and change CSS selectors accordingly. ([#361](https://github.com/mckinsey/vizro/pull/361)
 
 <!--
 ### Deprecated
