@@ -1,8 +1,9 @@
 """Unit tests for vizro.models.Card."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import dcc
 
 try:
     from pydantic.v1 import ValidationError
@@ -48,13 +49,13 @@ class TestBuildMethod:
         card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
 
-        expected_card = html.Div(
-            dcc.Link(
+        expected_card = dbc.Card(
+            dbc.NavLink(
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
                 href="https://www.google.com",
                 className="card-link",
             ),
-            className="nav_card_container",
+            className="nav-card",
             id="card_id_outer",
         )
 

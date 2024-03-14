@@ -372,7 +372,7 @@ pages:
         type: card
       - figure:
           _target_: dash_data_table
-          data_frame: gapminder_with_dt
+          data_frame: gapminder_2007
           page_size: 10
         id: table-gapminder
         title: Gapminder Data

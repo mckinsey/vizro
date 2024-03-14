@@ -124,4 +124,4 @@ A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a 
 
 In particular, `app = Vizro()` exposes the Flask app through `app.dash.server`. As in the [above example with Gunicorn](#gunicorn), this provides the application instance to a WSGI server.
 
-[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This allows you to configure the underlying Dash app using the same [argumentst that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.
+[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This allows you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.

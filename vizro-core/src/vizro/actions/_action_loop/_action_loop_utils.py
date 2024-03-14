@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
-from dash import page_registry
+import dash
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
@@ -14,10 +14,14 @@ if TYPE_CHECKING:
     from vizro.models._action._actions_chain import ActionsChain
 
 
-def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
+def _get_actions_chains_on_all_pages() -> List[ActionsChain]:
     """Gets list of ActionsChain models for registered pages."""
     actions_chains: List[ActionsChain] = []
-    for registered_page in page_registry.values():
+    # TODO: once dash.page_registry matches up with model_manager, change this to use purely model_manager.
+    # Making the change now leads to problems since there can be Action models defined that aren't used in the
+    # dashboard.
+    # See https://github.com/mckinsey/vizro/pull/366.
+    for registered_page in dash.page_registry.values():
         try:
             page: Page = model_manager[registered_page["module"]]
         except KeyError:
@@ -28,4 +32,4 @@ def _get_actions_chains_on_registered_pages() -> List[ActionsChain]:
 
 def _get_actions_on_registered_pages() -> List[Action]:
     """Gets list of Action models for registered pages."""
-    return [action for action_chain in _get_actions_chains_on_registered_pages() for action in action_chain.actions]
+    return [action for action_chain in _get_actions_chains_on_all_pages() for action in action_chain.actions]

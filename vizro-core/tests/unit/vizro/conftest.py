@@ -10,11 +10,6 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 @pytest.fixture
 def gapminder():
-    return px.data.gapminder()
-
-
-@pytest.fixture
-def gapminder_with_datetime():
     return px.data.gapminder(datetimes=True)
 
 
