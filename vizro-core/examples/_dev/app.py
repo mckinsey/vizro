@@ -1,6 +1,7 @@
 """Example to show dashboard configuration."""
-<<<<<<< HEAD
+import datetime
 import random
+import pandas as pd
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
