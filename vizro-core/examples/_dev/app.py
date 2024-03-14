@@ -1,22 +1,29 @@
 """Example to show dashboard configuration."""
+
 import datetime
 import random
-import pandas as pd
-from vizro import Vizro
-import vizro.plotly.express as px
-import vizro.models as vm
 
-date_date_frame = pd.DataFrame({
-    "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
-    "value": [random.randint(0, 100) for _ in range(31)]
-})
+import pandas as pd
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+
+date_data_frame = pd.DataFrame(
+    {
+        "type": [random.choice(["A", "B", "C"]) for _ in range(31)],
+        "value": [random.randint(0, 100) for _ in range(31)],
+        "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
+    }
+)
 
 page = vm.Page(
     title="My first page",
     components=[
-        vm.Graph(figure=px.scatter(date_date_frame, x="time", y="value")),
+        vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
     ],
     controls=[
+        vm.Filter(column="type"),
+        vm.Filter(column="value"),
         vm.Filter(column="time"),
     ],
 )
