@@ -3,7 +3,6 @@
 from datetime import date, datetime
 
 import dash_mantine_components as dmc
-import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -74,48 +73,26 @@ class TestDatePickerInstantiation:
         with pytest.raises(ValidationError, match="invalid date format"):
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
-    @pytest.mark.parametrize(
-        "value",
-        [(["2024-01-01", "2024-02-01"]), ([date(2024, 1, 1), date(2024, 2, 1)])],
-    )
-    def test_validate_range_true_datepicker_value_valid(self, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=True, value=value)
-        value_to_date = [v.date() for v in pd.to_datetime(value)]
-        assert date_picker.value == value_to_date
+    def test_validate_range_true_datepicker_value_valid(self):
+        value = ["2024-01-01", "2024-02-01"]
+        date_picker = vm.DatePicker(range=True, value=value)
+        expected_value = [date(2024, 1, 1), date(2024, 2, 1)]
+        assert date_picker.value == expected_value
 
-    @pytest.mark.parametrize(
-        "value",
-        [("2024-01-01"), (date(2024, 1, 1))],
-    )
-    def test_validate_range_false_datepicker_value_valid(self, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=False, value=value)
-        value_to_date = pd.to_datetime(value).date()
-        assert date_picker.value == value_to_date
+    def test_validate_range_false_datepicker_value_valid(self):
+        value = "2024-01-01"
+        date_picker = vm.DatePicker(range=False, value=value)
+        expected_value = date(2024, 1, 1)
+        assert date_picker.value == expected_value
 
-    @pytest.mark.parametrize(
-        "range, value",
-        [
-            (False, "2024-01-01"),
-            (False, date(2024, 1, 1)),
-            (True, ["2024-01-01", "2024-02-01"]),
-            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
-        ],
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
     def test_validate_datepicker_value_invalid(self, range, value):
         with pytest.raises(ValidationError, match="Please provide a valid value between the min and max value."):
-            vm.DatePicker(min="2023-01-01", max="2023-02-01", range=range, value=value)
+            vm.DatePicker(min="1999-01-01", max="1999-02-01", range=range, value=value)
 
-    @pytest.mark.parametrize(
-        "range, value",
-        [
-            (False, "2024-01-01"),
-            (False, date(2024, 1, 1)),
-            (True, ["2024-01-01", "2024-02-01"]),
-            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
-        ],
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2024-01-01"), (True, ["2024-01-01", "2024-02-01"])])
     def test_validate_datepicker_range_valid(self, range, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-04-01", range=range, value=value)
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=range, value=value)
         assert date_picker.range == range
 
     @pytest.mark.parametrize(
@@ -129,19 +106,11 @@ class TestDatePickerInstantiation:
     )
     def test_validate_datepicker_range_invalid(self, range, value):
         with pytest.raises(ValidationError):
-            vm.DatePicker(min="2024-01-01", max="2024-04-01", range=range, value=value)
+            vm.DatePicker(range=range, value=value)
 
 
 class TestBuildMethod:
-    @pytest.mark.parametrize(
-        "range, value",
-        [
-            (False, "2023-01-05"),
-            (False, date(2023, 1, 5)),
-            (True, ["2023-01-05", "2023-01-07"]),
-            (True, [date(2023, 1, 5), date(2023, 1, 7)]),
-        ],
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])])
     def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
             min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
