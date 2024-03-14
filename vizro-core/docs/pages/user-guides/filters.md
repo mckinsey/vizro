@@ -3,7 +3,7 @@
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
 The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
-This model allows the automatic creation of selectors (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user filter with the charts/components on the screen.
+This model allows the automatic creation of [selectors](../user-guides/selectors.md) (e.g. Dropdown, RadioItems, Slider, ...) that let a dashboard user filter with the charts/components on the screen.
 
 
 ## Basic filters
@@ -14,7 +14,7 @@ To add a filter to your page, do the following:
 - configure the `column` argument, which denotes the target column to be filtered
 
 By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen
-automatically based on the target column, e.g. a dropdown for categorical data or a range slider for numerical data.
+automatically based on the target column, e.g. a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.
 
 !!! example "Basic Filter"
     === "app.py"
