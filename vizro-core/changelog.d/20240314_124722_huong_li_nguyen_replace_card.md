@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Use `dbc.Card` as outer container for `Card`. ([#373](https://github.com/mckinsey/vizro/pull/373))
+- Rename CSS classNames `nav_card_container` and `card_container` to `nav-card` and `card`. ([#373](https://github.com/mckinsey/vizro/pull/373))
 
 <!--
 ### Deprecated
