@@ -15,7 +15,8 @@ dependencies = [
   "pytest",
   "toml",
   "nbformat>=4.2.0",
-  "pyhamcrest"
+  "pyhamcrest",
+  "jupyter"
 ]
 
 [envs.default.env-vars]

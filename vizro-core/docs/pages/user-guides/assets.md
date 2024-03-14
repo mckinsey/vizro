@@ -98,14 +98,14 @@ following the pattern `"{component_id}_outer"`.
 To achieve this, do the following:
 
 1. Provide a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
-2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card_container"` or `"card_text"`
+2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card"` or `"card_text"`
 3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
 
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
-    #my_card_outer.card_container {
+    #my_card_outer.card {
       background-color: white;
     }
 

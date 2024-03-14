@@ -23,17 +23,22 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
+### Changed
+
+- Rename CSS classNames `nav_card_container` and `card_container` to `nav-card` and `card`. ([#373](https://github.com/mckinsey/vizro/pull/373))
+
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Fixed
 
-- Remove the keyword `explain` from docs example explaining the `_get_chart_code` function ([#256](https://github.com/mckinsey/vizro/pull/256))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 
