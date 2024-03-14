@@ -15,7 +15,8 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 tips = px.data.tips()
-gapminder_2007 = px.data.gapminder(datetimes=True).query("year == 2007")
+gapminder = px.data.gapminder(datetimes=True)
+gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
         "measure": ["relative", "relative", "total", "relative", "relative", "total"],
@@ -371,7 +372,7 @@ selectors = vm.Page(
         ),
         vm.Table(
             id="table-gapminder",
-            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
+            figure=dash_data_table(data_frame=gapminder, page_size=10),
             title="Gapminder Data",
         ),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
@@ -398,11 +399,6 @@ selectors = vm.Page(
         ),
         vm.Filter(
             targets=["table-tips"],
-            column="day",
-            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
-        ),
-        vm.Filter(
-            targets=["table-tips"],
             column="sex",
             selector=vm.RadioItems(title="Radio Items (Tips - sex)"),
         ),
@@ -413,6 +409,11 @@ selectors = vm.Page(
         ),
         vm.Filter(
             targets=["table-gapminder"], column="year", selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="day",
+            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
         ),
     ],
 )
