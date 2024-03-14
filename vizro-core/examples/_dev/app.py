@@ -22,7 +22,7 @@ page = vm.Page(
     title="My first page",
     components=[
         vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
-        vm.DatePicker(min=datetime.datetime(2024, 1, 1), max=datetime.datetime(2026, 1, 1)),
+        vm.DatePicker(min="2024-01-01", max="2026-01-01", range=False),
     ],
     controls=[
         vm.Filter(column="type"),
