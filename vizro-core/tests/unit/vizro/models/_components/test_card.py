@@ -3,7 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import dcc
 
 try:
     from pydantic.v1 import ValidationError
@@ -55,7 +55,7 @@ class TestBuildMethod:
                 href="https://www.google.com",
                 className="card-link",
             ),
-            className="nav_card_container",
+            className="nav-card",
             id="card_id_outer",
         )
 
