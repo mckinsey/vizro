@@ -1,7 +1,7 @@
 from typing import Literal
 
 import dash_bootstrap_components as dbc
-from dash import dcc, get_relative_path, html
+from dash import dcc, get_relative_path
 
 try:
     from pydantic.v1 import Field

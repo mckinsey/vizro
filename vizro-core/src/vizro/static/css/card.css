@@ -1,24 +1,23 @@
 .nav_card_container,
 .card_container {
   background-color: var(--surfaces-bg-card);
+  border: none;
+  border-radius: 0;
   box-shadow: var(--box-shadow-elevation-card);
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  border: none;
-  border-radius: 0;
-}
-
-.nav_card_container {
-  height: 98%;
-  margin-top: 4px;
 }
 
 .nav_card_container:hover {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-card-hover);
-  top: -8px;
+  transform: translate3d(0, -8px, 0);
+  transition:
+    transform 0.3s,
+    box-shadow 0.2s;
+  will-change: transform;
 }
 
 .card-link {
