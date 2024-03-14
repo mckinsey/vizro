@@ -139,14 +139,6 @@
   width: 100%;
 }
 
-div.dashboard_container .tooltip-inner {
-  color: var(--text-primary);
-}
-
-div.dashboard_container .custom-tooltip {
-  color: var(--text-primary);
-}
-
 .nav-bar-icon-link.active .material-symbols-outlined {
   color: var(--text-active);
 }
@@ -154,22 +146,6 @@ div.dashboard_container .custom-tooltip {
 .loading-container {
   height: 100%;
   width: 100%;
-}
-
-.mantine-Tooltip-tooltip {
-  background-color: var(--border-selected);
-  border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-tooltip-hover);
-  color: var(--tooltip-text-primary);
-  filter: drop-shadow(0 2px 2px #141721);
-  font-size: var(--text-size-01);
-  font-weight: var(--text-weight-light);
-  letter-spacing: var(--letter-spacing-help-text);
-  line-height: var(--text-size-03);
-  max-width: 180px;
-  overflow-wrap: break-word;
-  padding: var(--spacing-01) var(--spacing-02);
-  white-space: pre-wrap;
 }
 
 #left-sidebar {
@@ -226,7 +202,13 @@ div.dashboard_container .custom-tooltip {
   left: -12px;
   position: relative;
   top: 36px;
-  width: 0 !important;
+}
+
+.collapse-icon-div {
+  display: flex;
+  justify-content: center;
+  padding-top: 36px;
+  width: 0;
 }
 
 /* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
@@ -245,6 +227,10 @@ div.dashboard_container .custom-tooltip {
     top: 28px;
   }
 
+  .collapse-icon-div {
+    padding-top: 28px;
+  }
+
   #page-header {
     zoom: 80%;
   }
@@ -261,6 +247,10 @@ div.dashboard_container .custom-tooltip {
 @media (height <= 576px) {
   .collapse-button-tooltip {
     top: 28px;
+  }
+
+  .collapse-icon-div {
+    padding-top: 28px;
   }
 
   #page-header {

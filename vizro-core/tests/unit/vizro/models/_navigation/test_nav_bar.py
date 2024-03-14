@@ -3,7 +3,6 @@
 import re
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
@@ -79,16 +78,22 @@ class TestNavBarPreBuildMethod:
 class TestNavBarBuildMethod:
     """Tests NavBar model build method."""
 
-    common_args = {"offset": 4, "withArrow": True, "position": "bottom-start"}
-
     def test_nav_bar_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
+        nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
         expected_navigation = html.Div(
             [
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
+                    children=[
+                        html.Span("filter_1", className="material-symbols-outlined", id="nav-link-1-tooltip-target"),
+                        dbc.Tooltip(
+                            "Group",
+                            placement="right",
+                            target="nav-link-1-tooltip-target",
+                        ),
+                    ],
                     active=True,
                     href="/",
                 )
@@ -101,16 +106,32 @@ class TestNavBarBuildMethod:
     def test_nav_bar_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
+        nav_bar.items[0].id = "nav-link-1"
+        nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
         expected_nav_bar = html.Div(
             [
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
+                    children=[
+                        html.Span("filter_1", className="material-symbols-outlined", id="nav-link-1-tooltip-target"),
+                        dbc.Tooltip(
+                            "Page 1",
+                            placement="right",
+                            target="nav-link-1-tooltip-target",
+                        ),
+                    ],
                     active=True,
                     href="/",
                 ),
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
+                    children=[
+                        html.Span("filter_2", className="material-symbols-outlined", id="nav-link-2-tooltip-target"),
+                        dbc.Tooltip(
+                            "Page 2",
+                            placement="right",
+                            target="nav-link-2-tooltip-target",
+                        ),
+                    ],
                     active=False,
                     href="/page-2",
                 ),
@@ -122,11 +143,19 @@ class TestNavBarBuildMethod:
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
+        nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
         expected_nav_bar = html.Div(
             [
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Group", children=[html.Span("filter_1")], **self.common_args)],
+                    children=[
+                        html.Span("filter_1", className="material-symbols-outlined", id="nav-link-1-tooltip-target"),
+                        dbc.Tooltip(
+                            "Group",
+                            placement="right",
+                            target="nav-link-1-tooltip-target",
+                        ),
+                    ],
                     active=False,
                     href="/",
                 )
@@ -138,16 +167,32 @@ class TestNavBarBuildMethod:
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
         nav_bar.pre_build()
+        nav_bar.items[0].id = "nav-link-1"
+        nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
         expected_nav_bar = html.Div(
             [
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Page 1", children=[html.Span("filter_1")], **self.common_args)],
+                    children=[
+                        html.Span("filter_1", className="material-symbols-outlined", id="nav-link-1-tooltip-target"),
+                        dbc.Tooltip(
+                            "Page 1",
+                            placement="right",
+                            target="nav-link-1-tooltip-target",
+                        ),
+                    ],
                     active=False,
                     href="/",
                 ),
                 dbc.NavLink(
-                    children=[dmc.Tooltip(label="Page 2", children=[html.Span("filter_2")], **self.common_args)],
+                    children=[
+                        html.Span("filter_2", className="material-symbols-outlined", id="nav-link-2-tooltip-target"),
+                        dbc.Tooltip(
+                            "Page 2",
+                            placement="right",
+                            target="nav-link-2-tooltip-target",
+                        ),
+                    ],
                     active=False,
                     href="/page-2",
                 ),
