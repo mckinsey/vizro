@@ -69,6 +69,14 @@ class DatePicker(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
+        # clientside callback is required as a workaround when the date-picker is overflowing its parent container
+        # if there is not enough space. Caused by another workaround for this issue:
+        # https://github.com/snehilvj/dash-mantine-components/issues/219
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_date_picker_position"),
+            output=Output(self.id, "dropdownPosition"),
+            inputs=Input(self.id, "n_clicks"),
+        )
 
         date_picker_class = dmc.DateRangePicker if self.range else dmc.DatePicker
 
