@@ -1,7 +1,6 @@
 """Unit tests for DatePicker."""
 
 from datetime import date, datetime
-from typing import Collection
 
 import dash_mantine_components as dmc
 import pandas as pd
@@ -76,10 +75,8 @@ class TestDatePickerInstantiation:
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
     @pytest.mark.parametrize(
-        "value", [
-            (["2024-01-01", "2024-02-01"]),
-            ([date(2024, 1, 1), date(2024, 2, 1)])
-        ],
+        "value",
+        [(["2024-01-01", "2024-02-01"]), ([date(2024, 1, 1), date(2024, 2, 1)])],
     )
     def test_validate_range_true_datepicker_value_valid(self, value):
         date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=True, value=value)
@@ -87,7 +84,8 @@ class TestDatePickerInstantiation:
         assert date_picker.value == value_to_date
 
     @pytest.mark.parametrize(
-        "value", [("2024-01-01"), (date(2024, 1, 1))],
+        "value",
+        [("2024-01-01"), (date(2024, 1, 1))],
     )
     def test_validate_range_false_datepicker_value_valid(self, value):
         date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=False, value=value)
