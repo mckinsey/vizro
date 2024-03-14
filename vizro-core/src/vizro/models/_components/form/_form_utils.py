@@ -66,7 +66,7 @@ def validate_max(cls, max, values):
         return max
 
     if values["min"] is not None and max < values["min"]:
-        raise ValueError("Maximum value of component is required to be larger than minimum value.")
+        raise ValueError("Maximum value of selector is required to be larger than minimum value.")
     return max
 
 

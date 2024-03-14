@@ -81,7 +81,7 @@ class TestPreBuildMethod:
         assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_invalid(self, test_input):
+    def test_slider_values_parameter_invalid(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
         page.controls = [parameter]
@@ -100,7 +100,7 @@ class TestPreBuildMethod:
         ):
             parameter.pre_build()
 
-    def test_set_datepicker_values_invalid(self):
+    def test_datepicker_values_parameter_invalid(self):
         parameter = Parameter(targets=["scatter_chart.x"], selector=vm.DatePicker())
         page = model_manager["test_page"]
         page.controls = [parameter]

@@ -255,12 +255,12 @@ class TestPreBuildMethod:
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-    def test_set_datepicker_values_defaults_min_max_none(self, gapminder_with_datetime, managers_one_page_two_graphs):
+    def test_set_datepicker_values_defaults_min_max_none(self, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter.selector.min == gapminder_with_datetime.year.min().to_pydatetime().date()
-        assert filter.selector.max == gapminder_with_datetime.year.max().to_pydatetime().date()
+        assert filter.selector.min == gapminder.year.min().to_pydatetime().date()
+        assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
     @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
     def test_set_slider_values_defaults_min_max_fix(self, test_input, managers_one_page_two_graphs):

@@ -14,10 +14,8 @@ from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
-gapminder = px.data.gapminder()
-gapminder_with_dt = px.data.gapminder(datetimes=True)
 tips = px.data.tips()
-gapminder_2007 = px.data.gapminder().query("year == 2007")
+gapminder_2007 = px.data.gapminder(datetimes=True).query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
         "measure": ["relative", "relative", "total", "relative", "relative", "total"],
@@ -373,7 +371,7 @@ selectors = vm.Page(
         ),
         vm.Table(
             id="table-gapminder",
-            figure=dash_data_table(data_frame=gapminder_with_dt, page_size=10),
+            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
             title="Gapminder Data",
         ),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
@@ -386,8 +384,6 @@ selectors = vm.Page(
                 title="Range Slider (Gapminder - lifeExp)",
                 step=1,
                 marks=None,
-                min=int(gapminder["lifeExp"].min()),
-                max=int(gapminder["lifeExp"].max()) + 1,
             ),
         ),
         vm.Filter(

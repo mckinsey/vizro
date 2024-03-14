@@ -67,7 +67,7 @@ class TestDatePickerInstantiation:
 
     def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of component is required to be larger than minimum value."
+            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
         ):
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
 
@@ -76,23 +76,22 @@ class TestDatePickerInstantiation:
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
     @pytest.mark.parametrize(
-        "range, value",
-        [
-            (False, "2024-01-01"),
-            (False, date(2024, 1, 1)),
-            (True, ["2024-01-01", "2024-02-01"]),
-            (True, [date(2024, 1, 1), date(2024, 2, 1)]),
+        "value", [
+            (["2024-01-01", "2024-02-01"]),
+            ([date(2024, 1, 1), date(2024, 2, 1)])
         ],
     )
-    def test_validate_datepicker_value_valid(self, range, value):
-        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=range, value=value)
+    def test_validate_range_true_datepicker_value_valid(self, value):
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=True, value=value)
+        value_to_date = [v.date() for v in pd.to_datetime(value)]
+        assert date_picker.value == value_to_date
 
-        value_to_date = pd.to_datetime(value).to_pydatetime()
-        if isinstance(value_to_date, Collection):
-            value_to_date = [v.date() for v in value_to_date]
-        else:
-            value_to_date = value_to_date.date()
-
+    @pytest.mark.parametrize(
+        "value", [("2024-01-01"), (date(2024, 1, 1))],
+    )
+    def test_validate_range_false_datepicker_value_valid(self, value):
+        date_picker = vm.DatePicker(min="2024-01-01", max="2024-02-01", range=False, value=value)
+        value_to_date = pd.to_datetime(value).date()
         assert date_picker.value == value_to_date
 
     @pytest.mark.parametrize(

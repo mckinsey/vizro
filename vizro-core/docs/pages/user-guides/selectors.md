@@ -13,9 +13,9 @@ the [`RadioItem`][vizro.models.RadioItems] serves as a single-option selector by
 
 For more details, refer to the documentation of the underlying Dash components:
 
-- [dcc.Dropdown](https://dash.plotly.com/dash-core-components/dropdown)
-- [dcc.Checklist](https://dash.plotly.com/dash-core-components/checklist)
-- [dcc.RadioItems](https://dash.plotly.com/dash-core-components/radioitems)
+- [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown)
+- [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
+- [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
 !!! note
 
@@ -32,8 +32,8 @@ For more details, refer to the documentation of the underlying Dash components:
 
 For more details, refer to the documentation of the underlying Dash components:
 
-- [dcc.Slider](https://dash.plotly.com/dash-core-components/slider])
-- [dcc.RangeSlider](https://dash.plotly.com/dash-core-components/rangeslider])
+- [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider])
+- [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider])
 
 !!! note
 
@@ -49,13 +49,13 @@ indicating that [pandas.api.types.is_numeric_dtype()](https://pandas.pydata.org/
 
 For more details, refer to the documentation of the underlying Dash components:
 
-- [dmc.DateRangePicker](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
-- [dmc.DatePicker](https://www.dash-mantine-components.com/components/datepicker)
+- [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
+- [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker)
 
 !!! note
 
-    The [`DatePicker`][vizro.models.DatePicker] component is based on 2 underlying components dmc.DatePicker and dmc.DateRangePicker.
-    When [`DatePicker`][vizro.models.DatePicker] is configured with `range=False` argument, underlying component is dmc.DatePicker. Default value of `range` is `True`, meaning [`DatePicker`][vizro.models.DatePicker] by default uses dmc.DateRangePicker.
+    [`DatePicker`][vizro.models.DatePicker] component is based on two underlying components `dmc.DatePicker` and `dmc.DateRangePicker`.
+    When [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`; when `range=False` the component is `dmc.DatePicker`.
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as datetime type.
 
 To utilize `temporal` [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` dtype,
