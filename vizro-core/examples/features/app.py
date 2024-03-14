@@ -399,6 +399,11 @@ selectors = vm.Page(
         ),
         vm.Filter(
             targets=["table-tips"],
+            column="day",
+            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
             column="sex",
             selector=vm.RadioItems(title="Radio Items (Tips - sex)"),
         ),
@@ -409,11 +414,6 @@ selectors = vm.Page(
         ),
         vm.Filter(
             targets=["table-gapminder"], column="year", selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
-        ),
-        vm.Filter(
-            targets=["table-tips"],
-            column="day",
-            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
         ),
     ],
 )
