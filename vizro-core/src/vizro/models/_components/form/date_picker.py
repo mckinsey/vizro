@@ -88,6 +88,7 @@ class DatePicker(VizroBaseModel):
             dropdownPosition="bottom-start",
             clearable=False,
             disabledDates=self.max + datetime.timedelta(days=1) if self.max else None,
+            className="datepicker",
             **date_range_picker_kwargs,
         )
 

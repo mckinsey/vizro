@@ -1,4 +1,5 @@
 """Example to show dashboard configuration."""
+<<<<<<< HEAD
 import random
 from vizro import Vizro
 import vizro.plotly.express as px
