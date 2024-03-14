@@ -165,6 +165,7 @@ class TestBuildMethod:
                     dropdownPosition="bottom-start",
                     disabledDates="2023-07-02",
                     clearable=False,
+                    className="datepicker",
                     **additional_kwargs,
                 ),
                 dcc.Store(id="datepicker_id_input_store", storage_type="session", data=value),
