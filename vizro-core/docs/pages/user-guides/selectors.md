@@ -62,7 +62,7 @@ To utilize `temporal` [`Filter`][vizro.models.Filter] selectors, the filtered co
 indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) must return `True` for the filtered column.
 
 !!! note
-    
+
     Dataframe column type can be changed to datetime using:
      - [pandas.to_datetime()](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) or
      - [pandas.DataFrame.astype()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.astype.html) with `datetime64` as the argument.
@@ -75,12 +75,12 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
-        
+
         date_date_frame = pd.DataFrame({
             "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
             "value": [random.randint(0, 100) for _ in range(31)]
         })
-        
+
         page = vm.Page(
             title="My first page",
             components=[
@@ -90,9 +90,9 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
                 vm.Filter(column="time"),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
-        
+
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
