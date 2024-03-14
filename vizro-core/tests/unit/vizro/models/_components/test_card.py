@@ -49,7 +49,7 @@ class TestBuildMethod:
         card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
 
-        expected_card = html.Div(
+        expected_card = dbc.Card(
             dbc.NavLink(
                 dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
                 href="https://www.google.com",
