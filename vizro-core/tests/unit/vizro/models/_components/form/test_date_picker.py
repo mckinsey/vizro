@@ -110,13 +110,7 @@ class TestDatePickerInstantiation:
 
 
 class TestBuildMethod:
-    @pytest.mark.parametrize(
-        "range, value",
-        [
-            (False, "2023-01-05"),
-            (True, ["2023-01-05", "2023-01-07"]),
-        ],
-    )
+    @pytest.mark.parametrize("range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])])
     def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
             min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
