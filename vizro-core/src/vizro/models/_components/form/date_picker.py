@@ -69,7 +69,8 @@ class DatePicker(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
-
+        # clientside callback is used as a workaround for situations where insufficient space below the date-picker
+        # input field prevents the date-picker calendar from opening.
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_date_picker_position"),
             output=Output(self.id, "dropdownPosition"),
