@@ -4,9 +4,9 @@ import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
 
 try:
-    from pydantic.v1 import Field
+    from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field
+    from pydantic import Field, validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -31,6 +31,13 @@ class Card(VizroBaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
+
+    @validator("href")
+    def set_href(cls, href) -> str:
+        if href:
+            return href.strip().lower().replace(" ", "-")
+
+        return href
 
     @_log_call
     def build(self):
