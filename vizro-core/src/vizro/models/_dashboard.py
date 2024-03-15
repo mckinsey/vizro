@@ -128,8 +128,7 @@ class Dashboard(VizroBaseModel):
                 [
                     Output("collapsable-left-side", "is_open"),
                     Output("collapse-icon", "style"),
-                    Output("collapse-tooltip", "label"),
-                    Output("collapse-tooltip", "offset"),
+                    Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapsable-left-side", "is_open"),
@@ -193,15 +192,18 @@ class Dashboard(VizroBaseModel):
             page_header_divs.append(page_divs["settings"])
 
         collapsable_icon = (
-            dmc.Tooltip(
-                html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
-                id="collapse-tooltip",
-                label="Hide Menu",
-                offset=24,
-                withArrow=True,
-                position="right",
-                arrowOffset=10,
-                className="collapse-button-tooltip",
+            html.Div(
+                [
+                    html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
+                    dbc.Tooltip(
+                        "Hide Menu",
+                        id="collapse-tooltip",
+                        placement="right",
+                        target="collapse-icon",
+                        className="collapse-button-tooltip",
+                    ),
+                ],
+                className="collapse-icon-div",
             )
             if not _all_hidden([*left_sidebar_divs, *left_main_divs])
             else None

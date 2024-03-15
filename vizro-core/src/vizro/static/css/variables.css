@@ -31,7 +31,6 @@
 
 /* Ensure dark and light have same list of variables (only color variables) */
 .vizro_dark {
-  --field-active: rgba(36, 48, 61, 1);
   --fill-active: var(--fill-dark-mode-active);
   --text-active: rgba(255, 255, 255, 1);
   --slider-background-color: #373a44;
@@ -47,7 +46,6 @@
   --border-contrast-selected: rgba(20, 23, 33, 1);
   --border-disabled: var(--border-dark-mode-disabled);
   --field-disabled: var(--field-dark-mode-disabled);
-  --fill-disabled: var(--fill-dark-mode-disabled);
   --text-disabled: var(--text-dark-mode-disabled);
   --border-enabled: var(--border-dark-mode-enabled);
   --field-enabled: var(--field-dark-mode-enabled);
@@ -85,20 +83,16 @@
     0px 2px 6px -1px rgba(20, 23, 33, 0.16);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
     0px 4px 8px 1px rgba(20, 23, 33, 0.12);
-  --box-shadow-elevation-tooltip-hover: 0px 4px 8px 0px rgba(20, 23, 33, 0.38),
-    0px 2px 4px -1px rgba(20, 23, 33, 0.88);
   --fill-subtle: var(--fill-dark-mode-subtle);
   --border-subtle-alpha-01: var(--border-dark-mode-subtle-alpha-01);
   --border-subtle-alpha-02: var(--border-dark-mode-subtle-alpha-02);
   --status-success: var(--status-dark-mode-success);
   --tags-text-color: var(--tags-dark-mode-text-color);
-  --tooltip-text-primary: rgba(20, 23, 33, 0.88);
   --status-warning: var(--status-dark-mode-warning);
 }
 
 .vizro_light {
   --fill-accordion-button: invert(64%) sepia(0%) saturate(1375%);
-  --field-active: rgba(251, 251, 251, 1);
   --fill-active: var(--fill-light-mode-active);
   --text-active: rgba(20, 23, 33, 1);
   --slider-background-color: #d3d6d9;
@@ -114,7 +108,6 @@
   --border-contrast-selected: rgba(255, 255, 255, 1);
   --border-disabled: var(--border-light-mode-disabled);
   --field-disabled: var(--field-light-mode-disabled);
-  --fill-disabled: var(--fill-light-mode-disabled);
   --text-disabled: var(--text-light-mode-disabled);
   --border-enabled: var(--border-light-mode-enabled);
   --field-enabled: var(--field-light-mode-enabled);
@@ -154,13 +147,10 @@
     0px 0px 1px 0px rgba(20, 23, 33, 0.38);
   --box-shadow-elevation-card-hover: 0px 2px 2px 0px rgba(20, 23, 33, 0.24),
     0px 4px 8px 1px rgba(20, 23, 33, 0.12);
-  --box-shadow-elevation-tooltip-hover: 0px 4px 8px 0px rgba(20, 23, 33, 0.12),
-    0px 2px 4px -1px rgba(20, 23, 33, 0.08);
   --fill-subtle: var(--fill-light-mode-subtle);
   --border-subtle-alpha-01: var(--border-light-mode-subtle-alpha-01);
   --border-subtle-alpha-02: var(--border-light-mode-subtle-alpha-02);
   --status-success: var(--status-light-mode-success);
   --tags-text-color: var(--tags-light-mode-text-color);
-  --tooltip-text-primary: rgba(255, 255, 255, 0.88);
   --status-warning: var(--status-light-mode-warning);
 }
