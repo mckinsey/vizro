@@ -35,6 +35,12 @@ SELECTORS = {
     "temporal": (DatePicker,),
 }
 
+ALLOWED_SELECTORS = {
+    "numerical": SELECTORS["numerical"] + SELECTORS["categorical"],
+    "temporal": SELECTORS["temporal"] + SELECTORS["categorical"],
+    "categorical": SELECTORS["categorical"],
+}
+
 
 def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
     if is_datetime64_any_dtype(series):
@@ -84,8 +90,8 @@ class Filter(VizroBaseModel):
         self._set_targets()
         self._set_column_type()
         self._set_selector()
-        self._set_slider_values()
-        self._set_date_picker_values()
+        self._validate_allowed_selector()
+        self._set_numerical_and_temporal_selectors_values()
         self._set_categorical_selectors_options()
         self._set_actions()
 
@@ -118,43 +124,32 @@ class Filter(VizroBaseModel):
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
 
-    def _set_slider_values(self):
-        if isinstance(self.selector, SELECTORS["numerical"]):
-            if self._column_type != "numerical":
-                raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible "
-                    f"with {self._column_type} column '{self.column}'."
-                )
+    def _validate_allowed_selector(self):
+        if not isinstance(self.selector, ALLOWED_SELECTORS[self._column_type]):
+            raise ValueError(
+                f"Chosen selector {self.selector.type} is not compatible "
+                f"with {self._column_type} column '{self.column}'. "
+                f"Allowed selectors for {self._column_type} column '{self.column}' "
+                f"are {ALLOWED_SELECTORS[self._column_type]}."
+            )
+
+    def _set_numerical_and_temporal_selectors_values(self):
+        if isinstance(self.selector, (SELECTORS["numerical"] + SELECTORS["temporal"])):
             min_values = []
             max_values = []
             for target_id in self.targets:
                 data_frame = data_manager._get_component_data(target_id)
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
-            if not is_numeric_dtype(pd.Series(min_values)) or not is_numeric_dtype(pd.Series(max_values)):
-                raise ValueError(
-                    f"Non-numeric values detected in the shared data column '{self.column}' for targeted charts. "
-                    f"Please ensure that the data column contains the same data type across all targeted charts."
-                )
-            if self.selector.min is None:
-                self.selector.min = min(min_values)
-            if self.selector.max is None:
-                self.selector.max = max(max_values)
 
-    def _set_date_picker_values(self):
-        if isinstance(self.selector, SELECTORS["temporal"]):
-            if self._column_type != "temporal":
+            if not (is_numeric_dtype(pd.Series(min_values)) and is_numeric_dtype(pd.Series(max_values))) and not (
+                is_datetime64_any_dtype(pd.Series(min_values)) and is_datetime64_any_dtype(pd.Series(max_values))
+            ):
                 raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible "
-                    f"with {self._column_type} column '{self.column}'."
+                    f"Variable types detected in the shared data column '{self.column}' for targeted charts "
+                    f"{self.targets}. Please ensure that the data column contains the same data type across all "
+                    f"targeted charts."
                 )
-
-            min_values = []
-            max_values = []
-            for target_id in self.targets:
-                data_frame = data_manager._get_component_data(target_id)
-                min_values.append(data_frame[self.column].min())
-                max_values.append(data_frame[self.column].max())
 
             if self.selector.min is None:
                 self.selector.min = min(min_values)

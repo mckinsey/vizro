@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from re import escape as regex_escape
 
 import pandas as pd
 import pytest
@@ -196,112 +197,151 @@ class TestPreBuildMethod:
             filter.pre_build()
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")]
+        "filtered_column, expected_column_type",
+        [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")],
     )
-    def test_set_column_type(self, test_input, expected, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input)
+    def test_set_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter._column_type == expected
+        assert filter._column_type == expected_column_type
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)]
+        "filtered_column, expected_selector",
+        [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)],
     )
-    def test_set_selector(self, test_input, expected, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input)
+    def test_set_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert isinstance(filter.selector, expected)
-        assert filter.selector.title == test_input.title()
+        assert isinstance(filter.selector, expected_selector)
+        assert filter.selector.title == filtered_column.title()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_incompatible_column_type(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="country", selector=test_input)
+    @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
+    def test_set_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=vm.RadioItems(title="Title"))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, vm.RadioItems)
+        assert filter.selector.title == "Title"
+
+    @pytest.mark.parametrize(
+        "filtered_column, selector",
+        [
+            ("country", vm.Dropdown()),
+            ("country", vm.RadioItems()),
+            ("country", vm.Checklist()),
+            ("lifeExp", vm.Slider()),
+            ("lifeExp", vm.RangeSlider()),
+            ("lifeExp", vm.Dropdown()),
+            ("lifeExp", vm.RadioItems()),
+            ("lifeExp", vm.Checklist()),
+            ("year", vm.Dropdown()),
+            ("year", vm.RadioItems()),
+            ("year", vm.Checklist()),
+            ("year", vm.DatePicker()),
+        ],
+    )
+    def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, type(selector))
+
+    @pytest.mark.parametrize(
+        "filtered_column, selector",
+        [
+            ("country", vm.Slider()),
+            ("country", vm.RangeSlider()),
+            ("country", vm.DatePicker()),
+            ("lifeExp", vm.DatePicker()),
+            ("year", vm.Slider()),
+            ("year", vm.RangeSlider()),
+        ],
+    )
+    def test_disallowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector)
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Chosen selector {test_input.type} is not compatible with categorical column '{filter.column}'.",
+            match=f"Chosen selector {selector.type} is not compatible with .* column '{filtered_column}'. "
+            f"Allowed selectors for .* column '{filtered_column}' are .*.",
         ):
             filter.pre_build()
 
-    def test_set_datepicker_values_incompatible_column_type(self, managers_one_page_two_graphs):
-        filter = vm.Filter(column="country", selector=vm.DatePicker())
-        model_manager["test_page"].controls = [filter]
-        with pytest.raises(
-            ValueError,
-            match=f"Chosen selector {vm.DatePicker().type} "
-            f"is not compatible with categorical column '{filter.column}'.",
-        ):
-            filter.pre_build()
-
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_shared_column_inconsistent_dtype(
-        self, test_input, managers_shared_column_different_dtype
-    ):
-        filter = vm.Filter(column="shared_column", selector=test_input)
+    @pytest.mark.parametrize(
+        "targets",
+        [
+            ["id_shared_column_numerical", "id_shared_column_temporal"],
+            ["id_shared_column_numerical", "id_shared_column_categorical"],
+            ["id_shared_column_temporal", "id_shared_column_categorical"],
+        ],
+    )
+    def test_set_slider_values_shared_column_inconsistent_dtype(self, targets, managers_shared_column_different_dtype):
+        filter = vm.Filter(column="shared_column", targets=targets)
         model_manager["graphs_with_shared_column"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Non-numeric values detected in the shared data column '{filter.column}' for targeted charts. "
-            f"Please ensure that the data column contains the same data type across all targeted charts.",
+            match=regex_escape(
+                f"Variable types detected in the shared data column 'shared_column' for targeted charts {targets}. "
+                f"Please ensure that the data column contains the same data type across all targeted charts."
+            ),
         ):
             filter.pre_build()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_defaults_min_max_none(self, test_input, gapminder, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=test_input)
+    @pytest.mark.parametrize("selector", [vm.Slider(), vm.RangeSlider()])
+    def test_set_numerical_selectors_values_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-    def test_set_datepicker_values_defaults_min_max_none(self, gapminder, managers_one_page_two_graphs):
+    def test_set_temporal_selectors_values_min_max_default(self, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == gapminder.year.min().to_pydatetime().date()
         assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
-    def test_set_slider_values_defaults_min_max_fix(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=test_input)
+    @pytest.mark.parametrize("selector", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
+    def test_set_numerical_selectors_values_min_max_specific(self, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == 3
         assert filter.selector.max == 5
 
-    def test_set_datepicker_values_defaults_min_max_fix(self, managers_one_page_two_graphs):
+    def test_set_temporal_selectors_values_min_max_specific(self, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == date(1952, 1, 1)
         assert filter.selector.max == date(2007, 1, 1)
 
-    @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_set_categorical_selectors_options_defaults_options_none(
-        self, test_input, gapminder, managers_one_page_two_graphs
-    ):
-        filter = vm.Filter(column="continent", selector=test_input)
+    @pytest.mark.parametrize("selector", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
+    def test_set_categorical_selectors_options_default(self, selector, gapminder, managers_one_page_two_graphs):
+        filter = vm.Filter(column="continent", selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == sorted(set(gapminder["continent"]))
 
     @pytest.mark.parametrize(
-        "test_input",
+        "selector",
         [
             vm.Checklist(options=["Africa", "Europe"]),
             vm.Dropdown(options=["Africa", "Europe"]),
             vm.RadioItems(options=["Africa", "Europe"]),
         ],
     )
-    def test_set_categorical_selectors_options_defaults_options_fix(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="continent", selector=test_input)
+    def test_set_categorical_selectors_options_specific(self, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column="continent", selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == ["Africa", "Europe"]
 
     @pytest.mark.parametrize(
-        "test_input, selector, filter_function",
+        "filtered_column, selector, filter_function",
         [
             ("lifeExp", None, _filter_between),
             ("country", None, _filter_isin),
@@ -309,8 +349,8 @@ class TestPreBuildMethod:
             ("year", vm.DatePicker(range=False), _filter_isin),
         ],
     )
-    def test_set_actions(self, test_input, selector, filter_function, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input, selector=selector)
+    def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         default_action = filter.selector.actions[0]

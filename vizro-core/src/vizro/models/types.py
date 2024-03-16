@@ -7,6 +7,8 @@ import functools
 import inspect
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
+from pandas import Timestamp
+
 try:
     from pydantic.v1 import Field, StrictBool
     from pydantic.v1.fields import ModelField
@@ -329,9 +331,9 @@ class capture:
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = Union[StrictBool, float, str]
+SingleValueType = Union[StrictBool, float, str, Timestamp]
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = Union[List[StrictBool], List[float], List[str]]
+MultiValueType = Union[List[StrictBool], List[float], List[str], List[Timestamp]]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -342,7 +344,7 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictType]]
+OptionsType = Union[List[StrictBool], List[float], List[str], List[Timestamp], List[OptionsDictType]]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
