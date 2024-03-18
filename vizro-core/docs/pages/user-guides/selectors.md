@@ -66,10 +66,10 @@ Default selectors for:
 
 Categorical selectors can be used independently of the data type of the column being filtered.
 
-To utilize numerical [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `numeric` format,
+To use numerical [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `numeric` format,
 indicating that [pandas.api.types.is_numeric_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) must return `True` for the filtered column.
 
-To utilize temporal [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` format,
+To use temporal [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` format,
 indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) must return `True` for the filtered column.
 
 !!! tip

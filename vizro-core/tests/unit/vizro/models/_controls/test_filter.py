@@ -1,8 +1,8 @@
 from datetime import date, datetime
-from re import escape as regex_escape
 
 import pandas as pd
 import pytest
+import re
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
@@ -304,8 +304,8 @@ class TestPreBuildMethod:
         model_manager["graphs_with_shared_column"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=regex_escape(
-                f"Variable types detected in the shared data column 'shared_column' for targeted charts {targets}. "
+            match=re.escape(
+                f"Inconsistent types detected in the shared data column 'shared_column' for targeted charts {targets}. "
                 f"Please ensure that the data column contains the same data type across all targeted charts."
             ),
         ):

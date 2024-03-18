@@ -139,7 +139,7 @@ class Filter(VizroBaseModel):
             )
 
     def _set_numerical_and_temporal_selectors_values(self):
-        if isinstance(self.selector, (SELECTORS["numerical"] + SELECTORS["temporal"])):
+        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             min_values = []
             max_values = []
             for target_id in self.targets:
@@ -147,11 +147,10 @@ class Filter(VizroBaseModel):
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
 
-            if not (is_numeric_dtype(pd.Series(min_values)) and is_numeric_dtype(pd.Series(max_values))) and not (
-                is_datetime64_any_dtype(pd.Series(min_values)) and is_datetime64_any_dtype(pd.Series(max_values))
-            ):
+            if not (is_numeric_dtype(pd.Series(min_values)) and is_numeric_dtype(pd.Series(max_values)) or
+                    is_datetime64_any_dtype(pd.Series(min_values)) and is_datetime64_any_dtype(pd.Series(max_values))):
                 raise ValueError(
-                    f"Variable types detected in the shared data column '{self.column}' for targeted charts "
+                    f"Inconsistent types detected in the shared data column '{self.column}' for targeted charts "
                     f"{self.targets}. Please ensure that the data column contains the same data type across all "
                     f"targeted charts."
                 )
