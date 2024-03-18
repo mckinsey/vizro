@@ -82,28 +82,32 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
 !!! example "Default Filter selectors"
     === "app.py"
         ```py
-        import datetime
-        import random
         import pandas as pd
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
 
-        date_data_frame = pd.DataFrame({
-            "type": [random.choice(["A", "B", "C"]) for _ in range(31)],
-            "value": [random.randint(0, 100) for _ in range(31)],
-            "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
-        })
+        df_stocks = px.data.stocks(datetimes=True)
+
+        df_stocks_long = pd.melt(
+            df_stocks,
+            id_vars='date',
+            value_vars=['GOOG', 'AAPL', 'AMZN', 'FB', 'NFLX', 'MSFT'],
+            var_name='stocks',
+            value_name='value'
+        )
+
+        df_stocks_long['value'] = df_stocks_long['value'].round(3)
 
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
+                vm.Graph(figure=px.line(df_stocks_long, x="date", y="value", color="stocks")),
             ],
             controls=[
-                vm.Filter(column="type"),
+                vm.Filter(column="stocks"),
                 vm.Filter(column="value"),
-                vm.Filter(column="time"),
+                vm.Filter(column="date"),
             ],
         )
 
@@ -119,16 +123,17 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
           - components:
               - figure:
                   _target_: line
-                  data_frame: date_data_frame
-                  x: time
+                  data_frame: df_stocks_long
+                  x: date
                   y: value
+                  color: stocks
                 type: graph
             controls:
-              - column: type
+              - column: stocks
                 type: filter
               - column: value
                 type: filter
-              - column: time
+              - column: date
                 type: filter
             title: My first page
         ```

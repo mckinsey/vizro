@@ -4,15 +4,16 @@ pages:
   - components:
       - figure:
           _target_: line
-          data_frame: date_date_frame
-          x: time
+          data_frame: df_stocks_long
+          x: date
           y: value
+          color: stocks
         type: graph
     controls:
-      - column: type
+      - column: stocks
         type: filter
       - column: value
         type: filter
-      - column: time
+      - column: date
         type: filter
     title: My first page

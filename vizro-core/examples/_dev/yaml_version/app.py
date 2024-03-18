@@ -15,14 +15,15 @@ data_manager["iris"] = px.data.iris
 data_manager["gapminder"] = px.data.gapminder
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
-date_data_frame = pd.DataFrame(
-    {
-        "type": [random.choice(["A", "B", "C"]) for _ in range(31)],
-        "value": [random.randint(0, 100) for _ in range(31)],
-        "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
-    }
+
+df_stocks_long = pd.melt(
+    px.data.stocks(datetimes=True),
+    id_vars="date",
+    value_vars=["GOOG", "AAPL", "AMZN", "FB", "NFLX", "MSFT"],
+    var_name="stocks",
+    value_name="value",
 )
-data_manager["date_data_frame"] = date_data_frame
+data_manager["df_stocks_long"] = df_stocks_long
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)

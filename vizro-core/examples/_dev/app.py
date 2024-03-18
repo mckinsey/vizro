@@ -62,7 +62,29 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+df_stocks_long = pd.melt(
+    px.data.stocks(datetimes=True),
+    id_vars="date",
+    value_vars=["GOOG", "AAPL", "AMZN", "FB", "NFLX", "MSFT"],
+    var_name="stocks",
+    value_name="value",
+)
+
+df_stocks_long["value"] = df_stocks_long["value"].round(3)
+
+page_2 = vm.Page(
+    title="My second page",
+    components=[
+        vm.Graph(figure=px.line(df_stocks_long, x="date", y="value", color="stocks")),
+    ],
+    controls=[
+        vm.Filter(column="stocks"),
+        vm.Filter(column="value"),
+        vm.Filter(column="date"),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
