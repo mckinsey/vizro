@@ -3,7 +3,6 @@ from __future__ import annotations
 import itertools
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 from dash import get_relative_path, html
 
 try:
@@ -60,14 +59,12 @@ class NavLink(VizroBaseModel):
 
         nav_link = dbc.NavLink(
             [
-                dmc.Tooltip(
-                    label=self.label,
-                    offset=4,
-                    withArrow=True,
-                    children=[html.Span(self.icon, className="material-symbols-outlined")],
-                    position="bottom-start",
-                    className="nav-icon-tooltip",
-                )
+                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-tooltip-target"),
+                dbc.Tooltip(
+                    self.label,
+                    placement="right",
+                    target=f"{self.id}-tooltip-target",
+                ),
             ],
             id=self.id,
             className="nav-bar-icon-link",

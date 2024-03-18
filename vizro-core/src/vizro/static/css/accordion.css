@@ -111,10 +111,6 @@
   color: var(--text-secondary);
 }
 
-.nav-icon-tooltip {
-  height: 24px;
-}
-
 .accordion-body .accordion-item-link:last-child {
   margin-bottom: var(--spacing-03);
 }
