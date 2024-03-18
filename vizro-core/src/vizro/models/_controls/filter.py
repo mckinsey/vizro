@@ -44,13 +44,19 @@ ALLOWED_SELECTORS = {
 
 def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
     if is_datetime64_any_dtype(series):
+        # Each value will always have time 00:00:00. In order for the filter to include all times during
+        # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
         value = pd.to_datetime(value)
+        series = pd.to_datetime(series.dt.date)
     return series.between(value[0], value[1], inclusive="both")
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     if is_datetime64_any_dtype(series):
+        # Value will always have time 00:00:00. In order for the filter to include all times during
+        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
         value = pd.to_datetime(value)
+        series = pd.to_datetime(series.dt.date)
     return series.isin(value)
 
 

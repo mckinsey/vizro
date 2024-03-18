@@ -42,9 +42,6 @@ For more details, refer to the documentation of the underlying Dash components:
     To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and
     [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size accordingly.
 
-To utilize `numerical` [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `numeric` dtype,
-indicating that [pandas.api.types.is_numeric_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) must return `True` for the filtered column.
-
 ## Temporal Selectors
 
 For more details, refer to the documentation of the underlying Dash components:
@@ -54,20 +51,34 @@ For more details, refer to the documentation of the underlying Dash components:
 
 !!! note
 
-    [`DatePicker`][vizro.models.DatePicker] component is based on two underlying components `dmc.DatePicker` and `dmc.DateRangePicker`.
-    When [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`; when `range=False` the component is `dmc.DatePicker`.
-    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as datetime type.
+    The [`DatePicker`][vizro.models.DatePicker] component is based on two underlying components -  `dmc.DatePicker` and `dmc.DateRangePicker`.
+    When the [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`. When `range=False` the underlying component is `dmc.DatePicker`.
+    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type.
 
-To utilize `temporal` [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` dtype,
+## Default selectors
+
+If you don't specify a selector, a default selector is applied based on the data type of the provided data column.
+
+Default selectors for:
+
+ - categorical data: vm.Dropdown
+ - numerical data: vm.RangeSlider
+ - temporal data: vm.DatePicker(range=True)
+
+Categorical selectors can be used independently of the data type of the column being filtered.
+
+To utilize numerical [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `numeric` format,
+indicating that [pandas.api.types.is_numeric_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) must return `True` for the filtered column.
+
+To utilize temporal [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` format,
 indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) must return `True` for the filtered column.
 
-!!! note
+!!! tip
 
-    Dataframe column type can be changed to datetime using:
-     - [pandas.to_datetime()](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) or
-     - [pandas.DataFrame.astype()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.astype.html) with `datetime64` as the argument.
+    `pd.DataFrame` column types can be changed to `datetime` using [pandas.to_datetime()](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) or
 
-Below is an example where all selectors are automatically set by default based on the type of the filtered column.
+
+### Example of default Filter selectors
 
 !!! example "Default Filter selectors"
     === "app.py"

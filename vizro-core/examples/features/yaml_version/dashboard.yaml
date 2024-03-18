@@ -372,7 +372,7 @@ pages:
         type: card
       - figure:
           _target_: dash_data_table
-          data_frame: gapminder
+          data_frame: gapminder_2007
           page_size: 10
         id: table-gapminder
         title: Gapminder Data
@@ -384,9 +384,19 @@ pages:
         id: table-tips
         title: Tips Data
         type: table
+      - figure:
+          _target_: line
+          data_frame: stocks
+          title: Stocks Data
+          x: date
+          y: GOOG
+        id: graph-stocks
+        type: graph
     controls:
       - column: lifeExp
         selector:
+          marks: null
+          step: 1
           title: Range Slider (Gapminder - lifeExp)
           type: range_slider
         targets:
@@ -431,12 +441,12 @@ pages:
         targets:
           - table-tips
         type: filter
-      - column: year
+      - column: date
         selector:
-          title: Date Picker (Gapminder - year)
+          title: Date Picker (Stocks - date)
           type: date_picker
         targets:
-          - table-gapminder
+          - graph-stocks
         type: filter
     layout:
       row_min_height: 170px
@@ -449,6 +459,9 @@ pages:
         - [2]
         - [2]
         - [2]
+        - [3]
+        - [3]
+        - [3]
     title: Selectors
 navigation:
   nav_selector:

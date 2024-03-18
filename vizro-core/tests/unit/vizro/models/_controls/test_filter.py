@@ -76,6 +76,17 @@ class TestFilterFunctions:
                 [False, False, False, False, False],
             ),  # Test for inverted values
             ([], ["2024-02-01", "2024-03-01"], pd.Series([], dtype=bool)),  # Test for empty series
+            (
+                [
+                    datetime(2024, 1, 1, 20, 20, 20),
+                    datetime(2024, 2, 1, 20, 20, 20),
+                    datetime(2024, 3, 1, 20, 20, 20),
+                    datetime(2024, 4, 1, 20, 20, 20),
+                    datetime(2024, 5, 1, 20, 20, 20),
+                ],
+                ["2024-02-01", "2024-03-01"],
+                [False, True, True, False, False],
+            ),  # Test with time part in the date
         ],
     )
     def test_filter_between_date(self, data, value, expected):
@@ -146,6 +157,17 @@ class TestFilterFunctions:
                 [],
                 [False, False, False, False, False],
             ),  # Test for empty value list
+            (
+                [
+                    datetime(2024, 1, 1, 20, 20, 20),
+                    datetime(2024, 2, 1, 20, 20, 20),
+                    datetime(2024, 3, 1, 20, 20, 20),
+                    datetime(2024, 4, 1, 20, 20, 20),
+                    datetime(2024, 5, 1, 20, 20, 20),
+                ],
+                ["2024-02-01"],
+                [False, True, False, False, False],
+            ),  # Test with time part in the date
         ],
     )
     def test_filter_isin_date(self, data, value, expected):

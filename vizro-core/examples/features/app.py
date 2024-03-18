@@ -15,7 +15,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 tips = px.data.tips()
-gapminder = px.data.gapminder(datetimes=True)
+stocks = px.data.stocks(datetimes=True)
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -354,7 +354,7 @@ parameters = vm.Page(
 
 selectors = vm.Page(
     title="Selectors",
-    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2]], row_min_height="170px", row_gap="24px"),
+    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2], [3], [3], [3]], row_min_height="170px", row_gap="24px"),
     components=[
         vm.Card(
             text="""
@@ -372,20 +372,20 @@ selectors = vm.Page(
         ),
         vm.Table(
             id="table-gapminder",
-            figure=dash_data_table(data_frame=gapminder, page_size=10),
+            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
             title="Gapminder Data",
         ),
         vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
+        vm.Graph(
+            id="graph-stocks",
+            figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
+        ),
     ],
     controls=[
         vm.Filter(
             targets=["table-gapminder"],
             column="lifeExp",
-            selector=vm.RangeSlider(
-                title="Range Slider (Gapminder - lifeExp)",
-                step=1,
-                marks=None,
-            ),
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
         ),
         vm.Filter(
             targets=["table-gapminder"],
@@ -412,9 +412,7 @@ selectors = vm.Page(
             column="size",
             selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
         ),
-        vm.Filter(
-            targets=["table-gapminder"], column="year", selector=vm.DatePicker(title="Date Picker (Gapminder - year)")
-        ),
+        vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
 
