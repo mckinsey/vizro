@@ -227,6 +227,8 @@ class Dashboard(VizroBaseModel):
         page_divs = self._get_page_divs(page=page)
         return self._arrange_page_divs(page_divs=page_divs)
 
+
+
     @staticmethod
     def _make_page_404_layout():
         return html.Div(

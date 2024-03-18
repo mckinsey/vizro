@@ -135,8 +135,7 @@ class Filter(VizroBaseModel):
             raise ValueError(
                 f"Chosen selector {self.selector.type} is not compatible "
                 f"with {self._column_type} column '{self.column}'. "
-                f"Allowed selectors for {self._column_type} column '{self.column}' "
-                f"are {ALLOWED_SELECTORS[self._column_type]}."
+                f"Allowed selectors are {ALLOWED_SELECTORS[self._column_type]}."
             )
 
     def _set_numerical_and_temporal_selectors_values(self):

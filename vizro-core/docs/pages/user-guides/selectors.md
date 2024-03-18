@@ -11,11 +11,11 @@ For instance, the [`Checklist`][vizro.models.Checklist] functions as a multi-opt
 the [`RadioItem`][vizro.models.RadioItems] serves as a single-option selector by default. However, the
 [`Dropdown`][vizro.models.Dropdown] can function as both a multi-option or single-option selector.
 
-For more details, refer to the documentation of the underlying Dash components:
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown)
-- [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
-- [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
+- [`Dropdown`][vizro.models.Dropdown] based on [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown)
+- [`Checklist`][vizro.models.Checklist] based on [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
+- [`RadioItems`][vizro.models.RadioItems] based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
 !!! note
 
@@ -30,10 +30,10 @@ For more details, refer to the documentation of the underlying Dash components:
 
 ## Numerical selectors
 
-For more details, refer to the documentation of the underlying Dash components:
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider])
-- [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider])
+- [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
+- [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
 
 !!! note
 
@@ -44,10 +44,9 @@ For more details, refer to the documentation of the underlying Dash components:
 
 ## Temporal Selectors
 
-For more details, refer to the documentation of the underlying Dash components:
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker)
-- [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker)
+- [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker) and [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker)
 
 !!! note
 
@@ -57,13 +56,13 @@ For more details, refer to the documentation of the underlying Dash components:
 
 ## Default selectors
 
-If you don't specify a selector, a default selector is applied based on the data type of the provided data column.
+If you don't specify a selector, a default selector is applied based on the data type of the provided column.
 
 Default selectors for:
 
- - categorical data: vm.Dropdown
- - numerical data: vm.RangeSlider
- - temporal data: vm.DatePicker(range=True)
+ - categorical data: [`Dropdown`][vizro.models.Dropdown]
+ - numerical data: [`RangeSlider`][vizro.models.RangeSlider]
+ - temporal data: [`DatePicker(range=True)`][vizro.models.DatePicker]
 
 Categorical selectors can be used independently of the data type of the column being filtered.
 
