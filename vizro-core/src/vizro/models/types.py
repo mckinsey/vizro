@@ -3,9 +3,9 @@
 # ruff: noqa: F821
 from __future__ import annotations
 
-from datetime import date
 import functools
 import inspect
+from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
 try:

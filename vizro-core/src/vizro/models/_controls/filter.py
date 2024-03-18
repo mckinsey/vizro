@@ -147,8 +147,12 @@ class Filter(VizroBaseModel):
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
 
-            if not (is_numeric_dtype(pd.Series(min_values)) and is_numeric_dtype(pd.Series(max_values)) or
-                    is_datetime64_any_dtype(pd.Series(min_values)) and is_datetime64_any_dtype(pd.Series(max_values))):
+            if not (
+                is_numeric_dtype(pd.Series(min_values))
+                and is_numeric_dtype(pd.Series(max_values))
+                or is_datetime64_any_dtype(pd.Series(min_values))
+                and is_datetime64_any_dtype(pd.Series(max_values))
+            ):
                 raise ValueError(
                     f"Inconsistent types detected in the shared data column '{self.column}' for targeted charts "
                     f"{self.targets}. Please ensure that the data column contains the same data type across all "
