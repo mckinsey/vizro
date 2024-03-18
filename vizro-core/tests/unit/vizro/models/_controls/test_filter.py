@@ -287,7 +287,7 @@ class TestPreBuildMethod:
         with pytest.raises(
             ValueError,
             match=f"Chosen selector {selector.type} is not compatible with .* column '{filtered_column}'. "
-            f"Allowed selectors are .*."
+            f"Allowed selectors are .*.",
         ):
             filter.pre_build()
 
