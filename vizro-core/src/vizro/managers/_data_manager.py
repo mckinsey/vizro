@@ -20,6 +20,8 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 # don't want this for now but might have in future.
 # how to turn cache off? For now just specify nullcache. Maybe in future have _dataset._cache = False as shortcut for
 # this. Implementation could be using unless or nullcache or if conditional.
+# If want to turn cache off for one dataset, basically just set low timeout
+# timeout=0 means it never expires
 
 
 # TODO: test, idea 2 (see shelf), think about preload and automatically named datasets, whether we still need
@@ -29,10 +31,12 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 class _Dataset:
     def __init__(self, load_data: pd_LazyDataFrame, /):
         self.__load_data: pd_LazyDataFrame = load_data
-        # timeout and cache will probably become public in future.
+        # timeout will probably become public in future.
         self._timeout: Optional[int] = None
+        # self._cache is the same for all datasets and is just the data_manager._cache. Only one global cache for now.
         self._cache: Optional[Cache] = None
         # name should never become public since it's taken from the key in data_manager.
+        # This scheme seems ugly - is there a better way?
         self._name: str = ""
 
         # We might also want a _cache_arguments dictionary in future that allows user to customise more than just
@@ -65,12 +69,6 @@ class _Dataset:
         _load_data.uncached.__qualname__ += f"__{self._name}"
         return _load_data()
 
-    def _init_cache(self, app: flask.Flask):
-        # Initialising the same cache repeatedly doesn't cause any harm but is not necessary. Once initialised,
-        # flask caching puts the cache in the flask.extensions["cache"] dictionary.
-        if self._cache not in flask.extensions.get("cache", {}):
-            self._cache.init_app(app)
-
 
 #
 # class _Dataset:
@@ -101,6 +99,7 @@ class DataManager:
         self._cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
     # AM: consider if this should also call the lazy data to populate the cache? Probably doesn't matter.
+    # Probably not because then it would load up all data even in not used.
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
@@ -164,8 +163,8 @@ class DataManager:
     def _init_cache(self, app: flask.Flask):
         """Sets the default cache for all datasets to be the same as the data_manager cache and initializes cache."""
         for dataset in self.__lazy_data.values():
-            dataset._cache = dataset._cache or self._cache
-            dataset._init_cache(app)
+            dataset._cache = self._cache
+        self._cache.init_app(app)
 
     # TODO: consider implementing __iter__ to make looping through datasets easier. Might not be worth doing though.
 
