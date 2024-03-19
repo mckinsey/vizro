@@ -1,7 +1,5 @@
 """Example to show dashboard configuration specified as a YAML file."""
 
-import datetime
-import random
 from pathlib import Path
 
 import pandas as pd

@@ -2,11 +2,22 @@
 
 import datetime
 import random
+from typing import List, Literal, Optional, Union
 
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import dcc, html
 from vizro import Vizro
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+
+try:
+    from pydantic.v1 import Field, PrivateAttr
+except ImportError:
+    from pydantic import Field, PrivateAttr
+from vizro.models import Action
+from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._base import VizroBaseModel, _log_call
 
 vm.Page.add_type("components", vm.DatePicker)
 
@@ -84,7 +95,87 @@ page_2 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_2])
+
+# CUSTOM SELECTORS
+
+
+class NewDropdown(VizroBaseModel):
+    """Categorical single/multi-selector `Dropdown` to be provided to `Filter`."""
+
+    type: Literal["new-dropdown"] = "new-dropdown"
+    options: Optional[OptionsType] = Field(None, description="Possible options the user can select from")
+    value: Optional[Union[SingleValueType, MultiValueType]] = Field(
+        None, description="Options that are selected by default"
+    )
+    multi: bool = Field(True, description="Whether to allow selection of multiple values")
+    actions: List[Action] = []  # noqa: RUF012
+    title: Optional[str] = Field(None, description="Title to be displayed")
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
+
+    set_actions = _action_validator_factory("value")
+
+    @_log_call
+    def build(self):
+        """Custom build method."""
+        return html.Div(
+            [
+                html.P(self.title) if self.title else None,
+                dcc.Dropdown(
+                    id=self.id,
+                    options=self.options,
+                    value=self.value or self.options[0],
+                    multi=self.multi,
+                    persistence=True,
+                    clearable=False,
+                ),
+            ],
+            className="input-container",
+        )
+
+
+class RangeSliderNonCross(vm.RangeSlider):
+    """Custom numeric multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
+
+    type: Literal["range_slider_non_cross"] = "range_slider_non_cross"
+
+    def build(self):
+        """Custom build method."""
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        return range_slider_build_obj
+
+
+# Important: Add new components to expected type - here the selector of the parent components
+vm.Filter.add_type("selector", NewDropdown)
+vm.Parameter.add_type("selector", NewDropdown)
+
+
+# Important: Add new components to expected type - here the selector of the parent components
+vm.Filter.add_type("selector", RangeSliderNonCross)
+vm.Parameter.add_type("selector", RangeSliderNonCross)
+
+
+page_3 = vm.Page(
+    title="Custom filer selectors",
+    components=[
+        vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
+    ],
+    controls=[
+        vm.Filter(column="type", selector=NewDropdown(options=["A", "B", "C"])),
+        vm.Filter(column="value", selector=NewDropdown(options=[1, 2, 3, 4, 5])),
+        vm.Filter(
+            column="time",
+            selector=NewDropdown(
+                options=[datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)]
+            ),
+        ),
+        vm.Filter(column="value", selector=RangeSliderNonCross(id="new_range_slider")),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

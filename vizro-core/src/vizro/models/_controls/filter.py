@@ -35,10 +35,10 @@ SELECTORS = {
     "temporal": (DatePicker,),
 }
 
-ALLOWED_SELECTORS = {
-    "numerical": SELECTORS["numerical"] + SELECTORS["categorical"],
-    "temporal": SELECTORS["temporal"] + SELECTORS["categorical"],
-    "categorical": SELECTORS["categorical"],
+DISALLOWED_SELECTORS = {
+    "numerical": SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
 
@@ -96,7 +96,7 @@ class Filter(VizroBaseModel):
         self._set_targets()
         self._set_column_type()
         self._set_selector()
-        self._validate_allowed_selector()
+        self._validate_disallowed_selector()
         self._set_numerical_and_temporal_selectors_values()
         self._set_categorical_selectors_options()
         self._set_actions()
@@ -130,15 +130,16 @@ class Filter(VizroBaseModel):
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
 
-    def _validate_allowed_selector(self):
-        if not isinstance(self.selector, ALLOWED_SELECTORS[self._column_type]):
+    def _validate_disallowed_selector(self):
+        if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
                 f"Chosen selector {self.selector.type} is not compatible "
                 f"with {self._column_type} column '{self.column}'. "
-                f"Allowed selectors are {ALLOWED_SELECTORS[self._column_type]}."
             )
 
     def _set_numerical_and_temporal_selectors_values(self):
+        # If the selector is a numerical or temporal selector, and the min and max values are not set, then set them
+        # N.B. All custom selectors inherit from numerical or temporal selector should also pass this check
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             min_values = []
             max_values = []
@@ -165,6 +166,8 @@ class Filter(VizroBaseModel):
                 self.selector.max = max(max_values)
 
     def _set_categorical_selectors_options(self):
+        # If the selector is a categorical selector, and the options are not set, then set them
+        # N.B. All custom selectors inherit from categorical selector should also pass this check
         if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
             options = set()
             for target_id in self.targets:
