@@ -35,6 +35,8 @@ SELECTORS = {
     "temporal": (DatePicker,),
 }
 
+# This disallowed selectors for each column type map is based on the discussion at the following link:
+# See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["temporal"],
     "temporal": SELECTORS["numerical"],
