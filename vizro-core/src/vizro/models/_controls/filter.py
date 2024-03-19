@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import List, Literal
+from typing import List, Literal, Union
 
 import pandas as pd
-from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype, is_string_dtype
+from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -35,12 +35,30 @@ SELECTORS = {
     "temporal": (DatePicker,),
 }
 
+# This disallowed selectors for each column type map is based on the discussion at the following link:
+# See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
+DISALLOWED_SELECTORS = {
+    "numerical": SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
+}
 
-def _filter_between(series: pd.Series, value: List[float]) -> pd.Series:
+
+def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
+    if is_datetime64_any_dtype(series):
+        # Each value will always have time 00:00:00. In order for the filter to include all times during
+        # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
+        value = pd.to_datetime(value)
+        series = pd.to_datetime(series.dt.date)
     return series.between(value[0], value[1], inclusive="both")
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    if is_datetime64_any_dtype(series):
+        # Value will always have time 00:00:00. In order for the filter to include all times during
+        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
+        value = pd.to_datetime(value)
+        series = pd.to_datetime(series.dt.date)
     return series.isin(value)
 
 
@@ -80,8 +98,8 @@ class Filter(VizroBaseModel):
         self._set_targets()
         self._set_column_type()
         self._set_selector()
-        self._set_slider_values()
-        self._set_date_picker_values()
+        self._validate_disallowed_selector()
+        self._set_numerical_and_temporal_selectors_values()
         self._set_categorical_selectors_options()
         self._set_actions()
 
@@ -100,21 +118,13 @@ class Filter(VizroBaseModel):
             if not self.targets:
                 raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
 
-    def _convert_column_type(self, data_frame):
-        if is_string_dtype(data_frame[self.column]):
-            if data_frame[self.column].str.contains(r"^\d{4}-\d{2}-\d{2}", regex=True).all():
-                data_frame[self.column] = pd.to_datetime(data_frame[self.column], format="mixed")
-
-        return data_frame
-
     def _set_column_type(self):
         data_frame = data_manager._get_component_data(self.targets[0])
-        data_frame = self._convert_column_type(data_frame=data_frame)
 
-        if is_datetime64_any_dtype(data_frame[self.column]):
-            self._column_type = "temporal"
-        elif is_numeric_dtype(data_frame[self.column]):
+        if is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
+        elif is_datetime64_any_dtype(data_frame[self.column]):
+            self._column_type = "temporal"
         else:
             self._column_type = "categorical"
 
@@ -122,44 +132,35 @@ class Filter(VizroBaseModel):
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
 
-    def _set_slider_values(self):
-        if isinstance(self.selector, SELECTORS["numerical"]):
-            if self._column_type != "numerical":
-                raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible "
-                    f"with {self._column_type} column '{self.column}'."
-                )
+    def _validate_disallowed_selector(self):
+        if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
+            raise ValueError(
+                f"Chosen selector {self.selector.type} is not compatible "
+                f"with {self._column_type} column '{self.column}'. "
+            )
+
+    def _set_numerical_and_temporal_selectors_values(self):
+        # If the selector is a numerical or temporal selector, and the min and max values are not set, then set them
+        # N.B. All custom selectors inherit from numerical or temporal selector should also pass this check
+        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             min_values = []
             max_values = []
             for target_id in self.targets:
                 data_frame = data_manager._get_component_data(target_id)
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
-            if not is_numeric_dtype(pd.Series(min_values)) or not is_numeric_dtype(pd.Series(max_values)):
-                raise ValueError(
-                    f"Non-numeric values detected in the shared data column '{self.column}' for targeted charts. "
-                    f"Please ensure that the data column contains the same data type across all targeted charts."
-                )
-            if self.selector.min is None:
-                self.selector.min = min(min_values)
-            if self.selector.max is None:
-                self.selector.max = max(max_values)
 
-    def _set_date_picker_values(self):
-        if isinstance(self.selector, SELECTORS["temporal"]):
-            if self._column_type != "temporal":
+            if not (
+                is_numeric_dtype(pd.Series(min_values))
+                and is_numeric_dtype(pd.Series(max_values))
+                or is_datetime64_any_dtype(pd.Series(min_values))
+                and is_datetime64_any_dtype(pd.Series(max_values))
+            ):
                 raise ValueError(
-                    f"Chosen selector {self.selector.type} is not compatible "
-                    f"with {self._column_type} column '{self.column}'."
+                    f"Inconsistent types detected in the shared data column '{self.column}' for targeted charts "
+                    f"{self.targets}. Please ensure that the data column contains the same data type across all "
+                    f"targeted charts."
                 )
-
-            min_values = []
-            max_values = []
-            for target_id in self.targets:
-                data_frame = data_manager._get_component_data(target_id)
-                data_frame = self._convert_column_type(data_frame=data_frame)
-                min_values.append(data_frame[self.column].min())
-                max_values.append(data_frame[self.column].max())
 
             if self.selector.min is None:
                 self.selector.min = min(min_values)
@@ -167,6 +168,8 @@ class Filter(VizroBaseModel):
                 self.selector.max = max(max_values)
 
     def _set_categorical_selectors_options(self):
+        # If the selector is a categorical selector, and the options are not set, then set them
+        # N.B. All custom selectors inherit from categorical selector should also pass this check
         if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
             options = set()
             for target_id in self.targets:

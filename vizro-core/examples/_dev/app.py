@@ -1,179 +1,181 @@
 """Example to show dashboard configuration."""
 
 import datetime
+import random
+from typing import List, Literal, Optional, Union
 
-import numpy as np
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import dcc, html
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
-df = px.data.gapminder()
-df_mean = (
-    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"}).reset_index()
+try:
+    from pydantic.v1 import Field, PrivateAttr
+except ImportError:
+    from pydantic import Field, PrivateAttr
+from vizro.models import Action
+from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models._base import VizroBaseModel, _log_call
+
+vm.Page.add_type("components", vm.DatePicker)
+
+date_data_frame = pd.DataFrame(
+    {
+        "value": [random.randint(0, 5) for _ in range(31)],
+        "time": [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)],
+        "type": [random.choice(["A", "B", "C"]) for _ in range(31)],
+    }
 )
 
-df_transformed = df.copy()
-df_transformed["lifeExp"] = df.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
-df_transformed["gdpPercap"] = df.groupby(by=["continent", "year"])["gdpPercap"].transform("mean")
-df_transformed["pop"] = df.groupby(by=["continent", "year"])["pop"].transform("sum")
-df_concat = pd.concat([df_transformed.assign(color="Continent Avg."), df.assign(color="Country")], ignore_index=True)
-
-
-df2 = px.data.stocks()
-df2["date_as_datetime"] = pd.to_datetime(df2["date"])
-df2["date_str"] = df2["date"].astype("str")
-df2["perc_from_float"] = np.random.rand(len(df2))
-df2["random"] = np.random.uniform(-100000.000, 100000.000, len(df2))
-
-
-# CREATE FAKE DATA
-column = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
-row = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5]
-value = ["1", "7", "3", "5", "2", "10", "9", "1", "3", "7", "5", "8", "2", "9", "1", "2", "7", "5", "3", "2"]
-group = ["A", "B", "C", "D", "E", "E", "D", "C", "B", "A", "A", "E", "C", "B", "D", "A", "D", "B", "C", "E"]
-date_time_str = [
-    "2023-01-01 20:04:01",
-    "2023-02-02",
-    "2023-03-03",
-    "2023-04-04",
-    "2023-05-05",
-    "2023-06-06",
-    "2023-07-07",
-    "2023-08-08",
-    "2023-09-09",
-    "2023-10-10",
-    "2023-11-11",
-    "2023-12-12",
-    "2024-01-01",
-    "2024-02-02",
-    "2024-03-03",
-    "2024-04-04",
-    "2024-05-05",
-    "2024-06-06",
-    "2024-07-01",
-    "2024-07-02",
-]
-date_time_date = [
-    datetime.datetime(2023, 1, 1).date(),
-    datetime.datetime(2023, 2, 2).date(),
-    datetime.datetime(2023, 3, 3).date(),
-    datetime.datetime(2023, 4, 4).date(),
-    datetime.datetime(2023, 5, 5).date(),
-    datetime.datetime(2023, 6, 6).date(),
-    datetime.datetime(2023, 7, 7).date(),
-    datetime.datetime(2023, 8, 8).date(),
-    datetime.datetime(2023, 9, 9).date(),
-    datetime.datetime(2023, 10, 10).date(),
-    datetime.datetime(2023, 11, 11).date(),
-    datetime.datetime(2023, 12, 12).date(),
-    datetime.datetime(2024, 1, 1).date(),
-    datetime.datetime(2024, 2, 2).date(),
-    datetime.datetime(2024, 3, 3).date(),
-    datetime.datetime(2024, 4, 4).date(),
-    datetime.datetime(2024, 5, 5).date(),
-    datetime.datetime(2024, 6, 6).date(),
-    datetime.datetime(2024, 7, 1).date(),
-    datetime.datetime(2024, 7, 2).date(),
-]
-date_time_time = [
-    datetime.datetime(2023, 1, 1),
-    datetime.datetime(2023, 2, 2),
-    datetime.datetime(2023, 3, 3),
-    datetime.datetime(2023, 4, 4),
-    datetime.datetime(2023, 5, 5),
-    datetime.datetime(2023, 6, 6),
-    datetime.datetime(2023, 7, 7),
-    datetime.datetime(2023, 8, 8),
-    datetime.datetime(2023, 9, 9),
-    datetime.datetime(2023, 10, 10),
-    datetime.datetime(2023, 11, 11),
-    datetime.datetime(2023, 12, 12),
-    datetime.datetime(2024, 1, 1),
-    datetime.datetime(2024, 2, 2),
-    datetime.datetime(2024, 3, 3),
-    datetime.datetime(2024, 4, 4),
-    datetime.datetime(2024, 5, 5),
-    datetime.datetime(2024, 6, 6),
-    datetime.datetime(2024, 7, 1),
-    datetime.datetime(2024, 7, 2),
+numerical_selectors = [
+    vm.RangeSlider(id="numerical_range_slider"),
+    vm.Slider(id="numerical_slider"),
+    vm.Dropdown(id="numerical_dropdown"),
+    vm.RadioItems(id="numerical_radio_items"),
+    vm.Checklist(id="numerical_checklist"),
+    # vm.DatePicker(id="numerical_date_picker")  # -> doesn't work properly with numerical column_type
+    #    because it's impossible to compare "number" with "date"
 ]
 
-date_time_iso = [
-    datetime.date(2023, 1, 1).isoformat(),
-    datetime.date(2023, 2, 2).isoformat(),
-    datetime.date(2023, 3, 3).isoformat(),
-    datetime.date(2023, 4, 4).isoformat(),
-    datetime.date(2023, 5, 5).isoformat(),
-    datetime.date(2023, 6, 6).isoformat(),
-    datetime.date(2023, 7, 7).isoformat(),
-    datetime.date(2023, 8, 8).isoformat(),
-    datetime.date(2023, 9, 9).isoformat(),
-    datetime.date(2023, 10, 10).isoformat(),
-    datetime.date(2023, 11, 11).isoformat(),
-    datetime.date(2023, 12, 12).isoformat(),
-    datetime.date(2024, 1, 1).isoformat(),
-    datetime.date(2024, 2, 2).isoformat(),
-    datetime.date(2024, 3, 3).isoformat(),
-    datetime.date(2024, 4, 4).isoformat(),
-    datetime.date(2024, 5, 5).isoformat(),
-    datetime.date(2024, 6, 6).isoformat(),
-    datetime.date(2024, 7, 1).isoformat(),
-    datetime.date(2024, 7, 2).isoformat(),
+temporal_selectors = [
+    # vm.RangeSlider(id="temporal_range_slider"),  # -> dcc.RangeSlider doesn't work with temporal data
+    # vm.Slider(id="temporal_slider"),  # -> dcc.Slider doesn't work with temporal data
+    vm.Dropdown(id="temporal_dropdown"),
+    vm.RadioItems(id="temporal_radio_items"),
+    vm.Checklist(id="temporal_checklist"),
+    vm.DatePicker(id="temporal_date_picker"),
 ]
 
-data = pd.DataFrame()
+categorical_selectors = [
+    # vm.RangeSlider(id="categorical_range_slider"),  # -> dcc.RangeSlider doesn't work with categorical data
+    # vm.Slider(id="categorical_slider"),  # -> dcc.Slider doesn't work with categorical data
+    vm.Dropdown(id="categorical_dropdown"),
+    vm.RadioItems(id="categorical_radio_items"),
+    vm.Checklist(id="categorical_checklist"),
+    # vm.DatePicker(id="categorical_date_picker")  # -> dmc.DatePicker doesn't work with categorical data
+]
 
-data["COLUMN1"] = column
-data["ROW1"] = row
-data["VALUE"] = value
-data["GROUP"] = group
-data["DATE_TIME"] = date_time_str
-
-# data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
-
-date_range_picker = vm.Page(
-    title="DateRangePicker",
-    components=[vm.AgGrid(id="table", figure=dash_ag_grid(data_frame=data))],
+page = vm.Page(
+    title="My first page",
+    components=[
+        vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
+        vm.DatePicker(min="2024-01-01", max="2026-01-01", range=False),
+    ],
     controls=[
-        vm.Filter(
-            column="DATE_TIME",
-            selector=vm.DatePicker(
-                title="Pick a date",
-                min="2023-01-01",
-                value=["2024-01-01", "2024-03-01"],
-                max="2024-07-01",
-            ),
-        ),
-        vm.Filter(
-            column="GROUP",
-        ),
+        # *[vm.Filter(column="value", selector=selector) for selector in numerical_selectors],
+        # *[vm.Filter(column="time", selector=selector) for selector in temporal_selectors],
+        # *[vm.Filter(column="type", selector=selector) for selector in categorical_selectors],
+        vm.Filter(column="type"),
+        vm.Filter(column="value"),
+        vm.Filter(column="time"),
     ],
 )
 
-date_picker = vm.Page(
-    title="Datepicker",
-    components=[vm.AgGrid(id="table two", figure=dash_ag_grid(data_frame=data))],
+df_stocks_long = pd.melt(
+    px.data.stocks(datetimes=True),
+    id_vars="date",
+    value_vars=["GOOG", "AAPL", "AMZN", "FB", "NFLX", "MSFT"],
+    var_name="stocks",
+    value_name="value",
+)
+
+df_stocks_long["value"] = df_stocks_long["value"].round(3)
+
+page_2 = vm.Page(
+    title="My second page",
+    components=[
+        vm.Graph(figure=px.line(df_stocks_long, x="date", y="value", color="stocks")),
+    ],
     controls=[
-        vm.Filter(
-            column="DATE_TIME",
-            selector=vm.DatePicker(
-                range=False,
-                title="Pick a date",
-                min="2023-01-01",
-                value="2024-01-01",
-                max="2024-07-01",
-            ),
-        ),
-        vm.Filter(
-            column="GROUP",
-        ),
+        vm.Filter(column="stocks"),
+        vm.Filter(column="value"),
+        vm.Filter(column="date"),
     ],
 )
 
 
-dashboard = vm.Dashboard(pages=[date_range_picker, date_picker])
+# CUSTOM SELECTORS
+
+
+class NewDropdown(VizroBaseModel):
+    """Categorical single/multi-selector `Dropdown` to be provided to `Filter`."""
+
+    type: Literal["new-dropdown"] = "new-dropdown"
+    options: Optional[OptionsType] = Field(None, description="Possible options the user can select from")
+    value: Optional[Union[SingleValueType, MultiValueType]] = Field(
+        None, description="Options that are selected by default"
+    )
+    multi: bool = Field(True, description="Whether to allow selection of multiple values")
+    actions: List[Action] = []  # noqa: RUF012
+    title: Optional[str] = Field(None, description="Title to be displayed")
+
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
+
+    set_actions = _action_validator_factory("value")
+
+    @_log_call
+    def build(self):
+        """Custom build method."""
+        return html.Div(
+            [
+                html.P(self.title) if self.title else None,
+                dcc.Dropdown(
+                    id=self.id,
+                    options=self.options,
+                    value=self.value or self.options[0],
+                    multi=self.multi,
+                    persistence=True,
+                    clearable=False,
+                ),
+            ],
+            className="input-container",
+        )
+
+
+class RangeSliderNonCross(vm.RangeSlider):
+    """Custom numeric multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
+
+    type: Literal["range_slider_non_cross"] = "range_slider_non_cross"
+
+    def build(self):
+        """Custom build method."""
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        return range_slider_build_obj
+
+
+# Important: Add new components to expected type - here the selector of the parent components
+vm.Filter.add_type("selector", NewDropdown)
+vm.Parameter.add_type("selector", NewDropdown)
+
+
+# Important: Add new components to expected type - here the selector of the parent components
+vm.Filter.add_type("selector", RangeSliderNonCross)
+vm.Parameter.add_type("selector", RangeSliderNonCross)
+
+
+page_3 = vm.Page(
+    title="Custom filer selectors",
+    components=[
+        vm.Graph(figure=px.line(date_data_frame, x="time", y="value")),
+    ],
+    controls=[
+        vm.Filter(column="type", selector=NewDropdown(options=["A", "B", "C"])),
+        vm.Filter(column="value", selector=NewDropdown(options=[1, 2, 3, 4, 5])),
+        vm.Filter(
+            column="time",
+            selector=NewDropdown(
+                options=[datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(31)]
+            ),
+        ),
+        vm.Filter(column="value", selector=RangeSliderNonCross(id="new_range_slider")),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
