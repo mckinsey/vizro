@@ -51,7 +51,7 @@ For more information, refer to the API reference of the selector, or the documen
 !!! note
 
     When the [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`. When `range=False` the underlying component is `dmc.DatePicker`.
-    
+
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (e.g. `datetime.datetime(2024, 01, 01)`).
 
 ## Default selectors
