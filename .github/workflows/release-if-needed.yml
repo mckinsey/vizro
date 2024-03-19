@@ -106,7 +106,9 @@ jobs:
           cd "${{ needs.check-version.outputs.package_name }}"
           hatch version patch,dev
           hatch run changelog:add
-          hatch run schema
+          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
+            hatch run schema
+          fi
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
           git add -A
