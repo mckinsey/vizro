@@ -32,6 +32,7 @@ data_manager["gapminder2"]._cache_arguments = {
 }
 print(f"_cache_arguments: {data_manager['gapminder2']._cache_arguments}")
 
+
 @capture("action")
 def delete_memoized_cache(delete_button_id_n_clicks):
     """Delete one memoized cache."""
