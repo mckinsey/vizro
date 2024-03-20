@@ -1,6 +1,5 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
 import logging
-import time
 from typing import Callable, Dict, Optional, Union
 
 import flask

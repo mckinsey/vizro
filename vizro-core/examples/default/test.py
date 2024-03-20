@@ -1,6 +1,6 @@
 """Example to show dashboard configuration."""
 import os
-import pandas as pd
+
 from flask_caching import Cache
 
 import vizro.models as vm

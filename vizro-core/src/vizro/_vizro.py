@@ -46,7 +46,6 @@ class Vizro:
         Returns:
             Vizro: App object
         """
-
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 
