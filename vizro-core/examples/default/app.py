@@ -13,11 +13,23 @@ def retrieve_gapminder():
     return px.data.gapminder()
 
 
-data_manager["gapminder"] = retrieve_gapminder
-data_manager["gapminder2"] = retrieve_gapminder
-
 df_gapminder = px.data.gapminder()
 df_gapminder2 = px.data.gapminder()
+
+
+# Options for configuring per-dataset arguments:
+data_manager["gapminder"] = retrieve_gapminder
+print("to update per dataset cache config")
+data_manager["gapminder"]._cache_arguments = {"timeout": 600}
+print(f"_cache_arguments: {data_manager['gapminder']._cache_arguments}")
+
+data_manager["gapminder2"] = retrieve_gapminder
+print("to update per dataset cache config")
+data_manager["gapminder2"]._cache_arguments = {
+    "timeout": 0,
+    # "unless": (lambda: True)
+}
+print(f"_cache_arguments: {data_manager['gapminder2']._cache_arguments}")
 
 
 @capture("action")

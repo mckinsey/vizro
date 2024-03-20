@@ -35,6 +35,8 @@ class Vizro:
             """Serve vizro static contents."""
             return flask.send_from_directory(self._lib_assets_folder, filepath)
 
+        data_manager._init_cache(self.dash.server)
+
     def build(self, dashboard: Dashboard):
         """Builds the dashboard.
 
@@ -44,7 +46,6 @@ class Vizro:
         Returns:
             Vizro: App object
         """
-        data_manager._cache.init_app(self.dash.server)
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 
