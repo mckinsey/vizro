@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
 try:
@@ -329,9 +330,9 @@ class capture:
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = Union[StrictBool, float, str]
+SingleValueType = Union[StrictBool, float, str, date]
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = Union[List[StrictBool], List[float], List[str]]
+MultiValueType = Union[List[StrictBool], List[float], List[str], List[date]]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -342,16 +343,16 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictType]]
+OptionsType = Union[List[StrictBool], List[float], List[str], List[date], List[OptionsDictType]]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
+    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
-[`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
+[`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider] or [`Slider`][vizro.models.Slider]."""
 
 _FormComponentType = Annotated[
