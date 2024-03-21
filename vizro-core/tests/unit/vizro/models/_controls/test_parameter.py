@@ -62,6 +62,26 @@ class TestPreBuildMethod:
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.title == title
 
+    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
+    def test_numerical_and_temporal_selectors_missing_values(self, test_input):
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        with pytest.raises(
+            TypeError, match=f"{test_input.type} requires the arguments 'min' and 'max' when used within Parameter."
+        ):
+            parameter.pre_build()
+
+    @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
+    def test_categorical_selectors_with_missing_options(self, test_input):
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        with pytest.raises(
+            TypeError, match=f"{parameter.selector.type} requires the argument 'options' when used within Parameter."
+        ):
+            parameter.pre_build()
+
     @pytest.mark.parametrize(
         "test_input",
         [
@@ -79,26 +99,6 @@ class TestPreBuildMethod:
         assert isinstance(default_action, ActionsChain)
         assert isinstance(default_action.actions[0].function, CapturedCallable)
         assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
-
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_invalid(self, test_input):
-        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
-        page = model_manager["test_page"]
-        page.controls = [parameter]
-        with pytest.raises(
-            TypeError, match=f"{test_input.type} requires the arguments 'min' and 'max' when used within Parameter."
-        ):
-            parameter.pre_build()
-
-    @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_set_categorical_selectors_with_missing_options(self, test_input):
-        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
-        page = model_manager["test_page"]
-        page.controls = [parameter]
-        with pytest.raises(
-            TypeError, match=f"{parameter.selector.type} requires the argument 'options' when used within Parameter."
-        ):
-            parameter.pre_build()
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
