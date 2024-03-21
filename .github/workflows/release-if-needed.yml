@@ -101,6 +101,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install hatch
+      # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
