@@ -1,53 +1,150 @@
 # How to install Vizro-AI
 
-This guide offers instructions on installing Vizro-AI and provides comprehensive explanation on how to install, update and verify the current version of Vizro-AI.
+This guide shows you how to install Vizro-AI, how to verify the installation succeeded and find the version of Vizro-AI, and how to update Vizro-AI.
+
+If you already have a virtual environment setup in Python then you can skip this page and just install Vizro-AI straight away by running:
+```bash
+pip install vizro_ai
+```
 
 ## Prerequisites
 
-- **Python**: Vizro-AI supports macOS, Linux, and Windows. It is designed to work with Python 3.8 and above. The python
-  version can be specified when setting up your virtual environment.
-- **Virtual environment**: We recommend creating a new virtual environment for each new Vizro-AI project you work on to
-  isolate the Python dependencies from those of other projects. To learn more, please see the following references about [python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
-- **OpenAI API Key**: Using Vizro-AI requires an API key, which you can get by creating an account [here](https://platform.openai.com/account/api-keys). (Users are recommended to review the third party API key section of the [disclaimer](../explanation/disclaimer.md) documentation.
-). Once you have your API key, the next step is to set your environment variable by:
-```bash
-export OPENAI_API_KEY="..."
+### Python
+Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.8 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
+
+
+### Virtual environment
+You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
+
+!!! tip "Prefer to use Vizro-AI without opening a terminal window?"
+
+    If you are a beginner or coding novice, you may prefer to avoid using a terminal to work with Vizro. Skip to the ["Use Vizro-AI inside Anaconda" section](#use-vizro-ai-inside-anaconda-navigator) below.
+
+
+
+??? information "How to create a virtual environment for your Vizro-AI project"
+
+    The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
+
+    ```bash
+    mkdir vizroai-project
+    cd vizroai-project
+    ```
+
+    Next, create and activate a new virtual environment in this directory with `venv`:
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+    Alternatively, you might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
+
+    ```bash
+    conda create --name vizroai-environment
+    conda activate vizroai-environment
+    ```
+
+### Large language model
+
+Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
+
+To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
+
+!!! note
+
+    We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
+
+There are two common ways to set up the API key in a development environment.
+
+__Method 1: Set an environment variable for a single project__
+
+To make the API key available for a single project, you can create a local `.env`
+file to store it. Then, you can load the API key from that `.env` file in your development environment.
+
+The `.env` file should look as follows (containing your key rather than `abc123`):
+
+```text
+OPENAI_API_KEY=abc123
 ```
 
+By default, `vizro-ai` automatically loads the `.env` file, by searching the current directory and, if it does not find `.env`, the search continues upwards through the directory hierarchy.
 
-More details can be found in the [environment setup guide](../user-guides/api-setup.md).
+If you would like to customize the `.env` file location and name, you can manually customize the search.
 
-??? tip "Beginners/Code novices"
-    If you are a beginner or new to coding and wish to avoid using the terminal, you can follow these steps:
 
-    - Install [Anaconda Navigator](https://www.anaconda.com/download)
-    - Create a new environment as detailed [here](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/), and select a Python version `>=3.8`
+??? example "How to override the default location of the .`env` file:"
 
-## Install
 
-To install Vizro-AI from the Python Package Index (PyPI), utilize [`pip`](https://pip.pypa.io/en/stable/) in your terminal with the following command:
+
+    ```py
+    from dotenv import load_dotenv, find_dotenv
+    from pathlib import Path
+
+    # Specify the exact path to your .env file
+    env_file = Path.cwd() / ".env"  # Adjust the path as needed
+
+    # Alternatively, specify a different .env file name
+    env_file = find_dotenv(".env.dev")  # Replace ".env.dev" with your file name
+
+    # Load the specified .env file
+    load_dotenv(env_file)
+    ```
+    Refer to [python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
+
+!!! warning "Don't share your secret API key!"
+
+    You should avoid committing the `.env` file to version control. You can do this for Git by adding `.env` to your `.gitignore` file.
+
+
+__Method 2: Set an environment variable for all projects__
+
+To make the OpenAI API key available for all projects, you can set it as a system environment
+variable. Please refer to the section ["Set up your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
+in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your API key").
+
+The documentation provides step-by-step instructions for setting up the API key as an environment
+variable, on operating systems including Windows and MacOS.
+
+
+__Set the base URL (optional)__
+
+You might need to provide the base URL if you are using a custom OpenAI resource endpoint.
+
+The API base URL used for the OpenAI connector is set to `https://api.openai.com/v1` by default.
+If you are using a custom API endpoint, for example, if your organization has a designated API gateway,
+you can change the base URL by setting it as an environment variable.
+
+
+Follow the approach above in Method 2 to add the environment variable `OPENAI_API_BASE` for use by all projects.
+
+
+## Install Vizro
+
+To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 
 ```bash
 pip install vizro_ai
 ```
 
-While you can execute code from the tutorials and user guides using a Python script, using a Jupyter notebook is often considered more convenient. You can install `jupyter` with the following command:
+## Use Vizro-AI inside Anaconda Navigator
 
-```bash
-pip install jupyter
-```
+To completely avoid terminal usage, follow these steps to work with Vizro-AI:
 
-??? tip "Beginners/Code novices"
-    If you're new to coding or consider yourself a beginner, you can follow these following steps to avoid using the terminal:
 
-    - Search `vizro_ai` and install it using the Anaconda Navigator package manager. You can find instructions [here](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/)
-    - Similarly, search `jupyter` and install it through the same procedure
-    - Once installed, launching a Jupyter notebook becomes straightforward; you can find guidance [here](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator)
-    - With Jupyter, you can easily copy and paste any of the provided examples into a notebook cell, evaluate the cell, and examine the results
+1. Install [Anaconda Navigator](https://www.anaconda.com/download).
 
-## Verify version
+2. Create a new environment as [outlined in the Anaconda documentation](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/). Choose a Python version `>=3.8`.
 
-After successfully installing Vizro-AI, to verify the version or confirm the installation, you can run the following code from a Python script or a Jupyter notebook cell:
+3. Search `vizro_ai` and install it [using the Anaconda Navigator package manager](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/).
+
+4. Similarly, search `jupyter` and install it.
+
+5. [Launch a Jupyter notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro-AI.
+
+
+## Confirm a successful installation
+
+To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter notebook cell, or run the following as a Python script:
 
 ```py
 import vizro_ai
@@ -55,14 +152,16 @@ import vizro_ai
 print(vizro_ai.__version__)
 ```
 
-You should see a return output of the current version.
+You should see a return output of the form `x.y.z`.
 
 ## Upgrade
 
-If you want to upgrade Vizro-AI to a different version later on, you can do so by running the following command:
-```
-pip install vizro_ai -U
+To change the version of Vizro-AI installed:
+
+```bash
+pip install -U vizro_ai
 ```
 
-The best way to safely upgrade is to check the [release notes]() for any notable breaking changes before migrating an
-existing project.
+!!! tip Check the Vizro-AI release notes
+
+    To upgrade safely, check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before migrating an existing project.

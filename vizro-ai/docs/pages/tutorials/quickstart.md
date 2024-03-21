@@ -1,45 +1,48 @@
 # Get started with Vizro-AI
 This tutorial serves as an introduction to Vizro-AI.
-It is a step-by-step guide to help you experiment and create your initial Vizro chart using Vizro-AI, our English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
+It is a step-by-step guide to help you experiment and create an initial Vizro chart using Vizro-AI, which is an English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
 
-## Let's get started!
-### 1. Install Vizro-AI and its dependencies
-If you haven't already installed `vizro_ai` package, follow the [installation guide](../user-guides/install.md)
-to do so inside a virtual environment.
+### 1. Install Vizro and its dependencies
 
-??? tip "Beginners/Code novices"
-    If you consider yourself a beginner to python and/or virtual environments, there is also a section in the [installation guide](../user-guides/install.md) that avoids any use of terminals and relies only upon a graphical user interface.
+If you haven't already installed Vizro-AI, follow the [installation guide](../user-guides/install.md).
 
-### 2. Set up jupyter notebook
-A good way to initially explore Vizro-AI is from a Jupyter notebook.
-Activate your previously created virtual environment and install Jupyter using the following command:
+### 2. Open a Jupyter Notebook
 
-```console
-pip install jupyter
-```
+A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
-Next, you can start your jupyter notebook in your activated environment by:
+??? "Install and run Jupyter"
 
-```console
+    If you haven't used Jupyter before, you may need to install the Jupyter package. From the terminal window:
+
+    ```bash
+    pip install jupyter
+    ```
+
+    Alternatively, you can [work within Anaconda Navigator](../user-guides/install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
+
+
+Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
+
+```bash
 jupyter notebook
 ```
-This opens a browser tab, and you can navigate to your preferred folder for this new project. Create a new notebook Python 3 (ipykernel) notebook from the "New" dropdown. Make sure that you select your environment as kernel.
 
-??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
+The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard.
 
-Confirm that `vizro_ai` is installed by typing the following into a jupyter cell in your notebook and running it.
+Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
 ```py
 import vizro_ai
+
 print(vizro_ai.__version__)
 ```
 
-You should see a return output of the version.
+You should see a return output of the form `x.y.z`.
 
-### 3. Large Language Model (LLM) API KEY
 
-A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user-guides/api-setup.md) on how to set up the API.
+### 3. OpenAI API KEY
+
+Use of Vizro-AI requires an API key for the OpenAI large language model. Refer to the [API set-up user guide](../user-guides/api-setup.md) for information about how to get set up.
 
 ### 4. Ask your first question using Vizro-AI
 

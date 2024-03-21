@@ -1,26 +1,11 @@
 # Vizro-AI
 
-Vizro-AI is a tool designed for generating data visualizations. It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly.
+Vizro-AI extends [Vizro] with a user-friendly interface that uses natural language capabilities to help you create interactive charts effortlessly.
 
-## Why Vizro-AI?
+If you're new to coding, Vizro-AI simplifies the process of creating charts that offer detailed insights about your data. Even if you're an experienced data practitioner, Vizro-AI optimizes how you create visually appealing charts.
 
-### Easy-to-use
-One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts while offering detailed insights about the data and the generated code.
-
-### Visually-optimized
-Vizro-AI also caters to data practitioners who often find themselves spending more time in formatting rather than actual visualization creation. Vizro-AI enables users to speed up the process of creating visually appealing charts by using Vizro's themes which incorporate design best practices by default.
-
-### Dashboard-ready
-Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce interactive charts, making it easier to seamlessly integrate these generated charts directly into dashboard applications.
-
-!!! notice "Notice"
-    Please review this [disclaimer](pages/explanation/disclaimer.md)
-    before using the `vizro-ai` package.
-
-    Since users must connect to Large Language Models (LLMs) in order to use Vizro-AI,
-    please also ensure that you review our guides on the [usage of LLMs](pages/explanation/safety-in-vizro-ai.md)
-    and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
-
+* It uses Vizro's themes, which incorporate design best practices by default.
+* It uses [Plotly](https://plotly.com/python/) and makes it easy to integrate the interactive charts it generates seamlessly into dashboard applications.
 
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
@@ -28,9 +13,9 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
 <a class="card-wrapper" href="pages/tutorials/quickstart/">
   <div class="card">
     <div class="card-content">
-      <h5>Get Started</h5>
+      <h5>Get started</h5>
       <p>
-        New to Vizro-AI? Take a look at our tutorials to get started and to explore our core features.
+        New to Vizro-AI? Tutorials to get started and to explore the key features.
       </p>
     </div>
   </div>
@@ -39,9 +24,9 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
 <a class="card-wrapper" href="pages/user-guides/install/">
   <div class="card">
     <div class="card-content">
-      <h5>User Guides</h5>
+      <h5>User guides</h5>
       <p>
-        Our user guides provide step-by-step instructions on how to install `vizro-ai` package and leverage our core features.
+        Step-by-step instructions on how to use Vizro-AI.
       </p>
     </div>
   </div>
@@ -53,7 +38,7 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
     <div class="card-content">
       <h5>Explanation</h5>
       <p>
-        Our explanation section contains background information and disclaimer.
+        The explanation section contains background information and a disclaimer.
       </p>
     </div>
   </div>
@@ -64,7 +49,7 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
     <div class="card-content">
       <h5>Contribute</h5>
       <p>
-        Find our contribution guidelines and all our current and previous contributors here.
+        Contribution guidelines and all our current and past contributors.
       </p>
     </div>
   </div>
@@ -72,3 +57,11 @@ Vizro-AI leverages the power of [Plotly](https://plotly.com/python/) to produce 
 
 </div>
 </div>
+
+!!! notice "Notice"
+    Please review this [disclaimer](pages/explanation/disclaimer.md)
+    before using the `vizro-ai` package.
+
+    Users must connect to Large Language Models (LLMs) to use Vizro-AI.
+    Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md)
+    and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).

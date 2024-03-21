@@ -3,7 +3,7 @@
 Users must select one of the [supported Large Language Models (LLMs)](../user-guides/model-config.md) in order to use the `vizro_ai` package,
 and are responsible for obtaining their own suitable API key for the relevant model.
 
-## Third Party API
+## Third party API
 
 - Users are responsible for anything done via their own API key.
 
@@ -11,7 +11,7 @@ and are responsible for obtaining their own suitable API key for the relevant mo
 
 - Users are wholly responsible for the use and security of the third-party generative AI tools and of Vizro.
 
-## User Acknowledgments
+## User acknowledgments
 
 Users acknowledge and agree that:
 

@@ -1,4 +1,4 @@
-# Safeguard Dynamic Code Execution in Vizro-AI
+# Safeguard dynamic code dxecution in Vizro-AI
 
 Vizro-AI uses the `exec()` statement in Python to run generated code from Large Language Models (LLMs) for
 self-debugging and automatic visual rendering in methods such as `vizro_ai._get_chart_code()` and `vizro_ai.plot()`.
