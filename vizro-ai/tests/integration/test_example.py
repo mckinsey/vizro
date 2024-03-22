@@ -1,4 +1,7 @@
+import time
+
 import plotly.express as px
+import pytest
 from hamcrest import all_of, any_of, assert_that, contains_string, equal_to
 from vizro_ai import VizroAI
 
@@ -6,9 +9,18 @@ vizro_ai = VizroAI()
 df = px.data.gapminder()
 
 
-def test_chart():
+@pytest.mark.parametrize(
+    "model_name",
+    ["gpt-3.5-turbo-0613", "gpt-4-0613"],
+    ids=["gpt-3.5", "gpt-4.0"],
+)
+def test_chart(model_name):
     vizro_ai._return_all_text = True
+    vizro_ai.model_name = model_name
+    before = time.time()
     resp = vizro_ai.plot(df, "describe the composition of scatter chart with gdp in continent")
+    after = time.time()
+    print("RESPONSE TIME:", after - before)  # noqa: T201
     assert_that(
         resp["code_string"],
         all_of(contains_string("px.scatter"), contains_string("x='continent'"), contains_string("y='gdpPercap'")),
@@ -17,9 +29,13 @@ def test_chart():
     assert_that(resp["code_explanation"], equal_to(None))
 
 
-def test_chart_with_explanation():
+def test_chart_with_explanation(model_name):
     vizro_ai._return_all_text = True
+    vizro_ai.model_name = model_name
+    before = time.time()
     resp = vizro_ai.plot(df, "describe the composition of gdp in US", explain=True)
+    after = time.time()
+    print("RESPONSE TIME (explanation):", after - before)  # noqa: T201
     assert_that(
         resp["code_string"],
         all_of(contains_string("px.bar"), contains_string("x='year'"), contains_string("y='gdpPercap'")),
