@@ -29,6 +29,11 @@ def test_chart(model_name):
     assert_that(resp["code_explanation"], equal_to(None))
 
 
+@pytest.mark.parametrize(
+    "model_name",
+    ["gpt-3.5-turbo-0613", "gpt-4-0613"],
+    ids=["gpt-3.5", "gpt-4.0"],
+)
 def test_chart_with_explanation(model_name):
     vizro_ai._return_all_text = True
     vizro_ai.model_name = model_name
