@@ -11,13 +11,13 @@ Before proceeding, ensure the installation of the `vizro_ai` package by followin
 ??? tip "Beginners/Code novices"
     For those new to Python or virtual environments, a user-friendly alternative is available in the [installation guide](../user-guides/install.md), offering a graphical user interface without the need for terminal commands.
 
-A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [api setup](../user-guides/api-setup.md) for instructions on setting up the API.
+A prerequisite for this tutorial is access to one of the supported large language models. Please refer to the [LLM setup guide](../user-guides/install.md#large-language-model) for instructions on setting up the API key.
 
 Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`.
 
 If you would like to customize the `.env` file location and name, you can set it manually.
 You can override the default import of the `.env` file by specifying the path and name of your custom `.env` file.
-Please refer to [API setup](../user-guides/api-setup.md) for instructions on customizing the `.env` file location and name.
+Please refer to [LLM setup guide](../user-guides/install.md#large-language-model) for instructions on customizing the `.env` file location and name.
 
 ### 2. Create your visualization using different languages
 

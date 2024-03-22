@@ -6,8 +6,7 @@ nav:
       - Install Vizro-AI: pages/user-guides/install.md
       - A first dashboard: pages/tutorials/quickstart.md
       - Explore Vizro-AI: pages/tutorials/explore-vizro-ai.md
-  - How-to Guides:
-      - LLM setup: pages/user-guides/api-setup.md
+  - How-to guides:
       - Run methods: pages/user-guides/run-vizro-ai.md
       - Model configuration: pages/user-guides/model-config.md
   - Explanation:

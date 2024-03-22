@@ -1,18 +1,17 @@
 # Get started with Vizro-AI
-This tutorial serves as an introduction to Vizro-AI.
-It is a step-by-step guide to help you experiment and create an initial Vizro chart using Vizro-AI, which is an English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
+This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
 
 ### 1. Install Vizro and its dependencies
 
-If you haven't already installed Vizro-AI, follow the [installation guide](../user-guides/install.md).
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
 ### 2. Open a Jupyter Notebook
 
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
-??? "Install and run Jupyter"
+??? "If you haven't used Jupyter before..."
 
-    If you haven't used Jupyter before, you may need to install the Jupyter package. From the terminal window:
+    You may need to install the Jupyter package if you . From the terminal window:
 
     ```bash
     pip install jupyter
@@ -27,7 +26,7 @@ Activate the virtual environment you used to install Vizro, and start a new Note
 jupyter notebook
 ```
 
-The command opens Jupyter in a browser tab. Navigate to a preferred folder in which to create this new dashboard.
+The command opens Jupyter in a browser tab. Use the UI to navigate to a preferred folder in which to create this new dashboard.
 
 Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
@@ -40,13 +39,9 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 
-### 3. OpenAI API KEY
+### 3. Ask your first question using Vizro-AI
 
-Use of Vizro-AI requires an API key for the OpenAI large language model. Refer to the [API set-up user guide](../user-guides/api-setup.md) for information about how to get set up.
-
-### 4. Ask your first question using Vizro-AI
-
-For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
+We will create a chart to illustrate the GDP of various continents while including a reference line for the average.
 
 Let's go through the code step-by-step to understand how to use Vizro-AI. First, we create `pandas` DataFrame using the gapminder data from `plotly express`. Next, we instantiate `VizroAI` to call the `plot()` method to generate your visualization.
 
@@ -88,6 +83,6 @@ Let's create another example and read through the additional information.
 
 ### 6. Explore further
 
-Now, you have created your first charts with Vizro-AI and are ready to explore the documentation further.
+Now, you have created your first charts with Vizro-AI you are ready to explore it further.
 
 A good place to start would be to go through the [model configuration](../user-guides/model-config.md) or different [run options](../user-guides/run-vizro-ai.md) including application integration.

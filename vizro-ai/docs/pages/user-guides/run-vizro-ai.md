@@ -6,7 +6,7 @@ This guide offers insights into different options of running Vizro-AI, including
 To run Vizro-AI in jupyter, create a new cell and execute the code below to render the described visualization. You should see the chart as an output.
 
 ??? note "Note: API key"
-    Make sure you have followed the [environment setup guide](../user-guides/api-setup.md) and
+    Make sure you have followed the [LLM setup guide](./install.md#large-language-model) and
     your api key is set up in a `.env` file in the same folder as your `ipynb` file.
 
 !!! example "Bar chart"
@@ -31,7 +31,7 @@ Please note that the chart's appearance may not precisely resemble the one displ
 You can utilize Vizro-AI in any standard development environment by creating a `.py` file and executing the following code. As a result, the rendered chart will display in a browser window.
 
 ??? note "Note: API key"
-    Make sure you have followed [environment setup guide](../user-guides/api-setup.md) and
+    Make sure you have followed [LLM setup guide](./install.md#large-language-model) and
     your API key is set up in the environment where your `.py` script is running with command as below:
     ```
     export OPENAI_API_KEY="your api key"

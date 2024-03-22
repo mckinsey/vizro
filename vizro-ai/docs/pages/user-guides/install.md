@@ -1,11 +1,6 @@
-# How to install Vizro-AI
+# Install Vizro-AI
 
-This guide shows you how to install Vizro-AI, how to verify the installation succeeded and find the version of Vizro-AI, and how to update Vizro-AI.
-
-If you already have a virtual environment setup in Python then you can skip this page and just install Vizro-AI straight away by running:
-```bash
-pip install vizro_ai
-```
+In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, and how to install it. You'll also find out how to verify the Vizro-AI installation succeeded, find the version of Vizro-AI, and learn how to update it.
 
 ## Prerequisites
 
@@ -19,8 +14,6 @@ You should create a virtual environment for each Vizro-AI project you work on to
 !!! tip "Prefer to use Vizro-AI without opening a terminal window?"
 
     If you are a beginner or coding novice, you may prefer to avoid using a terminal to work with Vizro. Skip to the ["Use Vizro-AI inside Anaconda" section](#use-vizro-ai-inside-anaconda-navigator) below.
-
-
 
 ??? information "How to create a virtual environment for your Vizro-AI project"
 

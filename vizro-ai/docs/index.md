@@ -21,10 +21,10 @@ If you're new to coding, Vizro-AI simplifies the process of creating charts that
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/user-guides/install/">
+<a class="card-wrapper" href="pages/user-guides/run-vizro-ai/">
   <div class="card">
     <div class="card-content">
-      <h5>User guides</h5>
+      <h5>How-to guides</h5>
       <p>
         Step-by-step instructions on how to use Vizro-AI.
       </p>
