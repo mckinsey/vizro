@@ -10,6 +10,10 @@ import {
   _gateway,
   _after_action_cycle_breaker,
 } from "./actions/build_action_loop_callbacks.js";
+import {
+  _update_date_picker_values,
+  _update_date_picker_position,
+} from "./models/date_picker.js";
 
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
   clientside: {
@@ -21,5 +25,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     after_action_cycle_breaker: _after_action_cycle_breaker,
     collapse_nav_panel: _collapse_nav_panel,
     update_ag_grid_theme: _update_ag_grid_theme,
+    update_date_picker_values: _update_date_picker_values,
+    update_date_picker_position: _update_date_picker_position,
   },
 });
