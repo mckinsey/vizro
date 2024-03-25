@@ -1,7 +1,6 @@
 from typing import List, Literal
 
 import dash_bootstrap_components as dbc
-from dash import html
 
 try:
     from pydantic.v1 import Field
