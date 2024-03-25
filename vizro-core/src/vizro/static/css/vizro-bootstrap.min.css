@@ -1,17 +1,15 @@
 @charset "UTF-8";
-/* TODO: Remove when tokens script create it */
-/* TODO: Remove when tokens script create it */
 .vizro_dark {
-  --elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.8784313725), 0px 0px 1px 0px rgba(20, 23, 33, 0.8784313725);
-  --elevation-0-inverted: 0px 1px 1px 0px rgba(20, 23, 33, 0.0784313725), 0px 0px 1px 0px rgba(20, 23, 33, 0.3803921569);
-  --elevation-1: 0px 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0px 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-1-inverted: 0px 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0px 1px 2px 0px rgba(20, 23, 33, 0.1215686275);
-  --elevation-2: 0px 4px 8px 0px rgba(20, 23, 33, 0.3803921569), 0px 2px 4px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-2-inverted: 0px 4px 8px 0px rgba(20, 23, 33, 0.1215686275), 0px 2px 4px -1px rgba(20, 23, 33, 0.0784313725);
-  --elevation-3: 0px 8px 12px 1px rgba(20, 23, 33, 0.3803921569), 0px 4px 8px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-3-inverted: 0px 8px 12px 1px rgba(20, 23, 33, 0.1215686275), 0px 4px 8px -1px rgba(20, 23, 33, 0.0784313725);
-  --elevation-4: 0px 16px 32px 2px rgba(20, 23, 33, 0.3803921569), 0px 8px 16px -2px rgba(20, 23, 33, 0.8784313725);
-  --elevation-4-inverted: 0px 16px 32px 2px rgba(20, 23, 33, 0.1215686275), 0px 8px 16px -2px rgba(20, 23, 33, 0.0784313725);
+  --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
+  --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
+  --elevation-1: 0 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-1-inverted: 0 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0 1px 2px 0 rgba(20, 23, 33, 0.1215686275);
+  --elevation-2: 0 4px 8px 0 rgba(20, 23, 33, 0.3803921569), 0 2px 4px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-2-inverted: 0 4px 8px 0 rgba(20, 23, 33, 0.1215686275), 0 2px 4px -1px rgba(20, 23, 33, 0.0784313725);
+  --elevation-3: 0 8px 12px 1px rgba(20, 23, 33, 0.3803921569), 0 4px 8px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-3-inverted: 0 8px 12px 1px rgba(20, 23, 33, 0.1215686275), 0 4px 8px -1px rgba(20, 23, 33, 0.0784313725);
+  --elevation-4: 0 16px 32px 2px rgba(20, 23, 33, 0.3803921569), 0 8px 16px -2px rgba(20, 23, 33, 0.8784313725);
+  --elevation-4-inverted: 0 16px 32px 2px rgba(20, 23, 33, 0.1215686275), 0 8px 16px -2px rgba(20, 23, 33, 0.0784313725);
   --primary-50: #373a44;
   --primary-50-inverted: white;
   --primary-100: #333640;
@@ -102,29 +100,160 @@
   --status-information-inverted: #009eff;
   --status-warning: #ffc107;
   --status-warning-inverted: #f17c02;
+  --focus: rgba(0, 133, 255, 0.6);
+  --focus-inverted: rgba(0, 133, 255, 0.6);
   --surfaces-bg01: #232632;
   --surfaces-bg01-inverted: white;
   --surfaces-bg02: #1b1e2a;
   --surfaces-bg02-inverted: #f5f6f6;
   --surfaces-bg03: #141721;
   --surfaces-bg03-inverted: #e6e8ea;
+  --categorical-01Cyan: #00b4ff;
+  --categorical-01Cyan-inverted: #00b4ff;
+  --categorical-02Orange: #ff9222;
+  --categorical-02Orange-inverted: #ff9222;
+  --categorical-03Purple: #3949ab;
+  --categorical-03Purple-inverted: #3949ab;
+  --categorical-04Red: #ff5267;
+  --categorical-04Red-inverted: #ff5267;
+  --categorical-05Teal: #08bdba;
+  --categorical-05Teal-inverted: #08bdba;
+  --categorical-06Amber: #fdc935;
+  --categorical-06Amber-inverted: #fdc935;
+  --categorical-07Green: #689f38;
+  --categorical-07Green-inverted: #689f38;
+  --categorical-08Purple: #976fd1;
+  --categorical-08Purple-inverted: #976fd1;
+  --categorical-09Pink: #f781bf;
+  --categorical-09Pink-inverted: #f781bf;
+  --categorical-10DarkGreen: #52733e;
+  --categorical-10DarkGreen-inverted: #52733e;
+  --sequentialCyan-100: #afe7f9;
+  --sequentialCyan-100-inverted: #afe7f9;
+  --sequentialCyan-200: #8bd0f6;
+  --sequentialCyan-200-inverted: #8bd0f6;
+  --sequentialCyan-300: #6cbaec;
+  --sequentialCyan-300-inverted: #6cbaec;
+  --sequentialCyan-400: #52a3dd;
+  --sequentialCyan-400-inverted: #52a3dd;
+  --sequentialCyan-500: #3b8dcb;
+  --sequentialCyan-500-inverted: #3b8dcb;
+  --sequentialCyan-600: #2777b7;
+  --sequentialCyan-600-inverted: #2777b7;
+  --sequentialCyan-700: #1661a2;
+  --sequentialCyan-700-inverted: #1661a2;
+  --sequentialCyan-800: #074c8c;
+  --sequentialCyan-800-inverted: #074c8c;
+  --sequentialCyan-900: #003875;
+  --sequentialCyan-900-inverted: #003875;
+  --sequentialOrange-100: #f9d8ac;
+  --sequentialOrange-100-inverted: #f9d8ac;
+  --sequentialOrange-200: #feb85b;
+  --sequentialOrange-200-inverted: #feb85b;
+  --sequentialOrange-300: #f09b32;
+  --sequentialOrange-300-inverted: #f09b32;
+  --sequentialOrange-400: #db811e;
+  --sequentialOrange-400-inverted: #db811e;
+  --sequentialOrange-500: #c76809;
+  --sequentialOrange-500-inverted: #c76809;
+  --sequentialOrange-600: #b05000;
+  --sequentialOrange-600-inverted: #b05000;
+  --sequentialOrange-700: #973a00;
+  --sequentialOrange-700-inverted: #973a00;
+  --sequentialOrange-800: #7e2400;
+  --sequentialOrange-800-inverted: #7e2400;
+  --sequentialOrange-900: #640d00;
+  --sequentialOrange-900-inverted: #640d00;
+  --sequentialIndigo-100: #dfd8fa;
+  --sequentialIndigo-100-inverted: #dfd8fa;
+  --sequentialIndigo-200: #c3c1ed;
+  --sequentialIndigo-200-inverted: #c3c1ed;
+  --sequentialIndigo-300: #aba8e0;
+  --sequentialIndigo-300-inverted: #aba8e0;
+  --sequentialIndigo-400: #9390d2;
+  --sequentialIndigo-400-inverted: #9390d2;
+  --sequentialIndigo-500: #7a79c4;
+  --sequentialIndigo-500-inverted: #7a79c4;
+  --sequentialIndigo-600: #6163b5;
+  --sequentialIndigo-600-inverted: #6163b5;
+  --sequentialIndigo-700: #474ea6;
+  --sequentialIndigo-700-inverted: #474ea6;
+  --sequentialIndigo-800: #2a3994;
+  --sequentialIndigo-800-inverted: #2a3994;
+  --sequentialIndigo-900: #002680;
+  --sequentialIndigo-900-inverted: #002680;
+  --sequentialYellow-100: #fff7cd;
+  --sequentialYellow-100-inverted: #fff7cd;
+  --sequentialYellow-200: #ffed9b;
+  --sequentialYellow-200-inverted: #ffed9b;
+  --sequentialYellow-300: #ffe16a;
+  --sequentialYellow-300-inverted: #ffe16a;
+  --sequentialYellow-400: #ffd545;
+  --sequentialYellow-400-inverted: #ffd545;
+  --sequentialYellow-500: #ffc107;
+  --sequentialYellow-500-inverted: #ffc107;
+  --sequentialYellow-600: #dba005;
+  --sequentialYellow-600-inverted: #dba005;
+  --sequentialYellow-700: #b78103;
+  --sequentialYellow-700-inverted: #b78103;
+  --sequentialYellow-800: #936402;
+  --sequentialYellow-800-inverted: #936402;
+  --sequentialYellow-900: #7a4f01;
+  --sequentialYellow-900-inverted: #7a4f01;
+  --sequentialTeal-100: #a5eae8;
+  --sequentialTeal-100-inverted: #a5eae8;
+  --sequentialTeal-200: #7dd5d3;
+  --sequentialTeal-200-inverted: #7dd5d3;
+  --sequentialTeal-300: #5ebfbc;
+  --sequentialTeal-300-inverted: #5ebfbc;
+  --sequentialTeal-400: #44a8a6;
+  --sequentialTeal-400-inverted: #44a8a6;
+  --sequentialTeal-500: #2e9190;
+  --sequentialTeal-500-inverted: #2e9190;
+  --sequentialTeal-600: #1b7b7a;
+  --sequentialTeal-600-inverted: #1b7b7a;
+  --sequentialTeal-700: #0c6565;
+  --sequentialTeal-700-inverted: #0c6565;
+  --sequentialTeal-800: #025050;
+  --sequentialTeal-800-inverted: #025050;
+  --sequentialTeal-900: #003b3c;
+  --sequentialTeal-900-inverted: #003b3c;
+  --sequentialRed-100: #f8d6da;
+  --sequentialRed-100-inverted: #f8d6da;
+  --sequentialRed-200: #fcb6ba;
+  --sequentialRed-200-inverted: #fcb6ba;
+  --sequentialRed-300: #f8989b;
+  --sequentialRed-300-inverted: #f8989b;
+  --sequentialRed-400: #ed7b7f;
+  --sequentialRed-400-inverted: #ed7b7f;
+  --sequentialRed-500: #dd6065;
+  --sequentialRed-500-inverted: #dd6065;
+  --sequentialRed-600: #c9474c;
+  --sequentialRed-600-inverted: #c9474c;
+  --sequentialRed-700: #b22f36;
+  --sequentialRed-700-inverted: #b22f36;
+  --sequentialRed-800: #981822;
+  --sequentialRed-800-inverted: #981822;
+  --sequentialRed-900: #7d000f;
+  --sequentialRed-900-inverted: #7d000f;
   --surfaces-bg-card: #232632;
   --surfaces-bg-card-inverted: #F5F6F6;
-  --focus-color: rgba(0, 133, 255, 0.6);
-  --focus-color-inverted: rgba(0, 133, 255, 0.6);
+  /* How do we keep these in sync with the tokens? */
+  --bs-primary-rgb: #ffffffe0;
+  --bs-secondary-color: #ffffff99;
 }
 
 .vizro_light {
-  --elevation-0: 0px 1px 1px 0px rgba(20, 23, 33, 0.0784313725), 0px 0px 1px 0px rgba(20, 23, 33, 0.3803921569);
-  --elevation-0-inverted: 0px 1px 1px 0px rgba(20, 23, 33, 0.8784313725), 0px 0px 1px 0px rgba(20, 23, 33, 0.8784313725);
-  --elevation-1: 0px 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0px 1px 2px 0px rgba(20, 23, 33, 0.1215686275);
-  --elevation-1-inverted: 0px 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0px 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-2: 0px 4px 8px 0px rgba(20, 23, 33, 0.1215686275), 0px 2px 4px -1px rgba(20, 23, 33, 0.0784313725);
-  --elevation-2-inverted: 0px 4px 8px 0px rgba(20, 23, 33, 0.3803921569), 0px 2px 4px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-3: 0px 8px 12px 1px rgba(20, 23, 33, 0.1215686275), 0px 4px 8px -1px rgba(20, 23, 33, 0.0784313725);
-  --elevation-3-inverted: 0px 8px 12px 1px rgba(20, 23, 33, 0.3803921569), 0px 4px 8px -1px rgba(20, 23, 33, 0.8784313725);
-  --elevation-4: 0px 16px 32px 2px rgba(20, 23, 33, 0.1215686275), 0px 8px 16px -2px rgba(20, 23, 33, 0.0784313725);
-  --elevation-4-inverted: 0px 16px 32px 2px rgba(20, 23, 33, 0.3803921569), 0px 8px 16px -2px rgba(20, 23, 33, 0.8784313725);
+  --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
+  --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
+  --elevation-1: 0 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0 1px 2px 0 rgba(20, 23, 33, 0.1215686275);
+  --elevation-1-inverted: 0 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-2: 0 4px 8px 0 rgba(20, 23, 33, 0.1215686275), 0 2px 4px -1px rgba(20, 23, 33, 0.0784313725);
+  --elevation-2-inverted: 0 4px 8px 0 rgba(20, 23, 33, 0.3803921569), 0 2px 4px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-3: 0 8px 12px 1px rgba(20, 23, 33, 0.1215686275), 0 4px 8px -1px rgba(20, 23, 33, 0.0784313725);
+  --elevation-3-inverted: 0 8px 12px 1px rgba(20, 23, 33, 0.3803921569), 0 4px 8px -1px rgba(20, 23, 33, 0.8784313725);
+  --elevation-4: 0 16px 32px 2px rgba(20, 23, 33, 0.1215686275), 0 8px 16px -2px rgba(20, 23, 33, 0.0784313725);
+  --elevation-4-inverted: 0 16px 32px 2px rgba(20, 23, 33, 0.3803921569), 0 8px 16px -2px rgba(20, 23, 33, 0.8784313725);
   --primary-50: white;
   --primary-50-inverted: #373a44;
   --primary-100: #fafafb;
@@ -215,26 +344,157 @@
   --status-information-inverted: #00b4ff;
   --status-warning: #f17c02;
   --status-warning-inverted: #ffc107;
+  --focus: rgba(0, 133, 255, 0.6);
+  --focus-inverted: rgba(0, 133, 255, 0.6);
   --surfaces-bg01: white;
   --surfaces-bg01-inverted: #232632;
   --surfaces-bg02: #f5f6f6;
   --surfaces-bg02-inverted: #1b1e2a;
   --surfaces-bg03: #e6e8ea;
   --surfaces-bg03-inverted: #141721;
+  --categorical-01Cyan: #00b4ff;
+  --categorical-01Cyan-inverted: #00b4ff;
+  --categorical-02Orange: #ff9222;
+  --categorical-02Orange-inverted: #ff9222;
+  --categorical-03Purple: #3949ab;
+  --categorical-03Purple-inverted: #3949ab;
+  --categorical-04Red: #ff5267;
+  --categorical-04Red-inverted: #ff5267;
+  --categorical-05Teal: #08bdba;
+  --categorical-05Teal-inverted: #08bdba;
+  --categorical-06Amber: #fdc935;
+  --categorical-06Amber-inverted: #fdc935;
+  --categorical-07Green: #689f38;
+  --categorical-07Green-inverted: #689f38;
+  --categorical-08Purple: #976fd1;
+  --categorical-08Purple-inverted: #976fd1;
+  --categorical-09Pink: #f781bf;
+  --categorical-09Pink-inverted: #f781bf;
+  --categorical-10DarkGreen: #52733e;
+  --categorical-10DarkGreen-inverted: #52733e;
+  --sequentialCyan-100: #afe7f9;
+  --sequentialCyan-100-inverted: #afe7f9;
+  --sequentialCyan-200: #8bd0f6;
+  --sequentialCyan-200-inverted: #8bd0f6;
+  --sequentialCyan-300: #6cbaec;
+  --sequentialCyan-300-inverted: #6cbaec;
+  --sequentialCyan-400: #52a3dd;
+  --sequentialCyan-400-inverted: #52a3dd;
+  --sequentialCyan-500: #3b8dcb;
+  --sequentialCyan-500-inverted: #3b8dcb;
+  --sequentialCyan-600: #2777b7;
+  --sequentialCyan-600-inverted: #2777b7;
+  --sequentialCyan-700: #1661a2;
+  --sequentialCyan-700-inverted: #1661a2;
+  --sequentialCyan-800: #074c8c;
+  --sequentialCyan-800-inverted: #074c8c;
+  --sequentialCyan-900: #003875;
+  --sequentialCyan-900-inverted: #003875;
+  --sequentialOrange-100: #f9d8ac;
+  --sequentialOrange-100-inverted: #f9d8ac;
+  --sequentialOrange-200: #feb85b;
+  --sequentialOrange-200-inverted: #feb85b;
+  --sequentialOrange-300: #f09b32;
+  --sequentialOrange-300-inverted: #f09b32;
+  --sequentialOrange-400: #db811e;
+  --sequentialOrange-400-inverted: #db811e;
+  --sequentialOrange-500: #c76809;
+  --sequentialOrange-500-inverted: #c76809;
+  --sequentialOrange-600: #b05000;
+  --sequentialOrange-600-inverted: #b05000;
+  --sequentialOrange-700: #973a00;
+  --sequentialOrange-700-inverted: #973a00;
+  --sequentialOrange-800: #7e2400;
+  --sequentialOrange-800-inverted: #7e2400;
+  --sequentialOrange-900: #640d00;
+  --sequentialOrange-900-inverted: #640d00;
+  --sequentialIndigo-100: #dfd8fa;
+  --sequentialIndigo-100-inverted: #dfd8fa;
+  --sequentialIndigo-200: #c3c1ed;
+  --sequentialIndigo-200-inverted: #c3c1ed;
+  --sequentialIndigo-300: #aba8e0;
+  --sequentialIndigo-300-inverted: #aba8e0;
+  --sequentialIndigo-400: #9390d2;
+  --sequentialIndigo-400-inverted: #9390d2;
+  --sequentialIndigo-500: #7a79c4;
+  --sequentialIndigo-500-inverted: #7a79c4;
+  --sequentialIndigo-600: #6163b5;
+  --sequentialIndigo-600-inverted: #6163b5;
+  --sequentialIndigo-700: #474ea6;
+  --sequentialIndigo-700-inverted: #474ea6;
+  --sequentialIndigo-800: #2a3994;
+  --sequentialIndigo-800-inverted: #2a3994;
+  --sequentialIndigo-900: #002680;
+  --sequentialIndigo-900-inverted: #002680;
+  --sequentialYellow-100: #fff7cd;
+  --sequentialYellow-100-inverted: #fff7cd;
+  --sequentialYellow-200: #ffed9b;
+  --sequentialYellow-200-inverted: #ffed9b;
+  --sequentialYellow-300: #ffe16a;
+  --sequentialYellow-300-inverted: #ffe16a;
+  --sequentialYellow-400: #ffd545;
+  --sequentialYellow-400-inverted: #ffd545;
+  --sequentialYellow-500: #ffc107;
+  --sequentialYellow-500-inverted: #ffc107;
+  --sequentialYellow-600: #dba005;
+  --sequentialYellow-600-inverted: #dba005;
+  --sequentialYellow-700: #b78103;
+  --sequentialYellow-700-inverted: #b78103;
+  --sequentialYellow-800: #936402;
+  --sequentialYellow-800-inverted: #936402;
+  --sequentialYellow-900: #7a4f01;
+  --sequentialYellow-900-inverted: #7a4f01;
+  --sequentialTeal-100: #a5eae8;
+  --sequentialTeal-100-inverted: #a5eae8;
+  --sequentialTeal-200: #7dd5d3;
+  --sequentialTeal-200-inverted: #7dd5d3;
+  --sequentialTeal-300: #5ebfbc;
+  --sequentialTeal-300-inverted: #5ebfbc;
+  --sequentialTeal-400: #44a8a6;
+  --sequentialTeal-400-inverted: #44a8a6;
+  --sequentialTeal-500: #2e9190;
+  --sequentialTeal-500-inverted: #2e9190;
+  --sequentialTeal-600: #1b7b7a;
+  --sequentialTeal-600-inverted: #1b7b7a;
+  --sequentialTeal-700: #0c6565;
+  --sequentialTeal-700-inverted: #0c6565;
+  --sequentialTeal-800: #025050;
+  --sequentialTeal-800-inverted: #025050;
+  --sequentialTeal-900: #003b3c;
+  --sequentialTeal-900-inverted: #003b3c;
+  --sequentialRed-100: #f8d6da;
+  --sequentialRed-100-inverted: #f8d6da;
+  --sequentialRed-200: #fcb6ba;
+  --sequentialRed-200-inverted: #fcb6ba;
+  --sequentialRed-300: #f8989b;
+  --sequentialRed-300-inverted: #f8989b;
+  --sequentialRed-400: #ed7b7f;
+  --sequentialRed-400-inverted: #ed7b7f;
+  --sequentialRed-500: #dd6065;
+  --sequentialRed-500-inverted: #dd6065;
+  --sequentialRed-600: #c9474c;
+  --sequentialRed-600-inverted: #c9474c;
+  --sequentialRed-700: #b22f36;
+  --sequentialRed-700-inverted: #b22f36;
+  --sequentialRed-800: #981822;
+  --sequentialRed-800-inverted: #981822;
+  --sequentialRed-900: #7d000f;
+  --sequentialRed-900-inverted: #7d000f;
   --surfaces-bg-card: #F5F6F6;
   --surfaces-bg-card-inverted: #232632;
-  --focus-color: rgba(0, 133, 255, 0.6);
-  --focus-color-inverted: rgba(0, 133, 255, 0.6);
+  --bs-primary-rgb: #141721e0;
+  --bs-secondary-color: #14172199;
 }
 
-/*14px*/
-/*12px*/
-/*16px*/
-/*4px*/
-/*8px*/
+/* 14px */
+/* 12px */
+/* 16px */
+/* 4px */
+/* 8px */
+/* import bootstrap */
 /*!
- * Bootstrap  v5.3.2 (https://getbootstrap.com/)
- * Copyright 2011-2023 The Bootstrap Authors
+ * Bootstrap  v5.3.3 (https://getbootstrap.com/)
+ * Copyright 2011-2024 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 :root,
@@ -304,7 +564,7 @@
   --bs-dark-border-subtle: #adb5bd;
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
-  --bs-font-sans-serif: Inter, sans-serif, Arial, serif, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --bs-font-sans-serif: inter, sans-serif, arial, serif, "Segoe UI", roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -2618,6 +2878,7 @@ textarea.form-control-lg {
   margin-left: -2.5em;
   background-image: var(--bs-form-switch-bg);
   background-position: left center;
+  border-radius: 0;
 }
 .form-switch .form-check-input:focus {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%239ca4d5'/%3e%3c/svg%3e");
@@ -3131,6 +3392,9 @@ textarea.form-control-lg {
   border-color: var(--bs-btn-active-border-color);
 }
 .btn-check:checked + .btn:focus-visible, :not(.btn-check) + .btn:active:focus-visible, .btn:first-child:active:focus-visible, .btn.active:focus-visible, .btn.show:focus-visible {
+  box-shadow: var(--bs-btn-focus-box-shadow);
+}
+.btn-check:checked:focus-visible + .btn {
   box-shadow: var(--bs-btn-focus-box-shadow);
 }
 .btn:disabled, .btn.disabled, fieldset:disabled .btn {
@@ -4532,22 +4796,21 @@ textarea.form-control-lg {
   --bs-accordion-bg: transparent;
   --bs-accordion-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
   --bs-accordion-border-color: var(--bs-border-color);
-  --bs-accordion-border-width: 0rem;
+  --bs-accordion-border-width: 0;
   --bs-accordion-border-radius: var(--bs-border-radius);
-  --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - 0rem);
+  --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - 0);
   --bs-accordion-btn-padding-x: 0.5rem;
   --bs-accordion-btn-padding-y: 1rem;
   --bs-accordion-btn-color: var(--bs-body-color);
   --bs-accordion-btn-bg: var(--bs-accordion-bg);
-  --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23212529' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
   --bs-accordion-btn-icon-width: 0.75rem;
   --bs-accordion-btn-icon-transform: rotate(-180deg);
   --bs-accordion-btn-icon-transition: transform 0.2s ease-in-out;
-  --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23171d44'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-  --bs-accordion-btn-focus-border-color: #9ca4d5;
+  --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23171d44' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
   --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgba(57, 73, 171, 0.25);
-  --bs-accordion-body-padding-x: 0rem;
-  --bs-accordion-body-padding-y: 0rem;
+  --bs-accordion-body-padding-x: 0;
+  --bs-accordion-body-padding-y: 0;
   --bs-accordion-active-color: var(--bs-primary-text-emphasis);
   --bs-accordion-active-bg: var(--bs-primary-bg-subtle);
 }
@@ -4589,7 +4852,6 @@ textarea.form-control-lg {
 }
 .accordion-button:focus {
   z-index: 3;
-  border-color: var(--bs-accordion-btn-focus-border-color);
   outline: 0;
   box-shadow: var(--bs-accordion-btn-focus-box-shadow);
 }
@@ -4610,17 +4872,14 @@ textarea.form-control-lg {
   padding: var(--bs-accordion-body-padding-y) var(--bs-accordion-body-padding-x);
 }
 
-.accordion-flush .accordion-collapse {
-  border-width: 0;
-}
-.accordion-flush .accordion-item {
+.accordion-flush > .accordion-item {
   border-right: 0;
   border-left: 0;
 }
-.accordion-flush .accordion-item:first-child {
+.accordion-flush > .accordion-item:first-child {
   border-top: 0;
 }
-.accordion-flush .accordion-item:last-child {
+.accordion-flush > .accordion-item:last-child {
   border-bottom: 0;
 }
 [data-bs-theme=dark] .accordion-button::after {
@@ -5394,7 +5653,6 @@ textarea.form-control-lg {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: space-between;
   padding: var(--bs-modal-header-padding);
   border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
 }
@@ -5901,20 +6159,12 @@ textarea.form-control-lg {
   background-size: 100% 100%;
 }
 
-/* rtl:options: {
-  "autoRename": true,
-  "stringMap":[ {
-    "name"    : "prev-next",
-    "search"  : "prev",
-    "replace" : "next"
-  } ]
-} */
 .carousel-control-prev-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e") /*rtl:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")*/;
 }
 
 .carousel-control-next-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") /*rtl:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e")*/;
 }
 
 .carousel-indicators {
@@ -6482,14 +6732,11 @@ textarea.form-control-lg {
 .offcanvas-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
 }
 .offcanvas-header .btn-close {
   padding: calc(var(--bs-offcanvas-padding-y) * 0.5) calc(var(--bs-offcanvas-padding-x) * 0.5);
-  margin-top: calc(-0.5 * var(--bs-offcanvas-padding-y));
-  margin-right: calc(-0.5 * var(--bs-offcanvas-padding-x));
-  margin-bottom: calc(-0.5 * var(--bs-offcanvas-padding-y));
+  margin: calc(-0.5 * var(--bs-offcanvas-padding-y)) calc(-0.5 * var(--bs-offcanvas-padding-x)) calc(-0.5 * var(--bs-offcanvas-padding-y)) auto;
 }
 
 .offcanvas-title {
@@ -11721,13 +11968,15 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/* custom component files */
+/* Thinking about moving all of these into a typography.scss file at some point */
 .btn {
   width: -moz-fit-content;
   width: fit-content;
-  height: 32;
+  height: 32px;
 }
 .btn-large {
-  height: 40;
+  height: 40px;
 }
 .btn-primary {
   color: var(--text-primary-inverted);
@@ -11739,9 +11988,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
   box-shadow: var(--elevation-0);
@@ -11761,9 +12007,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11772,9 +12015,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-active-inverted), var(--stateOverlays-active-inverted)), var(--fill-active);
   border: 0 solid transparent;
   box-shadow: var(--elevation-0);
@@ -11789,9 +12029,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11800,9 +12037,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-hover-inverted), var(--stateOverlays-hover-inverted)), var(--fill-active);
   border: 0 solid transparent;
   box-shadow: var(--elevation-1);
@@ -11817,9 +12051,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11828,9 +12059,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 1px solid transparent;
   box-shadow: var(--elevation-0);
@@ -11846,14 +12074,11 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-disabled-inverted), var(--stateOverlays-disabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
   box-shadow: var(--elevation-0);
 }
-.btn-primary:focus:not(:focus-visible):not(:disabled):not(.disabled) {
+.btn-primary:focus:not(:focus-visible, :disabled, .disabled) {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
@@ -11863,9 +12088,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11874,9 +12096,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
   box-shadow: var(--elevation-0);
@@ -11891,9 +12110,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-enabled);
   box-shadow: var(--elevation-0);
@@ -11913,9 +12129,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11924,9 +12137,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-active);
   border: 1px solid var(--border-selected);
   box-shadow: var(--elevation-0);
@@ -11941,9 +12151,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11952,9 +12159,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-hover);
   border: 1px solid var(--border-hover);
   box-shadow: var(--elevation-1);
@@ -11969,9 +12173,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -11980,9 +12181,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-hover);
   box-shadow: var(--elevation-0);
@@ -11998,14 +12196,11 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-disabled);
   box-shadow: var(--elevation-0);
 }
-.btn-secondary:focus:not(:focus-visible):not(:disabled):not(.disabled) {
+.btn-secondary:focus:not(:focus-visible, :disabled, .disabled) {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
@@ -12015,9 +12210,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -12026,9 +12218,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-enabled);
   box-shadow: var(--elevation-0);
@@ -12043,9 +12232,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
   box-shadow: None;
@@ -12065,9 +12251,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -12076,9 +12259,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-active);
   border: 0 solid transparent;
   box-shadow: None;
@@ -12093,9 +12273,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -12104,9 +12281,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-hover);
   border: 0 solid transparent;
   box-shadow: var(--elevation-1);
@@ -12121,9 +12295,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -12132,9 +12303,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 1px solid transparent;
   box-shadow: None;
@@ -12150,14 +12318,11 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
   box-shadow: None;
 }
-.btn-tertiary:focus:not(:focus-visible):not(:disabled):not(.disabled), .btn-link:focus:not(:focus-visible):not(:disabled):not(.disabled) {
+.btn-tertiary:focus:not(:focus-visible, :disabled, .disabled), .btn-link:focus:not(:focus-visible, :disabled, .disabled) {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
@@ -12167,9 +12332,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   font-size: 14px;
   text-decoration: underline;
   font-family: Inter;
@@ -12178,9 +12340,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.056;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 0;
-  text-case: none;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
   box-shadow: None;
@@ -12202,6 +12361,9 @@ textarea.form-control-lg {
   padding: 0.5rem;
   color: var(--text-secondary);
 }
+.accordion-item .nav-link:last-child {
+  margin-bottom: 0.75rem;
+}
 .accordion-item .nav-link:active, .accordion-item .nav-link.active {
   background: var(--stateOverlays-active);
   color: var(--text-primary);
@@ -12217,9 +12379,6 @@ textarea.form-control-lg {
   background: var(--stateOverlays-active);
   color: var(--text-primary);
 }
-.accordion-item .nav-link:last-child {
-  margin-bottom: 0.75rem;
-}
 .accordion-button {
   font-size: 14px;
   text-decoration: none;
@@ -12229,9 +12388,6 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.112;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 12;
-  text-case: none;
   color: var(--text-secondary);
   text-transform: uppercase;
   border: none;
@@ -12266,10 +12422,11 @@ textarea.form-control-lg {
   background: var(--surfaces-bg-card);
   border: none;
   box-shadow: var(--elevation-1);
+  width: 100%;
+  height: 100%;
 }
-.card:hover, .card.hover {
-  background: var(--field-enabled);
-  box-shadow: var(--elevation-2);
+.card-body {
+  overflow: auto;
 }
 .card-nav:hover, .card-nav.hover {
   background: var(--field-enabled);
@@ -12292,13 +12449,113 @@ textarea.form-control-lg {
   font-stretch: normal;
   letter-spacing: -0.112;
   line-height: 16px;
-  paragraph-indent: 0;
-  paragraph-spacing: 12;
-  text-case: none;
   color: var(--text-secondary);
 }
 .card-text:last-child {
   margin-bottom: 0.5rem;
+}
+
+h1, .h1 {
+  font-size: 32px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128;
+  line-height: 40px;
+  color: var(--text-primary);
+}
+
+h2, .h2 {
+  font-size: 24px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.096;
+  line-height: 32px;
+  color: var(--text-primary);
+}
+
+h3, .h3 {
+  font-size: 20px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+h4, .h4 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+h5, .h5 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016;
+  line-height: 20px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+h6, .h6 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016;
+  line-height: 20px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+p, blockquote {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+
+a {
+  font-size: 16px;
+  text-decoration: underline;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128;
+  line-height: 20px;
+}
+
+/* This is not taken over well. How do we deal with bootstrap variables that we want to change globally? */
+/* For example --bs-secondary-color - where would I change that globally? */
+.text-muted {
+  color: var(--text-subtle);
 }
 
 .qb-container-bg-01 {
@@ -12317,4 +12574,4 @@ textarea.form-control-lg {
   background-color: var(--surfaces-bg03);
   padding: 40px;
   width: 100%;
-}/*# sourceMappingURL=main.min.css.map */
+}/*# sourceMappingURL=vizro-bootstrap.min.css.map */
