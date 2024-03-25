@@ -1,7 +1,9 @@
 # Disclaimer
 
-Users must select one of the [supported large language models (LLMs)](../user-guides/faq.md#which-llms-are-supported-by-vizro-ai) in order to use the `vizro_ai` package,
+Users must select one of the [supported large language models (LLMs)](../user-guides/faq.md#which-llms-are-supported-by-vizro-ai) to use the `vizro_ai` package,
 and are responsible for obtaining their own suitable API key for the relevant model.
+
+<!-- vale off -->
 
 ## Third party API
 
@@ -33,3 +35,4 @@ The Outputs shall be verified and validated by the users and shall not be used w
 Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case,
 as well as for informing the users’ personnel and other affected users about the nature of the GenAI Output.
 Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-AI and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
+<!-- vale on -->

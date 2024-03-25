@@ -2,22 +2,22 @@
 
 Vizro-AI uses the `exec()` statement in Python to run generated code from large language models (LLMs) for
 self-debugging and automatic visual rendering in methods such as `vizro_ai._get_chart_code()` and `vizro_ai.plot()`.
-One of the primary concerns is the potential for malicious code to access or modify critical system resources or data.
+One of the primary concerns is the potential for malicious code to access or change critical system resources or data.
 
 ## Understand `exec()`
 
-The `exec()` function allows for the dynamic execution of Python programs which can either be a string or object code.
+The `exec()` function enables the dynamic execution of Python programs which can either be a string or object code.
 While it offers great flexibility, it also poses a significant security risk, especially when executing untrusted code.
 
 ## Safeguarding code execution
 
 While we have made considerable efforts to safeguard its usage by limiting the usage to specific modules and functions and by restricting certain built-in operations,
-these measures cannot guarantee absolute security. It is imperative for users to take additional precautions.
+these measures cannot guarantee absolute security. It is imperative for users to take extra precautions.
 
 ### Our effort on safeguarding code execution in Vizro-AI
 
 To help to mitigate these risks, we limit the execution of certain modules and functions.
-One approach is to leverage Python's built-in `sys` module to restrict access to unsafe modules or functions.
+One approach is to use Python's built-in `sys` module to restrict access to unsafe modules or functions.
 By defining a whitelist of safe modules and packages and restricting certain built-in functions.
 
 !!! Warning

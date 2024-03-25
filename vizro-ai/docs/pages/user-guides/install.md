@@ -95,10 +95,9 @@ in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your A
 The documentation provides step-by-step instructions for setting up the API key as an environment
 variable, on operating systems including Windows and MacOS.
 
-
 __Set the base URL (optional)__
 
-You might need to provide the base URL if you are using a custom OpenAI resource endpoint.
+You might need to give the base URL if you are using a custom OpenAI resource endpoint.
 
 The API base URL used for the OpenAI connector is set to `https://api.openai.com/v1` by default.
 If you are using a custom API endpoint, for example, if your organization has a designated API gateway,
@@ -129,12 +128,12 @@ To completely avoid terminal usage, follow these steps to work with Vizro-AI:
 
 4. Similarly, search `jupyter` and install it.
 
-5. [Launch a Jupyter notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro-AI.
+5. [Launch a Jupyter Notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro-AI.
 
 
 ## Confirm a successful installation
 
-To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter notebook cell, or run the following as a Python script:
+To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
 
 ```py
 import vizro_ai

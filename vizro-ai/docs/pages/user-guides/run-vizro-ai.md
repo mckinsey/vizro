@@ -59,7 +59,7 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
 
 ## Application integration
 
-You may prefer to integrate Vizro-AI into an application with a UI that allows users to input prompts using a text field.
+You may prefer to integrate Vizro-AI into an application with a UI that users use to input prompts using a text field.
 
 Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.
 
@@ -87,9 +87,9 @@ To use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(d
 ### How to use `max_debug_retry` parameter in plot function
 - Default Value: 3
 - Type: int
-- Brief: By default, the `max_debug_retry` is set to 3, the function will attempt to debug errors up to three times.
-If the errors are not resolved after the maximum number of retries, the function will cease further debugging attempts.
-E.g. if you would like adjust to 5 debugging attempts, you can set `max_debug_retry = 5` in the plot function:
+- Brief: By default, the `max_debug_retry` is set to 3, the function will try to debug errors up to three times.
+If the errors are not resolved after the maximum number of retries, the function will stop further debugging retries.
+For example, if you would like adjust to 5 retries, you can set `max_debug_retry = 5` in the plot function:
 
 ```py
 vizro_ai.plot(df = df, user_input = "your user input", max_debug_retry= 5)

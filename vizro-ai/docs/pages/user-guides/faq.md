@@ -8,9 +8,9 @@ Vizro-AI currently supports OpenAI models as follows:
 - gpt-3.5-turbo-1106 (under testing)
 - gpt-4-1106-preview (under testing, not suitable for production use)
 
-These models provide different levels of performance and
+These models offer different levels of performance and
 cost. In general, the `gpt-3.5-turbo` collection provides the most cost-effective models,
-which would be a good starting point for most users. `gpt-4` models are more powerful than `gpt-3` models, e.g. they allow for more tokens per request. You can refer to these models' [capabilities](https://platform.openai.com/docs/models/overview)
+which would be a good starting point for most users. `gpt-4` models are more powerful than `gpt-3` models, for example, they use more tokens per request. You can refer to these models' [capabilities](https://platform.openai.com/docs/models/overview)
 and [pricing](https://openai.com/pricing) for more information.
 
 We are working on supporting more models and more vendors. Stay tuned!

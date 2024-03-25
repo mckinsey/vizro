@@ -14,7 +14,7 @@ A prerequisite for this tutorial is access to one of the supported large languag
 Upon successful setup, your API key should be ready in the environment when you import `vizro_ai`.
 
 ## How to create visualizations using different languages
-Vizro-AI is versatile, supporting prompts and chart visualizations in multiple languages. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
+Vizro-AI is versatile, supporting prompts and chart visualizations in languages other than English. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
 
 !!! example "Vizro-AI Chinese"
 
@@ -53,7 +53,7 @@ Subsequently, we'll switch to German and prompt the visualization of life expect
     [GermanChart]: ../../assets/tutorials/chart/GermanExample.png
 
 ## How to create advanced charts and formatting
-Now, let's explore more advanced visualizations and leverage Vizro-AI for enhanced formatting.
+Now, let's explore more advanced visualizations and use Vizro-AI for enhanced formatting.
 
 To begin, we'll create an animated bar chart illustrating the population development of each continent over time. Run the code below and look at the result.
 
@@ -74,7 +74,7 @@ To begin, we'll create an animated bar chart illustrating the population develop
 
     [AnimatedChart1]: ../../assets/tutorials/chart/animated_bar_chart_1.png
 
-Having unveiled our animated bar chart showcasing population development per country, it's apparent that crucial details are overshadowed by the legend. Next, we will try to tweak our prompt to group the countries into continents and improve the overall layout.
+Having unveiled our animated bar chart showcasing population development per country, it's clear that crucial details are overshadowed by the legend. Next, we will try to tweak our prompt to group the countries into continents and improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
 
@@ -96,7 +96,7 @@ Having unveiled our animated bar chart showcasing population development per cou
 
 By incorporating the directive `Please improve layout`, we've successfully refined our animation and are now able to better interpret our result.
 
-Upon closer inspection, two challenges emerge: the legend overlaps the x-axis and the y-axis range is insufficient to capture the full spectrum of Asia's population development. Let's run the code below to improve and finalize the chart.
+Upon closer inspection, two challenges emerge: the legend overlaps the x-axis and the y-axis range is insufficient to capture the full spectrum of Asia's population development. Let's run the code below to improve the chart.
 
 !!! example "Vizro-AI animated chart"
 

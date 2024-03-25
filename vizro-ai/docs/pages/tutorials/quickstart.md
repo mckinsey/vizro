@@ -41,7 +41,7 @@ You should see a return output of the form `x.y.z`.
 
 ### 3. Create your first chart using Vizro-AI
 
-We will create a chart to illustrate the GDP of various continents while including a reference line for the average by using the instruction "*describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp*".
+Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
 Let's go through the code step-by-step. First, we create `pandas` DataFrame using the gapminder data from `plotly express`:
 
@@ -62,7 +62,7 @@ vizro_ai = VizroAI()
 Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
 
 ```python
-vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
+vizro_ai.plot(df, "describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP")
 ```
 
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
@@ -77,20 +77,18 @@ And that's it! By passing the prepared data and written visualization request, V
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
+        vizro_ai.plot(df, "describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP")
         ```
     === "Result"
         [![BarChart]][BarChart]
 
     [BarChart]: ../../assets/tutorials/chart/GDP_Composition_Bar.png
 
-The created chart is interactive, and you can hover over the data for additional information.
+The created chart is interactive: you can hover over the data for more information.
 
 ### 5. Get an explanation with your chart
 
-Passing `explain=True` to the `plot()` method provides additional insights in addition to the rendered chart.
-
-Let's create another example and read through the additional information.
+Passing `explain=True` to the `plot()` method provides insights to explain the rendered chart in detail. Let's create another example to illustrate the information returned:
 
 !!! example "Specify  `explain=True`"
 
