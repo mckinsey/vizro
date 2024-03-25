@@ -32,8 +32,4 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(
-            dbc.Button(id=self.id, children=self.text, className="button_primary"),
-            className="button_container",
-            id=f"{self.id}_outer",
-        )
+        return dbc.Button(id=self.id, children=self.text)

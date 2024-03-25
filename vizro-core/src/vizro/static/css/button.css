@@ -1,4 +1,3 @@
-#dashboard-container .button_primary,
 #dashboard-container .ag-standard-button {
   background: var(--fill-active);
   border: none;
@@ -14,7 +13,6 @@
   text-transform: none;
 }
 
-#dashboard-container .button_primary:hover,
 #dashboard-container .ag-standard-button:hover {
   background: linear-gradient(
       var(--state-overlays-contrast-hover),
@@ -23,21 +21,4 @@
     var(--fill-active);
   color: var(--text-contrast-primary);
   text-decoration-line: underline;
-}
-
-#dashboard-container .button_primary:active {
-  background: var(--fill-active);
-  color: var(--text-contrast-primary);
-}
-
-#dashboard-container .button_primary:visited {
-  background: var(--fill-active);
-  color: var(--text-contrast-primary);
-}
-
-.button_container {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
