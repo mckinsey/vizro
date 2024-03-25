@@ -41,6 +41,3 @@ Currently, Vizro-AI supports the following parameters:
 
         vizro_ai = VizroAI(model_name="gpt-3.5-turbo-0613", temperature=0)
         ```
-
-
-
