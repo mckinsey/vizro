@@ -67,14 +67,9 @@
   width: 100%;
 }
 
-#nav-panel {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
-#nav-panel:not(:empty) {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+#nav-panel {
+  width: 100%;
 }
 
 #control-panel {
