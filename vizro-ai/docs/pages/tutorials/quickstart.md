@@ -68,6 +68,7 @@ vizro_ai.plot(df, "describe the composition of gdp in continent and color by con
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
+
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
@@ -92,6 +93,7 @@ Passing `explain=True` to the `plot()` method provides additional insights in ad
 Let's create another example and read through the additional information.
 
 !!! example "Specify  `explain=True`"
+
     === "Code for the cell"
         ```py
         vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
@@ -105,4 +107,4 @@ Let's create another example and read through the additional information.
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
-A good place to start would be to review the different [run options](../user-guides/run-vizro-ai.md) including application integration.
+A good place to start would be the [Explore Vizro-AI](./explore-vizro-ai.md) tutorial or you may want to review the different [run options](../user-guides/run-vizro-ai.md) including application integration.

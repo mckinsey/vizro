@@ -13,7 +13,7 @@ cost. In general, the `gpt-3.5-turbo` collection provides the most cost-effectiv
 which would be a good starting point for most users. `gpt-4` models are more powerful than `gpt-3` models, e.g. they allow for more tokens per request. You can refer to these models' [capabilities](https://platform.openai.com/docs/models/overview)
 and [pricing](https://openai.com/pricing) for more information.
 
-We are working on supporting more models and more vendors. Please stay tuned!
+We are working on supporting more models and more vendors. Stay tuned!
 
 
 !!! Warning
@@ -35,6 +35,7 @@ Currently, Vizro-AI supports the following parameters:
 - `model_name`: The name of the model to use. See above for [models currently supported by Vizro-AI](#which-llms-are-supported-by-vizro-ai) for the models supported.
 
 !!! example "Config and construct Vizro-AI"
+
     === "python"
         ```py linenums="1"
         from vizro_ai import VizroAI

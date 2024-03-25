@@ -62,12 +62,9 @@ OPENAI_API_KEY=abc123
 
 By default, `vizro-ai` automatically loads the `.env` file, by searching the current directory and, if it does not find `.env`, the search continues upwards through the directory hierarchy.
 
-If you would like to customize the `.env` file location and name, you can manually customize the search.
-
+If you would like to customize the `.env` file location and name, you can manually customize the search to override the default and specify the path and name of a custom `.env` file.
 
 ??? example "How to override the default location of the .`env` file:"
-
-
 
     ```py
     from dotenv import load_dotenv, find_dotenv
@@ -92,7 +89,7 @@ If you would like to customize the `.env` file location and name, you can manual
 __Method 2: Set an environment variable for all projects__
 
 To make the OpenAI API key available for all projects, you can set it as a system environment
-variable. Please refer to the section ["Set up your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
+variable. Refer to the section ["Set up your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
 in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your API key").
 
 The documentation provides step-by-step instructions for setting up the API key as an environment
