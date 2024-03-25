@@ -12,6 +12,6 @@
 [Lingyi Zhang](https://github.com/lingyielia),
 [Maximilian Schulz](https://github.com/maxschulz-COL),
 [Nadija Graca](https://github.com/nadijagraca),
-[Petar Pejovic](https://github.com/petar-qb)
+[Petar Pejovic](https://github.com/petar-qb).
 
-with thanks to Sam Bourton and Stephen Xu for sponsorship, inspiration and guidance, plus everyone else who helped to test, guide, support and encourage development.
+With thanks to Sam Bourton and Stephen Xu for sponsorship, inspiration and guidance, plus everyone else who helped to test, guide, support and encourage development.

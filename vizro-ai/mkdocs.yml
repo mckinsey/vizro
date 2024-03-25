@@ -8,7 +8,7 @@ nav:
       - Explore Vizro-AI: pages/tutorials/explore-vizro-ai.md
   - How-to guides:
       - Run methods: pages/user-guides/run-vizro-ai.md
-      - Model configuration: pages/user-guides/model-config.md
+      - FAQs: pages/user-guides/faq.md
   - Explanation:
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md

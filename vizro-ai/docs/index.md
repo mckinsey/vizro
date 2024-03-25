@@ -1,6 +1,6 @@
 # Vizro-AI
 
-Vizro-AI extends [Vizro] with a user-friendly interface that uses natural language capabilities to help you create interactive charts effortlessly.
+Vizro-AI extends [Vizro](https://vizro.readthedocs.io) with a user-friendly interface that uses natural language capabilities to help you create interactive charts effortlessly.
 
 If you're new to coding, Vizro-AI simplifies the process of creating charts that offer detailed insights about your data. Even if you're an experienced data practitioner, Vizro-AI optimizes how you create visually appealing charts.
 

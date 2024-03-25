@@ -39,13 +39,33 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 
-### 3. Ask your first question using Vizro-AI
+### 3. Create your first chart using Vizro-AI
 
-We will create a chart to illustrate the GDP of various continents while including a reference line for the average.
+We will create a chart to illustrate the GDP of various continents while including a reference line for the average by using the instruction "*describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp*".
 
-Let's go through the code step-by-step to understand how to use Vizro-AI. First, we create `pandas` DataFrame using the gapminder data from `plotly express`. Next, we instantiate `VizroAI` to call the `plot()` method to generate your visualization.
+Let's go through the code step-by-step. First, we create `pandas` DataFrame using the gapminder data from `plotly express`:
 
-By passing your prepared data and your written visualization request to this method, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and then it proceeds to render the chart by executing the generated code.
+```python
+from vizro_ai import VizroAI
+import vizro.plotly.express as px
+
+df = px.data.gapminder()
+```
+
+
+Next, we instantiate `VizroAI`:
+
+```python
+vizro_ai = VizroAI()
+```
+
+Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
+
+```python
+vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
+```
+
+And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
     === "Code for the cell"
@@ -67,7 +87,7 @@ The created chart is interactive, and you can hover over the data for additional
 
 ### 5. Get an explanation with your chart
 
-By passing `explain=True` to the `plot()` method will provide additional insights in addition to the rendered chart.
+Passing `explain=True` to the `plot()` method provides additional insights in addition to the rendered chart.
 
 Let's create another example and read through the additional information.
 
@@ -83,6 +103,6 @@ Let's create another example and read through the additional information.
 
 ### 6. Explore further
 
-Now, you have created your first charts with Vizro-AI you are ready to explore it further.
+Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
-A good place to start would be to go through the [model configuration](../user-guides/model-config.md) or different [run options](../user-guides/run-vizro-ai.md) including application integration.
+A good place to start would be to review the different [run options](../user-guides/run-vizro-ai.md) including application integration.
