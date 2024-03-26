@@ -23,6 +23,7 @@
   --ag-header-column-resize-handle-width: 1px;
   --ag-header-column-resize-handle-color: var(--border-subtle-alpha-02);
   --ag-range-selection-border-color: transparent;
+  --ag-input-focus-border-color: transparent;
 }
 
 /* Header ------- */
@@ -30,12 +31,12 @@
   align-items: flex-start;
   border-bottom: 1px solid var(--border-subtle-alpha-02);
   display: flex;
-  padding: var(--spacing-03) 0 0 0;
 }
 
 #page-container .ag-header-cell {
   align-items: center;
   display: flex;
+  height: 40px;
   padding: 0 var(--spacing-03);
 }
 
@@ -55,6 +56,10 @@
 /* Rows ------- */
 #page-container .ag-cell {
   padding: 0 var(--spacing-03);
+}
+
+#page-container .ag-cell-focus {
+  border: none;
 }
 
 #page-container .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
@@ -134,10 +139,23 @@
 }
 
 .ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
-.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button {
+.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button,
+.ag-theme-quartz.ag-theme-vizro .ag-floating-filter-button-button,
+.ag-theme-quartz-dark.ag-theme-vizro .ag-floating-filter-button-button {
   --ag-quartz-icon-hover-color: transparent;
 }
 
+/* Floating Filter */
+#page-container .ag-floating-filter-input {
+  color: var(--text-primary);
+  height: 40px;
+}
+
+#page-container .ag-floating-filter-input input[class^="ag-"][type="text"] {
+  padding-left: 0;
+}
+
+/* Buttons */
 #dashboard-container .ag-standard-button {
   background: var(--fill-active);
   border: none;
@@ -161,4 +179,5 @@
     var(--fill-active);
   color: var(--text-contrast-primary);
   text-decoration-line: underline;
+
 }
