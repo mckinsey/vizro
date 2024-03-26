@@ -382,4 +382,5 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
-To enhance existing actions, please see the guide about [how to create custom actions](custom-actions.md).
+To enhance existing actions, see our how-to-guide on creating [custom actions](custom-actions.md).
+

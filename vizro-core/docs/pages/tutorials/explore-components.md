@@ -80,6 +80,7 @@ The code below adds two components to the page:
 * A [`Card`][vizro.models.Card] to insert Markdown text into the dashboard.
 * A [`Graph`][vizro.models.Graph] to illustrate GDP development per continent since 1952 as a line graph.
 
+
 !!! warning "Before you run this code in a Jupyter Notebook"
 
     If you are following this tutorial in a Jupyter Notebook, you need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
@@ -329,7 +330,7 @@ Fantastic job! You have completed first dashboard page and gained valuable skill
 
 ## 3. Create a second dashboard page
 
-This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the page you just created, but contains two charts that visualize the [iris dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
+This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the first page you created, but contains two charts that visualize the [iris dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
 
 The code below illustrates how to add the page, titled `second_page` to the dashboard by calling `vm.Dashboard(pages=[first_page,second_page])`. There are two `Graph` objects added to the list of components. To enable interactivity on those components, we add two [`Parameters`][vizro.models.Parameter] to the list of `controls`.
 

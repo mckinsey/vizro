@@ -98,9 +98,9 @@ To create and add a page to your dashboard, do the following steps:
     You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 
+
 ## Customize the page URL
-By default, the page URL is automatically generated based on the `id` of the page for example, if `id="This is my first page"`,
-the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+By default, the page URL is automatically generated based on the `id` of the page for example, if `id="This is my first page"`, the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
 Note that the page `id` defaults to be the same as the page `title` if not set.
 If you have multiple pages with the same `title` then you must assign a unique `id`.

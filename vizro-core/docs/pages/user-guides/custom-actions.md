@@ -64,6 +64,7 @@ The following example shows how to create a custom action that postpones executi
         ```
 <!-- vale on -->
 
+
 ## Interact with dashboard inputs and outputs
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 

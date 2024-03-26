@@ -125,4 +125,5 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 - where development teams already contain designers and JavaScript (or equivalent) engineers with bandwidth to build bespoke applications (though Vizro can sometimes still be used effectively to rapidly prototype potential solutions)
 
 - where Python developers are already very comfortable leveraging other Python packages
+
 <!-- vale on -->
