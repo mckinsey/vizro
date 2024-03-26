@@ -241,6 +241,7 @@
   /* How do we keep these in sync with the tokens? */
   --bs-primary-rgb: #ffffffe0;
   --bs-secondary-color: #ffffff99;
+  --bs-nav-link-color: #ffffff99; /*QQ: This doesn't seem to work*/
 }
 
 .vizro_light {
@@ -484,6 +485,7 @@
   --surfaces-bg-card-inverted: #232632;
   --bs-primary-rgb: #141721e0;
   --bs-secondary-color: #14172199;
+  --bs-nav-link-color: #14172199; /*QQ: This doesn't seem to work*/
 }
 
 /* 14px */
@@ -12529,7 +12531,7 @@ h6, .h6 {
   color: var(--text-primary);
 }
 
-p, blockquote {
+p, label, ul, li, blockquote {
   font-size: 14px;
   text-decoration: none;
   font-family: Inter;
@@ -12553,9 +12555,37 @@ a {
 }
 
 /* This is not taken over well. How do we deal with bootstrap variables that we want to change globally? */
-/* For example --bs-secondary-color - where would I change that globally? */
+/* QQ: This should be changed globally via Bootstrap variables and without the need of important tags. */
 .text-muted {
   color: var(--text-subtle);
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.left-sidebar {
+  border-right: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  width: 5rem;
+}
+
+.nav .nav-link {
+  padding: 0;
+  align-items: center;
+  display: flex;
+  height: 5rem;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+.nav .nav-link:active, .nav .nav-link.active {
+  color: var(--text-primary);
 }
 
 .qb-container-bg-01 {
