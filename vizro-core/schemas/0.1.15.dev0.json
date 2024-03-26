@@ -405,6 +405,10 @@
             },
             {
               "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date"
             }
           ]
         }
@@ -454,6 +458,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -478,6 +489,13 @@
               "type": "array",
               "items": {
                 "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
               }
             }
           ]
@@ -610,6 +628,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -628,6 +653,10 @@
               "type": "string"
             },
             {
+              "type": "string",
+              "format": "date"
+            },
+            {
               "type": "array",
               "items": {
                 "type": "boolean"
@@ -643,6 +672,13 @@
               "type": "array",
               "items": {
                 "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
               }
             }
           ]
@@ -712,6 +748,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -728,6 +771,10 @@
             },
             {
               "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date"
             }
           ]
         },
