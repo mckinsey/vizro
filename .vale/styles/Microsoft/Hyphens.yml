@@ -8,7 +8,7 @@ action:
   name: edit
   params:
     - replace
-    - '-'
-    - ' '
+    - "-"
+    - " "
 tokens:
   - '\s[^\s-]+ly-'

@@ -7,15 +7,15 @@ ignorecase: true
 action:
   name: replace
 swap:
-  '(?:agent|virtual assistant|intelligent personal assistant)': personal digital assistant
-  '(?:drive C:|drive C>|C: drive)': drive C
-  '(?:internet bot|web robot)s?': bot(s)
-  '(?:microsoft cloud|the cloud)': cloud
-  '(?:mobile|smart) ?phone': phone
-  '24/7': every day
-  'audio(?:-| )book': audiobook
-  'back(?:-| )light': backlight
-  'chat ?bots?': chatbot(s)
+  "(?:agent|virtual assistant|intelligent personal assistant)": personal digital assistant
+  "(?:drive C:|drive C>|C: drive)": drive C
+  "(?:internet bot|web robot)s?": bot(s)
+  "(?:microsoft cloud|the cloud)": cloud
+  "(?:mobile|smart) ?phone": phone
+  "24/7": every day
+  "audio(?:-| )book": audiobook
+  "back(?:-| )light": backlight
+  "chat ?bots?": chatbot(s)
   adaptor: adapter
   administrate: administer
   afterwards: afterward
@@ -29,7 +29,7 @@ swap:
   anti-virus: antivirus
   appendixes: appendices
   artificial intelligence: AI
-  '(?:assembler|machine language)': assembly language
+  "(?:assembler|machine language)": assembly language
   caap: CaaP
   conversation-as-a-platform: conversation as a platform
   eb: EB

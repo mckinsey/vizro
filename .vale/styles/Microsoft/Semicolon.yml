@@ -5,4 +5,4 @@ nonword: true
 scope: sentence
 level: suggestion
 tokens:
-  - ';'
+  - ";"

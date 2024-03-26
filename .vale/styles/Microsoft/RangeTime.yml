@@ -7,7 +7,7 @@ action:
   name: edit
   params:
     - replace
-    - '[-–]'
-    - 'to'
+    - "[-–]"
+    - "to"
 tokens:
   - '\b(?:AM|PM)\s?[-–]\s?.+(?:AM|PM)\b'

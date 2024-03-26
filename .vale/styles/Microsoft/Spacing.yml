@@ -4,4 +4,4 @@ link: https://docs.microsoft.com/en-us/style-guide/punctuation/periods
 level: error
 nonword: true
 tokens:
-  - '[a-z][.?!] {2,}[A-Z]'
+  - "[a-z][.?!] {2,}[A-Z]"

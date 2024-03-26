@@ -5,7 +5,7 @@ level: suggestion
 scope: heading
 match: $sentence
 indicators:
-  - ':'
+  - ":"
 exceptions:
   - Kedro
   - Kedro-Viz
