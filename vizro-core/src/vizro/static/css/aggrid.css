@@ -135,7 +135,9 @@
 }
 
 .ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
-.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button {
+.ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button,
+.ag-theme-quartz.ag-theme-vizro .ag-floating-filter-button-button,
+.ag-theme-quartz-dark.ag-theme-vizro .ag-floating-filter-button-button {
   --ag-quartz-icon-hover-color: transparent;
 }
 
