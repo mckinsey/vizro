@@ -9,7 +9,7 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
 
-<a class="card-wrapper" href="pages/tutorials/quickstart/">
+<a class="card-wrapper" href="pages/get-started/quickstart/">
   <div class="card">
     <div class="card-content">
       <h5>Get started</h5>
@@ -25,7 +25,7 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
     <div class="card-content">
       <h5>How-to guides</h5>
       <p>
-        How to run Vizro-AI and frequently asked questions.
+        How to guides about Vizro-AI and frequently asked questions.
       </p>
     </div>
   </div>

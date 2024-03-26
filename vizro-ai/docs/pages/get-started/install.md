@@ -11,10 +11,6 @@ Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.9 and later.
 ### Set up a virtual environment
 You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
-!!! tip "Prefer to use Vizro-AI without opening a terminal window?"
-
-    If you are a beginner or coding novice, you may prefer to avoid using a terminal to work with Vizro. Skip to the ["Use Vizro-AI inside Anaconda" section](#use-vizro-ai-inside-anaconda-navigator) below.
-
 ??? information "How to create a virtual environment for your Vizro-AI project"
 
     The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
@@ -114,22 +110,6 @@ To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your termina
 ```bash
 pip install vizro_ai
 ```
-
-## Use Vizro-AI inside Anaconda Navigator
-
-To completely avoid terminal usage, follow these steps to work with Vizro-AI:
-
-
-1. Install [Anaconda Navigator](https://www.anaconda.com/download).
-
-2. Create a new environment as [outlined in the Anaconda documentation](https://docs.anaconda.com/free/navigator/tutorials/manage-environments/). Choose a Python version `>=3.8`.
-
-3. Search `vizro_ai` and install it [using the Anaconda Navigator package manager](https://docs.anaconda.com/free/navigator/tutorials/manage-packages/).
-
-4. Similarly, search `jupyter` and install it.
-
-5. [Launch a Jupyter Notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro-AI.
-
 
 ## Confirm a successful installation
 

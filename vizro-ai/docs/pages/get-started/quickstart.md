@@ -3,7 +3,7 @@ This tutorial introduces you to Vizro-AI, which is an English-to-visualization p
 
 ### 1. Install Vizro and its dependencies
 
-If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../get-started/install.md).
 
 ### 2. Open a Jupyter Notebook
 
@@ -16,9 +16,6 @@ A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
     ```bash
     pip install jupyter
     ```
-
-    Alternatively, you can [work within Anaconda Navigator](../user-guides/install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
-
 
 Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
 
@@ -105,4 +102,4 @@ Passing `explain=True` to the `plot()` method provides insights to explain the r
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
-A good place to start would be the [Explore Vizro-AI](./explore-vizro-ai.md) tutorial or you may want to review the different [run options](../user-guides/run-vizro-ai.md) including application integration.
+A good place to start would be to review the different how-to guides, such as [how to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create visualizations using different languages](../user-guides/use-different-languages.md), and [how to create advanced charts](../user-guides/create-advanced-charts.md).
