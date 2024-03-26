@@ -8,7 +8,7 @@ In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, 
 Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.8 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
 
 
-### Virtual environment
+### Set up a virtual environment
 You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
 !!! tip "Prefer to use Vizro-AI without opening a terminal window?"
@@ -37,7 +37,7 @@ You should create a virtual environment for each Vizro-AI project you work on to
     conda activate vizroai-environment
     ```
 
-### Large language model
+### Set up access to a large language model
 
 Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
 
