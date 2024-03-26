@@ -1,9 +1,9 @@
 # How to use actions
 
-This guide shows you how to use actions, a concept that is similar, but not identical, to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
-Many components of a dashboard (e.g. [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
+This guide shows you how to use actions, an idea that is similar to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
+Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
 
-In a nutshell, using the [`Action`][vizro.models.Action] model together with an action function allows you to create complex functionality on a variety of triggers in your dashboard.
+In a nutshell, using the [`Action`][vizro.models.Action] model together with an action function enables you to create complex functionality on a variety of triggers in your dashboard.
 There is already a range of reusable action functions available.
 
 ???+ info "Overview of currently available pre-defined action functions"
@@ -17,13 +17,13 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
-    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (e.g. for the `Button` it is `n_click`).
+    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
-The below sections are guides on how to leverage pre-defined action functions.
+The below sections are guides on how to use pre-defined action functions.
 
 ### Export data
 
-In order to enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
+To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
 a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
@@ -284,8 +284,7 @@ Here is an example of how to configure a chart interaction when the source is an
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
 ## How to customize pre-defined actions
-Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
-refer to the [API reference][vizro.actions] on this topic.
+Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, refer to the [API reference][vizro.actions] on this topic.
 
 ### Chaining actions
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
@@ -382,4 +381,4 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
-To enhance existing actions, please see our How-to-guide on creating [custom actions](custom-actions.md).
+To enhance existing actions, see our how-to-guide on creating [custom actions](custom-actions.md).

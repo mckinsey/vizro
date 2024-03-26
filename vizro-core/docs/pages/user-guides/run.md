@@ -24,7 +24,7 @@ This guide shows you how to launch your dashboard in different ways. By default,
 
         Vizro().build(dashboard).run()
         ```
-- create a python file named app.py.
+- create a Python file named `app.py`.
 - type the command `python app.py` into your terminal.
 - information below will be displayed in your terminal, go to the http link.
 ```
@@ -50,7 +50,7 @@ Dash is running on http://127.0.0.1:8050/
 
 ## Jupyter
 The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
-!!! example "Run in jupyter notebook in inline mode"
+!!! example "Run in a Jupyter Notebook in inline mode"
     === "app.ipynb"
         ```py linenums="1"
         from vizro import Vizro
@@ -76,8 +76,8 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 ??? info "Reloading and debugging"
 
 
-     When working in a Jupyter notebook, only some of the [Dash Dev Tools](https://dash.plotly.com/devtools) functionality is enabled by using `run(debug=True)`.
-     In particular, code reloading and hot reloading do not work from a Jupyter notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
+     When working in a Jupyter Notebook, only some of the [Dash Dev Tools](https://dash.plotly.com/devtools) functionality is enabled by using `run(debug=True)`.
+     In particular, code reloading and hot reloading do not work from a Jupyter Notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
 ## Gunicorn
 !!!warning "In production"
     In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
@@ -113,7 +113,7 @@ To run using Gunicorn with four worker processes, execute
 ```bash
 gunicorn app:server --workers 4
 ```
-in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
+in the command line. For more Gunicorn configuration options, refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
 ## Deployment
 
@@ -122,6 +122,6 @@ A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a 
 - [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
 - [Dash deployment documentation](https://dash.plotly.com/deployment)
 
-In particular, `app = Vizro()` exposes the Flask app through `app.dash.server`. As in the [above example with Gunicorn](#gunicorn), this provides the application instance to a WSGI server.
+In particular, `app = Vizro()` exposes the Flask app through `app.dash.server`. As in the [above example with Gunicorn](#gunicorn), this provides the application instance to a [WSGI](https://werkzeug.palletsprojects.com/en/3.0.x/terms/#wsgi) server.
 
-[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This allows you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.
+[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This enables you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.

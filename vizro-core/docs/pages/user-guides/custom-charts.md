@@ -9,7 +9,7 @@ In general, the usage of the custom chart decorator `@capture("graph")` is requi
 
 ### When to use a custom chart
 
-- If you want to use any of the post figure update calls by `plotly` e.g., `update_layout`, `update_xaxes`, `update_traces`, etc. (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
+- If you want to use any of the post figure update calls by `plotly` such as `update_layout`, `update_xaxes`, `update_traces` (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
 - If you want to use a custom-created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short, `go.Figure()`) and add traces yourself via [`add_trace`](https://plotly.com/python/creating-and-updating-figures/#adding-traces)
 
 ### Requirements of a custom chart function
@@ -17,7 +17,7 @@ In general, the usage of the custom chart decorator `@capture("graph")` is requi
 - a `go.Figure()` object is returned by the function
 - the function must be decorated with the `@capture("graph")` decorator
 - the function accepts a `data_frame` argument (of type `pandas.DataFrame`)
-- the visualization is derived from and requires only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
+- the visualization is derived from and requires only one `pandas.DataFrame` (for example, any further dataframes added through other arguments will not react to dashboard components such as `Filter`)
 
 The below minimal example can be used as a base to build more sophisticated charts.
 
@@ -39,7 +39,7 @@ Building on the above, there are several routes one can take. The following exam
 ## Enhanced `plotly.express` chart with reference line
 
 The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then
-add a `Parameter` that allows the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
+add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"

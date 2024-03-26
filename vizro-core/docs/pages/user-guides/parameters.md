@@ -2,7 +2,7 @@
 
 This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function that creates the chart/component.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. If e.g. the charting function has a `title` argument, you could configure a parameter that allows the user to select the chart title via e.g. a dropdown.
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
 
 ## Basic parameters
 
@@ -78,11 +78,11 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
     [Parameter]: ../../assets/user_guides/control/control4.png
 
 !!! tip
-    If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
+    If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
 ## Nested parameters
 
-If you want to modify nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
+If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
 
 !!! example "Nested Parameters for multiple targets"
     === "app.py"

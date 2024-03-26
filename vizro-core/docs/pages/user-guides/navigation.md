@@ -3,11 +3,11 @@
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
-The dashboard includes a collapsible side panel that users can easily minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
+The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
 ## Using the default navigation
 
-By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title "SELECT PAGE".
+By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title `SELECT PAGE`.
 
 !!! example "Default navigation"
     === "app.py"
@@ -76,7 +76,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
 ## Including a subset of pages
 
-If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), e.g. we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
+If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
 !!! example "Navigation with only some pages"
     === "app.py"

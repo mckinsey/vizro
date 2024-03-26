@@ -53,7 +53,7 @@ Vizro, you need:
    data and then convert it to a Pandas DataFrame if necessary.
 
 2. Register this function with the Vizro [Data Manager][vizro.managers._data_manager].
-   This allows you to use this data connector
+   This enables you to use this data connector
    in your dashboard.
 
 !!! example "Use a data connector"
