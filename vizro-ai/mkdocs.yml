@@ -9,8 +9,8 @@ nav:
       - Run methods: pages/user-guides/run-vizro-ai.md
       - Create advanced charts: pages/user-guides/create-advanced-charts.md
       - Use different languages: pages/user-guides/use-different-languages.md
-      - FAQs: pages/user-guides/faq.md
   - Explanation:
+      - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
