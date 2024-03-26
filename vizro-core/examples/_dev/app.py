@@ -15,14 +15,14 @@ page = vm.Page(
             figure=dash_ag_grid(
                 data_frame=df,
                 columnDefs=[
-                    {"field" : "country", 'floatingFilter': True},
-                    {"field" : "continent", 'floatingFilter': True},
-                    {"field" : "year"},
-                    {"field" : "lifeExp", "cellDataType": "numeric"},
-                    {"field" : "pop", "cellDataType": "numeric"},
-                    {"field" : "gdpPercap", "cellDataType": "euro"},]
-
-            )
+                    {"field": "country", "floatingFilter": True},
+                    {"field": "continent", "floatingFilter": True},
+                    {"field": "year"},
+                    {"field": "lifeExp", "cellDataType": "numeric"},
+                    {"field": "pop", "cellDataType": "numeric"},
+                    {"field": "gdpPercap", "cellDataType": "euro"},
+                ],
+            ),
         ),
     ],
     controls=[vm.Filter(column="continent")],
