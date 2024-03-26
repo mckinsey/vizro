@@ -69,6 +69,7 @@
 
 #nav-panel {
   width: 100%;
+  margin-top: -4px;
 }
 
 #control-panel {
@@ -114,27 +115,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-}
-
-#nav-bar {
-  align-items: center;
-  display: inline-flex;
-  flex-direction: column;
-}
-
-.nav-bar-icon-link {
-  align-items: center;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  display: flex;
-  height: 80px;
-  justify-content: center;
-  width: 100%;
-}
-
-.nav-bar-icon-link.active .material-symbols-outlined {
-  color: var(--text-active);
 }
 
 .loading-container {

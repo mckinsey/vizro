@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from typing import Dict, List, Literal
+import dash_bootstrap_components as dbc
 
 from dash import html
 
@@ -73,4 +74,4 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel = html.Div(hidden=True, id="nav-panel")
 
-        return html.Div([html.Div(nav_links, id="nav-bar"), nav_panel])
+        return html.Div([dbc.Nav(nav_links, id="nav-bar", className="flex-column"), nav_panel])
