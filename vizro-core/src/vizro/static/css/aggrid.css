@@ -30,13 +30,13 @@
   align-items: flex-start;
   border-bottom: 1px solid var(--border-subtle-alpha-02);
   display: flex;
-  padding: var(--spacing-03) 0 0 0;
 }
 
 #page-container .ag-header-cell {
   align-items: center;
   display: flex;
   padding: 0 var(--spacing-03);
+  height: 40px;
 }
 
 #page-container .ag-header-cell-text {
@@ -136,4 +136,14 @@
 .ag-theme-quartz.ag-theme-vizro .ag-header-cell-menu-button,
 .ag-theme-quartz-dark.ag-theme-vizro .ag-header-cell-menu-button {
   --ag-quartz-icon-hover-color: transparent;
+}
+
+
+/* Floating Filter */
+#page-container .ag-floating-filter-input input[class^=ag-][type=text] {
+  padding-left: 0;
+}
+
+#page-container .ag-floating-filter-input {
+  outline: none;
 }
