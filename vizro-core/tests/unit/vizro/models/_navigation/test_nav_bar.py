@@ -83,7 +83,7 @@ class TestNavBarBuildMethod:
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_navigation = html.Div(
+        expected_navigation = dbc.Nav(
             [
                 dbc.NavLink(
                     children=[
@@ -109,7 +109,7 @@ class TestNavBarBuildMethod:
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_nav_bar = html.Div(
+        expected_nav_bar = dbc.Nav(
             [
                 dbc.NavLink(
                     children=[
@@ -145,7 +145,7 @@ class TestNavBarBuildMethod:
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_nav_bar = html.Div(
+        expected_nav_bar = dbc.Nav(
             [
                 dbc.NavLink(
                     children=[
@@ -170,7 +170,7 @@ class TestNavBarBuildMethod:
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_nav_bar = html.Div(
+        expected_nav_bar = dbc.Nav(
             [
                 dbc.NavLink(
                     children=[
