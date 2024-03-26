@@ -1,5 +1,5 @@
 # Explore Vizro-AI
-This tutorial serves as an exploration of Vizro-AI beyond the initial [quickstart guide](../tutorials/quickstart.md). It explains the different language options and shows how to use Vizro-AI to enhance the formatting your visualizations.
+This tutorial serves as an exploration of Vizro-AI beyond the initial [quickstart guide](../tutorials/quickstart.md). It explains the different language options and shows how to use Vizro-AI to enhance the formatting of your visualizations.
 
 ## Install Vizro-AI and get ready to run your code
 Before proceeding, you'll need to install Vizro-AI by following the steps in the [installation guide](../user-guides/install.md). To execute code either paste it into a Jupyter Notebook or run it from a Python script, or see the [guide on how to run Vizro-AI](../user-guides/run-vizro-ai.md) for more detail.
