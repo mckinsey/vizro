@@ -43,7 +43,7 @@ You should see a return output of the form `x.y.z`.
 
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
-Let's go through the code step-by-step. First, we create `pandas` DataFrame using the gapminder data from `plotly express`:
+Let's go through the code step-by-step. First, we create a `pandas` DataFrame using the gapminder data from `plotly express`:
 
 ```python
 from vizro_ai import VizroAI
