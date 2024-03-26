@@ -11,6 +11,24 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.14'></a>
+
+# 0.1.14 — 2024-03-26
+
+## Highlights ✨
+
+- Introduce `DatePicker` model as a new `Filter` and `Parameter` selector. Visit the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#309](https://github.com/mckinsey/vizro/pull/309))
+
+## Changed
+
+- Replace `dmc.Tooltip` with `dbc.Tooltip` and change CSS selectors accordingly. ([#361](https://github.com/mckinsey/vizro/pull/361))
+
+- Rename CSS classNames `nav_card_container` and `card_container` to `nav-card` and `card`. ([#373](https://github.com/mckinsey/vizro/pull/373))
+
+## Fixed
+
+- Fix navigation to external links by replacing `dcc.Link` with `dbc.NavLink`. ([#364](https://github.com/mckinsey/vizro/pull/364))
+
 <a id='changelog-0.1.13'></a>
 
 # 0.1.13 — 2024-03-12
