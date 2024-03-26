@@ -13,6 +13,12 @@ exceptions:
   - Vizro-AI
   - Jupyter
   - Notebook
+  - AG Grid
+  - Dash AG Grid
+  - Dash AG Grids
+  - Dash
+  - Dash DataTable
+  - Dash DataTables
   - Airflow
   - Amazon
   - Amazon Web Services
