@@ -12,7 +12,7 @@ tokens:
   - certain
   - devoid
   - entire
-  - 'false'
+  - "false"
   - fatal
   - favorite
   - final
@@ -33,7 +33,7 @@ tokens:
   - singular
   - stationary
   - sufficient
-  - 'true'
+  - "true"
   - unanimous
   - unavoidable
   - unbroken
