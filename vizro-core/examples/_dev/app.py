@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
 
-df = px.data.gapminder(datetimes=True)
+df = px.data.gapminder()
 
 page = vm.Page(
     title="Enhanced AG Grid",
@@ -15,8 +15,8 @@ page = vm.Page(
             figure=dash_ag_grid(
                 data_frame=df,
                 columnDefs=[
-                    {"field": "country", "floatingFilter": True},
-                    {"field": "continent", "floatingFilter": True},
+                    {"field": "country", "floatingFilter": True, "suppressHeaderMenuButton": True},
+                    {"field": "continent", "floatingFilter": True, "suppressHeaderMenuButton": True},
                     {"field": "year"},
                     {"field": "lifeExp", "cellDataType": "numeric"},
                     {"field": "pop", "cellDataType": "numeric"},
