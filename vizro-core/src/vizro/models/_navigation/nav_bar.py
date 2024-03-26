@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from typing import Dict, List, Literal
-import dash_bootstrap_components as dbc
 
+import dash_bootstrap_components as dbc
 from dash import html
 
 try:
