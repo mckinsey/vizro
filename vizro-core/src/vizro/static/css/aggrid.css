@@ -23,6 +23,7 @@
   --ag-header-column-resize-handle-width: 1px;
   --ag-header-column-resize-handle-color: var(--border-subtle-alpha-02);
   --ag-range-selection-border-color: transparent;
+  --ag-input-focus-border-color: transparent;
 }
 
 /* Header ------- */
@@ -140,10 +141,15 @@
 
 
 /* Floating Filter */
+#page-container .ag-floating-filter-input {
+  height: 40px;
+  color: var(--text-primary);
+}
+
 #page-container .ag-floating-filter-input input[class^=ag-][type=text] {
   padding-left: 0;
 }
 
-#page-container .ag-floating-filter-input {
-  outline: none;
+#page-container .ag-cell-focus, .ag-cell {
+    border: none;
 }
