@@ -2,14 +2,13 @@
 
 Vizro is a toolkit for creating modular data visualization applications.
 
-
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro?__
 
     ---
 
-    Tutorials to get started and to explore the key features.
+    Quick start tutorial to explore key features.
 
     [:octicons-arrow-right-24: Get started](pages/tutorials/first-dashboard/)
 
@@ -17,7 +16,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
-    Step-by-step instructions on how to use Vizro features.
+    Step-by-step instructions on key Vizro features.
 
     [:octicons-arrow-right-24: How-to guides](pages/user-guides/dashboard/)
 
