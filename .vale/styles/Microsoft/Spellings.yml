@@ -7,4 +7,3 @@ ignore:
   - Microsoft/ignore-names.txt
 filters:
   - '[vV]izro.*\b'
-
