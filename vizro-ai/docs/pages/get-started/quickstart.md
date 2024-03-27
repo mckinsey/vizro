@@ -1,11 +1,15 @@
 # Get started with Vizro-AI
 This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
 
+<!-- vale off -->
 ### 1. Install Vizro and its dependencies
+<!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../get-started/install.md).
 
+<!-- vale off -->
 ### 2. Open a Jupyter Notebook
+<!-- vale on -->
 
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
@@ -35,8 +39,9 @@ print(vizro_ai.__version__)
 
 You should see a return output of the form `x.y.z`.
 
-
+<!-- vale off -->
 ### 3. Create your first chart using Vizro-AI
+<!-- vale on -->
 
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
@@ -83,7 +88,9 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The created chart is interactive: you can hover over the data for more information.
 
-### 5. Get an explanation with your chart
+<!-- vale off -->
+### 4. Get an explanation with your chart
+<!-- vale on -->
 
 Passing `explain=True` to the `plot()` method provides insights to explain the rendered chart in detail. Let's create another example to illustrate the information returned:
 
@@ -98,7 +105,9 @@ Passing `explain=True` to the `plot()` method provides insights to explain the r
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
-### 6. Explore further
+<!-- vale off -->
+### 5. Explore further
+<!-- vale on -->
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 

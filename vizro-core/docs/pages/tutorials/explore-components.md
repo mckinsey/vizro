@@ -4,18 +4,21 @@ In this tutorial, we walk through the process of creating a sophisticated dashbo
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
+<!-- vale off -->
 ## 1. Install Vizro and get ready to run your code
-
+<!-- vale on -->
 To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first-dashboard/#2-open-a-jupyter-notebook), or from a Python script.
 
+<!-- vale off -->
 ## 2. Create a first dashboard page
-
+<!-- vale on -->
 In this section we create a new [`Page`][vizro.models.Page] called `first_page`.
 
 The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components/) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
 
+<!-- vale off -->
 ### 2.1. Add the first figure
-
+<!-- vale off -->
 Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](https://plotly.com/python-api-reference/plotly.express.html) to build different types of [figures](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html).
 
 The code below shows the steps necessary to add a box plot to the page:
@@ -71,8 +74,9 @@ The code below shows the steps necessary to add a box plot to the page:
 
 As you can see from the code, the `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`. Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
 
+<!-- vale off -->
 ### 2.2. Add further components
-
+<!-- vale on -->
 You can combine and arrange various types of `components` on a dashboard page. The `components` currently available are [`Card`][vizro.models.Card], [`Graph`][vizro.models.Graph], and [`Button`][vizro.models.Button]. For more information, refer to the [components](../user-guides/components.md) overview page to find the guide for each type.
 
 The code below adds two components to the page:
@@ -155,8 +159,9 @@ The code below adds two components to the page:
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
 
+<!-- vale off -->
 ### 2.3. Configure the layout
-
+<!-- vale on -->
 By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
 
 You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to
@@ -241,9 +246,9 @@ Run the code below to apply the layout to the dashboard page:
 
     [FirstPage3]: ../../assets/tutorials/dashboard/dashboard23.png
 
-
+<!-- vale off -->
 ### 2.4. Add a control for dashboard interactivity
-
+<!-- vale on -->
 Controls add interactivity to the dashboard page and make it more dynamic, enabling users
 to have greater control and customization over the displayed data and components.
 
@@ -320,8 +325,9 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
 
 Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](/#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
 
+<!-- vale off -->
 ## 3. Create a second dashboard page
-
+<!-- vale on -->
 This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the first page you created, but contains two charts that visualize the [iris dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
 
 The code below illustrates how to add the page, titled `second_page` to the dashboard by calling `vm.Dashboard(pages=[first_page,second_page])`. There are two `Graph` objects added to the list of components. To enable interactivity on those components, we add two [`Parameters`][vizro.models.Parameter] to the list of `controls`.
@@ -459,8 +465,9 @@ for parameters](../user-guides/parameters.md).
 
     [SecondPage]: ../../assets/tutorials/dashboard/dashboard3.png
 
+<!-- vale off -->
 ### 3.1. Customize with selectors
-
+<!-- vale on -->
 The code in the example above uses two different types of [`selector` objects](../user-guides/selectors/), namely
 [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider] upon the
 [`Parameters`][vizro.models.Parameter]. The `selectors` enable configuration of the controls to customize their behavior and appearance.
@@ -481,8 +488,9 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and
 - [`RangeSlider`][vizro.models.RangeSlider]
 - [`Slider`][vizro.models.Slider]
 
+<!-- vale off -->
 ## 4. The final touches
-
+<!-- vale on -->
 This section puts everything together by adding a
 homepage to the example for navigation between the two separate pages.
 
