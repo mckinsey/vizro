@@ -1,17 +1,17 @@
 # Authors
 
 ## Current team members
-
-[Anna Xiong](https://github.com/Anna-Xiong),
-[Maximilian Schulz](https://github.com/maxschulz-COL),
-[Chiara Pullem](https://github.com/chiara-sophie),
-[Lingyi Zhang](https://github.com/lingyielia),
-[Antony Milne](https://github.com/antonymilne),
 [Alexey Snigir](https://github.com/l0uden),
+[Anna Xiong](https://github.com/Anna-Xiong),
+[Antony Milne](https://github.com/antonymilne),
+[Chiara Pullem](https://github.com/chiara-sophie),
+[Dan Dumitriu](https://github.com/dandumitriu1),
 [Huong Li Nguyen](https://github.com/huong-li-nguyen),
-[Petar Pejovic](https://github.com/petar-qb),
+[Jo Stichbury](https://github.com/stichbury),
+[Joseph Perkins](https://github.com/Joseph-Perkins),
+[Lingyi Zhang](https://github.com/lingyielia),
+[Maximilian Schulz](https://github.com/maxschulz-COL),
 [Nadija Graca](https://github.com/nadijagraca),
-[Joseph Perkins](https://github.com/Joseph-Perkins)
+[Petar Pejovic](https://github.com/petar-qb).
 
-with thanks to Sam Bourton and Stephen Xu for sponsorhip, inspiration and guidance,
-(plus everyone else who helped to test, guide, support and encourage development)
+With thanks to Sam Bourton and Stephen Xu for sponsorship, inspiration and guidance, plus everyone else who helped to test, guide, support and encourage development.

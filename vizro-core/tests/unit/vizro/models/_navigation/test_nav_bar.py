@@ -83,7 +83,7 @@ class TestNavBarBuildMethod:
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_navigation = dbc.Nav(
+        expected_navigation = dbc.Navbar(
             [
                 dbc.NavLink(
                     children=[
@@ -100,7 +100,7 @@ class TestNavBarBuildMethod:
             ]
         )
         assert_component_equal(built_nav_bar["nav-bar"], expected_navigation, keys_to_strip={"id", "className"})
-        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_nav_bar["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_nav_bar_active_pages_as_list(self, pages_as_list):
@@ -109,7 +109,7 @@ class TestNavBarBuildMethod:
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 1")
-        expected_nav_bar = dbc.Nav(
+        expected_nav_bar = dbc.Navbar(
             [
                 dbc.NavLink(
                     children=[
@@ -138,14 +138,14 @@ class TestNavBarBuildMethod:
             ]
         )
         assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
-        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))
+        assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(id="nav-panel", className="d-none invisible"))
 
     def test_nav_bar_not_active_pages_as_dict(self, pages_as_dict):
         nav_bar = vm.NavBar(pages=pages_as_dict)
         nav_bar.pre_build()
         nav_bar.items[0].id = "nav-link-1"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_nav_bar = dbc.Nav(
+        expected_nav_bar = dbc.Navbar(
             [
                 dbc.NavLink(
                     children=[
@@ -162,7 +162,7 @@ class TestNavBarBuildMethod:
             ]
         )
         assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
-        assert_component_equal(built_nav_bar["nav-panel"], html.Div(hidden=True, id="nav-panel"))
+        assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(className="d-none invisible", id="nav-panel"))
 
     def test_nav_bar_not_active_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)
@@ -170,7 +170,7 @@ class TestNavBarBuildMethod:
         nav_bar.items[0].id = "nav-link-1"
         nav_bar.items[1].id = "nav-link-2"
         built_nav_bar = nav_bar.build(active_page_id="Page 3")
-        expected_nav_bar = dbc.Nav(
+        expected_nav_bar = dbc.Navbar(
             [
                 dbc.NavLink(
                     children=[
@@ -199,4 +199,4 @@ class TestNavBarBuildMethod:
             ]
         )
         assert_component_equal(built_nav_bar["nav-bar"], expected_nav_bar, keys_to_strip={"id", "className"})
-        assert_component_equal(built_nav_bar["nav-panel"], html.Div(id="nav-panel", hidden=True))
+        assert_component_equal(built_nav_bar["nav-panel"], dbc.Nav(id="nav-panel", className="d-none invisible"))

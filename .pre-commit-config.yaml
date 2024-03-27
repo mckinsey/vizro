@@ -99,6 +99,12 @@ repos:
           - stylelint-order@4.1.0
         args: ["--fix"]
 
+  - repo: https://github.com/errata-ai/vale
+    rev: 16d3a7f
+    hooks:
+      - id: vale
+        args: [--config=.vale/.vale.ini]
+
 # Configuration for https://pre-commit.ci/.
 ci:
   autoupdate_schedule: monthly

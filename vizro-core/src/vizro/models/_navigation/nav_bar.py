@@ -11,6 +11,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -72,6 +74,6 @@ class NavBar(VizroBaseModel):
             nav_panel = built_items["nav-panel"]
         else:
             # Active page is not in navigation at all, so hide navigation panel.
-            nav_panel = html.Div(hidden=True, id="nav-panel")
+            nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        return html.Div([dbc.Nav(nav_links, id="nav-bar", className="flex-column"), nav_panel])
+        return html.Div([dbc.Navbar(nav_links, id="nav-bar", className="flex-column"), nav_panel])
