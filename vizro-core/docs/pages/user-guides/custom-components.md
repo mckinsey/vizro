@@ -293,11 +293,11 @@ class OffCanvas(vm.VizroBaseModel):
 To enable our custom component to work with our custom action, we need to add few additional lines of code.
 
 1. First, you have to add `actions` argument to your custom component. Type of `actions` argument is `List[Action]`.
-2. Next step is to define `_input_property` of the component. `_input_property` is the property that is used as the input to the action.
+2. Next step is to define `_input_property` of the component. `_input_property` is the property that is used as the input to the custom action callback
    ```py
     _input_property: str = PrivateAttr("is_open")
    ```
-3. Next, you need to `_set_actions`.
+3. Next, you need to `_set_actions`. By setting action, change in 'is_open' property of our custom component will trigger the action.
    ```py
     _set_actions = _action_validator_factory("is_open")
    ```
@@ -398,8 +398,8 @@ Add our custom action `open_offcanvas` as a `function` argument inside the [`Act
 
         ```
 
-        1.  Here we set the property that is used as the input to the action.
-        2.  Here we set action.
+        1.  Here we set the property that is used as the input to the custom action callback.
+        2.  Here we set action. Change in 'is_open' property of our custom component will trigger the action.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via python configuration
