@@ -55,7 +55,7 @@ You should see a return output of the form `x.y.z`.
 <!-- vale on -->
 Paste the following example into a Notebook cell, run it, and view the generated dashboard by typing `localhost:8050` into your browser.
 
-!!! example "Dashboard Configuration Syntax"
+!!! example "Dashboard Configuration Syntaxes"
     === "Code for the cell"
         ```py
         import vizro.plotly.express as px
@@ -87,4 +87,4 @@ Paste the following example into a Notebook cell, run it, and view the generated
 <!-- vale off -->
 ### 4. Explore further
 <!-- vale on -->
-You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
+You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or by consulting the [how-to guides](../first-dashboard/).
