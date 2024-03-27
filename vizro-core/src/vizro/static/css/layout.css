@@ -126,6 +126,8 @@
   align-items: center;
   display: inline-flex;
   flex-direction: column;
+  padding: 0;
+  background: inherit !important;
 }
 
 .nav-bar-icon-link {
