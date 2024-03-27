@@ -4,7 +4,7 @@ vizro
 vizro-ai
 Jupyter
 Kedro
-kedro 
+kedro
 Kedro's
 Kubeflow
 Databricks
