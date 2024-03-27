@@ -266,6 +266,145 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
+# Custom component with custom action
+
+Custom components can be used as inputs to custom actions.
+
+Following the above instructions to create a custom component, we ended with the below `OffCanvas` component.
+
+```py
+class OffCanvas(vm.VizroBaseModel):
+    type: Literal["offcanvas"] = "offcanvas"
+    title: str
+    content: str
+
+    def build(self):
+        return html.Div(
+            [
+                dbc.Offcanvas(
+                    children=html.P(self.content),
+                    id=self.id,
+                    title=self.title,
+                    is_open=False,
+                ),
+            ]
+        )
+```
+To enable our custom component to work with our custom action, we need to add few additional lines of code.
+
+1. First, you have to add `actions` argument to your custom component. Type of `actions` argument is `List[Action]`.
+2. Next step is to define `_input_property` of the component. `_input_property` is the property that is used as the input to the action.
+   ```py
+    _input_property: str = PrivateAttr("is_open")
+   ```
+3. Next, you need to `_set_actions`.
+   ```py
+    _set_actions = _action_validator_factory("is_open")
+   ```
+
+After you have completed the above steps, it is time to write your custom [action]('user-guides/custom-actions.md').
+
+   ```py
+    @capture("action")
+    def open_offcanvas(n_clicks, is_open):
+        if n_clicks:
+            return not is_open
+        return is_open
+   ```
+
+Add our custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
+
+
+??? example "Example of the use of custom component with custom actions"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from dash import html
+        from vizro import Vizro
+
+        try:
+            from pydantic.v1 import Field, PrivateAttr
+        except ImportError:
+            from pydantic import PrivateAttr
+
+        from vizro.models import Action
+        from vizro.models._action._actions_chain import _action_validator_factory
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class OffCanvas(vm.VizroBaseModel):
+            type: Literal["offcanvas"] = "offcanvas"
+            title: str
+            content: str
+            actions: List[Action] = []
+
+            _input_property: str = PrivateAttr("is_open")  # (1)!
+            _set_actions = _action_validator_factory("is_open")  # (2)!
+
+            def build(self):
+                return html.Div(
+                    [
+                        dbc.Offcanvas(
+                            children=html.P(self.content),
+                            id=self.id,
+                            title=self.title,
+                            is_open=False,
+                        ),
+                    ]
+                )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", OffCanvas)
+
+        # 3. Create custom action
+        @capture("action")
+        def open_offcanvas(n_clicks, is_open):
+            if n_clicks:
+                return not is_open
+            return is_open
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Button(
+                    text="Open Offcanvas",
+                    id="open_button",
+                    actions=[
+                        vm.Action(
+                            function=open_offcanvas(),
+                            inputs=["open_button.n_clicks", "offcanvas.is_open"],
+                            outputs=["offcanvas.is_open"],
+                        )
+                    ],
+                ),
+                OffCanvas(
+                    id="offcanvas",
+                    content="OffCanvas content",
+                    title="Offcanvas Title",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+
+        ```
+
+        1.  Here we set the property that is used as the input to the action.
+        2.  Here we set action.
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+
 
 ???+ warning
 

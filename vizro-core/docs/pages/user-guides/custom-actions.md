@@ -219,13 +219,6 @@ If there are multiple `outputs` defined then the return value is iterated throug
     [CustomAction2]: ../../assets/user_guides/custom_actions/custom_action_multiple_return_values.png
 
 
-# Custom action with custom component
-
-Custom actions can be used in combination with custom components as well. 
-
-
-
-
 !!! warning
 
     Please note that users of this package are responsible for the content of any custom action function that they write - especially with regard to leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
