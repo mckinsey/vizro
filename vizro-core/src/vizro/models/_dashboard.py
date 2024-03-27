@@ -34,7 +34,9 @@ logger = logging.getLogger(__name__)
 def _all_hidden(components: List[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     return all(
-        component is None or getattr(component, "hidden", False) or "d-none" in getattr(component, "className", "d-inline")
+        component is None
+        or getattr(component, "hidden", False)
+        or "d-none" in getattr(component, "className", "d-inline")
         for component in components
     )
 
