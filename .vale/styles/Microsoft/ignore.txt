@@ -1,3 +1,5 @@
+vm
+px
 vizro
 vizro-ai
 Jupyter
