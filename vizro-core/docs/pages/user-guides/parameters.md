@@ -12,7 +12,7 @@ To add a parameter to your page, do the following:
 - add the `targets` argument
 - add a selector model to the `selector` argument.
 
-In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (eg. `scatter_chart.title`).
+In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (such as `scatter_chart.title`).
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
@@ -174,6 +174,6 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
     [Nested]: ../../assets/user_guides/control/control5.png
 
-In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (eg. `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
+In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (such as `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
 Note that in the above example, one parameter affects multiple targets.

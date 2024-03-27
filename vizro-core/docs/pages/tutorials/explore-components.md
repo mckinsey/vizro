@@ -82,7 +82,7 @@ You can combine and arrange various types of `components` on a dashboard page. T
 The code below adds two components to the page:
 
 * A [`Card`][vizro.models.Card] to insert markdown text into the dashboard.
-* A [`Graph`][vizro.models.Graph] to illusrate GDP development per continent since 1952 as a bar chart.
+* A [`Graph`][vizro.models.Graph] to illustrate GDP development per continent since 1952 as a bar chart.
 
 !!! warning "Before you run this code in a Jupyter Notebook"
 

@@ -26,7 +26,7 @@ This guide shows you how to launch your dashboard in different ways. By default,
         ```
 - create a Python file named `app.py`.
 - type the command `python app.py` into your terminal.
-- information below will be displayed in your terminal, go to the http link.
+- information below will be displayed in your terminal. Copy the URL and open it in your browser.
 ```
 Dash is running on http://127.0.0.1:8050/
 
@@ -69,7 +69,7 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run(jupyter_mode="external")
         ```
-- by default, the mode is set to `inline` in `run()` and the dashboard will be displayed inside your jupyter environment.
+- by default, the mode is set to `inline` in `run()` and the dashboard will be displayed inside your Jupyter environment.
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
