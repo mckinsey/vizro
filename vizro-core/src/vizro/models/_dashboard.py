@@ -32,8 +32,11 @@ logger = logging.getLogger(__name__)
 
 
 def _all_hidden(components: List[Component]):
-    """Returns True if all `components` are either None and/or have hidden=True."""
-    return all(component is None or getattr(component, "hidden", False) for component in components)
+    """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
+    return all(
+        component is None or getattr(component, "hidden", False) or "d-none" in getattr(component, "className", "d-inline")
+        for component in components
+    )
 
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component

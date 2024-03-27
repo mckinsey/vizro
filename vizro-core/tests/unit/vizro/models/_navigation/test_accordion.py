@@ -5,7 +5,6 @@ import re
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -122,4 +121,4 @@ class TestAccordionBuild:
 
     def test_accordion_one_page(self):
         accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")
-        assert_component_equal(accordion, html.Div(hidden=True, id="nav-panel"))
+        assert_component_equal(accordion, dbc.Nav(className="d-none invisible", id="nav-panel"))

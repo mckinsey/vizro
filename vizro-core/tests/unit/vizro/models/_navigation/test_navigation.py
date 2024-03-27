@@ -84,7 +84,7 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(hidden=True, id="nav-bar"))
+        assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(className="d-none invisible", id="nav-bar"))
         assert_component_equal(built_navigation["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
@@ -102,5 +102,7 @@ class TestNavigationBuildMethod:
         built_navigation = navigation.build(active_page_id="Page 1")
         assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(id="nav-bar"), keys_to_strip={"children"})
         assert_component_equal(
-            built_navigation["nav-panel"], dbc.Nav(id="nav-panel", hidden=True), keys_to_strip={"children"}
+            built_navigation["nav-panel"],
+            dbc.Nav(id="nav-panel", className="d-none invisible"),
+            keys_to_strip={"children"},
         )

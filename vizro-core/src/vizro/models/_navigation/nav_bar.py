@@ -73,6 +73,6 @@ class NavBar(VizroBaseModel):
             nav_panel = built_items["nav-panel"]
         else:
             # Active page is not in navigation at all, so hide navigation panel.
-            nav_panel = dbc.Nav(hidden=True, id="nav-panel")
+            nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
         return html.Div([dbc.Navbar(nav_links, id="nav-bar"), nav_panel])
