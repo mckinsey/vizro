@@ -51,6 +51,8 @@ nav:
       - Contribute to Vizro: pages/development/contributing.md
       - Documentation style: pages/development/documentation-style-guide.md
       - Authors: pages/development/authors.md
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
