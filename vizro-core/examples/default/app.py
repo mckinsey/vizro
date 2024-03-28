@@ -36,14 +36,14 @@ print(f"_cache_arguments: {data_manager['gapminder2']._cache_arguments}")
 def delete_memoized_cache(delete_button_id_n_clicks):
     """Delete one memoized cache."""
     if delete_button_id_n_clicks:
-        data_manager._cache.delete_memoized(data_manager._get_original_data, data_manager, "gapminder")
+        data_manager.cache.delete_memoized(data_manager._get_original_data, data_manager, "gapminder")
 
 
 @capture("action")
 def empty_cache(empty_button_id_n_clicks):
     """Empty the entire cache."""
     if empty_button_id_n_clicks:
-        data_manager._cache.cache.clear()
+        data_manager.cache.cache.clear()
 
 
 page = vm.Page(
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     #     "CACHE_THRESHOLD": 20,  # The maximum number of items the cache can hold
     #     "CACHE_DEFAULT_TIMEOUT": 3000,  # Unit of time is seconds
     # }
-    data_manager._cache.config = {
+    data_manager.cache.config = {
         "CACHE_TYPE": "RedisCache",
         "CACHE_REDIS_URL": "redis://localhost:6379/0",
         "CACHE_DEFAULT_TIMEOUT": 60,

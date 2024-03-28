@@ -33,7 +33,7 @@ data_manager["gapminder_default_expire"] = retrieve_gapminder
 data_manager["gapminder_fast_expire"] = retrieve_gapminder
 data_manager["gapminder_fast_expire"]._timeout = 5
 
-data_manager._cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 20})
+data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 20})
 # data_manager._cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT":
 # 20})
 

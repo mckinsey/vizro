@@ -1,10 +1,12 @@
 import logging
 import os
+import warnings
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 import dash
 import flask
+from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
@@ -35,7 +37,7 @@ class Vizro:
             """Serve vizro static contents."""
             return flask.send_from_directory(self._lib_assets_folder, filepath)
 
-        data_manager._cache.init_app(self.dash.server)
+        data_manager.cache.init_app(self.dash.server)
 
     def build(self, dashboard: Dashboard):
         """Builds the dashboard.
@@ -62,6 +64,12 @@ class Vizro:
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
+
+        if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:
+            warnings.warn(
+                "SimpleCache is designed to support only single process environments. If you would like to use multiple "
+                "processes then you should change to a cache that supports it such as FileSystemCache or RedisCache."
+            )
 
         self.dash.run(*args, **kwargs)
 

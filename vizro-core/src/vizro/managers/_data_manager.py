@@ -17,19 +17,13 @@ ComponentID = str
 DatasetName = str
 pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
-# _caches = {"simple": Cache(config={"CACHE_TYPE": "SimpleCache"}), "null": Cache(config={"CACHE_TYPE": "NullCache"})}
-# don't want this for now but might have in future.
-# how to turn memoize off? For now just specify nullcache. Maybe in future have _dataset._cache = False as shortcut for
-# this. Implementation could be using unless or nullcache or if conditional.
-# If want to turn memoize off for one dataset, basically just set low timeout for now?
+# If want to turn memoize off for one dataset, basically just set low timeout for now.
 # timeout=0 means it never expires. 0 means memoize forever and never refresh -> never re-run function.
 # Ones set with timeout=0 can still be manually refreshed with forced_update.
 
 # TODO: test, idea 2 (see shelf)
 #  whether we still need  components to dataset mapping - we don't but save this for future PR. Put mapping to
 #  dataset in callable model itself. So it's still one DS to many components but no need to store mapping here.
-#  Call it _cache_timeout? Only if might have cache_update etc. in future. Think about refresh_cache function - see
-#  shelf
 
 # Try out callable with parametrised args like Max example
 
@@ -49,12 +43,9 @@ SimpleCache: Simple memory memoize for single process environments. This class e
 development server and is not 100% thread safe.
 CONCLUSION: SimpleCache only good for single process with gunicorn or flask.
 As soon as move to multiple workers, need proper cache -> yes.
-Note threaded=True by default with run and probably shouldn't change that (?). And SimpleCache not 100%
-thread-safe.
 Problem with cache not shared between workers while running is not just inefficiency but that invalidating
 cache will not work properly.
-But NullCache would probably be too slow as default.
-Use SimpleCache by default. Set no timeout or default 5 mins?"""
+"""
 
 import wrapt
 
@@ -62,13 +53,13 @@ import wrapt
 # wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance._timeout)
 # are required as arguments.
 @wrapt.decorator
-def memoize(wrapped: Callable, instance: _Dataset, args, kwargs):
+def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
     """Caches the result of wrapped function, taking its arguments into account in the cache key.
 
     This delegates to flask_caching.memoize functionality, but with an important modification. flask_caching.memoize
     is designed to apply the same timeout to every call of the function or bound method, but we want to have a
     dataset-dependent timeout. This means rewriting the wrapped function's __qualname__ so that different instances
-    of _Dataset have completely independent caches. Without this, flask_caching.utils.function_namespace gives the
+    of Dataset have completely independent caches. Without this, flask_caching.utils.function_namespace gives the
     same namespace for each, which means that the timeouts cannot be set independently.
 
     The following things *do not* work to achieve the same thing - there will still be interference between
@@ -84,29 +75,28 @@ def memoize(wrapped: Callable, instance: _Dataset, args, kwargs):
 
     Args:
         wrapped: function that will be memoized.
-        instance: _Dataset object to which wrapped is bound.
+        instance: Dataset object to which wrapped is bound.
         args: positional arguments supplied to wrapped, taken into account for generating cache key.
         kwargs: keyword arguments supplied to wrapped, taken into account for generating cache key.
 
     Returns:
         Memoized call.
     """
-    # Before altering, wrapped.__func__.__qualname__ is "_Dataset.__call__"
-    # After altering, it becomes _Dataset.__call__.<vizro.managers._data_manager._Dataset object at 0x11d5fc2d0>
+    # Before altering, wrapped.__func__.__qualname__ is "Dataset.__call__"
+    # After altering, it becomes Dataset.__call__.<vizro.managers._data_manager.Dataset object at 0x11d5fc2d0>
     # where the repr(instance) depends on id(instance).
     # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
     # called so will be different every time and not ever hit the cache.
     wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
-    return data_manager._cache.memoize(timeout=instance._timeout)(wrapped)(*args, **kwargs)
+    return data_manager.cache.memoize(timeout=instance._timeout)(wrapped)(*args, **kwargs)
 
 
-class _Dataset:
+class Dataset:
     def __init__(self, load_data: pd_LazyDataFrame, /):
         self.__load_data: pd_LazyDataFrame = load_data
-        # timeout will probably become public in future.
-        self._timeout: Optional[int] = None
-        # We might also want a _cache_arguments dictionary in future that allows user to customise more than just
-        # timeout, but no rush to do this.
+        self.timeout: Optional[int] = None
+        # We might also want a self.cache_arguments dictionary in future that allows user to customise more than just
+        # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
     @memoize
     def __call__(self) -> pd.DataFrame:
@@ -131,7 +121,7 @@ class _Dataset:
         on __repr__.
 
         In future we might like to change the cache so that it works on dataset name rather than the place in memory.
-        This would necessitate a new _Dataset._name attribute. This would get us closer to getting gunicorn to work
+        This would necessitate a new Dataset._name attribute. This would get us closer to getting gunicorn to work
         without relying on --preload, although it would not get all the way there:
             * model_manager would need to fix a random seed or alternative solution (just like Dash does for its
             component ids)
@@ -145,28 +135,11 @@ class _Dataset:
         return super().__repr__()
 
 
-#
-# class _Dataset:
-#     """A dataset with flask-caching config attached.
-#
-#     Examples:
-#         >>> import plotly.express as px
-#         >>> data_manager["iris"] = pd.DataFrame()
-#         >>> data_manager["iris"]._cache_arguments = {"timeout": 600}
-#     """
-# Old notes:
-# # Options for configuring per-dataset arguments:
-# # 1.
+# data_manager.cache = ...
 # data_manager["iris"] = lambda: pd.DataFrame()
-# data_manager["iris"].set_cache(timeout=50)
-#
-#
-# # 2.
-# class VizroDataSet:
-#     pass
-#
-#
-# data_manager["iris"] = VizroDataSet(lambda: pd.DataFrame(), timeout=50)
+# data_manager["iris"].timeout = 50
+# Maybe in future:
+# data_manager["iris"] = Dataset(lambda: pd.DataFrame(), timeout=50)
 
 
 class DataManager:
@@ -180,15 +153,12 @@ class DataManager:
 
     def __init__(self):
         """Initializes the `DataManager` object."""
-        self.__lazy_data: Dict[DatasetName, _Dataset] = {}
-        self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
-        self.__component_to_original: Dict[ComponentID, DatasetName] = {}
+        self.__datasets: Dict[DatasetName, Dataset] = {}
+        self.__component_to_dataset: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
-        self._cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+        self.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
         # Note possibility of accepting just config dict in future
 
-    # AM: consider if this should also call the lazy data to populate the cache? Probably doesn't matter.
-    # Probably not because then it would load up all data even in not used.
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
@@ -196,59 +166,47 @@ class DataManager:
         This is the only user-facing function when configuring a simple dashboard. Others are only used internally
         in Vizro or advanced users who write their own actions.
         """
-        if dataset_name in self.__original_data or dataset_name in self.__lazy_data:
+        if dataset_name in dataset_name in self.__datasets:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
-            self.__lazy_data[dataset_name] = _Dataset(data)
+            self.__datasets[dataset_name] = Dataset(data)
         elif isinstance(data, pd.DataFrame):
-            self.__original_data[dataset_name] = data  # AM: should also put into Dataset?
+            self.__datasets[dataset_name] = Dataset(lambda: data)
         else:
             raise TypeError(
-                f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns pandas DataFrame."
+                f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns a pandas DataFrame."
             )
 
-    def __getitem__(self, dataset_name: DatasetName) -> _Dataset:
-        """Returns the `_Dataset` object associated with `dataset_name`."""
-        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
-            raise KeyError(f"Dataset {dataset_name} does not exist.")
-        if dataset_name in self.__original_data:
-            # no cache available
-            # AM: should always wrap into Dataset to make this consistent?
-            raise ValueError(f"Dataset {dataset_name} is not lazy.")
-        if dataset_name in self.__lazy_data:
-            return self.__lazy_data[dataset_name]
+    def __getitem__(self, dataset_name: DatasetName) -> Dataset:
+        """Returns the `Dataset` object associated with `dataset_name`."""
+        try:
+            return self.__datasets[dataset_name]
+        except KeyError as exc:
+            raise KeyError(f"Dataset {dataset_name} does not exist.") from exc
 
     # happens before dashboard build
     @_state_modifier
     def _add_component(self, component_id: ComponentID, dataset_name: DatasetName):
         """Adds a mapping from `component_id` to `dataset_name`."""
-        if dataset_name not in self.__original_data and dataset_name not in self.__lazy_data:
+        if dataset_name not in self.__datasets:
             raise KeyError(f"Dataset {dataset_name} does not exist.")
-        if component_id in self.__component_to_original:
+        if component_id in self.__component_to_dataset:
             raise ValueError(
                 f"Component with id={component_id} already exists and is mapped to dataset "
-                f"{self.__component_to_original[component_id]}. Components must uniquely map to a dataset across the "
+                f"{self.__component_to_dataset[component_id]}. Components must uniquely map to a dataset across the "
                 f"whole dashboard. If you are working from a Jupyter Notebook, please either restart the kernel, or "
                 f"use 'from vizro import Vizro; Vizro._reset()`."
             )
-        self.__component_to_original[component_id] = dataset_name
+        self.__component_to_dataset[component_id] = dataset_name
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
         """Returns the original data for `component_id`."""
-        if component_id not in self.__component_to_original:
+        if component_id not in self.__component_to_dataset:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-        dataset_name = self.__component_to_original[component_id]
-
-        if dataset_name in self.__lazy_data:
-            logger.debug(f"Calling dataset %s with id %s", dataset_name, id(self[dataset_name]))
-            return self[dataset_name]()
-        else:  # dataset_name is in self.__original_data
-            # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
-            # to not do any inplace=True operations, but probably safest to leave it here.
-            return self.__original_data[dataset_name].copy()
-
-    # TODO: consider implementing __iter__ to make looping through datasets easier. Might not be worth doing though.
+        dataset_name = self.__component_to_dataset[component_id]
+        logger.debug(f"Calling dataset %s with id %s", dataset_name, id(self[dataset_name]))
+        return self[dataset_name]()
 
     # TODO: we should be able to remove this soon. Try to avoid using it.
     def _has_registered_data(self, component_id: ComponentID) -> bool:
