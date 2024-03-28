@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import TypedDict
 
-from dash import html
+import dash_bootstrap_components as dbc
 
 from vizro.managers import model_manager
 
@@ -30,4 +30,4 @@ def _validate_pages(pages):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_NavBuildType = TypedDict("_NavBuildType", {"nav-bar": html.Div, "nav-panel": html.Div})
+_NavBuildType = TypedDict("_NavBuildType", {"nav-bar": dbc.Navbar, "nav-panel": dbc.Nav})
