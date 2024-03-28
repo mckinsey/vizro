@@ -124,8 +124,10 @@
 
 #nav-bar {
   align-items: center;
+  background: inherit !important;
   display: inline-flex;
   flex-direction: column;
+  padding: 0;
 }
 
 .nav-bar-icon-link {

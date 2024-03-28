@@ -5,7 +5,6 @@ import re
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
-from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -85,23 +84,25 @@ class TestNavigationBuildMethod:
         navigation = vm.Navigation(pages=pages)
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(built_navigation["nav-bar"], html.Div(hidden=True, id="nav-bar"))
-        assert_component_equal(built_navigation["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(className="d-none invisible", id="nav-bar"))
+        assert_component_equal(built_navigation["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_non_default_nav_selector_pags_as_dict(self, pages_as_dict, built_nav_link=None):
         navigation = vm.Navigation(pages=pages_as_dict, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(built_navigation["nav-bar"], html.Div(id="nav-bar"), keys_to_strip={"children"})
-        assert_component_equal(built_navigation["nav-panel"], html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(id="nav-bar"), keys_to_strip={"children"})
+        assert_component_equal(built_navigation["nav-panel"], dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(built_navigation["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
     def test_non_default_nav_selector_pages_as_list(self, pages_as_list):
         navigation = vm.Navigation(pages=pages_as_list, nav_selector=vm.NavBar())
         navigation.pre_build()
         built_navigation = navigation.build(active_page_id="Page 1")
-        assert_component_equal(built_navigation["nav-bar"], html.Div(id="nav-bar"), keys_to_strip={"children"})
+        assert_component_equal(built_navigation["nav-bar"], dbc.Navbar(id="nav-bar"), keys_to_strip={"children"})
         assert_component_equal(
-            built_navigation["nav-panel"], html.Div(id="nav-panel", hidden=True), keys_to_strip={"children"}
+            built_navigation["nav-panel"],
+            dbc.Nav(id="nav-panel", className="d-none invisible"),
+            keys_to_strip={"children"},
         )
