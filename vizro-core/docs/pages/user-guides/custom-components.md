@@ -266,11 +266,13 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
-# Custom component with custom action
+## Custom component with custom action
 
-Custom components can be used as inputs to custom actions.
+Custom components can be used as inputs to, or outputs of custom actions. In the examples below we will explore both options.
 
-Following the above instructions to create a custom component, we ended with the below `OffCanvas` component.
+### Custom component as input/output of custom action
+
+Following the instructions above to create a custom component, results in this `OffCanvas` component:
 
 ```py
 class OffCanvas(vm.VizroBaseModel):
@@ -290,19 +292,8 @@ class OffCanvas(vm.VizroBaseModel):
             ]
         )
 ```
-To enable our custom component to work with our custom action, we need to add few additional lines of code.
 
-1. First, you have to add `actions` argument to your custom component. Type of `actions` argument is `List[Action]`.
-2. Next step is to define `_input_property` of the component. `_input_property` is the property that is used as the input to the custom action callback
-   ```py
-    _input_property: str = PrivateAttr("is_open")
-   ```
-3. Next, you need to `_set_actions`. By setting action, change in 'is_open' property of our custom component will trigger the action.
-   ```py
-    _set_actions = _action_validator_factory("is_open")
-   ```
-
-After you have completed the above steps, it is time to write your custom [action]('user-guides/custom-actions.md').
+After you have completed the steps above, it is time to write your [custom action]('user-guides/custom-actions.md').
 
    ```py
     @capture("action")
@@ -312,10 +303,10 @@ After you have completed the above steps, it is time to write your custom [actio
         return is_open
    ```
 
-Add our custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
+Add the custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
 
 
-??? example "Example of the use of custom component with custom actions"
+??? example "Example of the use of custom component with actions"
 
     === "app.py"
         ``` py
@@ -327,13 +318,7 @@ Add our custom action `open_offcanvas` as a `function` argument inside the [`Act
         from dash import html
         from vizro import Vizro
 
-        try:
-            from pydantic.v1 import Field, PrivateAttr
-        except ImportError:
-            from pydantic import PrivateAttr
-
         from vizro.models import Action
-        from vizro.models._action._actions_chain import _action_validator_factory
         from vizro.models.types import capture
 
 
@@ -342,10 +327,6 @@ Add our custom action `open_offcanvas` as a `function` argument inside the [`Act
             type: Literal["offcanvas"] = "offcanvas"
             title: str
             content: str
-            actions: List[Action] = []
-
-            _input_property: str = PrivateAttr("is_open")  # (1)!
-            _set_actions = _action_validator_factory("is_open")  # (2)!
 
             def build(self):
                 return html.Div(
@@ -397,14 +378,111 @@ Add our custom action `open_offcanvas` as a `function` argument inside the [`Act
         Vizro().build(dashboard).run()
 
         ```
-
-        1.  Here we set the property that is used as the input to the custom action callback.
-        2.  Here we set action. Change in 'is_open' property of our custom component will trigger the action.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via python configuration
         ```
+    === "Result"
+        [![CustomComponent3]][CustomComponent3]
 
+    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.png
+
+
+### Triggering actions with a custom component
+
+As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
+
+To enable the custom component to work with the custom action, we need to add some additional lines of code:
+
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
+2. **Set the action through `_set_actions`**. In doing so, any change in the `active_index` property of the custom component triggers the action.
+   ```py
+    _set_actions = _action_validator_factory("active_index")
+   ```
+
+
+??? example "Example of triggering action with custom component"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        from dash import html
+        from vizro import Vizro
+
+        try:
+            from pydantic.v1 import Field, PrivateAttr
+        except ImportError:
+            from pydantic import PrivateAttr
+
+        from vizro.models import Action
+        from vizro.models._action._actions_chain import _action_validator_factory
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class Carussel(vm.VizroBaseModel):
+        type: Literal["carussel"] = "carussel"
+        items: List
+        actions: List[Action] = []
+
+        _set_actions = _action_validator_factory("active_index")  # (1)!
+
+        def build(self):
+            return dbc.Carousel(
+                id=self.id,
+                items=self.items,
+            )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", Carussel)
+
+        # 3. Create custom action
+        @capture("action")
+        def carussel(active_index):
+            if active_index:
+                return "Second slide"
+
+            return "First slide
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Card(text="First slide", id="carussel-card"),
+                Carussel(
+                    id="carrusel",
+                    items=[
+                        {"key": "1", "src": "path_to_your_image"},
+                        {"key": "2", "src": "path_to_your_image"},
+                    ],
+                    actions=[
+                        vm.Action(
+                            function=carussel(),
+                            inputs=["carrusel.active_index"],
+                            outputs=["carussel-card.children"]
+                        )
+                    ]
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+
+        1.  Here we set the action so a change in the `active_index` property of the custom component triggers the action.
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomComponent4]][CustomComponent4]
+
+    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.png
 
 ???+ warning
 
