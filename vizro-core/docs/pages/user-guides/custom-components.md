@@ -268,7 +268,7 @@ vm.Page.add_type("components", Jumbotron)
 
 ## Custom component with custom action
 
-Custom components can be used as inputs to, or outputs of custom actions. In the examples below we will explore both options.
+Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
 
 ### Custom component as input/output of custom action
 
@@ -293,7 +293,7 @@ class OffCanvas(vm.VizroBaseModel):
         )
 ```
 
-After you have completed the steps above, it is time to write your [custom action]('../user-guides/custom-actions.md').
+After you have completed the steps above, it is time to write your [custom action](../user-guides/custom-actions.md).
 
    ```py
     @capture("action")
@@ -392,10 +392,11 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
 
-To enable the custom component to work with the custom action, we need to add some additional lines of code:
-
 1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
-2. **Set the action through `_set_actions`**. In doing so, any change in the `active_index` property of the custom component triggers the action.
+   ```py
+    actions: List[Action] = []
+   ```
+2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
    ```py
     _set_actions = _action_validator_factory("active_index")
    ```
@@ -424,17 +425,17 @@ To enable the custom component to work with the custom action, we need to add so
 
         # 1. Create new custom component
         class Carussel(vm.VizroBaseModel):
-        type: Literal["carussel"] = "carussel"
-        items: List
-        actions: List[Action] = []
-
-        _set_actions = _action_validator_factory("active_index")  # (1)!
-
-        def build(self):
-            return dbc.Carousel(
-                id=self.id,
-                items=self.items,
-            )
+            type: Literal["carussel"] = "carussel"
+            items: List
+            actions: List[Action] = []
+    
+            _set_actions = _action_validator_factory("active_index")  # (1)!
+    
+            def build(self):
+                return dbc.Carousel(
+                    id=self.id,
+                    items=self.items,
+                )
 
 
         # 2. Add new components to expected type - here the selector of the parent components

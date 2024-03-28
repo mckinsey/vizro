@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add additional examples to docs of custom components use with custom actions. ([#392](https://github.com/mckinsey/vizro/pull/392))
+- Add additional examples to docs of using custom components with custom actions. ([#392](https://github.com/mckinsey/vizro/pull/392))
 
 <!--
 ### Changed
