@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data_class_action, filter_interaction
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 
@@ -16,11 +16,15 @@ dashboard = vm.Dashboard(
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(data_frame=df_gapminder),
-                    actions=[vm.Action(function=filter_interaction(
-                        targets=[
-                            "scatter",
-                            # "scatter_from_page_2",
-                        ]))
+                    actions=[
+                        vm.Action(
+                            function=filter_interaction(
+                                targets=[
+                                    "scatter",
+                                    # "scatter_from_page_2",
+                                ]
+                            )
+                        )
                     ],
                 ),
                 vm.Graph(
@@ -35,12 +39,16 @@ dashboard = vm.Dashboard(
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data_class_action(
-                        targets=[
-                            "scatter",
-                            # "scatter_from_page_2",
-                        ]
-                    ))],
+                    actions=[
+                        vm.Action(
+                            function=export_data_class_action(
+                                targets=[
+                                    "scatter",
+                                    # "scatter_from_page_2",
+                                ]
+                            )
+                        )
+                    ],
                 ),
             ],
             controls=[vm.Filter(column="continent")],
