@@ -42,6 +42,8 @@ exceptions:
   - Docker Compose
   - Docker Swarm
   - Dockerfile
+  - Filter
+  - Flask
   - FAQ
   - GitHub
   - GitHub Actions

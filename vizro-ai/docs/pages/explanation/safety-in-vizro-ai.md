@@ -6,39 +6,44 @@ We recommend users research and understand the selected model before using `vizr
 
 Users are encouraged to treat AI-generated content as supplementary, **always apply human judgment**,
 approach with caution, review the relevant [disclaimer](disclaimer.md) page, and consider the following:
-
-### 1. Hallucination and misrepresentation
 <!-- vale off -->
+### 1. Hallucination and misrepresentation
+
 Generative models can potentially generate information while appearing factual, being entirely fictitious or misleading.
 <!-- vale on -->
 The vendor models might lack real-time knowledge or events beyond its last updates.
 `vizro_ai` output may vary and you should always verify critical information.
 It is the user's responsibility to discern the accuracy, consistent, and reliability of the generated content.
 
+<!-- vale off -->
 ### 2. Unintended and sensitive output
-
+<!-- vale on -->
 The outputs from these models can be unexpected, inappropriate, or even harmful.
 Users as human in the loop is an essential part. Users must check and interpret the final output.
 It is necessary to approach the generated content with caution, especially when shared or applied in various contexts.
 
+<!-- vale off -->
 ### 3. Data privacy
-
+<!-- vale on -->
 Your data is sent to model vendors if you connect to LLMs via their APIs.
 For example, if you connect to the model "gpt-3.5-turbo-0613" from Open AI, your data will be sent to OpenAI via their API.
 Users should be cautious about sharing or inputting any personal or sensitive information.
 
+<!-- vale off -->
 ### 4. Bias and fairness
-
+<!-- vale on -->
 Generative AI can exhibit biases present in their training data.
 Users need to be aware of and navigate potential biases in generated outputs and be cautious when interpreting the generated content.
 
+<!-- vale off -->
 ### 5. Malicious use
-
+<!-- vale on -->
 These models can be exploited for various malicious activities. Users should be cautious about how and where they deploy and access such models.
 
 It's crucial for users to remain informed, cautious, and ethical in their applications.
 
-## Dependencies, code scanners and information security
+
+## Dependencies, code scanners, and information security
 
 It may occur that dependencies of `vizro_ai` get flagged by code scanners and other information security tools. As a consequence it may happen that
 `vizro_ai` also get flagged.
@@ -47,6 +52,7 @@ While we aim to resolve any flagged issues as soon as possible, there may not al
 to any functionality used in our code base or if they only concern functionality outside the scope of `vizro_ai`.
 
 In case those issues are related to code execution, note that `vizro_ai` has its own process of executing dynamic code (see [Safeguard Execution of Dynamic Code](safeguard.md)), and does not rely on its dependencies to do so.
+
 
 ## Execution of dynamic code in Vizro-AI
 

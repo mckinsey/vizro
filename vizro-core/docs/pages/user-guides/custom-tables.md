@@ -5,12 +5,12 @@ you can create a custom Dash AG Grid or Dash DataTable.
 
 One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
 
-For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), simply do the following:
+For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), do the following:
 
 - Define a function that returns a `dash_ag_grid.AgGrid` or `dash_table.DataTable` object.
 - Decorate it with the `@capture("ag_grid")` or `@capture("table")` decorator respectively.
 - The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
-- The table should be derived from and require only one `pandas.DataFrame` (e.g. any further dataframes added through other arguments will not react to dashboard components such as `Filter`).
+- The table should be derived from and require only one `pandas.DataFrame` (for example, any further dataframes added through other arguments will not react to dashboard components such as `Filter`).
 
 The following examples show a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 

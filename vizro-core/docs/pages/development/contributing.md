@@ -1,36 +1,36 @@
 ## Contributing guidelines
 
-Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate all of them. Please use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions. Before opening a pull request, please ensure you've first opened an issue to discuss the contribution.
+Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help. Use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions. Before opening a pull request, ensure you've first opened an issue to discuss the contribution.
 
 ### Found a bug?
 
-Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would greatly assist us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will promptly work on reproducing the bug you've reported and will follow up with the next steps.
+Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would help us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will try to reproduce the bug you've reported and follow up with the next steps.
 
 ### Request a feature
 
-Splendid! In order to raise a feature request, please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+Splendid! To raise a feature request, head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
 
 ### General question
 
-Nice! We are happy to receive general questions around Vizro. Please head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
+Nice! We are happy to receive general questions around Vizro. Take a look at our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
 
 ## How to interact with the repository
 
-The easiest way to get up and running quickly is to [open the repository in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=626855142). This will create a temporary development environment with all the necessary configurations, making it especially convenient for tasks like reviewing pull requests.
+The easiest way to get up and running is to [open the repository in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=626855142). This will create a temporary development environment with all the necessary configurations, making it especially convenient for tasks like reviewing pull requests.
 
 We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get started on your own machine, you should complete the following steps. Note there is _no need to set up your own virtual environment_ since Hatch takes care of that for you.
 
 1. [Install `hatch`](https://hatch.pypa.io/latest/install/) by running `brew install hatch` or `pipx install hatch` (preferable to `pip install hatch`).
 2. Clone this repository.
-3. Run `hatch -v env create` from the `vizro-core` folder of your cloned repository. This creates Hatch's `default` environment with dependencies installed and the project installed in development mode (i.e. using `pip install --editable`). It will take a few minutes to complete. All following commands should be executed from this folder as well.
+3. Run `hatch -v env create` from the `vizro-core` folder of your cloned repository. This creates Hatch's `default` environment with dependencies installed and the project installed in development mode (that is, using `pip install --editable`). It will take a few minutes to complete. All following commands should be executed from this folder as well.
 4. Run `hatch run example` to open an [example Vizro dashboard](#examples) with [Dash dev tools](https://dash.plotly.com/devtools) enabled.
-5. Edit the code to your heart's desire! Thanks to Dash dev tools' hot reloading, any changes to the example app or `vizro` source code should automatically show in your dashboard without needing refresh or restart any process.
+5. Edit the code! Thanks to Dash dev tools' hot reloading, any changes to the example app or `vizro` source code should automatically show in your dashboard without needing refresh or restart any process.
 
 !!!note
 
     The above steps are all automated in GitHub Codespaces thanks to the [devcontainer configuration](https://github.com/mckinsey/vizro/blob/main/.devcontainer/devcontainer.json), and the example dashboard should already be running on port `8050`.
 
-    If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all of Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro-core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
+    If you haven't used Hatch before, it's well worth skimming through [their documentation](https://hatch.pypa.io/), in particular the page on [environments](https://hatch.pypa.io/latest/environment/). Run `hatch env show` to show all Hatch's environments and available scripts, and take a look at [`hatch.toml`](https://github.com/mckinsey/vizro/tree/main/vizro-core/hatch.toml) to see our Hatch configuration. It is useful handy to [Hatch's tab completion](https://hatch.pypa.io/latest/cli/about/#tab-completion) to explore the Hatch CLI.
 
 ---
 
@@ -59,16 +59,16 @@ hatch run docs:serve
 
 ## Testing
 
-Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](https://jestjs.io/) frameworks, and test environments are managed by Hatch. To run all python tests, run
+Tests are handled using the [`pytest`](https://docs.pytest.org/) and [`jest`](https://jestjs.io/) frameworks, and test environments are managed by Hatch. To run all Python tests, run
 
 ```console
 hatch run test
 ```
 
-To run only python unit tests, run `hatch run test-unit`, and for python integration tests only run `hatch run test-integration`.
+To run only Python unit tests, run `hatch run test-unit`, and for Python integration tests only run `hatch run test-integration`.
 
 
-Arguments are passed through to the underlying `pytest` command, e.g.
+Arguments are passed through to the underlying `pytest` command:
 
 ```console
 hatch run test -vv
@@ -92,7 +92,7 @@ To run jest unit tests for javascript functions, run `hatch run test-js`.
 Note that Node.js is required to run tests written in the jest framework. If you don't have `Node.js` installed, guidelines on how to install Node.js will appear when you run the command: `hatch run test-js`.
 Otherwise, if `Node.js` is installed, then the same command (`hatch run test-js`) runs jest unit tests.
 
-Arguments are passed through to the underlying `npx jest` command, e.g.
+Arguments are passed through to the underlying `npx jest` command:
 
 ```console
 hatch run test-js --help
@@ -110,7 +110,7 @@ The JSON schema in [`schemas`](https://github.com/mckinsey/vizro/tree/main/vizro
 
 ## Pre-commit hooks (for linting etc.)
 
-All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks and specified in [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml). Configuration for tools is additionally given in [`pyproject.toml`](https://github.com/mckinsey/vizro/blob/main/pyproject.toml), e.g.
+All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks and specified in [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml). Configuration for tools is additionally given in [`pyproject.toml`](https://github.com/mckinsey/vizro/blob/main/pyproject.toml):
 
 ```toml
 [tool.black]
@@ -118,12 +118,12 @@ target-version = ["py37"]
 line-length = 120
 ```
 
-We use [`pre-commit ci`](https://pre-commit.ci/) to automatically fix all the linting checks that we can (e.g. `black` formatting) when a PR is pushed. Other linting failures (e.g. `mypy`) need manual intervention from the developer.
+We use [`pre-commit ci`](https://pre-commit.ci/) to automatically fix all the linting checks that we can (with `black` formatting) when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
 
 To run pre-commit hooks locally, there are two options:
 
-1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, please read below for an explanation and how to install `go`.
-2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run e.g. `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
+1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, you should read below for an explanation and how to install `go`.
+2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
 
 Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`. Once per month, `pre-commit ci` raises a PR to do so.
 
@@ -133,7 +133,7 @@ We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We 
 
 1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained in the [Go documentation](https://go.dev/doc/install).
 2. For that reason `hatch run lint` skips the secret scans, to function on all machines.
-3. To run a secret-scan, simply run `hatch run secrets`.
+3. To run a secret-scan, run `hatch run secrets`.
 4. Secret scans will run on CI, but it is highly recommended to check for secrets **before pushing to the remote repository** and ideally also before even committing.
 
 When executing the secret scan, there are two modes: `protect` can discover secrets in staged files, `detect` does so in the commit history.
@@ -161,17 +161,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Vizro uses [scriv](https://pypi.org/project/scriv/) to build and maintain a meaningful `CHANGELOG.md`. When creating a PR, the developer needs to ensure that
 a changelog fragment has been created in the folder `changelog.d`. This fragment is a small `.md` file describing the changes of the current PR that should be mentioned in the `CHANGELOG.md` entry of the next release.
 
-You can easily create such a fragment by running
+You can create such a fragment by running
 
 ```bash
 hatch run changelog:add
 ```
 
-Please begin by uncommenting the relevant section(s) you wish to describe. If your PR includes changes that are not relevant to `CHANGELOG.md`, please leave everything commented out. If you are uncertain about what to add or whether to add anything, please refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
+Begin by uncommenting the relevant section(s) you wish to describe. If your PR includes changes that are not relevant to `CHANGELOG.md`, leave everything commented out. If you are uncertain about what to add or whether to add anything, refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb should be, if in doubt, or if the user is affected in any way, it should be described in the `CHANGELOG.md`.
 
 ## Releases
 
-Vizro's version is given by `__version__` in [`src/vizro/__init__.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/__init__.py). To bump the version, run, e.g. `hatch version minor`. See [Hatch's documentation](https://hatch.pypa.io/latest/version/) for more details.
+Vizro's version is given by `__version__` in [`src/vizro/__init__.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/__init__.py). To bump the version, run `hatch version minor`. See [Hatch's documentation](https://hatch.pypa.io/latest/version/) for more details.
 
 To build the source distribution and wheel, run `hatch build`.
 
@@ -181,21 +181,23 @@ The Vizro team pledges to foster and maintain a friendly community. We enforce a
 
 ## Frequently asked questions
 
+<!-- vale off -->
 ### How do I add a dependency?
+<!-- vale on -->
 
-Add it to the list of `dependencies` in `hatch.toml` (if you are adding a dependency for development) or in `pyproject.toml` (if you are adding a dependency for the actual package). The next time the `default` environment is used (e.g. with `hatch shell`), the dependency will be automatically installed.
+Add it to the list of `dependencies` in `hatch.toml` (if you are adding a dependency for development) or in `pyproject.toml` (if you are adding a dependency for the actual package). The next time the `default` environment is used (with `hatch shell`), the dependency will be automatically installed.
 
 ### What about a lock file?
 
-We do not have and should not need a dependency lock file (see [this Hatch FAQ](https://hatch.pypa.io/latest/meta/faq/#libraries-vs-applications)). If one is for some reason eventually required, good options would be [pip-tools](https://github.com/jazzband/pip-tools), [`hatch-pip-deepfreeze`](https://github.com/sbidoul/hatch-pip-deepfreeze) or just `pip freeze`.
-
+We do not have and should not need a dependency lock file (see [this Hatch FAQ](https://hatch.pypa.io/latest/meta/faq/#libraries-vs-applications)). If one is for some reason eventually required, good options would be [pip-tools](https://github.com/jazzband/pip-tools), [`hatch-pip-deepfreeze`](https://github.com/sbidoul/hatch-pip-deepfreeze) or `pip freeze`.
+<!-- vale off -->
 ### How do I find the path to the Python executable used?
-
-`hatch run pypath` displays the path to the Python executable used in the `default` environment. This is useful e.g. for setting up a run configuration in PyCharm.
+<!-- vale on -->
+`hatch run pypath` displays the path to the Python executable used in the `default` environment. This is useful in cases such as when you are setting up a run configuration in PyCharm.
 
 ### Why are we using a line length of 120 characters?
 
-This is the default value set in the Hatch template, and it feels sensible in the era of big screens. Line lengths can be discussed endlessly but ultimately this number should be agreed on by the Vizro team. See also [this article](https://knox.codes/posts/line-length-limits).
+This is the default value set in the Hatch template, and it feels sensible in the era of big screens. Line lengths can be discussed endlessly but the number should be agreed on by the Vizro team. See also [this article](https://knox.codes/posts/line-length-limits).
 
 ## Further reading and credits
 

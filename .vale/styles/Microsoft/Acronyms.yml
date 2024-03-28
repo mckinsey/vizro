@@ -15,6 +15,7 @@ exceptions:
   - CLI
   - CPU
   - CSS
+  - css
   - CSV
   - DEBUG
   - DOM

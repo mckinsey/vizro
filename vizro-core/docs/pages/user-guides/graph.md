@@ -16,7 +16,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched, but allows _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without
-    a `data_frame` argument (e.g. the [`imshow` chart](https://plotly.com/python/imshow/)), please refer to our
+    a `data_frame` argument (e.g. the [`imshow` chart](https://plotly.com/python/imshow/)), refer to our
     [guide on custom charts](custom-charts.md).
     .
 
@@ -72,7 +72,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
     [Graph]: ../../assets/user_guides/components/graph.png
 
-Note that in the above example we directly inserted the chart into the `figure` argument for the `.py` version. This is also the simplest way to connect your chart to a Pandas `DataFrame` - for other connections, please refer to [this guide on data connections](data.md). For the `yaml` version, we simply referred to the [`plotly.express`](https://plotly.com/python/plotly-express/) name by string.
+Note that in the above example we directly inserted the chart into the `figure` argument for the `.py` version. This is also the simplest way to connect your chart to a Pandas `DataFrame` - for other connections, refer to [this guide on data connections](data.md). For the `yaml` version, we referred to the [`plotly.express`](https://plotly.com/python/plotly-express/) name by string.
 
 
 ??? info "Vizro automatically sets the plotly default template"

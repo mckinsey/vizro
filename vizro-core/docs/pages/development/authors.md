@@ -36,7 +36,7 @@ Natalia Kurakina,
 [Kee Wen Ng](https://github.com/KeeWenNgQB),
 [Rashida Kanchwala](https://github.com/rashidakanchwala),
 
-with thanks to Sam Bourton and Kevin Staight for sponsorhip, inspiration and guidance,
+with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
 and special thanks to
 [Wesley Leong](https://github.com/wesleyleong), [Jonas Kemper](https://github.com/jonasrk) and team for origination and support
