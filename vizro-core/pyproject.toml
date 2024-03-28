@@ -35,8 +35,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
-  "kedro-datasets",  # no longer a dependency of kedro for kedro>=0.19.2
+  "kedro>=0.19.3",  # pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-KEDRO-6370687
   "wheel>=0.38.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413,
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
   "tornado>=6.3.2"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
