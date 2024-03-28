@@ -9,6 +9,7 @@ nav:
       - Run methods: pages/user-guides/run-vizro-ai.md
       - Create advanced charts: pages/user-guides/create-advanced-charts.md
       - Use different languages: pages/user-guides/use-different-languages.md
+      - Use VizroAi charts in dashboards: pages/user-guides/genAI-use-case.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
