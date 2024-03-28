@@ -16,7 +16,12 @@ dashboard = vm.Dashboard(
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(data_frame=df_gapminder),
-                    actions=[vm.Action(function=filter_interaction(targets=["scatter"]))],
+                    actions=[vm.Action(function=filter_interaction(
+                        targets=[
+                            "scatter",
+                            # "scatter_from_page_2",
+                        ]))
+                    ],
                 ),
                 vm.Graph(
                     id="scatter",
@@ -30,7 +35,12 @@ dashboard = vm.Dashboard(
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data_class_action(targets=["scatter"]))],
+                    actions=[vm.Action(function=export_data_class_action(
+                        targets=[
+                            "scatter",
+                            # "scatter_from_page_2",
+                        ]
+                    ))],
                 ),
             ],
             controls=[vm.Filter(column="continent")],
@@ -38,19 +48,9 @@ dashboard = vm.Dashboard(
         vm.Page(
             title="Data Table - Filter interaction",
             components=[
-                vm.Table(
-                    figure=dash_data_table(data_frame=df_gapminder),
-                    actions=[vm.Action(function=filter_interaction(targets=["scatter_2"]))],
-                ),
                 vm.Graph(
-                    id="scatter_2",
-                    figure=px.scatter(
-                        df_gapminder,
-                        x="gdpPercap",
-                        y="lifeExp",
-                        size="pop",
-                        color="continent",
-                    ),
+                    id="scatter_from_page_2",
+                    figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", color="continent"),
                 ),
             ],
             controls=[vm.Filter(column="continent")],

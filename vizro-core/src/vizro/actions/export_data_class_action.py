@@ -10,12 +10,8 @@ from vizro.models.types import CapturedActionCallable
 
 
 class ExportDataClassAction(CapturedActionCallable):
-    def __init__(self, *args, **kwargs):
-        self._args = args
-        self._kwargs = kwargs
-        # Fake initialization - to let other actions see that this one exists.
-        super().__init__(*args, **kwargs)
 
+    # TODO-actions: Maybe we can rename it to '_validation' or similar.
     def _post_init(self):
         """Post initialization is called in the vm.Action build phase, and it is used to validate and calculate the
         properties of the CapturedActionCallable. With this, we can validate the properties and raise errors before
@@ -25,26 +21,26 @@ class ExportDataClassAction(CapturedActionCallable):
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
-        targets = self._kwargs.get("targets")
+        # TODO-actions: Make targets validation reusable for other actions.
+        # TODO-actions: Rethink using self._arguments
+        targets = self._arguments.get("targets")
         if targets:
             for target in targets:
-                if target not in model_manager:
+                if self._page_id != model_manager._get_model_page_id(model_id=target):
+                    # TODO-actions: Improve error message to explain in which action the error occur.
                     raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
         else:
             targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
-        self._kwargs["targets"] = self.targets = targets
+        self._arguments["targets"] = self.targets = targets
 
         # Validate and calculate "file_format"
-        file_format = self._kwargs.get("file_format", "csv")
+        file_format = self._arguments.get("file_format", "csv")
         if file_format not in ["csv", "xlsx"]:
             raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
         if file_format == "xlsx":
             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
                 raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
-        self._kwargs["file_format"] = self.file_format = file_format
-
-        # Post initialization - to enable pure_function to use calculated input arguments like "targets".
-        super().__init__(*self._args, **self._kwargs)
+        self._arguments["file_format"] = file_format
 
     @staticmethod
     def pure_function(targets: List[str], file_format: Literal["csv", "xlsx"] = "csv", **inputs: Dict[str, Any]):

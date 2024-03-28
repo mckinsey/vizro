@@ -14,7 +14,7 @@ import vizro.actions
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, CapturedActionCallable
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ class Action(VizroBaseModel):
         #     (by adding a new inputs/outputs to the overwritten action and check if it's working as expected)
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
-        elif hasattr(self.function, "inputs") and self.function.inputs:
+        elif isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
         else:
             callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
@@ -87,12 +87,12 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
-        elif hasattr(self.function, "outputs") and self.function.outputs:
+        elif isinstance(self.function, CapturedActionCallable):
             callback_outputs = self.function.outputs
         else:
             callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
-        if hasattr(self.function, "components") and self.function.components:
+        if isinstance(self.function, CapturedActionCallable):
             action_components = self.function.components
         else:
             action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
