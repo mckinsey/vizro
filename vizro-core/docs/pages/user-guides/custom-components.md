@@ -385,7 +385,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
     === "Result"
         [![CustomComponent3]][CustomComponent3]
 
-    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.png
+    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
 
 
 ### Triggering actions with a custom component
@@ -482,7 +482,7 @@ To enable the custom component to work with the custom action, we need to add so
     === "Result"
         [![CustomComponent4]][CustomComponent4]
 
-    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.png
+    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.gif
 
 ???+ warning
 
