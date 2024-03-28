@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # correctly they would need to cast all strings to these types.
 ComponentID = str
 DatasetName = str
-pd_LazyDataFrame = Callable[[], pd.DataFrame]
+pd_DataFrameCallable = Callable[[], pd.DataFrame]
 
 # If want to turn memoize off for one dataset, basically just set low timeout for now.
 # timeout=0 means it never expires. 0 means memoize forever and never refresh -> never re-run function.
@@ -50,7 +50,7 @@ cache will not work properly.
 import wrapt
 
 
-# wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance._timeout)
+# wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
 # are required as arguments.
 @wrapt.decorator
 def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
@@ -64,7 +64,7 @@ def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
 
     The following things *do not* work to achieve the same thing - there will still be interference between
     different caches:
-    * altering wrapped.cache_timeout
+    * altering wrapped.cachetimeout
     * using make_name argument (since this is only applied after function_namespace is called)
     * including self or self._name in the load_data arguments
     * whenever function_namespace recognise the memoized function as a bound method (even when __caching_id__ is
@@ -88,12 +88,12 @@ def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
     # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
     # called so will be different every time and not ever hit the cache.
     wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
-    return data_manager.cache.memoize(timeout=instance._timeout)(wrapped)(*args, **kwargs)
+    return data_manager.cache.memoize(timeout=instance.timeout)(wrapped)(*args, **kwargs)
 
 
 class Dataset:
-    def __init__(self, load_data: pd_LazyDataFrame, /):
-        self.__load_data: pd_LazyDataFrame = load_data
+    def __init__(self, load_data: pd_DataFrameCallable, /):
+        self.__load_data: pd_DataFrameCallable = load_data
         self.timeout: Optional[int] = None
         # We might also want a self.cache_arguments dictionary in future that allows user to customise more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
@@ -160,7 +160,7 @@ class DataManager:
         # Note possibility of accepting just config dict in future
 
     @_state_modifier
-    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
+    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
 
         This is the only user-facing function when configuring a simple dashboard. Others are only used internally
