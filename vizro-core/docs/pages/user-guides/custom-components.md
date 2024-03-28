@@ -293,7 +293,7 @@ class OffCanvas(vm.VizroBaseModel):
         )
 ```
 
-After you have completed the steps above, it is time to write your [custom action]('user-guides/custom-actions.md').
+After you have completed the steps above, it is time to write your [custom action]('../user-guides/custom-actions.md').
 
    ```py
     @capture("action")
