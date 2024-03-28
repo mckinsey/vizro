@@ -428,9 +428,9 @@ As mentioned above, custom components can trigger action. To enable the custom c
             type: Literal["carussel"] = "carussel"
             items: List
             actions: List[Action] = []
-    
+
             _set_actions = _action_validator_factory("active_index")  # (1)!
-    
+
             def build(self):
                 return dbc.Carousel(
                     id=self.id,
