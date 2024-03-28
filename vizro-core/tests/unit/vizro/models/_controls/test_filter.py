@@ -5,6 +5,7 @@ from typing import Literal
 import pandas as pd
 import pytest
 import vizro.models as vm
+from asserts import assert_component_equal
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
@@ -427,6 +428,7 @@ class TestFilterBuild:
         filter = vm.Filter(column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        result = str(filter.build())
-        expected = str(test_selector.build())
-        assert result == expected
+        result = filter.build()
+        expected = test_selector.build()
+
+        assert_component_equal(result, expected)

@@ -1,10 +1,8 @@
 """Unit tests for vizro.models.Action."""
 
-import json
 import sys
 
 import pandas as pd
-import plotly
 import pytest
 from dash import Output, State, html
 
@@ -15,6 +13,7 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.actions import export_data
 from vizro.managers import model_manager
@@ -152,17 +151,13 @@ class TestActionBuild:
     """Tests action build method."""
 
     def test_custom_action_build(self, identity_action_function, custom_action_build_expected):
-        action = Action(id="action_test", function=identity_action_function())
-        result = json.loads(json.dumps(action.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(custom_action_build_expected, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        action = Action(id="action_test", function=identity_action_function()).build()
+        assert_component_equal(action, custom_action_build_expected)
 
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     def test_predefined_export_data_action_build(self, predefined_action_build_expected):
-        predefined_filter_action = model_manager["test_page"].controls[0].selector.actions[0].actions[0]
-        result = json.loads(json.dumps(predefined_filter_action.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(predefined_action_build_expected, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        predefined_filter_action = model_manager["test_page"].controls[0].selector.actions[0].actions[0].build()
+        assert_component_equal(predefined_filter_action, predefined_action_build_expected)
 
 
 class TestActionPrivateMethods:
