@@ -7,6 +7,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -47,6 +49,6 @@ class Navigation(VizroBaseModel):
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav-panel".
             # This will make it match the case e.g. nav_selector is NavBar and nav_selector.build returns html.Div
             # containing children with id="nav-bar" and id="nav-panel"
-            nav_selector = html.Div([html.Div(hidden=True, id="nav-bar"), nav_selector])
+            nav_selector = html.Div([dbc.Navbar(className="d-none invisible", id="nav-bar"), nav_selector])
 
         return nav_selector
