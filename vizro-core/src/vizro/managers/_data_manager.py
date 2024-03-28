@@ -1,4 +1,6 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+from __future__ import annotations
+
 import logging
 from typing import Callable, Dict, Optional, Union
 
@@ -17,25 +19,85 @@ pd_LazyDataFrame = Callable[[], pd.DataFrame]
 
 # _caches = {"simple": Cache(config={"CACHE_TYPE": "SimpleCache"}), "null": Cache(config={"CACHE_TYPE": "NullCache"})}
 # don't want this for now but might have in future.
-# how to turn cache off? For now just specify nullcache. Maybe in future have _dataset._cache = False as shortcut for
+# how to turn memoize off? For now just specify nullcache. Maybe in future have _dataset._cache = False as shortcut for
 # this. Implementation could be using unless or nullcache or if conditional.
-# If want to turn cache off for one dataset, basically just set low timeout for now?
-# timeout=0 means it never expires. 0 means cache forever and never refresh -> never re-run function.
+# If want to turn memoize off for one dataset, basically just set low timeout for now?
+# timeout=0 means it never expires. 0 means memoize forever and never refresh -> never re-run function.
 # Ones set with timeout=0 can still be manually refreshed with forced_update.
 
 # TODO: test, idea 2 (see shelf)
 #  whether we still need  components to dataset mapping - we don't but save this for future PR. Put mapping to
 #  dataset in callable model itself. So it's still one DS to many components but no need to store mapping here.
-#  Call it _cache_timeout? Only if might have cache_update etc. in future. Think about refresh_cache function
+#  Call it _cache_timeout? Only if might have cache_update etc. in future. Think about refresh_cache function - see
+#  shelf
 
-# Try out callable with parametrised args
+# Try out callable with parametrised args like Max example
 
-# How to actually update/invalidate/reset cache on demand? rather than just waiting for timeout.
-# Use forced_update as in shelf "This is how to refresh cache for one dataset"
+# How to actually update/invalidate/reset memoize on demand? rather than just waiting for timeout.
+# Use forced_update as in shelf "This is how to refresh memoize for one dataset"
 
+
+"""
 # Note limitation than you need to set preload
 
-# Remove _name - just there for debugging purposes
+With flask.run and multiple processes:
+- FileSystemCache: Get lots of different processes but works ok
+- SimpleCache: Get lots of different processes and doesn't work ok - get interference. Put warning in
+place to prevent this.
+
+SimpleCache: Simple memory memoize for single process environments. This class exists mainly for the
+development server and is not 100% thread safe.
+CONCLUSION: SimpleCache only good for single process with gunicorn or flask.
+As soon as move to multiple workers, need proper cache -> yes.
+Note threaded=True by default with run and probably shouldn't change that (?). And SimpleCache not 100%
+thread-safe.
+Problem with cache not shared between workers while running is not just inefficiency but that invalidating
+cache will not work properly.
+But NullCache would probably be too slow as default.
+Use SimpleCache by default. Set no timeout or default 5 mins?"""
+
+import wrapt
+
+
+# wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance._timeout)
+# are required as arguments.
+@wrapt.decorator
+def memoize(wrapped: Callable, instance: _Dataset, args, kwargs):
+    """Caches the result of wrapped function, taking its arguments into account in the cache key.
+
+    This delegates to flask_caching.memoize functionality, but with an important modification. flask_caching.memoize
+    is designed to apply the same timeout to every call of the function or bound method, but we want to have a
+    dataset-dependent timeout. This means rewriting the wrapped function's __qualname__ so that different instances
+    of _Dataset have completely independent caches. Without this, flask_caching.utils.function_namespace gives the
+    same namespace for each, which means that the timeouts cannot be set independently.
+
+    The following things *do not* work to achieve the same thing - there will still be interference between
+    different caches:
+    * altering wrapped.cache_timeout
+    * using make_name argument (since this is only applied after function_namespace is called)
+    * including self or self._name in the load_data arguments
+    * whenever function_namespace recognise the memoized function as a bound method (even when __caching_id__ is
+    defined so that Flask Caching does not fall back on __repr__ which is risky)
+
+    Another option would be to use flask_caching.cached rather than memoize, but that is generally intended only
+    for use during a request, and we want to memoize during the build stage, not just at run time.
+
+    Args:
+        wrapped: function that will be memoized.
+        instance: _Dataset object to which wrapped is bound.
+        args: positional arguments supplied to wrapped, taken into account for generating cache key.
+        kwargs: keyword arguments supplied to wrapped, taken into account for generating cache key.
+
+    Returns:
+        Memoized call.
+    """
+    # Before altering, wrapped.__func__.__qualname__ is "_Dataset.__call__"
+    # After altering, it becomes _Dataset.__call__.<vizro.managers._data_manager._Dataset object at 0x11d5fc2d0>
+    # where the repr(instance) depends on id(instance).
+    # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
+    # called so will be different every time and not ever hit the cache.
+    wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
+    return data_manager._cache.memoize(timeout=instance._timeout)(wrapped)(*args, **kwargs)
 
 
 class _Dataset:
@@ -43,73 +105,44 @@ class _Dataset:
         self.__load_data: pd_LazyDataFrame = load_data
         # timeout will probably become public in future.
         self._timeout: Optional[int] = None
-        # self._cache is the same for all datasets and is just the data_manager._cache. Only one global cache for now.
-        # TODO: just call data_manager._cache directly?
-        self._cache: Optional[Cache] = None
-        # name should never become public since it's taken from the key in data_manager.
-        # This scheme seems ugly - is there a better way? Yes - just use id(self). self._name is only here for
-        # debugging.
-        self._name: str = ""
         # We might also want a _cache_arguments dictionary in future that allows user to customise more than just
         # timeout, but no rush to do this.
 
+    @memoize
     def __call__(self) -> pd.DataFrame:
-        # In future this will probably take arguments that are passed through to _load_data in order to re-run the
-        # loading function with different arguments. We might want to use CapturedCallable for self.__load_data then.
-        logger.debug("** Calling dataset %s", self._name)
+        """Loads data.
 
-        # memoize is designed to apply the same timeout setting to every call of the function, but we want to
-        # have a dataset-dependent timeout in the same cache. The only way to do this is to write a closure and alter
-        # the function qualname used in flask_caching.utils.function_namespace so that each _Dataset instance has a
-        # different cache for load_data.
-        # The following things *do not* work to achieve the same thing - there will still be interference between
-        # different load_data caches:
-        # * altering load_data.cache_timeout
-        # * using make_name argument (since this is only applied after function_namespace is called)
-        # * including self or self._name in the load_data arguments
-        # * whenever function_namespace recognise the memoized function as a bound method (even when __caching_id__ is
-        # defined so that Flask Caching does not fall back on __repr__ which is risky)
-        # Another option would be to use cached rather than memoize, but that is generally intended only for use
-        # during a request, and we want to call _load_data during the build stage, not just at run time.
+        In future this will probably take arguments that are passed through to __load_data in order to re-run the
+        loading function with different arguments. We might want to use CapturedCallable for self.__load_data then.
+        """
+        logger.debug("Cache miss; reloading data")
+        return self.__load_data()
 
-        # HERE: maybe doing as bound method and/or using data_manager._cache rather than self._cache was actually ok and
-        # it just didn't work properly because had multiple processes with SimpleCache?
-        #
-        # With flask.run and multiple processes:
-        #  - FileSystemCache: Get lots of different processes but works ok
-        #  - SimpleCache: Get lots of different processes and doesn't work ok - get interference. Put warning in
-        #  place to prevent this.
-        # When use gunicorn with two processes:
-        #   - FileSystemCache: get initial process for loading data and then boots two processes and just uses those from then on.
-        #   Cache works correctly.
-        #  - SimpleCache: same number of processes. Cache works sort of correctly - don't have interference,
-        #    but cache not being shared between processes, as expected.
+    def __repr__(self):
+        """This is just the default repr so behaviour would be the same if we removed the function definition.
 
-        # SimpleCache: Simple memory cache for single process environments. This class exists mainly for the
-        # development server and is not 100% thread safe.
-        # As soon as move to gunicorn, need to setup proper cache -> yes. SimpleCache still works ok but not memory
-        # efficient.
-        # Note threaded=True by default with run and probably shouldn't change that (?). And SimpleCache not 100%
-        # thread-safe.
-        # Problem with cache not shard between workers while running is not just inefficiency but that invalidating
-        # cache will not work properly.
-        # But NullCache would probably be too slow as default.
-        # Use SimpleCache with no timeout as default?
+        The reason for defining this is to have somewhere to put the following warning: caching currently relies on
+        this returning a string that depends on id(self). This is relied on by flask_caching.utils.function_namespace
+        and our own memoize decorator. If this method were changed to no longer include some representation of id(self)
+        then cache keys would be mixed up.
 
-        # What should default cache be?
-        # Check preload and non-preload behaviour
-        # Clear up debugging messaging and go through above again.
-        import os
+        flask_caching make it possible to set a __cached_id__ attribute to handle this so that repr can be set
+        independently of cache key, but this doesn't seem to be well documented or work well, so it's better to rely
+        on __repr__.
 
-        logger.debug(f"{self._name=}\t{id(self)}\t{os.getpid()=}")
-
-        @self._cache.memoize(timeout=self._timeout)
-        def _load_data():
-            logger.debug("** Cache for dataset %s not found; reloading data", self._name)
-            return self.__load_data()
-
-        _load_data.uncached.__qualname__ += f"__{id(self)}"
-        return _load_data()
+        In future we might like to change the cache so that it works on dataset name rather than the place in memory.
+        This would necessitate a new _Dataset._name attribute. This would get us closer to getting gunicorn to work
+        without relying on --preload, although it would not get all the way there:
+            * model_manager would need to fix a random seed or alternative solution (just like Dash does for its
+            component ids)
+            * not clear how to handle the case of unnamed datasets, where the name is currently generated
+            automatically by the id, since without --preload this would give mismatched names. If use a random number with
+            fixed seed for this then lose advantage of multiple plots that use the same dataset having just one
+            underlying dataframe in memory.
+            * would need to make it possible to disable cache at build time so that data would be loaded once at build
+            time and then again once at runtime, which is generally not what we want
+        """
+        return super().__repr__()
 
 
 #
@@ -168,7 +201,6 @@ class DataManager:
 
         if callable(data):
             self.__lazy_data[dataset_name] = _Dataset(data)
-            self.__lazy_data[dataset_name]._name = dataset_name
         elif isinstance(data, pd.DataFrame):
             self.__original_data[dataset_name] = data  # AM: should also put into Dataset?
         else:
@@ -209,19 +241,12 @@ class DataManager:
         dataset_name = self.__component_to_original[component_id]
 
         if dataset_name in self.__lazy_data:
+            logger.debug(f"Calling dataset %s with id %s", dataset_name, id(self[dataset_name]))
             return self[dataset_name]()
-
         else:  # dataset_name is in self.__original_data
             # Return a copy so that the original data cannot be modified. This is not necessary if we are careful
             # to not do any inplace=True operations, but probably safest to leave it here.
             return self.__original_data[dataset_name].copy()
-
-    def _init_cache(self, app: flask.Flask):
-        """Sets the default cache for all datasets to be the same as the data_manager cache and initializes cache."""
-        # Need to inject it here rather than in setitem so that you can set cache *after* adding things to DM
-        for dataset in self.__lazy_data.values():
-            dataset._cache = self._cache
-        self._cache.init_app(app)
 
     # TODO: consider implementing __iter__ to make looping through datasets easier. Might not be worth doing though.
 

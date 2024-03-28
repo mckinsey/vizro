@@ -9,6 +9,11 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
+import logging
+
+log = logging.getLogger("werkzeug")
+log.setLevel(logging.ERROR)
+
 
 def retrieve_gapminder():
     """This is a function that returns gapminder data."""
@@ -29,6 +34,8 @@ data_manager["gapminder_fast_expire"] = retrieve_gapminder
 data_manager["gapminder_fast_expire"]._timeout = 5
 
 data_manager._cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 20})
+# data_manager._cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT":
+# 20})
 
 
 @capture("action")
