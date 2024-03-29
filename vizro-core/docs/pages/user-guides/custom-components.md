@@ -266,11 +266,11 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
-## Custom component with custom action
+## How to use custom components with custom actions
 
 Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
 
-### Custom component as input/output of custom action
+### Custom components as inputs/outputs of custom actions
 
 Following the instructions above to create a custom component, results in this `OffCanvas` component:
 
@@ -388,7 +388,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
     [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
 
 
-### Triggering actions with a custom component
+### How to trigger actions with a custom component
 
 As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
 
