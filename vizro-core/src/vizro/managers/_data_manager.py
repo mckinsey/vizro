@@ -10,7 +10,7 @@ from vizro.managers._managers_utils import _state_modifier
 # correctly they would need to cast all strings to these types.
 ComponentID = str
 DatasetName = str
-pd_LazyDataFrame = Callable[[], pd.DataFrame]
+pd_DataFrameCallable = Callable[[], pd.DataFrame]
 
 
 class DataManager:
@@ -23,13 +23,13 @@ class DataManager:
     """
 
     def __init__(self):
-        self.__lazy_data: Dict[DatasetName, pd_LazyDataFrame] = {}
+        self.__lazy_data: Dict[DatasetName, pd_DataFrameCallable] = {}
         self.__original_data: Dict[DatasetName, pd.DataFrame] = {}
         self.__component_to_original: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
 
     @_state_modifier
-    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_LazyDataFrame]):
+    def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
         """Adds `data` to the `DataManager` with key `dataset_name`.
 
         This is the only user-facing function when configuring a simple dashboard. Others are only used internally
