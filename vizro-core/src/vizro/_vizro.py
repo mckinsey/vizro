@@ -5,6 +5,7 @@ from typing import List
 
 import dash
 import dash_bootstrap_components as dbc
+import flask
 from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
@@ -46,6 +47,20 @@ class Vizro:
         ]
         self.dash.config.external_stylesheets.extend(vizro_css)
         self.dash.config.external_scripts.extend(vizro_js)
+
+        # Serve all assets (including files other than css and js) that live in vizro_assets_folder at the
+        # route /vizro. Based on code in Dash.init_app that serves assets_folder. This respects the case that the
+        # dashboard is not hosted at the root of the server, e.g. http://www.example.com/dashboard/vizro.
+        routes_pathname_prefix = self.dash.config.routes_pathname_prefix
+        blueprint_prefix = routes_pathname_prefix.replace("/", "_").replace(".", "_")
+        self.dash.server.register_blueprint(
+            flask.Blueprint(
+                f"{blueprint_prefix}vizro_assets",
+                self.dash.config.name,
+                static_folder=vizro_assets_folder,
+                static_url_path=routes_pathname_prefix + STATIC_URL_PREFIX,
+            )
+        )
 
         data_manager.cache.init_app(self.dash.server)
 
