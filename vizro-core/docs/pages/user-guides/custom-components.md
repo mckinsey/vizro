@@ -392,11 +392,11 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
+1. Add the `actions` argument to your custom component. The type of the `actions` argument is `List[Action]`.
    ```py
     actions: List[Action] = []
    ```
-2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+2. Set the action through `_set_actions`. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
    ```py
     _set_actions = _action_validator_factory("active_index")
    ```
