@@ -83,9 +83,17 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-### 5. Get an explanation with your chart
+!!! Tip "How to get the code for the chart"
 
-Passing `explain=True` to the `plot()` method provides insights to explain the rendered chart in detail. Let's create another example to illustrate the information returned:
+    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+
+    ```python
+    fig = px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year':'Year', 'gdpPercap':'GDP Per Cap'}, title='')
+    ```
+
+### 4. Get an explanation with your chart
+
+Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
 
 !!! example "Specify  `explain=True`"
 
@@ -98,7 +106,7 @@ Passing `explain=True` to the `plot()` method provides insights to explain the r
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
-### 6. Explore further
+### 5. Explore further
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
