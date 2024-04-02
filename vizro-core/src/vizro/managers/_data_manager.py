@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 from typing import Callable, Dict, Optional, Union
 
-import flask
 import pandas as pd
 from flask_caching import Cache
 
@@ -238,7 +237,7 @@ class DataManager:
         if component_id not in self.__component_to_dataset:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_dataset[component_id]
-        logger.debug(f"Loading dataset %s with id %s", dataset_name, id(self[dataset_name]))
+        logger.debug("Loading dataset %s with id %s", dataset_name, id(self[dataset_name]))
         return self[dataset_name].load()
 
     # TODO: we should be able to remove this soon. Try to avoid using it.

@@ -1,4 +1,5 @@
 """Example to show dashboard configuration."""
+import logging
 import os
 
 from flask_caching import Cache
@@ -8,8 +9,6 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models.types import capture
-
-import logging
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
