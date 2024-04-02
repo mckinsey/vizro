@@ -1,0 +1,25 @@
+.tooltip-inner {
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-0);
+  filter: drop-shadow(0 2px 2px #141721);
+  font-size: var(--text-size-01);
+  font-weight: var(--text-weight-light);
+  letter-spacing: var(--letter-spacing-help-text);
+  line-height: var(--text-size-03);
+  max-width: 180px;
+  overflow-wrap: break-word;
+  padding: var(--spacing-01) var(--spacing-02);
+  white-space: pre-wrap;
+}
+
+.bs-tooltip-end .tooltip-arrow::before {
+  right: -3px;
+}
+
+.tooltip.show {
+  opacity: 1;
+}
+
+.tooltip {
+  pointer-events: none;
+}

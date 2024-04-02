@@ -85,9 +85,9 @@ instance/
 # Scrapy
 .scrapy
 
-# Sphinx
-docs/_build/
-my-project/site/
+# mkdocs
+vizro-core/site
+vizro-ai/site
 
 # PyBuilder
 .pybuilder/

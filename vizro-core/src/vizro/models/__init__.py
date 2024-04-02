@@ -2,7 +2,8 @@
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
 from ._components import Card, Container, Graph, Table, Tabs
-from ._components.form import Button, Checklist, Dropdown, RadioItems, RangeSlider, Slider
+from ._components import AgGrid
+from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
@@ -13,9 +14,12 @@ from ._layout import Layout
 from ._page import Page
 
 Tabs.update_forward_refs(Container=Container)
-Container.update_forward_refs(Button=Button, Card=Card, Graph=Graph, Layout=Layout, Table=Table, Tabs=Tabs)
+Container.update_forward_refs(
+    AgGrid=AgGrid, Button=Button, Card=Card, Graph=Graph, Layout=Layout, Table=Table, Tabs=Tabs
+)
 Page.update_forward_refs(
     Accordion=Accordion,
+    AgGrid=AgGrid,
     Button=Button,
     Card=Card,
     Container=Container,
@@ -29,16 +33,17 @@ Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLi
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 NavBar.update_forward_refs(NavLink=NavLink)
 NavLink.update_forward_refs(Accordion=Accordion)
-
 # Please keep alphabetically ordered
 __all__ = [
     "Accordion",
     "Action",
+    "AgGrid",
     "Button",
     "Card",
     "Container",
     "Checklist",
     "Dashboard",
+    "DatePicker",
     "Dropdown",
     "Filter",
     "Graph",

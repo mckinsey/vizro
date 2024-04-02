@@ -1,9 +1,7 @@
-import json
 from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
-import plotly
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -228,8 +226,8 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
-        dashboard_container = html.Div(
-            id="dashboard_container_outer",
+        expected_dashboard_container = html.Div(
+            id="dashboard-container",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
@@ -237,9 +235,7 @@ class TestDashboardBuild:
             ],
             className="vizro_dark",
         )
-        result = json.loads(json.dumps(dashboard.build(), cls=plotly.utils.PlotlyJSONEncoder))
-        expected = json.loads(json.dumps(dashboard_container, cls=plotly.utils.PlotlyJSONEncoder))
-        assert result == expected
+        assert_component_equal(dashboard.build(), expected_dashboard_container)
 
 
 @pytest.mark.parametrize(

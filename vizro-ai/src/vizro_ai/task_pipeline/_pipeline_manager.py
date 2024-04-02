@@ -13,6 +13,7 @@ class PipelineManager:
 
         Args:
             llm: Large language Model.
+
         """
         self.llm = llm
 

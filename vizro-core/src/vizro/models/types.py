@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
 try:
@@ -36,11 +37,13 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
-    Charts/Graph][graph], [Table][table] or [Actions][pre-defined-actions] to see available choices.
+    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md)
+    to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
-    custom charts](../user_guides/custom_charts.md), [custom tables][custom-table] or
-    [custom actions][custom-actions].
+    custom charts](../user-guides/custom-charts.md),
+    [custom tables](../user-guides/custom-tables.md) or
+    [custom actions](../user-guides/custom-actions.md).
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -48,8 +51,9 @@ class CapturedCallable:
 
         Partially binds *args and **kwargs to the function call.
 
-        Raises:
+        Raises
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
+
         """
         # It is difficult to get positional-only and variadic positional arguments working at the same time as
         # variadic keyword arguments. Ideally we would do the __call__ as
@@ -90,6 +94,9 @@ class CapturedCallable:
         if var_keyword_param in self.__bound_arguments:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
+
+        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        self._mode = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -215,30 +222,34 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are three possible modes: `"graph"`, `"table"` and
-    `"action"`.
+    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`,
+    `"ag_grid"` and `"action"`.
 
-    Examples:
+    Examples
         >>> @capture("graph")
         >>> def graph_function():
         >>>     ...
         >>> @capture("table")
         >>> def table_function():
         >>>     ...
+        >>> @capture("ag_grid")
+        >>> def ag_grid_function():
+        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
 
     For further help on the use of `@capture("graph")`, you can refer to the guide on
-    [custom graphs](../user_guides/custom_charts.md).
-    For further help on the use of `@capture("table")`, you can refer to the guide on
-    [custom tables](../user_guides/table#custom-table).
+    [custom graphs](../user-guides/custom-charts.md).
+    For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
+    [custom tables](../user-guides/custom-tables.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
-    [custom actions](../user_guides/actions/#custom-actions).
+    [custom actions](../user-guides/custom-actions.md).
+
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table"]):
-        """Instantiates the decorator to capture a function call. Valid modes are "graph", "table" and "action"."""
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid"]):
+        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
         self._mode = mode
 
     def __call__(self, func, /):
@@ -262,6 +273,7 @@ class capture:
                 # We need to capture function upfront in order to find value of data_frame argument: since it could be
                 # positional or keyword, this is much more robust than trying to get it out of arg or kwargs ourselves.
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
@@ -289,10 +301,12 @@ class capture:
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 # Note this is basically the same as partial(func, *args, **kwargs)
-                return CapturedCallable(func, *args, **kwargs)
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
+                return captured_callable
 
             return wrapped
-        elif self._mode == "table":
+        elif self._mode in ["table", "ag_grid"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
@@ -300,6 +314,7 @@ class capture:
                     raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
+                captured_callable._mode = self._mode
 
                 try:
                     captured_callable["data_frame"]
@@ -309,14 +324,15 @@ class capture:
 
             return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action') or @capture('table')."
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
+            "@capture('ag_grid')."
         )
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
-SingleValueType = Union[StrictBool, float, str]
+SingleValueType = Union[StrictBool, float, str, date]
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = Union[List[StrictBool], List[float], List[str]]
+MultiValueType = Union[List[StrictBool], List[float], List[str], List[date]]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -327,16 +343,16 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[List[StrictBool], List[float], List[str], List[OptionsDictType]]
+OptionsType = Union[List[StrictBool], List[float], List[str], List[date], List[OptionsDictType]]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    Union["Checklist", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
+    Union["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"],
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
-[`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
+[`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider] or [`Slider`][vizro.models.Slider]."""
 
 _FormComponentType = Annotated[
@@ -352,15 +368,15 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["Button", "Card", "Container", "Graph", "Table", "Tabs"],
+    Union["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
     ),
 ]
 """Discriminated union. Type of component that makes up part of the layout on the page:
-[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table] or
-[`Graph`][vizro.models.Graph]."""
+[`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
+[`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
 NavPagesType = Union[List[str], Dict[str, List[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."

@@ -1,47 +1,31 @@
 # Vizro-AI
 
-Vizro-AI is a tool designed for generating data visualizations. It serves as an extension to Vizro, leveraging natural language capabilities to empower users in creating charts effortlessly.
+Vizro-AI extends [Vizro](https://vizro.readthedocs.io) to enable a user to use English or other languages to effortlessly create create interactive charts with [Plotly](https://plotly.com/python/).
 
-## Why Vizro-AI?
+If you're new to coding, Vizro-AI simplifies the process of creating charts that offer detailed insights about your data. Even if you're an experienced data practitioner, Vizro-AI optimizes how you create visually appealing charts.
 
-### Easy-to-use
-One of the key strengths of Vizro-AI lies in its natural language capabilities, making it accessible to coding novices. Vizro-AI provides a user-friendly interface that allows to create interactive charts while offering detailed explanations about the data and the generated code.
-
-### Visually-optimized
-Vizro-AI also caters data scientist who often spend more time on formatting than creating a visualization. Vizro-AI enables the user to speed up the formatting process and create a visually appealing chart, also leveraging the design library of Vizro.
-
-### Dashboard-ready
-Vizro-AI focuses currently on plotly and is used to create interactive chart. Thus, it is primarily aimed at dashboards, ensuring that the generated charts are well-suited for dashboard applications.
-
-!!! notice "Notice"
-    Please review this [disclaimer](pages/explanation/disclaimer.md)
-    before using the `vizro-ai` package.
-
-    Since users must connect to Large Language Models (LLMs) in order to use Vizro-AI,
-    please also ensure that you review our guides on the [usage of LLMs](pages/explanation/safety_in_vizro_ai.md)
-    and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
-
+Vizro-AI uses a large language model and Plotly to generate code for an interactive chart that you can add into a [Vizro dashboard application](https://vizro.readthedocs.io). By using Vizro's themes, you can incorporate design best practices by default.
 
 <div class="card-section-wrapper" style="display: block;">
 <div class="responsive-grid">
 
-<a class="card-wrapper" href="pages/tutorials/quickstart/">
+<a class="card-wrapper" href="pages/get-started/quickstart/">
   <div class="card">
     <div class="card-content">
-      <h5>Get Started</h5>
+      <h5>Get started</h5>
       <p>
-        New to Vizro-AI? Take a look at our tutorials to get started and to explore our core features.
+        New to Vizro-AI? Tutorials to get started and to explore the key features.
       </p>
     </div>
   </div>
 </a>
 
-<a class="card-wrapper" href="pages/user_guides/install/">
+<a class="card-wrapper" href="pages/user-guides/run-vizro-ai/">
   <div class="card">
     <div class="card-content">
-      <h5>User Guides</h5>
+      <h5>How-to guides</h5>
       <p>
-        Our user guides provide step-by-step instructions on how to install `vizro-ai` package and leverage our core features.
+        How to guides about Vizro-AI and frequently asked questions.
       </p>
     </div>
   </div>
@@ -53,7 +37,7 @@ Vizro-AI focuses currently on plotly and is used to create interactive chart. Th
     <div class="card-content">
       <h5>Explanation</h5>
       <p>
-        Our explanation section contains background information and disclaimer.
+        The explanation section contains background information and a disclaimer.
       </p>
     </div>
   </div>
@@ -64,7 +48,7 @@ Vizro-AI focuses currently on plotly and is used to create interactive chart. Th
     <div class="card-content">
       <h5>Contribute</h5>
       <p>
-        Find our contribution guidelines and all our current and previous contributors here.
+        Contribution guidelines and all our current and past contributors.
       </p>
     </div>
   </div>
@@ -72,3 +56,11 @@ Vizro-AI focuses currently on plotly and is used to create interactive chart. Th
 
 </div>
 </div>
+
+!!! notice "Notice"
+    Please review this [disclaimer](pages/explanation/disclaimer.md)
+    before using the `vizro-ai` package.
+
+    Users must connect to large language models (LLMs) to use Vizro-AI.
+    Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md)
+    and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).

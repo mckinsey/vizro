@@ -10,6 +10,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -23,6 +25,7 @@ class NavBar(VizroBaseModel):
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
         pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
         items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
+
     """
 
     type: Literal["nav_bar"] = "nav_bar"
@@ -58,18 +61,18 @@ class NavBar(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
-        # We always show all the nav_link buttons, but only show the accordion for the active page. This works because
+        # We always show all the nav_links, but only show the accordion for the active page. This works because
         # item.build only returns the nav_panel Div when the item is active.
         # In future maybe we should do this by showing all navigation panels and then setting hidden=True for all but
         # one using a clientside callback?
         # Wrapping built_items into html.Div here is not for rendering purposes but so that we can look up the
         # components by id easily instead of needing to iterate through a nested list.
         built_items = html.Div([item.build(active_page_id=active_page_id) for item in self.items])
-        buttons = [built_items[item.id] for item in self.items]
+        nav_links = [built_items[item.id] for item in self.items]
         if "nav-panel" in built_items:
             nav_panel = built_items["nav-panel"]
         else:
             # Active page is not in navigation at all, so hide navigation panel.
-            nav_panel = html.Div(hidden=True, id="nav-panel")
+            nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        return html.Div([html.Div(buttons, id="nav-bar"), nav_panel])
+        return html.Div([dbc.Navbar(nav_links, id="nav-bar"), nav_panel])

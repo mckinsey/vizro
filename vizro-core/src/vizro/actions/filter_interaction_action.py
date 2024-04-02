@@ -26,6 +26,7 @@ def filter_interaction(targets: Optional[List[ModelID]] = None, **inputs: Dict[s
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+
     """
     return _get_modified_page_figures(
         targets=targets,

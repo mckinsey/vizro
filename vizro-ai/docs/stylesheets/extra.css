@@ -1,28 +1,28 @@
 .card-section-wrapper {
-  display: flex;
   align-items: center;
+  display: flex;
 }
 
 .responsive-grid {
   display: grid;
-  width: 100%;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows: auto;
   gap: 1.5rem;
+  grid-auto-rows: auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  width: 100%;
 }
 
 .card-section-wrapper .responsive-grid a {
+  background: none;
+  color: black;
+  padding: 0;
   text-decoration: none;
   transition: none;
-  background: none;
-  padding: 0;
-  color: black;
 }
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
   height: 100%;
+  transition: 0.3s;
 }
 
 .card:hover {

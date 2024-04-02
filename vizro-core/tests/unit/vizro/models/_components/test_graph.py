@@ -53,6 +53,10 @@ class TestDunderMethodsGraph:
         with pytest.raises(ValidationError, match="field required"):
             vm.Graph()
 
+    def test_wrong_captured_callable(self, standard_ag_grid):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
+            vm.Graph(figure=standard_ag_grid)
+
     def test_failed_graph_with_wrong_figure(self, standard_go_chart):
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.Graph(figure=standard_go_chart)
@@ -105,6 +109,14 @@ class TestDunderMethodsGraph:
         graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
         actions_chain = graph.actions[0]
         assert actions_chain.trigger.component_property == "clickData"
+
+
+class TestAttributesGraph:
+    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
+    def test_graph_filter_interaction_attributes(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart)
+        assert hasattr(graph, "_filter_interaction_input")
+        assert "modelID" in graph._filter_interaction_input
 
 
 class TestProcessFigureDataFrame:
