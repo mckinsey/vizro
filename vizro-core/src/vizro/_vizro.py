@@ -1,12 +1,10 @@
 import logging
-import os
 import warnings
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List
 
 import dash
 import dash_bootstrap_components as dbc
-import flask
 from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX

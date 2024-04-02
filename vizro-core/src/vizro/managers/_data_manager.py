@@ -1,14 +1,15 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
+
 from __future__ import annotations
 
 import logging
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
+import wrapt
 from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
-import wrapt
 
 # TODO: test manually and write tests:
 # * inplace operations
@@ -56,6 +57,7 @@ def memoize(wrapped: Callable, instance: _Dataset, args, kwargs):
 
     Returns:
         Memoized call.
+
     """
     # Before altering, wrapped.__func__.__qualname__ is "Dataset.__call__"
     # After altering, it becomes Dataset.__call__.<vizro.managers._data_manager.Dataset object at 0x11d5fc2d0>
@@ -164,7 +166,7 @@ class _StaticDataset:
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
-    Examples:
+    Examples
         >>> # Static data that cannot be refreshed during runtime
         >>> data_manager["data"] = pd.read_csv("data.csv")
         >>> # Data that can be refreshed during runtime
@@ -172,6 +174,7 @@ class DataManager:
         >>>     return pd.read_csv("live_data.csv")
         >>> data_manager["live_data"] = live_data
         >>> data_manager["live_data"].timeout = 5  # if you want to change the cache timeout to 5 seconds
+
     """
 
     def __init__(self):
@@ -231,7 +234,7 @@ class DataManager:
         if component_id not in self.__component_to_dataset:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_dataset[component_id]
-        logger.debug(f"Loading dataset %s with id %s", dataset_name, id(self[dataset_name]))
+        logger.debug("Loading dataset %s with id %s", dataset_name, id(self[dataset_name]))
         return self[dataset_name].load()
 
     def _clear(self):
