@@ -20,7 +20,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     [:octicons-arrow-right-24: How-to guides](pages/user-guides/dashboard/)
 
--   :material-format-font:{ .lg .middle } __Get the detail__
+-   :fontawesome-solid-microscope:{ .lg .middle } __Get the detail__
 
     ---
 
