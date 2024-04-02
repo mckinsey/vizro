@@ -21,31 +21,19 @@ pd_DataFrameCallable = Callable[[], pd.DataFrame]
 # timeout=0 means it never expires. 0 means memoize forever and never refresh -> never re-run function.
 # Ones set with timeout=0 can still be manually refreshed with forced_update.
 
-# TODO: test, idea 2 (see shelf)
-#  whether we still need  components to dataset mapping - we don't but save this for future PR. Put mapping to
-#  dataset in callable model itself. So it's still one DS to many components but no need to store mapping here.
+# TODO: test manually and write tests:
+# * inplace operations
+# * caching
+# * new error messages that are raised
+# * set cache to null in all other tests
+
+# Do we still need  components to dataset mapping? No but save this for future PR. Put mapping to
+# dataset in callable model itself. So it's still one DS to many components but no need to store mapping here.
 
 # Try out callable with parametrised args like Max example
 
 # How to actually update/invalidate/reset memoize on demand? rather than just waiting for timeout.
 # Use forced_update as in shelf "This is how to refresh memoize for one dataset"
-
-
-"""
-# Note limitation than you need to set preload
-
-With flask.run and multiple processes:
-- FileSystemCache: Get lots of different processes but works ok
-- SimpleCache: Get lots of different processes and doesn't work ok - get interference. Put warning in
-place to prevent this.
-
-SimpleCache: Simple memory memoize for single process environments. This class exists mainly for the
-development server and is not 100% thread safe.
-CONCLUSION: SimpleCache only good for single process with gunicorn or flask.
-As soon as move to multiple workers, need proper cache -> yes.
-Problem with cache not shared between workers while running is not just inefficiency but that invalidating
-cache will not work properly.
-"""
 
 import wrapt
 
@@ -53,7 +41,7 @@ import wrapt
 # wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
 # are required as arguments.
 @wrapt.decorator
-def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
+def memoize(wrapped: Callable, instance: _Dataset, args, kwargs):
     """Caches the result of wrapped function, taking its arguments into account in the cache key.
 
     This delegates to flask_caching.memoize functionality, but with an important modification. flask_caching.memoize
@@ -91,7 +79,24 @@ def memoize(wrapped: Callable, instance: Dataset, args, kwargs):
     return data_manager.cache.memoize(timeout=instance.timeout)(wrapped)(*args, **kwargs)
 
 
-class Dataset:
+class _Dataset:
+    """Wrapper for a pd_DataFrameCallable, i.e. a function that produces a pandas DataFrame. Crucially this means
+    that the data can be refreshed during runtime, since the loading function can be re-run.
+
+    This is currently private since it's not expected that a user would instantiate it directly. Instead, you would use
+    through the data_manager interface as follows:
+        >>> def live_data():
+        >>>     return pd.read_csv("live_data.csv")
+        >>> data_manager["live_data"] = live_data
+        >>> data_manager["live_data"].timeout = 5  # if you want to change the cache timeout to 5 seconds
+
+    Possibly in future, this will become a public class so you could directly do:
+        >>> data_manager["live_data"] = Dataset(live_data, timeout=5)
+
+    At this point we might like to disable the behaviour so that data_manager setitem and getitem handle the same
+    object rather than doing an implicit conversion to _Dataset.
+    """
+
     def __init__(self, load_data: pd_DataFrameCallable, /):
         self.__load_data: pd_DataFrameCallable = load_data
         self.timeout: Optional[int] = None
@@ -99,7 +104,7 @@ class Dataset:
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
     @memoize
-    def __call__(self) -> pd.DataFrame:
+    def load(self) -> pd.DataFrame:
         """Loads data.
 
         In future this will probably take arguments that are passed through to __load_data in order to re-run the
@@ -135,25 +140,56 @@ class Dataset:
         return super().__repr__()
 
 
-# data_manager.cache = ...
-# data_manager["iris"] = lambda: pd.DataFrame()
-# data_manager["iris"].timeout = 50
-# Maybe in future:
-# data_manager["iris"] = Dataset(lambda: pd.DataFrame(), timeout=50)
+class _StaticDataset:
+    """Wrapper for a pd.DataFrame. This data cannot be updated during runtime.
+
+    This is currently private since it's not expected that a user would instantiate it directly. Instead, you would use
+    through the data_manager interface as follows:
+         >>> data_manager["data"] = pd.read_csv("data.csv")
+
+    This class does not have much functionality but exists for a couple of reasons:
+        1. to align interface with _Dataset by providing a load method so that fetching data from data_manager can
+        transparently handle loading both _StaticDataset and _Dataset without needing switching logic
+        2. to raise a clear error message if a user tries to set a timeout on the dataset
+    """
+
+    def __init__(self, data: pd.DataFrame, /):
+        self.__data = data
+
+    def load(self) -> pd.DataFrame:
+        """Loads data.
+
+        Returns a copy of the data. This  is not necessary if we are careful to not do any inplace=True operations,
+        but probably safest to leave it here.
+        """
+        return self.__data.copy()
+
+    def __setattr__(self, name, value):
+        # Any attributes that are only relevant for _Dataset should go here to raise a clear error message.
+        if name in ["timeout"]:
+            raise AttributeError(
+                f"Dataset that is a pandas.DataFrame itself does not support {name}; you should instead use a dataset "
+                "that is a function that returns a pandas.DataFrame."
+            )
+        super().__setattr__(name, value)
 
 
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
     Examples:
-        >>> import plotly.express as px
-        >>> data_manager["iris"] = px.data.iris()
-
+        >>> # Static data that cannot be refreshed during runtime
+        >>> data_manager["data"] = pd.read_csv("data.csv")
+        >>> # Data that can be refreshed during runtime
+        >>> def live_data():
+        >>>     return pd.read_csv("live_data.csv")
+        >>> data_manager["live_data"] = live_data
+        >>> data_manager["live_data"].timeout = 5  # if you want to change the cache timeout to 5 seconds
     """
 
     def __init__(self):
         """Initializes the `DataManager` object."""
-        self.__datasets: Dict[DatasetName, Dataset] = {}
+        self.__datasets: Dict[DatasetName, Union[_Dataset, _StaticDataset]] = {}
         self.__component_to_dataset: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
         self.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
@@ -161,31 +197,26 @@ class DataManager:
 
     @_state_modifier
     def __setitem__(self, dataset_name: DatasetName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
-        """Adds `data` to the `DataManager` with key `dataset_name`.
-
-        This is the only user-facing function when configuring a simple dashboard. Others are only used internally
-        in Vizro or advanced users who write their own actions.
-        """
+        """Adds `data` to the `DataManager` with key `dataset_name`."""
         if dataset_name in dataset_name in self.__datasets:
             raise ValueError(f"Dataset {dataset_name} already exists.")
 
         if callable(data):
-            self.__datasets[dataset_name] = Dataset(data)
+            self.__datasets[dataset_name] = _Dataset(data)
         elif isinstance(data, pd.DataFrame):
-            self.__datasets[dataset_name] = Dataset(lambda: data)
+            self.__datasets[dataset_name] = _StaticDataset(data)
         else:
             raise TypeError(
-                f"Dataset {dataset_name} must be a pandas DataFrame or callable that returns a pandas DataFrame."
+                f"Dataset {dataset_name} must be a pandas DataFrame or function that returns a pandas DataFrame."
             )
 
-    def __getitem__(self, dataset_name: DatasetName) -> Dataset:
-        """Returns the `Dataset` object associated with `dataset_name`."""
+    def __getitem__(self, dataset_name: DatasetName) -> Union[_Dataset, _StaticDataset]:
+        """Returns the `_Dataset` or `_StaticDataset` object associated with `dataset_name`."""
         try:
             return self.__datasets[dataset_name]
         except KeyError as exc:
             raise KeyError(f"Dataset {dataset_name} does not exist.") from exc
 
-    # happens before dashboard build
     @_state_modifier
     def _add_component(self, component_id: ComponentID, dataset_name: DatasetName):
         """Adds a mapping from `component_id` to `dataset_name`."""
@@ -201,12 +232,14 @@ class DataManager:
         self.__component_to_dataset[component_id] = dataset_name
 
     def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
+        # TODO: once have removed self.__component_to_dataset, we shouldn't need any more. Calling functions would
+        #  just do as data_manager[dataset_name].load().
         """Returns the original data for `component_id`."""
         if component_id not in self.__component_to_dataset:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         dataset_name = self.__component_to_dataset[component_id]
-        logger.debug(f"Calling dataset %s with id %s", dataset_name, id(self[dataset_name]))
-        return self[dataset_name]()
+        logger.debug(f"Loading dataset %s with id %s", dataset_name, id(self[dataset_name]))
+        return self[dataset_name].load()
 
     # TODO: we should be able to remove this soon. Try to avoid using it.
     def _has_registered_data(self, component_id: ComponentID) -> bool:
