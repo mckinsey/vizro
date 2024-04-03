@@ -1,10 +1,9 @@
-# How to integrate Vizro with Kedro
+# How to integrate Vizro with Kedro Data Catalog
 
-This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. For Pandas datasets registered in a Kedro data catalog,
-Vizro provides a convenient way to visualize them.
+This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. For Pandas datasets registered in a Kedro data catalog, Vizro provides a convenient way to visualize them.
 
 ## Installation
-To install Vizro with Kedro support, run:
+If you already have Kedro installed then you do not need to install any additional dependencies. If you do not have Kedro installed then you should run:
 
 ```bash
 pip install vizro[kedro]

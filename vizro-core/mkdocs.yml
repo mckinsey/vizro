@@ -30,9 +30,11 @@ nav:
           - Assets: pages/user-guides/assets.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
-      - DATA CONNECTIONS:
-          - Data: pages/user-guides/data.md
-          - Integrations: pages/user-guides/integration.md
+      - DATA:
+          - Overview: pages/user-guides/data.md
+          - Static data: pages/user-guides/static-data.md
+          - Dynamic data: pages/user-guides/dynamic-data.md
+          - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md

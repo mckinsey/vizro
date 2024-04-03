@@ -109,7 +109,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the Data Manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:

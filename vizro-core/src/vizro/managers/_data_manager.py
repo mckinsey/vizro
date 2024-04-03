@@ -18,7 +18,12 @@ from vizro.managers._managers_utils import _state_modifier
 # * set cache to null in all other tests
 
 
+# * rename in code
+# * make sure no mention of lazy or eager/active
+
+
 logger = logging.getLogger(__name__)
+
 # Really ComponentID and DatasetName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 ComponentID = str
@@ -178,13 +183,12 @@ class DataManager:
     """
 
     def __init__(self):
-        """Initializes the `DataManager` object."""
         self.__datasets: Dict[DatasetName, Union[_Dataset, _StaticDataset]] = {}
         self.__component_to_dataset: Dict[ComponentID, DatasetName] = {}
         self._frozen_state = False
         self.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with
-        # default values though.
+        # default values though. We would do this with something like this:
         # def __set_cache(self, cache_config):
         #     if not isinstance(cache, Cache):
         #         self._cache = Cache(**cache)
@@ -238,7 +242,8 @@ class DataManager:
         return self[dataset_name].load()
 
     def _clear(self):
-        # TODO: clear cache? What should this do exactly?
+        # Make sure the cache itself is cleared before the reference to it is lost by calling __init__.
+        self.cache.clear()
         self.__init__()  # type: ignore[misc]
 
 

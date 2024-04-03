@@ -117,7 +117,7 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the Data Manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
