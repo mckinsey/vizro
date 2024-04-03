@@ -28,7 +28,7 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 [^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
-## How to extend an existing component
+## Extend an existing component
 ??? info "When to choose this strategy"
 
     You may want to use this strategy to:
@@ -147,7 +147,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
-## How to create a new component
+## Create a new component
 
 ??? info "When to choose this strategy"
 
@@ -266,7 +266,7 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
-## How to use custom components with custom actions
+## Using custom components with custom actions
 
 Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
 
@@ -388,15 +388,15 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
     [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
 
 
-### How to trigger actions with a custom component
+### Trigger actions with a custom component
 
 As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
 
-1. Add the `actions` argument to your custom component. The type of the `actions` argument is `List[Action]`.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
    ```py
     actions: List[Action] = []
    ```
-2. Set the action through `_set_actions`. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
    ```py
     _set_actions = _action_validator_factory("active_index")
    ```
