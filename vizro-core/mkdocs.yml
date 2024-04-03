@@ -122,6 +122,7 @@ plugins:
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
+              warn_unknown_params: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
