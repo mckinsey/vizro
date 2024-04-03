@@ -85,7 +85,7 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 
 ## Gunicorn
 
-[Gunicorn](https://gunicorn.org/) is a production-ready Python WSGI server for deploying an app over multiple worker processes. It can be installed with `pip install gunicorn`. 
+[Gunicorn](https://gunicorn.org/) is a production-ready Python WSGI server for deploying an app over multiple worker processes. It can be installed with `pip install gunicorn`.
 
 !!! example "Use Gunicorn"
     === "app.py"

@@ -34,7 +34,7 @@ Unlike static data, dynamic data cannot be supplied directly into the `data_fram
 
         1. To use `load_iris_data` as dynamic data it must first be added to the Data Manager. You should **not** actually call the function `load_iris_data()`; doing so would result in static data that cannot be reloaded.
         2. Dynamic data is referred to by the name of the data source `"iris"`.
-    
+
     === "Result"
         [![DataBasic]][DataBasic]
 
@@ -50,10 +50,10 @@ You can change the timeout of the cache independently for each dynamic data sour
 ```py title="Set the cache timeout"
 from vizro.managers import data_manager
 
-# Cache of default_expire_data expires every 5 minutes, the default 
+# Cache of default_expire_data expires every 5 minutes, the default
 data_manager["default_expire_data"] = ...
 
-# Set cache of fast_expire_data to expire every 10 seconds 
+# Set cache of fast_expire_data to expire every 10 seconds
 data_manager["fast_expire_data"] = ...
 data_manager["fast_expire_data"].timeout = 10
 
@@ -91,7 +91,7 @@ The `timeout` setting that can be set individually for each dynamic data source 
     Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with gunicorn](run.md/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
 
     ```py title="Production-ready caches"
-    # Store cached data in CACHE_DIR 
+    # Store cached data in CACHE_DIR
     data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"})
 
     # Use Redis key-value store

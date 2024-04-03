@@ -4,7 +4,7 @@ A static data source is the simplest way to provide data to your dashboard and s
 
 ## Supply directly
 
-You can directly supply a pandas DataFrame into components such as [graphs](graph.md) and [tables](table.md). 
+You can directly supply a pandas DataFrame into components such as [graphs](graph.md) and [tables](table.md).
 
 !!! example "Static data supplied directly"
     === "app.py"
@@ -43,7 +43,7 @@ The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`]
 
 ## Reference by name
 
-If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager. 
+If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager.
 
 !!! example "Static data referred to by name"
     === "app.py"
@@ -71,7 +71,7 @@ If you would like to specify your dashboard configuration through YAML then you 
         - components:
             - figure:
                 _target_: scatter
-                data_frame: iris # (1)! 
+                data_frame: iris # (1)!
                 x: sepal_length
                 y: petal_width
                 color: species
