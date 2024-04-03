@@ -63,7 +63,7 @@ The following example shows how to create a custom action that postpones executi
         ```
 
 
-## Interacting with dashboard inputs and outputs
+## Interact with dashboard inputs and outputs
 When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
 - `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (e.g. `"scatter_chart.clickData`").
