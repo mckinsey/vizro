@@ -405,6 +405,10 @@
             },
             {
               "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date"
             }
           ]
         }
@@ -454,6 +458,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -479,6 +490,13 @@
               "items": {
                 "type": "string"
               }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
+              }
             }
           ]
         },
@@ -487,6 +505,75 @@
           "description": "Title to be displayed",
           "default": "",
           "type": "string"
+        },
+        "actions": {
+          "title": "Actions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "DatePicker": {
+      "title": "DatePicker",
+      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\nBased on the underlying [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker) or\n[`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Union[List[date], date]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Default to `True`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "default": "",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "date_picker",
+          "enum": ["date_picker"],
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "description": "Start date for date picker.",
+          "type": "string",
+          "format": "date"
+        },
+        "max": {
+          "title": "Max",
+          "description": "End date for date picker.",
+          "type": "string",
+          "format": "date"
+        },
+        "value": {
+          "title": "Value",
+          "description": "Default date for date picker",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "string",
+              "format": "date"
+            }
+          ]
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title to be displayed.",
+          "default": "",
+          "type": "string"
+        },
+        "range": {
+          "title": "Range",
+          "description": "Boolean flag for displaying range picker.",
+          "default": true,
+          "type": "boolean"
         },
         "actions": {
           "title": "Actions",
@@ -541,6 +628,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -559,6 +653,10 @@
               "type": "string"
             },
             {
+              "type": "string",
+              "format": "date"
+            },
+            {
               "type": "array",
               "items": {
                 "type": "boolean"
@@ -574,6 +672,13 @@
               "type": "array",
               "items": {
                 "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
               }
             }
           ]
@@ -643,6 +748,13 @@
             {
               "type": "array",
               "items": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
                 "$ref": "#/definitions/OptionsDictType"
               }
             }
@@ -659,6 +771,10 @@
             },
             {
               "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date"
             }
           ]
         },
@@ -862,6 +978,7 @@
             "propertyName": "type",
             "mapping": {
               "checklist": "#/definitions/Checklist",
+              "date_picker": "#/definitions/DatePicker",
               "dropdown": "#/definitions/Dropdown",
               "radio_items": "#/definitions/RadioItems",
               "range_slider": "#/definitions/RangeSlider",
@@ -871,6 +988,9 @@
           "oneOf": [
             {
               "$ref": "#/definitions/Checklist"
+            },
+            {
+              "$ref": "#/definitions/DatePicker"
             },
             {
               "$ref": "#/definitions/Dropdown"
@@ -922,6 +1042,7 @@
             "propertyName": "type",
             "mapping": {
               "checklist": "#/definitions/Checklist",
+              "date_picker": "#/definitions/DatePicker",
               "dropdown": "#/definitions/Dropdown",
               "radio_items": "#/definitions/RadioItems",
               "range_slider": "#/definitions/RangeSlider",
@@ -931,6 +1052,9 @@
           "oneOf": [
             {
               "$ref": "#/definitions/Checklist"
+            },
+            {
+              "$ref": "#/definitions/DatePicker"
             },
             {
               "$ref": "#/definitions/Dropdown"

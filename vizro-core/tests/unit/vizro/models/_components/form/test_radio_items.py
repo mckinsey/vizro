@@ -115,7 +115,7 @@ class TestRadioItemsInstantiation:
             RadioItems(value=test_value, options=options)
 
     def test_create_radio_items_invalid_value_format(self):
-        with pytest.raises(ValidationError, match="3 validation errors for RadioItems"):
+        with pytest.raises(ValidationError, match="validation errors for RadioItems"):
             RadioItems(value=[1], options=[1, 2, 3, 4, 5])
 
     def test_set_action_via_validator(self, identity_action_function):

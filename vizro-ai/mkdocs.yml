@@ -3,18 +3,17 @@ site_url: https://vizro-ai.readthedocs.io/en/latest/
 nav:
   - Vizro-AI: index.md
   - Get started:
-      - Quickstart: pages/tutorials/quickstart.md
-      - Explore Vizro-AI: pages/tutorials/explore-vizro-ai.md
-  - User Guides:
-      - Fundamentals:
-          - Installation: pages/user-guides/install.md
-          - API Setup: pages/user-guides/api-setup.md
-          - Run Methods: pages/user-guides/run-vizro-ai.md
-          - Model Configuration: pages/user-guides/model-config.md
+      - Install Vizro-AI: pages/get-started/install.md
+      - A first example: pages/get-started/quickstart.md
+  - How-to guides:
+      - Run methods: pages/user-guides/run-vizro-ai.md
+      - Create advanced charts: pages/user-guides/create-advanced-charts.md
+      - Use different languages: pages/user-guides/use-different-languages.md
   - Explanation:
+      - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
-      - Safeguard Code Execution: pages/explanation/safeguard.md
-      - Safety in Vizro AI: pages/explanation/safety-in-vizro-ai.md
+      - Safeguard code execution: pages/explanation/safeguard.md
+      - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
   - Contribute:
       #      - Contributing: pages/contribute/contributing.md
       - Authors: pages/contribute/authors.md

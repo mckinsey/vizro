@@ -1,1 +1,1 @@
-# Contributing Guidelines
+# Contributing guidelines
