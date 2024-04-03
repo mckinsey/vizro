@@ -43,7 +43,6 @@ nav:
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Data manager: pages/API-reference/manager.md
       - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/captured-callables.md
   - Explanation:
