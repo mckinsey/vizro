@@ -39,6 +39,7 @@ jobs:
       package_version: ${{ steps.version_check.outputs.package_version }}
 
   build-publish:
+    environment: vizro_secrets
     needs: [check-version]
     if: |
       needs.check-version.outputs.new_release == 'True'
@@ -84,6 +85,7 @@ jobs:
           password: ${{ env.PYPI_TOKEN }}
 
   version-bump:
+    environment: vizro_secrets
     needs: [check-version, build-publish]
     if: |
       needs.check-version.outputs.new_release == 'True'
