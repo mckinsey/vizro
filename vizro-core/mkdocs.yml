@@ -123,6 +123,7 @@ plugins:
             docstring_options:
               ignore_init_summary: true
               warn_unknown_params: false
+              returns_named_value: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
