@@ -68,8 +68,8 @@ class Vizro:
 
         Returns:
             self: Vizro app
+
         """
-        
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
         if dashboard.title:
             self.dash.title = dashboard.title
