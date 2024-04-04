@@ -78,7 +78,7 @@ You can combine and arrange various types of `components` on a dashboard page. T
 The code below adds two components to the page:
 
 * A [`Card`][vizro.models.Card] to insert Markdown text into the dashboard.
-* A [`Graph`][vizro.models.Graph] to illusrate GDP development per continent since 1952 as a bar chart.
+* A [`Graph`][vizro.models.Graph] to illustrate GDP development per continent since 1952 as a line graph.
 
 !!! warning "Before you run this code in a Jupyter Notebook"
 
@@ -104,7 +104,7 @@ The code below adds two components to the page:
             id="line_gdp",
             figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
-                            "gdpPercap":"GDP Per Cap"}),
+                            "gdpPercap":"GDP Per Cap"}, title=''),
         )
         ```
 
@@ -139,7 +139,7 @@ The code below adds two components to the page:
                     id="line_gdp",
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
+                                    "gdpPercap":"GDP Per Cap"}, title=''),
                 ),
 
             ],
@@ -154,6 +154,13 @@ The code below adds two components to the page:
     [FirstPage2]: ../../assets/tutorials/dashboard/dashboard22.png
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
+
+!!! tip "An introduction to Vizro-AI"
+
+    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/get-started/quickstart/). Vizro-AI enables you to use English, or other languages, to create create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
+
+    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)!
+
 
 ### 2.3. Configure the layout
 
