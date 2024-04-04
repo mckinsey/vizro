@@ -31,7 +31,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-        run: pip install --upgrade hatch
+        run: pipx install hatch
 
       - name: Lint
         run: hatch run lint
