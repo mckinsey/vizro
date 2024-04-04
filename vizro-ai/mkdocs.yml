@@ -25,11 +25,6 @@ nav:
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
 repo_name: mckinsey/vizro-ai
 
-validation:
-  links:
-    absolute_links: warn
-    unrecognized_links: warn
-
 theme:
   name: material
   language: en
