@@ -43,7 +43,7 @@ Here `px.data.iris()` returns a Pandas DataFrame. We then pass this DataFrame to
 
 
 
-## How to use a data connector
+## Use a data connector
 
 You can also connect your charts with a data connector. To use a data connector with
 Vizro, you need:
@@ -116,7 +116,7 @@ Vizro, you need:
     how Vizro knows which data connector to use.
 
 
-### How to use a data connector with arguments
+### Use a data connector with arguments
 
 You can also define a data connector with arguments. This is useful when you want to
 use the same data connector to load different data. For example, when you want to
