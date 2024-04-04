@@ -67,7 +67,7 @@ repos:
         additional_dependencies: ["bandit[toml]"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.8.0
     hooks:
       - id: mypy
         files: ^vizro-core/src/
