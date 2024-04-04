@@ -55,6 +55,11 @@ nav:
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
 
+validation:
+  links:
+    absolute_links: warn
+    unrecognized_links: warn
+
 theme:
   name: material
   language: en
@@ -117,6 +122,8 @@ plugins:
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
+              warn_unknown_params: false
+              returns_named_value: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
