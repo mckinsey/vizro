@@ -590,26 +590,24 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
 
-#### Icon responsive to theme switch
+#### Customize an icon
 
-To add an icon that is responsive to the theme switch, you will need to override the value of the `filter` property.
+To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
 
-The `filter` property allows the application of visual effects to elements and accepts various functions as parameters. In the example below, we will use `invert()` function, to invert the color of the icon on theme switch.
+The `filter` CSS property enables the application of visual effects to elements and accepts various functions as values. In the example below, we use the one of the predefined Vizro theme CSS variables `--inverse-color` that leverages CSS `invert()` function, to invert the color of the icon on theme switch. Please note, use the said CSS variable only if your icon is white.
+If your icon color is not white, we can alter the color of the `.svg` image by adding an attribute `fill="white"` directly within the SVG code. This attribute sets the fill color of the SVG graphic to white, which makes applying visual effects to the image easier.
 
-1. Begin by introducing a new variable into the `vizro_dark` theme.
-```css
-.vizro_dark {
-  --icon-color: invert(100%);
-}
-```
-2. Next, utilize the previously defined variable and assign it as the value for the `filter` property in your custom CSS file:
+Simply assign predefined variable `--inverse-color` to `filter` property in your custom css class.
+
 ```css
 img[src*="#my-image"] {
   filter: var(--icon-color);
 }
 ```
-!!! example "Responsive icon"
-    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
+
+!!! example "Styled icon"
+    ![styled icon](../../assets/user_guides/components/responsive_icon.gif)
+
 
 ## Buttons
 
