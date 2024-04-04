@@ -49,7 +49,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     [Card]: ../../assets/user_guides/components/card.png
 
-### How to customize card text
+### Customize card text
 
 The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component.
 For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown).
@@ -183,7 +183,7 @@ Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the 
 
     [CardText]: ../../assets/user_guides/components/card_text.png
 
-### How to place an image on a card
+### Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
 
@@ -255,7 +255,7 @@ accessibility of your app. Providing an image ALT text is optional.
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
-### How to resize or position a card image
+### Style a card image
 
 To change the size or position of the image, add a URL hash to your image like this:
 
@@ -395,7 +395,7 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-### How to create a navigation card
+### Create a navigation card
 
 !!! note
 
@@ -497,8 +497,10 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
+
 ### How to add an icon
-If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+If you want to add an icon to your card, add your image as described in the [previous section](#placing-images).
+
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
 !!! example "Navigation Card with Icon"

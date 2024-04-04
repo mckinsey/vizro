@@ -5,7 +5,7 @@ This guide shows you how to use the [`Layout`][vizro.models.Layout] to arrange c
 The [`Page`][vizro.models.Page] model accepts the `layout` argument, where you can input your [`Layout`][vizro.models.Layout] with a custom grid.
 
 
-## Using the default layout
+## Use the default layout
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components
 will automatically be [**vertically stacked**](layouts.md#stacking-components) down the page in one column.
 If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
@@ -47,7 +47,7 @@ If that is your desired layout, you can create your charts/components without pr
 
 
 
-## Configuring the grid
+## Configure the grid
 To customize the grid arrangement, you can configure the `grid` parameter of the [`Layout`][vizro.models.Layout] model.
 The example below shows how the grid works and how to specify a valid one:
 
@@ -71,7 +71,7 @@ grid=[[0, 1, 3, 4],
       [2, 2, 3, 4]]
 ```
 
-### Stacking components
+### Stack components
 - When no `Layout` is specified, components will automatically be **stacked vertically** down the page in one column.
 For instance, if you have three components, the default `Layout.grid` will be `grid = [[0], [1], [2]]`.
 This means three equally sized rows, each containing a component spanning the entire width.
@@ -257,7 +257,7 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
 
     [GridAdv]: ../../assets/user_guides/layout/grid_advanced.png
 
-## Using custom layout examples
+## Use custom layout examples
 Below is a table of examples you can take as a reference to create some selected layouts:
 
 | Configuration                                              | Description            | Image                                                                                |
@@ -276,7 +276,7 @@ Below is a table of examples you can take as a reference to create some selected
 | `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
 
 
-## Adding empty spaces to the grid
+## Add empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.
 This can be achieved by specifying `-1` within your grid layout.
 
@@ -328,7 +328,7 @@ grid = [[0, 1, -1],
 
     [GridEmpty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 
-## Controlling the scroll behavior
+## Control the scroll behavior
 By default, the grid will try to fit all charts/components on the screen. This can lead to distortions of the chart/component looking
 squeezed in. You can control the scroll behavior of the grid by specifying the following:
 

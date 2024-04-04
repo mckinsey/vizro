@@ -142,5 +142,4 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
 
     [Filter]: ../../assets/user_guides/selectors/default_filter_selectors.png
 
-
-To enhance existing selectors, see our how-to-guide on creating [custom components](custom_components.md).
+To enhance existing selectors, see our how-to-guide on creating [custom components](custom-components.md).

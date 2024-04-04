@@ -5,7 +5,7 @@ This guide shows you how to visualize tables in Vizro.
 There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid) or [Dash DataTable](#dash-datatable).
 In general, [AG Grid](#ag-grid) is Vizro's recommended table implementation, but sometimes it may make sense to use the [Dash DataTable](#dash-datatable) instead.
 
-## How to choose between AG Grid and Dash DataTable
+## Choose between AG Grid and Dash DataTable
 
 Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the above two approaches respectively.
 They both visualize tabular data in similar ways.

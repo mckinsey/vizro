@@ -1,5 +1,6 @@
 import pytest
 import vizro.models as vm
+from asserts import assert_component_equal
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
@@ -118,6 +119,7 @@ class TestParameterBuild:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
-        result = str(parameter.build())
-        expected = str(test_input.build())
-        assert result == expected
+        result = parameter.build()
+        expected = test_input.build()
+
+        assert_component_equal(result, expected)

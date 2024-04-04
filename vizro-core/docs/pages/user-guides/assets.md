@@ -25,11 +25,11 @@ The user's `assets` folder thus always takes precedence.
     Note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
     Adding a Bootstrap stylesheet will have no visual effect on the [components](https://vizro.readthedocs.io/en/stable/pages/user_guides/components/) included in Vizro.
 
-## How to change the favicon
+## Change the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see the [Dash documentation](https://dash.plotly.com/external-resources#changing-the-favicon).
 
-## How to overwrite global CSS properties
+## Overwrite global CSS properties
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
@@ -87,8 +87,9 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
 
-## How to overwrite CSS properties in selective components
-To overwrite CSS properties of selective components, pass an ID to the relevant component and target the right CSS property.
+
+## Overwrite CSS properties in selective components
+
 For more information, see this [CSS selectors tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure).
 
 Let's say we want to change the background and font-color of one [`Card`][vizro.models.Card] instead of all existing Cards in the Dashboard.
@@ -160,7 +161,7 @@ CSS properties will be applied with the last served file taking precedence. The 
 
 Within each of these categories, individual files are served in alphanumeric order.
 
-## How to change the `assets` folder path
+## Change the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
 specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
 
@@ -179,7 +180,7 @@ Note that in the example above, you still need to configure your [`Page`][vizro.
 See more information in the [Pages User Guide](pages.md).
 
 
-## How to include a meta tags image
+## Include a meta tags image
 
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
 clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
@@ -187,7 +188,7 @@ clients. To include an image in the preview, place an image file in the assets f
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 
-## How to add a logo image
+## Add a logo image
 
 Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 

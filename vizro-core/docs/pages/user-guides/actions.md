@@ -283,12 +283,13 @@ Here is an example of how to configure a chart interaction when the source is an
 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
-## How to customize pre-defined actions
+
+## Customize pre-defined actions
 Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, refer to the [API reference][vizro.actions] on this topic.
 
-### Chaining actions
+### Chain actions
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
-This means that it's possible to set a list of actions that will be executed by triggering only one component.
+This means that it's possible to chain together a list of actions that are executed by triggering only one component.
 The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
 
 
@@ -381,4 +382,5 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
-To enhance existing actions, see our how-to-guide on creating [custom actions](custom-actions.md).
+To enhance existing actions, please see the guide about [how to create custom actions](custom-actions.md).
+

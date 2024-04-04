@@ -9,12 +9,13 @@ If you haven't yet done so, you may want to review the [first dashboard tutorial
 <!-- vale on -->
 To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first-dashboard/#2-open-a-jupyter-notebook), or from a Python script.
 
+
 <!-- vale off -->
 ## 2. Create a first dashboard page
 <!-- vale on -->
 In this section we create a new [`Page`][vizro.models.Page] called `first_page`.
 
-The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components/) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
+The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components.md) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
 
 <!-- vale off -->
 ### 2.1. Add the first figure
@@ -323,7 +324,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
 
         [FirstPage4]: ../../assets/tutorials/dashboard/dashboard24.png
 
-Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](/#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
+Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
 
 <!-- vale off -->
 ## 3. Create a second dashboard page
@@ -468,7 +469,8 @@ for parameters](../user-guides/parameters.md).
 <!-- vale off -->
 ### 3.1. Customize with selectors
 <!-- vale on -->
-The code in the example above uses two different types of [`selector` objects](../user-guides/selectors/), namely
+The code in the example above uses two different types of [`selector` objects](../user-guides/selectors.md), namely
+
 [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider] upon the
 [`Parameters`][vizro.models.Parameter]. The `selectors` enable configuration of the controls to customize their behavior and appearance.
 

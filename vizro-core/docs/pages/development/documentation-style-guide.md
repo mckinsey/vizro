@@ -60,6 +60,25 @@ Callout boxes can be made collapsible: if you use them, add them to the page so 
 * We use a `bash` lexer for all codeblocks that represent the terminal, and we don't include the prompt.
 * Use the code format for Python package names such as `pandas` or `pydantic`.
 
+## Headings and subheadings
+
+Choosing a heading is sometimes the hardest part of the writing process. Take your time!
+
+Aim to avoid use of gerunds (verb+ing) where you can. So your page should be "Get started" rather than "Getting started" and "Customize a layout" rather than "Customizing a layout". Keep the title short and descriptive, ideally think about a reader who may be using a search engine to find an answer -- structure your title to give them the best chance of understanding what the page tells them.
+
+In Vizro, when you are working on a how-to guide, there are a few additional guidelines to follow for consistency:
+
+* Don't use "how to" in the file name: keep that as short as possible.
+* The title (H1 header) should start with "How to".
+* Don't use "how to" in the subsections that follow (H2 - H5) unless you consider the alternative to be confusing.
+* Don't use gerund form in the subsections either.
+
+Example: In a page called "Filters" you would have the following:
+
+* H1: "How to use filters"
+* H2 subsection: "Use a custom filter" and not "How to use a custom filter" nor "Using a custom filter".
+
+
 ## Instructions
 
 Prefer to use imperatives to make instructions. For example:
