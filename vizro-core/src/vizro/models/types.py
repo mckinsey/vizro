@@ -282,10 +282,8 @@ class capture:
 
                 if isinstance(captured_callable["data_frame"], str):
                     # Enable running e.g. px.scatter("iris") from the Python API. Don't actually run the function
-                    # because it won't get work as there's no data. It's vital we don't fetch data from the data manager
-                    # yet either, because otherwise all lazy data will be loaded before the dashboard is started.
-                    # This case is not relevant for the JSON/YAML API, which is handled separately through validation of
-                    # CapturedCallable.
+                    # because it won't get work as there's no data. This case is not relevant for the JSON/YAML API,
+                    # which is handled separately through validation of CapturedCallable.
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).

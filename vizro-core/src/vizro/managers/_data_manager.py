@@ -1,7 +1,7 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
 
 from __future__ import annotations
-
+import os
 import logging
 from typing import Callable, Dict, Optional, Union
 
@@ -17,13 +17,11 @@ from vizro.managers._managers_utils import _state_modifier
 # * new error messages that are raised
 # * set cache to null in all other tests
 
-
-# * rename in code
-# * make sure no mention of lazy or eager/active
+# TODO: __main__ in this file: remove/move to docs
 
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 # Really ComponentID and DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 # TODO: remove these type aliases once have moved component to data mapping to models
@@ -87,13 +85,16 @@ class _DynamicData:
 
     Possibly in future, this will become a public class so you could directly do:
         >>> data_manager["dynamic_data"] = DynamicData(dynamic_data, timeout=5)
+    But we'd need to make sure that name is not an argument in __init__ then.
 
     At this point we might like to disable the behaviour so that data_manager setitem and getitem handle the same
     object rather than doing an implicit conversion to _DynamicData.
     """
 
-    def __init__(self, load_data: pd_DataFrameCallable, /):
+    def __init__(self, name: str, load_data: pd_DataFrameCallable):
         self.__load_data: pd_DataFrameCallable = load_data
+        # name is needed for the cache key and should not be modified by users.
+        self._name = name
         self.timeout: Optional[int] = None
         # We might also want a self.cache_arguments dictionary in future that allows user to customise more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
@@ -109,30 +110,20 @@ class _DynamicData:
         return self.__load_data()
 
     def __repr__(self):
-        """This is just the default repr so behaviour would be the same if we removed the function definition.
+        """Flask-caching uses repr to form the cache key, so this is very important to set correctly.
 
-        The reason for defining this is to have somewhere to put the following warning: caching currently relies on
-        this returning a string that depends on id(self). This is relied on by flask_caching.utils.function_namespace
-        and our own memoize decorator. If this method were changed to no longer include some representation of id(self)
-        then cache keys would be mixed up.
+        In particular, it must depend on something that uniquely labels the data source and is the same across all
+        workers: self._name. Using id(self), as in Python's default repr, only works in the case that gunicorn is
+        running with --preload: without preloading, the id of the same data source in different processes will be
+        different so the cache will not match up.
 
         flask_caching make it possible to set a __cached_id__ attribute to handle this so that repr can be set
         independently of cache key, but this doesn't seem to be well documented or work well, so it's better to rely
         on __repr__.
-
-        In future we might like to change the cache so that it works on data source name rather than the place in memory.
-        This would necessitate a new _DynamicData._name attribute. This would get us closer to getting gunicorn to work
-        without relying on --preload, although it would not get all the way there:
-            * model_manager would need to fix a random seed or alternative solution (just like Dash does for its
-            component ids)
-            * not clear how to handle the case of unnamed data sources, where the name is currently generated
-            automatically by the id, since without --preload this would give mismatched names. If use a random number with
-            fixed seed for this then lose advantage of multiple plots that use the same data source having just one
-            underlying dataframe in memory.
-            * would need to make it possible to disable cache at build time so that data would be loaded once at build
-            time and then again once at runtime, which is generally not what we want
         """
-        return super().__repr__()
+        # Note that using repr(self.__load_data) is not good since it depends on the id of self.__load_data and so
+        # would not be consistent across processes.
+        return f"{self.__class__.__name__}({self._name}, {self.__load_data.__qualname__})"
 
 
 class _StaticData:
@@ -148,7 +139,8 @@ class _StaticData:
         2. to raise a clear error message if a user tries to set a timeout on the data source
     """
 
-    def __init__(self, data: pd.DataFrame, /):
+    def __init__(self, data: pd.DataFrame):
+        # No need for _name here because static data doesn't need a cache key.
         self.__data = data
 
     def load(self) -> pd.DataFrame:
@@ -203,7 +195,7 @@ class DataManager:
             raise ValueError(f"Data source {name} already exists.")
 
         if callable(data):
-            self.__data[name] = _DynamicData(data)
+            self.__data[name] = _DynamicData(name, data)
         elif isinstance(data, pd.DataFrame):
             self.__data[name] = _StaticData(data)
         else:
@@ -239,7 +231,8 @@ class DataManager:
         if component_id not in self.__component_to_data:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         name = self.__component_to_data[component_id]
-        logger.debug("Loading data %s with id %s", name, id(self[name]))
+
+        logger.debug(f"Loading data %s on process %s", name, os.getpid())
         return self[name].load()
 
     def _clear(self):
@@ -252,7 +245,6 @@ data_manager = DataManager()
 
 
 if __name__ == "__main__":
-    # TODO: remove this/move to docs
     from functools import partial
 
     import vizro.plotly.express as px

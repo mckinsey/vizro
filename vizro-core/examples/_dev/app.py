@@ -1,33 +1,39 @@
 """Example to show dashboard configuration."""
+from flask_caching import Cache
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.managers import data_manager
 from vizro.tables import dash_ag_grid
 
-df = px.data.gapminder()
+from vizro.managers import data_manager
+
+df = px.data.iris()
+
+# Cache of default_expire_data expires every 5 minutes, the default
+data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT": 20})
+data_manager["default_expire_data"] = lambda: px.data.iris()
+
+# Set cache of fast_expire_data to expire every 10 seconds
+data_manager["fast_expire_data"] = lambda: px.data.iris()
+data_manager["fast_expire_data"].timeout = 5
+# Set cache of no_expire_data to never expire
+data_manager["no_expire_data"] = lambda: px.data.iris()
+data_manager["no_expire_data"].timeout = 0
 
 page = vm.Page(
-    title="Enhanced AG Grid",
+    title="Blah",
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                data_frame=df,
-                columnDefs=[
-                    {"field": "country", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "continent", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "year"},
-                    {"field": "lifeExp", "cellDataType": "numeric"},
-                    {"field": "pop", "cellDataType": "numeric"},
-                    {"field": "gdpPercap", "cellDataType": "euro"},
-                ],
-            ),
-        ),
+        vm.Graph(figure=px.scatter(df, "sepal_width", "sepal_length")),
+        vm.Graph(figure=px.scatter("default_expire_data", "sepal_width", "sepal_length")),
+        vm.Graph(figure=px.scatter("fast_expire_data", "sepal_width", "sepal_length")),
+        vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length")),
     ],
-    controls=[vm.Filter(column="continent")],
 )
 dashboard = vm.Dashboard(pages=[page])
+app = Vizro().build(dashboard)
+server = app.dash.server
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app.run()
