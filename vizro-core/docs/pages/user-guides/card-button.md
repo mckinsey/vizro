@@ -590,6 +590,26 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
 
+#### Add an icon responsive to theme switch
+
+To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
+
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Please note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+
+Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+
+```css
+img[src*="#my-image"] {
+  filter: var(--icon-color);
+}
+```
+
+!!! example "Styled icon"
+    ![styled icon](../../assets/user_guides/components/responsive_icon.gif)
+
+
 ## Buttons
 
 To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
