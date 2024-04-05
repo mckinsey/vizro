@@ -72,7 +72,7 @@ repos:
       - id: mypy
         files: ^vizro-core/src/
         additional_dependencies:
-          - pydantic>=1.10.13, <2 # deliberately pinned to <2 until we bump our pydantic requirement to strictly >=2
+          - pydantic==1.10.14 #, <2 # deliberately pinned to <2 until we bump our pydantic requirement to strictly >=2
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2
