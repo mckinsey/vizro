@@ -16,7 +16,7 @@ gapminder_mixed["lifeExp"][:200] = gapminder_mixed["lifeExp"][:200] * (-1)
 
 
 @capture("graph")
-def variable_map(data_frame: pd.DataFrame = None, color: Optional[str] = None, title: Optional[str]=None):
+def variable_map(data_frame: pd.DataFrame = None, color: Optional[str] = None, title: Optional[str] = None):
     """Custom choropleth figure that needs post update calls."""
     fig = px.choropleth(
         data_frame,
