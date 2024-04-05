@@ -12,7 +12,7 @@ gapminder_pos = px.data.gapminder()
 gapminder_neg = px.data.gapminder()
 gapminder_mixed = px.data.gapminder()
 gapminder_neg["lifeExp"] = gapminder_neg["lifeExp"] * (-1)
-gapminder_mixed["lifeExp"][:200] = gapminder_mixed["lifeExp"][:200] * (-1)
+gapminder_mixed["lifeExp"].iloc[:200] = gapminder_mixed["lifeExp"].iloc[:200] * (-1)
 
 
 @capture("graph")
