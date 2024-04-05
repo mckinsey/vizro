@@ -57,11 +57,11 @@ def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
     * altering wrapped.cache_timeout
     * using make_name argument (since this is only applied after function_namespace is called)
     * including self or self._name in the load_data arguments
-    * whenever function_namespace recognise the memoized function as a bound method (even when __caching_id__ is
-    defined so that Flask Caching does not fall back on __repr__ which is risky)
+    * whenever function_namespace recognises the memoized function as a bound method (even when __caching_id__ is
+    defined so that Flask Caching does not fall back on __repr__)
 
-    Another option would be to use flask_caching.cached rather than memoize, but that is generally intended only
-    for use during a request, and we want to memoize during the build stage, not just at run time.
+    Another option would be to use flask_caching.cached rather than memoize, but that makes it harder to include
+    arguments in the cache key.
 
     Args:
         wrapped: function that will be memoized.
@@ -74,8 +74,7 @@ def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
 
     """
     # Before altering, wrapped.__func__.__qualname__ is "_DynamicData.__call__"
-    # After altering, it becomes _DynamicData.__call__.<vizro.managers._data_manager._DynamicData object at 0x11d5fc2d0>
-    # where the repr(instance) depends on id(instance).
+    # After altering, it becomes _DynamicData.__call__._DynamicData("name", function_name)
     # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
     # called so will be different every time and not ever hit the cache.
     wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
@@ -135,7 +134,7 @@ class _DynamicData:
         # would not be consistent across processes.
         # lambda function has __qualname__. partial does not unless explicitly assigned a name but will not work with
         # flask-caching anyway since flask_caching.utils.function_namespace would not be able to find a name for it.
-        return f"{self.__class__.__name__}({self._name}, {self.__load_data.__qualname__})"
+        return f"{self.__class__.__name__}({self._name!r}, {self.__load_data.__qualname__})"
 
 
 class _StaticData:
