@@ -59,7 +59,7 @@ vizro_ai = VizroAI()
 Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
 
 ```python
-vizro_ai.plot(df, "describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP")
+vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
 ```
 
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
@@ -74,18 +74,26 @@ And that's it! By passing the prepared data and written visualization request, V
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP")
+        vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
         ```
     === "Result"
-        [![BarChart]][BarChart]
+        [![LineGraph]][LineGraph]
 
-    [BarChart]: ../../assets/tutorials/chart/GDP_Composition_Bar.png
+    [LineGraph]: ../../assets/tutorials/chart/GDP_Composition_Graph.png
 
-The created chart is interactive: you can hover over the data for more information.
+The chart created is interactive: you can hover over the data for more information.
 
-### 5. Get an explanation with your chart
+!!! Tip "How to get the code for the chart"
 
-Passing `explain=True` to the `plot()` method provides insights to explain the rendered chart in detail. Let's create another example to illustrate the information returned:
+    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+
+    ```python
+    fig = px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year':'Year', 'gdpPercap':'GDP Per Cap'}, title='')
+    ```
+
+### 4. Get an explanation with your chart
+
+Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
 
 !!! example "Specify  `explain=True`"
 
@@ -98,7 +106,7 @@ Passing `explain=True` to the `plot()` method provides insights to explain the r
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
-### 6. Explore further
+### 5. Explore further
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
