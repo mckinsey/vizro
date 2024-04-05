@@ -88,4 +88,4 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 
-It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the Data Manager. 
+It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the Data Manager.

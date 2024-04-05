@@ -1,12 +1,9 @@
 """Example to show dashboard configuration."""
-from flask_caching import Cache
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from flask_caching import Cache
 from vizro import Vizro
-from vizro.managers import data_manager
-from vizro.tables import dash_ag_grid
-
 from vizro.managers import data_manager
 
 df = px.data.iris()

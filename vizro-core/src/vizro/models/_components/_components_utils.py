@@ -1,6 +1,5 @@
-import uuid
-
 import logging
+import uuid
 from functools import partial
 
 from vizro.managers import data_manager

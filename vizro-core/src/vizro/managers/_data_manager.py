@@ -1,8 +1,9 @@
 """The data manager handles access to all DataFrames used in a Vizro app."""
 
 from __future__ import annotations
-import os
+
 import logging
+import os
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
@@ -243,7 +244,7 @@ class DataManager:
             raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
         name = self.__component_to_data[component_id]
 
-        logger.debug(f"Loading data %s on process %s", name, os.getpid())
+        logger.debug("Loading data %s on process %s", name, os.getpid())
         return self[name].load()
 
     def _clear(self):
