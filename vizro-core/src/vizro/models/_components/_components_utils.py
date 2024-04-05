@@ -29,20 +29,22 @@ def _process_callable_data_frame(captured_callable, values):
     data_frame = captured_callable["data_frame"]
 
     if isinstance(data_frame, str):
-        # Enable running with DynamicData, e.g. px.scatter("iris") from the Python API and specification of
-        # "data_frame": "iris" through JSON. In these cases, data already exists in the data manager and just needs to be
-        # linked to the component.
+        # Named data source, which could be dynamic or static. This means px.scatter("iris") from the Python API and
+        # specification of "data_frame": "iris" through JSON. In these cases, data already exists in the data manager
+        # and just needs to be linked to the component.
         data_source_name = data_frame
     else:
-        # Standard StaticData case for px.scatter(df: pd.DataFrame).
-        # Extract dataframe from the captured function and put it into the data manager.
+        # Unnamed data source, which must be a pd.DataFrame and hence static data. This means px.scatter(pd.DataFrame())
+        # and is only possible from the Python API. Extract dataframe from the captured function and put it into the
+        # data manager.
         # Unlike with model_manager, it doesn't matter if the random seed is different across workers here. So long as we
-        # always fetch StaticData data from the data manager my going through the appropriate Figure component, the right
-        # data name will be fetched. It also doesn't matter that multiple Figures with the same underlying data
+        # always fetch static data from the data manager by going through the appropriate Figure component, the right
+        # data source name will be fetched. It also doesn't matter if multiple Figures with the same underlying data
         # each have their own entry in the data manager, since the underlying pd.DataFrame will still be the same and not
         # copied into each one, so no memory is wasted.
         logger.debug("Adding data to data manager for Figure with id %s", values["id"])
         data_source_name = str(uuid.uuid4())
+        data_manager[data_source_name] = data_frame
 
     data_manager._add_component(values["id"], data_source_name)
     # No need to keep the data in the captured function any more so remove it to save memory.

@@ -16,6 +16,7 @@ from vizro.managers._managers_utils import _state_modifier
 # * caching
 # * new error messages that are raised
 # * set cache to null in all other tests
+# * copy returned
 
 # TODO: __main__ in this file: remove/move to docs
 
@@ -123,6 +124,8 @@ class _DynamicData:
         """
         # Note that using repr(self.__load_data) is not good since it depends on the id of self.__load_data and so
         # would not be consistent across processes.
+        # lambda function has __qualname__. partial does not unless explicitly assigned a name but will not work with
+        # flask-caching anyway since flask_caching.utils.function_namespace would not be able to find a name for it.
         return f"{self.__class__.__name__}({self._name}, {self.__load_data.__qualname__})"
 
 
@@ -242,47 +245,3 @@ class DataManager:
 
 
 data_manager = DataManager()
-
-
-if __name__ == "__main__":
-    from functools import partial
-
-    import vizro.plotly.express as px
-
-    dm = data_manager
-    dm["iris"] = px.data.iris()
-
-    dm._add_component("component_id_a", "iris")
-    print(len(dm._get_component_data("component_id_a")))  # 150   # noqa: T201
-
-    dm._add_component("component_id_b", "iris")
-    df_a = dm._get_component_data("component_id_a")
-    df_a.drop(columns="species", inplace=True)
-    print(df_a.shape)  # (150, 5)   # noqa: T201
-    df_b = dm._get_component_data("component_id_b")
-    print(df_b.shape)  # (150, 6)   # noqa: T201
-
-    # Lazy loading example 1
-    def retrieve_iris():
-        df = px.data.iris()
-        subset = df.query("species == 'setosa'")
-        return subset
-
-    dm["iris_subset"] = retrieve_iris
-    dm._add_component("component_id_c", "iris_subset")
-    print(len(dm._get_component_data("component_id_c")))  # 50   # noqa: T201
-
-    # Lazy loading example 2
-    def retrieve_one_species(species):
-        df = px.data.iris()
-        subset = df[df["species"] == species].copy()
-        return subset
-
-    dm["data_from_external_1"] = lambda: retrieve_one_species("setosa")
-    dm._add_component("component_id_d", "data_from_external_1")
-    print(len(dm._get_component_data("component_id_d")))  # 50   # noqa: T201
-
-    # Lazy loading example 3
-    dm["data_from_external_2"] = partial(retrieve_one_species, "setosa")
-    dm._add_component("component_id_e", "data_from_external_2")
-    print(len(dm._get_component_data("component_id_e")))  # 50   # noqa: T201

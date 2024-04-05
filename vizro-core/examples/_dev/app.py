@@ -30,6 +30,7 @@ page = vm.Page(
         vm.Graph(figure=px.scatter("fast_expire_data", "sepal_width", "sepal_length")),
         vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length")),
     ],
+    controls=[vm.Filter(column="species")],
 )
 dashboard = vm.Dashboard(pages=[page])
 app = Vizro().build(dashboard)
