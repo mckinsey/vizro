@@ -6,13 +6,13 @@ If you haven't yet done so, you may want to review the [first dashboard tutorial
 
 ## 1. Install Vizro and get ready to run your code
 
-To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code [within a Jupyter Notebook cell](../first-dashboard/#2-open-a-jupyter-notebook), or from a Python script.
+To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code within a Jupyter Notebook cell or from a Python script.
 
 ## 2. Create a first dashboard page
 
 In this section we create a new [`Page`][vizro.models.Page] called `first_page`.
 
-The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components/) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
+The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components.md) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
 
 ### 2.1. Add the first figure
 
@@ -78,7 +78,7 @@ You can combine and arrange various types of `components` on a dashboard page. T
 The code below adds two components to the page:
 
 * A [`Card`][vizro.models.Card] to insert Markdown text into the dashboard.
-* A [`Graph`][vizro.models.Graph] to illusrate GDP development per continent since 1952 as a bar chart.
+* A [`Graph`][vizro.models.Graph] to illustrate GDP development per continent since 1952 as a line graph.
 
 !!! warning "Before you run this code in a Jupyter Notebook"
 
@@ -104,7 +104,7 @@ The code below adds two components to the page:
             id="line_gdp",
             figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
-                            "gdpPercap":"GDP Per Cap"}),
+                            "gdpPercap":"GDP Per Cap"}, title=''),
         )
         ```
 
@@ -139,7 +139,7 @@ The code below adds two components to the page:
                     id="line_gdp",
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
+                                    "gdpPercap":"GDP Per Cap"}, title=''),
                 ),
 
             ],
@@ -154,6 +154,13 @@ The code below adds two components to the page:
     [FirstPage2]: ../../assets/tutorials/dashboard/dashboard22.png
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
+
+!!! tip "An introduction to Vizro-AI"
+
+    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/get-started/quickstart/). Vizro-AI enables you to use English, or other languages, to create create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
+
+    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)!
+
 
 ### 2.3. Configure the layout
 
@@ -318,7 +325,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
 
         [FirstPage4]: ../../assets/tutorials/dashboard/dashboard24.png
 
-Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](/#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
+Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
 
 ## 3. Create a second dashboard page
 
@@ -461,7 +468,7 @@ for parameters](../user-guides/parameters.md).
 
 ### 3.1. Customize with selectors
 
-The code in the example above uses two different types of [`selector` objects](../user-guides/selectors/), namely
+The code in the example above uses two different types of [`selector` objects](../user-guides/selectors.md), namely
 [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider] upon the
 [`Parameters`][vizro.models.Parameter]. The `selectors` enable configuration of the controls to customize their behavior and appearance.
 

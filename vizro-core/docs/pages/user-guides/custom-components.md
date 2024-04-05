@@ -28,7 +28,7 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 [^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
-## How to extend an existing component
+## Extend an existing component
 ??? info "When to choose this strategy"
 
     You may want to use this strategy to:
@@ -147,7 +147,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
-## How to create a new component
+## Create a new component
 
 ??? info "When to choose this strategy"
 
@@ -266,6 +266,224 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
+## Using custom components with custom actions
+
+Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
+
+### Custom components as inputs/outputs of custom actions
+
+Following the instructions above to create a custom component, results in this `OffCanvas` component:
+
+```py
+class OffCanvas(vm.VizroBaseModel):
+    type: Literal["offcanvas"] = "offcanvas"
+    title: str
+    content: str
+
+    def build(self):
+        return html.Div(
+            [
+                dbc.Offcanvas(
+                    children=html.P(self.content),
+                    id=self.id,
+                    title=self.title,
+                    is_open=False,
+                ),
+            ]
+        )
+```
+
+After you have completed the steps above, it is time to write your [custom action](../user-guides/custom-actions.md).
+
+   ```py
+    @capture("action")
+    def open_offcanvas(n_clicks, is_open):
+        if n_clicks:
+            return not is_open
+        return is_open
+   ```
+
+Add the custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
+
+
+??? example "Example of the use of custom component with actions"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from dash import html
+        from vizro import Vizro
+
+        from vizro.models import Action
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class OffCanvas(vm.VizroBaseModel):
+            type: Literal["offcanvas"] = "offcanvas"
+            title: str
+            content: str
+
+            def build(self):
+                return html.Div(
+                    [
+                        dbc.Offcanvas(
+                            children=html.P(self.content),
+                            id=self.id,
+                            title=self.title,
+                            is_open=False,
+                        ),
+                    ]
+                )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", OffCanvas)
+
+        # 3. Create custom action
+        @capture("action")
+        def open_offcanvas(n_clicks, is_open):
+            if n_clicks:
+                return not is_open
+            return is_open
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Button(
+                    text="Open Offcanvas",
+                    id="open_button",
+                    actions=[
+                        vm.Action(
+                            function=open_offcanvas(),
+                            inputs=["open_button.n_clicks", "offcanvas.is_open"],
+                            outputs=["offcanvas.is_open"],
+                        )
+                    ],
+                ),
+                OffCanvas(
+                    id="offcanvas",
+                    content="OffCanvas content",
+                    title="Offcanvas Title",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+
+        ```
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomComponent3]][CustomComponent3]
+
+    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
+
+
+### Trigger actions with a custom component
+
+As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some additional lines of code:
+
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
+   ```py
+    actions: List[Action] = []
+   ```
+2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+   ```py
+    _set_actions = _action_validator_factory("active_index")
+   ```
+
+
+??? example "Example of triggering action with custom component"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        from dash import html
+        from vizro import Vizro
+
+        try:
+            from pydantic.v1 import Field, PrivateAttr
+        except ImportError:
+            from pydantic import PrivateAttr
+
+        from vizro.models import Action
+        from vizro.models._action._actions_chain import _action_validator_factory
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class Carussel(vm.VizroBaseModel):
+            type: Literal["carussel"] = "carussel"
+            items: List
+            actions: List[Action] = []
+
+            _set_actions = _action_validator_factory("active_index")  # (1)!
+
+            def build(self):
+                return dbc.Carousel(
+                    id=self.id,
+                    items=self.items,
+                )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", Carussel)
+
+        # 3. Create custom action
+        @capture("action")
+        def carussel(active_index):
+            if active_index:
+                return "Second slide"
+
+            return "First slide
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Card(text="First slide", id="carussel-card"),
+                Carussel(
+                    id="carrusel",
+                    items=[
+                        {"key": "1", "src": "path_to_your_image"},
+                        {"key": "2", "src": "path_to_your_image"},
+                    ],
+                    actions=[
+                        vm.Action(
+                            function=carussel(),
+                            inputs=["carrusel.active_index"],
+                            outputs=["carussel-card.children"]
+                        )
+                    ]
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+
+        1.  Here we set the action so a change in the `active_index` property of the custom component triggers the action.
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomComponent4]][CustomComponent4]
+
+    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.gif
 
 ???+ warning
 

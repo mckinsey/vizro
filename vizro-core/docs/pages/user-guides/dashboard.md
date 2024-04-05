@@ -12,7 +12,7 @@ To create a dashboard:
 6. Add your `dashboard` to the `build` call of Vizro
 
 
-## Using dashboard configuration options
+## Use dashboard configuration options
 
 !!! example "Dashboard Configuration Syntaxes"
     === "app.py - pydantic models"
@@ -183,12 +183,12 @@ To create a dashboard:
 
 After running the dashboard, you can access the dashboard via `localhost:8050`.
 
-## How to add a dashboard title
+## Add a dashboard title
 
 If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
 
-## How to add a dashboard logo
+## Add a dashboard logo
 
 Vizro will automatically incorporate the dashboard [logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 

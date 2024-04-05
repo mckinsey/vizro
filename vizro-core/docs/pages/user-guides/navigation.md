@@ -5,7 +5,7 @@ This guide shows you how to use and customize the navigation that appears on the
 The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
 The dashboard includes a collapsible side panel that users can easily minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
-## Using the default navigation
+## Use the default navigation
 
 By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title "SELECT PAGE".
 
@@ -74,7 +74,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
     [DefaultNavigation]: ../../assets/user_guides/navigation/default_navigation.png
 
-## Including a subset of pages
+## Include a subset of pages
 
 If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), e.g. we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
@@ -103,7 +103,7 @@ If you wish to include only some of your dashboard pages in your navigation then
 
     [OnlySomePages]: ../../assets/user_guides/navigation/only_some_pages.png
 
-## Grouping pages
+## Group pages
 
 You can also group your pages together by specifying `pages` as a dictionary:
 
@@ -137,7 +137,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
     [GroupedNavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
 
 
-## Using a navigation bar with icons
+## Use a navigation bar with icons
 
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 
@@ -178,7 +178,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
 Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
 By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
 
-## Customizing the navigation bar
+## Customize the navigation bar
 
 Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.NavLink] to build the icons in the navigation bar. It is possible to customize the navigation further by providing the `NavLink` models yourself.
 

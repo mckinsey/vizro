@@ -9,7 +9,7 @@ If you already have Kedro installed then you do not need to install any addition
 pip install vizro[kedro]
 ```
 
-## Using datasets from the Kedro Data Catalog
+## Use datasets from the Kedro Data Catalog
 `vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the [Vizro Data Manager][vizro.managers._data_manager] is:
 ```python
 from vizro.integrations import kedro as kedro_integration

@@ -5,7 +5,7 @@ and configure your dashboard interactions (e.g. filters and parameters).
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, where you can insert your [`Page`][vizro.models.Page].
 
-## Creating a page
+## Create a page
 
 A [`Page`][vizro.models.Page] is split up into four main containers:
 
@@ -98,7 +98,7 @@ To create and add a page to your dashboard, do the following steps:
     You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 
-## Customizing the page URL
+## Customize the page URL
 By default, the page URL is automatically generated based on the `id` of the page e.g., if `id="This is my first page"`
 the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
