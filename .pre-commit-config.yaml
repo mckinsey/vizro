@@ -119,5 +119,5 @@ ci:
     - check-branch-name
     - codespell
     - bandit
-    - mypy
     - gitleaks
+    - vale
