@@ -18,11 +18,19 @@ from vizro.managers._managers_utils import _state_modifier
 # * set cache to null in all other tests
 # * copy returned
 
-# TODO: __main__ in this file: remove/move to docs
+
+#####################
+# Just for the purposes of easily seeing the right debug messages. Remove before merging to main and revert to this:
+# logger = logging.getLogger(__name__)
+class PrefixAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        return f"[DATA MANAGER] {msg}", kwargs
 
 
-logger = logging.getLogger(__name__)
+logger = PrefixAdapter(logging.getLogger(__name__))
 logger.setLevel(logging.DEBUG)
+#####################
+
 # Really ComponentID and DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 # TODO: remove these type aliases once have moved component to data mapping to models
@@ -182,7 +190,7 @@ class DataManager:
         self.__data: Dict[DataSourceName, Union[_DynamicData, _StaticData]] = {}
         self.__component_to_data: Dict[ComponentID, DataSourceName] = {}
         self._frozen_state = False
-        self.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+        self.cache = Cache(config={"CACHE_TYPE": "NullCache"})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with
         # default values though. We would do this with something like this:
         # def __set_cache(self, cache_config):

@@ -1,6 +1,6 @@
 # Static data
 
-A static data source is the simplest way to provide data to your dashboard and should be used for any data that does not need to be reloaded while the dashboard is running. It is production-ready and works out of the box in a multi-process deployment. If you need data that can be refreshed without restarting the dashboard then you should use [dynamic data](dynamic-data.md).
+A static data source is the simplest way to provide data to your dashboard and should be used for any data that does not need to be reloaded while the dashboard is running. It is production-ready and works out of the box in a multi-process deployment. If you need data to be refreshed without restarting the dashboard then you should instead use [dynamic data](dynamic-data.md).
 
 ## Supply directly
 
@@ -35,15 +35,14 @@ You can directly supply a pandas DataFrame into components such as [graphs](grap
 
     [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 
-The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) which always takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument (so you could write `data_frame=iris`); when specifying the dashboard configuration through YAML, the argument name must be given.
-
+The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of just `iris`.
 !!! note
 
     With static data, once the dashboard is running, the data shown in the dashboard cannot change even if the source data in `iris.csv` changes. The code `iris = pd.read_csv("iris.csv")` is only executed once when the dashboard is first started. If you would like changes to source data to flow through to the dashboard then you must use [dynamic data](dynamic-data.md).
 
 ## Reference by name
 
-If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager.
+If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager, importable as `vizro.managers.data_manager`. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager.
 
 !!! example "Static data referred to by name"
     === "app.py"
@@ -89,4 +88,4 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 
-It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` would work if the `"iris"` data source has been registered in the Data Manager. In fact, when it comes to dynamic data, using the data source name is the _only_ way to refer to a data source.
+It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the Data Manager. 

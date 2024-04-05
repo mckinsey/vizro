@@ -122,7 +122,7 @@ in the command line. For more Gunicorn configuration options, please refer to [G
 
 !!! warning "In production"
 
-    If your dashboard uses [dynamic data](dynamic-data.md) that can be refreshed while the dashboard is running then you should [configure your Data Manager cache](data.md#cache-configuration) to use a backend that supports multiple processes. The Vizro default simple caching mechanism is only suitable for single-process development purposes and is not intended to be used in production.
+    If your dashboard uses [dynamic data](dynamic-data.md) that can be refreshed while the dashboard is running then you should [configure your Data Manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
 ## Deployment
 

@@ -12,7 +12,7 @@ from vizro.managers import data_manager
 df = px.data.iris()
 
 # Cache of default_expire_data expires every 5 minutes, the default
-data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT": 20})
+# data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT": 20})
 data_manager["default_expire_data"] = lambda: px.data.iris()
 
 # Set cache of fast_expire_data to expire every 10 seconds
