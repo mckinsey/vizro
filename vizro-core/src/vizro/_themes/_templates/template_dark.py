@@ -43,7 +43,7 @@ def create_template_dark() -> Template:
     template_dark["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["WHITE_55"]
     template_dark["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = COLORS["WHITE_55"]
     # Applied when data for color is positive and negative
-    template_dark["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"][::-1]
+    template_dark["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"]
     # Applied when data for color is positive
     template_dark["layout"]["colorscale"]["sequential"] = COLORS["SEQUENTIAL_CYAN"]
     # Applied when data for color is positive
