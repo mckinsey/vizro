@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, root_validator, validator
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro.actions import update_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
@@ -90,6 +90,7 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
+        # TODO: Swap ON_PAGE_LOAD_ACTION_PREFIX with something like UPDATE_FIGURES_ACTION_PREFIX
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
         if targets:
             self.actions = [
@@ -100,7 +101,7 @@ class Page(VizroBaseModel):
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=update_figures(targets=targets)
                         )
                     ],
                 )

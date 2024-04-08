@@ -64,19 +64,15 @@ class Action(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
-        from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
-
         callback_inputs: Union[List[State], Dict[str, State]]
-        # TODO-actions: Refactor the following lines to:
+        # TODO-AV2-OQ: Refactor the following lines to something like: (Try to reconcile different inputs types)
         #     `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
-        #     After refactoring that's mentioned above, test overwriting of the predefined action.
-        #     (by adding a new inputs/outputs to the overwritten action and check if it's working as expected)
+        #     Then, test overwriting of the predefined action.
+        #     (by adding new inputs/outputs to the overwritten predefined action)
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
-        else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
         callback_outputs: Union[List[Output], Dict[str, Output]]
         if self.outputs:
@@ -89,13 +85,10 @@ class Action(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
         elif isinstance(self.function, CapturedActionCallable):
             callback_outputs = self.function.outputs
-        else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
+        action_components = []
         if isinstance(self.function, CapturedActionCallable):
             action_components = self.function.components
-        else:
-            action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
 
         return callback_inputs, callback_outputs, action_components
 

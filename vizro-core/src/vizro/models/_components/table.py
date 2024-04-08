@@ -90,7 +90,8 @@ class Table(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
 
         for action in source_table_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # TODO-AV2: Handle if "action.function != "filter_interaction" until inputs refactoring
+            if "targets" not in action.function._arguments or target not in action.function["targets"]:
                 continue
             column = ctd_active_cell["value"]["column_id"]
             derived_viewport_data_row = ctd_active_cell["value"]["row"]

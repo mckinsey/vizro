@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import _filter
+from vizro.actions import filter_action
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
@@ -60,6 +60,10 @@ class Filter(VizroBaseModel):
     selector: SelectorType = None
     _column_type: Literal["numerical", "categorical"] = PrivateAttr()
 
+    # TODO-AV2-OQ: Consider do we need to validate the targets (consider similar for Parameter and parameter_action):
+    #  1. in the filter initialization phase, or
+    #  2. in the filter.pre_build phase, or
+    #  3. in the action build phase?
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:
@@ -138,7 +142,7 @@ class Filter(VizroBaseModel):
             filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
             self.selector.actions = [
                 Action(
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
+                    function=filter_action(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 )
             ]

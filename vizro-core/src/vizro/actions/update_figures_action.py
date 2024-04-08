@@ -9,7 +9,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import CapturedActionCallable
 
 
-class FilterInteractionAction(CapturedActionCallable):
+class UpdateFiguresAction(CapturedActionCallable):
     def _post_init(self):
         """Post initialization is called in the vm.Action build phase, and it is used to validate and calculate the
         properties of the CapturedActionCallable. With this, we can validate the properties and raise errors before
@@ -64,6 +64,7 @@ class FilterInteractionAction(CapturedActionCallable):
             _get_inputs_of_parameters,
         )
         from vizro.actions.filter_action import FilterAction
+        from vizro.actions.filter_interaction_action import FilterInteractionAction
         from vizro.actions.parameter_action import ParameterAction
 
         page = model_manager[self._page_id]
@@ -89,5 +90,5 @@ class FilterInteractionAction(CapturedActionCallable):
         }
 
 
-# Alias for FilterInteractionAction
-filter_interaction = FilterInteractionAction
+# Alias for UpdateFiguresAction
+update_figures = UpdateFiguresAction

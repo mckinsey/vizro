@@ -144,11 +144,11 @@ class CapturedCallable:
 
     @property
     def _arguments(self):
-        # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
+        # TODO-AV2: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
         return self.__bound_arguments
 
-    # TODO-actions: Find a way how to compare CapturedCallable and function
+    # TODO-AV2-OQ: Find a way how to compare CapturedCallable and function
     @property
     def _function(self):
         return self.__function
@@ -224,7 +224,7 @@ class CapturedActionCallable(CapturedCallable, metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    # TODO-actions: Rename to "function"
+    # TODO-AV2: Rename to "function"
     def pure_function(*args, **kwargs):
         """This is the function that will be called when the action is triggered."""
 
