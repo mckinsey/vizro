@@ -1,11 +1,10 @@
 """Rough example used by developers."""
-from dash import Output, State
 
 from typing import Any, Dict, List, Optional
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import Output
+from dash import Output, State
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.managers._model_manager import ModelID
@@ -48,7 +47,9 @@ def overwritten_filter_interactions_1(
         **filter_interaction.pure_function(targets=targets, **inputs),
     }
 
+
 # 2. Overwriting the filter_interaction action by inheriting FilterInteractionAction
+
 
 # This also works:
 # from vizro.actions.filter_interaction_action import FilterInteractionAction
@@ -99,8 +100,8 @@ dashboard = vm.Dashboard(
                         #         targets=[
                         #             "scatter",
                         #             "scatter_from_page_2",
-                                # ]
-                            # )
+                        # ]
+                        # )
                         # ),
                         # Implementing updating card with grid clicked data as the independent action.
                         # vm.Action(
