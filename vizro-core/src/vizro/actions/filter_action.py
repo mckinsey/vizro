@@ -17,19 +17,10 @@ class FilterAction(CapturedActionCallable):
         and the calculated arguments.
         """
         # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
-        #      have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
-        #      here, instead inside the Filter/Parameter/Page models.
+        #  have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
+        #  here, instead inside the Filter/Parameter/Page models.
 
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
-
-        # targets = self._arguments.get("targets")
-        # if targets:
-        #     for target in targets:
-        #         if self._page_id != model_manager._get_model_page_id(model_id=target):
-        #             raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
-        # else:
-        #     targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
-        # self._arguments["targets"] = self.targets = targets
 
         # Validate and calculate "targets"
         self.targets = self._arguments.get("targets")
@@ -75,18 +66,16 @@ class FilterAction(CapturedActionCallable):
         from vizro.actions.parameter_action import ParameterAction
         from vizro.actions.filter_interaction_action import FilterInteractionAction
 
-        # TODO-AV2-OO: Consider the following inputs ctx form:
-        #    ```
-        #    return {
-        #        target_1: {'filters': ..., 'parameters': ..., 'filter_interaction': ..., 'theme_selector': ...},
-        #        target_2: {'filters': ..., 'parameters': ..., 'filter_interaction': ..., 'theme_selector': ...},
-        #    }
-        #    ```
-        #    Pros:
-        #    1. We don't need anymore to send all filter/parameters/filter_interaction inputs to the server
-        #    2. Potentially we don't need to dig through the ctx in the _actions_utils.py which decreases the complexity
-        #    Cons:
-        #    1. Time for tests refactoring
+        # TODO-AV2-OQ: Consider the following inputs ctx form:
+        #  ```
+        #  return {
+        #      target_1: {'filters': ..., 'parameters': ..., 'filter_interaction': ..., 'theme_selector': ...},
+        #      target_2: {'filters': ..., 'parameters': ..., 'filter_interaction': ..., 'theme_selector': ...},
+        #  }
+        #  ```
+        #  Pros:
+        #  1. We don't need anymore to send all filter/parameters/filter_interaction inputs to the server
+        #  2. Potentially we don't need to dig through the ctx in the _actions_utils.py which decreases the complexity
 
         page = model_manager[self._page_id]
         return {

@@ -144,8 +144,7 @@ class CapturedCallable:
 
     @property
     def _arguments(self):
-        # TODO-AV2: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
-        # references are removed.
+        # TODO-AV2: The method should be removed when all references are removed.
         return self.__bound_arguments
 
     # TODO-AV2-OQ: Find a way how to compare CapturedCallable and function

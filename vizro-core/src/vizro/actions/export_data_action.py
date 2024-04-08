@@ -19,13 +19,13 @@ class ExportDataAction(CapturedActionCallable):
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
-        # TODO-AV2-EASY: Make targets validation reusable for the other actions too.
+        # TODO-AV2-TICKET-NEW: Make targets validation reusable for the other actions too.
         # TODO-AV2-OQ: Rethink using self._arguments
         targets = self._arguments.get("targets")
         if targets:
             for target in targets:
                 if self._page_id != model_manager._get_model_page_id(model_id=target):
-                    # TODO-AV2-EASY: Improve error message to explain in which action the error occurs.
+                    # TODO-AV2-TICKET-NEW: Improve error message to explain in which action the error occurs.
                     raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
         else:
             targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
@@ -85,6 +85,7 @@ class ExportDataAction(CapturedActionCallable):
 
     @property
     def inputs(self):
+        # TODO-AV2: Consider using aliases like """from vizro.actions import filter_action, filter_interaction""" below.
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
@@ -102,7 +103,7 @@ class ExportDataAction(CapturedActionCallable):
 
     @property
     def outputs(self) -> Dict[str, Output]:
-        # TODO-AV2-TICKET: Take the "actions_info" into account once it's implemented.
+        # TODO-AV2-TICKET-CREATED: Take the "actions_info" into account once it's implemented.
         return {
             f"download_dataframe_{target}": Output(
                 component_id={"type": "download_dataframe", "action_id": self._action_id, "target_id": target},
@@ -113,7 +114,7 @@ class ExportDataAction(CapturedActionCallable):
 
     @property
     def components(self):
-        # TODO-AV2-TICKET: Take the "actions_info" into account once it's implemented.
+        # TODO-AV2-TICKET-CREATED: Take the "actions_info" into account once it's implemented.
         return [
             dcc.Download(id={"type": "download_dataframe", "action_id": self._action_id, "target_id": target})
             for target in self.targets

@@ -17,30 +17,19 @@ class ParameterAction(CapturedActionCallable):
         and the calculated arguments.
         """
         # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
-        #      have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
-        #      here, instead inside the Filter/Parameter/Page models.
+        #  have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
+        #  here, instead inside the Filter/Parameter/Page models.
 
         # TODO-AV2-OQ: Consider making a difference within this method between 'targets' and 'affected_arguments' e.g.:
-        #   "targets" - only target model IDs e.g. "my_scatter"
-        #   "affected_arguments" - affected_argument per target e.g. "layout.title.size"
-        #   PROS:
-        #   1. Calculate everything we can in advance so we don't have to deal with calculation every time later
+        #  "targets" - only target model IDs e.g. "my_scatter_chart_id"
+        #  "affected_arguments" - affected_argument per target e.g. "layout.title.size"
+        #  PROS:
+        #  1. Calculate everything we can in advance so we don't have to deal with calculation every time later.
 
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
-        # targets = self._arguments.get("targets")
-        # if targets:
-        #     for target in targets:
-        #         if self._page_id != model_manager._get_model_page_id(model_id=target):
-        #             raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
-        # else:
-        #     targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
-        # self._arguments["targets"] = self.targets = targets
-
         # Validate and calculate "targets"
         self.targets = self._arguments.get("targets")
-        # Validate and calculate "filter_function"
-        # Validate and calculate "filter_column"
 
     @staticmethod
     def pure_function(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:

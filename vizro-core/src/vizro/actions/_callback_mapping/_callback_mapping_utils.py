@@ -25,8 +25,10 @@ def _get_matching_page_actions_by_action_class(
     ]
 
 
-# TODO-AV2-TICKET: Once "actions_info" is implemented, functions like:
+# TODO-AV2-TICKET-CREATED: Once "actions_info" is implemented, functions like:
 #  _get_inputs_of_filters, _get_inputs_of_parameters, _get_inputs_of_figure_interactions will become a single function.
+#  This approach should enable predefined actions to see custom actions if they are inherited from the predefined
+#  actions (which is a use case we want to achieve).
 def _get_inputs_of_filters(
     page: Page,
     action_class: CapturedActionCallable = None
@@ -36,7 +38,6 @@ def _get_inputs_of_filters(
         page_id=ModelID(str(page.id)), action_class=action_class
     )
     inputs = []
-    # TODO-AV2-TICKET: Take the "actions_info" into account once it's implemented.
     for action in filter_actions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
         inputs.append(State(component_id=triggered_model.id, component_property=triggered_model._input_property))
@@ -53,7 +54,6 @@ def _get_inputs_of_parameters(
         page_id=ModelID(str(page.id)), action_class=action_class
     )
     inputs = []
-    # TODO-AV2-TICKET: Take the "actions_info" into account once it's implemented.
     for action in parameter_actions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
         inputs.append(State(component_id=triggered_model.id, component_property=triggered_model._input_property))
@@ -64,12 +64,11 @@ def _get_inputs_of_parameters(
 def _get_inputs_of_figure_interactions(
     page: Page, action_class: CapturedActionCallable = None
 ) -> List[Dict[str, State]]:
-    """Gets list of `States` for selected chart interaction `action_function` of triggered `Page`."""
+    """Gets list of `States` for all components that have the `filter_interaction` action from the `Page`."""
     figure_interactions_on_page = _get_matching_page_actions_by_action_class(
         page_id=ModelID(str(page.id)), action_class=action_class
     )
     inputs = []
-    # TODO-AV2-TICKET: Take the "actions_info" into account once it's implemented.
     for action in figure_interactions_on_page:
         triggered_model = model_manager._get_action_trigger(action_id=ModelID(str(action.id)))
         required_attributes = ["_filter_interaction_input", "_filter_interaction"]

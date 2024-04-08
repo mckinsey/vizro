@@ -54,16 +54,8 @@ def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerD
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                # TODO-AV2: Check do we need to check the statement given in the comment below.
-                # We don't need to check if the function name is _filter anymore, since every action is a filter now.
-                # action.function._function.__name__ != "_filter"
-                # or target not in action.function["targets"]
-
             # TODO-AV2: Handle if "action.function != "filter_action" until inputs refactoring
-            target not in action.function.targets
-                or ALL_OPTION in selector_value
-            ):
+            if (target not in action.function.targets or ALL_OPTION in selector_value):
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -138,7 +130,7 @@ def _get_parametrized_config(
 ) -> Dict[ModelID, Dict[str, Any]]:
     parameterized_config = {}
     for target in targets:
-        # TODO-AV2 - avoid calling _captured_callable. Once we have done this we can remove _arguments from
+        # TODO-AV2 - avoid calling _captured_callable. Once we have done this and similar we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = deepcopy(model_manager[target].figure._arguments)
         if "data_frame" in graph_config:

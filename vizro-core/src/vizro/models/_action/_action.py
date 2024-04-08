@@ -43,15 +43,6 @@ class Action(VizroBaseModel):
         regex="^[^.]+[.][^.]+$",
     )
 
-    # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
-    # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
-    # require, and make the code here look up the appropriate validation using the function as key
-    # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
-    # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    #
-    # @validator("function")
-    # def validate_predefined_actions(cls, function):
-
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -66,16 +57,18 @@ class Action(VizroBaseModel):
         """
         callback_inputs: Union[List[State], Dict[str, State]]
         # TODO-AV2-OQ: Refactor the following lines to something like: (Try to reconcile different inputs types)
-        #     `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
-        #     Then, test overwriting of the predefined action.
-        #     (by adding new inputs/outputs to the overwritten predefined action)
-        if self.inputs:
-            callback_inputs = [State(*input.split(".")) for input in self.inputs]
-        elif isinstance(self.function, CapturedActionCallable):
+        #  `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
+        #  Then, test overwriting of the predefined action.
+        #  (by adding new inputs/outputs to the overwritten predefined action)
+        if isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
+        else:
+            callback_inputs = [State(*input.split(".")) for input in self.inputs]
 
         callback_outputs: Union[List[Output], Dict[str, Output]]
-        if self.outputs:
+        if isinstance(self.function, CapturedActionCallable):
+            callback_outputs = self.function.outputs
+        else:
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -83,8 +76,6 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
-        elif isinstance(self.function, CapturedActionCallable):
-            callback_outputs = self.function.outputs
 
         action_components = []
         if isinstance(self.function, CapturedActionCallable):

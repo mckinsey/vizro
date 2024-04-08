@@ -48,7 +48,7 @@ class Page(VizroBaseModel):
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
-    # TODO: Remove default on page load action if possible
+    # TODO-AV2-TICKET-CREATED: Remove default on page load action if possible
     actions: List[ActionsChain] = []
 
     # Re-used validators
@@ -89,8 +89,7 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO: Remove default on page load action if possible
-        # TODO: Swap ON_PAGE_LOAD_ACTION_PREFIX with something like UPDATE_FIGURES_ACTION_PREFIX
+        # TODO-AV2: Swap ON_PAGE_LOAD_ACTION_PREFIX with something like UPDATE_FIGURES_ACTION_PREFIX
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
         if targets:
             self.actions = [
@@ -131,9 +130,9 @@ class Page(VizroBaseModel):
         # flickering.
         # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
         # method defined. But at the moment this just means Graphs.
-        # TODO: consider making this clientside callback and then possibly we can remove the call to _update_theme in
-        #  Graph.__call__ without any flickering.
-        # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
+        # TODO-AV2-TICKET-CREATED: consider making this clientside callback and then possibly we can remove the
+        #  call to _update_theme in Graph.__call__ without any flickering.
+        #  If we do this then we should *consider* defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
         themed_components = [
