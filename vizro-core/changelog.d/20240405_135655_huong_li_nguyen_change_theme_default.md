@@ -22,12 +22,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Change default continuous color scale to `SEQUENTIAL_CYAN´. ([#407](https://github.com/mckinsey/vizro/pull/407))
 
--->
+
 <!--
 ### Deprecated
 
@@ -35,10 +35,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
+<!--
 ### Fixed
 
-- Turn on `autocolorscale` for color palettes to be assigned correctly in Plotly charts. ([#407](https://github.com/mckinsey/vizro/pull/407))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 
