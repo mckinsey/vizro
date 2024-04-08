@@ -1,7 +1,6 @@
-import importlib
-from typing import Any, Callable, Dict, List, Literal
+from typing import Any, Callable, Dict, List
 
-from dash import Output, State, ctx, dcc
+from dash import Output, State, ctx
 from pandas import Series
 
 from vizro.managers import model_manager
@@ -41,7 +40,7 @@ class FilterAction(CapturedActionCallable):
         filter_column: str,
         targets: List[ModelID],
         filter_function: Callable[[Series, Any], Series],
-        **inputs: Dict[str, Any]
+        **inputs: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Filters targeted charts/components on page by interaction with `Filter` control.
 
@@ -72,8 +71,8 @@ class FilterAction(CapturedActionCallable):
             _get_inputs_of_filters,
             _get_inputs_of_parameters,
         )
-        from vizro.actions.parameter_action import ParameterAction
         from vizro.actions.filter_interaction_action import FilterInteractionAction
+        from vizro.actions.parameter_action import ParameterAction
 
         # TODO-AV2-OO: Consider the following inputs ctx form:
         #    ```
@@ -91,9 +90,7 @@ class FilterAction(CapturedActionCallable):
         page = model_manager[self._page_id]
         return {
             "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_class=FilterInteractionAction
-            ),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
             "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
             # TODO-AV2-OQ: Propagate theme_selector only if it exists on the page (could be overwritten by the user)
             "theme_selector": State("theme_selector", "checked"),

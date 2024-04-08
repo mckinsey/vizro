@@ -142,7 +142,9 @@ class Filter(VizroBaseModel):
             filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
             self.selector.actions = [
                 Action(
-                    function=filter_action(filter_column=self.column, targets=self.targets, filter_function=filter_function),
+                    function=filter_action(
+                        filter_column=self.column, targets=self.targets, filter_function=filter_function
+                    ),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 )
             ]

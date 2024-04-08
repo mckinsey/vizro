@@ -1,20 +1,18 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from typing import Any, Callable, Dict, List, Union
+from typing import Dict, List
 
-from dash import Output, State, dcc
+from dash import State
 
-from vizro.actions import parameter_action, export_data, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, Page
-from vizro.models._controls import Filter, Parameter
-from vizro.models.types import ControlType
 from vizro.models.types import CapturedActionCallable
 
 
 def _get_matching_page_actions_by_action_class(
-    page_id: ModelID, action_class: CapturedActionCallable,
+    page_id: ModelID,
+    action_class: CapturedActionCallable,
 ) -> List[Action]:
     """Gets list of `Actions` on triggered `Page` that match the provided `action_class`."""
     return [
@@ -27,10 +25,7 @@ def _get_matching_page_actions_by_action_class(
 
 # TODO-AV2-TICKET: Once "actions_info" is implemented, functions like:
 #  _get_inputs_of_filters, _get_inputs_of_parameters, _get_inputs_of_figure_interactions will become a single function.
-def _get_inputs_of_filters(
-    page: Page,
-    action_class: CapturedActionCallable = None
-) -> List[State]:
+def _get_inputs_of_filters(page: Page, action_class: CapturedActionCallable = None) -> List[State]:
     """Gets list of `States` for all components that have the `filter` action from the `Page`."""
     filter_actions_on_page = _get_matching_page_actions_by_action_class(
         page_id=ModelID(str(page.id)), action_class=action_class
@@ -44,10 +39,7 @@ def _get_inputs_of_filters(
     return inputs
 
 
-def _get_inputs_of_parameters(
-    page: Page,
-    action_class: CapturedActionCallable = None
-) -> List[State]:
+def _get_inputs_of_parameters(page: Page, action_class: CapturedActionCallable = None) -> List[State]:
     """Gets list of `States` for all components that have the `parameter` action from the `Page`."""
     parameter_actions_on_page = _get_matching_page_actions_by_action_class(
         page_id=ModelID(str(page.id)), action_class=action_class

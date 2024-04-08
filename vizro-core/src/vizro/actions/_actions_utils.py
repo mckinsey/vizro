@@ -59,9 +59,8 @@ def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerD
                 # We don't need to check if the function name is _filter anymore, since every action is a filter now.
                 # action.function._function.__name__ != "_filter"
                 # or target not in action.function["targets"]
-
-            # TODO-AV2: Handle if "action.function != "filter_action" until inputs refactoring
-            target not in action.function.targets
+                # TODO-AV2: Handle if "action.function != "filter_action" until inputs refactoring
+                target not in action.function.targets
                 or ALL_OPTION in selector_value
             ):
                 continue

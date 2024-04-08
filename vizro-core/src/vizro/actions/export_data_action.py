@@ -1,7 +1,7 @@
 import importlib
 from typing import Any, Dict, List, Literal
 
-from dash import Output, State, ctx, dcc
+from dash import Output, ctx, dcc
 
 from vizro.managers import model_manager
 from vizro.models.types import CapturedActionCallable
@@ -42,9 +42,7 @@ class ExportDataAction(CapturedActionCallable):
 
     @staticmethod
     def pure_function(
-        targets: List[str],
-        file_format: Literal["csv", "xlsx"] = "csv",
-        **inputs: Dict[str, Any]
+        targets: List[str], file_format: Literal["csv", "xlsx"] = "csv", **inputs: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Exports visible data of target charts/components on page after being triggered.
 
@@ -95,9 +93,7 @@ class ExportDataAction(CapturedActionCallable):
         page = model_manager[self._page_id]
         return {
             "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_class=FilterInteractionAction
-            ),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
         }
 
     @property

@@ -1,8 +1,6 @@
-import importlib
-from typing import Any, Callable, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
-from dash import Output, State, ctx, dcc
-from pandas import Series
+from dash import Output, State, ctx
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
@@ -70,9 +68,7 @@ class FilterInteractionAction(CapturedActionCallable):
 
         return {
             "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_class=FilterInteractionAction
-            ),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
             "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
             "theme_selector": State("theme_selector", "checked"),
         }

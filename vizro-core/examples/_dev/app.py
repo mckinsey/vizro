@@ -1,15 +1,15 @@
 """Rough example used by developers."""
-from dash import Output
+
+from typing import Any, Dict, List, Optional
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import Output
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
 from vizro.managers._model_manager import ModelID
-from typing import Any, Dict, List, Optional
-
+from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 default_card_text = "Click on a cell in the table to filter the scatter plot."
@@ -39,18 +39,17 @@ def update_card_with_grid_clicked_data(card_cellClicked: Optional[Dict] = None):
 #   self.inputs (List[States]) and self.function.inputs (Dict[str, List[State]]) at the same time.
 @capture("action")
 def overwritten_filter_interactions_1(
-    targets: Optional[List[ModelID]] = None,
-    card_cellClicked: Optional[Dict] = None,
-    **inputs: Dict[str, Any]
+    targets: Optional[List[ModelID]] = None, card_cellClicked: Optional[Dict] = None, **inputs: Dict[str, Any]
 ):
     return {
         "card.children": _build_card_text_message(card_cellClicked=card_cellClicked),
         **filter_interaction.pure_function(targets=targets, **inputs),
     }
 
+
 # 2. Overwriting the filter_interaction action by inheriting FilterInteractionAction
+from dash import State
 from vizro.actions.filter_interaction_action import FilterInteractionAction
-from dash import Output, State
 
 
 class OverwrittenFilterInteractions2(FilterInteractionAction):
@@ -149,7 +148,7 @@ dashboard = vm.Dashboard(
                 # TODO-AV2-TICKET: 1. overwrite filter function so it cancels the card.children changes too.
                 #   2. OR attach the 'update_card_with_grid_clicked_data' action after the default filter action.
                 vm.Filter(targets=["scatter"], column="continent"),
-                vm.Parameter(targets=["scatter.x"], selector=vm.RadioItems(options=["gdpPercap", "lifeExp"]))
+                vm.Parameter(targets=["scatter.x"], selector=vm.RadioItems(options=["gdpPercap", "lifeExp"])),
             ],
             # TODO-AV2-TICKET: Try to attach the 'update_card_with_grid_clicked_data' action after update_figures action.
         ),
