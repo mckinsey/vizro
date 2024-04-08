@@ -3,7 +3,7 @@ import os
 
 from ._vizro import Vizro
 
-__all__ = ["Vizro"]
+__all__ = ["Vizro_test"]
 
 __version__ = "0.1.15.dev0"
 
