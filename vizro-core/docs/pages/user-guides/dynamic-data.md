@@ -2,7 +2,7 @@
 
 A dynamic data source is a Python function that returns a pandas DataFrame. This function is executed when the dashboard is initially started and _can be executed again while the dashboard is running_. This makes it possible to refresh the data shown in your dashboard without restarting the dashboard itself. If you do not this functionality then you should use [static data](static-data.md) instead.
 
-Unlike static data, dynamic data cannot be supplied directly into the `data_frame` argument of a `figure`. Instead, it must first be added to the Data Manager and then referred to by name.
+Unlike static data, dynamic data cannot be supplied directly into the `data_frame` argument of a `figure`. Instead, it must first be added to the Data Manager and then referenced by name.
 
 !!! example "Dynamic data"
     === "app.py"
@@ -33,20 +33,20 @@ Unlike static data, dynamic data cannot be supplied directly into the `data_fram
         ```
 
         1. To use `load_iris_data` as dynamic data it must first be added to the Data Manager. You should **not** actually call the function as `load_iris_data()`; doing so would result in static data that cannot be reloaded.
-        2. Dynamic data is referred to by the name of the data source `"iris"`.
+        2. Dynamic data is referenced by the name of the data source `"iris"`.
 
     === "Result"
         [![DataBasic]][DataBasic]
 
     [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 
-Since dynamic data sources must always be added to the Data Manager and referred to by name, they may be used in YAML configuration [exactly the same way as for static data sources](static-data.md#reference-by-name).
+Since dynamic data sources must always be added to the Data Manager and referenced by name, they may be used in YAML configuration [exactly the same way as for static data sources](static-data.md#reference-by-name).
 
 ## Configure cache
 
 By default, every time the dashboard is refreshed a dynamic data function will be executed again. This means that your dashboard will always show the very latest data. In fact, if there are multiple graphs on the same page using the same dynamic data source then the loading function will be executed _multiple_ times, once for each graph on the page. Hence, if loading your data is a slow operation, your dashboard performance may suffer.
 
-The Vizro Data Manager has a caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off.
+The Vizro Data Manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off. 
 
 In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options:
 

@@ -41,3 +41,5 @@ if __name__ == "__main__":
     # app.run(processes=2, threaded=False)
     # gunicorn -w 2 app:server -b localhost:8050
     # should also work with --preload
+
+# docs: serverside

@@ -44,7 +44,7 @@ The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`]
 
 If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager, importable as `vizro.managers.data_manager`. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager.
 
-!!! example "Static data referred to by name"
+!!! example "Static data referenced by name"
     === "app.py"
         ```py
         import yaml
