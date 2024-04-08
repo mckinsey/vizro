@@ -27,7 +27,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Change default continuous color scale to `SEQUENTIAL_CYAN´. ([#407](https://github.com/mckinsey/vizro/pull/407))
 
-
 <!--
 ### Deprecated
 
