@@ -11,7 +11,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field
 
 import vizro.actions
-from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedActionCallable, CapturedCallable

@@ -1,9 +1,7 @@
-import importlib
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List
 
-from dash import Output, State, ctx, dcc
+from dash import Output, State, ctx
 
-from vizro.actions import filter_action
 from vizro.managers import model_manager
 from vizro.models.types import CapturedActionCallable
 
@@ -35,15 +33,15 @@ class ParameterAction(CapturedActionCallable):
     def pure_function(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
         """Modifies parameters of targeted charts/components on page.
 
-            Args:
-                targets: List of target component ids to change parameters of.
-                inputs: Dict mapping action function names with their inputs e.g.
-                    inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
+        Args:
+            targets: List of target component ids to change parameters of.
+            inputs: Dict mapping action function names with their inputs e.g.
+                inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
-            Returns:
-                Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+        Returns:
+            Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
 
-            """
+        """
         from vizro.actions._actions_utils import _get_modified_page_figures
 
         target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
@@ -60,7 +58,7 @@ class ParameterAction(CapturedActionCallable):
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
-            _get_inputs_of_parameters
+            _get_inputs_of_parameters,
         )
         from vizro.actions.filter_action import FilterAction
         from vizro.actions.filter_interaction_action import FilterInteractionAction
@@ -68,9 +66,7 @@ class ParameterAction(CapturedActionCallable):
         page = model_manager[self._page_id]
         return {
             "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_class=FilterInteractionAction
-            ),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
             "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
             "theme_selector": State("theme_selector", "checked"),
         }

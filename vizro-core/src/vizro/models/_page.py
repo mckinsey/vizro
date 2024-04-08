@@ -100,7 +100,8 @@ class Page(VizroBaseModel):
                     ),
                     actions=[
                         Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=update_figures(targets=targets)
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                            function=update_figures(targets=targets),
                         )
                     ],
                 )
