@@ -6,11 +6,12 @@ from plotly import graph_objects as go
 def create_template_common():
     """Create general themed plotly template.
 
-    Returns:
+    Returns
     -------
         A plotly template object containing the general theme
         with optional keys specified here:
         https://plotly.com/python/reference/layout/
+
     """
     primary_font = "Inter, sans-serif, Arial"
 
@@ -47,6 +48,7 @@ def create_template_common():
         margin_b=64,
         margin_pad=0,
         margin_autoexpand=True,
+        coloraxis_autocolorscale=False,  # Set to False as otherwise users cannot customize via `color_continous_scale`
         coloraxis_colorbar_outlinewidth=0,
         coloraxis_colorbar_thickness=20,
         coloraxis_colorbar_showticklabels=True,

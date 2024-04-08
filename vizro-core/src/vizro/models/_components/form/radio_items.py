@@ -15,7 +15,11 @@ from vizro.models.types import OptionsType, SingleValueType
 
 
 class RadioItems(VizroBaseModel):
-    """Categorical single-selector `RadioItems` to be provided to `Filter`.
+    """Categorical single-option selector `RadioItems`.
+
+    Can be provided to [`Filter`][vizro.models.Filter] or
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems).
 
     Args:
         type (Literal["radio_items"]): Defaults to `"radio_items"`.
@@ -24,6 +28,7 @@ class RadioItems(VizroBaseModel):
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["radio_items"] = "radio_items"
@@ -53,9 +58,9 @@ class RadioItems(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_radio_items",
+                    className="radio-items-list",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

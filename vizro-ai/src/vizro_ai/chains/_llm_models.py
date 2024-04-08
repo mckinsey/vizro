@@ -1,6 +1,6 @@
 from typing import Callable, Dict, List, Union
 
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -38,10 +38,11 @@ PREDEFINED_MODELS: List[Dict[str, any]] = [
 class LLM(BaseModel):
     """Represents a Language Learning Model (LLM).
 
-    Attributes:
+    Attributes
         name (str): The name of the LLM.
         max_tokens (int): The maximum number of tokens that the LLM can handle.
         wrapper (callable): The langchain function used to instantiate the model.
+
     """
 
     name: str
@@ -73,6 +74,7 @@ class ModelConstructor:
 
         Raises:
             ValueError: If the model name is not found.
+
         """
         model = self.models.get(model_name.lower())
         if model:

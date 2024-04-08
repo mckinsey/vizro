@@ -13,6 +13,7 @@ class Pipeline:
 
         Args:
             llm: The LLM instance to be used by components in the pipeline.
+
         """
         self.llm = llm
         self.components = []
@@ -27,6 +28,7 @@ class Pipeline:
                     These should match the output keys of previous components in the pipeline, if applicable.
             output_key: The key or identifier for the output that this component will produce.
                     This can be used as an input key for subsequent components.
+
         """
         self.components.append((component_class, input_keys, output_key))
 

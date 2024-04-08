@@ -10,7 +10,7 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: var(--spacing-08);
+  gap: var(--spacing-06);
   overflow: auto;
   padding: 32px 32px 0;
   width: 352px;
@@ -27,7 +27,7 @@
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-06);
+  gap: var(--spacing-04);
   padding: 32px;
   width: 100%;
 }
@@ -45,11 +45,11 @@
   background-color: var(--surfaces-bg-02);
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   height: 64px;
+  justify-content: space-between;
+  min-height: 0;
   padding: 0 32px;
   width: 100%;
-  min-height: 0;
 }
 
 #page-header:not(:empty) {
@@ -58,18 +58,19 @@
 
 #page-components {
   overflow: auto;
+  padding-top: var(--spacing-02);
 }
 
 .grid-layout {
   display: grid;
-  width: 100%;
   height: 100%;
+  width: 100%;
 }
 
 #nav-panel {
-  align-self: stretch;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 #nav-panel:not(:empty) {
@@ -81,7 +82,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  padding: 4px 0 24px 0;
+  padding-bottom: var(--spacing-06);
+  padding-top: var(--spacing-02);
 }
 
 #control-panel:not(:empty) {
@@ -122,48 +124,30 @@
 
 #nav-bar {
   align-items: center;
+  background: inherit !important;
   display: inline-flex;
   flex-direction: column;
+  padding: 0;
 }
 
-.icon-button {
+.nav-bar-icon-link {
   align-items: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   display: flex;
   height: 80px;
   justify-content: center;
   width: 100%;
 }
 
-div.dashboard_container .tooltip-inner {
-  color: var(--text-primary);
-}
-
-div.dashboard_container .custom-tooltip {
-  color: var(--text-primary);
-}
-
-.icon-button.btn.btn-primary.active .material-symbols-outlined {
+.nav-bar-icon-link.active .material-symbols-outlined {
   color: var(--text-active);
 }
+
 .loading-container {
   height: 100%;
   width: 100%;
-}
-
-.mantine-Tooltip-tooltip {
-  background-color: var(--border-selected);
-  border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-tooltip-hover);
-  color: var(--tooltip-text-primary);
-  filter: drop-shadow(0px 2px 2px #141721);
-  font-size: var(--text-size-01);
-  font-weight: var(--text-weight-light);
-  letter-spacing: var(--letter-spacing-help-text);
-  line-height: 16px;
-  max-width: 180px;
-  overflow-wrap: break-word;
-  padding: var(--spacing-01) var(--spacing-02);
-  white-space: pre-wrap;
 }
 
 #left-sidebar {
@@ -184,6 +168,7 @@ div.dashboard_container .custom-tooltip {
   flex: 1 1 0;
   flex-direction: row;
   height: calc(100vh - 64px);
+  overflow: auto;
 }
 
 #dashboard-title {
@@ -203,11 +188,11 @@ div.dashboard_container .custom-tooltip {
 }
 
 #collapse-icon.material-symbols-outlined {
-  position: absolute;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--text-disabled);
   background-color: var(--tooltip-bg-color);
+  border-radius: 50%;
+  color: var(--text-disabled);
+  cursor: pointer;
+  position: absolute;
 }
 
 #collapse-icon.material-symbols-outlined:hover {
@@ -215,9 +200,70 @@ div.dashboard_container .custom-tooltip {
 }
 
 .collapse-button-tooltip {
+  height: 24px;
+  left: -12px;
   position: relative;
   top: 36px;
-  left: -12px;
-  height: 24px;
-  width: 0 !important;
+}
+
+.collapse-icon-div {
+  display: flex;
+  justify-content: center;
+  padding-top: 36px;
+  width: 0;
+}
+
+/* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+
+/* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+
+/* Applies to device size x-small and small */
+@media (width <= 576px) {
+  .grid-layout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .collapse-button-tooltip {
+    top: 28px;
+  }
+
+  .collapse-icon-div {
+    padding-top: 28px;
+  }
+
+  #page-header {
+    zoom: 80%;
+  }
+
+  #left-side {
+    zoom: 80%;
+  }
+
+  #right-side {
+    zoom: 80%;
+  }
+}
+
+@media (height <= 576px) {
+  .collapse-button-tooltip {
+    top: 28px;
+  }
+
+  .collapse-icon-div {
+    padding-top: 28px;
+  }
+
+  #page-header {
+    zoom: 80%;
+  }
+
+  #left-side {
+    zoom: 80%;
+  }
+
+  #right-side {
+    zoom: 80%;
+  }
 }

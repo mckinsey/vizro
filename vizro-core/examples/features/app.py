@@ -5,16 +5,17 @@ from typing import List, Literal, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
-from dash import dash_table, html
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import dash_table, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
+tips = px.data.tips()
+stocks = px.data.stocks(datetimes=True)
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -47,8 +48,16 @@ home = vm.Page(
 
                 ### Controls
 
-                Vizro has two different control types **filters** and **parameters**.
+                Vizro has two different control types **Filter** and **Parameter**.
 
+                You can use any pre-existing selector inside the **Filter** or **Parameter**:
+
+                * Dropdown
+                * Checklist
+                * RadioItems
+                * RangeSlider
+                * Slider
+                * DatePicker
                 """,
             href="/filters",
         ),
@@ -89,6 +98,17 @@ graphs = vm.Page(
         )
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+)
+
+ag_grid = vm.Page(
+    title="AG Grid",
+    components=[
+        vm.AgGrid(
+            title="Dash AG Grid",
+            figure=dash_ag_grid(data_frame=gapminder_2007),
+        )
+    ],
+    controls=[vm.Filter(column="continent")],
 )
 
 table = vm.Page(
@@ -332,6 +352,70 @@ parameters = vm.Page(
     ],
 )
 
+selectors = vm.Page(
+    title="Selectors",
+    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2], [3], [3], [3]], row_min_height="170px", row_gap="24px"),
+    components=[
+        vm.Card(
+            text="""
+        A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
+
+        The following selectors are available:
+        * Dropdown (**categorical** multi and single option selector)
+        * Checklist (**categorical** multi option selector only)
+        * RadioItems (**categorical** single option selector only)
+        * RangeSlider (**numerical** multi option selector only)
+        * Slider (**numerical** single option selector only)
+        * DatePicker(**temporal** multi and single option selector)
+
+        """
+        ),
+        vm.Table(
+            id="table-gapminder",
+            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
+            title="Gapminder Data",
+        ),
+        vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
+        vm.Graph(
+            id="graph-stocks",
+            figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="lifeExp",
+            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="continent",
+            selector=vm.Checklist(title="Checklist (Gapminder - continent)"),
+        ),
+        vm.Filter(
+            targets=["table-gapminder"],
+            column="country",
+            selector=vm.Dropdown(title="Dropdown (Gapminder - country)"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="day",
+            selector=vm.Dropdown(title="Dropdown (Tips - day)", multi=False, value="Sat"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="sex",
+            selector=vm.RadioItems(title="Radio Items (Tips - sex)"),
+        ),
+        vm.Filter(
+            targets=["table-tips"],
+            column="size",
+            selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
+        ),
+        vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
+    ],
+)
+
 # ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
     title="Export data",
@@ -381,7 +465,7 @@ def scatter_with_line(data_frame, x, y, hline=None, title=None):
 
 
 @capture("graph")
-def waterfall(data_frame, measure, x, y, text, title=None):
+def waterfall(data_frame, measure, x, y, text, title=None):  # noqa: PLR0913
     """Custom waterfall chart based on go."""
     fig = go.Figure()
     fig.add_traces(
@@ -571,8 +655,8 @@ custom_actions = vm.Page(
 )
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, table, cards, button, containers, tabs]
-controls = [filters, parameters]
+components = [graphs, ag_grid, table, cards, button, containers, tabs]
+controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
 
@@ -586,8 +670,8 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "Table", "Cards", "Button", "Containers", "Tabs"],
-                        "Controls": ["Filters", "Parameters"],
+                        "Components": ["Graphs", "AG Grid", "Table", "Cards", "Button", "Containers", "Tabs"],
+                        "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
                     },

@@ -12,14 +12,14 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,
     validate_max,
-    validate_slider_value,
+    validate_range_value,
     validate_step,
 )
 from vizro.models._models_utils import _log_call
 
 
 class RangeSlider(VizroBaseModel):
-    """Numeric multi-selector `RangeSlider`.
+    """Numeric multi-option selector `RangeSlider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter]. Based on the underlying
@@ -34,6 +34,7 @@ class RangeSlider(VizroBaseModel):
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["range_slider"] = "range_slider"
@@ -52,7 +53,7 @@ class RangeSlider(VizroBaseModel):
 
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_step = validator("step", allow_reuse=True)(validate_step)
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
@@ -84,59 +85,55 @@ class RangeSlider(VizroBaseModel):
         return html.Div(
             [
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 html.Div(
                     [
-                        dcc.RangeSlider(
-                            id=self.id,
-                            min=self.min,
-                            max=self.max,
-                            step=self.step,
-                            marks=self.marks,
-                            value=init_value,
-                            persistence=True,
-                            persistence_type="session",
-                            className="range_slider_control" if self.step else "range_slider_control_no_space",
-                        ),
+                        html.Label(self.title, htmlFor=self.id) if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(
                                     id=f"{self.id}_start_value",
                                     type="number",
-                                    placeholder="start",
+                                    placeholder="min",
                                     min=self.min,
                                     max=self.max,
                                     step=self.step,
                                     value=init_value[0],
-                                    size="24px",
                                     persistence=True,
                                     persistence_type="session",
-                                    className=(
-                                        "slider_input_field_left" if self.step else "slider_input_field_no_space_left"
-                                    ),
+                                    className="slider-text-input-field",
                                 ),
+                                html.Span("-", className="slider-text-input-range-separator"),
                                 dcc.Input(
                                     id=f"{self.id}_end_value",
                                     type="number",
-                                    placeholder="end",
+                                    placeholder="max",
                                     min=self.min,
                                     max=self.max,
                                     step=self.step,
                                     value=init_value[1],
                                     persistence=True,
                                     persistence_type="session",
-                                    className=(
-                                        "slider_input_field_right" if self.step else "slider_input_field_no_space_right"
-                                    ),
+                                    className="slider-text-input-field",
                                 ),
                                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                             ],
-                            className="slider_input_container",
+                            className="slider-text-input-container",
                         ),
                     ],
-                    className="range_slider_inner_container",
+                    className="slider-label-input",
+                ),
+                dcc.RangeSlider(
+                    id=self.id,
+                    min=self.min,
+                    max=self.max,
+                    step=self.step,
+                    marks=self.marks,
+                    value=init_value,
+                    persistence=True,
+                    persistence_type="session",
+                    className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
-            className="selector_container",
+            className="input-container",
             id=f"{self.id}_outer",
         )

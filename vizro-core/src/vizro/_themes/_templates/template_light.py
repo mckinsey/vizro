@@ -10,9 +10,10 @@ from vizro._themes._templates.common_values import create_template_common
 def create_template_light() -> Template:
     """Create light themed plotly template.
 
-    Returns:
+    Returns
     -------
         A plotly template object containing the light theme
+
     """
     template_light = create_template_common()
 
@@ -42,8 +43,8 @@ def create_template_light() -> Template:
     template_light["layout"]["coloraxis"]["colorbar"]["tickcolor"] = COLORS["BLACK_30"]
     template_light["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["BLACK_55"]
     template_light["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = COLORS["BLACK_55"]
-    template_light["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"][::-1]
-    template_light["layout"]["colorscale"]["sequential"] = COLORS["DIVERGING_RED_CYAN"]  # default for continuous
+    template_light["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"]
+    template_light["layout"]["colorscale"]["sequential"] = COLORS["SEQUENTIAL_CYAN"]
     template_light["layout"]["colorscale"]["sequentialminus"] = COLORS["SEQUENTIAL_RED"][::-1]
     template_light["layout"]["colorway"] = COLORS["DISCRETE_10"]
 

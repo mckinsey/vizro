@@ -37,8 +37,9 @@ debugging_prompt = (
 class GetDebugger(VizroAiComponentBase):
     """Get Visual code.
 
-    Attributes:
+    Attributes
         prompt (str): Prompt visual code.
+
     """
 
     prompt: str = debugging_prompt

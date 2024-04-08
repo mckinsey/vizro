@@ -1,23 +1,25 @@
 site_name: Vizro-AI
-site_url: https://mckinsey.github.io/vizro-ai/
+site_url: https://vizro-ai.readthedocs.io/en/latest/
 nav:
   - Vizro-AI: index.md
   - Get started:
-      - Quickstart: pages/tutorials/quickstart.md
-      - Explore Vizro-AI: pages/tutorials/explore_vizro_ai.md
-  - User Guides:
-      - Fundamentals:
-          - Installation: pages/user_guides/install.md
-          - API Setup: pages/user_guides/api_setup.md
-          - Run Methods: pages/user_guides/run_vizro_ai.md
-          - Model Configuration: pages/user_guides/model_config.md
-  - Explanation:
+      - Install Vizro-AI: pages/get-started/install.md
+      - A first example: pages/get-started/quickstart.md
+  - How-to guides:
+      - Run methods: pages/user-guides/run-vizro-ai.md
+      - Create advanced charts: pages/user-guides/create-advanced-charts.md
+      - Use different languages: pages/user-guides/use-different-languages.md
+      - Use Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+  - Find out more:
+      - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
-      - Safeguard Code Execution: pages/explanation/safeguard.md
-      - Safety in Vizro AI: pages/explanation/safety_in_vizro_ai.md
-  - Contribute:
-      #      - Contributing: pages/contribute/contributing.md
+      - Safeguard code execution: pages/explanation/safeguard.md
+      - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
       - Authors: pages/contribute/authors.md
+  #- Contribute:
+  #      - Contributing: pages/contribute/contributing.md
+  - Vizro:
+      - Vizro: https://vizro.readthedocs.io
 
 #  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
@@ -65,6 +67,9 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search
@@ -82,6 +87,7 @@ plugins:
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
+              warn_unknown_params: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

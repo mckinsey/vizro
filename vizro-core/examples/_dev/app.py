@@ -1,35 +1,56 @@
-"""Rough example used by developers."""
+"""Example to show dashboard configuration."""
 
+from typing import Optional
+
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models._components.form._text_area import TextArea
-from vizro.models._components.form._user_input import UserInput
+from vizro.models.types import capture
 
-iris = px.data.iris()
+gapminder_pos = px.data.gapminder()
+gapminder_neg = px.data.gapminder()
+gapminder_mixed = px.data.gapminder()
+gapminder_neg["lifeExp"] = gapminder_neg["lifeExp"] * (-1)
+gapminder_mixed.loc[:200, "lifeExp"] = gapminder_mixed.loc[:200, "lifeExp"] * (-1)
 
-# Only added to container.components directly for dev example
-vm.Container.add_type("components", UserInput)
-vm.Container.add_type("components", TextArea)
+
+@capture("graph")
+def variable_map(data_frame: pd.DataFrame = None, color: Optional[str] = None, title: Optional[str] = None):
+    """Custom choropleth figure that needs post update calls."""
+    fig = px.choropleth(
+        data_frame,
+        locations="iso_alpha",
+        color=color,
+        hover_name="country",
+        labels={
+            "year": "year",
+            "lifeExp": "Life expectancy",
+            "pop": "Population",
+            "gdpPercap": "GDP per capita",
+        },
+        title="Global development over time",
+    )
+    fig.update_layout(showlegend=False, title=title)
+    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
+    return fig
+
 
 page = vm.Page(
-    title="User Text Inputs",
-    layout=vm.Layout(grid=[[0, 1]], col_gap="40px"),
+    title="Autocolorscale",
+    layout=vm.Layout(grid=[[0, 1, 2]]),
     components=[
-        vm.Container(
-            title="Input Components",
-            components=[
-                UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
-                TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
-            ],
+        vm.Graph(
+            figure=variable_map(data_frame=gapminder_pos, color="lifeExp", title="Positive Life Expectancy"),
         ),
         vm.Graph(
-            id="for_custom_chart",
-            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+            figure=variable_map(data_frame=gapminder_neg, color="lifeExp", title="Negative Life Expectancy"),
+        ),
+        vm.Graph(
+            figure=variable_map(data_frame=gapminder_mixed, color="lifeExp", title="Mixed Life Expectancy"),
         ),
     ],
 )
-
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":

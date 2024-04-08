@@ -1,32 +1,38 @@
-.nav_card_container,
-.card_container {
+.nav-card,
+.card {
   background-color: var(--surfaces-bg-card);
+  border: none;
+  border-radius: 0;
   box-shadow: var(--box-shadow-elevation-card);
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  padding: var(--spacing-04);
-  position: relative;
 }
 
-.nav_card_container {
-  height: 98%;
-  margin-top: 4px;
-  position: relative;
-}
-
-.nav_card_container:hover {
+.nav-card:hover {
   background-color: var(--field-enabled);
   box-shadow: var(--box-shadow-elevation-card-hover);
-  top: -8px;
+  transform: translate3d(0, -8px, 0);
+  transition:
+    transform 0.3s,
+    box-shadow 0.2s;
+  will-change: transform;
 }
 
-.card_button {
+.card-link {
+  color: transparent;
+  display: flex;
   height: 100%;
   left: 0;
-  position: absolute;
+  position: relative;
   top: 0;
+  width: 100%;
+}
+
+.card_text {
+  height: 100%;
+  padding: var(--spacing-04);
   width: 100%;
 }
 
@@ -36,10 +42,7 @@ h3,
 h4,
 h5,
 h6,
-p {
+p,
+ul {
   margin-bottom: var(--spacing-02);
-}
-
-.card_text ul {
-  color: var(--text-secondary);
 }

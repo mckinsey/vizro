@@ -15,7 +15,8 @@ dependencies = [
   "pytest",
   "toml",
   "nbformat>=4.2.0",
-  "pyhamcrest"
+  "pyhamcrest",
+  "jupyter"
 ]
 
 [envs.default.env-vars]
@@ -50,7 +51,7 @@ dependencies = [
   "mkdocstrings[python]"
 ]
 detached = true
-scripts = {serve = "mkdocs serve"}
+scripts = {serve = "mkdocs serve --strict"}
 
 [envs.lint]
 dependencies = [

@@ -16,40 +16,45 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0, "max": 10}),
-            html.Label("Test title", htmlFor="slider_id"),
+            dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dcc.Slider(
-                        id="slider_id",
-                        min=0,
-                        max=10,
-                        step=1,
-                        marks={},
-                        value=5,
-                        included=False,
-                        persistence=True,
-                        persistence_type="session",
-                        className="slider_control",
+                    html.Label("Test title", htmlFor="slider_id"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="slider_id_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=1.0,
+                                value=5.0,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="slider_id_input_store", storage_type="session", data=5.0),
+                        ],
+                        className="slider-text-input-container",
                     ),
-                    dcc.Input(
-                        id="slider_id_text_value",
-                        type="number",
-                        placeholder="end",
-                        min=0,
-                        step=1,
-                        max=10,
-                        value=5,
-                        persistence=True,
-                        persistence_type="session",
-                        className="slider_input_field_right",
-                    ),
-                    dcc.Store(id="slider_id_input_store", storage_type="session", data=5),
                 ],
-                className="slider_inner_container",
+                className="slider-label-input",
+            ),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={},
+                value=5.0,
+                included=False,
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
             ),
         ],
-        className="selector_container",
+        className="input-container",
         id="slider_id_outer",
     )
 
@@ -79,7 +84,7 @@ class TestSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
+            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
         ):
             vm.Slider(min=10, max=0)
 
@@ -136,17 +141,22 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
-        "step, marks, expected",
+        "step, marks, expected_marks, expected_class",
         [
-            (1, None, None),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (None, {}, None),
+            (1, None, None, "slider-track-without-marks"),
+            (None, {}, None, "slider-track-without-marks"),
+            (None, None, None, "slider-track-without-marks"),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
+            # be drawn by the dash component, so we need to check for the className here on top.
+            (1, {}, {}, "slider-track-with-marks"),
         ],
     )
-    def test_set_step_and_marks(self, step, marks, expected):
-        slider = vm.Slider(min=0, max=10, step=step, marks=marks)
-        assert slider.marks == expected
+    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
+        slider = vm.Slider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
+        assert slider["slider-id"].marks == expected_marks
+        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):

@@ -1,13 +1,10 @@
 """Unit tests for vizro.actions._callback_mapping._get_action_callback_mapping file."""
 
-import json
-
 import dash
-import plotly
 import pytest
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
@@ -136,10 +133,11 @@ def action_callback_inputs_expected():
             dash.State("parameter_table_row_selectable", "value"),
         ],
         "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData")},
+            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
+                "modelID": dash.State("vizro_table", "id"),
             },
         ],
         "theme_selector": dash.State("theme_selector", "checked"),
@@ -163,10 +161,11 @@ def export_data_inputs_expected():
         ],
         "parameters": [],
         "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData")},
+            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
             {
                 "active_cell": dash.State("underlying_table_id", "active_cell"),
                 "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
+                "modelID": dash.State("vizro_table", "id"),
             },
         ],
         "theme_selector": [],
@@ -298,10 +297,7 @@ class TestCallbackMapping:
     )
     def test_export_data_no_targets_set_mapping_components(self, export_data_components_expected):
         result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
-
-        result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
-        expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
-        assert result == expected
+        assert_component_equal(result_components, export_data_components_expected)
 
     @pytest.mark.parametrize(
         "config_for_testing_all_components_with_actions, export_data_components_expected",
@@ -317,9 +313,7 @@ class TestCallbackMapping:
         self, config_for_testing_all_components_with_actions, export_data_components_expected
     ):
         result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
-        result = json.dumps(result_components, cls=plotly.utils.PlotlyJSONEncoder)
-        expected = json.dumps(export_data_components_expected, cls=plotly.utils.PlotlyJSONEncoder)
-        assert result == expected
+        assert_component_equal(result_components, export_data_components_expected)
 
     def test_known_action_unknown_argument(self):
         result = _get_action_callback_mapping(action_id="export_data_action", argument="unknown-argument")

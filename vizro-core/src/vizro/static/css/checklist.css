@@ -1,15 +1,14 @@
 input[type="checkbox" i] {
   align-items: center;
-  -webkit-appearance: none;
+  appearance: none;
   border: 1px solid var(--text-secondary);
   display: inline-flex;
   height: 16px;
-  margin: 4px 8px 4px 4px;
-  vertical-align: middle;
+  margin: var(--spacing-01);
   width: 16px;
 }
 
-input[type="checkbox"]:checked:before {
+input[type="checkbox"]:checked::before {
   color: var(--text-primary);
   content: "✓";
   display: flex;

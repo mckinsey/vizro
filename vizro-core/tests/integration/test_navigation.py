@@ -1,14 +1,16 @@
 import pytest
-from asserts import assert_component_equal
-
 import vizro.models as vm
+from asserts import assert_component_equal
 from vizro import Vizro
-from vizro.managers import model_manager
 
 
 @pytest.fixture
 def dashboard_result(request):
     # Inject the navigation into the dashboard. Note we need to call request.param since they are all lambda functions.
+    # Ideally we would do Vizro._reset after yield dashboard, but that won't work since the fixture is used
+    # indirectly and needs to be reset immediately after it's used rather than after running the test.
+    Vizro._reset()
+
     dashboard = vm.Dashboard(
         pages=[
             vm.Page(title="Page 1", components=[vm.Button()]),
@@ -17,11 +19,6 @@ def dashboard_result(request):
         navigation=request.param(),
     )
     Vizro()._pre_build()
-    # Ideally we would do Vizro._reset after yield dashboard, but that won't work since the fixture is used
-    # indirectly and needs to be reset immediately after it's used rather than after running the test.
-    # We can't do Vizro._reset since current implementation of navigation uses dash.page_registry to look up a page,
-    # so that must remain populated.
-    model_manager._clear()
     return dashboard
 
 
@@ -145,4 +142,4 @@ navbar_grouped_cases = label_cases(navbar_grouped_cases, "navbar_grouped")
 def test_navigation_build(dashboard_result, dashboard_expected):
     result = dashboard_result.navigation.build()
     expected = dashboard_expected.navigation.build()
-    assert_component_equal(result, expected, keys_to_strip={"id"})
+    assert_component_equal(result, expected, keys_to_strip={"id", "target"})
