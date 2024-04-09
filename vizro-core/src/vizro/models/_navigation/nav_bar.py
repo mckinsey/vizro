@@ -11,7 +11,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
-import dash_bootstrap_components as dbc
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
