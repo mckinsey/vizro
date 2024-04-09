@@ -602,12 +602,12 @@ Assign the predefined CSS variable `--inverse-color` to the `filter` property of
 
 ```css
 img[src*="#my-image"] {
-  filter: var(--icon-color);
+  filter: var(--inverse_color);
 }
 ```
 
-!!! example "Styled icon"
-    ![styled icon](../../assets/user_guides/components/responsive_icon.gif)
+??? example "Responsive icon"
+    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
 
 
 ## Buttons
