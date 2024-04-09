@@ -1,5 +1,6 @@
 """Unit tests for hyphen.models.slider."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -19,7 +20,7 @@ def expected_slider():
             dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    html.Label("Test title", htmlFor="slider_id"),
+                    dbc.Label("Test title", html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
