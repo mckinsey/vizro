@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import warnings
+
+from contextlib import suppress
+
 import logging
 import os
 from typing import Callable, Dict, Optional, Union
@@ -13,11 +17,9 @@ from flask_caching import Cache
 from vizro.managers._managers_utils import _state_modifier
 
 # TODO: test manually and write tests:
-# * inplace operations
-# * caching
 # * new error messages that are raised
-# * set cache to null in all other tests
-# * copy returned
+# Only need to test str/non-str static dataframe argument throughout unit tests in general.
+# And test dynamic datasets by themselves
 
 
 #####################
@@ -41,8 +43,9 @@ pd_DataFrameCallable = Callable[[], pd.DataFrame]
 
 
 # wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
-# are required as arguments.
-@wrapt.decorator
+# are required as arguments. The enabled argument bypasses the entire decorator when data_manager._cache_has_app
+# is False. This prevents Flask-Caching from trying to access a Flask app when one doesn't yet exist.
+@wrapt.decorator(enabled=lambda: data_manager._cache_has_app)
 def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
     """Caches the result of wrapped function, taking its arguments into account in the cache key.
 
@@ -61,7 +64,7 @@ def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
     defined so that Flask Caching does not fall back on __repr__)
 
     Another option would be to use flask_caching.cached rather than memoize, but that makes it harder to include
-    arguments in the cache key.
+    arguments in the cache key and only works inside a Flask request context.
 
     Args:
         wrapped: function that will be memoized.
@@ -76,7 +79,6 @@ def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
     # Before altering, wrapped.__func__.__qualname__ is "_DynamicData.__call__"
     # After altering, it becomes _DynamicData.__call__._DynamicData("name", function_name)
     # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
-    # called so will be different every time and not ever hit the cache.
     wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
     return data_manager.cache.memoize(timeout=instance.timeout)(wrapped)(*args, **kwargs)
 
@@ -115,6 +117,8 @@ class _DynamicData:
         In future this will probably take arguments that are passed through to __load_data in order to re-run the
         loading function with different arguments. We might want to use CapturedCallable for self.__load_data then.
         """
+        # Note you get the same "cache missed" message if NullCache is running or if data_manager._cache_has_app is
+        # False.
         logger.debug("Cache miss; reloading data")
         return self.__load_data()
 
@@ -202,9 +206,6 @@ class DataManager:
     @_state_modifier
     def __setitem__(self, name: DataSourceName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
         """Adds `data` to the `DataManager` with key `name`."""
-        if name in self.__data:
-            raise ValueError(f"Data source {name} already exists.")
-
         if callable(data):
             self.__data[name] = _DynamicData(name, data)
         elif isinstance(data, pd.DataFrame):
@@ -224,6 +225,8 @@ class DataManager:
     @_state_modifier
     def _add_component(self, component_id: ComponentID, name: DataSourceName):
         """Adds a mapping from `component_id` to `name`."""
+        # TODO: once have removed self.__component_to_data, we shouldn't need this function any more.
+        #  Maybe always updated capturedcallable data_frame to  data source name string then.
         if name not in self.__data:
             raise KeyError(f"Data source {name} does not exist.")
         if component_id in self.__component_to_data:
@@ -247,9 +250,33 @@ class DataManager:
         return self[name].load()
 
     def _clear(self):
-        # Make sure the cache itself is cleared before the reference to it is lost by calling __init__.
-        self.cache.clear()
+        # We do not actually call self.cache.clear() because (a) it would only work when self._cache_has_app is True,
+        # which is not the case when e.g. Vizro._reset is called, and (b) because we do not want to accidentally
+        # clear the cache if we eventually put a call to Vizro._reset inside Vizro(), since cache should be persisted
+        # across server restarts.
         self.__init__()  # type: ignore[misc]
+
+    @property
+    def _cache_has_app(self) -> bool:
+        """Detects whether self.cache.init_app has been called (as it is in Vizro) to attach a Flask app to the cache.
+
+        Note that even NullCache needs to have an app attached before it can be "used". The only time the cache would
+        not have an app attached is if the user tries to interact with the cache before Vizro() has been called.
+        """
+        cache_has_app = hasattr(self.cache, "app")
+        if not cache_has_app and self.cache.config["CACHE_TYPE"] != "NullCache":
+            # Try to prevent anyone from setting data_manager.cache after they've instantiated Vizro().
+            # No need to emit a warning if the cache is left as NullCache; we only care about this if someone has
+            # explicitly set a cache.
+            # Eventually Vizro should probably have init_app method explicitly to clear this up so the order of
+            # operations is more reliable. Alternatively we could just initialize cache at run time rather than build
+            # time, which is what Flask-Caching is really designed for. This would require an extra step for users
+            # though, since it could not go in Vizro.run() since that is not used in the case of gunicorn.
+            warnings.warn(
+                "Cache does not have Vizro app attached and so is not operational. Make sure you call "
+                "Vizro() after you set data_manager.cache."
+            )
+        return cache_has_app
 
 
 data_manager = DataManager()

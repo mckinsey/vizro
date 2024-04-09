@@ -119,7 +119,10 @@ class Vizro:
 
     @staticmethod
     def _reset():
-        """Private method that clears all state in the `Vizro` app."""
+        """Private method that clears all state in the `Vizro` app.
+
+        This deliberately does not clear the data manager cache - see comments in data_manager._clear for
+        explanation."""
         data_manager._clear()
         model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
