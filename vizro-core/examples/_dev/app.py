@@ -1,4 +1,7 @@
 """Example to show dashboard configuration."""
+import logging
+from dash import ctx
+from flask import request
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -10,14 +13,24 @@ import pandas as pd
 
 df = px.data.iris()
 
+
+def f():
+    # logging.critical(ctx)
+    try:
+        species = request.args["species"]
+    except (RuntimeError, KeyError):
+        species = "setosa"
+    return px.data.iris().query("species == @species")
+
+
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 20})
 data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache", "CACHE_DEFAULT_TIMEOUT": 20})
 # I didn't test this one yet:
 # data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache"})
-data_manager["default_expire_data"] = lambda: px.data.iris()
+data_manager["default_expire_data"] = f
 
 # Set cache of fast_expire_data to expire every 10 seconds
-data_manager["fast_expire_data"] = px.data.iris()
+data_manager["fast_expire_data"] = f
 # data_manager["fast_expire_data"].timeout = 5
 # Set cache of no_expire_data to never expire
 data_manager["no_expire_data"] = lambda: pd.read_csv("file.csv")
@@ -32,11 +45,11 @@ def refresh(data: str):
 page = vm.Page(
     title="Blah",
     components=[
-        vm.Graph(figure=px.scatter(df, "sepal_width", "sepal_length")),
-        vm.Graph(figure=px.scatter(df, "sepal_width", "sepal_length")),
-        vm.Graph(figure=px.scatter("default_expire_data", "sepal_width", "sepal_length")),
-        vm.Graph(figure=px.scatter("fast_expire_data", "sepal_width", "sepal_length")),
-        vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length")),
+        vm.Graph(figure=px.scatter(df, "sepal_width", "sepal_length", color="species")),
+        vm.Graph(figure=px.scatter(df, "sepal_width", "sepal_length", color="species")),
+        vm.Graph(figure=px.scatter("default_expire_data", "sepal_width", "sepal_length", color="species")),
+        vm.Graph(figure=px.scatter("fast_expire_data", "sepal_width", "sepal_length", color="species")),
+        vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length", color="species")),
         vm.Button(text="Refresh no_expire_data", actions=[vm.Action(function=refresh("no_expire_data"))]),
     ],
     controls=[vm.Filter(column="species")],
