@@ -11988,7 +11988,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
@@ -12007,7 +12007,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12015,7 +12015,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-active-inverted), var(--stateOverlays-active-inverted)), var(--fill-active);
   border: 0 solid transparent;
@@ -12029,7 +12029,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12037,7 +12037,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-hover-inverted), var(--stateOverlays-hover-inverted)), var(--fill-active);
   border: 0 solid transparent;
@@ -12051,7 +12051,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12059,7 +12059,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 1px solid transparent;
@@ -12074,7 +12074,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-disabled-inverted), var(--stateOverlays-disabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
@@ -12088,7 +12088,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12096,7 +12096,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: linear-gradient(var(--stateOverlays-enabled-inverted), var(--stateOverlays-enabled-inverted)), var(--fill-active);
   border: 0 solid transparent;
@@ -12110,7 +12110,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-enabled);
@@ -12129,7 +12129,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12137,7 +12137,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-active);
   border: 1px solid var(--border-selected);
@@ -12151,7 +12151,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12159,7 +12159,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-hover);
   border: 1px solid var(--border-hover);
@@ -12173,7 +12173,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12181,7 +12181,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-hover);
@@ -12196,7 +12196,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-disabled);
@@ -12210,7 +12210,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12218,7 +12218,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 1px solid var(--border-enabled);
@@ -12232,7 +12232,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
@@ -12251,7 +12251,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12259,7 +12259,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-active);
   border: 0 solid transparent;
@@ -12273,7 +12273,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12281,7 +12281,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-hover);
   border: 0 solid transparent;
@@ -12295,7 +12295,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12303,7 +12303,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 1px solid transparent;
@@ -12318,7 +12318,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
@@ -12332,7 +12332,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
@@ -12340,7 +12340,7 @@ textarea.form-control-lg {
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.056;
+  letter-spacing: -0.056px;
   line-height: 16px;
   background: var(--stateOverlays-enabled);
   border: 0 solid transparent;
@@ -12391,7 +12391,7 @@ textarea.form-control-lg {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.112;
+  letter-spacing: -0.112px;
   line-height: 16px;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -12452,7 +12452,7 @@ textarea.form-control-lg {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.112;
+  letter-spacing: -0.112px;
   line-height: 16px;
   color: var(--text-secondary);
 }
@@ -12467,7 +12467,7 @@ h1, .h1 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.128;
+  letter-spacing: -0.128px;
   line-height: 40px;
   color: var(--text-primary);
 }
@@ -12479,7 +12479,7 @@ h2, .h2 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.096;
+  letter-spacing: -0.096px;
   line-height: 32px;
   color: var(--text-primary);
 }
@@ -12503,7 +12503,7 @@ h4, .h4 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.016;
+  letter-spacing: -0.016px;
   line-height: 20px;
   color: var(--text-primary);
 }
@@ -12515,7 +12515,7 @@ h5, .h5 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.016;
+  letter-spacing: -0.016px;
   line-height: 20px;
   font-size: 14px;
   color: var(--text-primary);
@@ -12528,7 +12528,7 @@ h6, .h6 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.016;
+  letter-spacing: -0.016px;
   line-height: 20px;
   font-size: 12px;
   color: var(--text-primary);
@@ -12541,7 +12541,7 @@ p, label, ul, li, blockquote {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.112;
+  letter-spacing: -0.112px;
   line-height: 16px;
   color: var(--text-secondary);
 }
@@ -12553,7 +12553,7 @@ a {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: -0.128;
+  letter-spacing: -0.128px;
   line-height: 20px;
 }
 
