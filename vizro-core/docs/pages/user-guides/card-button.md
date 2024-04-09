@@ -602,7 +602,7 @@ Assign the predefined CSS variable `--inverse-color` to the `filter` property of
 
 ```css
 img[src*="#my-image"] {
-  filter: var(--inverse_color);
+  filter: var(--inverse-color);
 }
 ```
 
