@@ -78,7 +78,9 @@ def memoize(wrapped: Callable, instance: _DynamicData, args, kwargs):
     # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
     # called so will be different every time and not ever hit the cache.
     wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
-    return data_manager.cache.memoize(timeout=instance.timeout)(wrapped)(*args, **kwargs)
+    return data_manager.cache.memoize(timeout=instance.timeout, forced_update=lambda: instance._forced_update)(wrapped)(
+        *args, **kwargs
+    )
 
 
 class _DynamicData:
@@ -104,6 +106,7 @@ class _DynamicData:
         self.__load_data: pd_DataFrameCallable = load_data
         # name is needed for the cache key and should not be modified by users.
         self._name = name
+        self._forced_update = False
         self.timeout: Optional[int] = None
         # We might also want a self.cache_arguments dictionary in future that allows user to customise more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
@@ -117,6 +120,11 @@ class _DynamicData:
         """
         logger.debug("Cache miss; reloading data")
         return self.__load_data()
+
+    def refresh(self):
+        self._forced_update = True
+        self.load()
+        self._forced_update = False
 
     def __repr__(self):
         """Flask-caching uses repr to form the cache key, so this is very important to set correctly.

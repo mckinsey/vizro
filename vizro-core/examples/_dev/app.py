@@ -5,6 +5,8 @@ import vizro.plotly.express as px
 from flask_caching import Cache
 from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.models.types import capture
+import pandas as pd
 
 df = px.data.iris()
 
@@ -18,8 +20,14 @@ data_manager["default_expire_data"] = lambda: px.data.iris()
 data_manager["fast_expire_data"] = px.data.iris()
 # data_manager["fast_expire_data"].timeout = 5
 # Set cache of no_expire_data to never expire
-data_manager["no_expire_data"] = lambda: px.data.iris()
+data_manager["no_expire_data"] = lambda: pd.read_csv("file.csv")
 data_manager["no_expire_data"].timeout = 0
+
+
+@capture("action")
+def refresh(data: str):
+    data_manager[data].refresh()
+
 
 page = vm.Page(
     title="Blah",
@@ -29,6 +37,7 @@ page = vm.Page(
         vm.Graph(figure=px.scatter("default_expire_data", "sepal_width", "sepal_length")),
         vm.Graph(figure=px.scatter("fast_expire_data", "sepal_width", "sepal_length")),
         vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length")),
+        vm.Button(text="Refresh no_expire_data", actions=[vm.Action(function=refresh("no_expire_data"))]),
     ],
     controls=[vm.Filter(column="species")],
 )
@@ -42,4 +51,5 @@ if __name__ == "__main__":
     # gunicorn -w 2 app:server -b localhost:8050
     # should also work with --preload
 
-# docs: serverside
+# Check you can update/invalidate/reset memoize on demand? rather than just waiting for timeout. Use forced_update as in shelf "This is how to refresh memoize for one dataset". Previously done with delete_memoized and
+# data_manager._cache.cache.clear()
