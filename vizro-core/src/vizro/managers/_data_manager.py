@@ -28,7 +28,7 @@ class PrefixAdapter(logging.LoggerAdapter):
         return f"[DATA MANAGER] {msg}", kwargs
 
 
-logger = PrefixAdapter(logging.getLogger(__name__))
+logger = PrefixAdapter(logging.getLogger(__name__), {})
 logger.setLevel(logging.DEBUG)
 #####################
 
