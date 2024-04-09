@@ -117,6 +117,29 @@
   width: 100%;
 }
 
+#nav-bar {
+  align-items: center;
+  background: inherit !important;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.nav-bar-icon-link {
+  align-items: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-bar-icon-link.active .material-symbols-outlined {
+  color: var(--text-active);
+}
+
 .loading-container {
   height: 100%;
   width: 100%;

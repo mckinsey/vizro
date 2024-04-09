@@ -49,7 +49,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     [Card]: ../../assets/user_guides/components/card.png
 
-### How to customize card text
+### Customize card text
 
 The [`Card`][vizro.models.Card] utilizes the `dcc.Markdown` component from Dash as its underlying text component.
 For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown).
@@ -183,7 +183,7 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
 
     [CardText]: ../../assets/user_guides/components/card_text.png
 
-### How to place an image on a card
+### Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
 
@@ -255,7 +255,7 @@ accessibility of your app. Providing an image ALT text is optional.
 
 You might notice that the image is quite large, find out how to style images (e.g. position and size) in the next section!
 
-### How to style a card image
+### Style a card image
 
 To change the styling of the image (e.g. size or position), add a URL hash to your image like this:
 
@@ -395,7 +395,7 @@ and provide an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-### How to create a navigation card
+### Create a navigation card
 
 !!! note
 
@@ -497,7 +497,7 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href provided is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href provided is an absolute link, it should start with `https://` or an equivalent protocol.
 
-### How to add an icon
+### Add an icon
 If you want to add an icon to your card, just add your image as described in the [previous section](#placing-images)
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
@@ -589,6 +589,26 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
+
+#### Add an icon responsive to theme switch
+
+To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
+
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Please note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+
+Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+
+```css
+img[src*="#my-image"] {
+  filter: var(--icon-color);
+}
+```
+
+!!! example "Styled icon"
+    ![styled icon](../../assets/user_guides/components/responsive_icon.gif)
+
 
 ## Buttons
 

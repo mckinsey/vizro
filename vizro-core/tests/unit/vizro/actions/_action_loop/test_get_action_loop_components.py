@@ -1,11 +1,9 @@
 """Unit tests for vizro.actions._action_loop._get_action_loop_components file."""
 
-import json
-
-import plotly
 import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
+from asserts import assert_component_equal
 from dash import dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
@@ -125,11 +123,7 @@ class TestGetActionLoopComponents:
     @pytest.mark.usefixtures("managers_one_page_no_actions")
     def test_no_components(self):
         result = _get_action_loop_components()
-        result = json.loads(json.dumps(result, cls=plotly.utils.PlotlyJSONEncoder))
-
-        expected = json.loads(json.dumps(html.Div(id="action_loop_components_div"), cls=plotly.utils.PlotlyJSONEncoder))
-
-        assert result == expected
+        assert_component_equal(result, html.Div(id="action_loop_components_div"))
 
     @pytest.mark.usefixtures("managers_one_page_two_components_two_controls")
     @pytest.mark.parametrize(
@@ -155,21 +149,14 @@ class TestGetActionLoopComponents:
         action_trigger_actions_id_component,
         trigger_to_actions_chain_mapper_component,
     ):
-        result = json.loads(json.dumps(_get_action_loop_components(), cls=plotly.utils.PlotlyJSONEncoder))
-
-        all_action_loop_components_expected = (
-            fundamental_components
+        result = _get_action_loop_components()
+        expected = html.Div(
+            id="action_loop_components_div",
+            children=fundamental_components
             + gateway_components
             + action_trigger_components
             + [action_trigger_actions_id_component]
-            + [trigger_to_actions_chain_mapper_component]
+            + [trigger_to_actions_chain_mapper_component],
         )
 
-        expected = json.loads(
-            json.dumps(
-                html.Div(children=all_action_loop_components_expected, id="action_loop_components_div"),
-                cls=plotly.utils.PlotlyJSONEncoder,
-            )
-        )
-
-        assert result == expected
+        assert_component_equal(result, expected)

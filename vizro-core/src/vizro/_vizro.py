@@ -20,7 +20,7 @@ class Vizro:
         """Initializes Dash app, stored in `self.dash`.
 
         Args:
-            kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
+            **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
@@ -66,7 +66,7 @@ class Vizro:
             dashboard (Dashboard): [`Dashboard`][vizro.models.Dashboard] object.
 
         Returns:
-            Vizro: App object
+            self: Vizro app
 
         """
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
@@ -84,8 +84,8 @@ class Vizro:
         """Runs the dashboard.
 
         Args:
-            args: Passed through to `dash.run`.
-            kwargs: Passed through to `dash.run`.
+            *args : Passed through to `dash.run`.
+            **kwargs : Passed through to `dash.run`.
 
         """
         data_manager._frozen_state = True

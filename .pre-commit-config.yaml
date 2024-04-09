@@ -44,36 +44,40 @@ repos:
       - id: prettier
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.12.0
+    rev: v2.13.0
     hooks:
       - id: pretty-format-toml
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.0
+    rev: v0.3.5
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
 
   - repo: https://github.com/psf/black
-    rev: 24.1.1
+    rev: 24.3.0
     hooks:
       - id: black
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.7
+    rev: 1.7.8
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
         additional_dependencies: ["bandit[toml]"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v1.9.0
     hooks:
       - id: mypy
         files: ^vizro-core/src/
         additional_dependencies:
-          - pydantic>=1.10.13, <2 # deliberately pinned to <2 until we bump our pydantic requirement to strictly >=2
+          # Deliberately pinned to <2 until we bump our pydantic requirement to strictly >=2.
+          # pydantic>=1.10.15 includes this fix which flags some genuine type problems. These will take a while to fix
+          # or ignore so for now we just pin to 1.10.14 which doesn't flag the problems.
+          # https://github.com/pydantic/pydantic/pull/8765
+          - pydantic==1.10.14
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2
@@ -100,7 +104,7 @@ repos:
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
-    rev: 16d3a7f
+    rev: v3.3.1
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]
@@ -122,3 +126,4 @@ ci:
     - bandit
     - mypy
     - gitleaks
+    - vale
