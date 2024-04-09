@@ -131,7 +131,7 @@ class Page(VizroBaseModel):
         # flickering.
         # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
         # method defined. But at the moment this just means Graphs.
-        # TODO-AV2-TICKET-CREATED: consider making this clientside callback and then possibly we can remove the
+        # TODO-AV2-TICKET-CREATED-*: consider making this clientside callback and then possibly we can remove the
         #  call to _update_theme in Graph.__call__ without any flickering.
         #  If we do this then we should *consider* defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.

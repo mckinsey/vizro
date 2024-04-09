@@ -18,7 +18,7 @@ class ParameterAction(CapturedActionCallable):
         #  have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
         #  here, instead inside the Filter/Parameter/Page models.
 
-        # TODO-AV2-OQ: Consider making a difference within this method between 'targets' and 'affected_arguments' e.g.:
+        # TODO-AV2-OQ-*: Consider making a difference within this method between 'targets' and 'affected_arguments' e.g.
         #  "targets" - only target model IDs e.g. "my_scatter_chart_id"
         #  "affected_arguments" - affected_argument per target e.g. "layout.title.size"
         #  PROS:

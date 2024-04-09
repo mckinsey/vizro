@@ -19,13 +19,13 @@ class ExportDataAction(CapturedActionCallable):
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
-        # TODO-AV2-TICKET-NEW: Make targets validation reusable for the other actions too.
+        # TODO-AV2-TICKET-NEW-*: Make targets validation reusable for the other actions too.
         # TODO-AV2-OQ: Rethink using self._arguments
         targets = self._arguments.get("targets")
         if targets:
             for target in targets:
                 if self._page_id != model_manager._get_model_page_id(model_id=target):
-                    # TODO-AV2-TICKET-NEW: Improve error message to explain in which action the error occurs.
+                    # TODO-AV2-TICKET-NEW-*: Improve error message to explain in which action the error occurs.
                     raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
         else:
             targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
