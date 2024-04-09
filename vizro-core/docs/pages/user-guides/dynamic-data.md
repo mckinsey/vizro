@@ -50,14 +50,42 @@ The Vizro Data Manager has a server-side caching mechanism to help solve this. V
 
 In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options:
 
-```py title="Simple cache with default timeout of 5 minutes"
-from flask_caching import Cache
+!!! example "Simple cache with default timeout of 5 minutes"
+    === "app.py"
+        ```py hl_lines="11"
+        from vizro import Vizro
+        import pandas as pd
+        import vizro.plotly.express as px
+        import vizro.models as vm
 
-data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-data_manager["iris"] = load_iris_data
-```
+        from vizro.managers import data_manager
 
-By default, dynamic data is cached in the Data Manager for 5 minutes. A refresh of the dashboard within this time interval will fetch the pandas DataFrame from the cache and not re-run the data loading function. Once the cache timeout period has elapsed, the next refresh of the dashboard will re-execute the dynamic data loading function. The resulting pandas DataFrame will again be put into the cache and not expire until another 5 minutes has elapsed.
+        def load_iris_data():
+            return pd.read_csv("iris.csv")
+
+        data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+        data_manager["iris"] = load_iris_data
+        
+        page = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[vm.Filter(column="species")],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![DataBasic]][DataBasic]
+
+    [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
+
+
+By default, when caching is turned on, dynamic data is cached in the Data Manager for 5 minutes. A refresh of the dashboard within this time interval will fetch the pandas DataFrame from the cache and not re-run the data loading function. Once the cache timeout period has elapsed, the next refresh of the dashboard will re-execute the dynamic data loading function. The resulting pandas DataFrame will again be put into the cache and not expire until another 5 minutes has elapsed.
 
 If you would like to alter some options, such as the default cache timeout, then you can specify a different cache configuration:
 
@@ -76,6 +104,8 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
     # Use Redis key-value store
     data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
     ```
+
+Note that when a production-ready cache backend is used, the cache is persisted beyond the Vizro process and is not cleared by restarting your server. If you wish to clear the cache then you must do so manually, e.g. if you use `FileSystemCache` then you would delete your `cache` directory. Persisting the cache can also be useful for development purposes when handling data that takes a long time to load: even if you do not need the data to refresh while your dashboard is running, it can speed up your development loop to use dynamic data with a cache that is persisted between repeated runs of Vizro.
 
 ### Configure timeouts
 

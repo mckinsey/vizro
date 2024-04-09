@@ -91,15 +91,16 @@ class TestProcessTableDataFrame:
     # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
-        table_with_str_df = vm.Table(id="table", figure=dash_table_with_str_dataframe)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        assert table_with_str_df["data_frame"] == "gapminder"
-
-    def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
-        table_with_str_df = vm.Table(id="table", figure=standard_dash_table)
+        table = vm.Table(id="table", figure=dash_table_with_str_dataframe)
         assert data_manager._get_component_data("table").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
-            table_with_str_df.figure["data_frame"]
+            table["data_frame"]
+
+    def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
+        graph = vm.Table(id="table", figure=standard_dash_table)
+        assert data_manager._get_component_data("table").equals(gapminder)
+        with pytest.raises(KeyError, match="'data_frame'"):
+            graph["data_frame"]
 
 
 class TestPreBuildTable:
