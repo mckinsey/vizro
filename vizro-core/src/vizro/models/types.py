@@ -282,7 +282,7 @@ class capture:
 
                 if isinstance(captured_callable["data_frame"], str):
                     # Enable running e.g. px.scatter("iris") from the Python API. Don't actually run the function
-                    # because it won't get work as there's no data. This case is not relevant for the JSON/YAML API,
+                    # because it won't work as there's no data. This case is not relevant for the JSON/YAML API,
                     # which is handled separately through validation of CapturedCallable.
                     fig = _DashboardReadyFigure()
                 else:
