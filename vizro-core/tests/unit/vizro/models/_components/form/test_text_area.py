@@ -35,7 +35,7 @@ class TestUserInputBuild:
         text_area = TextArea(title="Title", placeholder="Placeholder", id="text-area-id").build()
         expected_text_area = html.Div(
             [
-                html.Label("Title", htmlFor="text-area-id"),
+                dbc.Label("Title", html_for="text-area-id"),
                 dbc.Textarea(
                     id="text-area-id",
                     placeholder="Placeholder",
