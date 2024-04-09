@@ -12572,7 +12572,7 @@ a {
 }
 
 .navbar {
-  background: transparent;
+  background: var(--surfaces-bg02) !important;
 }
 .navbar .nav-link {
   padding: 0;

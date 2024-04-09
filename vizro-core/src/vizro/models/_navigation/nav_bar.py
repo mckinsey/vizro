@@ -75,4 +75,6 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        return html.Div([dbc.Navbar(nav_links, id="nav-bar"), nav_panel])
+        # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
+        # to create a horizontal NavBar.
+        return html.Div([dbc.Navbar(nav_links, id="nav-bar", className="flex-column", light=False, color="dark"), nav_panel])
