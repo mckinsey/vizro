@@ -41,9 +41,9 @@ The below toy example demonstrates how dynamic data is updated every time the pa
         4. Dynamic data is referenced by the name of the data source `"iris"`.
 
     === "Result"
-        [![DataBasic]][DataBasic]
+        [![DynamicData]][DynamicData]
 
-    [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
+    [DynamicData]: ../../assets/user_guides/data/dynamic_data.gif
 
 Since dynamic data sources must always be added to the Data Manager and referenced by name, they may be used in YAML configuration [exactly the same way as for static data sources](static-data.md#reference-by-name).
 
