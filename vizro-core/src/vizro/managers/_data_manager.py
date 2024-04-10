@@ -161,7 +161,7 @@ class _StaticData:
     def load(self) -> pd.DataFrame:
         """Loads data.
 
-        Returns a copy of the data. This  is not necessary if we are careful to not do any inplace=True operations,
+        Returns a copy of the data. This is not necessary if we are careful to not do any inplace=True operations,
         but probably safest to leave it here.
         """
         return self.__data.copy()
