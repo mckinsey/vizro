@@ -42,7 +42,7 @@ class TestLoad:
 
 
 class TestInvalid:
-    def test_static_data_des_not_support_timeout(self):
+    def test_static_data_does_not_support_timeout(self):
         data = pd.DataFrame([1, 2, 3])
         data_manager["data"] = data
         with pytest.raises(
