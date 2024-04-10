@@ -114,3 +114,9 @@
 .accordion-body .accordion-item-link:last-child {
   margin-bottom: var(--spacing-03);
 }
+
+.nav-link:focus-visible {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}

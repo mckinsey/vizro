@@ -42,8 +42,11 @@ def create_template_dark() -> Template:
     template_dark["layout"]["coloraxis"]["colorbar"]["tickcolor"] = COLORS["WHITE_30"]
     template_dark["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["WHITE_55"]
     template_dark["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = COLORS["WHITE_55"]
-    template_dark["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"][::-1]
-    template_dark["layout"]["colorscale"]["sequential"] = COLORS["DIVERGING_RED_CYAN"]  # default for continuous
+    # Diverging, sequential and sequentialminus colorscale will only be applied automatically if
+    # `coloraxis_autocolorscale=True`. Otherwise, they have no effect, and the default for continuous color scales
+    # will be the color sequence applied to ["colorscale"]["sequential"].
+    template_dark["layout"]["colorscale"]["diverging"] = COLORS["DIVERGING_RED_CYAN"]
+    template_dark["layout"]["colorscale"]["sequential"] = COLORS["SEQUENTIAL_CYAN"]
     template_dark["layout"]["colorscale"]["sequentialminus"] = COLORS["SEQUENTIAL_RED"][::-1]
     template_dark["layout"]["colorway"] = COLORS["DISCRETE_10"]
 
