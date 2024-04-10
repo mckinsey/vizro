@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import List
 
 import dash
-import dash_bootstrap_components as dbc
 import flask
 
 from vizro._constants import STATIC_URL_PREFIX
@@ -28,8 +27,6 @@ class Vizro:
         self.dash.config.external_stylesheets.extend(
             [
                 "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-                # Bootstrap theme has to be added here to provide defaults where none are defined in vizro-bootstrap.
-                dbc.themes.BOOTSTRAP,
             ]
         )
 
@@ -38,6 +35,10 @@ class Vizro:
         vizro_assets_folder = Path(__file__).with_name("static")
         requests_pathname_prefix = self.dash.config.requests_pathname_prefix
         vizro_css = [requests_pathname_prefix + path for path in self._get_external_assets(vizro_assets_folder, "css")]
+
+        # Ensure vizro-bootstrap.min.css is loaded in first to allow overwrites
+        vizro_css.sort(key=lambda x: not x.endswith("vizro-bootstrap.min.css"))
+
         vizro_js = [
             {"src": requests_pathname_prefix + path, "type": "module"}
             for path in self._get_external_assets(vizro_assets_folder, "js")
