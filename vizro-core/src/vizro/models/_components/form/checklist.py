@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
