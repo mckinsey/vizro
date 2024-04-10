@@ -51,7 +51,7 @@ Since dynamic data sources must always be added to the Data Manager and referenc
 
 By default, every time the dashboard is refreshed a dynamic data function will be executed again. This means that your dashboard will always show the very latest data. In fact, if there are multiple graphs on the same page using the same dynamic data source then the loading function will be executed _multiple_ times, once for each graph on the page. Hence, if loading your data is a slow operation, your dashboard performance may suffer.
 
-The Vizro Data Manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off. 
+The Vizro Data Manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off.
 
 In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the above example to set `data_manager.cache`:
 
@@ -68,7 +68,7 @@ In a development environment the easiest way to enable caching is to use a [simp
     def load_iris_data():
         iris = pd.read_csv("iris.csv")
         return iris.sample(30)
-    
+
     data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
     data_manager["iris"] = load_iris_data
 

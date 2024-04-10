@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-import warnings
-
-from contextlib import suppress
-
 import logging
 import os
+import warnings
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd

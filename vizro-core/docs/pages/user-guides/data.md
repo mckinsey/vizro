@@ -18,11 +18,11 @@ graph TD
   refresh -- Yes --> dynamic
   specification -- No --> static-direct
   specification -- Yes --> static-name
-  
+
   click static-direct href "../static-data#supply-directly"
   click static-name href "../static-data#reference-by-name"
   click dynamic href "../dynamic-data"
-  
+
   classDef clickable color:#4051b5;
 ```
 

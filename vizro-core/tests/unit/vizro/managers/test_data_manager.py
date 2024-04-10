@@ -1,17 +1,16 @@
 """Unit tests for vizro.managers.data_manager."""
-from contextlib import suppress
 
 import time
+from contextlib import suppress
 
 import numpy as np
 import pandas as pd
 import pytest
-from flask_caching import Cache
-
 from asserts import assert_frame_not_equal
+from flask_caching import Cache
+from pandas.testing import assert_frame_equal
 from vizro import Vizro
 from vizro.managers import data_manager
-from pandas.testing import assert_frame_equal
 
 
 @pytest.fixture(autouse=True)
