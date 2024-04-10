@@ -53,15 +53,15 @@ class Checklist(VizroBaseModel):
         return html.Div(
             [
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dcc.Checklist(
+                dbc.Checklist(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
                     persistence_type="session",
-                    className="checkboxes-list",
+                    className="form-check",
                 ),
             ],
-            className="input-container",
+            className="form-group",
             id=f"{self.id}_outer",
         )
