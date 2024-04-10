@@ -104,55 +104,60 @@ def simple_cache():
     yield
 
 
-# TODO: think if any more needed here
-# TODO: make sure no changes would have affected the manual testing
 class TestCache:
-    def test_simple_cache(self, simple_cache):
+    def test_simple_cache_default_timeout(self, simple_cache):
         data_manager["data"] = make_random_data
+
         loaded_data_1 = data_manager["data"].load()
         loaded_data_2 = data_manager["data"].load()
 
-        # Cache saves result.
+        # Cache does not expire.
         assert_frame_equal(loaded_data_1, loaded_data_2)
 
-    def test_shared_dynamic_data_function(self, simple_cache):
-        data_manager["data_x"] = make_random_data
-        data_manager["data_y"] = make_random_data
-
-        # Two data sources that shared the same function are independent.
-        loaded_data_x_1 = data_manager["data_x"].load()
-        loaded_data_y_1 = data_manager["data_y"].load()
-        assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
-
-        loaded_data_x_2 = data_manager["data_x"].load()
-        loaded_other_y_2 = data_manager["data_y"].load()
-
-        # Cache saves result.
-        assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
-        assert_frame_equal(loaded_data_y_1, loaded_other_y_2)
-
-    def test_change_default_timeout(self):
+    def test_change_non_default_timeout(self):
         data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 1})
         Vizro()
-
         data_manager["data"] = make_random_data
-        loaded_data_1 = data_manager["data"].load()
-        time.sleep(1)
-        loaded_data_2 = data_manager["data"].load()
 
-        # Cache has expired in between two data loads.
-        assert_frame_not_equal(loaded_data_1, loaded_data_2)
+        loaded_data_1 = data_manager["data"].load()
+        loaded_data_2 = data_manager["data"].load()
+        time.sleep(1)
+        loaded_data_3 = data_manager["data"].load()
+        loaded_data_4 = data_manager["data"].load()
+
+        # Cache has expired between loaded_data_2 and loaded_data_3 only.
+        assert_frame_equal(loaded_data_1, loaded_data_2)
+        assert_frame_equal(loaded_data_3, loaded_data_4)
+        assert_frame_not_equal(loaded_data_2, loaded_data_3)
 
     def test_change_individual_timeout(self, simple_cache):
         data_manager["data"] = make_random_data
         data_manager["data"].timeout = 1
 
         loaded_data_1 = data_manager["data"].load()
-        time.sleep(1)
         loaded_data_2 = data_manager["data"].load()
+        time.sleep(1)
+        loaded_data_3 = data_manager["data"].load()
+        loaded_data_4 = data_manager["data"].load()
 
-        # Cache has expired in between two data loads.
-        assert_frame_not_equal(loaded_data_1, loaded_data_2)
+        # Cache has expired between loaded_data_2 and loaded_data_3 only.
+        assert_frame_equal(loaded_data_1, loaded_data_2)
+        assert_frame_equal(loaded_data_3, loaded_data_4)
+        assert_frame_not_equal(loaded_data_2, loaded_data_3)
+
+    def test_shared_dynamic_data_function(self, simple_cache):
+        data_manager["data_x"] = make_random_data
+        data_manager["data_y"] = make_random_data
+
+        loaded_data_x_1 = data_manager["data_x"].load()
+        loaded_data_y_1 = data_manager["data_y"].load()
+        loaded_data_x_2 = data_manager["data_x"].load()
+        loaded_other_y_2 = data_manager["data_y"].load()
+
+        # Two data sources that shared the same function are independent.
+        assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
+        assert_frame_equal(loaded_data_y_1, loaded_other_y_2)
+        assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
 
     def test_timeouts_do_not_interfere(self, simple_cache):
         # This test only passes thanks to the code in memoize that alters the wrapped.__func__.__qualname__,
