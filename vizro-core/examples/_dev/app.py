@@ -1,5 +1,8 @@
 """Example to show dashboard configuration."""
 
+from typing import Optional
+
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from flask_caching import Cache
@@ -31,6 +34,7 @@ page = vm.Page(
         vm.Graph(figure=px.scatter("no_expire_data", "sepal_width", "sepal_length")),
     ],
     controls=[vm.Filter(column="species")],
+
 )
 dashboard = vm.Dashboard(pages=[page])
 app = Vizro().build(dashboard)

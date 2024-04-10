@@ -35,7 +35,7 @@ class TestUserInputBuild:
         user_input = UserInput(title="Title", placeholder="Placeholder", id="user-input-id").build()
         expected_user_input = html.Div(
             [
-                html.Label("Title", htmlFor="user-input-id"),
+                dbc.Label("Title", html_for="user-input-id"),
                 dbc.Input(
                     id="user-input-id",
                     placeholder="Placeholder",
