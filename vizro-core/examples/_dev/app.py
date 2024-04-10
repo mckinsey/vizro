@@ -1,8 +1,7 @@
-from vizro import Vizro
 import pandas as pd
-import vizro.plotly.express as px
 import vizro.models as vm
-
+import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
 
 
