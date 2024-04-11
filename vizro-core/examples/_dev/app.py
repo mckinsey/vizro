@@ -27,7 +27,7 @@ selectors = vm.Page(
             id="scatter_relation",
             figure=px.scatter(data_frame=px.data.gapminder(), x="gdpPercap", y="lifeExp", size="pop"),
         ),
-vm.Card(
+        vm.Card(
             text="""
                 # This is an <h1> tag
                 ## This is an <h2> tag
