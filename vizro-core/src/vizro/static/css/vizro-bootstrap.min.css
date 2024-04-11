@@ -244,6 +244,8 @@
   --bs-primary-rgb: #ffffffe0;
   --bs-secondary-color: #ffffff99;
   --bs-nav-link-color: #ffffff99; /*QQ: This doesn't seem to work*/
+  --bs-form-valid-color: #40d86eff; /*"status-success"*/
+  --bs-form-invalid-color: #f56565ff; /*"status-error"*/
 }
 
 .vizro_light {
@@ -488,6 +490,8 @@
   --bs-primary-rgb: #141721e0;
   --bs-secondary-color: #14172199;
   --bs-nav-link-color: #14172199; /*QQ: This doesn't seem to work*/
+  --bs-form-valid-color: #26bf56ff; /*"status-success"*/
+  --bs-form-invalid-color: #f03b3aff; /*"status-error"*/
 }
 
 /* 14px */
@@ -1180,7 +1184,7 @@ progress {
 }
 
 .blockquote {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-size: 1.09375rem;
 }
 .blockquote > :last-child {
@@ -1188,8 +1192,8 @@ progress {
 }
 
 .blockquote-footer {
-  margin-top: -0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
   font-size: 0.875em;
   color: #6c757d;
 }
@@ -2573,7 +2577,7 @@ progress {
   }
 }
 .form-label {
-  margin-bottom: 0rem;
+  margin-bottom: 0.5rem;
 }
 
 .col-form-label {
@@ -12577,6 +12581,26 @@ a {
   color: var(--text-secondary) !important;
 }
 
+/* Types */
+blockquote {
+  border-left: 0.25rem var(--text-secondary) solid;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+hr {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  width: 100%;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
+label {
+  margin-bottom: 0.5rem;
+}
+
 /** This is an auto-generated file, don't edit it. **/
 .navbar {
   background: var(--surfaces-bg02) !important;
@@ -12594,15 +12618,50 @@ a {
 }
 
 /** This is an auto-generated file, don't edit it. **/
-blockquote {
-  border-left: 0.25rem var(--text-secondary) solid;
+.form-group {
   margin-bottom: 0.5rem;
-  padding-left: 0.25rem;
 }
 
-hr {
-  border-bottom: 1px solid var(--border-subtleAlpha01);
-  width: 100%;
+.form-control, .input-group-text {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  background-color: var(--field-enabled);
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  box-shadow: var(--elevation-0);
+  border: none;
+}
+.form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+  background-color: var(--field-hover);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--focus) inset;
+}
+.form-control:hover, .form-control.hover, .input-group-text:hover, .input-group-text.hover {
+  background-color: var(--field-hover);
+}
+.form-control:disabled, .form-control.disabled, .input-group-text:disabled, .input-group-text.disabled {
+  background-color: var(--field-disabled);
+  color: var(--text-disabled);
+}
+
+.form-control.is-invalid {
+  box-shadow: 0 0 0 2px var(--status-error) inset;
+}
+.form-control.is-invalid:focus, .form-control.is-invalid.focus {
+  box-shadow: 0 0 0 2px var(--status-error) inset;
+}
+
+.form-control.is-valid {
+  box-shadow: 0 0 0 2px var(--status-success) inset;
+}
+.form-control.is-valid:focus, .form-control.is-valid.focus {
+  box-shadow: 0 0 0 2px var(--status-success) inset;
 }
 
 .qb-container-bg-01 {
