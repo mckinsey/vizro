@@ -1,8 +1,8 @@
 """Unit tests for vizro.managers.data_manager."""
-from functools import partial
 
 import time
 from contextlib import suppress
+from functools import partial
 
 import numpy as np
 import pandas as pd
