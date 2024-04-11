@@ -1,10 +1,10 @@
 # How to launch the dashboard
 
-This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost.
+This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost port 8050 so is accessible at http://127.0.0.1:8050/.
 
-## Default built-in Flask web server
+## Default built-in Flask development server
 
-!!! example "Default built-in Flask web server"
+!!! example "Default built-in Flask development server"
     === "app.py"
         ```py
         from vizro import Vizro
@@ -31,8 +31,13 @@ This guide shows you how to launch your dashboard in different ways. By default,
 Dash is running on http://127.0.0.1:8050/
 
  * Serving Flask app 'app'
- * Debug mode: on
+ * Debug mode: off
+INFO:werkzeug:WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
 ```
+
+!!! warning "In production"
+
+    As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [gunicorn](#gunicorn).
 
 ??? info "Automatic reloading and debugging"
 
@@ -75,12 +80,12 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 
 ??? info "Reloading and debugging"
 
-
      When working in a Jupyter notebook, only some of the [Dash Dev Tools](https://dash.plotly.com/devtools) functionality is enabled by using `run(debug=True)`.
      In particular, code reloading and hot reloading do not work from a Jupyter notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
+
 ## Gunicorn
-!!!warning "In production"
-    In production, it is recommended **not** to use the default Flask server. One of the options here is Gunicorn. It is easy to scale the application to serve more users or run more computations, run more "copies" of the app in separate processes.
+
+[Gunicorn](https://gunicorn.org/) is a production-ready Python WSGI server for deploying an app over multiple worker processes. It can be installed with `pip install gunicorn`.
 
 !!! example "Use Gunicorn"
     === "app.py"
@@ -114,6 +119,10 @@ To run using Gunicorn with four worker processes, execute
 gunicorn app:server --workers 4
 ```
 in the command line. For more Gunicorn configuration options, please refer to [Gunicorn documentation](https://docs.gunicorn.org/).
+
+!!! warning "In production"
+
+    If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
 ## Deployment
 
