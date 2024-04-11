@@ -31,7 +31,6 @@ exceptions:
   - CI/CD
   - DataCatalog
   - Data Catalog
-  - Data Manager
   - DataFrame
   - DataTable
   - Dash
