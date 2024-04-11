@@ -52,6 +52,6 @@ class UserInput(VizroBaseModel):
                     className="user_input",
                 ),
             ],
-            className="input-container",
+            className="form-group",
             id=f"{self.id}_outer",
         )

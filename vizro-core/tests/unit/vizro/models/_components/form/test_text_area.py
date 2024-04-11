@@ -45,7 +45,7 @@ class TestUserInputBuild:
                     className="text-area",
                 ),
             ],
-            className="input-container",
+            className="form-group",
             id="text-area-id_outer",
         )
         assert_component_equal(text_area, expected_text_area)
