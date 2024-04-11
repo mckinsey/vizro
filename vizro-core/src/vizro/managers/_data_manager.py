@@ -13,10 +13,6 @@ from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
 
-# TODO: test manually and write tests:
-# Only need to test str/non-str static dataframe argument throughout unit tests in general.
-# And test dynamic datasets by themselves
-
 logger = logging.getLogger(__name__)
 
 # Really ComponentID and DataSourceName should be NewType and not just aliases but then for a user's code to type check
@@ -37,7 +33,8 @@ class BoundMethod(Protocol):
     __self__: object
     __func__: Callable[..., Any]
 
-    def __call__(self, *args, **kwargs): ...
+    def __call__(self, *args, **kwargs):
+        ...
 
 
 # wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
