@@ -31,9 +31,7 @@ nav:
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
       - DATA:
-          - Overview: pages/user-guides/data.md
-          - Static data: pages/user-guides/static-data.md
-          - Dynamic data: pages/user-guides/dynamic-data.md
+          - Data: pages/user-guides/data.md
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
           - Custom charts: pages/user-guides/custom-charts.md
