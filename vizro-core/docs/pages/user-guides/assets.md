@@ -68,7 +68,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -133,7 +133,7 @@ To achieve this, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:

@@ -34,7 +34,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -132,7 +132,7 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -227,7 +227,7 @@ accessibility of your app. Providing an image ALT text is optional.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -302,7 +302,7 @@ and provide an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -368,7 +368,7 @@ and provide an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -455,7 +455,7 @@ To create a navigation card, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -550,7 +550,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
         ```
     === "app.yaml"
         ```yaml hl_lines="5 13"
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -664,7 +664,7 @@ In the below example we show how to configure a button to export the filtered da
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:

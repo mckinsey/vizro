@@ -44,7 +44,7 @@ The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`]
 
 ## Reference by name
 
-If you would like to specify your dashboard configuration through YAML then you must first add your data to the Data Manager, importable as `vizro.managers.data_manager`. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the Data Manager.
+If you would like to specify your dashboard configuration through YAML then you must first add your data to the data manager, importable as `vizro.managers.data_manager`. The value of the `data_frame` argument in the YAML configuration should then refer to the name of your data in the data manager.
 
 !!! example "Static data referenced by name"
     === "app.py"
@@ -65,7 +65,7 @@ If you would like to specify your dashboard configuration through YAML then you 
         Vizro().build(dashboard).run()
         ```
 
-        1. `"iris"` is the name of a data source added to the Data Manager. This data is a pandas DataFrame created by reading from the CSV file `iris.csv`.
+        1. `"iris"` is the name of a data source added to the data manager. This data is a pandas DataFrame created by reading from the CSV file `iris.csv`.
     === "dashboard.yaml"
         ```yaml
         pages:
@@ -90,4 +90,4 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 
-It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the Data Manager.
+It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the data manager.

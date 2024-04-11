@@ -79,7 +79,7 @@ To create a dashboard:
         ```
     === "dashboard.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:

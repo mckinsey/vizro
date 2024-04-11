@@ -34,8 +34,8 @@ graph TD
     |---------------------------------------------------------------|------------------|------------------------------------------|
     | Required Python type                                          | pandas DataFrame | Function that returns a pandas DataFrame |
     | Can be supplied directly in `data_frame` argument of `figure` | Yes              | No                                       |
-    | Can be referenced by name after adding to Data Manager        | Yes              | Yes                                      |
+    | Can be referenced by name after adding to data manager        | Yes              | Yes                                      |
     | Can be refreshed while dashboard is running                   | No               | Yes                                      |
     | Production-ready                                              | Yes              | Yes                                      |
 
-If you have a [Kedro](https://kedro.org/) project or would like to use the [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) to manage your data independently of a Kedro project then you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md). This provides helper functions to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets as dynamic data in the Vizro Data Manager.
+If you have a [Kedro](https://kedro.org/) project or would like to use the [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) to manage your data independently of a Kedro project then you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md). This provides helper functions to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets as dynamic data in the Vizro data manager.

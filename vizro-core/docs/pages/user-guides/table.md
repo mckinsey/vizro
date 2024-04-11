@@ -64,7 +64,7 @@ creating a [custom AG Grid callable](custom-tables.md) or reach out to the Vizro
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -134,7 +134,7 @@ In the example below we select and format some columns of the gapminder dataset.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -247,7 +247,7 @@ There are many more ways to alter the grid beyond this showcase.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -340,7 +340,7 @@ setting some defaults for some of the arguments to help with styling.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -426,7 +426,7 @@ an example of a styled table where some conditional formatting is applied. There
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:

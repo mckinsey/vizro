@@ -65,7 +65,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -170,7 +170,7 @@ Here is an example of how to configure a chart interaction when the source is a 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -251,7 +251,7 @@ Here is an example of how to configure a chart interaction when the source is an
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the Data Manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:

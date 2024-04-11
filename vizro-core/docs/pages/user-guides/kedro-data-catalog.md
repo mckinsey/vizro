@@ -10,7 +10,7 @@ pip install vizro[kedro]
 ```
 
 ## Use datasets from the Kedro Data Catalog
-`vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the Vizro Data Manager is:
+`vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the Vizro data manager is:
 ```python
 from vizro.integrations import kedro as kedro_integration
 from vizro.managers import data_manager
@@ -30,7 +30,7 @@ The `catalog` variable may have been created in a number of different ways:
 
 The full code for these different cases is given below.
 
-!!! example "Import a Kedro Data Catalog into the Vizro Data Manager"
+!!! example "Import a Kedro Data Catalog into the Vizro data manager"
     === "app.py (Kedro project path)"
         ```py
         from vizro.integrations import kedro as kedro_integration

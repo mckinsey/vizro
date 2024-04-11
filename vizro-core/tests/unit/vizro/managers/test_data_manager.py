@@ -37,7 +37,7 @@ class TestLoad:
         # Make sure loaded_data is a copy rather than the same object.
         assert loaded_data is not data
 
-    def test_dynamic_lambda(self):
+    def test_dynamic(self):
         data = make_fixed_data
         data_manager["data"] = data
         loaded_data = data_manager["data"].load()
