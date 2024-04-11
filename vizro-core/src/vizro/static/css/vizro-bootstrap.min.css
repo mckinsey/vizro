@@ -1,4 +1,6 @@
 @charset "UTF-8";
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
 .vizro_dark {
   --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
   --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
@@ -763,7 +765,7 @@ h6, .h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 abbr[title] {
@@ -1178,7 +1180,7 @@ progress {
 }
 
 .blockquote {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-size: 1.09375rem;
 }
 .blockquote > :last-child {
@@ -1186,8 +1188,8 @@ progress {
 }
 
 .blockquote-footer {
-  margin-top: -1rem;
-  margin-bottom: 1rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
   font-size: 0.875em;
   color: #6c757d;
 }
@@ -11971,6 +11973,7 @@ textarea.form-control-lg {
   }
 }
 /* custom component files */
+/** This is an auto-generated file, don't edit it. **/
 /* Thinking about moving all of these into a typography.scss file at some point */
 .btn {
   width: -moz-fit-content;
@@ -12350,6 +12353,7 @@ textarea.form-control-lg {
   text-decoration: underline;
 }
 
+/** This is an auto-generated file, don't edit it. **/
 .accordion {
   width: 100%;
 }
@@ -12423,6 +12427,7 @@ textarea.form-control-lg {
   box-shadow: none;
 }
 
+/** This is an auto-generated file, don't edit it. **/
 .card {
   background: var(--surfaces-bg-card);
   border: none;
@@ -12460,6 +12465,7 @@ textarea.form-control-lg {
   margin-bottom: 0.5rem;
 }
 
+/** This is an auto-generated file, don't edit it. **/
 h1, .h1 {
   font-size: 32px;
   text-decoration: none;
@@ -12491,7 +12497,7 @@ h3, .h3 {
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: 0;
+  letter-spacing: 0px;
   line-height: 28px;
   color: var(--text-primary);
 }
@@ -12571,6 +12577,7 @@ a {
   color: var(--text-secondary) !important;
 }
 
+/** This is an auto-generated file, don't edit it. **/
 .navbar {
   background: var(--surfaces-bg02) !important;
 }
@@ -12584,6 +12591,18 @@ a {
 }
 .navbar .nav-link:active, .navbar .nav-link.active {
   color: var(--text-primary);
+}
+
+/** This is an auto-generated file, don't edit it. **/
+blockquote {
+  border-left: 0.25rem var(--text-secondary) solid;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+hr {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  width: 100%;
 }
 
 .qb-container-bg-01 {
