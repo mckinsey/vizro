@@ -98,8 +98,9 @@ class Vizro:
 
         if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:
             warnings.warn(
-                "`SimpleCache` is designed to support only single process environments. If you would like to use multiple "
-                "processes then you should change to a cache that supports it such as `FileSystemCache` or `RedisCache`."
+                "`SimpleCache` is designed to support only single process environments. If you would like to use"
+                " multiple processes then you should change to a cache that supports it such as `FileSystemCache` or "
+                "`RedisCache`."
             )
 
         self.dash.run(*args, **kwargs)

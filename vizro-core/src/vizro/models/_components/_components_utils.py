@@ -36,11 +36,11 @@ def _process_callable_data_frame(captured_callable, values):
         # Unnamed data source, which must be a pd.DataFrame and hence static data. This means px.scatter(pd.DataFrame())
         # and is only possible from the Python API. Extract dataframe from the captured function and put it into the
         # data manager.
-        # Unlike with model_manager, it doesn't matter if the random seed is different across workers here. So long as we
-        # always fetch static data from the data manager by going through the appropriate Figure component, the right
+        # Unlike with model_manager, it doesn't matter if the random seed is different across workers here. So long as
+        # we always fetch static data from the data manager by going through the appropriate Figure component, the right
         # data source name will be fetched. It also doesn't matter if multiple Figures with the same underlying data
-        # each have their own entry in the data manager, since the underlying pd.DataFrame will still be the same and not
-        # copied into each one, so no memory is wasted.
+        # each have their own entry in the data manager, since the underlying pd.DataFrame will still be the same and
+        # not copied into each one, so no memory is wasted.
         logger.debug("Adding data to data manager for Figure with id %s", values["id"])
         data_source_name = str(uuid.uuid4())
         data_manager[data_source_name] = data_frame

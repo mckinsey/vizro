@@ -1,21 +1,25 @@
-import pandas as pd
+"""Example to show dashboard configuration."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
 
 
-def load_iris_data():
-    iris = pd.read_csv("iris.csv")  # (1)!
-    return iris.sample(30)  # (2)!
+def load_iris_data(n):
+    """Blah blah blah."""
+    iris = px.data.iris()
+    return iris.sample(n)  # (2)!
 
 
-data_manager["iris"] = load_iris_data  # (3)!
+data_manager["iris"] = lambda: load_iris_data(n=10)  # (3)!
+data_manager["iris2"] = lambda: load_iris_data(n=30)  # (3)!
 
 page = vm.Page(
     title="My first page",
     components=[
         vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),  # (1)!
+        vm.Graph(figure=px.scatter("iris2", x="sepal_length", y="petal_width", color="species")),  # (1)!
     ],
     controls=[vm.Filter(column="species")],
 )

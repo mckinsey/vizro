@@ -1,4 +1,5 @@
 """Unit tests for vizro.managers.data_manager."""
+from functools import partial
 
 import time
 from contextlib import suppress
@@ -23,17 +24,29 @@ def clear_cache():
         data_manager.cache.clear()
 
 
+def make_fixed_data():
+    return pd.DataFrame([1, 2, 3])
+
+
 class TestLoad:
     def test_static(self):
-        data = pd.DataFrame([1, 2, 3])
+        data = make_fixed_data()
         data_manager["data"] = data
         loaded_data = data_manager["data"].load()
         assert_frame_equal(loaded_data, data)
         # Make sure loaded_data is a copy rather than the same object.
         assert loaded_data is not data
 
-    def test_dynamic(self):
-        data = lambda: pd.DataFrame([1, 2, 3])
+    def test_dynamic_lambda(self):
+        data = make_fixed_data
+        data_manager["data"] = data
+        loaded_data = data_manager["data"].load()
+        assert_frame_equal(loaded_data, data())
+        # Make sure loaded_data is a copy rather than the same object.
+        assert loaded_data is not data()
+
+    def test_dynamic_lambda(self):
+        data = lambda: make_fixed_data()  # noqa: E731
         data_manager["data"] = data
         loaded_data = data_manager["data"].load()
         assert_frame_equal(loaded_data, data())
@@ -43,14 +56,18 @@ class TestLoad:
 
 class TestInvalid:
     def test_static_data_does_not_support_timeout(self):
-        data = pd.DataFrame([1, 2, 3])
+        data = make_fixed_data()
         data_manager["data"] = data
         with pytest.raises(
             AttributeError, match="Static data that is a pandas.DataFrame itself does not support timeout"
         ):
             data_manager["data"].timeout = 10
 
-    def test_setitem(self):
+    def test_setitem_invalid_callable(self):
+        with pytest.raises(TypeError, match="Data source data's function does not have a name."):
+            data_manager["data"] = partial(make_fixed_data)
+
+    def test_setitem_invalid_type(self):
         with pytest.raises(
             TypeError, match="Data source data must be a pandas DataFrame or function that returns a pandas DataFrame."
         ):
