@@ -78,8 +78,6 @@ Optional high-code extensions enable almost infinite customization in a modular 
 
 Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases.
 
-<br/>
-
 ### What is Vizro-AI?
 
 [vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts. 
@@ -91,7 +89,7 @@ Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation
 
 See the [Vizro-AI documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
 
-### Key benefits of Vizro
+## Key benefits of Vizro
 
 <br/>
 
@@ -101,20 +99,21 @@ See the [Vizro-AI documentation](https://vizro-ai.readthedocs.io/en/latest/) for
 
 <br/>
 
-### Examples
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
-</p>
-
-### Live demo
+## Live demo
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
-### Installation
+## Examples
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
+</p>
+
+
+## Installation and first steps
 
 ```console
 pip install vizro
@@ -122,17 +121,15 @@ pip install vizro
 
 See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information.
 
-### New to Vizro?
+The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) explains how to create your first dashboard.
 
-See the [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) to learn how to create your first dashboard.
-
-### Get hands on
+## Get hands on
 
 See the [how-to guides](https://vizro.readthedocs.io/en/stable/) for step-by-step instructions on the key Vizro features.
 
 ## Packages
 
-> **This repository is a monorepo containing the following packages**.
+This repository is a monorepo containing the following packages:
 
 |           Folder           |                                           Version                                           |                        Documentation                        |
 | :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
