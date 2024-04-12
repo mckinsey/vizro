@@ -80,7 +80,18 @@ Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation
 
 <br/>
 
-### Key benefits
+### What is Vizro-AI?
+
+[vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts. 
+
+<p align="center">
+<img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
+</p>
+
+
+See the [Vizro-AI documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
+
+### Key benefits of Vizro
 
 <br/>
 
@@ -111,8 +122,6 @@ pip install vizro
 
 See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information.
 
-> **This repository is a monorepo and the core `vizro` package can be found in [/vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core)**.
-
 ### New to Vizro?
 
 See the [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) to learn how to create your first dashboard.
@@ -123,21 +132,13 @@ See the [how-to guides](https://vizro.readthedocs.io/en/stable/) for step-by-ste
 
 ## Packages
 
+> **This repository is a monorepo containing the following packages**.
+
 |           Folder           |                                           Version                                           |                        Documentation                        |
 | :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
 | [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |    [Vizro Docs](https://vizro.readthedocs.io/en/stable/)    |
 |   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro-ai.readthedocs.io/en/latest/) |
 
-### Vizro-AI
-
-[vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is an extension to [vizro-core](https://vizro.readthedocs.io/en/stable/) that is specifically designed to enrich the existing suite of tools of Vizro, introducing advanced artificial intelligence features for generating, analyzing, and manipulating visuals.
-`vizro-ai` uses natural language capabilities to empower users in creating charts effortlessly.
-
-<p align="center">
-<img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
-<p>
-
-See [Vizro-AI Documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
 
 ## Community and development
 
