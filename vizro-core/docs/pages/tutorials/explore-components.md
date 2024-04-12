@@ -267,7 +267,7 @@ To link a control to a component, use the id assigned to the component, which is
 To illustrate, let's add a [`Filter`][vizro.models.Filter] on specific
 continents of the underlying gapminder data. The [`Filter`][vizro.models.Filter] requires the `column` argument, that denotes
 the target column to be filtered. Each `control` also has a `targets` parameter, to specify the
-datasets and components targeted by the `control`. For this dashboard, both charts
+data and components targeted by the `control`. For this dashboard, both charts
 are listed in the `targets` parameter, meaning that the filter is be applied to both charts. However, you can apply the [`Filter`][vizro.models.Filter] to only one specific chart if required.
 
 !!! example "Configure filter"
@@ -335,7 +335,7 @@ The code below illustrates how to add the page, titled `second_page` to the dash
 
 In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In the code below:
 
-* The first parameter enables the user to change the color mapping for the `virginica` category of the iris data set, targeting both charts.
+* The first parameter enables the user to change the color mapping for the `virginica` category of the iris data, targeting both charts.
 * The second parameter adjusts the opacity of the first chart alone, through `scatter_iris.opacity`.
 
 

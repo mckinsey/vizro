@@ -79,7 +79,7 @@ To create a dashboard:
         ```
     === "dashboard.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -158,7 +158,7 @@ To create a dashboard:
         from vizro.managers import data_manager
         from vizro.models import Dashboard
 
-        data_manager["iris"] = px.data.iris
+        data_manager["iris"] = px.data.iris()
         dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
         dashboard = Dashboard(**dashboard)
 
@@ -174,7 +174,7 @@ To create a dashboard:
         from vizro.managers import data_manager
         from vizro.models import Dashboard
 
-        data_manager["iris"] = px.data.iris
+        data_manager["iris"] = px.data.iris()
         dashboard = json.loads(Path("dashboard.json").read_text(encoding="utf-8"))
         dashboard = Dashboard(**dashboard)
 
