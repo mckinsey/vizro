@@ -43,7 +43,10 @@ swap:
   zb: ZB
   leverage: use
   leverages: uses
+  leveraging: using
   utilize: use
   utilizes: uses
+  utilizing: using
+  utilising: using
   dataset: data (or data source)
   connector: data (or data source)
