@@ -102,7 +102,7 @@ repos:
     rev: v3.3.1
     hooks:
       - id: vale
-        args: [--config=.vale/.vale.ini]
+        args: [--config=.vale/.vale.ini, --glob='../vizro-*/docs/pages/*.md']
 
 # Configuration for https://pre-commit.ci/.
 ci:
