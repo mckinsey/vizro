@@ -22,12 +22,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Replace default bootstrap stylesheet with `vizro-bootstrap` stylesheet. ([#384](https://github.com/mckinsey/vizro/pull/384))
+- Refactor code and remove custom classNames from `Button`, `Card`, `NavBar` and `NavLink`. ([#384](https://github.com/mckinsey/vizro/pull/384))
 
--->
 <!--
 ### Deprecated
 
