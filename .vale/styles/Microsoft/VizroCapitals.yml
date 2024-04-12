@@ -1,3 +1,4 @@
+
 extends: existence
 message: Consider your capitalization of '%s'
 level: warning
@@ -13,4 +14,3 @@ tokens:
   - quantumblack
 exceptions:
   - 'vizro-*'
-  

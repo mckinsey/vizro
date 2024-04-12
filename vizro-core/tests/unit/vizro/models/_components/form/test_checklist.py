@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Checklist."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -131,7 +132,7 @@ class TestChecklistBuild:
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Div(
             [
-                html.Label("Title", htmlFor="checklist_id"),
+                dbc.Label("Title", html_for="checklist_id"),
                 dcc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],

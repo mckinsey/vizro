@@ -50,7 +50,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -136,7 +136,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:

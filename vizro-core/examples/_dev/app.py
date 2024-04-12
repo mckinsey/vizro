@@ -3,30 +3,27 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
+from vizro.managers import data_manager
 
-df = px.data.gapminder()
+
+def load_iris_data(n):
+    """Blah blah blah."""
+    iris = px.data.iris()
+    return iris.sample(n)  # (2)!
+
+
+data_manager["iris"] = lambda: load_iris_data(n=10)  # (3)!
+data_manager["iris2"] = lambda: load_iris_data(n=30)  # (3)!
 
 page = vm.Page(
-    title="Enhanced AG Grid",
+    title="My first page",
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                data_frame=df,
-                columnDefs=[
-                    {"field": "country", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "continent", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "year"},
-                    {"field": "lifeExp", "cellDataType": "numeric"},
-                    {"field": "pop", "cellDataType": "numeric"},
-                    {"field": "gdpPercap", "cellDataType": "euro"},
-                ],
-            ),
-        ),
+        vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),  # (1)!
+        vm.Graph(figure=px.scatter("iris2", x="sepal_length", y="petal_width", color="species")),  # (1)!
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[vm.Filter(column="species")],
 )
+
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":

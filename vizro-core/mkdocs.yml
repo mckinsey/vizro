@@ -30,9 +30,9 @@ nav:
           - Assets: pages/user-guides/assets.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
-      - DATA CONNECTIONS:
+      - DATA:
           - Data: pages/user-guides/data.md
-          - Integrations: pages/user-guides/integration.md
+          - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md
@@ -41,7 +41,6 @@ nav:
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Data manager: pages/API-reference/manager.md
       - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/captured-callables.md
   - Explanation:
@@ -51,14 +50,11 @@ nav:
       - Contribute to Vizro: pages/development/contributing.md
       - Documentation style: pages/development/documentation-style-guide.md
       - Authors: pages/development/authors.md
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
-
-validation:
-  links:
-    absolute_links: warn
-    unrecognized_links: warn
 
 theme:
   name: material
@@ -96,7 +92,11 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

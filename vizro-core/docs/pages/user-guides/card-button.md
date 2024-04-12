@@ -34,7 +34,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -132,7 +132,7 @@ Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -227,7 +227,7 @@ accessibility of your app. Providing an image ALT text is optional.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -302,7 +302,7 @@ and give an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -368,7 +368,7 @@ and give an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -455,7 +455,7 @@ To create a navigation card, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -552,7 +552,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
         ```
     === "app.yaml"
         ```yaml hl_lines="5 13"
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -591,6 +591,26 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
+
+#### Add an icon responsive to theme switch
+
+To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
+
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Please note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+
+Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+
+```css
+img[src*="#my-image"] {
+  filter: var(--inverse-color);
+}
+```
+
+??? example "Responsive icon"
+    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
+
 
 ## Buttons
 
@@ -646,7 +666,7 @@ In the below example we show how to configure a button to export the filtered da
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:

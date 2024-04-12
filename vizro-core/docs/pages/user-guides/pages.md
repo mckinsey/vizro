@@ -56,7 +56,7 @@ To create and add a page to your dashboard, do the following steps:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -147,7 +147,7 @@ To customize the page URL, give a valid URL name to the `path` argument of [`Pag
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
