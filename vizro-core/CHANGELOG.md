@@ -27,7 +27,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Replace default bootstrap stylesheet with `vizro-bootstrap` stylesheet. ([#384](https://github.com/mckinsey/vizro/pull/384))
 - Refactor code and remove custom classNames from `Button`, `Card`, `NavBar` and `NavLink`. ([#384](https://github.com/mckinsey/vizro/pull/384))
-
 - Change default continuous color scale to `SEQUENTIAL_CYAN`. ([#407](https://github.com/mckinsey/vizro/pull/407))
 
 ## Fixed
