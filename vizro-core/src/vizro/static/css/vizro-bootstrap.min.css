@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /** This is an auto-generated file, don't edit it. **/
 /** This is an auto-generated file, don't edit it. **/
-.vizro_dark {
+.vizro_dark, [data-bs-theme=dark] {
   --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
   --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
   --elevation-1: 0 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
@@ -240,13 +240,15 @@
   --sequentialRed-900-inverted: #7d000f;
   --surfaces-bg-card: #232632;
   --surfaces-bg-card-inverted: #F5F6F6;
+  --bg1: #ff0000;
+  --bg1-inverted: #0000ff;
   /* How do we keep these in sync with the tokens? */
   --bs-primary-rgb: #ffffffe0;
   --bs-secondary-color: #ffffff99;
   --bs-nav-link-color: #ffffff99; /*QQ: This doesn't seem to work*/
 }
 
-.vizro_light {
+.vizro_light, [data-bs-theme=light] {
   --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
   --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
   --elevation-1: 0 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0 1px 2px 0 rgba(20, 23, 33, 0.1215686275);
@@ -485,6 +487,8 @@
   --sequentialRed-900-inverted: #7d000f;
   --surfaces-bg-card: #F5F6F6;
   --surfaces-bg-card-inverted: #232632;
+  --bg1: #0000ff;
+  --bg1-inverted: #ff0000;
   --bs-primary-rgb: #141721e0;
   --bs-secondary-color: #14172199;
   --bs-nav-link-color: #14172199; /*QQ: This doesn't seem to work*/
@@ -495,7 +499,6 @@
 /* 16px */
 /* 4px */
 /* 8px */
-/* import bootstrap */
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -11972,7 +11975,159 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
+.vizro_dark,
+:root,
+[data-bs-theme=dark] {
+  --bs-primary: #1b0734;
+  --bs-secondary: #808080;
+  --bs-success: #222222;
+  --bs-danger: #be3636;
+  --bs-info: #163960;
+  --bs-dark: #2a2a2a;
+  --bs-light: #333333;
+  --bs-primary-rgb: 27, 7, 52;
+  --bs-secondary-rgb: 128, 128, 128;
+  --bs-success-rgb: 34, 34, 34;
+  --bs-danger-rgb: 190, 54, 54;
+  --bs-info-rgb: 22, 57, 96;
+  --bs-dark-rgb: 42, 42, 42;
+  --bs-light-rgb: 51, 51, 51;
+}
+
+.vizro_light,
+:root,
+[data-bs-theme=light] {
+  --bs-primary: #1b0734;
+  --bs-secondary: #808080;
+  --bs-success: #222222;
+  --bs-danger: #be3636;
+  --bs-info: #163960;
+  --bs-dark: #2a2a2a;
+  --bs-light: #333333;
+  --bs-primary-rgb: 27, 7, 52;
+  --bs-secondary-rgb: 128, 128, 128;
+  --bs-success-rgb: 34, 34, 34;
+  --bs-danger-rgb: 190, 54, 54;
+  --bs-info-rgb: 22, 57, 96;
+  --bs-dark-rgb: 42, 42, 42;
+  --bs-light-rgb: 51, 51, 51;
+}
+
 /* custom component files */
+/** This is an auto-generated file, don't edit it. **/
+h1, .h1 {
+  font-size: 32px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128px;
+  line-height: 40px;
+  color: var(--text-primary);
+}
+
+h2, .h2 {
+  font-size: 24px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.096px;
+  line-height: 32px;
+  color: var(--text-primary);
+}
+
+h3, .h3, legend {
+  font-size: 20px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+h4, .h4 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+h5, .h5 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+h6, .h6 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+p, label, ul, li, blockquote {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+
+a {
+  font-size: 16px;
+  text-decoration: underline;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128px;
+  line-height: 20px;
+}
+
+/* This is not taken over well. How do we deal with bootstrap variables that we want to change globally? */
+/* QQ: This should be changed globally via Bootstrap variables and without the need of important tags. */
+.text-muted {
+  color: var(--text-subtle);
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
 /** This is an auto-generated file, don't edit it. **/
 /* Thinking about moving all of these into a typography.scss file at some point */
 .btn {
@@ -12465,6 +12620,97 @@ textarea.form-control-lg {
 }
 
 /** This is an auto-generated file, don't edit it. **/
+/** space between radio icon/checkbox and the label is 8px **/
+.form-label {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.form-check {
+  transition: all 150ms ease 0s;
+  margin-bottom: 12px;
+  padding-left: 24px;
+}
+.form-check-inline {
+  margin-right: 12px;
+}
+.form-check-input {
+  position: relative;
+  border-color: var(--border-enabled);
+  border-radius: 0;
+  color: var(--fill-active);
+  width: 16px;
+  height: 16px;
+  outline: none;
+  background-color: transparent;
+  top: -1.5px;
+}
+.form-check-input:checked {
+  background-color: transparent;
+  border-color: var(--border-enabled);
+  color: var(--fill-active);
+}
+.form-check-input[type=radio] {
+  background-image: none;
+}
+.form-check-input[type=radio]:checked::after {
+  position: absolute;
+  content: "";
+  background-color: var(--fill-active);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.form-check-input:hover {
+  border-color: var(--border-hover);
+}
+.form-check-input:active {
+  border-color: var(--border-selected);
+}
+.form-check-input:disabled {
+  border-color: var(--border-disabled);
+}
+.form-check-input:focus {
+  border-color: var(--border-selected);
+  box-shadow: none;
+}
+.form-check .form-check-input {
+  margin-left: -24px;
+}
+.form-check-label {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+.form-check-large .form-check-input {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+.form-check-large .form-check-label {
+  gap: 8px;
+}
+.form-check.disabled .form-check-label {
+  color: var(--text-disabled);
+}
+
+/** This is an auto-generated file, don't edit it. **/
 h1, .h1 {
   font-size: 32px;
   text-decoration: none;
@@ -12489,7 +12735,7 @@ h2, .h2 {
   color: var(--text-primary);
 }
 
-h3, .h3 {
+h3, .h3, legend {
   font-size: 20px;
   text-decoration: none;
   font-family: Inter;
