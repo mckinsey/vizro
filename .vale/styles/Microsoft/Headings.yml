@@ -31,6 +31,7 @@ exceptions:
   - Azure App Service Plan
   - Azure Blob Storage
   - Azure Event Hub
+  - CSS
   - CI/CD
   - DataCatalog
   - Data Catalog

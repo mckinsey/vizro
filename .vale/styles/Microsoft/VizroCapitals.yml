@@ -1,6 +1,6 @@
 extends: existence
 message: Consider your capitalization of '%s'
-level: warning
+level: suggestion
 tokens:
   - kedro
   - kedro-viz

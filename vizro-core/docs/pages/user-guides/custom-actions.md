@@ -74,6 +74,7 @@ When a custom action needs to interact with the dashboard, it is possible to def
 The following example shows how to create a custom action that shows the clicked chart data in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
 !!! example "Custom action with dashboard inputs and outputs"
+
     === "app.py"
         ```py
         import vizro.models as vm

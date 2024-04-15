@@ -259,6 +259,7 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
 
 ## Use custom layout examples
 Below is a table of examples you can take as a reference to create some selected layouts:
+<!-- vale off -->
 
 | Configuration                                              | Description            | Image                                                                                |
 |------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
@@ -275,6 +276,7 @@ Below is a table of examples you can take as a reference to create some selected
 | `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
 | `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
 
+<!--vale on -->
 
 ## Add empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.

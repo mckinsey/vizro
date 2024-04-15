@@ -57,6 +57,7 @@ Vizro, you need:
    in your dashboard.
 
 !!! example "Use a data connector"
+    
     === "app.py"
         ```py linenums="1"  hl_lines="18"
         from vizro import Vizro
@@ -124,6 +125,7 @@ retrieve data from different tables in a database, you can define a data connect
 that accepts different SQL queries as arguments.
 
 !!! example "Use a data connector with arguments"
+    
     === "app.py (use lambda)"
         ```py linenums="1"
         from vizro import Vizro
