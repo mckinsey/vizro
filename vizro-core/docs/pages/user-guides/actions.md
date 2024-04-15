@@ -66,7 +66,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -119,7 +119,7 @@ actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
 
-Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data in the continent column. The same applies when providing multiple columns in `custom_data`.
+Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
@@ -173,7 +173,7 @@ Here is an example of how to configure a chart interaction when the source is a 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -255,7 +255,7 @@ Here is an example of how to configure a chart interaction when the source is an
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -289,7 +289,7 @@ Here is an example of how to configure a chart interaction when the source is an
 
 
 ## Customize pre-defined actions
-Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, refer to the [API reference][vizro.actions] on this topic.
+Many pre-defined actions are customizable which helps to achieve a more specific goal. Refer to the [API reference][vizro.actions] for the options available.
 
 ### Chain actions
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
