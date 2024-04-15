@@ -12,5 +12,4 @@ tokens:
   - python
   - quantumblack
 exceptions:
-  - 'vizro-*'
-  
+  - "vizro-*"
