@@ -8,6 +8,7 @@ from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
+from langchain_openai import ChatOpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,8 @@ class VizroAI:
     pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
+    def __init__(self, model=None):
+    # def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
         """Initialization of VizroAI.
 
         Args:
@@ -27,13 +29,15 @@ class VizroAI:
             temperature: Temperature parameter for LLM.
 
         """
-        self.model_name = model_name
-        self.temperature = temperature
+        # self.model_name = model_name
+        # self.temperature = temperature ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+        # self.model = model if model else self.model_constructor.get_llm_model()
+        self.model = self.model_constructor.get_llm_model(model=model)
         self.components_instances = {}
-        self._llm_to_use = None
+        # self._llm_to_use = None
         # TODO add pending URL link to docs
         logger.info(
-            f"You have selected {self.model_name},"
+            f"You have selected {self.model},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
@@ -41,19 +45,14 @@ class VizroAI:
         )
         self._set_task_pipeline_llm()
 
-    @property
-    def llm_to_use(self) -> LLM_MODELS:
-        _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
-        return _llm_to_use
-
     def _set_task_pipeline_llm(self) -> None:
-        self.pipeline_manager.llm = self.llm_to_use
+        self.pipeline_manager.llm = self.model
 
     # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+            self.components_instances[component_class] = component_class(llm=self.model)
         return self.components_instances[component_class]
 
     def _run_plot_tasks(

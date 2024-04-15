@@ -11,28 +11,47 @@ except ImportError:  # pragma: no cov
 LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
-PREDEFINED_MODELS: List[Dict[str, any]] = [
-    {
-        "name": "gpt-3.5-turbo-0613",
+# temperature 0 redefine
+# PREDEFINED_MODELS: List[Dict[str, any]] = [
+#     {
+#         "name": "gpt-3.5-turbo-0613",
+#         "max_tokens": 4096,
+#         "wrapper": ChatOpenAI,
+#     },
+#     {
+#         "name": "gpt-4-0613",
+#         "max_tokens": 8192,
+#         "wrapper": ChatOpenAI,
+#     },
+#     {
+#         "name": "gpt-3.5-turbo-1106",
+#         "max_tokens": 16385,
+#         "wrapper": ChatOpenAI,
+#     },
+#     {
+#         "name": "gpt-4-1106-preview",
+#         "max_tokens": 128000,
+#         "wrapper": ChatOpenAI,
+#     },
+# ]
+PREDEFINED_MODELS: Dict[str, Dict[str, any]] = {
+    "gpt-3.5-turbo-0613": {
         "max_tokens": 4096,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-4-0613",
+    "gpt-4-0613": {
         "max_tokens": 8192,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-3.5-turbo-1106",
+    "gpt-3.5-turbo-1106": {
         "max_tokens": 16385,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-4-1106-preview",
+    "gpt-4-1106-preview": {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
-    },
-]
+    }
+}
 
 
 class LLM(BaseModel):
@@ -58,11 +77,11 @@ class ModelConstructor:
 
     models: Dict[str, LLM]
 
-    def __init__(self):
-        """Initializes the model manager with a set of predefined LLMs."""
-        self.models = {model["name"]: LLM(**model) for model in PREDEFINED_MODELS}
+    # def __init__(self):
+    #     """Initializes the model manager with a set of predefined LLMs."""
+    #     self.models = {model["name"]: LLM(**model) for model in PREDEFINED_MODELS}
 
-    def get_llm_model(self, model_name: str, temperature: float = 0) -> LLM_MODELS:
+    def get_llm_model(self, model) -> LLM_MODELS:
         """Fetches and initializes an instance of the LLM.
 
         Args:
@@ -76,13 +95,14 @@ class ModelConstructor:
             ValueError: If the model name is not found.
 
         """
-        model = self.models.get(model_name.lower())
         if model:
-            return model.wrapper(model_name=model.name, temperature=temperature)
-        else:
-            raise ValueError(f"Model {model_name} not found!")
+            if model.model_name not in PREDEFINED_MODELS:
+                raise ValueError(f"Model {model.model_name} not found!")
+            else:
+                return model
+        return ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
 
 
 if __name__ == "__main__":
     model_manager = ModelConstructor()
-    llm_chat_openai = model_manager.get_llm_model("gpt-3.5-turbo-0613", temperature=0)
+    llm_chat_openai = model_manager.get_llm_model()
