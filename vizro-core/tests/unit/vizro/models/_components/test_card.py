@@ -65,7 +65,7 @@ class TestBuildMethod:
 
         expected_card = dbc.Card(
             dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"),
-            className="nav-card",
+            className="card",
             id="card_id_outer",
         )
 
