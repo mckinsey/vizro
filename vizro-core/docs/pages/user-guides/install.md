@@ -2,7 +2,7 @@
 
 This guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
 
-If you already have a virtual environment setup in Python then you can skip this page and just install Vizro straight away by running:
+If you already have a virtual environment setup in Python then you can skip this page and install Vizro straight away by running:
 ```bash
 pip install vizro
 ```
@@ -65,12 +65,12 @@ To completely avoid terminal usage, follow these steps to work with Vizro:
 
 4. Similarly, search `jupyter` and install it.
 
-5. [Launch a Jupyter notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro.
+5. [Launch a Jupyter Notebook](https://problemsolvingwithpython.com/02-Jupyter-Notebooks/02.04-Opening-a-Jupyter-Notebook/#open-a-jupyter-notebook-with-anaconda-navigator) to work with Vizro.
 
 
 ## Confirm a successful installation
 
-To confirm the installation was successful, and verify the version of Vizro installed, call the following. You can do this from within a Jupyter notebook cell, or run the following as a Python script:
+To confirm the installation was successful, and verify the version of Vizro installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
 
 ```py
 import vizro

@@ -1,31 +1,31 @@
 # How to create custom components
 
-Vizro's public API is deliberately kept small in order to facilitate quick and easy configuration of a dashboard. However,
-at the same time, Vizro is easily extensible, so that you can tweak any component to your liking or even create entirely new ones.
+Vizro's public API is kept small to enable quick and easy configuration of a dashboard. However,
+at the same time, Vizro is extensible, so that you can tweak any component to your liking or even create entirely new ones.
 
 If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
 This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
-In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
+In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
 
 
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
-or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
+or if you would like to use extra `args` or `kwargs` of those components, then this is the correct way to include those. You can use any existing attribute of any underlying Dash component with this method.
 
 !!!note
 
-    There are always **three general steps** to consider in order to create a custom component:
+    There are always **three general steps** to consider to create a custom component:
 
     1. **Sub-class to create** your component
-    2. **Enhance or build** the component (e.g. add/change model fields, overwrite pre-build/build method, etc.) to your desire
+    2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method, etc.) to your desire
     3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
         - you must ensure your component has a `type` field
         - you must register the new type with its parent model's relevant field (where the new component is entered into) with [`add_type`][vizro.models.VizroBaseModel.add_type]
 
     We will refer back to these three steps in the two examples below.
 
-[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
+[^1]: You can check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (for example, `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
 ## Extend an existing component
@@ -33,9 +33,9 @@ or if you would like to use additional `args` or `kwargs` of those components, t
 
     You may want to use this strategy to:
 
-    - extend an existing component (e.g. adding a button to [`Card`][vizro.models.Card])
-    - change configurations we have set by default (e.g. setting `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
-    - change any fields of any models (e.g. changing the title field from `Optional` to have a default)
+    - extend an existing component (for example, to add a button to [`Card`][vizro.models.Card])
+    - change configurations we have set by default (for example, to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
+    - change any fields of any models (for example, to change the title field from `Optional` to have a default)
 
 
 You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
@@ -167,7 +167,7 @@ The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-compo
     - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], etc.
     - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card], etc.
 
-    For components that only create other components, you do not need to define a `build` method, e.g. for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
+    For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
     If you would like to have access to other components, you may want to define a `pre_build` method. This method is automatically run for all models and makes them internally consistent. Notable existing models
     with `pre_build` methods are [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
