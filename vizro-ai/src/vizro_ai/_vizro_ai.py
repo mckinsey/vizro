@@ -4,11 +4,9 @@ from typing import Any, Dict, Union
 import pandas as pd
 
 from vizro_ai.chains import ModelConstructor
-from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
-from langchain_openai import ChatOpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -21,20 +19,15 @@ class VizroAI:
     _return_all_text: bool = False
 
     def __init__(self, model=None):
-    # def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
         """Initialization of VizroAI.
 
         Args:
-            model_name: Model name in string format.
-            temperature: Temperature parameter for LLM.
+            model (Union[callable, str]): model instance or model name.
 
         """
-        # self.model_name = model_name
-        # self.temperature = temperature ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
-        # self.model = model if model else self.model_constructor.get_llm_model()
         self.model = self.model_constructor.get_llm_model(model=model)
         self.components_instances = {}
-        # self._llm_to_use = None
+
         # TODO add pending URL link to docs
         logger.info(
             f"You have selected {self.model},"
