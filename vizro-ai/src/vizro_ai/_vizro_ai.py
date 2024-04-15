@@ -30,7 +30,7 @@ class VizroAI:
 
         # TODO add pending URL link to docs
         logger.info(
-            f"You have selected {self.model},"
+            f"You have selected {self.model.model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "

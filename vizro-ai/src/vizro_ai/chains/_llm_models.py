@@ -25,6 +25,9 @@ PREDEFINED_MODELS: Dict[str, Dict[str, any]] = {
     },
 }
 
+DEFAULT_MODEL = "gpt-3.5-turbo-0613"
+DEFAULT_TEMPERATURE = 0
+
 
 class ModelConstructor:
     """Manages available Language Learning Models (LLMs).
@@ -42,17 +45,16 @@ class ModelConstructor:
             ValueError: If the model name is not found.
 
         """
-        if isinstance(model, str):
-            if model in PREDEFINED_MODELS:
-                model_dict = PREDEFINED_MODELS.get(model)
-                return model_dict["wrapper"](model_name=model, temperature=0)
-            else:
-                ValueError(f"Model {model} not found!")
+        if not model:
+            return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
 
-        elif isinstance(model, LLM_MODELS):
+        if isinstance(model, LLM_MODELS):
             return model
-        else:
-            return ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+
+        if isinstance(model, str) and model in PREDEFINED_MODELS:
+            return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
+
+        raise ValueError(f"Model {model} not found!")
 
 
 if __name__ == "__main__":
