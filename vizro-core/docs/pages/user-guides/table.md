@@ -34,13 +34,14 @@ To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 [`Page`][vizro.models.Page] model.
 - Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
-The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas DataFrame as the source of data.
+The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data.
 As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
-Note that some defaults are set for some of the arguments (e.g. for `columnDefs`) to help with styling and usability.
-In some cases a parameter may not work because it e.g. requires an additional callback to function. In that case you can try creating a [custom AG Grid callable](custom-tables.md) or reach out to the Vizro team for help.
+Note that some defaults are set for some arguments (for example, for `columnDefs`) to help with styling and usability.
+Sometimes a parameter may not work because it requires a callback to function. In that case you can try creating a [custom AG Grid callable](custom-tables.md) or reach out to the Vizro team for help.
 
 
 !!! example "Basic Dash AG Grid"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -87,8 +88,8 @@ In some cases a parameter may not work because it e.g. requires an additional ca
 #### Numbers
 
 One of the most common tasks when working with tables is to format the columns so that displayed numbers are more readable.
-To do this, you can use the native functionality of [Value Formatters](https://dash.plotly.com/dash-ag-grid/value-formatters)
-or the Vizro pre-defined [Custom Cell Data Types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
+To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters)
+or the Vizro pre-defined [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
 
 The available custom cell types for Vizro are `dollar`, `euro`, `percentage` and `numeric`.
 
@@ -99,9 +100,10 @@ the `columnDefs` argument of your `dash_ag_grid` function:
 columnDefs = [{"field": "<COLUMN>", "cellDataType": "euro"}]
 ```
 
-In the example below we select and format some columns of the gapminder dataset.
+In the example below we select and format some columns of the gapminder data.
 
 ??? example "AG Grid with formatted columns"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -177,6 +179,7 @@ an example of a styled AG Grid where some conditional formatting is applied, and
 There are many more ways to alter the grid beyond this showcase.
 
 ??? example "Styled and modified Dash AG Grid"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -313,13 +316,14 @@ To add a [`Table`][vizro.models.Table] to your page, do the following:
 - Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
 
 
-The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas DataFrame as the source of data.
+The Vizro version of this table differs in one way from the original table: it requires the user to pass a pandas DataFrame as the source of data.
 As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`.
 
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are
 setting some defaults for some arguments to help with styling.
 
 !!! example "Dash DataTable"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -363,6 +367,7 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
 
 ??? example "Styled Dash DataTable"
+
     === "app.py"
         ```py
         import vizro.models as vm

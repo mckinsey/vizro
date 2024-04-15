@@ -27,6 +27,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -117,7 +118,8 @@ actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
-Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
+
+Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
@@ -126,6 +128,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "Graph `filter_interaction`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -210,6 +213,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
 !!! example "AgGrid `filter_interaction`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -294,6 +298,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 
 
 !!! example "Actions chaining"
+
     === "app.py"
         ```py
         import vizro.models as vm

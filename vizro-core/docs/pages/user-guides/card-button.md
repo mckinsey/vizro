@@ -599,7 +599,7 @@ To add an icon that is responsive to the theme switch, you will need to override
 
 The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
 
-It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Please note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
 
 Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
 
@@ -630,6 +630,7 @@ In the below example we show how to configure a button to export the filtered da
 
 
 !!! example "Button"
+
     === "app.py"
         ```py
         import vizro.models as vm
