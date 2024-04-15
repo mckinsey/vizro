@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Dropdown."""
 
-import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -151,7 +150,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label("Title", html_for="dropdown_id"),
+                html.Label("Title", htmlFor="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["ALL", "A", "B", "C"],
@@ -172,7 +171,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label("Title", html_for="dropdown_id"),
+                html.Label("Title", htmlFor="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],

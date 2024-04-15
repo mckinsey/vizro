@@ -208,7 +208,7 @@ class TestDashboardPreBuild:
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href="/"),
+                        dbc.Button("Take me home", href="/", className="button_primary"),
                     ],
                     className="error_content_container",
                 ),

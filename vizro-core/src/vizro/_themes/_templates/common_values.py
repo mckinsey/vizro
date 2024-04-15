@@ -48,7 +48,6 @@ def create_template_common():
         margin_b=64,
         margin_pad=0,
         margin_autoexpand=True,
-        coloraxis_autocolorscale=False,  # Set to False as otherwise users cannot customize via `color_continous_scale`
         coloraxis_colorbar_outlinewidth=0,
         coloraxis_colorbar_thickness=20,
         coloraxis_colorbar_showticklabels=True,

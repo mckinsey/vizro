@@ -52,4 +52,4 @@ class TestContainerBuildMethod:
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(result.children[0], html.H3("Title", className="container__title"))
         # And also that a button has been inserted in the right place:
-        assert_component_equal(result["layout_id_0"].children, dbc.Button(), keys_to_strip=STRIP_ALL)
+        assert_component_equal(result["layout_id_0"].children.children, dbc.Button(), keys_to_strip=STRIP_ALL)

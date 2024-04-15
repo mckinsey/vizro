@@ -41,9 +41,11 @@ swap:
   pb: PB
   tb: TB
   zb: ZB
+  notebook: Notebook
+  python: Python
   leverage: use
   leverages: uses
   utilize: use
   utilizes: uses
-  dataset: data (or data source)
-  connector: data (or data source)
+  Markdown: markdown
+  How-to guide: how-to guide

@@ -1,6 +1,7 @@
 from typing import List, Literal
 
 import dash_bootstrap_components as dbc
+from dash import html
 
 try:
     from pydantic.v1 import Field
@@ -31,4 +32,8 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return dbc.Button(id=self.id, children=self.text)
+        return html.Div(
+            dbc.Button(id=self.id, children=self.text, className="button_primary"),
+            className="button_container",
+            id=f"{self.id}_outer",
+        )

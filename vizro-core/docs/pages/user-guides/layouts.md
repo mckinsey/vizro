@@ -28,7 +28,7 @@ If that is your desired layout, you can create your charts/components without pr
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
         - components:
@@ -104,7 +104,7 @@ This defines a single row that occupies the entire width and height, divided int
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
         - components:
@@ -202,7 +202,7 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
           - components:
@@ -306,7 +306,7 @@ grid = [[0, 1, -1],
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
         - components:
@@ -361,7 +361,7 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
         - components:

@@ -90,7 +90,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See from_yaml example
         pages:
           - components:

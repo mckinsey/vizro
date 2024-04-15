@@ -39,7 +39,6 @@ jobs:
       package_version: ${{ steps.version_check.outputs.package_version }}
 
   build-publish:
-    environment: vizro_secrets
     needs: [check-version]
     if: |
       needs.check-version.outputs.new_release == 'True'
@@ -85,7 +84,6 @@ jobs:
           password: ${{ env.PYPI_TOKEN }}
 
   version-bump:
-    environment: vizro_secrets
     needs: [check-version, build-publish]
     if: |
       needs.check-version.outputs.new_release == 'True'
@@ -103,7 +101,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install hatch
-      # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"

@@ -246,7 +246,7 @@ class Dashboard(VizroBaseModel):
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href=get_relative_path("/")),
+                        dbc.Button("Take me home", href=get_relative_path("/"), className="button_primary"),
                     ],
                     className="error_content_container",
                 ),

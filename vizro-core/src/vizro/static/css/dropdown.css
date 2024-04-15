@@ -121,6 +121,11 @@
   width: 16px;
 }
 
+#nav-panel a {
+  font-weight: var(--text-weight-regular);
+  line-height: var(--text-size-07);
+}
+
 /* Page Selector Dropdown */
 #page-container
   .dash-dropdown

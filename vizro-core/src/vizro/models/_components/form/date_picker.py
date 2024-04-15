@@ -12,8 +12,6 @@ except ImportError:  # pragma: no cov
 import datetime
 from datetime import date
 
-import dash_bootstrap_components as dbc
-
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
@@ -104,7 +102,7 @@ class DatePicker(VizroBaseModel):
 
         return html.Div(
             [
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 date_picker,
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
             ],

@@ -41,7 +41,7 @@ class TextArea(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                html.Label(self.title, htmlFor=self.id) if self.title else None,
                 dbc.Textarea(
                     id=self.id,
                     placeholder=self.placeholder,

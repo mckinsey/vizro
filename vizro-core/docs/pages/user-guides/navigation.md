@@ -43,7 +43,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
           - components:
@@ -90,7 +90,7 @@ If you wish to include only some of your dashboard pages in your navigation then
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         # pages defined as in default example
         navigation:
@@ -120,7 +120,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         # pages defined as in default example
         navigation:
@@ -156,7 +156,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         # pages defined as in default example
         navigation:
@@ -208,7 +208,7 @@ The same configuration for [grouping pages](#grouping-your-pages) applies inside
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         # pages defined as in default example
         navigation:
@@ -253,7 +253,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         # pages defined as in default example
         navigation:

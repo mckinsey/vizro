@@ -41,7 +41,7 @@ automatically based on the target column, for example, a dropdown for categorica
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
           - components:
@@ -92,7 +92,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
           - components:
@@ -150,7 +150,7 @@ Below is an advanced example where we only target one page component, and where 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
         # See yaml_version example
         pages:
           - components:

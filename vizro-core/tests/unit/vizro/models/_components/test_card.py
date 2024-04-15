@@ -51,7 +51,9 @@ class TestBuildMethod:
 
         expected_card = dbc.Card(
             dbc.NavLink(
-                dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), href="https://www.google.com"
+                dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
+                href="https://www.google.com",
+                className="card-link",
             ),
             className="nav-card",
             id="card_id_outer",

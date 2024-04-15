@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.RadioItems."""
 
-import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -132,7 +131,7 @@ class TestRadioItemsBuild:
         radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Div(
             [
-                dbc.Label("Title", html_for="radio_items_id"),
+                html.Label("Title", htmlFor="radio_items_id"),
                 dcc.RadioItems(
                     id="radio_items_id",
                     options=["A", "B", "C"],

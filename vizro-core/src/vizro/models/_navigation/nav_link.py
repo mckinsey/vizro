@@ -67,6 +67,7 @@ class NavLink(VizroBaseModel):
                 ),
             ],
             id=self.id,
+            className="nav-bar-icon-link",
             href=get_relative_path(first_page.path),
             # `active` is required to keep the icon highlighted when navigating through different pages inside
             # the nested accordion

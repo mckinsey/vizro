@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 import vizro.models as vm
 from asserts import assert_component_equal
+from dash import html
 from vizro.actions import export_data
 
 
@@ -34,5 +35,9 @@ class TestButtonInstantiation:
 class TestBuildMethod:
     def test_button_build(self):
         button = vm.Button(id="button_id", text="My text").build()
-        expected = dbc.Button(id="button_id", children="My text")
+        expected = html.Div(
+            dbc.Button(id="button_id", children="My text", className="button_primary"),
+            className="button_container",
+            id="button_id_outer",
+        )
         assert_component_equal(button, expected)

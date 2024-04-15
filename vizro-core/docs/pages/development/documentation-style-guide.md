@@ -12,9 +12,7 @@ What follows is a set of lightweight guidelines rather than rules. There are alw
 
 The names of our products are **Vizro** and **Vizro-AI**.
 
-We refer to other products using their preferred capitalization. For example:
-* Dash and Pydantic are always capitalized, except where given as Python package names `dash` and `pydantic`.
-* pandas DataFrame has a lowercase "p" and camelcase "DataFrame".
+We refer to other products using their preferred capitalization. For example, Dash and Pydantic are always capitalized, except where given as Python package names `dash` and `pydantic`.
 
 Vizro components are named using lower case:
 
@@ -23,8 +21,6 @@ Vizro components are named using lower case:
 Use code font when referring to the component as a class or object:
 
 > To add a `Container` to your page...
-
-Avoid referring to data using terms like "dataset" or "connector". Prefer to use just "data" or, where that does not feel natural, "data source".
 
 ## Bullets
 * Capitalize the first word, and end the bullet with a period.

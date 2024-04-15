@@ -9,21 +9,23 @@ nav:
       - Run methods: pages/user-guides/run-vizro-ai.md
       - Create advanced charts: pages/user-guides/create-advanced-charts.md
       - Use different languages: pages/user-guides/use-different-languages.md
-      - Use Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
-  - Find out more:
+  - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
+  - Contribute:
+      #      - Contributing: pages/contribute/contributing.md
       - Authors: pages/contribute/authors.md
-  #- Contribute:
-  #      - Contributing: pages/contribute/contributing.md
-  - Vizro:
-      - Vizro: https://vizro.readthedocs.io
 
 #  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
 repo_name: mckinsey/vizro-ai
+
+validation:
+  links:
+    absolute_links: warn
+    unrecognized_links: warn
 
 theme:
   name: material
@@ -67,9 +69,6 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - md_in_html
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search

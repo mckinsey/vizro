@@ -1,0 +1,43 @@
+#dashboard-container .button_primary,
+#dashboard-container .ag-standard-button {
+  background: var(--fill-active);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--box-shadow-elevation-0);
+  color: var(--text-contrast-primary);
+  font-size: var(--text-size-02);
+  font-weight: var(--text-weight-semibold);
+  height: 32px;
+  letter-spacing: var(--letter-spacing-body-link-02);
+  line-height: var(--text-size-05);
+  padding: var(--spacing-01) var(--spacing-03);
+  text-transform: none;
+}
+
+#dashboard-container .button_primary:hover,
+#dashboard-container .ag-standard-button:hover {
+  background: linear-gradient(
+      var(--state-overlays-contrast-hover),
+      var(--state-overlays-contrast-hover)
+    ),
+    var(--fill-active);
+  color: var(--text-contrast-primary);
+  text-decoration-line: underline;
+}
+
+#dashboard-container .button_primary:active {
+  background: var(--fill-active);
+  color: var(--text-contrast-primary);
+}
+
+#dashboard-container .button_primary:visited {
+  background: var(--fill-active);
+  color: var(--text-contrast-primary);
+}
+
+.button_container {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
