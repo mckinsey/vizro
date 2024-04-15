@@ -3,7 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -133,16 +133,16 @@ class TestChecklistBuild:
         expected_checklist = html.Div(
             [
                 dbc.Label("Title", html_for="checklist_id"),
-                dcc.Checklist(
+                dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
                     value=["ALL"],
-                    className="checkboxes-list",
+                    className="form-check",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="input-container",
+            className="form-group",
             id="checklist_id_outer",
         )
         assert_component_equal(checklist, expected_checklist)
