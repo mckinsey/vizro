@@ -64,6 +64,7 @@ class Filter(VizroBaseModel):
     #  1. in the filter initialization phase, or
     #  2. in the filter.pre_build phase, or
     #  3. in the action build phase?
+    #  Test whether it works if controls are specified before components in the vm.Page.
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:
