@@ -27,6 +27,7 @@ target-version = ["py38"]
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
 ignore-words-list = "grey,ned,sav"
+skip = "*.min.css.map,*.min.css,.vale/*"
 
 [tool.mypy]
 # strict checks : strict = true
