@@ -67,8 +67,7 @@ def memoize(wrapped: BoundMethod, instance: _DynamicData, args, kwargs):
         kwargs : keyword arguments supplied to wrapped, taken into account for generating cache key.
 
     Returns:
-        
-        Memoized call.
+          Memoized call.
 
     """
     # Before altering, wrapped.__func__.__qualname__ is "_DynamicData.__call__"
