@@ -60,9 +60,7 @@ class RadioItems(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
-                    className="form-check",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )

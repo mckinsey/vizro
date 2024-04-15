@@ -137,12 +137,10 @@ class TestChecklistBuild:
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
                     value=["ALL"],
-                    className="form-check",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="form-group",
             id="checklist_id_outer",
         )
         assert_component_equal(checklist, expected_checklist)

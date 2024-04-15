@@ -137,12 +137,10 @@ class TestRadioItemsBuild:
                     id="radio_items_id",
                     options=["A", "B", "C"],
                     value="A",
-                    className="form-check",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="form-group",
             id="radio_items_id_outer",
         )
 
