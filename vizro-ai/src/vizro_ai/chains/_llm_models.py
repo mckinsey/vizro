@@ -48,9 +48,11 @@ class ModelConstructor:
                 return model_dict["wrapper"](model_name=model, temperature=0)
             else:
                 ValueError(f"Model {model} not found!")
-        elif isinstance(model, ChatOpenAI):
+
+        elif isinstance(model, LLM_MODELS):
             return model
-        return ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+        else:
+            return ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
 
 
 if __name__ == "__main__":
