@@ -33,7 +33,7 @@ repos:
     rev: v2.2.6
     hooks:
       - id: codespell
-        args: ["--skip=*.min.map, *.min.css"]
+        args: ["--skip=*.min.css.map, *.min.css"]
         additional_dependencies:
           - tomli
 

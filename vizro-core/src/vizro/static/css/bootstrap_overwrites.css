@@ -1,0 +1,6 @@
+/* This file contains overwrites, which we want to have as defaults for vizro
+but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough. */
+
+.card .nav-link {
+  height: 100%;
+}
