@@ -119,18 +119,19 @@ class TestAttributesGraph:
         assert "modelID" in graph._filter_interaction_input
 
 
-class TestProcessFigureDataFrame:
+class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
-        graph_with_str_df = vm.Graph(id="text_graph", figure=standard_px_chart_with_str_dataframe)
-        assert data_manager._get_component_data("text_graph").equals(gapminder)
-        assert graph_with_str_df["data_frame"] == "gapminder"
+        graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
+        assert data_manager._get_component_data("graph").equals(gapminder)
+        with pytest.raises(KeyError, match="'data_frame'"):
+            graph["data_frame"]
 
     def test_process_figure_data_frame_df(self, standard_px_chart, gapminder):
-        graph_with_df = vm.Graph(id="text_graph", figure=standard_px_chart)
-        assert data_manager._get_component_data("text_graph").equals(gapminder)
+        graph = vm.Graph(id="graph", figure=standard_px_chart)
+        assert data_manager._get_component_data("graph").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
-            graph_with_df.figure["data_frame"]
+            graph["data_frame"]
 
 
 class TestBuild:

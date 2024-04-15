@@ -34,8 +34,8 @@ To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 [`Page`][vizro.models.Page] model.
 - Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
-The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas dataframe as source of data.
-This must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
+The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to provide a pandas DataFrame as the source of data.
+As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
 Note that some defaults are set for some of the arguments (e.g. for `columnDefs`) to help with styling and usability.
 In some cases a parameter may not work because it e.g. requires an additional callback to function. In that case you can try
 creating a [custom AG Grid callable](custom-tables.md) or reach out to the Vizro team for help.
@@ -64,7 +64,7 @@ creating a [custom AG Grid callable](custom-tables.md) or reach out to the Vizro
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -134,7 +134,7 @@ In the example below we select and format some columns of the gapminder dataset.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -247,7 +247,7 @@ There are many more ways to alter the grid beyond this showcase.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -313,8 +313,8 @@ To add a [`Table`][vizro.models.Table] to your page, do the following:
 [`Page`][vizro.models.Page] model.
 - Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
 
-The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas dataframe as source of data.
-This must be entered under the argument `data_frame`.
+The Vizro version of this table differs in one way from the original table: it requires the user to provide a pandas DataFrame as the source of data.
+As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`.
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are
 setting some defaults for some of the arguments to help with styling.
 
@@ -340,7 +340,7 @@ setting some defaults for some of the arguments to help with styling.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -426,7 +426,7 @@ an example of a styled table where some conditional formatting is applied. There
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
