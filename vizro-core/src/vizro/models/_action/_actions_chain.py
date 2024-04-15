@@ -30,10 +30,7 @@ def _set_actions(
 ) -> List[ActionsChain]:
     actions_chain = [
         ActionsChain(
-            trigger=Trigger(
-                component_id=f'{component_id_prefix}{values["id"]}',
-                component_property=trigger_property
-            ),
+            trigger=Trigger(component_id=f'{component_id_prefix}{values["id"]}', component_property=trigger_property),
             actions=actions,
         )
     ]

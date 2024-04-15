@@ -14,7 +14,7 @@ from vizro.actions import update_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain, Trigger, _action_validator_factory
+from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, _validate_min_length
 
