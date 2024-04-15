@@ -47,13 +47,10 @@ class ModelConstructor:
         """
         if not model:
             return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
-
         if isinstance(model, LLM_MODELS):
             return model
-
         if isinstance(model, str) and model in PREDEFINED_MODELS:
             return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
-
         raise ValueError(f"Model {model} not found!")
 
 
