@@ -100,6 +100,8 @@ See the [Vizro-AI documentation](https://vizro-ai.readthedocs.io/en/latest/) for
 
 ## Live demo
 
+You can see Vizro in action by clicking on the following image or by visiting [vizro.mckinsey.com](https://vizro.mckinsey.com).
+
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
 <img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
