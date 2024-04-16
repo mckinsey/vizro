@@ -120,6 +120,5 @@ class Slider(VizroBaseModel):
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )

@@ -48,9 +48,7 @@ class TextArea(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="text-area",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )

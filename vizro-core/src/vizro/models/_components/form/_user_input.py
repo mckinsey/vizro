@@ -49,9 +49,7 @@ class UserInput(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="user_input",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )
