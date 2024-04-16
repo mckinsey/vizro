@@ -1,9 +1,20 @@
----
-hide:
-  - toc
----
+# FAQs
+
 <!-- vale off -->
-# Why Vizro?
+
+## Which browsers does Vizro support?
+Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/).
+Other browsers may work, but are not officially supported.
+
+## What is the Vizro versioning policy?
+This project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
+We do not consider frontend changes (such as changing the appearance of a component) to be breaking changes.
+
+!!! note
+    While being in version `0.x.x`, we may introduce breaking changes in minor versions.
+
+
+## Why should I use Vizro?
 
 Vizro is a high-level framework built on top of Dash and Pydantic,
 which makes it easier to build advanced dashboards
@@ -11,7 +22,7 @@ since it automates many of the otherwise complex and time-consuming tasks
 traditionally associated with designing, building and deploying front-end applications,
 from prototypes to production.
 
-### 1) Build beautiful & powerful dashboards, quickly & easily
+### You can build beautiful & powerful dashboards, quickly & easily
 
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
 
@@ -30,7 +41,7 @@ Users can configure Vizro dashboards without needing to know advanced software d
     This removes most of the "glue code" that would otherwise need to be written. Thousands of lines of code are reduced to tens of lines of configuration.
     Users can configure Vizro dashboards without needing to know any advanced software development principles of how to build front-end applications.
 
-### 2) Extend and customize infinitely
+### You can extend and customize infinitely
 
 Users benefit from the power of the Dash framework and the flexibility of React.
 
@@ -41,7 +52,7 @@ Users benefit from the power of the Dash framework and the flexibility of React.
     - **React** - since Dash enables JavaScript React components to be incorporated into Dash applications, Vizro users can create custom charts and UI components which offer the infinite flexibility of React.
     - **Vizro extensions** - adding extensions such as user defined custom charts, components, actions and data connectors is intuitively incorporated into the configuration language of Vizro.
 
-### 3) Rapidly scale from prototypes to production deployment
+### You can rapidly scale from prototypes to production deployment
 
 Consistency and re-usability designed for scale.
 
@@ -91,7 +102,7 @@ If you prefer a configuration approach with in-built best practices, and the pot
 For a more detailed comparison, it may help to visit the introductory articles of [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://towardsdatascience.com/coding-ml-tools-like-you-code-ml-models-ddba3357eace) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db),
 to see how each tool serves a distinct purpose, and could be the best tool of choice.
 
-## Comparing Vizro with Python packages and business intelligence (BI) tools such as Streamlit, Tableau and PowerBI
+## How does Vizro compare with Python packages and business intelligence (BI) tools such as Streamlit, Tableau and PowerBI
 
 There are a number of Python packages and BI tools which offer support for visualization applications (such as Streamlit, Plotly/Dash, Tableau and PowerBI).
 
@@ -116,7 +127,7 @@ along with the ability to scale easily across multiple developers and implementa
     | **Python first** <ul><li>Leveraging Pydantic and Plotly/Dash give a Python first approach (whilst making use of a mostly tech agnostic configuration system).</li><li>(Since Plotly/Dash leverage React components, and allow them to be used as components, then JavaScript can also be used in a form that is effectively wrapped in Python).</li></ul> | <ul><li>This empowers a wider group of practitioners that are already close to data analytics, since they are more likely to have existing skills in Python than JavaScript.</li><li>This offers the advantage of leveraging existing Python work spaces such as notebooks and IDEs.</li><li>Facilitates multi-developer collaboration via tools such as Git.</li></ul>                                                                                                                                                                                                                                                                                                                                           | Python packages are already Python focused. <br/><br/> Vizro is no different in this respect. By leveraging Plotly/Dash, Vizro is also able to benefit from the power and flexibility offered by JavaScript via React, whilst still presenting a format that is Python first to the user (by making use of the ability offered by Dash to effectively wrap those components into Python).                                                                                                                                                                                                                                                                                                                                              | Many BI tools do not offer direct or full integration with Python. <br/><br/> Vizro supports a Python first approach which leverages the power and flexibility of Python, and the open source community supporting that wide ranging functionality.                                                                                                                                                                                                                                                                                                                                                                                                              |
     | **Open source** <ul><li>The use of an open source license, and the reliance on open source packages.</li><li>The provision of ongoing development and maintenance.</li></ul>                                                                                                                                                                                  | <ul><li>There is no license fee required to utilize Vizro.</li><li>Ongoing development and maintenance increases the long term usability of the Vizro package, and viability of implementations.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Many Python packages also use an open source license, and offer ongoing development and maintenance. <br/><br/> Vizro is no different in this respect.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Many BI tools follow a license fee model and/or charge for ongoing development and maintenance. <br/><br/> Vizro requires no license fee, and offers ongoing development and support, which helps to remove some barriers to usage.                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
-## Cases where alternatives to Vizro are potentially more suitable
+## When would an alternative to Vizro be potentially more suitable?
 
 There are a number of cases where alternatives to Vizro may be more suitable, including:
 

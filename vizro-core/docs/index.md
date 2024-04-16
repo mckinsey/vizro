@@ -10,7 +10,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     Quick start tutorial to explore key features.
 
-    [:octicons-arrow-right-24: Get started](pages/tutorials/first-dashboard/)
+    [:octicons-arrow-right-24: Get started](pages/get-started/first-dashboard/)
 
 -   :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
@@ -32,9 +32,9 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
-    Background information and answers to your "Why..?" questions.
+    Vizro examples.
 
-    [:octicons-arrow-right-24: Explanation](pages/explanation/why-vizro/)
+    [:octicons-arrow-right-24: Explanation](pages/examples/examples/)
 
 -   :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Contribution guidelines__
 
@@ -42,7 +42,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     Find out more about contributing to Vizro.
 
-    [:octicons-arrow-right-24: Contribute](pages/development/contributing/)
+    [:octicons-arrow-right-24: Contribute](pages/contribute/contributing/)
 
 -   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro-AI__
 

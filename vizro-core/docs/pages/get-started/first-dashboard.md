@@ -2,7 +2,7 @@
 
 This is a short tutorial for you to create your first dashboard, showing you the basic setup so you can explore Vizro further.
 
-Once you've completed this tutorial, the following ["Explore Vizro" tutorial](../tutorials/explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
+Once you've completed this tutorial, the following ["Explore Vizro" tutorial](./explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
 
 
 ## Get started
@@ -10,7 +10,7 @@ Once you've completed this tutorial, the following ["Explore Vizro" tutorial](..
 <!-- vale off -->
 ### 1. Install Vizro and its dependencies
 <!-- vale on -->
-If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md).
+If you haven't already installed Vizro, follow the [installation guide](./install.md).
 
 <!-- vale off -->
 ### 2. Open a Jupyter Notebook
@@ -25,7 +25,7 @@ A good way to initially explore Vizro is from inside a Jupyter Notebook.
     pip install jupyter
     ```
 
-    Alternatively, you can [work within Anaconda Navigator](../user-guides/install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
+    Alternatively, you can [work within Anaconda Navigator](./install.md#use-vizro-inside-anaconda-navigator) as described in the Vizro installation guide.
 
 
 Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
