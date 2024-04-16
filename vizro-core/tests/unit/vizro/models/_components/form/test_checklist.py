@@ -142,7 +142,6 @@ class TestChecklistBuild:
                     persistence_type="session",
                 ),
             ],
-            className="form-group",
             id="checklist_id_outer",
         )
         assert_component_equal(checklist, expected_checklist)

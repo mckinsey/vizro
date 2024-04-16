@@ -142,7 +142,6 @@ class TestRadioItemsBuild:
                     persistence_type="session",
                 ),
             ],
-            className="form-group",
             id="radio_items_id_outer",
         )
 

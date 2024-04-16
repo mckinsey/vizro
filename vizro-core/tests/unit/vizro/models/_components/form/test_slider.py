@@ -55,7 +55,6 @@ def expected_slider():
                 className="slider-track-with-marks",
             ),
         ],
-        className="form-group",
         id="slider_id_outer",
     )
 

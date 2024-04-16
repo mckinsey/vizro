@@ -67,7 +67,6 @@ def expected_range_slider_default():
                 className="slider-track-without-marks",
             ),
         ],
-        className="form-group",
         id="range_slider_outer",
     )
 
@@ -126,7 +125,6 @@ def expected_range_slider_with_optional():
                 className="slider-track-with-marks",
             ),
         ],
-        className="form-group",
         id="range_slider_outer",
     )
 
