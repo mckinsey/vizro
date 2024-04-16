@@ -409,8 +409,8 @@ A navigation card enables you to navigate to a different page via a click on the
 To create a navigation card, do the following:
 
 - Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page]
-- The `text` parameter contains a title and some description.
-- The `href` parameter is for a relative or absolute URL.
+- Pass your markdown text to the `Card.text`
+- Pass a relative or absolute URL to the `Card.href`
 
 !!! example "Navigation Card"
     === "app.py"
