@@ -11,7 +11,7 @@ This project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.htm
 We do not consider frontend changes (such as changing the appearance of a component) to be breaking changes.
 
 !!! note
-    
+
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
 
 
