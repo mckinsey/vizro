@@ -11,6 +11,7 @@ This project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.htm
 We do not consider frontend changes (such as changing the appearance of a component) to be breaking changes.
 
 !!! note
+    
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
 
 
@@ -27,7 +28,7 @@ from prototypes to production.
 Users can configure Vizro dashboards without needing to know advanced software development principles, nor how to build front-end applications.
 
 <!-- prettier-ignore -->
-???+ details "See more details"
+??? details "See more details"
 
     <figure markdown>
     <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" alt="Image title" />
@@ -71,7 +72,7 @@ In many ways a direct comparison is not possible as these products tackle somewh
 
 Any attempt at a high-level explanation must rely on an oversimplification that misses many important nuances. With the caveat that it's not possible to "compare apples with pears", and that any comparison will have a different conclusion for different users, an oversimplified view could be:
 
-??? info "Streamlit is great for rapid prototyping"
+??? details "Streamlit is great for rapid prototyping"
 
     - **rapid prototyping** - Streamlit's architecture allows you to write apps the same way you write plain Python scripts.
       To unlock this, Streamlit apps have a unique data flow: any time something must be updated on the screen, Streamlit reruns your entire Python script from top to bottom. [[1]](https://docs.streamlit.io/library/get-started/main-concepts)
@@ -79,7 +80,7 @@ Any attempt at a high-level explanation must rely on an oversimplification that 
       Adding a widget is the same as declaring a variable.
       (No need to write a backend, define routes, handle HTTP requests, connect a frontend, write HTML, CSS, JavaScript, etc. [[3]](https://streamlit.io/))
 
-??? info "Dash is great for customization and scalability"
+??? details "Dash is great for customization and scalability"
 
     - **customization** - one of the great things about Dash is that it is built on top of React.js, a JavaScript library for building web components.
       Thousands of components have been built and released with open source licenses by the React community, any of which could be adapted into a Dash component. [[4]](https://dash.plotly.com/plugins)
@@ -88,7 +89,7 @@ Any attempt at a high-level explanation must rely on an oversimplification that 
     - **scalability** - based on Flask which is widely adopted by the Python community and deployed in production environments
         everywhere [[7]](https://medium.com/plotly/introducing-dash-5ecf7191b503) Dash was designed to be a stateless framework. Stateless frameworks are more scalable and robust [[8]](https://dash.plotly.com/sharing-data-between-callbacks#why-share-state?)
 
-??? info "Vizro is great for combining rapid prototyping with customization and scalability"
+??? details "Vizro is great for combining rapid prototyping with customization and scalability"
 
     - **rapid prototyping** - since Vizro is a high-level framework providing declarative configuration, it is quick and easy to create powerful interactive apps in minutes, without needing to write callbacks, HTML, CSS, or JavaScript. Key topics such as applying state management, application architecture, and testing are done automatically by Vizro.
     - **customization and scalability** - since Vizro is built on top of Dash, then users benefit from all the underlying power of the Dash framework for customization and scalability
