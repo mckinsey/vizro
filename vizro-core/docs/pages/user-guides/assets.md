@@ -100,7 +100,7 @@ following the pattern `"{component_id}_outer"`.
 To achieve this, do the following:
 
 1. Pass a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
-2. Take a look at the source code of the component to see which CSS Class you need to target such as `"card"` or `"card_text"`
+2. Take a look at the source code of the component to see which CSS Class you need to target such as `"card"`
 3. Use CSS selectors to target the right property by using the ID of the outermost Div `"my_card_outer"`
 
 
