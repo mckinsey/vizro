@@ -7,7 +7,7 @@ If you can't find a component that you would like to have in the code basis, or 
 This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
 In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
-[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
+[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)).
 
 
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
@@ -18,7 +18,7 @@ or if you would like to use extra `args` or `kwargs` of those components, then t
     There are always **three general steps** to consider to create a custom component:
 
     1. **Sub-class to create** your component
-    2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method, etc.) to your desire
+    2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method) to your desire
     3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
         - you must ensure your component has a `type` field
         - you must register the new type with its parent model's relevant field (where the new component is entered into) with [`add_type`][vizro.models.VizroBaseModel.add_type]
@@ -164,8 +164,8 @@ The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-compo
 ???note "Note on `build` and `pre_build` methods"
     Note that when creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
 
-    - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], etc.
-    - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card], etc.
+    - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems].
+    - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card].
 
     For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
