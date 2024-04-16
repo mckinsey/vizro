@@ -1,5 +1,7 @@
 """Rough example used by developers."""
 
+from typing import Literal
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -7,6 +9,19 @@ from vizro.models._components.form._text_area import TextArea
 from vizro.models._components.form._user_input import UserInput
 
 iris = px.data.iris()
+
+
+class CustomInput(UserInput):
+    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+
+    type: Literal["other_input"] = "other_input"
+    class_name: str = "form-control"
+
+    def build(self):
+        input_build_obj = super().build()
+        input_build_obj[self.id].className = self.class_name
+        return input_build_obj
+
 
 # Only added to container.components directly for dev example
 vm.Page.add_type("controls", UserInput)
@@ -18,7 +33,7 @@ vm.Container.add_type("components", vm.Slider)
 vm.Container.add_type("components", vm.RangeSlider)
 vm.Container.add_type("components", TextArea)
 vm.Container.add_type("components", UserInput)
-
+vm.Container.add_type("components", CustomInput)
 
 selectors = vm.Page(
     title="Selectors - Controls",
@@ -89,6 +104,16 @@ form_components = vm.Page(
             title="Form",
             components=[
                 UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
+                CustomInput(
+                    title="Input - Text (single-line)",
+                    placeholder="Enter text here",
+                    class_name="form-control is-valid",
+                ),
+                CustomInput(
+                    title="Input - Text (single-line)",
+                    placeholder="Enter text here",
+                    class_name="form-control is-invalid",
+                ),
                 TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
                 vm.Dropdown(title="Dropdown - Single", options=["Option 1", "Option 2", "Option 3"], multi=False),
                 vm.Dropdown(title="Dropdown - Multi", options=["Option 1", "Option 2", "Option 3"], multi=True),
