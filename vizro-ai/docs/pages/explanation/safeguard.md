@@ -72,8 +72,8 @@ The lists below are a reflection of the security and functionality we have imple
 
 ??? failure "Redlisted Data Handling Methods and Formats"
 
-    - Various data file formats (e.g., .csv, .tsv, .xlsx, .json, etc.)
-    - Specific methods related to data input/output operations (e.g., .to_csv, .read_excel, .loadtxt, etc.)
+    - Various data file formats (such as .csv, .tsv, .xlsx, .json, and so on)
+    - Specific methods related to data input/output operations (such as .to_csv, .read_excel, .loadtxt)
 
 ### Safeguard for user environment and input
 

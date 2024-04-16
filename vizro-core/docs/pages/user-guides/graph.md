@@ -16,7 +16,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched, but allows _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without
-    a `data_frame` argument (e.g. the [`imshow` chart](https://plotly.com/python/imshow/)), please refer to our
+    a `data_frame` argument (for example, the [`imshow` chart](https://plotly.com/python/imshow/)), refer to our
     [guide on custom charts](custom-charts.md).
 
 
@@ -71,7 +71,8 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
     [Graph]: ../../assets/user_guides/components/graph.png
 
-In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [the simplest way to connect a chart to data](data.md#supply-directly). For the YAML version, we [refer to the data source by name as `data_frame: iris`](data.md#reference-by-name). For a full explanation of the different methods you can use to provide data to your dashboard, see [our guide to using data in Vizro](data.md).
+
+In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to connect a chart to data](data.md#supply-directly). For the YAML version, we [refer to the data source by name as `data_frame: iris`](data.md#reference-by-name). For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
 
 
 ??? info "Vizro automatically sets the plotly default template"

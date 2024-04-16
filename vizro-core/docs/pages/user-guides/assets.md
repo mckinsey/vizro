@@ -5,7 +5,7 @@ with which you would like to enhance/change the appearance of your dashboard.
 
 To add images, custom CSS or JS files, create a folder named `assets` in the root of your app directory and insert your files.
 Assets included in that folder are automatically served after serving Vizro's static files via the `external_stylesheets`  and `external_scripts` arguments of [Dash](https://dash.plotly.com/external-resources#adding-external-css/javascript).
-The user-provided `assets` folder thus always takes precedence.
+The user's `assets` folder thus always takes precedence.
 
 ```text title="Example folder structure"
 ├── app.py
@@ -22,7 +22,7 @@ The user-provided `assets` folder thus always takes precedence.
 
 !!! warning "Dash Bootstrap Themes"
 
-    Please note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
+    Note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
     Adding a Bootstrap stylesheet will have no visual effect on the [components](https://vizro.readthedocs.io/en/stable/pages/user_guides/components/) included in Vizro.
 
 ## Change the favicon
@@ -87,8 +87,10 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
 
+
 ## Overwrite CSS properties in selective components
-To overwrite CSS properties of selective components, provide an ID to the relevant component and target the right CSS property.
+To overwrite CSS properties of selective components, pass an ID to the relevant component and target the right CSS property.
+
 For more information, see this [CSS selectors tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure).
 
 Let's say we want to change the background and font-color of one [`Card`][vizro.models.Card] instead of all existing Cards in the Dashboard.
@@ -97,9 +99,9 @@ following the pattern `"{component_id}_outer"`.
 
 To achieve this, do the following:
 
-1. Provide a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
-2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card"` or `"card_text"`
-3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
+1. Pass a custom `id` to the relevant `Card`, for example: `Card(id="my_card", ...)`
+2. Take a look at the source code of the component to see which CSS Class you need to target such as `"card"`
+3. Use CSS selectors to target the right property by using the ID of the outermost Div `"my_card_outer"`
 
 
 !!! example "Customizing CSS properties in selective components"
@@ -158,7 +160,7 @@ CSS properties will be applied with the last served file taking precedence. The 
 2. Vizro built-in stylesheets
 3. User assets folder stylesheets
 
-Within each of these categories, individual files are served in alphanumerical order.
+Within each of these categories, individual files are served in alphanumeric order.
 
 ## Change the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
