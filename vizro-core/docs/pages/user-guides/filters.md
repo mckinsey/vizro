@@ -64,7 +64,7 @@ automatically based on the target column, for example, a dropdown for categorica
 
 ## Changing selectors
 
-If you want to have a different selector for your filter, you can pass the `selector` argument of the [`Filter`][vizro.models.Filter] with a different selector model.
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model.
 Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
 
 !!! example "Filter with custom Selector"
