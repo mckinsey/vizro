@@ -46,6 +46,7 @@ nav:
       - Table functions: pages/API-reference/captured-callables.md
   - Examples:
       - Examples: pages/examples/examples.md
+      - Your examples: pages/examples/your-examples.md
   - Contribute:
       - Contribute to Vizro: pages/contribute/contributing.md
       - Documentation style: pages/contribute/documentation-style-guide.md
