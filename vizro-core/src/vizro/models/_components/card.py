@@ -35,9 +35,13 @@ class Card(VizroBaseModel):
     @_log_call
     def build(self):
         text = dcc.Markdown(self.text, dangerously_allow_html=False, id=self.id)
-        card_content = dbc.NavLink(
-            text,
-            href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+        card_content = (
+            dbc.NavLink(
+                text,
+                href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+            )
+            if self.href
+            else text
         )
 
         card_class = "nav-card" if self.href else "card"
