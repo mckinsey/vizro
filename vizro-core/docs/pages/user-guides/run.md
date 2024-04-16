@@ -26,7 +26,7 @@ This guide shows you how to launch your dashboard in different ways. By default,
         ```
 - create a Python file named `app.py`.
 - type the command `python app.py` into your terminal.
-- information below will be displayed in your terminal, go to the [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+- information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 ```
 Dash is running on http://127.0.0.1:8050/
