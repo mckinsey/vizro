@@ -39,7 +39,7 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
 
     Vizro documentation.
 
-    [:octicons-arrow-right-24: Vizro](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
+    [:octicons-arrow-right-24: Vizro](https://vizro.readthedocs.io/)
 
 
 </div>

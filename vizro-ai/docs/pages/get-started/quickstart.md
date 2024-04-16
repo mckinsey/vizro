@@ -93,7 +93,7 @@ The chart created is interactive: you can hover over the data for more informati
 <!-- vale on -->
 
 
-    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/get-started/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
 
     ```python
     fig = px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year':'Year', 'gdpPercap':'GDP Per Cap'}, title='')
