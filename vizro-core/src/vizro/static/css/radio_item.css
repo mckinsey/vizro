@@ -1,0 +1,27 @@
+input[type="radio" i] {
+  appearance: none;
+  border: 1px solid var(--text-secondary);
+  border-radius: 50%;
+  height: 16px;
+  margin: var(--spacing-01);
+  width: 16px;
+}
+
+input[type="radio"]:hover {
+  border: 1px solid var(--text-primary);
+}
+
+input[type="radio"]:focus {
+  border: 1px solid var(--text-primary);
+  box-shadow: 0 0 0 2px var(--text-secondary);
+}
+
+input[type="radio"]:checked::before {
+  background-color: var(--text-primary);
+  border-radius: 50%;
+  content: "";
+  float: left;
+  height: 100%;
+  transform: scale(0.5);
+  width: 100%;
+}

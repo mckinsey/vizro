@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 
-from dash import html
+from dash import dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
@@ -54,15 +54,14 @@ class RadioItems(VizroBaseModel):
         return html.Div(
             [
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dbc.RadioItems(
+                dcc.RadioItems(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
-                    className="form-check",
+                    className="radio-items-list",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )
