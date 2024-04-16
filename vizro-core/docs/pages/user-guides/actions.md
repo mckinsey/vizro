@@ -3,7 +3,7 @@
 This guide shows you how to use actions, an idea that is similar to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
 Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
 
-By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events. 
+By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
 
 There are already lots of action functions you can reuse.
 
