@@ -137,7 +137,7 @@ The following example shows how to create a custom action that shows the clicked
         Vizro().build(dashboard).run()
         ```
 
-        1. Just as for a standard Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
+        1. Just as for any Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
         2. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
         3. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
     === "app.yaml"
