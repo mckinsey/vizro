@@ -46,7 +46,7 @@ prep-release = [
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
-secrets = "pre-commit run gitleaks --all-files"
+secrets = "hatch run lint:pre-commit run gitleaks --all-files"
 test = "pytest tests --headless {args}"
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
