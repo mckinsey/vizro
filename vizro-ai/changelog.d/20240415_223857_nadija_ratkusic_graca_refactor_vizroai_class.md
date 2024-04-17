@@ -13,11 +13,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Removed `temperature` and `model_name` arguments of `VizroAI` class. For current configuration visit [VizroAI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#what-parameters-does-vizro-ai-support) ([#423](https://github.com/mckinsey/vizro/pull/423))
+- Removed `temperature` and `model_name` arguments of `VizroAI` class. For current configuration options, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#what-parameters-does-vizro-ai-support) ([#423](https://github.com/mckinsey/vizro/pull/423))
 
 ### Added
 
-- Enable customization of LLM models provided to VizroAI class. ([#423](https://github.com/mckinsey/vizro/pull/423))
+- Enable customization of LLM models provided to Vizro-AI class. ([#423](https://github.com/mckinsey/vizro/pull/423))
 
 <!--
 ### Changed

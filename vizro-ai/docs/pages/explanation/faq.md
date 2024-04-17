@@ -31,7 +31,7 @@ We are working on supporting more models and more vendors. Stay tuned!
 ## What parameters does Vizro-AI support?
 Currently, Vizro-AI supports the following parameters:
 
-- `model`: The name of the model or the instantiated model to use. See above for [models currently supported by Vizro-AI](#which-llms-are-supported-by-vizro-ai) for the models supported.
+`model`: The name of the model  as `str` (see above for [models currently supported by Vizro-AI](#which-llms-are-supported-by-vizro-ai)) or instance of `ChatOpenAI` (see below for configuration options).
 
 !!! example "Config and construct Vizro-AI"
 
@@ -44,13 +44,14 @@ Currently, Vizro-AI supports the following parameters:
 
 ## How can I customize my model?
 
-`model` parameter of `VizroAI` accepts instantiated model, allowing users to customize it as needed. If the `temperature` is not specified during model instantiation, it defaults to 0.
+`model` parameter of `VizroAI` accepts instantiated model, allowing users to customize it as needed.
 
 !!! example "model customization"
 
     === "python"
         ```py linenums="1"
         from vizro_ai import VizroAI
+        from langchain_openai import ChatOpenAI
 
         llm = ChatOpenAI(
             model_name="gpt-3.5-turbo-1106",
