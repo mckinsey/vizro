@@ -8,49 +8,52 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
-    Quick start tutorial to explore key features.
+    [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install/) </br>
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard/)
+    
+    
 
-    [:octicons-arrow-right-24: Get started](pages/tutorials/first-dashboard/)
-
--   :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
-
-    ---
-
-    Step-by-step instructions on key Vizro features.
-
-    [:octicons-arrow-right-24: How-to guides](pages/user-guides/dashboard/)
-
--   :fontawesome-solid-microscope:{ .lg .middle } __Get the detail__
+-   :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
 
     ---
 
-    API reference for Vizro and our pydantic models.
+    [:octicons-arrow-right-24: Fundamentals](pages/user-guides/dashboard/)</br>
+    [:octicons-arrow-right-24: Components overview](pages/user-guides/components/)</br>
+    [:octicons-arrow-right-24: Filters, parameters and selectors](pages/user-guides/filters/)</br>
+    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/layouts/)
+    
+    
 
-    [:octicons-arrow-right-24: API Reference](pages/API-reference/vizro/)
-
--   :material-scale-balance:{ .lg .middle } __Vizro explained__
-
-    ---
-
-    Vizro examples.
-
-    [:octicons-arrow-right-24: Explanation](pages/examples/examples/)
-
--   :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Contribution guidelines__
+-   :fontawesome-solid-microscope:{ .lg .middle } __Hands-on code__
 
     ---
 
-    Find out more about contributing to Vizro.
+    [:octicons-arrow-right-24: Tutorials](pages/tutorials/explore-components/) <br/>
+    [:octicons-arrow-right-24: Examples](pages/examples/examples/)
+    
+    
 
-    [:octicons-arrow-right-24: Contribute](pages/explanation/contributing/)
+-   :material-scale-balance:{ .lg .middle } __FAQs__
+
+    ---
+
+    [:octicons-arrow-right-24: How is Vizro different to Streamlit?](pages/explanation/faqs/#how-does-vizro-differ-from-dash-or-streamlit) <br/>
+    [:octicons-arrow-right-24: Other FAQs](/pages/explanation/faqs/) 
+
+
+
+-   :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
+
+    ---
+
+    [:octicons-arrow-right-24: Contribute code](pages/explanation/contributing/) <br/>
+    [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide/) 
 
 -   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro-AI__
 
     ---
 
-    Use natural language queries to build Plotly charts.
-
-    [:octicons-arrow-right-24: Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
+    [:octicons-arrow-right-24: Vizro-AI: Use natural language queries to build Plotly charts](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
 
 
 </div>
