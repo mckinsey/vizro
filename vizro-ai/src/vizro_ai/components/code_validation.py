@@ -88,9 +88,9 @@ class GetDebugger(VizroAiComponentBase):
 if __name__ == "__main__":
     import plotly.express as px
 
-    from vizro_ai.chains._llm_models import get_llm_model
+    from vizro_ai.chains._llm_models import _get_llm_model
 
-    llm_to_use = get_llm_model()
+    llm_to_use = _get_llm_model()
 
     df = px.data.gapminder()
     test_code_snippet = "import numpy as np\n" "import pandas as pd\n" "\n" "print(df['country', 'continent'])\n"

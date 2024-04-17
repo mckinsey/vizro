@@ -27,13 +27,17 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
         "max_tokens": 16385,
         "wrapper": ChatOpenAI,
     },
+    "gpt-3.5-turbo": {
+        "max_tokens": 16385,
+        "wrapper": ChatOpenAI,
+    },
 }
 
-DEFAULT_MODEL = "gpt-3.5-turbo-0125"
+DEFAULT_MODEL = "gpt-3.5-turbo"
 DEFAULT_TEMPERATURE = 0
 
 
-def get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
+def _get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
     """Fetches and initializes an instance of the LLM.
 
     Args:
@@ -52,8 +56,10 @@ def get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
         return model
     if isinstance(model, str) and model in PREDEFINED_MODELS:
         return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
-    raise ValueError(f"Model {model} not found!")
+    raise ValueError(
+        f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#which-llms-are-supported-by-vizro-ai"
+    )
 
 
 if __name__ == "__main__":
-    llm_chat_openai = get_llm_model()
+    llm_chat_openai = _get_llm_model()
