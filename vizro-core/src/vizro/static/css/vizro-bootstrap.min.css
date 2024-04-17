@@ -12654,6 +12654,7 @@ li {
 .form-check {
   transition: all 150ms ease 0s;
   margin-bottom: 12px;
+  line-height: 16px;
   min-height: auto;
   padding-left: 28px;
 }
@@ -12661,7 +12662,7 @@ li {
   margin-right: 12px;
 }
 .form-check-input {
-  margin-top: auto;
+  margin: 0;
   position: relative;
   border-color: var(--border-enabled);
   border-radius: 0;

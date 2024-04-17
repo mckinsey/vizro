@@ -50,7 +50,7 @@ class Checklist(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=True)
 
-        return html.Div(
+        return html.Fieldset(
             [
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dbc.Checklist(
@@ -61,5 +61,6 @@ class Checklist(VizroBaseModel):
                     persistence_type="session",
                 ),
             ],
+            className="form-group",
             id=f"{self.id}_outer",
         )
