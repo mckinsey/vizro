@@ -1,11 +1,15 @@
 # Get started with Vizro-AI
 This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
 
+<!-- vale off -->
 ### 1. Install Vizro and its dependencies
+<!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../get-started/install.md).
 
+<!-- vale off -->
 ### 2. Open a Jupyter Notebook
+<!-- vale on -->
 
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
@@ -35,8 +39,9 @@ print(vizro_ai.__version__)
 
 You should see a return output of the form `x.y.z`.
 
-
+<!-- vale off -->
 ### 3. Create your first chart using Vizro-AI
+<!-- vale on -->
 
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
@@ -83,7 +88,10 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-!!! Tip "How to get the code for the chart"
+<!-- vale off -->
+### 4. Get an explanation with your chart
+<!-- vale on -->
+
 
     Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
 
@@ -106,7 +114,10 @@ Let's create another example to illustrate the code and insights returned when p
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
+<!-- vale off -->
 ### 5. Explore further
+<!-- vale on -->
+
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
 
