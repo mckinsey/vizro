@@ -4,7 +4,7 @@ from typing import Any, Dict, Union
 import pandas as pd
 from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains import ModelConstructor
+from vizro_ai.chains._llm_models import get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
@@ -25,7 +25,7 @@ class VizroAI:
             model (Union[callable, str]): model instance or model name.
 
         """
-        self.model = ModelConstructor.get_llm_model(model=model)
+        self.model = get_llm_model(model=model)
         self.components_instances = {}
 
         # TODO add pending URL link to docs

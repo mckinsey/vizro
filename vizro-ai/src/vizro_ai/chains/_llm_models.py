@@ -23,38 +23,37 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
+    "gpt-3.5-turbo-0125": {
+        "max_tokens": 16385,
+        "wrapper": ChatOpenAI,
+    },
 }
 
-DEFAULT_MODEL = "gpt-3.5-turbo-0613"
+DEFAULT_MODEL = "gpt-3.5-turbo-0125"
 DEFAULT_TEMPERATURE = 0
 
 
-class ModelConstructor:
-    """Manages available Language Learning Models (LLMs).
+def get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
+    """Fetches and initializes an instance of the LLM.
 
-    Provides methods to fetch LLM details and instantiate appropriate wrappers.
+    Args:
+        model: Model instance or model name.
+
+    Returns:
+        The initialized instance of the LLM.
+
+    Raises:
+        ValueError: If the provided model string does not match any pre-defined model
+
     """
-
-    @staticmethod
-    def get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
-        """Fetches and initializes an instance of the LLM.
-
-        Returns:
-            The initialized instance of the LLM.
-
-        Raises:
-            ValueError: If the provided model string does not match any pre-defined model
-
-        """
-        if not model:
-            return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
-        if isinstance(model, ChatOpenAI):
-            return model
-        if isinstance(model, str) and model in PREDEFINED_MODELS:
-            return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
-        raise ValueError(f"Model {model} not found!")
+    if not model:
+        return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
+    if isinstance(model, ChatOpenAI):
+        return model
+    if isinstance(model, str) and model in PREDEFINED_MODELS:
+        return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
+    raise ValueError(f"Model {model} not found!")
 
 
 if __name__ == "__main__":
-    model_manager = ModelConstructor()
-    llm_chat_openai = model_manager.get_llm_model()
+    llm_chat_openai = get_llm_model()

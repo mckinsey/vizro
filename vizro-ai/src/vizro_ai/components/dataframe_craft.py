@@ -125,10 +125,9 @@ class GetDataFrameCraft(VizroAiComponentBase):
 if __name__ == "__main__":
     import plotly.express as px
 
-    from vizro_ai.chains import ModelConstructor
+    from vizro_ai.chains._llm_models import get_llm_model
 
-    model_manager = ModelConstructor()
-    llm_to_use = model_manager.get_llm_model()
+    llm_to_use = get_llm_model()
     df = px.data.gapminder()
 
     test_df_crafter = GetDataFrameCraft(llm=llm_to_use)
