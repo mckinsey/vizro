@@ -2,11 +2,11 @@
 
 In this tutorial, we walk through the process of creating a sophisticated dashboard. You'll be introduced to some Vizro components and learn how to create a pair of dashboard pages and configure their layout to suit the functionality you need. The example uses the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
-If you haven't yet done so, you may want to review the [first dashboard tutorial](../get-started/first-dashboard.md) before starting on this one.
+If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
 ## 1. Install Vizro and get ready to run your code
 
-To get started with this tutorial, make sure you have [installed Vizro](./install.md), and can run the dashboard code within a Jupyter Notebook cell or from a Python script.
+To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code within a Jupyter Notebook cell or from a Python script.
 
 ## 2. Create a first dashboard page
 
