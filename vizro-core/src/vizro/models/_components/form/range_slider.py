@@ -7,6 +7,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
@@ -87,7 +89,7 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
                     [
-                        html.Label(self.title, htmlFor=self.id) if self.title else None,
+                        dbc.Label(self.title, html_for=self.id) if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(

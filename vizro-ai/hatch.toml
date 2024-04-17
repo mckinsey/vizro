@@ -29,7 +29,7 @@ prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
@@ -51,7 +51,7 @@ dependencies = [
   "mkdocstrings[python]"
 ]
 detached = true
-scripts = {serve = "mkdocs serve"}
+scripts = {serve = "mkdocs serve --strict"}
 
 [envs.lint]
 dependencies = [
