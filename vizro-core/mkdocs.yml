@@ -50,7 +50,7 @@ nav:
       - Authors: pages/explanation/authors.md
   - Examples:
       - Examples: pages/examples/examples.md
-      - Your examples: pages/examples/your-examples.md    
+      - Your examples: pages/examples/your-examples.md
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
 
