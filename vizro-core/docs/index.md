@@ -10,8 +10,8 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install/) </br>
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard/)
-    
-    
+
+
 
 -   :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
 
@@ -21,8 +21,8 @@ Vizro is a toolkit for creating modular data visualization applications.
     [:octicons-arrow-right-24: Components overview](pages/user-guides/components/)</br>
     [:octicons-arrow-right-24: Filters, parameters and selectors](pages/user-guides/filters/)</br>
     [:octicons-arrow-right-24: Visual formatting](pages/user-guides/layouts/)
-    
-    
+
+
 
 -   :fontawesome-solid-microscope:{ .lg .middle } __Hands-on code__
 
@@ -30,15 +30,15 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     [:octicons-arrow-right-24: Tutorials](pages/tutorials/explore-components/) <br/>
     [:octicons-arrow-right-24: Examples](pages/examples/examples/)
-    
-    
+
+
 
 -   :material-scale-balance:{ .lg .middle } __FAQs__
 
     ---
 
     [:octicons-arrow-right-24: How is Vizro different to Streamlit?](pages/explanation/faqs/#how-does-vizro-differ-from-dash-or-streamlit) <br/>
-    [:octicons-arrow-right-24: Other FAQs](/pages/explanation/faqs/) 
+    [:octicons-arrow-right-24: Other FAQs](/pages/explanation/faqs/)
 
 
 
@@ -47,7 +47,7 @@ Vizro is a toolkit for creating modular data visualization applications.
     ---
 
     [:octicons-arrow-right-24: Contribute code](pages/explanation/contributing/) <br/>
-    [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide/) 
+    [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide/)
 
 -   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro-AI__
 
