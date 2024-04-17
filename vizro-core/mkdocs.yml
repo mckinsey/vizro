@@ -44,7 +44,7 @@ nav:
       - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/captured-callables.md
   - Explanation:
-      - FAQs: pages/explanation/faqs.md   
+      - FAQs: pages/explanation/faqs.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
