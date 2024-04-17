@@ -162,7 +162,6 @@ class TestDropdownBuild:
                     className="selector_body_dropdown",
                 ),
             ],
-            className="input-container",
             id="dropdown_id_outer",
         )
 
@@ -183,7 +182,6 @@ class TestDropdownBuild:
                     className="selector_body_dropdown",
                 ),
             ],
-            className="input-container",
             id="dropdown_id_outer",
         )
 
