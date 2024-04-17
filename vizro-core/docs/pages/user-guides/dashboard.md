@@ -1,6 +1,6 @@
 # How to create a dashboard
 This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either
-pydantic models, python dictionaries, yaml or json.
+pydantic models, Python dictionaries, yaml, or json.
 
 To create a dashboard:
 
@@ -8,7 +8,7 @@ To create a dashboard:
 2. Create your `pages`, see our guide on [Pages](pages.md)
 3. (optional) Choose a `theme`, see our guide on [Themes](themes.md)
 4. (optional) Customize your `navigation`, see our guide on [Navigation](navigation.md)
-5. (optional) Provide a `title` to your dashboard
+5. (optional) Set a `title` for your dashboard
 6. Add your `dashboard` to the `build` call of Vizro
 
 
@@ -143,9 +143,9 @@ To create a dashboard:
 
     [Dashboard]: ../../assets/user_guides/dashboard/dashboard.png
 
-???+ note "Additional `.py` files for `yaml` and `json` required"
+???+ note "Extra `.py` files for `yaml` and `json` required"
 
-    Note that in the `yaml` and `json` example an additional `.py` is required to register the data and parse the yaml/json configuration.
+    Note that in the `yaml` and `json` example an extra `.py` is required to register the data and parse the yaml/json configuration.
 
     === "app.py for yaml"
         ```py
@@ -197,10 +197,10 @@ Vizro will automatically incorporate the dashboard [logo](assets.md/#logo-image)
 ## Browser title
 
 The [website icon](assets.md/#changing-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's
-title bar.  For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
+title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
 ## Meta tags for social media
 
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
-clients.  The preview includes the `URL`, `title`, plus an [image](assets.md/#meta-tags-image) and
+clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#meta-tags-image) and
 [Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing the [Vizro demo app](https://vizro.mckinsey.com/).

@@ -1,5 +1,7 @@
 # Vizro documentation style guide
 
+<!-- vale off -->
+
 This is the style guide we apply to the [Vizro documentation](https://vizro.readthedocs.io/en/stable/).
 
 We ask anyone kind enough to contribute documentation changes to follow this style for consistency and simplicity.
@@ -52,7 +54,7 @@ Callout boxes can be made collapsible: if you use them, add them to the page so 
     Don't use expanded-on-load collapsibles. If the callout contains important information and needs to be shown as expanded on page load, it should simply be non-collapsible.
 
 ## Capitalization
-* Only capitalize proper nouns e.g. names of technology products, other tools and services.
+* Only capitalize proper nouns such as the names of technology products, other tools and services.
 * Don't capitalize cloud, internet, machine learning, or advanced analytics. Take a look at the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/accessibility-terms) if you're unsure.
 * Follow sentence case, which capitalizes only the first word of a title/subtitle. We prefer "An introduction to data visualization" to "An Introduction to Data Visualization".
 
@@ -105,7 +107,6 @@ Don't use the passive tense:
 ## Language
 * Use US English.
 
-
 ## Links
 * Make hyperlink descriptions as descriptive as you can. This is a good description:
 
@@ -117,16 +118,13 @@ This is less helpful:
 
 Don't write this:
 
-<!-- vale off -->
-
 > To learn how to contribute to Vizro, see [here](https://vizro.readthedocs.io/en/stable/pages/development/contributing/).
 
-<!-- vale on -->
 
 ### Internal cross-referencing
 We use internal cross-references as follows:
 
-* For each documentation page, if it helps the reader, we link to narrative documentation (non-API documentation) about each Vizro concept where it is first introduced.
+* For each documentation page, if it helps the reader, we link to narrative documentation (non-API documentation) about each Vizro topic where it is first introduced.
 * On any single page, we limit the repetition of links: do not re-link to the same page again unless there is good reason to do so (for example, linking to a specific sub-section to illustrate a point).
 * Add links to relevant API documentation where it is useful for the reader, and consider how they will navigate from where they land in the API documentation back to the narrative content. Consider adding a link in the relevant docstring back to your page.
 
@@ -180,3 +178,4 @@ Functional is not try-hard, cliched or hyperbolic:
 * **Colloquialisms**. Avoid them "like the plague" because they may not translate to other regions/languages.
 * **Technical terminology**. This applies particularly to acronyms that do not pass the "Google test". If it is not possible to find their meaning from a simple Google search, don't use them, or explain them with a link or some text.
 * **Business speak**. You can explain simply without using words like "leverage", "utilize" or "facilitate" and still sound clever.
+<!-- vale on -->
