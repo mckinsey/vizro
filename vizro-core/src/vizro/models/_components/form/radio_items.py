@@ -53,7 +53,7 @@ class RadioItems(VizroBaseModel):
 
         return html.Fieldset(
             [
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                html.Legend(self.title, className="form-label") if self.title else None,
                 dbc.RadioItems(
                     id=self.id,
                     options=full_options,
@@ -62,6 +62,5 @@ class RadioItems(VizroBaseModel):
                     persistence_type="session",
                 ),
             ],
-            className="form-group",
             id=f"{self.id}_outer",
         )
