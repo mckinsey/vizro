@@ -7,6 +7,9 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 import numpy as np
+import dash_bootstrap_components as dbc
+from dash import html
+from typing import Literal
 
 def create_sales_df():
     # Generate sample sales data for the last two years
@@ -25,6 +28,30 @@ def create_sales_df():
     })
 
     return df
+
+# TODO: Think more about potential API - this is just a quick mock-up. Types will likely change.
+class KPI(vm.VizroBaseModel):
+    """New custom component `KPI`."""
+
+    type: Literal["kpi"] = "kpi"
+    title: str
+    value: str
+    icon: str
+    sign: Literal["up", "down"]
+    ref_value: str
+
+    def build(self):
+        return dbc.Card([
+                html.H3(self.title, className="card-title"),
+                html.P(self.value, className="card-value"),
+                html.Span([
+                    html.Span(self.icon, className=f"material-symbols-outlined {self.sign}"),
+                    html.Span(self.ref_value, className=self.sign)
+            ], className="card-ref-value"),
+        ], className=f"card-border-{self.sign}")
+
+vm.Page.add_type("components", KPI)
+vm.Container.add_type("components", KPI)
 
 @capture("graph")
 def kpi_card(data_frame: pd.DataFrame = None, value: int = None, ref_value: int = None):
@@ -61,36 +88,31 @@ df_tips= px.data.tips()
 
 page_exec = vm.Page(
     title="Executive View",
-    layout=vm.Layout(grid=[[0, 0],
-                           [1, 2],
-                           [1, 2],
-                           [3, 4],
-                           [3, 4]]),
+    layout=vm.Layout(grid=[[0, 1, 2, 3, 4],
+                           [5, 5, 5, 6, 6],
+                           [5, 5, 5, 6, 6],
+                           [7, 7, 7, 8, 8],
+                           [7, 7, 7, 8, 8]],
+                     row_min_height="120px",
+                     col_gap="32px", row_gap="32px"),
     components=[
-        vm.Container(
-            title="KPI Summary",
-            id="kpi-container",
-            layout=vm.Layout(grid=[[0, 1, 2, 3]]),
-            components=[
-                vm.Graph(figure=kpi_card(data_frame=df, value=1000, ref_value=700)),
-                vm.Graph(figure=kpi_card(data_frame=df, value=760, ref_value=500)),
-                vm.Graph(figure=kpi_card(data_frame=df, value=170, ref_value=200)),
-                vm.Graph(figure=kpi_card(data_frame=df, value=90, ref_value=80)),
-            ],
-        ),
+        KPI(title="Revenue", value="$10.5 M", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
+        KPI(title="Sales", value="$5.4 M", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(title="Profit", value="$1.3 M", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"),
+        KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
+        KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
         vm.Graph(figure=px.bar(df, x="Month", y="Sales", color="Period", barmode="group", title="Annual Revenue")),
         vm.Graph(figure=heatmap(df, title="Traffic Channels")),
         vm.Container(
             title="Sales Breakdown",
             layout=vm.Layout(grid=[[0, 1, 2]]),
             components=[
-vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["North", "West", "South", "East"], orientation='h', title="Sales by Region")),
-vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',  title="Sales by Customer")),
-vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Prod A", "Prod B", "Prod C", "Prod D"], orientation='h',  title="Sales by Product"))
-
+                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["North", "West", "South", "East"], orientation='h', title="Sales by Region")),
+                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',  title="Sales by Customer")),
+                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Prod A", "Prod B", "Prod C", "Prod D"], orientation='h',  title="Sales by Product"))
             ]
         ),
-vm.Graph(figure=px.area(df, x=[1, 2, 3, 4], y=[0, 2, 3, 5],  title="Sales by Product"))
+        vm.Graph(figure=px.area(df, x=[1, 2, 3, 4], y=[0, 2, 3, 5],  title="Sales by Product"))
     ],
 )
 
