@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict, Union
 
 import pandas as pd
+from langchain_openai import ChatOpenAI
 
 from vizro_ai.chains import ModelConstructor
 from vizro_ai.components import GetCodeExplanation, GetDebugger
@@ -14,18 +15,17 @@ logger = logging.getLogger(__name__)
 class VizroAI:
     """Vizro-AI main class."""
 
-    model_constructor: ModelConstructor = ModelConstructor()
     pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model=None):
+    def __init__(self, model: Union[ChatOpenAI, str] = None):
         """Initialization of VizroAI.
 
         Args:
             model (Union[callable, str]): model instance or model name.
 
         """
-        self.model = self.model_constructor.get_llm_model(model=model)
+        self.model = ModelConstructor.get_llm_model(model=model)
         self.components_instances = {}
 
         # TODO add pending URL link to docs

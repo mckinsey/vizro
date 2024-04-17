@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
-PREDEFINED_MODELS: Dict[str, Dict[str, any]] = {
+PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
     "gpt-3.5-turbo-0613": {
         "max_tokens": 4096,
         "wrapper": ChatOpenAI,
@@ -35,19 +35,20 @@ class ModelConstructor:
     Provides methods to fetch LLM details and instantiate appropriate wrappers.
     """
 
-    def get_llm_model(self, model=None) -> LLM_MODELS:
+    @staticmethod
+    def get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
         """Fetches and initializes an instance of the LLM.
 
-        Returns
+        Returns:
             The initialized instance of the LLM.
 
-        Raises
-            ValueError: If the model name is not found.
+        Raises:
+            ValueError: If the provided model string does not match any pre-defined model
 
         """
         if not model:
             return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
-        if isinstance(model, LLM_MODELS):
+        if isinstance(model, ChatOpenAI):
             return model
         if isinstance(model, str) and model in PREDEFINED_MODELS:
             return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
