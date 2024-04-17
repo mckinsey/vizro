@@ -130,9 +130,9 @@ class TestRadioItemsBuild:
 
     def test_radio_items_build(self):
         radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
-        expected_radio_items = html.Div(
+        expected_radio_items = html.Fieldset(
             [
-                dbc.Label("Title", html_for="radio_items_id"),
+                html.Legend("Title", className="form-label"),
                 dbc.RadioItems(
                     id="radio_items_id",
                     options=["A", "B", "C"],

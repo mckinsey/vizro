@@ -130,9 +130,9 @@ class TestChecklistBuild:
 
     def test_checklist_build(self):
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
-        expected_checklist = html.Div(
+        expected_checklist = html.Fieldset(
             [
-                dbc.Label("Title", html_for="checklist_id"),
+                html.Legend("Title", className="form-label"),
                 dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
