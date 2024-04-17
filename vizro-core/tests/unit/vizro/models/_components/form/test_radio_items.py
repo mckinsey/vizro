@@ -3,7 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -130,14 +130,13 @@ class TestRadioItemsBuild:
 
     def test_radio_items_build(self):
         radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
-        expected_radio_items = html.Div(
+        expected_radio_items = html.Fieldset(
             [
-                dbc.Label("Title", html_for="radio_items_id"),
-                dcc.RadioItems(
+                html.Legend("Title", className="form-label"),
+                dbc.RadioItems(
                     id="radio_items_id",
                     options=["A", "B", "C"],
                     value="A",
-                    className="radio-items-list",
                     persistence=True,
                     persistence_type="session",
                 ),
