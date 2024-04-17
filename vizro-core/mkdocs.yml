@@ -47,7 +47,7 @@ nav:
       - Examples: pages/examples/examples.md
       - Your examples: pages/examples/your-examples.md
   - Explanation:
-      - FAQs: pages/explanation/faqs.md   
+      - FAQs: pages/explanation/faqs.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
