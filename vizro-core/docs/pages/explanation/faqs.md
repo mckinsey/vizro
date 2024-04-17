@@ -1,6 +1,19 @@
+---
+hide:
+  - toc
+---
+
 # FAQs
 
-<!-- vale off -->
+Here are some answers to frequently asked questions:
+
+* [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
+* [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
+* [Why should I use Vizro?](#why-should-i-use-vizro)
+* [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
+* [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
+* [When would an alternative to Vizro be potentially more suitable?](#when-would-an-alternative-to-vizro-be-potentially-more-suitable)
+
 
 ## Which browsers does Vizro support?
 Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/).
@@ -14,7 +27,7 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
 
-
+<!-- vale off -->
 ## Why should I use Vizro?
 
 Vizro is a high-level framework built on top of Dash and Pydantic,
@@ -103,8 +116,7 @@ If you prefer a configuration approach with in-built best practices, and the pot
 For a more detailed comparison, it may help to visit the introductory articles of [Dash](https://medium.com/plotly/introducing-dash-5ecf7191b503), [Streamlit](https://towardsdatascience.com/coding-ml-tools-like-you-code-ml-models-ddba3357eace) and [Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db),
 to see how each tool serves a distinct purpose, and could be the best tool of choice.
 
-## How does Vizro compare with Python packages and business intelligence (BI) tools such as Streamlit, Tableau and PowerBI
-
+## How does Vizro compare with Python packages and business intelligence (BI) tools?
 There are a number of Python packages and BI tools which offer support for visualization applications (such as Streamlit, Plotly/Dash, Tableau and PowerBI).
 
 Vizro is intended to support several niches between the benefits from those tools, rather than being in direct comparison with any single tool. Therefore, direct comparisons are often only partially suitable, given the many features offered across this landscape.

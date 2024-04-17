@@ -2,11 +2,10 @@ site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
 nav:
   - Vizro: index.md
-  - Get started:
-      - Install Vizro: pages/get-started/install.md
-      - A first dashboard: pages/get-started/first-dashboard.md
-      - Explore Vizro: pages/get-started/explore-components.md
-      - FAQs: pages/get-started/faqs.md
+  - Tutorials:
+      - Install Vizro: pages/user-guides/install.md
+      - A first dashboard: pages/tutorials/first-dashboard.md
+      - Explore Vizro: pages/tutorials/explore-components.md
   - How-to guides:
       - FUNDAMENTALS:
           - Dashboards: pages/user-guides/dashboard.md
@@ -47,10 +46,11 @@ nav:
   - Examples:
       - Examples: pages/examples/examples.md
       - Your examples: pages/examples/your-examples.md
-  - Contribute:
-      - Contribute to Vizro: pages/contribute/contributing.md
-      - Documentation style: pages/contribute/documentation-style-guide.md
-      - Authors: pages/contribute/authors.md
+  - Explanation:
+      - FAQs: pages/explanation/faqs.md   
+      - Contribute to Vizro: pages/explanation/contributing.md
+      - Documentation style: pages/explanation/documentation-style-guide.md
+      - Authors: pages/explanation/authors.md
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
 
