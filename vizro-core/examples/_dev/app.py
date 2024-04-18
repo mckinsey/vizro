@@ -70,6 +70,35 @@ def kpi_card(data_frame: pd.DataFrame = None, value: int = None, ref_value: int 
 
 
 @capture("graph")
+def stacked_bar(data_frame=None):
+    fig = go.Figure(go.Bar(
+        y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
+        x=[28, 22, 30, 15, 27],
+        text=["28%", "22%", "30%", "15%", "27%"],
+        textposition="inside",
+        name='North', marker_color='#1A85FF', orientation="h"))
+    fig.add_trace(go.Bar(
+        y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
+        x=[19, 28, 20, 35, 23],
+        text=["19%", "28%", "20%", "35%", "23%"],
+        textposition="inside",
+        name='West', marker_color='#749ff9', orientation="h"))
+    fig.add_trace(go.Bar(
+        y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
+        x=[26, 25, 25, 20, 30],
+        text=["26%", "25%", "25%", "20%", "30%"],
+        textposition="inside",
+        name='South', marker_color='#a3baf3', orientation="h"))
+    fig.add_trace(go.Bar(
+        y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
+        x=[27, 25, 25, 30, 20],
+        text=["27%", "25%", "25%", "30%", "20%"],
+        textposition="inside",
+        name='East', marker_color='#c9d6eb', orientation="h"))
+    fig.update_layout(title="Regional distribution", barmode='relative', title_pad_l=0, title_pad_t=0, margin=dict(l=0, r=0, t=32))
+    return fig
+
+@capture("graph")
 def heatmap(data_frame: pd.DataFrame = None, title: str = None):
     fig = go.Figure(data=go.Heatmap(
         z=[[1, None, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]],
@@ -81,7 +110,7 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
 
 
 @capture("graph")
-def bar(x: str, y: str, color: str, barmode: str, title: str, data_frame: pd.DataFrame = None):
+def bar(x: str, y: str, color: str, barmode: str, data_frame: pd.DataFrame = None):
     fig = px.bar(data_frame=data_frame, x=x, y=y, color=color, barmode=barmode, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
     fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0, t=0), title_pad_t=0,
                       legend=dict(
@@ -104,35 +133,31 @@ tabs_section = vm.Tabs(
                 vm.Container(
                     title="Revenue",
                     components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Revenue", color="Period", barmode="group", title="Total Revenue")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Revenue", color="Period", barmode="group")),
                     ],
                 ),
                 vm.Container(
                     title="Sales",
                     components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Sales", color="Period", barmode="group",
-                                               title="Total Sales")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Sales", color="Period", barmode="group")),
                     ],
                 ),
                 vm.Container(
                     title="Profit",
                     components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Profit", color="Period", barmode="group",
-                                               title="Total Profit")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Profit", color="Period", barmode="group")),
                     ],
                 ),
                 vm.Container(
                     title="Customers",
                     components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Customers", color="Period", barmode="group",
-                                               title="Total Customers")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Customers", color="Period", barmode="group")),
                     ],
                 ),
                 vm.Container(
                     title="Products",
                     components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Products", color="Period", barmode="group",
-                                               title="Total Products")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Products", color="Period", barmode="group")),
                     ],
                 ),
             ],
@@ -144,10 +169,10 @@ tabs_section = vm.Tabs(
 page_exec = vm.Page(
     title="Executive View",
     layout=vm.Layout(grid=[[0, 1, 2, 3, 4],
-                           [5, 5, 6, 6, 6],
-                           [5, 5, 6, 6, 6],
-                           [7, 7, 7, 8, 8],
-                           [7, 7, 7, 8, 8]],
+                           [5, 5, 7, 8, 9],
+                           [5, 5, 7, 8, 9],
+                           [6, 6, 7, 8, 9],
+                           [6, 6, 7, 8, 9]],
                      row_min_height="100px",
                      col_gap="32px", row_gap="32px"),
     components=[
@@ -157,17 +182,15 @@ page_exec = vm.Page(
         KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
         tabs_section,
-        vm.Graph(figure=heatmap(df, title="Traffic Channels")),
-        vm.Container(
-            title="Sales Breakdown",
-            layout=vm.Layout(grid=[[0, 1, 2]]),
-            components=[
-                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["North", "West", "South", "East"], orientation='h', title="Sales by Region")),
-                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',  title="Sales by Customer")),
-                vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Prod A", "Prod B", "Prod C", "Prod D"], orientation='h',  title="Sales by Product"))
-            ]
-        ),
-        vm.Graph(figure=px.area(df, x=[1, 2, 3, 4], y=[0, 2, 3, 5],  title="Sales by Product"))
+        vm.Graph(figure=stacked_bar(df)),
+        vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',
+                               title="Sales by Customer")),
+        vm.Graph(figure=px.bar(df, x=np.random.randint(150000, 900000, size=10), y=["Phones", "Chairs", "Storage", "Tables", "Binders", "Machines", "Accessories", "Copiers", "Bookcases", "Appliances"], orientation='h',
+                               title="Sales by Product Categories")),
+        vm.Graph(figure=px.bar(df, x=np.random.randint(150000, 900000, size=10),
+                               y=["Phones", "Chairs", "Storage", "Tables", "Binders", "Machines", "Accessories",
+                                  "Copiers", "Bookcases", "Appliances"], orientation='h',
+                               title="Sales by Product Categories")),
     ],
 )
 
