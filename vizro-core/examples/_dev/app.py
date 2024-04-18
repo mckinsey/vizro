@@ -80,6 +80,21 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
     return fig
 
 
+@capture("graph")
+def bar(x: str, y: str, color: str, barmode: str, title: str, data_frame: pd.DataFrame = None):
+    fig = px.bar(data_frame=data_frame, x=x, y=y, color=color, barmode=barmode, title=title, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
+    fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0), title_pad_l=0, title_pad_t=16,
+                      legend=dict(
+                          orientation="h",
+                          yanchor="bottom",
+                          y=-0.7,
+                          xanchor="left",
+                          x=-0.05
+                      )
+                      )
+    return fig
+
+
 df = create_sales_df()
 df_tips= px.data.tips()
 
@@ -89,34 +104,34 @@ tabs_section = vm.Tabs(
                 vm.Container(
                     title="Revenue",
                     components=[
-                        vm.Graph(figure=px.bar(df, x="Month", y="Revenue", color="Period", barmode="group", title="Total Revenue")),
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Revenue", color="Period", barmode="group", title="Total Revenue")),
                     ],
                 ),
                 vm.Container(
                     title="Sales",
                     components=[
-                        vm.Graph(figure=px.bar(df, x="Month", y="Sales", color="Period", barmode="group",
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Sales", color="Period", barmode="group",
                                                title="Total Sales")),
                     ],
                 ),
                 vm.Container(
                     title="Profit",
                     components=[
-                        vm.Graph(figure=px.bar(df, x="Month", y="Profit", color="Period", barmode="group",
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Profit", color="Period", barmode="group",
                                                title="Total Profit")),
                     ],
                 ),
                 vm.Container(
                     title="Customers",
                     components=[
-                        vm.Graph(figure=px.bar(df, x="Month", y="Customers", color="Period", barmode="group",
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Customers", color="Period", barmode="group",
                                                title="Total Customers")),
                     ],
                 ),
                 vm.Container(
                     title="Products",
                     components=[
-                        vm.Graph(figure=px.bar(df, x="Month", y="Products", color="Period", barmode="group",
+                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Products", color="Period", barmode="group",
                                                title="Total Products")),
                     ],
                 ),
