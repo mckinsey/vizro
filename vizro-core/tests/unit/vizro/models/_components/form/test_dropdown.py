@@ -159,10 +159,8 @@ class TestDropdownBuild:
                     multi=True,
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_dropdown",
                 ),
             ],
-            className="input-container",
             id="dropdown_id_outer",
         )
 
@@ -180,10 +178,8 @@ class TestDropdownBuild:
                     multi=False,
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_dropdown",
                 ),
             ],
-            className="input-container",
             id="dropdown_id_outer",
         )
 

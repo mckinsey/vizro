@@ -72,9 +72,7 @@ class Dropdown(VizroBaseModel):
                     multi=self.multi,
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_dropdown",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )
