@@ -136,6 +136,5 @@ class RangeSlider(VizroBaseModel):
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )
