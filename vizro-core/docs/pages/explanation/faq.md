@@ -7,6 +7,8 @@ hide:
 
 Here are some answers to frequently asked questions:
 
+<!-- vale off -->
+
 * [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
 * [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
 * [Why should I use Vizro?](#why-should-i-use-vizro)
@@ -14,6 +16,7 @@ Here are some answers to frequently asked questions:
 * [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
 * [When would an alternative to Vizro be more suitable?](#when-would-an-alternative-to-vizro-be-more-suitable)
 
+<!-- vale on -->
 
 ## Which browsers does Vizro support?
 Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/).
