@@ -29,6 +29,10 @@ def create_sales_df():
     return df
 
 
+df = create_sales_df()
+df_tips= px.data.tips()
+
+
 
 # TODO: Think more about potential API - this is just a quick mock-up. Types will likely change.
 class KPI(vm.VizroBaseModel):
@@ -85,14 +89,14 @@ def stacked_bar(data_frame=None):
         name='West', marker_color='#749ff9', orientation="h"))
     fig.add_trace(go.Bar(
         y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
-        x=[19, 28, 20, 35, 30],
-        text=["19%", "28%", "20%", "35%", "30%"],
+        x=[19, 28, 25, 35, 30],
+        text=["19%", "28%", "25%", "35%", "30%"],
         textposition="inside",
         name='South', marker_color='#a3baf3', orientation="h"))
     fig.add_trace(go.Bar(
         y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
-        x=[27, 25, 25, 30, 20],
-        text=["27%", "25%", "25%", "30%", "20%"],
+        x=[27, 25, 20, 30, 20],
+        text=["27%", "25%", "20%", "30%", "20%"],
         textposition="inside",
         name='East', marker_color='#c9d6eb', orientation="h"))
     fig.update_layout(title="Regional distribution", barmode='relative', title_pad_l=0, title_pad_t=4, margin=dict(l=0, r=0, t=32))
@@ -124,8 +128,29 @@ def bar(x: str, y: str, color: str, barmode: str, data_frame: pd.DataFrame = Non
     return fig
 
 
-df = create_sales_df()
-df_tips= px.data.tips()
+@capture("graph")
+def chloropleth(data_frame: pd.DataFrame = None):
+    from urllib.request import urlopen
+    import json
+    with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+        counties = json.load(response)
+
+    import pandas as pd
+    data_frame = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
+                     dtype={"fips": str})
+    data_frame['unemp'] = data_frame['unemp']/4
+    data_frame.loc[1::5, 'unemp'] *= -1
+    fig = px.choropleth(data_frame, geojson=counties, locations='fips', color='unemp',
+                           color_continuous_scale=['#d41159', '#d41159', '#d41159', '#d3d3d3', '#1a85ff', '#1a85ff', '#1a85ff'],
+                           color_continuous_midpoint=0,
+                           scope="usa",
+                           labels={'unemp':'% change'}
+                          )
+    fig.update_layout(title_text='Change in revenue by ZIP code', margin=dict(l=0, r=0, t=0), title_pad_t=20)
+    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
+    return fig
+
+
 
 
 tabs_section = vm.Tabs(
@@ -168,11 +193,11 @@ tabs_section = vm.Tabs(
 
 page_exec = vm.Page(
     title="Executive View",
-    layout=vm.Layout(grid=[[0, 1, 2, 3, 4],
-                           [5, 5, 7, 8, 9],
-                           [5, 5, 7, 8, 9],
-                           [6, 6, 7, 8, 9],
-                           [6, 6, 7, 8, 9]],
+    layout=vm.Layout(grid=[[0, 1, 2, 3, 4, 5],
+                           [6, 6, 8, 8, 10, 10],
+                           [6, 6, 8, 8, 10, 10],
+                           [7, 7, 9, 9, 10, 10],
+                           [7, 7, 9, 9, 11, 11]],
                      row_min_height="100px",
                      col_gap="32px", row_gap="32px"),
     components=[
@@ -181,16 +206,15 @@ page_exec = vm.Page(
         KPI(title="Profit", value="$1.3 M", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"),
         KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
+        KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
         tabs_section,
         vm.Graph(figure=stacked_bar(df)),
         vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',
                                title="Sales by Customer")),
         vm.Graph(figure=px.bar(df, x=np.random.randint(150000, 900000, size=10), y=["Phones", "Chairs", "Storage", "Tables", "Binders", "Machines", "Accessories", "Copiers", "Bookcases", "Appliances"], orientation='h',
                                title="Sales by Product Categories")),
-        vm.Graph(figure=px.bar(df, x=np.random.randint(150000, 900000, size=10),
-                               y=["Phones", "Chairs", "Storage", "Tables", "Binders", "Machines", "Accessories",
-                                  "Copiers", "Bookcases", "Appliances"], orientation='h',
-                               title="Sales by Product Categories")),
+        vm.Graph(figure=chloropleth(df)),
+        vm.Card(text="# Placeholder"),
     ],
 )
 
