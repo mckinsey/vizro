@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from langchain_openai import ChatOpenAI
 
@@ -37,7 +37,7 @@ DEFAULT_MODEL = "gpt-3.5-turbo"
 DEFAULT_TEMPERATURE = 0
 
 
-def _get_llm_model(model: Union[ChatOpenAI, str] = None) -> LLM_MODELS:
+def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> LLM_MODELS:
     """Fetches and initializes an instance of the LLM.
 
     Args:

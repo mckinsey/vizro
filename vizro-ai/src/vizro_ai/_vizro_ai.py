@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
 from langchain_openai import ChatOpenAI
@@ -18,7 +18,7 @@ class VizroAI:
     pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model: Union[ChatOpenAI, str] = None):
+    def __init__(self, model: Optional[Union[ChatOpenAI, str]] = None):
         """Initialization of VizroAI.
 
         Args:

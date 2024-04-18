@@ -44,7 +44,7 @@ Currently, Vizro-AI supports the following parameters:
 
 ## How can I customize my model?
 
-`model` parameter of `VizroAI` accepts instantiated model, allowing users to customize it as needed.
+The `model` parameter of `VizroAI` accepts an instantiated `ChatOpenAI` model, allowing users to customize it as needed.
 
 !!! example "model customization"
 
