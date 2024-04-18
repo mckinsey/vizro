@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /** This is an auto-generated file, don't edit it. **/
 /** This is an auto-generated file, don't edit it. **/
-.vizro_dark {
+.vizro_dark, [data-bs-theme=dark] {
   --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
   --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
   --elevation-1: 0 2px 4px -1px rgba(20, 23, 33, 0.3803921569), 0 1px 2px -1px rgba(20, 23, 33, 0.8784313725);
@@ -244,9 +244,11 @@
   --bs-primary-rgb: #ffffffe0;
   --bs-secondary-color: #ffffff99;
   --bs-nav-link-color: #ffffff99; /*QQ: This doesn't seem to work*/
+  --bs-form-valid-color: #40d86eff; /*"status-success"*/
+  --bs-form-invalid-color: #f56565ff; /*"status-error"*/
 }
 
-.vizro_light {
+.vizro_light, [data-bs-theme=light] {
   --elevation-0: 0 1px 1px 0 rgba(20, 23, 33, 0.0784313725), 0 0 1px 0 rgba(20, 23, 33, 0.3803921569);
   --elevation-0-inverted: 0 1px 1px 0 rgba(20, 23, 33, 0.8784313725), 0 0 1px 0 rgba(20, 23, 33, 0.8784313725);
   --elevation-1: 0 2px 4px 1px rgba(20, 23, 33, 0.1215686275), 0 1px 2px 0 rgba(20, 23, 33, 0.1215686275);
@@ -488,6 +490,8 @@
   --bs-primary-rgb: #141721e0;
   --bs-secondary-color: #14172199;
   --bs-nav-link-color: #14172199; /*QQ: This doesn't seem to work*/
+  --bs-form-valid-color: #26bf56ff; /*"status-success"*/
+  --bs-form-invalid-color: #f03b3aff; /*"status-error"*/
 }
 
 /* 14px */
@@ -495,7 +499,6 @@
 /* 16px */
 /* 4px */
 /* 8px */
-/* import bootstrap */
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -765,7 +768,7 @@ h6, .h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 abbr[title] {
@@ -2573,7 +2576,7 @@ progress {
   }
 }
 .form-label {
-  margin-bottom: 0rem;
+  margin-bottom: 0.5rem;
 }
 
 .col-form-label {
@@ -11972,7 +11975,171 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
+.vizro_dark, [data-bs-theme=dark] {
+  --bs-primary: #1b0734;
+  --bs-secondary: #808080;
+  --bs-success: #222222;
+  --bs-danger: #be3636;
+  --bs-info: #163960;
+  --bs-dark: #2a2a2a;
+  --bs-light: #333333;
+  --bs-primary-rgb: 27, 7, 52;
+  --bs-secondary-rgb: 128, 128, 128;
+  --bs-success-rgb: 34, 34, 34;
+  --bs-danger-rgb: 190, 54, 54;
+  --bs-info-rgb: 22, 57, 96;
+  --bs-dark-rgb: 42, 42, 42;
+  --bs-light-rgb: 51, 51, 51;
+}
+
+.vizro_light, [data-bs-theme=light] {
+  --bs-primary: #1b0734;
+  --bs-secondary: #808080;
+  --bs-success: #222222;
+  --bs-danger: #be3636;
+  --bs-info: #163960;
+  --bs-dark: #2a2a2a;
+  --bs-light: #333333;
+  --bs-primary-rgb: 27, 7, 52;
+  --bs-secondary-rgb: 128, 128, 128;
+  --bs-success-rgb: 34, 34, 34;
+  --bs-danger-rgb: 190, 54, 54;
+  --bs-info-rgb: 22, 57, 96;
+  --bs-dark-rgb: 42, 42, 42;
+  --bs-light-rgb: 51, 51, 51;
+}
+
 /* custom component files */
+/** This is an auto-generated file, don't edit it. **/
+h1, .h1 {
+  font-size: 32px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128px;
+  line-height: 40px;
+  color: var(--text-primary);
+}
+
+h2, .h2 {
+  font-size: 24px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.096px;
+  line-height: 32px;
+  color: var(--text-primary);
+}
+
+h3, .h3, legend {
+  font-size: 20px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+h4, .h4 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+h5, .h5 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+h6, .h6 {
+  font-size: 16px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.016px;
+  line-height: 20px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+p, label, ul, li, blockquote {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+
+a {
+  font-size: 16px;
+  text-decoration: underline;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.128px;
+  line-height: 20px;
+}
+
+/* This is not taken over well. How do we deal with bootstrap variables that we want to change globally? */
+/* QQ: This should be changed globally via Bootstrap variables and without the need of important tags. */
+.text-muted {
+  color: var(--text-subtle);
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+/* Types */
+blockquote {
+  border-left: 0.25rem var(--text-secondary) solid;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+hr {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  width: 100%;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
 /** This is an auto-generated file, don't edit it. **/
 /* Thinking about moving all of these into a typography.scss file at some point */
 .btn {
@@ -12465,118 +12632,6 @@ textarea.form-control-lg {
 }
 
 /** This is an auto-generated file, don't edit it. **/
-h1, .h1 {
-  font-size: 32px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.128px;
-  line-height: 40px;
-  color: var(--text-primary);
-}
-
-h2, .h2 {
-  font-size: 24px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.096px;
-  line-height: 32px;
-  color: var(--text-primary);
-}
-
-h3, .h3 {
-  font-size: 20px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: 0px;
-  line-height: 28px;
-  color: var(--text-primary);
-}
-
-h4, .h4 {
-  font-size: 16px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.016px;
-  line-height: 20px;
-  color: var(--text-primary);
-}
-
-h5, .h5 {
-  font-size: 16px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.016px;
-  line-height: 20px;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-h6, .h6 {
-  font-size: 16px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.016px;
-  line-height: 20px;
-  font-size: 12px;
-  color: var(--text-primary);
-}
-
-p, label, ul, li, blockquote {
-  font-size: 14px;
-  text-decoration: none;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.112px;
-  line-height: 16px;
-  color: var(--text-secondary);
-}
-
-a {
-  font-size: 16px;
-  text-decoration: underline;
-  font-family: Inter;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: -0.128px;
-  line-height: 20px;
-}
-
-/* This is not taken over well. How do we deal with bootstrap variables that we want to change globally? */
-/* QQ: This should be changed globally via Bootstrap variables and without the need of important tags. */
-.text-muted {
-  color: var(--text-subtle);
-}
-
-.text-primary {
-  color: var(--text-primary) !important;
-}
-
-.text-secondary {
-  color: var(--text-secondary) !important;
-}
-
-/** This is an auto-generated file, don't edit it. **/
 .navbar {
   background: var(--surfaces-bg02) !important;
 }
@@ -12590,6 +12645,191 @@ a {
 }
 .navbar .nav-link:active, .navbar .nav-link.active {
   color: var(--text-primary);
+}
+
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
+/** space between radio icon/checkbox and the label is 8px **/
+.form-check {
+  transition: all 150ms ease 0s;
+  margin-bottom: 12px;
+  line-height: 16px;
+  min-height: auto;
+  padding-left: 28px;
+}
+.form-check-inline {
+  margin-right: 12px;
+}
+.form-check-input {
+  margin: 0;
+  position: relative;
+  border-color: var(--border-enabled);
+  border-radius: 0;
+  color: var(--fill-active);
+  width: 16px;
+  height: 16px;
+  outline: none;
+  background-color: transparent;
+  background-size: auto;
+}
+.form-check-input:checked {
+  background-color: transparent;
+  border-color: var(--border-enabled);
+  color: var(--fill-active);
+}
+.form-check-input[type=radio] {
+  background-image: none;
+}
+.form-check-input[type=radio]:checked::after {
+  position: absolute;
+  content: "";
+  background-color: var(--fill-active);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.form-check-input:hover, .form-check-input.hover {
+  border-color: var(--border-hover);
+}
+.form-check-input:active, .form-check-input.active {
+  border-color: var(--border-selected);
+}
+.form-check-input:disabled, .form-check-input.disabled {
+  border-color: var(--border-disabled);
+}
+.form-check-input:focus, .form-check-input.focus {
+  border-color: var(--border-selected);
+  box-shadow: none;
+}
+.form-check-input:hover {
+  border-color: var(--border-hover);
+}
+.form-check .form-check-input {
+  margin-left: -24px;
+}
+.form-check-label {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+.form-check-lg {
+  line-height: 20px;
+  min-height: auto;
+  padding-left: 32px;
+}
+.form-check-lg .form-check-input {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  margin-left: -28px;
+}
+.form-check-lg .form-check-label {
+  line-height: 20px;
+}
+.form-check.disabled .form-check-label {
+  color: var(--text-disabled);
+}
+
+.vizro_light .form-check-input:checked[type=checkbox], [data-bs-theme=light] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_light .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
+.vizro_dark .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
+/***
+Since the above 2 css deinifitions have athe same specificity
+the last one will be applied. So we need to add the below
+css definitions to make sure the correct css is applied
+if the parent has a dark mode but the child is rendering a light mode
+**/
+.vizro_light .vizro_dark .form-check-input:checked[type=checkbox], .vizro_light [data-bs-theme=dark] .form-check-input:checked[type=checkbox], [data-bs-theme=light] .vizro_dark .form-check-input:checked[type=checkbox], [data-bs-theme=light] [data-bs-theme=dark] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_light .vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], .vizro_light [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] .vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
+.vizro_dark .vizro_light .form-check-input:checked[type=checkbox], .vizro_dark [data-bs-theme=light] .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .vizro_light .form-check-input:checked[type=checkbox], [data-bs-theme=dark] [data-bs-theme=light] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_dark .vizro_light .form-check-lg .form-check-input:checked[type=checkbox], .vizro_dark [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .vizro_light .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
+/** This is an auto-generated file, don't edit it. **/
+.form-control, .input-group-text {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  background-color: var(--field-enabled);
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  box-shadow: var(--elevation-0);
+  border: none;
+}
+.form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+  background-color: var(--field-hover);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--focus) inset;
+}
+.form-control:hover, .form-control.hover, .input-group-text:hover, .input-group-text.hover {
+  background-color: var(--field-hover);
+}
+.form-control:disabled, .form-control.disabled, .input-group-text:disabled, .input-group-text.disabled {
+  background-color: var(--field-disabled);
+  color: var(--text-disabled);
+}
+
+.form-control.is-invalid {
+  box-shadow: 0 0 0 2px var(--status-error) inset;
+}
+.form-control.is-invalid:focus, .form-control.is-invalid.focus {
+  box-shadow: 0 0 0 2px var(--status-error) inset;
+}
+
+.form-control.is-valid {
+  box-shadow: 0 0 0 2px var(--status-success) inset;
+}
+.form-control.is-valid:focus, .form-control.is-valid.focus {
+  box-shadow: 0 0 0 2px var(--status-success) inset;
+}
+
+/** This is an auto-generated file, don't edit it. **/
+.form-label {
+  font-size: 14px;
+  text-decoration: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: -0.112px;
+  line-height: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  width: 100%;
 }
 
 .qb-container-bg-01 {

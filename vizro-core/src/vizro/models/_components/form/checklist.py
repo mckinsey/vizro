@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
@@ -50,18 +50,16 @@ class Checklist(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=True)
 
-        return html.Div(
+        return html.Fieldset(
             [
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dcc.Checklist(
+                html.Legend(self.title, className="form-label") if self.title else None,
+                dbc.Checklist(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
                     persistence_type="session",
-                    className="checkboxes-list",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )

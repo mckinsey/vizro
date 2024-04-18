@@ -51,6 +51,5 @@ class TextArea(VizroBaseModel):
                     className="text-area",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )
