@@ -3,12 +3,12 @@
 ## Which LLMs are supported by Vizro-AI?
 Vizro-AI currently supports OpenAI models as follows:
 
-- gpt-3.5-turbo-0613 (to be deprecated on June 13, 2024)
-- gpt-4-0613
-- gpt-3.5-turbo-1106 (under testing)
-- gpt-4-1106-preview (under testing, not suitable for production use)
-- gpt-3.5-turbo-0125
-- gpt-3.5-turbo
+- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
+- `gpt-4-0613`
+- `gpt-3.5-turbo-1106` (under testing)
+- `gpt-4-1106-preview` (under testing, not suitable for production use)
+- `gpt-3.5-turbo-0125`
+- `gpt-3.5-turbo`
 
 These models offer different levels of performance and
 cost. In general, the `gpt-3.5-turbo` collection provides the most cost-effective models,
