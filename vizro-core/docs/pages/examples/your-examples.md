@@ -24,7 +24,8 @@ If you have something you'd like us to include on the list, or spot something th
 
 ## Examples on GitHub
 <!-- vale off -->
-* [Proof of concept example by viiviandias](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb)
-* [Amazon sales analysis by Bottleneck44](https://github.com/Bottleneck44/Amazon-Sales-Analysis/blob/main/Amazon-analysis.ipynb)
-* [Opioid interactive map by rmejia41](https://github.com/rmejia41/vizro-opioid-interactive-app/blob/main/src/app.py)
+* [Personal Vizro app demos by Vizro team member `huong-li-nguyen`](https://github.com/huong-li-nguyen/vizro-app-demos).
+* [Proof of concept example by `viiviandias`](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb).
+* [Amazon sales analysis by `Bottleneck44`](https://github.com/Bottleneck44/Amazon-Sales-Analysis/blob/main/Amazon-analysis.ipynb).
+* [Opioid interactive map by `rmejia41`](https://github.com/rmejia41/vizro-opioid-interactive-app/blob/main/src/app.py).
 <!-- vale on -->

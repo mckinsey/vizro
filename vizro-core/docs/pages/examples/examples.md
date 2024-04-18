@@ -17,27 +17,9 @@ You can find the code for each of the charts, for each page of the dashboard, in
 
     If you have any problems running the example code, please [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository.
 
-The Vizro demo is deployed...
-
-<!-- TO DO -- I need a bit of help here!
-
-* Explain in brief how we deploy it, to help others wanting to do the same
-* Probably should link to https://vizro.readthedocs.io/en/stable/pages/user-guides/run/#deployment
--->
-
 ## Vizro features
-The [`examples/features` folder](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/features) of the `vizro-core` package within [Vizro's GitHub repository](https://github.com/mckinsey/vizro) contains an example that illustrates all Vizro's features. The code is available as a Python script, and there is an alternative `yaml_version` that offers the same example but via YAML configuration.
+The [`examples/features` folder](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/features) of the `vizro-core` package within [Vizro's GitHub repository](https://github.com/mckinsey/vizro) contains an example that illustrates Vizro's features. The code is available as a Python script, plus there is an alternative `yaml_version` that offers the same example as the pydantic model but via YAML configuration.
 
-<!-- TO DO -- I need a bit of help here!
+!!! info "Ways to configure a dashboard"
 
-* Anything to add about the YAML config -- I don't think we've documented this much elsewhere in the docs have we?
-* Any differences between the two
-* Preferred way of working?
--->
-
-## Example in the _dev folder
-
-<!-- TO DO -- I need a bit of help here!
-
-* What is this? Should a user be looking at it? Is the name suitable?
--->
+    In most cases, the pydantic model should be your preferred method of dashboard configuration, but you can also [define a dashboard with YAML, JSON, or as a Python dictionary](../user-guides/dashboard.md).
