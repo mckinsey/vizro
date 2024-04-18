@@ -1,6 +1,6 @@
 # Examples from Vizro users
 
-This page lists videos, blog posts, and examples of Vizro usage in repositories on GitHub. We've curated the list so it is a snapshot of projects and content that Vizro users have created.
+This page lists videos, blog posts, and examples of Vizro usage in repositories on GitHub. We've curated the list so it is a snapshot of the best projects and content that Vizro users have created.
 
 If you have something you'd like us to include on the list, or spot something that we should include, let us know:
 
@@ -16,11 +16,12 @@ If you have something you'd like us to include on the list, or spot something th
 ## Videos
 
 * From [Charming Data on YouTube](https://www.youtube.com/@CharmingData):
-    * [Build Python Data Apps with Vizro Dash](https://www.youtube.com/watch?v=wmQ6_GZ0zSk)
-    * [Introduction to Vizro Actions - Plotly Dash](https://www.youtube.com/watch?v=bom-9275Cic&t=8s)
-    * [Use Dash AG Grid within a Vizro app](https://www.youtube.com/watch?v=YvtVcXwQw0E)
+    * [Build Python Data Apps with Vizro Dash](https://www.youtube.com/watch?v=wmQ6_GZ0zSk).
+    * [Introduction to Vizro Actions - Plotly Dash](https://www.youtube.com/watch?v=bom-9275Cic&t=8s).
+    * [Use Dash AG Grid within a Vizro app](https://www.youtube.com/watch?v=YvtVcXwQw0E).
 
 ## Blog posts
+* [Introducing Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db).
 
 ## Examples on GitHub
 <!-- vale off -->
