@@ -9,6 +9,6 @@ from vizro_ai.chains._llm_models import _get_llm_model
         "gpt-3.5-turbo-instruct"  # model not supported
     ],
 )
-def test_get_llm_model_invalid_model_name(model):
+def test_get_llm_model_invalid_model(model):
     with pytest.raises(ValueError, match=f"Model {model} not found!"):
         _get_llm_model(model=model)
