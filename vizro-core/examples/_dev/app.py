@@ -82,14 +82,14 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
 
 @capture("graph")
 def bar(x: str, y: str, color: str, barmode: str, title: str, data_frame: pd.DataFrame = None):
-    fig = px.bar(data_frame=data_frame, x=x, y=y, color=color, barmode=barmode, title=title, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
-    fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0), title_pad_l=0, title_pad_t=16,
+    fig = px.bar(data_frame=data_frame, x=x, y=y, color=color, barmode=barmode, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
+    fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0, t=0), title_pad_t=0,
                       legend=dict(
                           orientation="h",
                           yanchor="bottom",
-                          y=-0.7,
+                          y=-0.6,
                           xanchor="left",
-                          x=-0.05
+                          x=-0.1
                       )
                       )
     return fig
@@ -148,7 +148,7 @@ page_exec = vm.Page(
                            [5, 5, 6, 6, 6],
                            [7, 7, 7, 8, 8],
                            [7, 7, 7, 8, 8]],
-                     row_min_height="120px",
+                     row_min_height="100px",
                      col_gap="32px", row_gap="32px"),
     components=[
         KPI(title="Revenue", value="$10.5 M", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
