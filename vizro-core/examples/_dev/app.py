@@ -12,22 +12,23 @@ from dash import html
 from typing import Literal
 
 def create_sales_df():
-    # Generate sample sales data for the last two years
-    this_year_sales = np.random.randint(1000, 5000, size=12)
-    last_year_sales = np.random.randint(1000, 5000, size=12)
-
     # Define months and years
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    years = ['2022'] * 12 + ['2023'] * 12
+    years = ['Last Year'] * 12 + ['Current'] * 12
 
     # Create DataFrame
     df = pd.DataFrame({
         'Month': months * 2,
-        'Sales': np.concatenate([last_year_sales, this_year_sales]),
-        'Period': pd.Categorical(years, categories=['2022', '2023'], ordered=True)
+        'Revenue': np.concatenate([np.random.randint(8000000, 13000000, size=12), np.random.randint(8000000, 13000000, size=12)]),
+        'Sales': np.concatenate([np.random.randint(3000000, 6000000, size=12), np.random.randint(3000000, 6000000, size=12)]),
+        'Profit': np.concatenate([np.random.randint(800000, 1300000, size=12), np.random.randint(800000, 1300000, size=12)]),
+        'Customers': np.concatenate([np.random.randint(20000, 28000, size=12), np.random.randint(20000, 28000, size=12)]),
+        'Products': np.concatenate([np.random.randint(95000, 130000, size=12), np.random.randint(95000, 130000, size=12)]),
+        'Period': pd.Categorical(years, categories=['Last Year', 'Current'], ordered=True)
     })
-
     return df
+
+
 
 # TODO: Think more about potential API - this is just a quick mock-up. Types will likely change.
 class KPI(vm.VizroBaseModel):
@@ -79,18 +80,57 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
     return fig
 
 
-
-
-
-
 df = create_sales_df()
 df_tips= px.data.tips()
+
+
+tabs_section = vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Revenue",
+                    components=[
+                        vm.Graph(figure=px.bar(df, x="Month", y="Revenue", color="Period", barmode="group", title="Total Revenue")),
+                    ],
+                ),
+                vm.Container(
+                    title="Sales",
+                    components=[
+                        vm.Graph(figure=px.bar(df, x="Month", y="Sales", color="Period", barmode="group",
+                                               title="Total Sales")),
+                    ],
+                ),
+                vm.Container(
+                    title="Profit",
+                    components=[
+                        vm.Graph(figure=px.bar(df, x="Month", y="Profit", color="Period", barmode="group",
+                                               title="Total Profit")),
+                    ],
+                ),
+                vm.Container(
+                    title="Customers",
+                    components=[
+                        vm.Graph(figure=px.bar(df, x="Month", y="Customers", color="Period", barmode="group",
+                                               title="Total Customers")),
+                    ],
+                ),
+                vm.Container(
+                    title="Products",
+                    components=[
+                        vm.Graph(figure=px.bar(df, x="Month", y="Products", color="Period", barmode="group",
+                                               title="Total Products")),
+                    ],
+                ),
+            ],
+        )
+
+
+
 
 page_exec = vm.Page(
     title="Executive View",
     layout=vm.Layout(grid=[[0, 1, 2, 3, 4],
-                           [5, 5, 5, 6, 6],
-                           [5, 5, 5, 6, 6],
+                           [5, 5, 6, 6, 6],
+                           [5, 5, 6, 6, 6],
                            [7, 7, 7, 8, 8],
                            [7, 7, 7, 8, 8]],
                      row_min_height="120px",
@@ -101,7 +141,7 @@ page_exec = vm.Page(
         KPI(title="Profit", value="$1.3 M", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"),
         KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
-        vm.Graph(figure=px.bar(df, x="Month", y="Sales", color="Period", barmode="group", title="Annual Revenue")),
+        tabs_section,
         vm.Graph(figure=heatmap(df, title="Traffic Channels")),
         vm.Container(
             title="Sales Breakdown",
