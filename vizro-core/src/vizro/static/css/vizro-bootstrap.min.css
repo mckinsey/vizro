@@ -12722,24 +12722,56 @@ li {
   line-height: 16px;
   color: var(--text-secondary);
 }
-.form-check-large .form-check-input {
+.form-check-lg {
+  line-height: 20px;
+  min-height: auto;
+  padding-left: 32px;
+}
+.form-check-lg .form-check-input {
   width: 20px;
   height: 20px;
   border-width: 2px;
+  margin-left: -28px;
 }
-.form-check-large .form-check-label {
-  gap: 8px;
+.form-check-lg .form-check-label {
+  line-height: 20px;
 }
 .form-check.disabled .form-check-label {
   color: var(--text-disabled);
 }
 
+.vizro_light .form-check-input:checked[type=checkbox], [data-bs-theme=light] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_light .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
 .vizro_dark .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .form-check-input:checked[type=checkbox] {
   --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)'/%3E%3C/svg%3E");
 }
+.vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
 
-.vizro_light .form-check-input:checked[type=checkbox], [data-bs-theme=light] .form-check-input:checked[type=checkbox] {
+/***
+Since the above 2 css deinifitions have athe same specificity
+the last one will be applied. So we need to add the below
+css definitions to make sure the correct css is applied
+if the parent has a dark mode but the child is rendering a light mode
+**/
+.vizro_light .vizro_dark .form-check-input:checked[type=checkbox], .vizro_light [data-bs-theme=dark] .form-check-input:checked[type=checkbox], [data-bs-theme=light] .vizro_dark .form-check-input:checked[type=checkbox], [data-bs-theme=light] [data-bs-theme=dark] .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_light .vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], .vizro_light [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] .vizro_dark .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=light] [data-bs-theme=dark] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(255, 255, 255, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
+}
+
+.vizro_dark .vizro_light .form-check-input:checked[type=checkbox], .vizro_dark [data-bs-theme=light] .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .vizro_light .form-check-input:checked[type=checkbox], [data-bs-theme=dark] [data-bs-theme=light] .form-check-input:checked[type=checkbox] {
   --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='8' height='7' viewBox='0 0 8 7' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.5 1.25L6.25 0L2.5 3.75L1.25 2.5L0 3.75L2.5 6.25L7.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)'/%3E%3C/svg%3E");
+}
+.vizro_dark .vizro_light .form-check-lg .form-check-input:checked[type=checkbox], .vizro_dark [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] .vizro_light .form-check-lg .form-check-input:checked[type=checkbox], [data-bs-theme=dark] [data-bs-theme=light] .form-check-lg .form-check-input:checked[type=checkbox] {
+  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg width='11' height='9' viewBox='0 0 11 9' xmlns='http://www.w3.org/2000/svg' data-testid='checkmark-icon'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 1.25L9.25 0L3.5 5.75L1.25 3.5L0 4.75L3.5 8.25L10.5 1.25Z' fill='rgba(20, 23, 33, 0.8784313725)' fill-opacity='0.88'/%3E%3C/svg%3E");
 }
 
 /** This is an auto-generated file, don't edit it. **/
