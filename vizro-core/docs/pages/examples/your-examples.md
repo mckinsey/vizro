@@ -1,16 +1,30 @@
-# Your examples
+# Examples from Vizro users
 
-This page lists the examples we've found and liked that use Vizro, including videos, blog posts and dashboard code.
+This page lists videos, blog posts, and examples of Vizro usage in repositories on GitHub. We've curated the list so it is a snapshot of projects and content that Vizro users have created.
 
-This page is a bit like [Awesome-Kedro](https://github.com/kedro-org/awesome-kedro) in that it covers a set of Vizro-related third party content.
+If you have something you'd like us to include on the list, or spot something that we should include, let us know:
+
+* by emailing (made-up-vizro-email TO DO),
+* or you can [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository,
+* better still, you can [make a PR to contribute](../explanation/contributing.md) to this page.
 
 
-The text that introduces the page explains that the Vizro team curate the list so if you spot something that we should include, let us know by emailing (made-up-vizro-email @quantumblack.com) or making an issue and we will make a PR to add the example. Or point to the contribution process and suggest they create a PR on the page with the item they want to add.
+!!! note
 
-We should also note that we don't take responsibility for third party content and haven't tested it to ensure it works at the time of publication nor with later releases of Vizro.
+    The Vizro team and QuantumBlack, AI by McKinsey, do not take responsibility for third party content. In curating the list below, we may inspect or test an example at time of inclusion, but cannot guarantee the content thereafter.
 
 ## Videos
 
+* From [Charming Data on YouTube](https://www.youtube.com/@CharmingData):
+    * [Build Python Data Apps with Vizro Dash](https://www.youtube.com/watch?v=wmQ6_GZ0zSk)
+    * [Introduction to Vizro Actions - Plotly Dash](https://www.youtube.com/watch?v=bom-9275Cic&t=8s)
+    * [Use Dash AG Grid within a Vizro app](https://www.youtube.com/watch?v=YvtVcXwQw0E)
+
 ## Blog posts
 
-## Example dashboards
+## Examples on GitHub
+<!-- vale off -->
+* [Proof of concept example by viiviandias](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb)
+* [Amazon sales analysis by Bottleneck44](https://github.com/Bottleneck44/Amazon-Sales-Analysis/blob/main/Amazon-analysis.ipynb)
+* [Opioid interactive map by rmejia41](https://github.com/rmejia41/vizro-opioid-interactive-app/blob/main/src/app.py)
+<!-- vale on -->
