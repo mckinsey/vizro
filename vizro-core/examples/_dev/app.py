@@ -79,14 +79,14 @@ def stacked_bar(data_frame=None):
         name='North', marker_color='#1A85FF', orientation="h"))
     fig.add_trace(go.Bar(
         y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
-        x=[19, 28, 20, 35, 23],
-        text=["19%", "28%", "20%", "35%", "23%"],
+        x=[26, 25, 25, 20, 23],
+        text=["26%", "25%", "25%", "20%", "23%"],
         textposition="inside",
         name='West', marker_color='#749ff9', orientation="h"))
     fig.add_trace(go.Bar(
         y=['Products', 'Customers', 'Profit', 'Sales', 'Revenue'],
-        x=[26, 25, 25, 20, 30],
-        text=["26%", "25%", "25%", "20%", "30%"],
+        x=[19, 28, 20, 35, 30],
+        text=["19%", "28%", "20%", "35%", "30%"],
         textposition="inside",
         name='South', marker_color='#a3baf3', orientation="h"))
     fig.add_trace(go.Bar(
@@ -95,7 +95,7 @@ def stacked_bar(data_frame=None):
         text=["27%", "25%", "25%", "30%", "20%"],
         textposition="inside",
         name='East', marker_color='#c9d6eb', orientation="h"))
-    fig.update_layout(title="Regional distribution", barmode='relative', title_pad_l=0, title_pad_t=0, margin=dict(l=0, r=0, t=32))
+    fig.update_layout(title="Regional distribution", barmode='relative', title_pad_l=0, title_pad_t=4, margin=dict(l=0, r=0, t=32))
     return fig
 
 @capture("graph")
