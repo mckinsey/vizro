@@ -88,18 +88,26 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
+Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/get-started/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+
+!!! example "Returned by Vizro-AI"
+
+    ```python
+    from vizro.models.types import capture
+    import vizro.plotly.express as px
+    import pandas as pd
+    @capture('graph')
+    def custom_chart(data_frame):
+        df = data_frame.groupby(['year', 'continent'])['gdpPercap'].mean().unstack().reset_index()
+        fig = px.line(df, x='year', y=['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'])
+        return fig
+
+    fig = custom_chart(data_frame=df)
+    ```
+
 <!-- vale off -->
 ### 4. Get an explanation with your chart
 <!-- vale on -->
-
-
-    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
-
-    ```python
-    fig = px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year':'Year', 'gdpPercap':'GDP Per Cap'}, title='')
-    ```
-
-### 4. Get an explanation with your chart
 
 Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
 
