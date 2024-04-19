@@ -7,7 +7,14 @@ from vizro_ai.chains import ModelConstructor
 from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
+from vizro_ai.utils.helper import (
+    DebugFailure,
+    _debug_helper,
+    _display_markdown_and_chart,
+    _exec_code,
+    _is_jupyter,
+    _return_fig_object,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +111,7 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(
-        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
+        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3, embed: bool = False
     ) -> Union[None, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -113,6 +120,7 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
+            embed: Flag to indicate if the chart will be used within a dashboard
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
@@ -132,5 +140,8 @@ class VizroAI:
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
         # TODO Tentative for integration test
+        if embed:
+            dash_fig = _return_fig_object(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+            return dash_fig
         if self._return_all_text:
             return output_dict

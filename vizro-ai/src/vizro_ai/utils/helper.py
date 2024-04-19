@@ -80,6 +80,19 @@ def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insight
     _exec_code(code_snippet, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
 
 
+def _return_fig_object(code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True):
+    from IPython import get_ipython
+
+    namespace = get_ipython().user_ns if is_notebook_env else globals()
+    if local_args:
+        namespace.update(local_args)
+    _safeguard_check(code)
+    exec(code, namespace)  # nosec
+    dashboard_ready_fig = namespace["fig"]
+
+    return dashboard_ready_fig
+
+
 class DebugFailure(Exception):
     """Debug Failure."""
 
