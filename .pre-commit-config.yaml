@@ -84,12 +84,12 @@ repos:
       - id: gitleaks
         name: gitleaks (protect)
         description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks protect --verbose --redact --staged
+        entry: gitleaks protect --verbose --staged
         language: golang
       - id: gitleaks
         name: gitleaks (detect)
         description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks detect --verbose --redact --baseline-path .gitleaks-report.json
+        entry: gitleaks detect --verbose --baseline-path gitleaks-report.json
         language: golang
 
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
