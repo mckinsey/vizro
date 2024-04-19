@@ -25,7 +25,7 @@ def test_chart_with_explanation():
         all_of(contains_string("px.bar"), contains_string("x='year'"), contains_string("y='gdpPercap'")),
     )
     assert_that(
-        resp["business_insights"], any_of(contains_string("GDP in the United States"), contains_string("GDP in the US"))
+        resp["business_insights"], any_of(contains_string("GDP per capita in the United States"), contains_string("GDP in the US"))
     )
     assert_that(
         resp["code_explanation"],
