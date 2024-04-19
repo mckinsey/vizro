@@ -79,7 +79,7 @@ And that's it! By passing the prepared data and written visualization request, V
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "create a line graph for GDP per capita for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
+        vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
         ```
     === "Result"
         [![LineGraph]][LineGraph]
