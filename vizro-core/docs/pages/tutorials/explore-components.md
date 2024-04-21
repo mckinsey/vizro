@@ -260,7 +260,7 @@ There are two types of control:
 * [`Parameters`][vizro.models.Parameter] enable users to change arguments or properties of the components, such as adjusting colors.
 
 
-The guides for [Filters](../user-guides/filters.md) and [Parameters](../user-guides/parameters.md) explain how to apply [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter]. For further customization, refer to the [guide on selectors](../user-guides/selectors.md).
+The guides on [`How to use Filters`](../user-guides/filters.md) and [`How to use Parameters`](../user-guides/parameters.md) provide instructions on their application. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 To link a control to a component, use the id assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
 
@@ -325,7 +325,12 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
 
         [FirstPage4]: ../../assets/tutorials/dashboard/dashboard24.png
 
-Fantastic job! You have completed first dashboard page and gained valuable skills to [create an initial figure on a dashboard page](#2-create-a-first-dashboard-page), [add extra components](#22-add-further-components), [arrange them in a layout configuration](#23-configure-the-layout), and [set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
+Fantastic job! You have completed first dashboard page and gained valuable skills to:
+
+1. [Create an initial figure on a dashboard page](#2-create-a-first-dashboard-page)
+2. [Add extra components](#22-add-further-components)
+3. [Arrange them in a layout configuration](#23-configure-the-layout)
+4. [Set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
 
 ## 3. Create a second dashboard page
 
@@ -468,7 +473,7 @@ for parameters](../user-guides/parameters.md).
 
 ### 3.1. Customize with selectors
 
-The code in the example above uses two different types of [`selector` objects](../user-guides/selectors.md), namely
+The code in the example above uses two different types of [`selector`](../user-guides/selectors.md) objects, namely
 [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider] upon the
 [`Parameters`][vizro.models.Parameter]. The `selectors` enable configuration of the controls to customize their behavior and appearance.
 
@@ -669,6 +674,6 @@ to [Navigation](../user-guides/navigation.md).
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
 - How to create you own components under [custom components](../user-guides/custom-components.md).
-- How to add custom styling using [custom css](../user-guides/assets.md).
+- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or js files.
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
