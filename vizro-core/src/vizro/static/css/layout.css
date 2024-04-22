@@ -142,7 +142,8 @@
   overflow: auto;
 }
 
-#dashboard-title, #page-title {
+#dashboard-title,
+#page-title {
   margin: 0;
 }
 
