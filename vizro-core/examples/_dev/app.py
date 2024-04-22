@@ -1,27 +1,20 @@
 """Example to show dashboard configuration."""
-
-import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.managers import data_manager
-
-
-def load_iris_data(n):
-    """Blah blah blah."""
-    iris = px.data.iris()
-    return iris.sample(n)  # (2)!
-
-
-data_manager["iris"] = lambda: load_iris_data(n=10)  # (3)!
-data_manager["iris2"] = lambda: load_iris_data(n=30)  # (3)!
+import vizro.models as vm
+from vizro.tables import dash_ag_grid, dash_data_table
+df = px.data.iris()
 
 page = vm.Page(
-    title="My first page",
+    title="My first dashboard",
     components=[
-        vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),  # (1)!
-        vm.Graph(figure=px.scatter("iris2", x="sepal_length", y="petal_width", color="species")),  # (1)!
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", title="Title - Plotly Chart")),
+        vm.AgGrid(title="Title - AG Grid", figure=dash_ag_grid(data_frame=df)),
+        vm.Table(title="Title - DataTable", figure=dash_data_table(data_frame=df)),
     ],
-    controls=[vm.Filter(column="species")],
+    controls=[
+        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
