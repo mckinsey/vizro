@@ -13,33 +13,32 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
 
     ---
 
-    Quickstart tutorial to explore key features.
+    [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install/) </br>
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart/)
 
-    [:octicons-arrow-right-24: Get started](pages/get-started/install/)
 
 -   :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    Step-by-step guides to Vizro-AI.
-
-    [:octicons-arrow-right-24: How-to guides](pages/user-guides/run-vizro-ai/)
+    [:octicons-arrow-right-24: Ways to run Vizro-AI](pages/user-guides/run-vizro-ai/)</br>
+    [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts/)</br>
+    [:octicons-arrow-right-24: Use different languages](pages/user-guides/use-different-languages/)</br>
+    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase/)
 
 -   :material-format-font:{ .lg .middle } __Find out more__
 
     ---
 
-    FAQs and code safety guides.
-
-    [:octicons-arrow-right-24: Find out more](pages/explanation/why-vizro/)
+    [:octicons-arrow-right-24: FAQs](pages/explanation/faq/) </br>
+    [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard/) </br>
+    [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai//)
 
 -   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
 
     ---
 
-    Vizro documentation.
-
-    [:octicons-arrow-right-24: Vizro](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
+    [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
 
 
 </div>
