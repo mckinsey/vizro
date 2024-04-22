@@ -287,14 +287,14 @@
         "row_gap": {
           "title": "Row Gap",
           "description": "Gap between rows in px. Defaults to 12px.",
-          "default": "12px",
+          "default": "24px",
           "pattern": "[0-9]+px",
           "type": "string"
         },
         "col_gap": {
           "title": "Col Gap",
           "description": "Gap between columns in px. Defaults to 12px.",
-          "default": "12px",
+          "default": "24px",
           "pattern": "[0-9]+px",
           "type": "string"
         },
