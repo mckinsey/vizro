@@ -8,3 +8,11 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 .form-check:last-of-type {
   margin-bottom: 0;
 }
+
+.navbar .nav-link {
+  height: 4rem;
+}
+
+.card {
+  padding: 1.5rem;
+}
