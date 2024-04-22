@@ -7,10 +7,6 @@ defaults:
 on:
   push:
     branches: [main]
-  # TODO: delete before merge to main
-  pull_request:
-    branches:
-      - main
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
