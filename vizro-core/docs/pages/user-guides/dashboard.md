@@ -1,6 +1,6 @@
 # How to create a dashboard
 This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either
-pydantic models, Python dictionaries, yaml, or json.
+pydantic models, Python dictionaries, YAML, or JSON.
 
 To create a dashboard:
 

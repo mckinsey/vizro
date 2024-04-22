@@ -86,3 +86,4 @@ subpages
 Plotly's
 Gunicorn
 dataframe
+streamlit
