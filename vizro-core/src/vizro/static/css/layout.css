@@ -170,13 +170,6 @@
   color: var(--text-active);
 }
 
-.collapse-button-tooltip {
-  height: 24px;
-  left: -12px;
-  position: relative;
-  top: 36px;
-}
-
 .collapse-icon-div {
   display: flex;
   justify-content: center;
@@ -196,12 +189,8 @@
     flex-direction: column;
   }
 
-  .collapse-button-tooltip {
-    top: 28px;
-  }
-
   .collapse-icon-div {
-    padding-top: 28px;
+    padding-top: 20px;
   }
 
   #page-header {
@@ -218,12 +207,8 @@
 }
 
 @media (height <= 576px) {
-  .collapse-button-tooltip {
-    top: 28px;
-  }
-
   .collapse-icon-div {
-    padding-top: 28px;
+    padding-top: 20px;
   }
 
   #page-header {
