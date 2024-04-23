@@ -11,7 +11,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
+    - cron: "14 04 * * [0,6]" # run everyday 14:02 UTC
 
 env:
   PYTHONUNBUFFERED: 1
@@ -43,6 +43,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+          ref: qa/vizro_ai_resp_time
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
