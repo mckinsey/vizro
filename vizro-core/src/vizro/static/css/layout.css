@@ -13,7 +13,7 @@
   gap: var(--spacing-06);
   overflow: auto;
   padding: 24px 24px 0;
-  width: 296px;
+  width: 324px;
 }
 
 #left-side {
@@ -148,14 +148,14 @@
 }
 
 #logo {
-  height: 40px;
+  height: 60px;
 }
 
 #logo-and-title {
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 8px;
   height: 100%;
 }
 
