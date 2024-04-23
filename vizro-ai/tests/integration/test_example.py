@@ -11,7 +11,7 @@ df = px.data.gapminder()
 
 @pytest.mark.parametrize(
     "model_name",
-    ["gpt-3.5-turbo-0613", "gpt-4-0613"],
+    ["gpt-3.5-turbo", "gpt-4-0613"],
     ids=["gpt-3.5", "gpt-4.0"],
 )
 def test_chart(model_name):
@@ -31,7 +31,7 @@ def test_chart(model_name):
 
 @pytest.mark.parametrize(
     "model_name",
-    ["gpt-3.5-turbo-0613", "gpt-4-0613"],
+    ["gpt-3.5-turbo", "gpt-4-0613"],
     ids=["gpt-3.5", "gpt-4.0"],
 )
 def test_chart_with_explanation(model_name):
