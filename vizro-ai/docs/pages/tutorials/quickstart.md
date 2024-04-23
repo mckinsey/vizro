@@ -1,55 +1,76 @@
 # Get started with Vizro-AI
-This tutorial serves as an introduction to Vizro-AI.
-It is a step-by-step guide to help you experiment and create your initial Vizro chart using Vizro-AI, our English-to-visualization package. The goal is to provide you with the necessary knowledge to explore further into our documentation.
+This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
 
-## Let's get started!
-### 1. Install Vizro-AI and its dependencies
-If you haven't already installed `vizro_ai` package, follow the [installation guide](../user-guides/install.md)
-to do so inside a virtual environment.
+<!-- vale off -->
+### 1. Install Vizro and its dependencies
+<!-- vale on -->
 
-??? tip "Beginners/Code novices"
-    If you consider yourself a beginner to python and/or virtual environments, there is also a section in the [installation guide](../user-guides/install.md) that avoids any use of terminals and relies only upon a graphical user interface.
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
-### 2. Set up jupyter notebook
-A good way to initially explore Vizro-AI is from a Jupyter notebook.
-Activate your previously created virtual environment and install Jupyter using the following command:
+<!-- vale off -->
+### 2. Open a Jupyter Notebook
+<!-- vale on -->
 
-```console
-pip install jupyter
-```
+A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
-Next, you can start your jupyter notebook in your activated environment by:
+??? "If you haven't used Jupyter before..."
 
-```console
+    You may need to install the Jupyter package if you . From the terminal window:
+
+    ```bash
+    pip install jupyter
+    ```
+
+Activate the virtual environment you used to install Vizro, and start a new Notebook as follows:
+
+```bash
 jupyter notebook
 ```
-This opens a browser tab, and you can navigate to your preferred folder for this new project. Create a new notebook Python 3 (ipykernel) notebook from the "New" dropdown. Make sure that you select your environment as kernel.
 
-??? tip "Beginners/Code novices"
-    If you followed the beginners steps in the [installation guide](../user-guides/install.md), you should already be set, and you can continue below.
+The command opens Jupyter in a browser tab. Use the UI to navigate to a preferred folder in which to create this new dashboard.
 
-Confirm that `vizro_ai` is installed by typing the following into a jupyter cell in your notebook and running it.
+Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
 
 ```py
 import vizro_ai
+
 print(vizro_ai.__version__)
 ```
 
-You should see a return output of the version.
+You should see a return output of the form `x.y.z`.
 
-### 3. Large Language Model (LLM) API KEY
+<!-- vale off -->
+### 3. Create your first chart using Vizro-AI
+<!-- vale on -->
 
-A prerequisite to use Vizro-AI is access to one of the supported LLMs. Refer to the [user guide](../user-guides/api-setup.md) on how to set up the API.
+Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
 
-### 4. Ask your first question using Vizro-AI
+Let's go through the code step-by-step. First, we create a `pandas` DataFrame using the gapminder data from `plotly express`:
 
-For your first visualization, we will create a chart illustrating the GDP of various continents while including a reference line for the average.
+```python
+from vizro_ai import VizroAI
+import vizro.plotly.express as px
 
-Let's go through the code step-by-step to understand how to use Vizro-AI. First, we create `pandas` DataFrame using the gapminder data from `plotly express`. Next, we instantiate `VizroAI` to call the `plot()` method to generate your visualization.
+df = px.data.gapminder()
+```
 
-By passing your prepared data and your written visualization request to this method, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and then it proceeds to render the chart by executing the generated code.
+
+Next, we instantiate `VizroAI`:
+
+```python
+vizro_ai = VizroAI()
+```
+
+Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
+
+```python
+vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
+```
+
+And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
+
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
@@ -58,22 +79,40 @@ By passing your prepared data and your written visualization request to this met
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "describe the composition of gdp in continent and color by continent, and add a horizontal line for avg gdp")
+        vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
         ```
     === "Result"
-        [![BarChart]][BarChart]
+        [![LineGraph]][LineGraph]
 
-    [BarChart]: ../../assets/tutorials/chart/GDP_Composition_Bar.png
+    [LineGraph]: ../../assets/tutorials/chart/GDP_Composition_Graph.png
 
-The created chart is interactive, and you can hover over the data for additional information.
+The chart created is interactive: you can hover over the data for more information.
 
-### 5. Get an explanation with your chart
+Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/get-started/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
 
-By passing `explain=True` to the `plot()` method will provide additional insights in addition to the rendered chart.
+!!! example "Returned by Vizro-AI"
 
-Let's create another example and read through the additional information.
+    ```python
+    from vizro.models.types import capture
+    import vizro.plotly.express as px
+    import pandas as pd
+    @capture('graph')
+    def custom_chart(data_frame):
+        df = data_frame.groupby(['year', 'continent'])['gdpPercap'].mean().unstack().reset_index()
+        fig = px.line(df, x='year', y=['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'])
+        return fig
+
+    fig = custom_chart(data_frame=df)
+    ```
+
+<!-- vale off -->
+### 4. Get an explanation with your chart
+<!-- vale on -->
+
+Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
 
 !!! example "Specify  `explain=True`"
+
     === "Code for the cell"
         ```py
         vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
@@ -83,8 +122,11 @@ Let's create another example and read through the additional information.
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 
-### 6. Explore further
+<!-- vale off -->
+### 5. Explore further
+<!-- vale on -->
 
-Now, you have created your first charts with Vizro-AI and are ready to explore the documentation further.
 
-A good place to start would be to go through the [model configuration](../user-guides/model-config.md) or different [run options](../user-guides/run-vizro-ai.md) including application integration.
+Now, you have created your first charts with Vizro-AI you are ready to explore further.
+
+A good place to start would be to review the different how-to guides, such as [how to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create visualizations using different languages](../user-guides/use-different-languages.md), and [how to create advanced charts](../user-guides/create-advanced-charts.md).

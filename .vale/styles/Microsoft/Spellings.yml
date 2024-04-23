@@ -1,0 +1,10 @@
+extends: spelling
+message: "Did you really mean '%s'?"
+level: error
+ignorecase: true
+ignore:
+  # Located at StylesPath/
+  - Microsoft/ignore.txt
+  - Microsoft/ignore-names.txt
+filters:
+  - '[vV]izro.*\b'

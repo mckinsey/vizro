@@ -21,6 +21,7 @@ jobs:
   test-integration-vizro-ai:
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
 
+    environment: vizro_secrets
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

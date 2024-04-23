@@ -1,16 +1,16 @@
 # How to use pages
 This guide shows you how to add pages to your dashboard and customize the URL paths if needed.
-A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (e.g., chart/components, tables, and text)
-and configure your dashboard interactions (e.g. filters and parameters).
+A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (for example, chart/components, tables, and text)
+and configure your dashboard interactions (such as filters and parameters).
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, where you can insert your [`Page`][vizro.models.Page].
 
-## Creating a page
+## Create a page
 
 A [`Page`][vizro.models.Page] is split up into four main containers:
 
 1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
-2. The **control container**  where you can add your `controls` (see e.g. [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
+2. The **control container**  where you can add your `controls` (see [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 3. The **page header** that contains the page title and the theme toggle switch button
 4. The **component container** where you can add your [components](components.md) to visualize your data
 
@@ -21,11 +21,11 @@ A [`Page`][vizro.models.Page] is split up into four main containers:
 
 To create and add a page to your dashboard, do the following steps:
 
-1. Provide a `title` to your [`Page`][vizro.models.Page]
+1. Set a `title` for your [`Page`][vizro.models.Page]
 2. Configure your `components`, see our guide on the [various options](components.md)
 3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
-5. (optional) Provide a `description` of your `Page` for the app's [meta tags](https://metatags.io/)
+5. (optional) Give a `description` of your `Page` to the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
     === "app.py"
@@ -56,7 +56,7 @@ To create and add a page to your dashboard, do the following steps:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -98,8 +98,8 @@ To create and add a page to your dashboard, do the following steps:
     You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 
-## Customizing the page URL
-By default, the page URL is automatically generated based on the `id` of the page e.g., if `id="This is my first page"`
+## Customize the page URL
+By default, the page URL is automatically generated based on the `id` of the page. For example, if `id="This is my first page"`
 the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
 Note that the page `id` defaults to be the same as the page `title` if not set.
@@ -107,7 +107,7 @@ If you have multiple pages with the same `title` then you must assign a unique `
 
 The first page always has the URL prefix `/` assigned. A custom URL can, therefore, not be created for the first page.
 
-To customize the page URL, provide a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
+To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
 
 !!! example "Page"
     === "app.py"
@@ -147,7 +147,7 @@ To customize the page URL, provide a valid URL name to the `path` argument of [`
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:

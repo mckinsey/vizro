@@ -1,8 +1,9 @@
 """Unit tests for vizro.models.RadioItems."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -129,19 +130,17 @@ class TestRadioItemsBuild:
 
     def test_radio_items_build(self):
         radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
-        expected_radio_items = html.Div(
+        expected_radio_items = html.Fieldset(
             [
-                html.Label("Title", htmlFor="radio_items_id"),
-                dcc.RadioItems(
+                html.Legend("Title", className="form-label"),
+                dbc.RadioItems(
                     id="radio_items_id",
                     options=["A", "B", "C"],
                     value="A",
-                    className="radio-items-list",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="input-container",
             id="radio_items_id_outer",
         )
 

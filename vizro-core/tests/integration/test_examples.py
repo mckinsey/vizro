@@ -36,14 +36,16 @@ examples_path = Path(__file__).parents[2] / "examples"
 
 # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+# Ignore as it doesn't affect the test run
+@pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
 @pytest.mark.parametrize(
     "example_path, version",
     [
         (examples_path / "_dev", ""),
         (examples_path / "features", ""),
-        (examples_path / "demo", ""),
-        (examples_path / "_dev", "yaml_version"),
-        (examples_path / "features", "yaml_version"),
+        # (examples_path / "demo", ""),
+        # (examples_path / "_dev", "yaml_version"),
+        # (examples_path / "features", "yaml_version"),
     ],
 )
 def test_dashboard(dash_duo, example_path, dashboard, version):

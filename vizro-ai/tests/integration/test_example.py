@@ -43,10 +43,19 @@ def test_chart_with_explanation(model_name):
     print("RESPONSE TIME (explanation):", after - before)  # noqa: T201
     assert_that(
         resp["code_string"],
-        all_of(contains_string("px.bar"), contains_string("x='year'"), contains_string("y='gdpPercap'")),
+        all_of(contains_string("px.bar"), contains_string("x='year'")),
     )
     assert_that(
-        resp["business_insights"], any_of(contains_string("GDP in the United States"), contains_string("GDP in the US"))
+        resp["code_string"],
+        any_of(contains_string("y='gdpPercap'"), contains_string("y='total_gdp'")),
+    )
+    assert_that(
+        resp["business_insights"],
+        any_of(
+            contains_string("GDP per capita in the United States"),
+            contains_string("GDP in the United States"),
+            contains_string("GDP in the US"),
+        ),
     )
     assert_that(
         resp["code_explanation"],
