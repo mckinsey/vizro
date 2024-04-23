@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update gaps and widths in dashboard layout. ([#433](https://github.com/mckinsey/vizro/pull/433))
+- Update gaps, widths and heights in dashboard layout. ([#433](https://github.com/mckinsey/vizro/pull/433))
 
 <!--
 ### Deprecated
