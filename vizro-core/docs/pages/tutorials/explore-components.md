@@ -157,7 +157,7 @@ As you explore the dashboard, you may notice that the current layout could be fu
 
 !!! tip "An introduction to Vizro-AI"
 
-    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/get-started/quickstart/). Vizro-AI enables you to use English, or other languages, to create create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
+    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/get-started/quickstart/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
 
     Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)!
 
