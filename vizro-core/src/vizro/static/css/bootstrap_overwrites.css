@@ -9,7 +9,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin-bottom: 0;
 }
 
-/*TO DO: Check if this should live in vizro-bootstrap*/
+/* TO DO: Check if this should live in vizro-bootstrap */
 .navbar .nav-link {
   height: 4rem;
 }
