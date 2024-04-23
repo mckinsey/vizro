@@ -5,7 +5,7 @@ This tutorial introduces you to Vizro-AI, which is an English-to-visualization p
 ### 1. Install Vizro and its dependencies
 <!-- vale on -->
 
-If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../get-started/install.md).
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
 <!-- vale off -->
 ### 2. Open a Jupyter Notebook
