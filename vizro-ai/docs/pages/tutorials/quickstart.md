@@ -67,6 +67,16 @@ Finally, we call the `plot()` method with our English language instruction, to g
 vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
 ```
 
+!!! warning "Help! My LLM request was unauthorized"
+
+    If you see an error similar to this, your LLM API key is not valid:
+
+    `INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"`
+
+    Make sure you have [set up access to a large language model](../user-guides/install/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
+
+    `export OPENAI_API_KEY="sk-YOURKEY"`.
+
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
