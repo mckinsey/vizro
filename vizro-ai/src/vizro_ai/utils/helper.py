@@ -53,16 +53,15 @@ def _exec_code(
     """Execute code in notebook with correct namespace."""
     from IPython import get_ipython
 
-    if show_fig and "\nfig.show()" not in code:
-        code += "\nfig.show()"
-    elif not show_fig:
-        code = code.replace("fig.show()", "")
     namespace = get_ipython().user_ns if is_notebook_env else globals()
     if local_args:
         namespace.update(local_args)
     _safeguard_check(code)
 
     exec(code, namespace)  # nosec
+
+    dashboard_ready_fig = namespace["fig"]
+    return dashboard_ready_fig
 
 
 def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str) -> None:
@@ -77,20 +76,7 @@ def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insight
     markdown_code = f"```\n{code_snippet}\n```"
     output_text = f"<h4>Insights:</h4>\n\n{biz_insights}\n<br><br><h4>Code:</h4>\n\n{code_explain}\n{markdown_code}"
     display(Markdown(output_text))
-    _exec_code(code_snippet, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
-
-
-def _return_fig_object(code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True):
-    from IPython import get_ipython
-
-    namespace = get_ipython().user_ns if is_notebook_env else globals()
-    if local_args:
-        namespace.update(local_args)
-    _safeguard_check(code)
-    exec(code, namespace)  # nosec
-    dashboard_ready_fig = namespace["fig"]
-
-    return dashboard_ready_fig
+    return _exec_code(code_snippet, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
 
 
 class DebugFailure(Exception):

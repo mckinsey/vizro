@@ -13,7 +13,6 @@ from vizro_ai.utils.helper import (
     _display_markdown_and_chart,
     _exec_code,
     _is_jupyter,
-    _return_fig_object,
 )
 
 logger = logging.getLogger(__name__)
@@ -103,7 +102,7 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(
-        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3, embed: bool = False
+        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
     ) -> Union[None, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -112,7 +111,6 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
-            embed: Flag to indicate if the chart will be used within a dashboard
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
@@ -126,14 +124,11 @@ class VizroAI:
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
         if not explain:
-            _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
+            return _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
         if explain:
-            _display_markdown_and_chart(
+            return _display_markdown_and_chart(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
         # TODO Tentative for integration test
-        if embed:
-            dash_fig = _return_fig_object(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
-            return dash_fig
         if self._return_all_text:
             return output_dict
