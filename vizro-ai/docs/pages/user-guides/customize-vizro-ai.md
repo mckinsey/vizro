@@ -7,7 +7,8 @@ We'll delve into customizing the `ChatOpenAI` model later; for now, let's concen
 
 ## Default usage
 
-`VizroAI` can be initialized without any arguments, in which case the default OpenAI model used is `"gpt-3.5-turbo"`, and temperature is set to 0.
+`VizroAI` can be initialized without any arguments, in which case the default OpenAI model used is `"gpt-3.5-turbo"`, and temperature is set to 0. `"gpt-3.5-turbo"` points to the latest model, it has improved speed and accuracy at responding in requested formats. 
+It’s both good at completing both general tasks and chat-specific ones. - add cost eficiency while mantaining performance. for more complex upgrade. 
 
 ## Choosing OpenAI model
 
@@ -23,14 +24,14 @@ You can customize `VizroAI` by providing OpenAI model name in a string form.
         ```
 We support the following OpenAI models:
 
-| model                | description                                    |
-|----------------------|------------------------------------------------|
-| `gpt-3.5-turbo-0613` | Deprecated on June 13, 2024                    |
-| `gpt-4-0613`         |                                                |
-| `gpt-3.5-turbo-1106` | under testing                                  |
-| `gpt-4-1106-preview` | under testing, not suitable for production use |
-| `gpt-3.5-turbo-0125` | The latest GPT-3.5 Turbo mode                  |
-| `gpt-3.5-turbo`      | Currently points at `gpt-3.5-turbo-0125`       |
+| model                | description                                                                                        |
+|----------------------|----------------------------------------------------------------------------------------------------|
+| `gpt-3.5-turbo-0613` | Deprecated on June 13, 2024                                                                        |
+| `gpt-4-0613`         | The most capable GPT model series to date. Able to do complex tasks, but slower at giving answers. |
+| `gpt-3.5-turbo-1106` | under testing                                                                                      |
+| `gpt-4-1106-preview` | under testing, not suitable for production use                                                     |
+| `gpt-3.5-turbo-0125` | The latest GPT-3.5 Turbo mode                                                                      |
+| `gpt-3.5-turbo`      | Currently points at `gpt-3.5-turbo-0125`                                                           |
 
 ## Customize ChatOpenAI instance
 
