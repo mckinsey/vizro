@@ -21,3 +21,11 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 .accordion-button {
   padding: var(--bs-accordion-btn-padding-y) 0;
 }
+
+.accordion-item .nav-link {
+  padding: 0.5rem 1rem;
+}
+
+.accordion-item .nav-link.active {
+  border-left: 2px solid var(--border-enabled);
+}
