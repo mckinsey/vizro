@@ -11,7 +11,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "6 14 * * *" # run everyday 14:06 UTC
+    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
 env:
   PYTHONUNBUFFERED: 1
@@ -43,7 +43,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
-          ref: qa/vizro_ai_resp_time
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -58,6 +57,11 @@ jobs:
 
       - name: Run vizro-ai integration tests with pypi vizro
         run: |
+          touch report_test_chart_$(date '+%Y-%m-%d').csv
+          touch report_test_chart_with_explanation_$(date '+%Y-%m-%d').csv
+          str="GPT Model, Resp. time"
+          echo $str >> report_test_chart_$(date '+%Y-%m-%d').csv
+          echo report_test_chart_with_explanation_$(date '+%Y-%m-%d').csv
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
           hatch run ${{ matrix.hatch-env }}:test-integration
@@ -71,3 +75,11 @@ jobs:
           cd ../vizro-ai
           hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
           hatch run ${{ matrix.hatch-env }}:test-integration
+
+      - name: Report artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Report
+          path: |
+            /home/runner/work/vizro/vizro/vizro-ai/report*.csv

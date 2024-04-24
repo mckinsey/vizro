@@ -1,4 +1,6 @@
+import csv
 import time
+from datetime import datetime
 
 import plotly.express as px
 import pytest
@@ -7,6 +9,8 @@ from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()
 df = px.data.gapminder()
+today = datetime.today()
+formatted_date = today.strftime("%Y-%m-%d")
 
 
 @pytest.mark.parametrize(
@@ -20,6 +24,7 @@ def test_chart(model_name):
     before = time.time()
     resp = vizro_ai.plot(df, "describe the composition of scatter chart with gdp in continent")
     after = time.time()
+    resp_time = after - before
     print("RESPONSE TIME:", after - before)  # noqa: T201
     assert_that(
         resp["code_string"],
@@ -27,6 +32,9 @@ def test_chart(model_name):
     )
     assert_that(resp["business_insights"], equal_to(None))
     assert_that(resp["code_explanation"], equal_to(None))
+    with open(f"report_test_chart_{formatted_date}.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow([f"{model_name}", f"{resp_time}"])
 
 
 @pytest.mark.parametrize(
@@ -40,6 +48,7 @@ def test_chart_with_explanation(model_name):
     before = time.time()
     resp = vizro_ai.plot(df, "describe the composition of gdp in US", explain=True)
     after = time.time()
+    resp_time = after - before
     print("RESPONSE TIME (explanation):", after - before)  # noqa: T201
     assert_that(
         resp["code_string"],
@@ -61,3 +70,6 @@ def test_chart_with_explanation(model_name):
         resp["code_explanation"],
         all_of(contains_string("https://vizro.readthedocs.io/en/stable/pages/user_guides/custom_charts/")),
     )
+    with open(f"report_test_chart_with_explanation_{formatted_date}.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow([f"{model_name}", f"{resp_time}"])
