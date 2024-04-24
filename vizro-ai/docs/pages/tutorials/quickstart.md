@@ -76,6 +76,8 @@ vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each co
     Make sure you have [set up access to a large language model](../user-guides/install/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
 
     `export OPENAI_API_KEY="sk-YOURKEY"`.
+    
+    The call above makes the API key available from that terminal instance. If you want to access Vizro-AI from a Notebook, you should then run `jupyter notebook`  (or just work within that terminal to run your Python script in `app.py`. When you restart the terminal, you'll need to call `export` again.
 
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
