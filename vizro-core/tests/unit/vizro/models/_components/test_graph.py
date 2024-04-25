@@ -78,9 +78,9 @@ class TestDunderMethodsGraph:
 
         assert graph.layout.margin.t == expected
         assert graph.layout.template.layout.margin.t == 64
-        assert graph.layout.template.layout.margin.l == 80
+        assert graph.layout.template.layout.margin.l == 24
         assert graph.layout.template.layout.margin.b == 64
-        assert graph.layout.template.layout.margin.r == 12
+        assert graph.layout.template.layout.margin.r == 24
 
     def test_update_theme_outside_callback(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart).__call__()
