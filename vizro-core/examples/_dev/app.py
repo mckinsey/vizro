@@ -12,7 +12,12 @@ from dash import html
 from typing import Literal
 from vizro.tables import dash_ag_grid
 
+# DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
+df_complaints['Date Received'] = pd.to_datetime(df_complaints['Date Received'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
+df_complaints['Date Sumbited'] = pd.to_datetime(df_complaints['Date Sumbited'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
+df_complaints.rename(columns={"Date Sumbited": "Date Submitted"}, inplace=True)
+print(df_complaints)
 
 def create_sales_df():
     # Define months and years
@@ -221,33 +226,42 @@ page_exec = vm.Page(
     ],
 )
 
-# 'ZIP code',
-selected_columns = ['Complaint ID', 'Date Received', 'Submitted via', 'State', 'Product', 'Sub-product', 'Issue',
-                    'Sub-issue', 'Timely response?', 'Company response to consumer']
+# TODO: Check why date format does not work
+# TODO: Check how to specify different % column widths while still using 100% of available screen width
+# TODO: Replace with appropriate icons
+rain =  "![alt text: rain](https://www.ag-grid.com/example-assets/weather/rain.png)"
+sun = "![alt text: sun](https://www.ag-grid.com/example-assets/weather/sun.png)"
+
+df_complaints["Timely response?"] = df_complaints["Timely response?"].apply(lambda x: f"No {rain} " if x == 'No' else f"Yes {sun} ")
+
+
+column_defs = [{"field": "Complaint ID", "cellDataType": "text"},
+ {"field": "Date Received", "cellDataType": "text"}, # Why doesn't date work even after reformatting?
+ {"field": "Submitted via", "cellDataType": "text"},
+ {"field": "State", "cellDataType": "text"},
+ {"field": "Product", "cellDataType": "text"},
+ {"field": "Sub-product", "cellDataType": "text"},
+ {"field": "Issue", "cellDataType": "text"},
+ {"field": "Sub-issue", "cellDataType": "text"},
+ {"field": "Timely response?", "cellRenderer": "markdown"},
+ {"field": "Company response to consumer", "cellDataType": "text"}]
 
 # TODO: Add cell coloring of last column and timely response
-# TODO: Implement dynamic column width
 page_table = vm.Page(
     title="List of complaints",
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(
                 data_frame=df_complaints,
-                columnDefs=[{"field": i} for i in selected_columns],
-            )
+                columnDefs=column_defs,
+                columnSize="autoSize",
+                defaultColDef= {"minWidth": 0, "flex": 1}
+
+        )
         )
     ],
 )
 
-page_cust = vm.Page(
-    title="Customer View",
-    components=[vm.Card(text="# Placeholder")],
-)
-
-page_prod = vm.Page(
-    title="Product View",
-    components=[vm.Card(text="# Placeholder")],
-)
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_table],
