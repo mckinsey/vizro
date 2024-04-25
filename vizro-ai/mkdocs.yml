@@ -7,10 +7,10 @@ nav:
       - A first example: pages/tutorials/quickstart.md
   - How-to guides:
       - Run methods: pages/user-guides/run-vizro-ai.md
-      - Create advanced charts: pages/user-guides/create-advanced-charts.md
-      - Use different languages: pages/user-guides/use-different-languages.md
-      - Use Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
-      - Customize VizroAI: pages/user-guides/customize-vizro-ai.md
+      - Custom models: pages/user-guides/customize-vizro-ai.md
+      - Advanced charts: pages/user-guides/create-advanced-charts.md
+      - Different languages: pages/user-guides/use-different-languages.md
+      - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
