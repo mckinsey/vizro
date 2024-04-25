@@ -1,29 +1,30 @@
 """Customising (overwriting) predefined actions with inheriting.
-    1. What's new?
-        - It's possible to modify the predefined action behaviour. This could be used to:
-            - Adjust predefined action's outputs returned value.
-            - Add additional inputs into the action's function.
-            - Add additional outputs which are returned from the action's function.
-    2. Example below shows how not to lose the clicked data from ag_grid when the page is changed, but this time, using
-        the power of customising predefined actions. Remember that every action is one http request to the server, so
-        it's important to keep the number of actions as low as possible. In this example, we're replicating the example
-        from the `02_overwriting_default_actions`, but using the customised actions to keep number of actions low.
-        How it works:
-        - Clicking an ag_grid cell:
-            1. Applies filter interaction but also stores the clicked data into the global store and card component.
-        - Navigating to the Page_1
-            1. Takes the global store into account while applying update_figures action. It updates card component too.
+1. What's new?
+- It's possible to modify the predefined action behaviour. This could be used to:
+- Adjust predefined action's outputs returned value.
+- Add additional inputs into the action's function.
+- Add additional outputs which are returned from the action's function.
+2. Example below shows how not to lose the clicked data from ag_grid when the page is changed, but this time, using
+the power of customising predefined actions. Remember that every action is one http request to the server, so
+it's important to keep the number of actions as low as possible. In this example, we're replicating the example
+from the `02_overwriting_default_actions`, but using the customised actions to keep number of actions low.
+How it works:
+- Clicking an ag_grid cell:
+1. Applies filter interaction but also stores the clicked data into the global store and card component.
+- Navigating to the Page_1
+1. Takes the global store into account while applying update_figures action. It updates card component too.
 """
-from typing import Optional, Dict, List, Any
+
+from typing import Any, Dict, List, Optional
+
 import dash_ag_grid as dag
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import ctx, dcc, Output, State
+from dash import Output, State, ctx, dcc
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction, update_figures
 from vizro.managers._model_manager import ModelID
 from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
 
 df = px.data.gapminder().query("year == 2007")
 default_card_text = "Click on a cell in the table to filter the scatter plot."
@@ -103,7 +104,7 @@ class CustomUpdateFigures(update_figures):
 
         # This adjustment potentially won't be necessary anymore once we solve the following to-do from
         # filter_action.py: "Consider the following inputs ctx form: ..."
-        ctx.args_grouping['external']['filter_interaction'][0]['cellClicked']['value'] = global_data_store
+        ctx.args_grouping["external"]["filter_interaction"][0]["cellClicked"]["value"] = global_data_store
 
         return_value = {
             "card_children": _build_card_text_message(grid_cell_clicked=global_data_store),
@@ -143,10 +144,12 @@ dashboard = CustomDashboard(
                     figure=dash_ag_grid(id="underlying_ag_grid", data_frame=df),
                     actions=[
                         vm.Action(function=CustomFilterInteraction(targets=["scatter"])),
-                    ]
+                    ],
                 ),
-                vm.Graph(id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))])
+                vm.Graph(
+                    id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")
+                ),
+                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))]),
             ],
             controls=[
                 vm.Filter(column="continent", targets=["scatter"]),
@@ -157,7 +160,7 @@ dashboard = CustomDashboard(
         vm.Page(
             title="Page 2",
             components=[vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", color="continent"))],
-            controls=[vm.Filter(column="continent")]
+            controls=[vm.Filter(column="continent")],
         ),
     ]
 )
