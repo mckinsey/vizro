@@ -226,27 +226,65 @@ page_exec = vm.Page(
     ],
 )
 
+# TABLE --------------------------------------------------------------------------------------------
 # TODO: Check why date format does not work
 # TODO: Check how to specify different % column widths while still using 100% of available screen width
 # TODO: Replace with appropriate icons
+# TODO: Find better color sequences for last column
 rain =  "![alt text: rain](https://www.ag-grid.com/example-assets/weather/rain.png)"
 sun = "![alt text: sun](https://www.ag-grid.com/example-assets/weather/sun.png)"
-
 df_complaints["Timely response?"] = df_complaints["Timely response?"].apply(lambda x: f"No {rain} " if x == 'No' else f"Yes {sun} ")
 
+cell_style = {
+    "styleConditions": [
+        {
+            "condition": "params.value == 'Closed with explanation'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'Closed with monetary relief'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'Closed with non-monetary relief'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'Closed without relief'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'Closed with relief'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'Closed'",
+            "style": {"backgroundColor": "#78a9ff"},
+        },
+        {
+            "condition": "params.value == 'In progress'",
+            "style": {"backgroundColor": "orange"},
+        },
+        {
+            "condition": "params.value == 'Untimely response'",
+            "style": {"backgroundColor": "#D41159"},
+        },
 
-column_defs = [{"field": "Complaint ID", "cellDataType": "text"},
+    ]
+}
+
+
+column_defs = [{"field": "Complaint ID", "cellDataType": "text", "headerName": "ID"},
  {"field": "Date Received", "cellDataType": "text"}, # Why doesn't date work even after reformatting?
- {"field": "Submitted via", "cellDataType": "text"},
+ {"field": "Submitted via", "cellDataType": "text", "headerName": "Channel"},
  {"field": "State", "cellDataType": "text"},
  {"field": "Product", "cellDataType": "text"},
  {"field": "Sub-product", "cellDataType": "text"},
  {"field": "Issue", "cellDataType": "text"},
  {"field": "Sub-issue", "cellDataType": "text"},
  {"field": "Timely response?", "cellRenderer": "markdown"},
- {"field": "Company response to consumer", "cellDataType": "text"}]
+ {"field": "Company response to consumer", "cellDataType": "text", "cellStyle": cell_style, "headerName": "Company response"},]
 
-# TODO: Add cell coloring of last column and timely response
 page_table = vm.Page(
     title="List of complaints",
     components=[
