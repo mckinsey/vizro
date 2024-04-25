@@ -8,7 +8,7 @@ except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import UPDATE_FIGURES_ACTION_PREFIX
 from vizro.models._action._actions_chain import ActionsChain
 
 
@@ -86,14 +86,13 @@ class TestPageInstantiation:
             vm.Page(title="Page Title", components=[vm.Button()], controls=[vm.Button()])
 
 
-# TODO: Remove this if we can get rid of on-page-load action
 class TestPagePreBuildMethod:
     def test_action_auto_generation_valid(self, standard_px_chart):
         page = vm.Page(title="Page 1", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
         page.pre_build()
         assert len(page.actions) == 1
         assert isinstance(page.actions[0], ActionsChain)
-        assert page.actions[0].id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_Page 1"
+        assert page.actions[0].id == f"{UPDATE_FIGURES_ACTION_PREFIX}_Page 1"
 
 
 # TODO: Add unit tests for private methods in page build

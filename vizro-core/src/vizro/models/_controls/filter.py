@@ -35,6 +35,8 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
+# TODO-AV2-OQ: Consider introducing target dot notation for the Filter as well. This would allow to filter different
+#  targets with different columns.
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -61,10 +63,8 @@ class Filter(VizroBaseModel):
     _column_type: Literal["numerical", "categorical"] = PrivateAttr()
 
     # TODO-AV2-OQ: Consider do we need to validate the targets (consider similar for Parameter and parameter_action):
-    #  1. in the filter initialization phase, or
-    #  2. in the filter.pre_build phase, or
-    #  3. in the action build phase?
-    #  Test whether it works if controls are specified before components in the vm.Page.
+    #  1. in the filter.pre_build phase, or
+    #  2. in the action build phase?
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:
@@ -139,6 +139,11 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_actions(self):
+        # TODO-AV2-OQ: Consider do we want to disallow overwriting default Filter.selector.actions
+        #  (apply the same logic to Parameter). This would be a breaking change. It makes sense to apply this rule and
+        #  to allow overwriting control actions only if controls are directly specified from vizro.models._components
+        #  (e.g. vm.Dropdown). It seems like it doesn't make sense to overwrite Filter actions because
+        #  then 'Filter.targets' and 'Filter.column' arguments don't make sense anymore.
         if not self.selector.actions:
             filter_function = _filter_between if isinstance(self.selector, RangeSlider) else _filter_isin
             self.selector.actions = [

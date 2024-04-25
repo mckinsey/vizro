@@ -40,6 +40,8 @@ def _set_actions(
     return actions_chain
 
 
+# TODO-AV2: We probably shouldn't make any ActionsChain if there are no "actions" (e.g. actions=[] currently creates
+#  ActionsChain with empty "actions" list, but it should not create any ActionsChain at all)
 def _action_validator_factory(trigger_property: str, component_id_prefix: str = "", actions_chain_id: str = None):
     set_actions = partial(
         _set_actions,

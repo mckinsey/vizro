@@ -202,7 +202,7 @@ class TestCallbackMapping:
             ("filter_action_filter_continent", "action_callback_inputs_expected"),
             ("filter_interaction_action", "action_callback_inputs_expected"),
             ("parameter_action_parameter_x", "action_callback_inputs_expected"),
-            ("on_page_load_action_action_test_page", "action_callback_inputs_expected"),
+            ("update_figures_action_action_test_page", "action_callback_inputs_expected"),
             ("export_data_action", "export_data_inputs_expected"),
         ],
     )
@@ -251,7 +251,7 @@ class TestCallbackMapping:
                 ],
             ),
             (
-                "on_page_load_action_action_test_page",
+                "update_figures_action_action_test_page",
                 [
                     {"component_id": "scatter_chart", "component_property": "figure"},
                     {"component_id": "scatter_chart_2", "component_property": "figure"},

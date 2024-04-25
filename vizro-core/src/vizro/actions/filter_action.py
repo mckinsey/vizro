@@ -16,8 +16,8 @@ class FilterAction(CapturedActionCallable):
         and the calculated arguments.
         """
         # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
-        #  have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
-        #  here, instead inside the Filter/Parameter/Page models.
+        #  have been private actions before. Maybe we can make them public and do validation and calculation in
+        #  _post_init, here, instead inside the Filter/Parameter/Page models.
 
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 

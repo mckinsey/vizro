@@ -100,7 +100,7 @@ class AgGrid(VizroBaseModel):
 
     def build(self):
         # The pagination setting (and potentially others) only work when the initially built AgGrid has the same
-        # setting as the object that is built on-page-load and rendered finally.
+        # setting as the object that is built on-page-load (with update_figures action) and rendered finally.
         dash_ag_grid_conf = self.figure._arguments.copy()
         dash_ag_grid_conf["data_frame"] = pd.DataFrame()
         grid = self.figure._function(**dash_ag_grid_conf)

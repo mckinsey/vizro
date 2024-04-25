@@ -9,7 +9,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, root_validator, validator
 
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import UPDATE_FIGURES_ACTION_PREFIX
 from vizro.actions import update_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
@@ -48,7 +48,6 @@ class Page(VizroBaseModel):
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
-    # TODO-AV2-TICKET-CREATED: Remove default on page load action if possible
     actions: List[Action] = []
 
     # Re-used validators
@@ -56,8 +55,8 @@ class Page(VizroBaseModel):
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
     _set_actions = _action_validator_factory(
         trigger_property="data",
-        component_id_prefix=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_",
-        actions_chain_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_chain_id",
+        component_id_prefix=f"{UPDATE_FIGURES_ACTION_PREFIX}_trigger_",
+        actions_chain_id=f"{UPDATE_FIGURES_ACTION_PREFIX}_action_chain_id",
     )
 
     @root_validator(pre=True)
@@ -94,13 +93,12 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO-AV2: Swap ON_PAGE_LOAD_ACTION_PREFIX with something like UPDATE_FIGURES_ACTION_PREFIX
         # TODO-AV2-TICKET-CREATED: Handle overwriting default actions in the same way as in filter/parameter
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
         if targets and not self.actions:
             self.actions = [
                 Action(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                    id=f"{UPDATE_FIGURES_ACTION_PREFIX}_action_{self.id}",
                     function=update_figures(targets=targets),
                 )
             ]
@@ -116,7 +114,7 @@ class Page(VizroBaseModel):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
         # Page specific CSS ID and Stores
-        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.children.append(dcc.Store(id=f"{UPDATE_FIGURES_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container], id=self.id)
 
@@ -131,7 +129,7 @@ class Page(VizroBaseModel):
         # method defined. But at the moment this just means Graphs.
         # TODO-AV2-TICKET-CREATED-*: consider making this clientside callback and then possibly we can remove the
         #  call to _update_theme in Graph.__call__ without any flickering.
-        #  If we do this then we should *consider* defining the callback in Graph itself rather than at Page
+        #  If we do this then we should consider defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
         themed_components = [
