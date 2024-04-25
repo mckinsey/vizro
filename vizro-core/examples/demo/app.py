@@ -434,7 +434,7 @@ def create_benchmark_analysis():
     page_country = vm.Page(
         title="Benchmark Analysis",
         description="Discovering how the metrics differ for each country and export data for further investigation",
-        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
+        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]]),
         components=[
             vm.AgGrid(
                 title="Click on a cell in country column:",
