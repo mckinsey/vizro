@@ -13,14 +13,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Removal of classNames `checkboxes-list`, `radio-items-list` and `input-container` from Vizro stylesheets. ([#414](https://github.com/mckinsey/vizro/pull/414))
+- Removed `temperature` and `model_name` arguments of `VizroAI` class. For current configuration options, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#what-parameters-does-vizro-ai-support) ([#423](https://github.com/mckinsey/vizro/pull/423))
 
-<!--
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable customization of LLM models provided to Vizro-AI class. ([#423](https://github.com/mckinsey/vizro/pull/423))
 
--->
 <!--
 ### Changed
 

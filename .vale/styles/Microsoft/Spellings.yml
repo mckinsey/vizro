@@ -1,6 +1,7 @@
 extends: spelling
 message: "Did you really mean '%s'?"
 level: error
+ignorecase: true
 ignore:
   # Located at StylesPath/
   - Microsoft/ignore.txt

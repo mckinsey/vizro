@@ -5,7 +5,7 @@ This tutorial introduces you to Vizro-AI, which is an English-to-visualization p
 ### 1. Install Vizro and its dependencies
 <!-- vale on -->
 
-If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../get-started/install.md).
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
 <!-- vale off -->
 ### 2. Open a Jupyter Notebook
@@ -67,6 +67,18 @@ Finally, we call the `plot()` method with our English language instruction, to g
 vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
 ```
 
+!!! warning "Help! My LLM request was unauthorized"
+
+    If you see an error similar to this, your LLM API key is not valid:
+
+    `INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"`
+
+    Make sure you have [set up access to a large language model](../user-guides/install/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
+
+    `export OPENAI_API_KEY="sk-YOURKEY"`.
+
+    The call above makes the API key available from that terminal instance. If you want to access Vizro-AI from a Notebook, you should then run `jupyter notebook`  (or just work within that terminal to run your Python script in `app.py`. When you restart the terminal, you'll need to call `export` again.
+
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
@@ -88,18 +100,26 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
+Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/get-started/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+
+!!! example "Returned by Vizro-AI"
+
+    ```python
+    from vizro.models.types import capture
+    import vizro.plotly.express as px
+    import pandas as pd
+    @capture('graph')
+    def custom_chart(data_frame):
+        df = data_frame.groupby(['year', 'continent'])['gdpPercap'].mean().unstack().reset_index()
+        fig = px.line(df, x='year', y=['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'])
+        return fig
+
+    fig = custom_chart(data_frame=df)
+    ```
+
 <!-- vale off -->
 ### 4. Get an explanation with your chart
 <!-- vale on -->
-
-
-    Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
-
-    ```python
-    fig = px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year':'Year', 'gdpPercap':'GDP Per Cap'}, title='')
-    ```
-
-### 4. Get an explanation with your chart
 
 Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
 
