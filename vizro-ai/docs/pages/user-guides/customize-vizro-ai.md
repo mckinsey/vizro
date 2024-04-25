@@ -35,7 +35,7 @@ In the example below, we customized `VizroAI` by providing OpenAI model name in 
 
 The `model` parameter in `VizroAI` can take an initialized `ChatOpenAI` model, allowing for flexible customization by users. In the example below, we'll be customizing the `ChatOpenAI` instance.
 The `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy. To ensure a deterministic answer to our queries, we've set the temperature to 0.
-If you prefer more creative responses, you can raise the temperature to a maximum of 1.
+If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
 
 
 !!! example "model customization"
