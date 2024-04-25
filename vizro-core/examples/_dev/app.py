@@ -122,17 +122,29 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
 
 
 @capture("graph")
-def bar(x: str, y: str, color: str, barmode: str, data_frame: pd.DataFrame = None):
-    fig = px.bar(data_frame=data_frame, x=x, y=y, color=color, barmode=barmode, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
-    fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0, t=0), title_pad_t=0,
-                      legend=dict(
-                          orientation="h",
-                          yanchor="bottom",
-                          y=-0.6,
-                          xanchor="left",
-                          x=-0.1
-                      )
-                      )
+def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 20):
+    df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x).reset_index()
+ #   df_top = df_agg.head(top_n)
+
+    # Sum counts for remaining rows
+  #  other_sum = df_agg.iloc[top_n:].sum()
+   # df_other = pd.DataFrame({y: ['Other'], x: [other_sum[x]]})
+
+    # Append to top_n dataframe
+ #   df_top = pd.concat([df_top, df_other], ignore_index=True)
+
+    fig = px.bar(data_frame=df_agg, x=x, y=y, orientation="h")
+    #, barmode=barmode, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
+    #fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0, t=0), title_pad_t=0,
+    #                  legend=dict(
+    #                      orientation="h",
+    #                      yanchor="bottom",
+    #                      y=-0.6,
+    #                      xanchor="left",
+    #                      x=-0.1
+    #                  )
+    #                  )
+    fig.update_layout(xaxis_title="# of Complaints")
     return fig
 
 
@@ -161,52 +173,13 @@ def chloropleth(data_frame: pd.DataFrame = None):
 
 
 
-tabs_section = vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Revenue",
-                    components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Revenue", color="Period", barmode="group")),
-                    ],
-                ),
-                vm.Container(
-                    title="Sales",
-                    components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Sales", color="Period", barmode="group")),
-                    ],
-                ),
-                vm.Container(
-                    title="Profit",
-                    components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Profit", color="Period", barmode="group")),
-                    ],
-                ),
-                vm.Container(
-                    title="Customers",
-                    components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Customers", color="Period", barmode="group")),
-                    ],
-                ),
-                vm.Container(
-                    title="Products",
-                    components=[
-                        vm.Graph(figure=bar(data_frame=df, x="Month", y="Products", color="Period", barmode="group")),
-                    ],
-                ),
-            ],
-        )
-
-
-
-
 page_exec = vm.Page(
     title="Executive View",
     layout=vm.Layout(grid=[[0, 1, 2, 3, 4, 5],
-                           [6, 6, 8, 8, 10, 10],
-                           [6, 6, 8, 8, 10, 10],
-                           [7, 7, 9, 9, 10, 10],
-                           [7, 7, 9, 9, 11, 11]],
-                     row_min_height="100px",
+                           [6, 6, 6, 7, 7, 9],
+                           [6, 6, 6, 7, 7, 9],
+                           [6, 6, 6, 8, 8, 8],
+                           [6, 6, 6, 8, 8, 8]],
                      col_gap="32px", row_gap="32px"),
     components=[
         KPI(title="Revenue", value="$10.5 M", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
@@ -215,12 +188,12 @@ page_exec = vm.Page(
         KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
-        tabs_section,
+        vm.Container(
+            title="Complaints by Issue",
+            layout=vm.Layout(grid=[[0]], row_min_height="500px"),
+            components=[vm.Graph(id="bar_chart", figure=bar(data_frame=df_complaints, y="Issue", x="Complaint ID"))]
+        ),
         vm.Graph(figure=stacked_bar(df)),
-        vm.Graph(figure=px.bar(df, x=[1, 2, 3, 4], y=["Cust A", "Cust B", "Cust C", "Cust D"], orientation='h',
-                               title="Sales by Customer")),
-        vm.Graph(figure=px.bar(df, x=np.random.randint(150000, 900000, size=10), y=["Phones", "Chairs", "Storage", "Tables", "Binders", "Machines", "Accessories", "Copiers", "Bookcases", "Appliances"], orientation='h',
-                               title="Sales by Product Categories")),
         vm.Graph(figure=chloropleth(df)),
         vm.Card(text="# Placeholder"),
     ],

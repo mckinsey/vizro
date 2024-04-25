@@ -9,7 +9,14 @@ df_complaints['Date Received'] = pd.to_datetime(df_complaints['Date Received'], 
 df_complaints['Date Sumbited'] = pd.to_datetime(df_complaints['Date Sumbited'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
 df_complaints.rename(columns={"Date Sumbited": "Date Submitted"}, inplace=True)
 
-rain =  "![alt text: rain](https://www.ag-grid.com/example-assets/weather/rain.png)"
-sun = "![alt text: sun](https://www.ag-grid.com/example-assets/weather/sun.png)"
+df_agg = df_complaints.groupby(["Issue"]).aggregate({"Complaint ID": "count"}).sort_values(by="Complaint ID", ascending=False).reset_index()
+top_n = df_agg.head(10)
 
-df_complaints["Timely response?"] = df_complaints["Timely response?"].apply(lambda x: rain if x == 'No' else sun)
+# Sum counts for remaining issues
+other_sum = df_agg.iloc[10:].sum()
+other_row = pd.DataFrame({'Issue': ['Other'], 'Complaint ID': [other_sum['Complaint ID']]})
+
+# Append to top_n dataframe
+top_n = pd.concat([top_n, other_row], ignore_index=True)
+
+print(top_n.head(12))

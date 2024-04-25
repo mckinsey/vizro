@@ -1,24 +1,13 @@
-/* Layout */
-#left-sidebar {
-  width: 60px;
-}
-
 #page-header {
-  height: 60px;
-  padding-left: 8px;
-}
-
-#logo {
-  height: 40px;
+  padding-left: 4px;
 }
 
 
-
+/* OLD */
 #kpi-container {
   background-color: var(--surfaces-bg-02);
 }
 
-/**/
 .card {
   display: flex;
   gap: 4px;
