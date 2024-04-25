@@ -476,7 +476,7 @@ def create_home_page():
     page_home = vm.Page(
         title="Homepage",
         description="Vizro demo app for studying gapminder data",
-        layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
+        layout=vm.Layout(grid=[[0, 1], [2, 3]]),
         components=[
             vm.Card(
                 text="""
