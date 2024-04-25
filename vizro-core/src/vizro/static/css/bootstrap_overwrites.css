@@ -10,12 +10,12 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 }
 
 /* TO DO: Check if this should live in vizro-bootstrap */
-.navbar .nav-link {
-  height: 4rem;
+.card p:last-of-type {
+  margin-bottom: 0;
 }
 
-.card {
-  padding: 1.5rem;
+.navbar .nav-link {
+  height: 4rem;
 }
 
 .accordion-button {
