@@ -10,6 +10,9 @@ import numpy as np
 import dash_bootstrap_components as dbc
 from dash import html
 from typing import Literal
+from vizro.tables import dash_ag_grid
+
+df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
 
 def create_sales_df():
     # Define months and years
@@ -218,9 +221,22 @@ page_exec = vm.Page(
     ],
 )
 
-page_reg = vm.Page(
-    title="Regional View",
-    components=[vm.Card(text="# Placeholder")],
+# 'ZIP code',
+selected_columns = ['Complaint ID', 'Date Received', 'Submitted via', 'State', 'Product', 'Sub-product', 'Issue',
+                    'Sub-issue', 'Timely response?', 'Company response to consumer']
+
+# TODO: Add cell coloring of last column and timely response
+# TODO: Implement dynamic column width
+page_table = vm.Page(
+    title="List of complaints",
+    components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(
+                data_frame=df_complaints,
+                columnDefs=[{"field": i} for i in selected_columns],
+            )
+        )
+    ],
 )
 
 page_cust = vm.Page(
@@ -234,15 +250,13 @@ page_prod = vm.Page(
 )
 
 dashboard = vm.Dashboard(
-    pages=[page_exec, page_reg, page_cust, page_prod],
-    title="Vizro - Sales Dashboard",
+    pages=[page_exec, page_table],
+    title="Financial Complaints Dashboard",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Executive View", icon="Leaderboard", pages=["Executive View"]),
-                vm.NavLink(label="Regional View", icon="South America", pages=["Regional View"]),
-                vm.NavLink(label="Customer View", icon="Account Circle", pages=["Customer View"]),
-                vm.NavLink(label="Product View", icon="Qr code", pages=["Product View"]),
+                vm.NavLink(label="Table View", icon="Table View", pages=["List of complaints"]),
             ]
         )
     ),
