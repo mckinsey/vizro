@@ -42,11 +42,11 @@ prep-release = [
   "rm -rf schemas/*json",
   "schema",
   "git add schemas",
-  'echo "Now raise a PR to merge into main with title: Release of vizro-core $(hatch version)"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
-secrets = "pre-commit run gitleaks --all-files"
+secrets = "hatch run lint:pre-commit run gitleaks --all-files"
 test = "pytest tests --headless {args}"
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
@@ -66,7 +66,7 @@ dependencies = [
   "mkdocstrings[python]"
 ]
 detached = true
-scripts = {serve = "mkdocs serve"}
+scripts = {serve = "mkdocs serve --strict"}
 
 [envs.lint]
 dependencies = [

@@ -60,7 +60,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
             )
         ).to_dict("records"),
         "defaultColDef": {
-            # "editable": True, #do not set, as this may confuse some users
             "resizable": True,
             "sortable": True,
             "filter": True,

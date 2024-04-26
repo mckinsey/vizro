@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import TypedDict
 
-from dash import html
+import dash_bootstrap_components as dbc
 
 from vizro.managers import model_manager
 
@@ -13,7 +13,7 @@ def _validate_pages(pages):
     from vizro.models import Page
 
     pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
-    # Ideally we would use dash.page_registry or maybe dashboard.pages here, but we only register pages in
+    # Ideally we would use dashboard.pages in the model manager here, but we only register pages in
     # dashboard.pre_build and model manager cannot find a Dashboard at validation time.
     # page[0] gives the page model ID.
     registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
@@ -30,4 +30,4 @@ def _validate_pages(pages):
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
-_NavBuildType = TypedDict("_NavBuildType", {"nav-bar": html.Div, "nav-panel": html.Div})
+_NavBuildType = TypedDict("_NavBuildType", {"nav-bar": dbc.Navbar, "nav-panel": dbc.Nav})

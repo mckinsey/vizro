@@ -1,6 +1,7 @@
 from typing import Literal
 
-from dash import dcc, get_relative_path, html
+import dash_bootstrap_components as dbc
+from dash import dcc, get_relative_path
 
 try:
     from pydantic.v1 import Field
@@ -33,15 +34,15 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        text = dcc.Markdown(self.text, className="card_text", dangerously_allow_html=False, id=self.id)
+        text = dcc.Markdown(self.text, dangerously_allow_html=False, id=self.id)
         card_content = (
-            dcc.Link(
+            dbc.NavLink(
                 text,
                 href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-                className="card-link",
             )
             if self.href
             else text
         )
-        card_container = "nav_card_container" if self.href else "card_container"
-        return html.Div(card_content, className=card_container, id=f"{self.id}_outer")
+
+        card_class = "card-nav" if self.href else "card"
+        return dbc.Card(card_content, className=card_class, id=f"{self.id}_outer")

@@ -1,5 +1,6 @@
 """Unit tests for hyphen.models.slider."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -19,7 +20,7 @@ def expected_slider():
             dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    html.Label("Test title", htmlFor="slider_id"),
+                    dbc.Label("Test title", html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -54,7 +55,6 @@ def expected_slider():
                 className="slider-track-with-marks",
             ),
         ],
-        className="input-container",
         id="slider_id_outer",
     )
 
@@ -84,7 +84,7 @@ class TestSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
+            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
         ):
             vm.Slider(min=10, max=0)
 

@@ -71,10 +71,10 @@ class Page(VizroBaseModel):
     def set_path(cls, path, values) -> str:
         # Based on how Github generates anchor links - see:
         # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-        def clean_path(path, allowed_characters):
+        def clean_path(path: str, allowed_characters: str) -> str:
             path = path.strip().lower().replace(" ", "-")
             path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-            return "/" + path
+            return path if path.startswith("/") else "/" + path
 
         # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
         if path:

@@ -1,8 +1,9 @@
 """Unit tests for vizro.models.Table."""
 
+import pandas as pd
 import pytest
 from asserts import assert_component_equal
-from dash import dash_table, dcc, html
+from dash import dcc, html
 
 try:
     from pydantic.v1 import ValidationError
@@ -90,15 +91,16 @@ class TestProcessTableDataFrame:
     # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
-        table_with_str_df = vm.Table(id="table", figure=dash_table_with_str_dataframe)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        assert table_with_str_df["data_frame"] == "gapminder"
-
-    def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
-        table_with_str_df = vm.Table(id="table", figure=standard_dash_table)
+        table = vm.Table(id="table", figure=dash_table_with_str_dataframe)
         assert data_manager._get_component_data("table").equals(gapminder)
         with pytest.raises(KeyError, match="'data_frame'"):
-            table_with_str_df.figure["data_frame"]
+            table["data_frame"]
+
+    def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
+        table = vm.Table(id="table", figure=standard_dash_table)
+        assert data_manager._get_component_data("table").equals(gapminder)
+        with pytest.raises(KeyError, match="'data_frame'"):
+            table["data_frame"]
 
 
 class TestPreBuildTable:
@@ -124,7 +126,7 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="__input_text_table"), id="text_table"),
+                    html.Div(dash_data_table(id="__input_text_table", data_frame=pd.DataFrame())(), id="text_table"),
                 ],
                 className="table-container",
                 id="text_table_outer",
@@ -144,7 +146,7 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_table.DataTable(id="underlying_table_id"), id="text_table"),
+                    html.Div(dash_data_table(id="underlying_table_id", data_frame=pd.DataFrame())(), id="text_table"),
                 ],
                 className="table-container",
                 id="text_table_outer",

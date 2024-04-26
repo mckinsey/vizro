@@ -7,12 +7,14 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,
     validate_max,
-    validate_slider_value,
+    validate_range_value,
     validate_step,
 )
 from vizro.models._models_utils import _log_call
@@ -53,7 +55,7 @@ class RangeSlider(VizroBaseModel):
 
     # Re-used validators
     _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_value = validator("value", allow_reuse=True)(validate_slider_value)
+    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_step = validator("step", allow_reuse=True)(validate_step)
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
@@ -87,7 +89,7 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
                     [
-                        html.Label(self.title, htmlFor=self.id) if self.title else None,
+                        dbc.Label(self.title, html_for=self.id) if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(
@@ -134,6 +136,5 @@ class RangeSlider(VizroBaseModel):
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )

@@ -12,6 +12,8 @@ if TYPE_CHECKING:
     from vizro.models import VizroBaseModel
     from vizro.models._action._actions_chain import ActionsChain
 
+# As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
+# the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
 rd = random.Random(0)
 
 ModelID = NewType("ModelID", str)

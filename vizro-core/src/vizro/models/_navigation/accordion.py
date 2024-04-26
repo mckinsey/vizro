@@ -2,9 +2,8 @@ import itertools
 from collections.abc import Mapping
 from typing import Dict, List, Literal
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import get_relative_path
 
 try:
     from pydantic.v1 import Field, validator
@@ -12,13 +11,12 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
+from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 
 
-# TODO: if and when made public, consider naming as NavAccordion to be consistent with other
-#  navigation models.
 class Accordion(VizroBaseModel):
     """Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].
 
@@ -44,7 +42,7 @@ class Accordion(VizroBaseModel):
         # Note build does not return _NavBuildType but just a single html.Div with id="nav-panel".
         # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
-            return html.Div(hidden=True, id="nav-panel")
+            return dbc.Nav(id="nav-panel", className="d-none invisible")
 
         accordion_items = []
         for page_group, page_members in self.pages.items():
@@ -62,7 +60,7 @@ class Accordion(VizroBaseModel):
             (page_group for page_group, page_members in self.pages.items() if active_page_id in page_members), None
         )
 
-        return html.Div(
+        return dbc.Nav(
             children=[
                 dbc.Accordion(
                     id=self.id,
@@ -79,22 +77,18 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_nav_links(self, pages):
-        """Creates a `NavLink` for each provided page that is registered."""
+    def _create_nav_links(self, pages: List[str]):
+        """Creates a `NavLink` for each provided page."""
         nav_links = []
+
         for page_id in pages:
-            try:
-                page = dash.page_registry[page_id]
-            except KeyError as exc:
-                raise KeyError(
-                    f"Page with ID {page_id} cannot be found. Please add the page to `Dashboard.pages`"
-                ) from exc
+            page = model_manager[ModelID(str(page_id))]
             nav_links.append(
                 dbc.NavLink(
-                    children=[page["name"]],
+                    children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=page["relative_path"],
+                    href=get_relative_path(page.path),
                 )
             )
         return nav_links

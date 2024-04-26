@@ -1,8 +1,9 @@
 """Unit tests for vizro.models.Checklist."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -129,19 +130,17 @@ class TestChecklistBuild:
 
     def test_checklist_build(self):
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
-        expected_checklist = html.Div(
+        expected_checklist = html.Fieldset(
             [
-                html.Label("Title", htmlFor="checklist_id"),
-                dcc.Checklist(
+                html.Legend("Title", className="form-label"),
+                dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
                     value=["ALL"],
-                    className="checkboxes-list",
                     persistence=True,
                     persistence_type="session",
                 ),
             ],
-            className="input-container",
             id="checklist_id_outer",
         )
         assert_component_equal(checklist, expected_checklist)

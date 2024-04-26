@@ -6,7 +6,7 @@ from typing import List
 from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
 from vizro.actions._action_loop._action_loop_utils import (
-    _get_actions_chains_on_registered_pages,
+    _get_actions_chains_on_all_pages,
     _get_actions_on_registered_pages,
 )
 from vizro.managers import model_manager
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def _build_action_loop_callbacks() -> None:
     """Creates all required dash callbacks for the action loop."""
-    actions_chains = _get_actions_chains_on_registered_pages()
+    actions_chains = _get_actions_chains_on_all_pages()
     actions = _get_actions_on_registered_pages()
 
     if not actions_chains:

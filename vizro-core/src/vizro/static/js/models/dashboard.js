@@ -20,11 +20,9 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         false,
         {
           transform: "rotate(180deg)",
-          left: "12px",
           transition: "transform 0.35s ease-in-out",
         },
         "Show Menu",
-        36,
       ];
     }
     return dash_clientside.no_update;
@@ -34,11 +32,9 @@ export function _collapse_nav_panel(n_clicks, is_open) {
       false,
       {
         transform: "rotate(180deg)",
-        left: "12px",
         transition: "transform 0.35s ease-in-out",
       },
       "Show Menu",
-      36,
     ];
   } else {
     return [
@@ -48,7 +44,6 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
-      24,
     ];
   }
 }
