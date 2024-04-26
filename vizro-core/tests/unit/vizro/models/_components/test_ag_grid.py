@@ -117,7 +117,7 @@ class TestPreBuildAgGrid:
 
 
 class TestBuildAgGrid:
-    def test_ag_grid_build_mandatory_only(self, standard_ag_grid):
+    def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -125,7 +125,7 @@ class TestBuildAgGrid:
             [
                 None,
                 html.Div(
-                    dash_ag_grid(data_frame=pd.DataFrame(), id="__input_text_ag_grid")(),
+                    dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")(),
                     id="text_ag_grid",
                     className="table-container",
                 ),
@@ -137,7 +137,7 @@ class TestBuildAgGrid:
 
         assert_component_equal(ag_grid, expected_ag_grid)
 
-    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action):
+    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -147,7 +147,7 @@ class TestBuildAgGrid:
                 None,
                 html.Div(
                     dash_ag_grid(
-                        data_frame=pd.DataFrame(), id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
+                        data_frame=gapminder, id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
                     )(),
                     id="text_ag_grid",
                     className="table-container",
