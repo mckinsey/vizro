@@ -56,7 +56,7 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -103,7 +103,7 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(
-        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
+            self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3, get_output_dict: bool=False,
     ) -> Union[go.Figure, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -112,7 +112,8 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
-
+            get_output_dict: Get all output dict, including code_string, fig_obejct, if explain enabled,
+            business_insights and code_explanation are also added
         Returns:
             go.Figure
 
@@ -127,53 +128,21 @@ class VizroAI:
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
+        fig_object = _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+
+        if get_output_dict:
+            return {
+                "code_string": code_string,
+                "fig_object": fig_object,
+                "business_insights": business_insights,
+                "code_explanation": code_explanation,
+
+            }
+
         if not explain:
-            return _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+            return fig_object
+
         if explain:
             return _display_markdown_and_chart(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
-        # TODO Tentative for integration test
-        if self._return_all_text:
-            return output_dict
-
-
-    def get_all_output(
-        self, df: pd.DataFrame,
-            user_input: str,
-            fig_object: bool = False,
-            business_insights: bool = False,
-            code_explanation: bool = False,
-            max_debug_retry: int = 3
-    ) -> Union[None, Dict[str, Any]]:
-        """Plot visuals using vizro via english descriptions, english to chart translation.
-
-        Args:
-            df: The dataframe to be analyzed.
-            user_input: User questions or descriptions of the desired visual.
-            explain: Flag to include explanation in response.
-            max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
-
-        """
-        explain = True if business_insights or code_explanation else False
-        output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
-        code_string = output_dict.get("code_string")
-        business_insights = output_dict.get("business_insights")
-        code_explanation = output_dict.get("code_explanation")
-
-        if code_string.startswith("Failed to debug code"):
-            raise DebugFailure(
-                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
-                "or try to select a different model. Fallout response is provided: \n\n" + code_string
-            )
-        if not explain:
-            fig_object = _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
-
-        # TODO Tentative for integration test
-        return {
-            "code_string": code_string,
-            "fig_object": fig_object,
-            "business_insights": business_insights,
-            "code_explanation": code_explanation,
-
-        }
