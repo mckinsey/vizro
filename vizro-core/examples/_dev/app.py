@@ -17,7 +17,6 @@ from vizro.tables import dash_ag_grid
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
 df_complaints = clean_data_and_add_columns(df_complaints)
-print(df_complaints.head(10))
 
 # TODO: Overall - Do everything vs. last year
 # TODO: Overall - Consolidate colors and gaps
@@ -33,40 +32,6 @@ print(df_complaints.head(10))
 # TODO: Table-view - Check how to specify different % column widths while still using 100% of available screen width
 # TODO: Table-view - Replace with appropriate icons
 # TODO: Table-view - Find better color sequences for last column
-
-
-def create_sales_df():
-    # Define months and years
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    years = ["Last Year"] * 12 + ["Current"] * 12
-
-    # Create DataFrame
-    df = pd.DataFrame(
-        {
-            "Month": months * 2,
-            "Revenue": np.concatenate(
-                [np.random.randint(8000000, 13000000, size=12), np.random.randint(8000000, 13000000, size=12)]
-            ),
-            "Sales": np.concatenate(
-                [np.random.randint(3000000, 6000000, size=12), np.random.randint(3000000, 6000000, size=12)]
-            ),
-            "Profit": np.concatenate(
-                [np.random.randint(800000, 1300000, size=12), np.random.randint(800000, 1300000, size=12)]
-            ),
-            "Customers": np.concatenate(
-                [np.random.randint(20000, 28000, size=12), np.random.randint(20000, 28000, size=12)]
-            ),
-            "Products": np.concatenate(
-                [np.random.randint(95000, 130000, size=12), np.random.randint(95000, 130000, size=12)]
-            ),
-            "Period": pd.Categorical(years, categories=["Last Year", "Current"], ordered=True),
-        }
-    )
-    return df
-
-
-df = create_sales_df()
-df_tips = px.data.tips()
 
 
 # TODO: Think more about potential API - this is just a quick mock-up. Types will likely change.
@@ -100,72 +65,6 @@ class KPI(vm.VizroBaseModel):
 vm.Page.add_type("components", KPI)
 vm.Container.add_type("components", KPI)
 
-
-@capture("graph")
-def kpi_card(data_frame: pd.DataFrame = None, value: int = None, ref_value: int = None):
-    fig = go.Figure(
-        go.Indicator(
-            mode="number+delta",
-            value=value,
-            number={"prefix": "$", "suffix": "m"},
-            title={"text": "Accounts<br><span style='font-size:0.8em;color:gray'>vs. last year</span><br>"},
-            delta={"reference": ref_value, "relative": True},
-        )
-    )
-    fig.update_layout()
-    return fig
-
-
-@capture("graph")
-def stacked_bar(data_frame=None):
-    fig = go.Figure(
-        go.Bar(
-            y=["Products", "Customers", "Profit", "Sales", "Revenue"],
-            x=[28, 22, 30, 15, 27],
-            text=["28%", "22%", "30%", "15%", "27%"],
-            textposition="inside",
-            name="North",
-            marker_color="#1A85FF",
-            orientation="h",
-        )
-    )
-    fig.add_trace(
-        go.Bar(
-            y=["Products", "Customers", "Profit", "Sales", "Revenue"],
-            x=[26, 25, 25, 20, 23],
-            text=["26%", "25%", "25%", "20%", "23%"],
-            textposition="inside",
-            name="West",
-            marker_color="#749ff9",
-            orientation="h",
-        )
-    )
-    fig.add_trace(
-        go.Bar(
-            y=["Products", "Customers", "Profit", "Sales", "Revenue"],
-            x=[19, 28, 25, 35, 30],
-            text=["19%", "28%", "25%", "35%", "30%"],
-            textposition="inside",
-            name="South",
-            marker_color="#a3baf3",
-            orientation="h",
-        )
-    )
-    fig.add_trace(
-        go.Bar(
-            y=["Products", "Customers", "Profit", "Sales", "Revenue"],
-            x=[27, 25, 20, 30, 20],
-            text=["27%", "25%", "20%", "30%", "20%"],
-            textposition="inside",
-            name="East",
-            marker_color="#c9d6eb",
-            orientation="h",
-        )
-    )
-    fig.update_layout(
-        title="Regional distribution", barmode="relative", title_pad_l=0, title_pad_t=4, margin=dict(l=0, r=0, t=32)
-    )
-    return fig
 
 
 @capture("graph")
@@ -222,31 +121,22 @@ def pie(
 
 
 @capture("graph")
-def chloropleth(data_frame: pd.DataFrame = None):
-    import json
-    from urllib.request import urlopen
+def chloropleth(locations: str, color: str, data_frame: pd.DataFrame = None):
 
-    with urlopen("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json") as response:
-        counties = json.load(response)
+    df_agg = data_frame.groupby([locations]).aggregate({color: "count"}).reset_index()
+    df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
 
-    import pandas as pd
 
-    data_frame = pd.read_csv(
-        "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv", dtype={"fips": str}
-    )
-    data_frame["unemp"] = data_frame["unemp"] / 4
-    data_frame.loc[1::5, "unemp"] *= -1
     fig = px.choropleth(
-        data_frame,
-        geojson=counties,
-        locations="fips",
-        color="unemp",
-        color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
-        color_continuous_midpoint=0,
+        data_frame=df_agg,
+        locations=locations,
+        color=color,
+    #    color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
         scope="usa",
-        labels={"unemp": "% change"},
+        locationmode="USA-states",
     )
-    fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
+
+ #   fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
     fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
     return fig
 
@@ -443,7 +333,53 @@ page_table = vm.Page(
 
 page_region = vm.Page(
     title="Regional View",
-    components=[vm.Graph(figure=stacked_bar(df)), vm.Graph(figure=chloropleth(df))],
+    layout=vm.Layout(
+        grid=[
+            [0, 1, 2, 3, 4, 5],
+            [0, 1, 2, 3, 4, 5],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
+        ],
+        col_gap="32px",
+        row_gap="32px",
+    ),
+    components=[
+        KPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up",
+            ref_value="5.5% vs. Last Year"),
+        KPI(
+            title="Closed Complaints", value="75.230 (99.6%)", icon="arrow_circle_down", sign="down",
+            ref_value="-4.5% vs. Last Year"
+        ),
+        KPI(
+            title="Open Complaints", value="283 (0.4%)", icon="arrow_circle_down", sign="down",
+            ref_value="-4.5% vs. Last Year"
+        ),
+        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Resolved at no cost",
+            value="84.5%",
+            icon="arrow_circle_down",
+            sign="down",
+            ref_value="-8.5% vs. Last Year",
+        ),
+        KPI(title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up",
+            ref_value="10.5% vs. Last Year"),
+        vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
+        vm.Card(text="Placeholder"),
+        vm.Card(text="Placeholder"),
+    ],
+    controls=[
+        #vm.Filter(column="Region"),
+              vm.Filter(column="State"),
+              vm.Filter(column="ZIP code")
+              ]
 )
 
 
