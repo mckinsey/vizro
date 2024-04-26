@@ -56,7 +56,7 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -103,7 +103,12 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(
-            self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3, get_output_dict: bool=False,
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        explain: bool = False,
+        max_debug_retry: int = 3,
+        get_output_dict: bool = False,
     ) -> Union[go.Figure, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -136,7 +141,6 @@ class VizroAI:
                 "fig_object": fig_object,
                 "business_insights": business_insights,
                 "code_explanation": code_explanation,
-
             }
 
         if not explain:
