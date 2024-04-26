@@ -1,9 +1,10 @@
 import logging
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
+from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains import ModelConstructor
+from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
@@ -14,50 +15,48 @@ logger = logging.getLogger(__name__)
 class VizroAI:
     """Vizro-AI main class."""
 
+    pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
+    def __init__(self, model: Optional[Union[ChatOpenAI, str]] = None):
         """Initialization of VizroAI.
 
         Args:
-            model_name: Model name in string format.
-            temperature: Temperature parameter for LLM.
+            model: model instance or model name.
 
         """
-        self._model_constructor = ModelConstructor()
-        self._pipeline_manager = PipelineManager()
-        self.llm = self._model_constructor.get_llm_model(model_name, temperature)
+        self.model = _get_llm_model(model=model)
         self.components_instances = {}
+
+        # TODO add pending URL link to docs
         logger.info(
-            f"You have selected {model_name},"
+            f"You have selected {self.model.model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
             "https://vizro-ai.readthedocs.io/en/latest/pages/explanation/disclaimer/"
         )
-
-
         self._set_task_pipeline_llm()
 
     def _set_task_pipeline_llm(self) -> None:
-        self._pipeline_manager.llm = self.llm
+        self.pipeline_manager.llm = self.model
 
     # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm)
+            self.components_instances[component_class] = component_class(llm=self.model)
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Dict[str, Any]:
         """Task execution."""
-        chart_type_pipeline = self._pipeline_manager.chart_type_pipeline
+        chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
         chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
         # TODO update to loop through charts for multiple charts creation
-        plot_pipeline = self._pipeline_manager.plot_pipeline
+        plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
             initial_args={"chain_input": user_input, "df": df, "chart_types": chart_types}
         )

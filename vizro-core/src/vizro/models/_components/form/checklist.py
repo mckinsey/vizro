@@ -1,11 +1,13 @@
 from typing import List, Literal, Optional
 
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, root_validator, validator
+
+import dash_bootstrap_components as dbc
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -15,7 +17,11 @@ from vizro.models.types import MultiValueType, OptionsType
 
 
 class Checklist(VizroBaseModel):
-    """Categorical multi-selector `Checklist` to be provided to [`Filter`][vizro.models.Filter].
+    """Categorical multi-option selector `Checklist`.
+
+    Can be provided to [`Filter`][vizro.models.Filter] or
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist).
 
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
@@ -44,18 +50,16 @@ class Checklist(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=True)
 
-        return html.Div(
+        return html.Fieldset(
             [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
-                dcc.Checklist(
+                html.Legend(self.title, className="form-label") if self.title else None,
+                dbc.Checklist(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else [default_value],
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_checklist",
                 ),
             ],
-            className="selector_container",
             id=f"{self.id}_outer",
         )

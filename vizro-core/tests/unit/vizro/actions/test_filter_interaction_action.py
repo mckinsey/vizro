@@ -11,7 +11,7 @@ from vizro.managers import model_manager
 @pytest.fixture
 def ctx_filter_interaction(request):
     """Mock dash.ctx that represents a click on a continent data-point and table selected cell."""
-    continent_filter_interaction, country_table_filter_interaction = request.param
+    continent_filter_interaction, country_table_filter_interaction, country_aggrid_filter_interaction = request.param
 
     args_grouping_filter_interaction = []
     if continent_filter_interaction:
@@ -23,7 +23,10 @@ def ctx_filter_interaction(request):
                     value={"points": [{"customdata": [continent_filter_interaction]}]},
                     str_id="box_chart",
                     triggered=False,
-                )
+                ),
+                "modelID": CallbackTriggerDict(
+                    id="box_chart", property="id", value="box_chart", str_id="box_chart", triggered=False
+                ),
             }
         )
     if country_table_filter_interaction:
@@ -46,9 +49,32 @@ def ctx_filter_interaction(request):
                     str_id="underlying_table_id",
                     triggered=False,
                 ),
+                "modelID": CallbackTriggerDict(
+                    id="vizro_table", property="id", value="vizro_table", str_id="vizro_table", triggered=False
+                ),
             }
         )
-
+    if country_aggrid_filter_interaction:
+        args_grouping_filter_interaction.append(
+            {
+                "cellClicked": CallbackTriggerDict(
+                    id="underlying_ag_grid_id",
+                    property="cellClicked",
+                    value={
+                        "value": country_aggrid_filter_interaction,
+                        "colId": "country",
+                        "rowIndex": 0,
+                        "rowId": "0",
+                        "timestamp": 1708697920849,
+                    },
+                    str_id="underlying_ag_grid_id",
+                    triggered=False,
+                ),
+                "modelID": CallbackTriggerDict(
+                    id="ag_grid", property="id", value="ag_grid", str_id="ag_grid", triggered=False
+                ),
+            }
+        )
     mock_ctx = {
         "args_grouping": {
             "external": {
@@ -91,9 +117,9 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
     return px.box(data, **box_params).update_layout(margin_t=24)
 
 
-@pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_button")
+@pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")
 class TestFilterInteraction:
-    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
+    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
         self, ctx_filter_interaction
     ):
@@ -110,9 +136,9 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
-            (("Africa", None), ("Africa", None), ("Africa", None)),
-            (("Europe", None), ("Europe", None), ("Europe", None)),
-            (("Americas", None), ("Americas", None), ("Americas", None)),
+            (("Africa", None, None), ("Africa", None), ("Africa", None)),
+            (("Europe", None, None), ("Europe", None), ("Europe", None)),
+            (("Americas", None, None), ("Americas", None), ("Americas", None)),
         ],
         indirect=True,
     )
@@ -131,9 +157,9 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent",
         [
-            (("Africa", None), ("Africa", None)),
-            (("Europe", None), ("Europe", None)),
-            (("Americas", None), ("Americas", None)),
+            (("Africa", None, None), ("Africa", None)),
+            (("Europe", None, None), ("Europe", None)),
+            (("Americas", None, None), ("Americas", None)),
         ],
         indirect=True,
     )
@@ -152,9 +178,9 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
-            (("Africa", None), ("Africa", None), ("Africa", None)),
-            (("Europe", None), ("Europe", None), ("Europe", None)),
-            (("Americas", None), ("Americas", None), ("Americas", None)),
+            (("Africa", None, None), ("Africa", None), ("Africa", None)),
+            (("Europe", None, None), ("Europe", None), ("Europe", None)),
+            (("Americas", None, None), ("Americas", None), ("Americas", None)),
         ],
         indirect=True,
     )
@@ -174,7 +200,7 @@ class TestFilterInteraction:
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
-    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None), ("Europe", None)], indirect=True)
+    @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
         with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
@@ -185,9 +211,9 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent",
         [
-            ((None, "Algeria"), (None, "Algeria")),
-            ((None, "Albania"), (None, "Albania")),
-            ((None, "Argentina"), (None, "Argentina")),
+            ((None, "Algeria", None), (None, "Algeria")),
+            ((None, "Albania", None), (None, "Albania")),
+            ((None, "Argentina", None), (None, "Argentina")),
         ],
         indirect=True,
     )
@@ -208,9 +234,9 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
         [
-            ((None, "Algeria"), (None, "Algeria"), (None, "Algeria")),
-            ((None, "Albania"), (None, "Albania"), (None, "Albania")),
-            ((None, "Argentina"), (None, "Argentina"), (None, "Argentina")),
+            ((None, "Algeria", None), (None, "Algeria"), (None, "Algeria")),
+            ((None, "Albania", None), (None, "Albania"), (None, "Albania")),
+            ((None, "Argentina", None), (None, "Argentina"), (None, "Argentina")),
         ],
         indirect=True,
     )
@@ -218,11 +244,11 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         model_manager["box_chart"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
 
         model_manager["vizro_table"].actions = [
-            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
         ]
         model_manager["vizro_table"].pre_build()
 
@@ -235,9 +261,38 @@ class TestFilterInteraction:
     @pytest.mark.parametrize(
         "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
         [
-            (("Africa", "Algeria"), ("Africa", "Algeria"), ("Africa", "Algeria")),
-            (("Europe", "Albania"), ("Europe", "Albania"), ("Europe", "Albania")),
-            (("Americas", "Argentina"), ("Americas", "Argentina"), ("Americas", "Argentina")),
+            ((None, None, "Algeria"), (None, "Algeria"), (None, "Algeria")),
+            ((None, None, "Albania"), (None, "Albania"), (None, "Albania")),
+            ((None, None, "Argentina"), (None, "Argentina"), (None, "Argentina")),
+        ],
+        indirect=True,
+    )
+    def test_aggrid_filter_interaction_with_two_targets(
+        self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
+    ):
+        # To not overcrowd these tests with duplication, we use one general case here for the AG Grid
+        # Functionality should be similar enough to the Dash Datatable that this suffices
+        model_manager["box_chart"].actions = [
+            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+        ]
+
+        model_manager["ag_grid"].actions = [
+            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+        ]
+        model_manager["ag_grid"].pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager["test_action"].function()
+        expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
+
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
+        [
+            (("Africa", "Algeria", None), ("Africa", "Algeria"), ("Africa", "Algeria")),
+            (("Europe", "Albania", None), ("Europe", "Albania"), ("Europe", "Albania")),
+            (("Americas", "Argentina", None), ("Americas", "Argentina"), ("Americas", "Argentina")),
         ],
         indirect=True,
     )

@@ -16,11 +16,11 @@
   border-color: var(--surfaces-bg-02);
 }
 
-.card_container::-webkit-scrollbar-thumb {
+.card::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-card);
 }
 
-.nav_card_container::-webkit-scrollbar-thumb {
+.card-nav::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-card);
 }
 
@@ -30,4 +30,13 @@
 
 .table-container::-webkit-scrollbar-thumb {
   border-color: var(--main-container-bg-color);
+}
+
+/* Can't control thumb color so hover is turned off */
+.ag-root ::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ag-root ::-webkit-scrollbar-thumb:hover {
+  background: var(--field-enabled);
 }

@@ -1,7 +1,6 @@
 .rc-slider {
   flex: auto;
-  height: 24px;
-  margin: 4px -12px 0 -12px;
+  margin: 4px -12px 0;
 }
 
 .rc-slider-rail,
@@ -35,7 +34,7 @@
   border-color: var(--fill-on-active);
   border-radius: 100%;
   height: 16px;
-  margin: -8px 0 0 0;
+  margin: -8px 0 0;
   position: absolute;
   width: 16px;
 }
@@ -63,6 +62,7 @@
 .rc-slider-mark-text {
   color: var(--text-secondary);
   font-size: var(--text-size-01);
+  line-height: var(--text-size-02);
   margin-top: var(--spacing-01);
   min-width: 44px;
 }
@@ -71,71 +71,69 @@
   color: var(--fill-on-active);
 }
 
-.slider_control,
-.slider_control_no_space,
-.range_slider_control,
-.range_slider_control_no_space {
+.slider-track-with-marks,
+.slider-track-without-marks {
   display: flex;
-  height: 20px;
-  margin: 0 8px 24px -4px;
+  margin: 0;
   width: 100%;
 }
 
-.slider_control_no_space {
-  margin-bottom: -4px;
+.slider-track-without-marks {
+  padding: 4px 24px !important;
 }
 
-.range_slider_control_no_space {
-  margin: 2px 8px -4px 0px;
-  padding: 0 30px 25px 30px !important;
-}
-.range_slider_control {
-  padding: 0 30px 25px 30px !important;
-}
-
-.slider_input_field_left,
-.slider_input_field_right,
-.slider_input_field_no_space_left,
-.slider_input_field_no_space_right {
-  background-color: inherit;
-  color: var(--text-secondary);
-  font-size: var(--text-size-02);
-  margin-right: 4px;
-  max-width: 54px;
-  min-width: 40px;
-  padding-bottom: var(--spacing-08);
-  text-decoration: underline;
-  text-decoration-color: var(--border-subtle-alpha-01);
-}
-
-.slider_input_field_right,
-.slider_input_field_no_space_right {
-  margin-right: 0;
-  text-align: right;
-}
-
-.slider_input_field_no_space_left,
-.slider_input_field_no_space_right {
-  padding-bottom: 4px;
-}
-
-.slider_inner_container,
-.range_slider_inner_container {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.range_slider_inner_container {
-  flex-direction: column;
-}
-
-.slider_input_container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+.slider-track-with-marks {
+  padding: 4px 24px 24px !important;
 }
 
 input.dash-input:invalid {
   outline: none;
+}
+
+/* Slider Label + Input Container ---------------------- */
+.slider-label-input {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  line-height: var(--text-size-03);
+}
+
+.slider-label-input label {
+  width: 100%;
+}
+
+/* Slider Text Input ---------------------- */
+.slider-text-input-container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-01);
+  margin-bottom: var(--spacing-03);
+}
+
+.slider-text-input-field {
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-size-02);
+  max-width: 80px; /* required for Mozilla */
+  padding: 0;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-color: var(--border-subtle-alpha-01);
+}
+
+.slider-text-input-range-separator {
+  color: var(--text-secondary);
+  font-size: var(--text-size-02);
+}
+
+/* To remove number input spin box */
+.slider-text-input-container input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.slider-text-input-container input[type="number"] {
+  appearance: textfield;
 }

@@ -1,32 +1,24 @@
-"""Rough example used by developers."""
+"""Example to show dashboard configuration."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models._components.form._text_area import TextArea
-from vizro.models._components.form._user_input import UserInput
+from vizro.tables import dash_ag_grid, dash_data_table
 
-iris = px.data.iris()
-
-# Only added to container.components directly for dev example
-vm.Container.add_type("components", UserInput)
-vm.Container.add_type("components", TextArea)
+df = px.data.iris()
 
 page = vm.Page(
-    title="User Text Inputs",
-    layout=vm.Layout(grid=[[0, 1]], col_gap="40px"),
+    title="My first dashboard",
     components=[
-        vm.Container(
-            title="Input Components",
-            components=[
-                UserInput(title="Input - Text (single-line)", placeholder="Enter text here"),
-                TextArea(title="Input - Text (multi-line)", placeholder="Enter multi-line text here"),
-            ],
-        ),
         vm.Graph(
-            id="for_custom_chart",
-            figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+            id="scatter_chart",
+            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", title="Title - Plotly Chart"),
         ),
+        vm.AgGrid(title="Title - AG Grid", figure=dash_ag_grid(data_frame=df)),
+        vm.Table(title="Title - DataTable", figure=dash_data_table(data_frame=df)),
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
     ],
 )
 

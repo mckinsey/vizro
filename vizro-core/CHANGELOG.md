@@ -11,6 +11,86 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.15'></a>
+
+# 0.1.15 — 2024-04-15
+
+## Highlights ✨
+
+- Add dynamic data, which can be reloaded while the dashboard is running. An optional caching layer enables efficient refreshes with per-data source timeouts. Visit the [user guide on data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/) for more details. ([#398](https://github.com/mckinsey/vizro/pull/398))
+
+## Changed
+
+- Replace default bootstrap stylesheet with `vizro-bootstrap` stylesheet. ([#384](https://github.com/mckinsey/vizro/pull/384))
+
+- Refactor code and remove custom classNames from `Button`, `Card`, `NavBar` and `NavLink`. ([#384](https://github.com/mckinsey/vizro/pull/384))
+
+- Change default continuous color scale to `SEQUENTIAL_CYAN`. ([#407](https://github.com/mckinsey/vizro/pull/407))
+
+## Fixed
+
+- Fix CSS for `floatingFilter` in `AgGrid`. ([#388](https://github.com/mckinsey/vizro/pull/388))
+
+<a id='changelog-0.1.14'></a>
+
+# 0.1.14 — 2024-03-26
+
+## Highlights ✨
+
+- Introduce `DatePicker` as a new selector for`Filter` and `Parameter`. Visit the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#309](https://github.com/mckinsey/vizro/pull/309))
+
+## Changed
+
+- Replace `dmc.Tooltip` with `dbc.Tooltip` and change CSS selectors accordingly. ([#361](https://github.com/mckinsey/vizro/pull/361))
+
+- Rename CSS classNames `nav_card_container` and `card_container` to `nav-card` and `card`. ([#373](https://github.com/mckinsey/vizro/pull/373))
+
+## Fixed
+
+- Fix navigation to external links by replacing `dcc.Link` with `dbc.NavLink`. ([#364](https://github.com/mckinsey/vizro/pull/364))
+
+<a id='changelog-0.1.13'></a>
+
+# 0.1.13 — 2024-03-12
+
+### Highlights ✨
+
+- Introduce `AgGrid` as a new `Page` component, allowing the usage of
+  [AG Grid](https://www.ag-grid.com/) in
+  `Vizro`. See the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/)
+  for more information. ([#289](https://github.com/mckinsey/vizro/pull/289),[#268](https://github.com/mckinsey/vizro/pull/268),[#324](https://github.com/mckinsey/vizro/pull/324))
+
+## Changed
+
+- Apply new design to `Slider` and `RangeSlider`. ([#336](https://github.com/mckinsey/vizro/pull/336))
+- Consolidate gaps between selectors. ([#336](https://github.com/mckinsey/vizro/pull/336))
+
+## Fixed
+
+- Fix path to built-in Vizro assets when `requests_pathname_prefix` is not the same as `routes_pathname_prefix`. ([#358](https://github.com/mckinsey/vizro/pull/358))
+
+<a id='changelog-0.1.12'></a>
+
+# 0.1.12 — 2024-03-04
+
+## Changed
+
+- Temporarily exclude `dash==2.16.0` ([#341](https://github.com/mckinsey/vizro/pull/341))
+
+## Fixed
+
+- Added default Bootstrap theme to external stylesheets and fix any visually incompatible CSS declarations. ([#311](https://github.com/mckinsey/vizro/pull/311))
+
+- Fix CSS bug on `page-main` overflowing `page-container` in mobile layouts. ([#331](https://github.com/mckinsey/vizro/pull/331))
+
+<a id='changelog-0.1.11'></a>
+
+# 0.1.11 — 2024-02-13
+
+## Fixed
+
+- Improve layouts for small devices. ([#302](https://github.com/mckinsey/vizro/pull/302))
+
 <a id='changelog-0.1.10'></a>
 
 # 0.1.10 — 2024-01-31

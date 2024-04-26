@@ -1,5 +1,15 @@
 export function _update_dashboard_theme(checked) {
+  document.documentElement.setAttribute(
+    "data-bs-theme",
+    checked ? "light" : "dark",
+  );
   return checked ? "vizro_light" : "vizro_dark";
+}
+
+export function _update_ag_grid_theme(checked) {
+  return checked
+    ? "ag-theme-quartz ag-theme-vizro"
+    : "ag-theme-quartz-dark ag-theme-vizro";
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
@@ -10,11 +20,9 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         false,
         {
           transform: "rotate(180deg)",
-          left: "12px",
           transition: "transform 0.35s ease-in-out",
         },
         "Show Menu",
-        36,
       ];
     }
     return dash_clientside.no_update;
@@ -24,11 +32,9 @@ export function _collapse_nav_panel(n_clicks, is_open) {
       false,
       {
         transform: "rotate(180deg)",
-        left: "12px",
         transition: "transform 0.35s ease-in-out",
       },
       "Show Menu",
-      36,
     ];
   } else {
     return [
@@ -38,7 +44,6 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         transition: "transform 0.35s ease-in-out",
       },
       "Hide Menu",
-      24,
     ];
   }
 }

@@ -1,5 +1,4 @@
-**/docs/pages/API_reference/
-**/docs/pages/user_guides
-**/docs/pages/tutorials
-**/docs/index.md
+**/docs/
 **/.devcontainer/devcontainer.json
+**/static/css/vizro-bootstrap.min.css
+**/static/css/vizro-bootstrap.min.css.map

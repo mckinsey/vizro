@@ -1,11 +1,10 @@
 img[src*="#my-image"] {
-  width: 100px;
-  height: 100px;
   float: left;
+  height: 100px;
   margin: 10px 25px;
+  width: 100px;
 }
 
-#logo {
-  margin-left: -8px;
-  height: 40px;
+#page-header {
+  padding-left: 4px;
 }

@@ -8,7 +8,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid
 
 gapminder = px.data.gapminder()
 gapminder_mean = (
@@ -401,55 +401,44 @@ def create_continent_summary():
 
 def create_benchmark_analysis():
     """Function returns a page to perform analysis on country level."""
-    # Apply formatting to table columns
-    columns = [
-        {"id": "country", "name": "country"},
-        {"id": "continent", "name": "continent"},
-        {"id": "year", "name": "year"},
-        {"id": "lifeExp", "name": "lifeExp", "type": "numeric", "format": {"specifier": ",.1f"}},
-        {"id": "gdpPercap", "name": "gdpPercap", "type": "numeric", "format": {"specifier": "$,.2f"}},
-        {"id": "pop", "name": "pop", "type": "numeric", "format": {"specifier": ",d"}},
+    # Apply formatting to grid columns
+    cellStyle = {
+        "styleConditions": [
+            {
+                "condition": "params.value < 1045",
+                "style": {"backgroundColor": "#ff9222"},
+            },
+            {
+                "condition": "params.value >= 1045 && params.value <= 4095",
+                "style": {"backgroundColor": "#de9e75"},
+            },
+            {
+                "condition": "params.value > 4095 && params.value <= 12695",
+                "style": {"backgroundColor": "#aaa9ba"},
+            },
+            {
+                "condition": "params.value > 12695",
+                "style": {"backgroundColor": "#00b4ff"},
+            },
+        ]
+    }
+    columnsDefs = [
+        {"field": "country"},
+        {"field": "continent"},
+        {"field": "year"},
+        {"field": "lifeExp", "cellDataType": "numeric"},
+        {"field": "gdpPercap", "cellDataType": "dollar", "cellStyle": cellStyle},
+        {"field": "pop"},
     ]
 
     page_country = vm.Page(
         title="Benchmark Analysis",
         description="Discovering how the metrics differ for each country and export data for further investigation",
-        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]], col_gap="32px", row_gap="60px"),
+        layout=vm.Layout(grid=[[0, 1]] * 5 + [[2, -1]]),
         components=[
-            vm.Table(
+            vm.AgGrid(
                 title="Click on a cell in country column:",
-                figure=dash_data_table(
-                    id="dash_data_table_country",
-                    data_frame=gapminder,
-                    columns=columns,
-                    page_size=10,
-                    style_data_conditional=[
-                        {
-                            "if": {"filter_query": "{gdpPercap} < 1045", "column_id": "gdpPercap"},
-                            "backgroundColor": "#ff9222",
-                        },
-                        {
-                            "if": {
-                                "filter_query": "{gdpPercap} >= 1045 && {gdpPercap} <= 4095",
-                                "column_id": "gdpPercap",
-                            },
-                            "backgroundColor": "#de9e75",
-                        },
-                        {
-                            "if": {
-                                "filter_query": "{gdpPercap} > 4095 && {gdpPercap} <= 12695",
-                                "column_id": "gdpPercap",
-                            },
-                            "backgroundColor": "#aaa9ba",
-                        },
-                        {
-                            "if": {"filter_query": "{gdpPercap} > 12695", "column_id": "gdpPercap"},
-                            "backgroundColor": "#00b4ff",
-                        },
-                    ],
-                    sort_action="native",
-                    style_cell={"textAlign": "left"},
-                ),
+                figure=dash_ag_grid(id="dash_ag_grid_country", data_frame=gapminder, columnDefs=columnsDefs),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(
@@ -487,7 +476,7 @@ def create_home_page():
     page_home = vm.Page(
         title="Homepage",
         description="Vizro demo app for studying gapminder data",
-        layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
+        layout=vm.Layout(grid=[[0, 1], [2, 3]]),
         components=[
             vm.Card(
                 text="""

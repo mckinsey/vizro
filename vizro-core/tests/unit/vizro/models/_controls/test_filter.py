@@ -1,6 +1,11 @@
+import re
+from datetime import date, datetime
+from typing import Literal
+
 import pandas as pd
 import pytest
 import vizro.models as vm
+from asserts import assert_component_equal
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
@@ -28,6 +33,73 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-02-01", "2024-03-01"],
+                [False, True, True, False, False],
+            ),  # Standard test
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-01-01", "2024-05-01"],
+                [True, True, True, True, True],
+            ),  # Test with dates for inclusive both ends
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-06-01", "2024-07-01"],
+                [False, False, False, False, False],
+            ),  # Test with no result
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-03-01", "2024-02-01"],
+                [False, False, False, False, False],
+            ),  # Test for inverted values
+            ([], ["2024-02-01", "2024-03-01"], pd.Series([], dtype=bool)),  # Test for empty series
+            (
+                [
+                    datetime(2024, 1, 1, 20, 20, 20),
+                    datetime(2024, 2, 1, 20, 20, 20),
+                    datetime(2024, 3, 1, 20, 20, 20),
+                    datetime(2024, 4, 1, 20, 20, 20),
+                    datetime(2024, 5, 1, 20, 20, 20),
+                ],
+                ["2024-02-01", "2024-03-01"],
+                [False, True, True, False, False],
+            ),  # Test with time part in the date
+        ],
+    )
+    def test_filter_between_date(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_between(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
             ([1, 2, 3, 4, 5], [2, 4], [False, True, False, True, False]),  # Test for integers
             (["apple", "banana", "orange"], ["banana", "grape"], [False, True, False]),  # Test for strings
             ([1.1, 2.2, 3.3, 4.4, 5.5], [2.2, 4.4], [False, True, False, True, False]),  # Test for float values
@@ -35,6 +107,72 @@ class TestFilterFunctions:
         ],
     )
     def test_filter_isin(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_isin(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-02-01"],
+                [False, True, False, False, False],
+            ),  # Standard test
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 2, 1),
+                ],
+                ["2024-02-01"],
+                [False, True, False, True, True],
+            ),  # Multiple values
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                ["2024-06-01"],
+                [False, False, False, False, False],
+            ),  # Test with no result
+            (
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 2, 1),
+                    datetime(2024, 3, 1),
+                    datetime(2024, 4, 1),
+                    datetime(2024, 5, 1),
+                ],
+                [],
+                [False, False, False, False, False],
+            ),  # Test for empty value list
+            (
+                [
+                    datetime(2024, 1, 1, 20, 20, 20),
+                    datetime(2024, 2, 1, 20, 20, 20),
+                    datetime(2024, 3, 1, 20, 20, 20),
+                    datetime(2024, 4, 1, 20, 20, 20),
+                    datetime(2024, 5, 1, 20, 20, 20),
+                ],
+                ["2024-02-01"],
+                [False, True, False, False, False],
+            ),  # Test with time part in the date
+        ],
+    )
+    def test_filter_isin_date(self, data, value, expected):
         series = pd.Series(data)
         expected = pd.Series(expected)
         result = _filter_isin(series, value)
@@ -83,94 +221,190 @@ class TestPreBuildMethod:
             filter.pre_build()
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", "categorical"), ("year", "numerical"), ("lifeExp", "numerical")]
+        "filtered_column, expected_column_type",
+        [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")],
     )
-    def test_set_column_type(self, test_input, expected, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input)
+    def test_set_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter._column_type == expected
+        assert filter._column_type == expected_column_type
 
     @pytest.mark.parametrize(
-        "test_input,expected", [("country", vm.Dropdown), ("year", vm.RangeSlider), ("lifeExp", vm.RangeSlider)]
+        "filtered_column, expected_selector",
+        [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)],
     )
-    def test_set_selector(self, test_input, expected, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input)
+    def test_set_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert isinstance(filter.selector, expected)
-        assert filter.selector.title == test_input.title()
+        assert isinstance(filter.selector, expected_selector)
+        assert filter.selector.title == filtered_column.title()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_incompatible_column_type(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="country", selector=test_input)
+    @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
+    def test_set_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=vm.RadioItems(title="Title"))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, vm.RadioItems)
+        assert filter.selector.title == "Title"
+
+    @pytest.mark.parametrize(
+        "filtered_column, selector",
+        [
+            ("country", vm.Dropdown),
+            ("country", vm.RadioItems),
+            ("country", vm.Checklist),
+            ("lifeExp", vm.Slider),
+            ("lifeExp", vm.RangeSlider),
+            ("lifeExp", vm.Dropdown),
+            ("lifeExp", vm.RadioItems),
+            ("lifeExp", vm.Checklist),
+            ("year", vm.Dropdown),
+            ("year", vm.RadioItems),
+            ("year", vm.Checklist),
+            ("year", vm.DatePicker),
+        ],
+    )
+    def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, selector)
+
+    @pytest.mark.parametrize(
+        "filtered_column, selector",
+        [
+            ("country", vm.Slider),
+            ("country", vm.RangeSlider),
+            ("country", vm.DatePicker),
+            ("lifeExp", vm.DatePicker),
+            ("year", vm.Slider),
+            ("year", vm.RangeSlider),
+        ],
+    )
+    def test_disallowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Chosen selector {test_input.type} is not compatible with categorical column '{filter.column}'.",
+            match=f"Chosen selector {selector().type} is not compatible with .* column '{filtered_column}'. ",
         ):
             filter.pre_build()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_shared_column_inconsistent_dtype(
-        self, test_input, managers_shared_column_different_dtype
-    ):
-        filter = vm.Filter(column="shared_column", selector=test_input)
+    @pytest.mark.parametrize(
+        "targets",
+        [
+            ["id_shared_column_numerical", "id_shared_column_temporal"],
+            ["id_shared_column_numerical", "id_shared_column_categorical"],
+            ["id_shared_column_temporal", "id_shared_column_categorical"],
+        ],
+    )
+    def test_set_slider_values_shared_column_inconsistent_dtype(self, targets, managers_shared_column_different_dtype):
+        filter = vm.Filter(column="shared_column", targets=targets)
         model_manager["graphs_with_shared_column"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Non-numeric values detected in the shared data column '{filter.column}' for targeted charts. "
-            f"Please ensure that the data column contains the same data type across all targeted charts.",
+            match=re.escape(
+                f"Inconsistent types detected in the shared data column 'shared_column' for targeted charts {targets}. "
+                f"Please ensure that the data column contains the same data type across all targeted charts."
+            ),
         ):
             filter.pre_build()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider()])
-    def test_set_slider_values_defaults_min_max_none(self, test_input, gapminder, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=test_input)
+    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    def test_set_numerical_selectors_values_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-    @pytest.mark.parametrize("test_input", [vm.Slider(min=3, max=5), vm.RangeSlider(min=3, max=5)])
-    def test_set_slider_values_defaults_min_max_fix(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=test_input)
+    def test_set_temporal_selectors_values_min_max_default(self, gapminder, managers_one_page_two_graphs):
+        filter = vm.Filter(column="year", selector=vm.DatePicker())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == gapminder.year.min().to_pydatetime().date()
+        assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
+
+    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    def test_set_numerical_selectors_values_min_max_specific(self, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector(min=3, max=5))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == 3
         assert filter.selector.max == 5
 
-    @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
-    def test_set_categorical_selectors_options_defaults_options_none(
-        self, test_input, gapminder, managers_one_page_two_graphs
-    ):
-        filter = vm.Filter(column="continent", selector=test_input)
+    def test_set_temporal_selectors_values_min_max_specific(self, managers_one_page_two_graphs):
+        filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == date(1952, 1, 1)
+        assert filter.selector.max == date(2007, 1, 1)
+
+    @pytest.mark.parametrize("selector", [vm.Checklist, vm.Dropdown, vm.RadioItems])
+    def test_set_categorical_selectors_options_default(self, selector, gapminder, managers_one_page_two_graphs):
+        filter = vm.Filter(column="continent", selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == sorted(set(gapminder["continent"]))
 
-    @pytest.mark.parametrize(
-        "test_input",
-        [
-            vm.Checklist(options=["Africa", "Europe"]),
-            vm.Dropdown(options=["Africa", "Europe"]),
-            vm.RadioItems(options=["Africa", "Europe"]),
-        ],
-    )
-    def test_set_categorical_selectors_options_defaults_options_fix(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column="continent", selector=test_input)
+    @pytest.mark.parametrize("selector", [vm.Checklist, vm.Dropdown, vm.RadioItems])
+    def test_set_categorical_selectors_options_specific(self, selector, managers_one_page_two_graphs):
+        filter = vm.Filter(column="continent", selector=selector(options=["Africa", "Europe"]))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == ["Africa", "Europe"]
 
-    @pytest.mark.parametrize("test_input", ["country", "year", "lifeExp"])
-    def test_set_actions(self, test_input, managers_one_page_two_graphs):
-        filter = vm.Filter(column=test_input)
+    @pytest.mark.parametrize(
+        "filtered_column, selector, filter_function",
+        [
+            ("lifeExp", None, _filter_between),
+            ("country", None, _filter_isin),
+            ("year", None, _filter_between),
+            ("year", vm.DatePicker(range=False), _filter_isin),
+        ],
+    )
+    def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
+        filter = vm.Filter(column=filtered_column, selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         default_action = filter.selector.actions[0]
         assert isinstance(default_action, ActionsChain)
         assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].function["filter_function"] == filter_function
+        assert default_action.actions[0].id == f"filter_action_{filter.id}"
+
+    # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
+    #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
+    def test_numerical_custom_selector(self, gapminder, managers_one_page_two_graphs):
+        class RangeSliderNonCross(vm.RangeSlider):
+            """Custom numerical multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
+
+            type: Literal["range_slider_non_cross"] = "range_slider_non_cross"
+
+            def build(self):
+                range_slider_build_obj = super().build()
+                range_slider_build_obj[self.id].allowCross = False
+                return range_slider_build_obj
+
+        filtered_column = "lifeExp"
+        selector = RangeSliderNonCross
+        vm.Filter.add_type("selector", selector)
+
+        filter = vm.Filter(column=filtered_column, selector=selector())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        assert isinstance(filter.selector, selector)
+        assert filter.selector.title == filtered_column.title()
+        assert filter.selector.min == gapminder.lifeExp.min()
+        assert filter.selector.max == gapminder.lifeExp.max()
+
+        default_action = filter.selector.actions[0]
+        assert isinstance(default_action, ActionsChain)
+        assert isinstance(default_action.actions[0].function, CapturedCallable)
+        assert default_action.actions[0].function["filter_function"] == _filter_between
         assert default_action.actions[0].id == f"filter_action_{filter.id}"
 
 
@@ -186,12 +420,15 @@ class TestFilterBuild:
             ("continent", vm.RadioItems()),
             ("pop", vm.RangeSlider()),
             ("pop", vm.Slider()),
+            ("year", vm.DatePicker()),
+            ("year", vm.DatePicker(range=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
         filter = vm.Filter(column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        result = str(filter.build())
-        expected = str(test_selector.build())
-        assert result == expected
+        result = filter.build()
+        expected = test_selector.build()
+
+        assert_component_equal(result, expected)

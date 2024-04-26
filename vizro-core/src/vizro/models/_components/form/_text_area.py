@@ -14,7 +14,9 @@ from vizro.models._models_utils import _log_call
 
 
 class TextArea(VizroBaseModel):
-    """Component provided to `Form` to allow user multi-line text input.
+    """Multi-line text input component `TextArea`.
+
+    Based on the underlying [`dcc.TextArea`](https://dash.plotly.com/dash-core-components/textarea).
 
     Args:
         type (Literal["text_area"]): Defaults to `"text_area"`.
@@ -39,15 +41,15 @@ class TextArea(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+                dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dbc.Textarea(
                     id=self.id,
                     placeholder=self.placeholder,
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
+                    className="text-area",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )

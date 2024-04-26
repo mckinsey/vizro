@@ -1,5 +1,6 @@
 """Unit tests for hyphen.models.slider."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -17,56 +18,55 @@ def expected_range_slider_default():
     return html.Div(
         [
             dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": None, "max": None}),
-            None,
             html.Div(
                 [
-                    dcc.RangeSlider(
-                        id="range_slider",
-                        className="range_slider_control_no_space",
-                        persistence=True,
-                        persistence_type="session",
-                        min=None,
-                        max=None,
-                        marks=None,
-                        value=[None, None],
-                        step=None,
-                    ),
+                    None,
                     html.Div(
                         [
                             dcc.Input(
                                 id="range_slider_start_value",
                                 type="number",
-                                placeholder="start",
-                                className="slider_input_field_no_space_left",
-                                size="24px",
-                                step=None,
-                                persistence=True,
-                                persistence_type="session",
+                                placeholder="min",
                                 min=None,
                                 max=None,
+                                step=None,
                                 value=None,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
                             ),
+                            html.Span("-", className="slider-text-input-range-separator"),
                             dcc.Input(
                                 id="range_slider_end_value",
                                 type="number",
-                                placeholder="end",
-                                className="slider_input_field_no_space_right",
-                                persistence=True,
-                                persistence_type="session",
-                                step=None,
+                                placeholder="max",
                                 min=None,
                                 max=None,
+                                step=None,
                                 value=None,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
                             ),
                             dcc.Store(id="range_slider_input_store", storage_type="session", data=[None, None]),
                         ],
-                        className="slider_input_container",
+                        className="slider-text-input-container",
                     ),
                 ],
-                className="range_slider_inner_container",
+                className="slider-label-input",
+            ),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=None,
+                max=None,
+                step=None,
+                marks=None,
+                value=[None, None],
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-without-marks",
             ),
         ],
-        className="selector_container",
         id="range_slider_outer",
     )
 
@@ -75,58 +75,57 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            dcc.Store("range_slider_with_all_callback_data", data={"id": "range_slider_with_all", "min": 0, "max": 10}),
-            html.Label("Title", htmlFor="range_slider_with_all"),
+            dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dcc.RangeSlider(
-                        id="range_slider_with_all",
-                        min=0,
-                        max=10,
-                        step=2,
-                        marks={1: "1", 5: "5", 10: "10"},
-                        className="range_slider_control",
-                        value=[0, 10],
-                        persistence=True,
-                        persistence_type="session",
-                    ),
+                    dbc.Label("Title", html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
-                                id="range_slider_with_all_start_value",
+                                id="range_slider_start_value",
                                 type="number",
-                                placeholder="start",
-                                min=0,
-                                step=2,
-                                max=10,
-                                className="slider_input_field_left",
-                                value=0,
-                                size="24px",
+                                placeholder="min",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][0],
                                 persistence=True,
                                 persistence_type="session",
+                                className="slider-text-input-field",
                             ),
+                            html.Span("-", className="slider-text-input-range-separator"),
                             dcc.Input(
-                                id="range_slider_with_all_end_value",
+                                id="range_slider_end_value",
                                 type="number",
-                                placeholder="end",
-                                min=0,
-                                max=10,
-                                step=2,
-                                className="slider_input_field_right",
-                                value=10,
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][1],
                                 persistence=True,
                                 persistence_type="session",
+                                className="slider-text-input-field",
                             ),
-                            dcc.Store(id="range_slider_with_all_input_store", storage_type="session", data=[0, 10]),
+                            dcc.Store(id="range_slider_input_store", storage_type="session", data=[0, 10]),
                         ],
-                        className="slider_input_container",
+                        className="slider-text-input-container",
                     ),
                 ],
-                className="range_slider_inner_container",
+                className="slider-label-input",
+            ),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1: "1", 5: "5", 10: "10"},
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
             ),
         ],
-        className="selector_container",
-        id="range_slider_with_all_outer",
+        id="range_slider_outer",
     )
 
 
@@ -179,7 +178,7 @@ class TestRangeSliderInstantiation:
 
     def test_validate_max_invalid(self):
         with pytest.raises(
-            ValidationError, match="Maximum value of slider is required to be larger than minimum value."
+            ValidationError, match="Maximum value of selector is required to be larger than minimum value."
         ):
             vm.RangeSlider(min=10, max=0)
 
@@ -252,17 +251,22 @@ class TestRangeSliderInstantiation:
         assert slider.marks == expected
 
     @pytest.mark.parametrize(
-        "step, marks, expected",
+        "step, marks, expected_marks, expected_class",
         [
-            (1, None, None),
-            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (1, {1: "1", 2: "2"}, {1: "1", 2: "2"}),
-            (None, {}, None),
+            (1, None, None, "slider-track-without-marks"),
+            (None, {}, None, "slider-track-without-marks"),
+            (None, None, None, "slider-track-without-marks"),
+            (None, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            (2, {1: "1", 2: "2"}, {1: "1", 2: "2"}, "slider-track-with-marks"),
+            # This case might be unintuitive, as the resulting marks are an empty dict. However, marks will
+            # be drawn by the dash component, so we need to check for the className here on top.
+            (1, {}, {}, "slider-track-with-marks"),
         ],
     )
-    def test_set_step_and_marks(self, step, marks, expected):
-        slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks)
-        assert slider.marks == expected
+    def test_set_step_and_marks(self, step, marks, expected_marks, expected_class):
+        slider = vm.RangeSlider(min=0, max=10, step=step, marks=marks, id="slider-id").build()
+        assert slider["slider-id"].marks == expected_marks
+        assert slider["slider-id"].className == expected_class
 
     @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
     def test_valid_title(self, title):
@@ -291,7 +295,7 @@ class TestRangeSliderBuild:
             max=10,
             step=2,
             value=[0, 10],
-            id="range_slider_with_all",
+            id="range_slider",
             title="Title",
             marks={1: "1", 5: "5", 10: "10"},
         ).build()

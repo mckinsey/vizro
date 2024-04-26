@@ -32,8 +32,13 @@ logger = logging.getLogger(__name__)
 
 
 def _all_hidden(components: List[Component]):
-    """Returns True if all `components` are either None and/or have hidden=True."""
-    return all(component is None or getattr(component, "hidden", False) for component in components)
+    """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
+    return all(
+        component is None
+        or getattr(component, "hidden", False)
+        or "d-none" in getattr(component, "className", "d-inline")
+        for component in components
+    )
 
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
@@ -46,8 +51,8 @@ _PageDivsType = TypedDict(
         "dashboard-title": html.Div,
         "settings": html.Div,
         "page-title": html.H2,
-        "nav-bar": html.Div,
-        "nav-panel": html.Div,
+        "nav-bar": dbc.Navbar,
+        "nav-panel": dbc.Nav,
         "control-panel": html.Div,
         "page-components": html.Div,
         "logo": html.Div,
@@ -96,6 +101,8 @@ class Dashboard(VizroBaseModel):
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
+        self.pages[0].path = "/"
+
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
@@ -103,7 +110,7 @@ class Dashboard(VizroBaseModel):
                 description=page.description,
                 image=meta_image,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
-                path=page.path if order else "/",
+                path=page.path,
                 order=order,
                 layout=partial(self._make_page_layout, page),
             )
@@ -116,7 +123,7 @@ class Dashboard(VizroBaseModel):
 
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
-            Output("dashboard_container_outer", "className"),
+            Output("dashboard-container", "className"),
             Input("theme_selector", "checked"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
@@ -126,15 +133,14 @@ class Dashboard(VizroBaseModel):
                 [
                     Output("collapsable-left-side", "is_open"),
                     Output("collapse-icon", "style"),
-                    Output("collapse-tooltip", "label"),
-                    Output("collapse-tooltip", "offset"),
+                    Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapsable-left-side", "is_open"),
             )
 
         return html.Div(
-            id="dashboard_container_outer",
+            id="dashboard-container",
             children=[
                 html.Div(vizro.__version__, id="vizro_version", hidden=True),
                 ActionLoop._create_app_callbacks(),
@@ -191,15 +197,17 @@ class Dashboard(VizroBaseModel):
             page_header_divs.append(page_divs["settings"])
 
         collapsable_icon = (
-            dmc.Tooltip(
-                html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
-                id="collapse-tooltip",
-                label="Hide Menu",
-                offset=24,
-                withArrow=True,
-                position="right",
-                arrowOffset=10,
-                className="collapse-button-tooltip",
+            html.Div(
+                [
+                    html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
+                    dbc.Tooltip(
+                        "Hide Menu",
+                        id="collapse-tooltip",
+                        placement="right",
+                        target="collapse-icon",
+                    ),
+                ],
+                className="collapse-icon-div",
             )
             if not _all_hidden([*left_sidebar_divs, *left_main_divs])
             else None
@@ -237,7 +245,7 @@ class Dashboard(VizroBaseModel):
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href=get_relative_path("/"), className="button_primary"),
+                        dbc.Button("Take me home", href=get_relative_path("/")),
                     ],
                     className="error_content_container",
                 ),

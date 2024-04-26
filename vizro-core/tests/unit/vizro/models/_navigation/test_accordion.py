@@ -5,7 +5,6 @@ import re
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -65,8 +64,8 @@ class TestAccordionBuild:
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
-                            dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
+                            dbc.NavLink(children="Page 1", active="exact", href="/"),
+                            dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
                         ],
                         title="GROUP",
                         item_id="Group",
@@ -81,12 +80,12 @@ class TestAccordionBuild:
             dbc.Accordion(
                 children=[
                     dbc.AccordionItem(
-                        children=[dbc.Button(children=["Page 1"], active=True, href="/", key="/")],
+                        children=[dbc.NavLink(children="Page 1", active="exact", href="/")],
                         title="GROUP 1",
                         item_id="Group 1",
                     ),
                     dbc.AccordionItem(
-                        children=[dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2")],
+                        children=[dbc.NavLink(children="Page 2", active="exact", href="/page-2")],
                         title="GROUP 2",
                         item_id="Group 2",
                     ),
@@ -101,8 +100,8 @@ class TestAccordionBuild:
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.Button(children=["Page 1"], active=True, href="/", key="/"),
-                            dbc.Button(children=["Page 2"], active=False, href="/page-2", key="/page-2"),
+                            dbc.NavLink(children="Page 1", active="exact", href="/"),
+                            dbc.NavLink(children="Page 2", active="exact", href="/page-2"),
                         ],
                         title=ACCORDION_DEFAULT_TITLE,
                         item_id="SELECT PAGE",
@@ -117,9 +116,9 @@ class TestAccordionBuild:
     @pytest.mark.parametrize("pages, expected", test_cases)
     def test_accordion(self, pages, expected):
         accordion = vm.Accordion(id="accordion", pages=pages).build(active_page_id="Page 1")
-        assert_component_equal(accordion, html.Div(id="nav-panel"), keys_to_strip={"children"})
+        assert_component_equal(accordion, dbc.Nav(id="nav-panel"), keys_to_strip={"children"})
         assert_component_equal(accordion["accordion"], expected, keys_to_strip={"class_name", "className"})
 
     def test_accordion_one_page(self):
         accordion = vm.Accordion(pages={"Group": ["Page 1"]}).build(active_page_id="Page 1")
-        assert_component_equal(accordion, html.Div(hidden=True, id="nav-panel"))
+        assert_component_equal(accordion, dbc.Nav(className="d-none invisible", id="nav-panel"))

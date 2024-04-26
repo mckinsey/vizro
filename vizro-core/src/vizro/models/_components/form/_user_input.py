@@ -14,7 +14,9 @@ from vizro.models._models_utils import _log_call
 
 
 class UserInput(VizroBaseModel):
-    """Component provided to `Form` to allow single-line user input.
+    """Single-line text input component `UserInput`.
+
+    Based on the underlying [`dcc.Input`](https://dash.plotly.com/dash-core-components/input).
 
     Args:
         type (Literal["user_input"]): Defaults to `"user_input"`.
@@ -39,7 +41,7 @@ class UserInput(VizroBaseModel):
     def build(self):
         return html.Div(
             [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+                dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,
@@ -50,6 +52,5 @@ class UserInput(VizroBaseModel):
                     className="user_input",
                 ),
             ],
-            className="input-container",
             id=f"{self.id}_outer",
         )

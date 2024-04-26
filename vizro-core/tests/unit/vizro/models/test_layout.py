@@ -182,8 +182,8 @@ class TestLayoutBuild:
                 html.Div(id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3"}),
             ],
             style={
-                "gridRowGap": "12px",
-                "gridColumnGap": "12px",
+                "gridRowGap": "24px",
+                "gridColumnGap": "24px",
                 "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
                 "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
             },

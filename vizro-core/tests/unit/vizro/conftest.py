@@ -5,12 +5,17 @@ import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid, dash_data_table
 
 
 @pytest.fixture
 def gapminder():
-    return px.data.gapminder()
+    return px.data.gapminder(datetimes=True)
+
+
+@pytest.fixture
+def stocks():
+    return px.data.stocks()
 
 
 @pytest.fixture
@@ -27,6 +32,21 @@ def standard_px_chart(gapminder):
 
 
 @pytest.fixture
+def standard_ag_grid(gapminder):
+    return dash_ag_grid(data_frame=gapminder)
+
+
+@pytest.fixture
+def ag_grid_with_id(gapminder):
+    return dash_ag_grid(id="underlying_ag_grid_id", data_frame=gapminder)
+
+
+@pytest.fixture
+def ag_grid_with_id_and_conf(gapminder):
+    return dash_ag_grid(id="underlying_ag_grid_id", data_frame=gapminder, dashGridOptions={"pagination": True})
+
+
+@pytest.fixture
 def standard_dash_table(gapminder):
     return dash_data_table(data_frame=gapminder)
 
@@ -39,6 +59,11 @@ def dash_data_table_with_id(gapminder):
 @pytest.fixture
 def standard_go_chart(gapminder):
     return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
+
+
+@pytest.fixture
+def chart_with_temporal_data(stocks):
+    return go.Figure(data=go.Scatter(x=stocks["Date"], y=stocks["AAPL.High"], mode="markers"))
 
 
 @pytest.fixture()
