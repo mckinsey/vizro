@@ -26,7 +26,7 @@ class FilterAction(CapturedActionCallable):
         if not filter_column or not isinstance(filter_column, str):
             raise ValueError("'filter_column' must be a string.")
 
-        # TODO-AV2: Should we: 
+        # TODO-AV2: Should we:
         #  1. Rename it to `filtering_function`?
         #  2. Calculate it based on the 'filter_column' type (something similar we do in the Filter._pre_build() phase)?
         # Validate and calculate "filter_function"
