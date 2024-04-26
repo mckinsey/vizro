@@ -17,10 +17,13 @@ df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
 df_complaints['Date Received'] = pd.to_datetime(df_complaints['Date Received'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
 df_complaints['Date Sumbited'] = pd.to_datetime(df_complaints['Date Sumbited'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
 df_complaints.rename(columns={"Date Sumbited": "Date Submitted", "Submitted via": "Channel"}, inplace=True)
-print(df_complaints)
+df_complaints['Date Received YY-MM'] = pd.to_datetime(df_complaints['Date Received'], format='%Y-%m-%d').dt.strftime('%Y-%m')
 
+# TODO: Do everything vs. last year
+# TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
+# TODO: Bar - Reformat numbers with comas in bar chart
+# TODO: Line - Customise function to always show selected year vs. past year
 
-# TODO: How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
 def create_sales_df():
     # Define months and years
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -112,15 +115,7 @@ def stacked_bar(data_frame=None):
     fig.update_layout(title="Regional distribution", barmode='relative', title_pad_l=0, title_pad_t=4, margin=dict(l=0, r=0, t=32))
     return fig
 
-@capture("graph")
-def heatmap(data_frame: pd.DataFrame = None, title: str = None):
-    fig = go.Figure(data=go.Heatmap(
-        z=[[1, None, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]],
-        x=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        y=['Morning', 'Afternoon', 'Evening']))
 
-    fig.update_layout(title=title)
-    return fig
 
 
 @capture("graph")
@@ -129,6 +124,14 @@ def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 15, color_
 
     fig = px.bar(data_frame=df_agg.head(top_n), x=x, y=y, orientation="h", text=x, color_discrete_sequence=color_discrete_sequence)
     fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))
+    return fig
+
+
+@capture("graph")
+def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequence: List[str] = None):
+    df_agg = data_frame.groupby([x]).aggregate({y: "count"}).reset_index()
+    fig = px.area(data_frame=df_agg, x=x, y=y, color_discrete_sequence=color_discrete_sequence, title="Complaints over time - monthly")
+    fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
     return fig
 
 
@@ -159,19 +162,17 @@ def chloropleth(data_frame: pd.DataFrame = None):
 
 page_exec = vm.Page(
     title="Executive View",
-    layout=vm.Layout(grid=[[0, 1, 2, 3, 4, 5],
-                           [6, 6, 6, 7, 7, 9],
-                           [6, 6, 6, 7, 7, 9],
-                           [6, 6, 6, 8, 8, 8],
-                           [6, 6, 6, 8, 8, 8]],
+    layout=vm.Layout(grid=[[0, 1, 2, 3, -1,],
+                           [4, 4, 5, 5, 5],
+                           [4, 4, 5, 5, 5],
+                           [4, 4, 6, 7, 8],
+                           [4, 4, 6, 7, 8]],
                      col_gap="32px", row_gap="32px"),
     components=[
-        KPI(title="Revenue", value="$10.5 M", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
-        KPI(title="Sales", value="$5.4 M", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
-        KPI(title="Profit", value="$1.3 M", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"),
-        KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
-        KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
-        KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
+        KPI(title="Total Complaints", value="75513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
+        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(title="Open Complaints", value="283", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"),
+        KPI(title="Resolved at no cost", value="84.5%", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -201,8 +202,9 @@ page_exec = vm.Page(
                 ),
             ],
         ),
-        vm.Graph(figure=stacked_bar(df)),
-        vm.Graph(figure=chloropleth(df)),
+        vm.Graph(id="line-date", figure=line(data_frame=df_complaints, y="Complaint ID", x="Date Received YY-MM", color_discrete_sequence=["#1A85FF"])),
+        vm.Card(text="# Placeholder"),
+        vm.Card(text="# Placeholder"),
         vm.Card(text="# Placeholder"),
     ],
 )
@@ -281,14 +283,23 @@ page_table = vm.Page(
     ],
 )
 
+page_region = vm.Page(
+    title="Regional View",
+    components=[
+        vm.Graph(figure=stacked_bar(df)),
+        vm.Graph(figure=chloropleth(df))
+    ],
+)
+
 
 dashboard = vm.Dashboard(
-    pages=[page_exec, page_table],
+    pages=[page_exec, page_region, page_table],
     title="Financial Complaints Dashboard",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Executive View", icon="Leaderboard", pages=["Executive View"]),
+                vm.NavLink(label="Regional View", icon="South America", pages=["Regional View"]),
                 vm.NavLink(label="Table View", icon="Table View", pages=["List of complaints"]),
             ]
         )
