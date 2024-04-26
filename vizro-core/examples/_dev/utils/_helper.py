@@ -13,13 +13,6 @@ REGION_MAPPING = {
 
 
 def clean_data_and_add_columns(data: pd.DataFrame):
-    # Clean cell values
-    data.fillna("N/A", inplace=True)
-
-    # Convert to correct data type
-    data["Date Received"] = pd.to_datetime(data["Date Received"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
-    data["Date Sumbited"] = pd.to_datetime(data["Date Sumbited"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
-
     # Rename columns
     data.rename(
         columns={
@@ -29,6 +22,14 @@ def clean_data_and_add_columns(data: pd.DataFrame):
         },
         inplace=True,
     )
+
+    # Clean cell values and/or assign different values
+    data.fillna("N/A", inplace=True)
+    data['Company response - detailed'] = data['Company response - detailed'].replace('Closed', 'Closed without relief')
+
+    # Convert to correct data type
+    data["Date Received"] = pd.to_datetime(data["Date Received"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
+    data["Date Submitted"] = pd.to_datetime(data["Date Submitted"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
 
     # Create additional columns
     data["Year-Month Received"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y-%m")

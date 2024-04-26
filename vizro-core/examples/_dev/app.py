@@ -216,6 +216,8 @@ def pie(
         title=title,
         hole=0.4,
     )
+
+    fig.update_layout(legend_x=0, legend_y=0)
     return fig
 
 
@@ -253,28 +255,25 @@ page_exec = vm.Page(
     title="Executive View",
     layout=vm.Layout(
         grid=[
-            [
-                0,
-                1,
-                2,
-                3,
-                -1,
-            ],
-            [4, 4, 5, 5, 5],
-            [4, 4, 5, 5, 5],
-            [4, 4, 6, 7, 8],
-            [4, 4, 6, 7, 8],
-            [4, 4, 6, 7, 8],
+            [0, 1, 2, 3, 4, -1],
+            [5, 5, 5, 6, 6, 6],
+            [5, 5, 5, 6, 6, 6],
+            [5, 5, 5, 7, 8, 8],
+            [5, 5, 5, 7, 8, 8],
+            [5, 5, 5, 7, 8, 8],
         ],
         col_gap="32px",
         row_gap="32px",
     ),
     components=[
-        KPI(title="Total Complaints", value="75513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
-        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
         KPI(
-            title="Open Complaints", value="283", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"
+            title="Closed Complaints", value="75.230 (99.6%)", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"
         ),
+        KPI(
+            title="Open Complaints", value="283 (0.4%)", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"
+        ),
+        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
         KPI(
             title="Resolved at no cost",
             value="84.5%",
@@ -326,6 +325,20 @@ page_exec = vm.Page(
                         )
                     ],
                 ),
+                vm.Container(
+                    title="By Region",
+                    components=[
+                        vm.Graph(
+                            id="bar-region",
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Region",
+                                x="Complaint ID",
+                                color_discrete_sequence=["#1A85FF"],
+                            ),
+                        )
+                    ],
+                ),
             ],
         ),
         vm.Graph(
@@ -341,15 +354,10 @@ page_exec = vm.Page(
         ),
         vm.Graph(
             figure=pie(
-                data_frame=df_complaints, values="Complaint ID", names="Company response", title="Company Response"
-            )
-        ),
-        vm.Graph(
-            figure=pie(
-                data_frame=df_complaints,
+                data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
                 values="Complaint ID",
                 names="Company response - Closed",
-                title="Closed-Company Response",
+                title="Resolved Company Responses",
             )
         ),
     ],
