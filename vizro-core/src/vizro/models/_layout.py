@@ -13,7 +13,7 @@ from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-GAP_DEFAULT = "12px"
+GAP_DEFAULT = "24px"
 MIN_DEFAULT = "0px"
 
 
