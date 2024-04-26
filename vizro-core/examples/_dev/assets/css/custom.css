@@ -2,18 +2,17 @@
   padding-left: 4px;
 }
 
-
 /* OLD */
 #kpi-container {
   background-color: var(--surfaces-bg-02);
 }
 
 .card {
+  background: var(--bs-card-cap-bg);
   display: flex;
   gap: 4px;
-  width: 100%;
   height: 100%;
-  background: var(--bs-card-cap-bg);
+  width: 100%;
 }
 
 .card .card-title {
@@ -22,25 +21,25 @@
 
 .card .card-value {
   font-size: 1.5rem;
-  margin: 0;
-  height: 100%;
   font-weight: 600;
+  height: 100%;
+  margin: 0;
 }
 
 .card-border-up {
-  border-left: 4px solid #1A85FF;
+  border-left: 4px solid #1a85ff;
 }
 
 .card-border-down {
-  border-left: 4px solid #D41159;
+  border-left: 4px solid #d41159;
 }
 
 .card .down {
-  color: #D41159;
+  color: #d41159;
 }
 
 .card .up {
-  color: #1A85FF;
+  color: #1a85ff;
 }
 
 .card .material-symbols-outlined {
@@ -49,8 +48,8 @@
 }
 
 .card .card-ref-value {
-  line-height: 20px;
   display: flex;
-  gap: 4px;
   font-weight: 600;
+  gap: 4px;
+  line-height: 20px;
 }
