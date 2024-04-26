@@ -83,7 +83,7 @@ class KPI(vm.VizroBaseModel):
     def build(self):
         return dbc.Card(
             [
-                html.H3(self.title, className="card-title"),
+                html.H4(self.title, className="card-title"),
                 html.P(self.value, className="card-value"),
                 html.Span(
                     [
@@ -217,7 +217,7 @@ def pie(
         hole=0.4,
     )
 
-    fig.update_layout(legend_x=0, legend_y=0)
+    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=4, margin=dict(l=0, r=24, t=40, b=16))
     return fig
 
 
@@ -255,12 +255,17 @@ page_exec = vm.Page(
     title="Executive View",
     layout=vm.Layout(
         grid=[
-            [0, 1, 2, 3, 4, -1],
-            [5, 5, 5, 6, 6, 6],
-            [5, 5, 5, 6, 6, 6],
-            [5, 5, 5, 7, 8, 8],
-            [5, 5, 5, 7, 8, 8],
-            [5, 5, 5, 7, 8, 8],
+            [0, 1, 2, 3, 4, 5],
+            [0, 1, 2, 3, 4, 5],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 8, 8, 8],
         ],
         col_gap="32px",
         row_gap="32px",
@@ -281,6 +286,7 @@ page_exec = vm.Page(
             sign="down",
             ref_value="-8.5% vs. Last Year",
         ),
+        KPI(title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -346,11 +352,6 @@ page_exec = vm.Page(
             figure=line(
                 data_frame=df_complaints, y="Complaint ID", x="Year-Month Received", color_discrete_sequence=["#1A85FF"]
             ),
-        ),
-        vm.Graph(
-            figure=pie(
-                data_frame=df_complaints, values="Complaint ID", names="Consumer disputed?", title="Consumer Disputed"
-            )
         ),
         vm.Graph(
             figure=pie(
