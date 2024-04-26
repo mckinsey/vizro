@@ -1,7 +1,7 @@
 # How to customize model usage
 
-## Which LLMs are supported by Vizro-AI?
-Vizro-AI currently supports OpenAI models as follows:
+## Supported models
+Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows:
 
 - `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
 - `gpt-4-0613`
