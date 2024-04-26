@@ -25,6 +25,7 @@ exceptions:
   - GDB
   - GDP
   - GET
+  - GPT
   - GPU
   - GTK
   - GUI
