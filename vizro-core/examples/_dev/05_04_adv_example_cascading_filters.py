@@ -1,18 +1,16 @@
 """Example of cascading filters.
-    By selection 'continent' filter, the 'country' filter options (and value) is updated and the filtering action is
-    applied.
+By selection 'continent' filter, the 'country' filter options (and value) is updated and the filtering action is
+applied.
 """
-import pandas as pd
-from typing import Optional, Dict, List, Any
-import dash_ag_grid as dag
+
+from typing import Optional
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import ctx, dcc, Output, State, exceptions
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction, update_figures, filter_action
-from vizro.managers._model_manager import ModelID
-from vizro.tables import dash_ag_grid
+from vizro.actions import update_figures
 from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
 df = px.data.gapminder()
 
@@ -41,14 +39,11 @@ dashboard = vm.Dashboard(
                                 inputs=["continent_filter.value"],
                                 outputs=["country_filter.options", "country_filter.value"],
                             ),
-                            vm.Action(function=update_figures())
-                        ]
-                    )
+                            vm.Action(function=update_figures()),
+                        ],
+                    ),
                 ),
-                vm.Filter(
-                    column="country",
-                    selector=vm.Dropdown(id="country_filter")
-                ),
+                vm.Filter(column="country", selector=vm.Dropdown(id="country_filter")),
                 vm.Filter(column="year"),
             ],
             actions=[
@@ -57,8 +52,8 @@ dashboard = vm.Dashboard(
                     inputs=["continent_filter.value"],
                     outputs=["country_filter.options", "country_filter.value"],
                 ),
-                vm.Action(function=update_figures())
-            ]
+                vm.Action(function=update_figures()),
+            ],
         ),
     ]
 )

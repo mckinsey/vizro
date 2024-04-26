@@ -16,25 +16,21 @@
         - That way, we can define custom_filter_action on button.actions which would apply filtering on two targets.
 
 """
-import pandas as pd
-from typing import Optional, Dict, List, Any
 
-import dash_ag_grid as dag
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import ctx, dcc, Output, State, exceptions
+from dash import exceptions
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction, update_figures, filter_action
-from vizro.managers._model_manager import ModelID
+from vizro.actions import export_data, filter_action, update_figures
 from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
-
 
 df = px.data.gapminder()
 
 
 class CustomFilterAction(filter_action):
     """Custom filter action which prevents update."""
+
     @staticmethod
     def pure_function(**kwargs):
         raise exceptions.PreventUpdate
@@ -55,8 +51,10 @@ dashboard = vm.Dashboard(
                     id="ag_grid",
                     figure=dash_ag_grid(id="underlying_ag_grid", data_frame=df),
                 ),
-                vm.Graph(id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))])
+                vm.Graph(
+                    id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")
+                ),
+                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))]),
             ],
             controls=[
                 vm.Filter(
@@ -69,13 +67,11 @@ dashboard = vm.Dashboard(
                         actions=[
                             vm.Action(
                                 function=CustomFilterAction(
-                                    filter_column="year",
-                                    targets=["ag_grid", "scatter"],
-                                    filter_function=_filter_isin
+                                    filter_column="year", targets=["ag_grid", "scatter"], filter_function=_filter_isin
                                 )
                             )
                         ],
-                    )
+                    ),
                 ),
                 vm.Filter(
                     column="continent",
@@ -86,24 +82,19 @@ dashboard = vm.Dashboard(
                                 function=CustomFilterAction(
                                     filter_column="continent",
                                     targets=["ag_grid", "scatter"],
-                                    filter_function=_filter_isin
+                                    filter_function=_filter_isin,
                                 )
                             )
                         ],
-                    )
+                    ),
                 ),
-                vm.Button(
-                    text="Apply filters on click",
-                    actions=[
-                        vm.Action(function=update_figures())
-                    ]
-                ),
+                vm.Button(text="Apply filters on click", actions=[vm.Action(function=update_figures())]),
                 vm.Parameter(
                     targets=["scatter.x"],
                     selector=vm.RadioItems(options=["gdpPercap", "lifeExp"]),
                 ),
             ],
-            actions=[]
+            actions=[],
         ),
     ]
 )

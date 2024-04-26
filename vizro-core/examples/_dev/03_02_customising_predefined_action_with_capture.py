@@ -1,21 +1,23 @@
 """Customising (overwriting) predefined actions with @capture.
-    This example shows some limitations of the current vm.Action inputs/outputs building mechanism. The general idea is
-        to enable users to overwrite predefined action only by using the @capture decorator. It doesn't seem possible to
-        achieve this, since _action._get_callback_mapping can't reconcile self.inputs (List[States]) and
-        self.function.inputs (Dict[str, List[State]]) at the same time.
+This example shows some limitations of the current vm.Action inputs/outputs building mechanism. The general idea is
+to enable users to overwrite predefined action only by using the @capture decorator. It doesn't seem possible to
+achieve this, since _action._get_callback_mapping can't reconcile self.inputs (List[States]) and
+self.function.inputs (Dict[str, List[State]]) at the same time.
 
-    Example below shows an attempt to customise the predefined filter_interaction action. The idea is to save the
-        clicked data from the ag_grid into the global store and card component.
+Example below shows an attempt to customise the predefined filter_interaction action. The idea is to save the
+clicked data from the ag_grid into the global store and card component.
 """
-from typing import Optional, Dict, List, Any
+
+from typing import Any, Dict, List, Optional
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dcc, Output, State
+from dash import dcc
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.managers._model_manager import ModelID
-from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
 df = px.data.gapminder().query("year == 2007")
 default_card_text = "Click on a cell in the table to filter the scatter plot."
@@ -47,6 +49,7 @@ def _build_card_text_message(grid_cell_clicked: Optional[Dict] = None):
 #  self.inputs (List[States]) and self.function.inputs (Dict[str, List[State]]) at the same time. There are many ways
 #  to solve this, but it's not clear which one is the best.
 
+
 # TODO-AV-OQ: It seems like the only way to achieve a proper overwrite of the predefined action is to really inherit it
 #  from the base predefined action. In that case, it will be taken into account while applying other predefined actions.
 #  See `04_taking_custom_filter_into_account.py` for more.
@@ -77,10 +80,12 @@ dashboard = CustomDashboard(
                             inputs=["underlying_ag_grid.cellClicked"],
                             outputs=["card.children", "global_data_store.data"],
                         ),
-                    ]
+                    ],
                 ),
-                vm.Graph(id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
-                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))])
+                vm.Graph(
+                    id="scatter", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent")
+                ),
+                vm.Button(text="Export data", actions=[vm.Action(function=export_data(targets=["scatter"]))]),
             ],
             controls=[
                 vm.Filter(column="continent", targets=["scatter"]),
@@ -90,7 +95,7 @@ dashboard = CustomDashboard(
         vm.Page(
             title="Page 2",
             components=[vm.Graph(figure=px.scatter(df, x="gdpPercap", y="lifeExp", color="continent"))],
-            controls=[vm.Filter(column="continent")]
+            controls=[vm.Filter(column="continent")],
         ),
     ]
 )

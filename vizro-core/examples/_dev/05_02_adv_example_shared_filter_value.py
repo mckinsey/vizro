@@ -1,16 +1,16 @@
 """Example where filter on another page is set to the value of the filter on the first page.
-    Implementation is solved utilising the "overwriting default actions" feature.
+Implementation is solved utilising the "overwriting default actions" feature.
 """
+
+from typing import Any, Dict, List, Optional
+
 import pandas as pd
-from typing import Optional, Dict, List, Any
-import dash_ag_grid as dag
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import ctx, dcc, Output, State
+from dash import Output, dcc
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction, update_figures, filter_action
+from vizro.actions import filter_action, filter_interaction, update_figures
 from vizro.managers._model_manager import ModelID
-from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
 
 df = px.data.gapminder().query("year == 2007")
@@ -74,22 +74,18 @@ dashboard = CustomDashboard(
                                     filter_function=_filter_isin,
                                 ),
                             )
-                        ]
-                    )
+                        ],
+                    ),
                 ),
             ],
         ),
         vm.Page(
             title="Page 2",
             components=[
-                vm.Graph(id="fig_2", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))],
+                vm.Graph(id="fig_2", figure=px.scatter(df, x="gdpPercap", y="lifeExp", size="pop", color="continent"))
+            ],
             controls=[
-                vm.Filter(
-                    column="continent",
-                    selector=vm.Dropdown(
-                        id="target_filter_selector"
-                    )
-                ),
+                vm.Filter(column="continent", selector=vm.Dropdown(id="target_filter_selector")),
             ],
             actions=[
                 # 1. It would be nice if we already had client side actions for this.
@@ -102,8 +98,8 @@ dashboard = CustomDashboard(
                     inputs=["global_data_store.data"],
                     outputs=["target_filter_selector.value"],
                 ),
-                vm.Action(function=update_figures())
-            ]
+                vm.Action(function=update_figures()),
+            ],
         ),
     ]
 )
