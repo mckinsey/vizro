@@ -1,28 +1,18 @@
-"""Example to show dashboard configuration."""
+import dash
+from dash import Dash, html, dcc
 
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
 
-df = px.data.iris()
+app = Dash(__name__, use_pages=True)
 
-page = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(
-            id="scatter_chart",
-            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", title="Title - Plotly Chart"),
-        ),
-        vm.AgGrid(title="Title - AG Grid", figure=dash_ag_grid(data_frame=df)),
-        vm.Table(title="Title - DataTable", figure=dash_data_table(data_frame=df)),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-    ],
-)
+app.layout = html.Div([
+    html.H1('Multi-page app with Dash Pages'),
+    html.Div([
+        html.Div(
+            dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
+        ) for page in dash.page_registry.values()
+    ]),
+    dash.page_container,
+])
 
-dashboard = vm.Dashboard(pages=[page])
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+if __name__ == '__main__':
+    app.run(debug=True)
