@@ -1,3 +1,4 @@
+# flake8: noqa
 """Trigger update_figures on button click.
 
 1. Why it doesn't work?

@@ -1,7 +1,8 @@
+# flake8: noqa
 """Example where (invisible) filter on another page is set to the filter_interaction value from the Page_1.
-Once filter interaction from the Page_1 is triggered, user is redirected to the Page_2 where the filter is set to
-the chart clicked value.
-Implementation is solved utilising the "overwriting default actions" feature and by hiding the existing filter.
+    Once filter interaction from the Page_1 is triggered, user is redirected to the Page_2 where the filter is set to
+    the chart clicked value.
+    Implementation is solved utilising the "overwriting default actions" feature and by hiding the existing filter.
 """
 
 from typing import Dict, Optional

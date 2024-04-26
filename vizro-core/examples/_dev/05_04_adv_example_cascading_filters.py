@@ -1,6 +1,7 @@
+# flake8: noqa
 """Example of cascading filters.
-By selection 'continent' filter, the 'country' filter options (and value) is updated and the filtering action is
-applied.
+    By selection 'continent' filter, the 'country' filter options (and value) is updated and the filtering action is
+    applied.
 """
 
 from typing import Optional

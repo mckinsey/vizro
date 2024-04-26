@@ -1,25 +1,27 @@
+# flake8: noqa
 """Overwriting default actions examples.
-1. What's new?
-- Overwriting default filter/parameter actions have always been possible, but with the new
-actions implementation, overwriting of "on page load mechanism" is also possible.
-- By making `filter_action`, `parameter_action` and `update_figures` actions public,
-we achieve the new level of flexibility. This enables users to add some "pre-actions" before or
-"post-actions" after the filter action is triggered (sounds like "cascading filters"?).
-It's also possible to apply global stored controls values before the `update_figures` is triggered
-(sounds like "Enable shared filter values" and "Drill-through"?).
-- Complete overwriting of the default actions instead of appending configured actions to the actions chain seems
-as a better approach. One more reason for that could be that because sometimes we don’t want any action to
-be trigger (setting `actions=[]') from the Filter.selector or vm.Page (default is update_figures).
-See example: '05_01_adv_example_trigger_filtering_on_button_click.py'
-2. Example below shows how not to lose the clicked data from ag_grid when the page is changed.
-How it works:
-- Clicking an ag_grid cell app:
-1. Applies a standard filter interaction
-2. Stores the clicked data into the global store and updates the card component with the clicked data.
-- Navigating to the Page_1 app:
-1. Applies global store data to ag_grid cellClicked property and updates the card component
-2. Applies a standard "update_figures" action
-3. Applies global store data to ag_grid cellClicked property and updates the card component again.
+    1. What's new?
+        - Overwriting default filter/parameter actions have always been possible, but with the new
+            actions implementation, overwriting of "on page load mechanism" is also possible.
+        - By making `filter_action`, `parameter_action` and `update_figures` actions public,
+            we achieve the new level of flexibility. This enables users to add some "pre-actions" before or
+            "post-actions" after the filter action is triggered (sounds like "cascading filters"?).
+            It's also possible to apply global stored controls values before the `update_figures` is triggered
+            (sounds like "Enable shared filter values" and "Drill-through"?).
+        - Complete overwriting of the default actions instead of appending configured actions to the actions chain seems
+            as a better approach. One more reason for that could be that because sometimes we don’t want any action to
+            be trigger (setting `actions=[]') from the Filter.selector or vm.Page (default is update_figures).
+            See example: '05_01_adv_example_trigger_filtering_on_button_click.py'
+    2. Example below shows how not to lose the clicked data from ag_grid when the page is changed.
+        How it works:
+        - Clicking an ag_grid cell app:
+            1. Applies a standard filter interaction
+            2. Stores the clicked data into the global store and updates the card component with the clicked data.
+        - Navigating to the Page_1 app:
+            1. Applies global store data to ag_grid cellClicked property and updates the card component
+            2. Applies a standard "update_figures" action
+            3. Applies global store data to ag_grid cellClicked property and updates the card component again.
+
 """
 
 from typing import Dict, Optional

@@ -1,11 +1,12 @@
+# flake8: noqa
 """Customising (overwriting) predefined actions with @capture.
-This example shows some limitations of the current vm.Action inputs/outputs building mechanism. The general idea is
-to enable users to overwrite predefined action only by using the @capture decorator. It doesn't seem possible to
-achieve this, since _action._get_callback_mapping can't reconcile self.inputs (List[States]) and
-self.function.inputs (Dict[str, List[State]]) at the same time.
+    This example shows some limitations of the current vm.Action inputs/outputs building mechanism. The general idea is
+        to enable users to overwrite predefined action only by using the @capture decorator. It doesn't seem possible to
+        achieve this, since _action._get_callback_mapping can't reconcile self.inputs (List[States]) and
+        self.function.inputs (Dict[str, List[State]]) at the same time.
 
-Example below shows an attempt to customise the predefined filter_interaction action. The idea is to save the
-clicked data from the ag_grid into the global store and card component.
+    Example below shows an attempt to customise the predefined filter_interaction action. The idea is to save the
+        clicked data from the ag_grid into the global store and card component.
 """
 
 from typing import Any, Dict, List, Optional

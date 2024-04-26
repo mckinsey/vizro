@@ -1,5 +1,6 @@
+# flake8: noqa
 """Example where filter on another page is set to the value of the filter on the first page.
-Implementation is solved utilising the "overwriting default actions" feature.
+    Implementation is solved utilising the "overwriting default actions" feature.
 """
 
 from typing import Any, Dict, List, Optional
