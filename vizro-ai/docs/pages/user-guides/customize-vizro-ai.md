@@ -44,7 +44,7 @@ The example below customizes the `ChatOpenAI` instance, passing the `"gpt-3.5-tu
 To ensure a deterministic answer to our queries, we've set the temperature to 0. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
 <!-- vale on -->
 
-!!! example "model customization"
+!!! example "Customize with instantiated model"
 
     === "python"
         ```py linenums="1"
