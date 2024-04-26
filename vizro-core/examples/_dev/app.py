@@ -19,6 +19,8 @@ df_complaints['Date Sumbited'] = pd.to_datetime(df_complaints['Date Sumbited'], 
 df_complaints.rename(columns={"Date Sumbited": "Date Submitted", "Submitted via": "Channel"}, inplace=True)
 print(df_complaints)
 
+
+# TODO: How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
 def create_sales_df():
     # Define months and years
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -122,11 +124,11 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
 
 
 @capture("graph")
-def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 20, color_discrete_sequence: List[str] = None):
-    df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x).reset_index()
+def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 15, color_discrete_sequence: List[str] = None):
+    df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x, ascending=False).reset_index()
 
     fig = px.bar(data_frame=df_agg.head(top_n), x=x, y=y, orientation="h", text=x, color_discrete_sequence=color_discrete_sequence)
-    fig.update_layout(xaxis_title="# of Complaints", yaxis_title="")
+    fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))
     return fig
 
 
