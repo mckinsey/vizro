@@ -1,4 +1,4 @@
-# How to customize Vizro-AI
+# How to customize model usage
 
 ## Which LLMs are supported by Vizro-AI?
 Vizro-AI currently supports OpenAI models as follows:
