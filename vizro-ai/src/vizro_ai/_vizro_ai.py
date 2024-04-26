@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict, Optional, Union
 
 import pandas as pd
+import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
 
 from vizro_ai.chains._llm_models import _get_llm_model
@@ -103,7 +104,7 @@ class VizroAI:
 
     def plot(
         self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
-    ) -> Union[None, Dict[str, Any]]:
+    ) -> Union[go.Figure, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -111,6 +112,9 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
+
+        Returns:
+            go.Figure
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
@@ -124,7 +128,7 @@ class VizroAI:
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
         if not explain:
-            return _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
+            return _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
         if explain:
             return _display_markdown_and_chart(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation

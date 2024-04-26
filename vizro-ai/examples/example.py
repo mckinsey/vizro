@@ -5,4 +5,7 @@ from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()
 df = px.data.gapminder()
-vizro_ai.plot(df, "describe the composition of gdp in continent,and horizontal line for avg gdp")
+fig = vizro_ai.plot(df, "describe the composition of gdp in continent,and horizontal line for avg gdp")
+
+# To display fig uncomment code below
+# fig.show()
