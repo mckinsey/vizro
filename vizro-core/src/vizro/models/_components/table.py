@@ -108,7 +108,7 @@ class Table(VizroBaseModel):
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id),
+                    html.Div(self.__call__(), id=self.id),
                 ],
                 className="table-container",
                 id=f"{self.id}_outer",
