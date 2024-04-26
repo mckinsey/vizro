@@ -14,10 +14,6 @@ class ParameterAction(CapturedActionCallable):
         the action is built. Also, "input"/"output"/"components" properties and "pure_function" can use these validated
         and the calculated arguments.
         """
-        # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
-        #  have been private actions. Maybe we can make them public and do validation and calculation in _post_init,
-        #  here, instead inside the Filter/Parameter/Page models.
-
         # TODO-AV2-OQ-*: Consider making a difference within this method between 'targets' and 'affected_arguments' e.g.
         #  "targets" - only target model IDs e.g. "my_scatter_chart_id"
         #  "affected_arguments" - affected_argument per target e.g. "layout.title.size"
@@ -27,7 +23,17 @@ class ParameterAction(CapturedActionCallable):
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
-        self.targets = self._arguments.get("targets")
+        targets = self.targets = self._arguments.get("targets")
+        for target in targets:
+            if "." not in target:
+                raise ValueError(
+                    f"Invalid target {target}. Targets must be supplied in the from of "
+                    "<target_component>.<target_argument>"
+                )
+            target_id = target.split(".")[0]
+            if self._page_id != model_manager._get_model_page_id(model_id=target_id):
+                raise ValueError(f"Component '{target_id}' does not exist on the page '{self._page_id}'.")
+        self.targets = targets
 
     @staticmethod
     def pure_function(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
@@ -55,19 +61,18 @@ class ParameterAction(CapturedActionCallable):
 
     @property
     def inputs(self):
+        from vizro.actions import filter_action, filter_interaction
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
             _get_inputs_of_parameters,
         )
-        from vizro.actions.filter_action import FilterAction
-        from vizro.actions.filter_interaction_action import FilterInteractionAction
 
         page = model_manager[self._page_id]
         return {
-            "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
-            "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
+            "filters": _get_inputs_of_filters(page=page, action_class=filter_action),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=filter_interaction),
+            "parameters": _get_inputs_of_parameters(page=page, action_class=parameter_action),
             "theme_selector": State("theme_selector", "checked"),
         }
 

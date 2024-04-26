@@ -19,7 +19,7 @@ class ExportDataAction(CapturedActionCallable):
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
         # Validate and calculate "targets"
-        # TODO-AV2-TICKET-NEW-*: Make targets validation reusable for the other actions too.
+        # TODO-AV2-TICKET-NEW-*: Make targets validation reusable for the other actions (maybe even for Filter model).
         # TODO-AV2-OQ: Rethink using self._arguments
         targets = self._arguments.get("targets")
         if targets:
@@ -38,7 +38,6 @@ class ExportDataAction(CapturedActionCallable):
         if file_format == "xlsx":
             if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
                 raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
-        self._arguments["file_format"] = file_format
 
     @staticmethod
     def pure_function(
@@ -83,18 +82,16 @@ class ExportDataAction(CapturedActionCallable):
 
     @property
     def inputs(self):
-        # TODO-AV2: Consider using aliases like """from vizro.actions import filter_action, filter_interaction""" below.
+        from vizro.actions import filter_action, filter_interaction
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
         )
-        from vizro.actions.filter_action import FilterAction
-        from vizro.actions.filter_interaction_action import FilterInteractionAction
 
         page = model_manager[self._page_id]
         return {
-            "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
+            "filters": _get_inputs_of_filters(page=page, action_class=filter_action),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=filter_interaction),
         }
 
     @property

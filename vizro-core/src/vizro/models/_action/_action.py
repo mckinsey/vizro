@@ -57,8 +57,7 @@ class Action(VizroBaseModel):
         callback_inputs: Union[List[State], Dict[str, State]]
         # TODO-AV2-OQ: Refactor the following lines to something like: (Try to reconcile different inputs types)
         #  `callback_inputs = self.function.inputs + [State(*input.split(".")) for input in self.inputs]`
-        #  Then, test overwriting of the predefined action.
-        #  (by adding new inputs/outputs to the overwritten predefined action)
+        #  The best way to test it is to add `vm.Action.inputs/outputs` configuration to overwritten predefined action.
         if isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
         else:

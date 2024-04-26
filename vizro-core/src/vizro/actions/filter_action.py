@@ -16,15 +16,36 @@ class FilterAction(CapturedActionCallable):
         and the calculated arguments.
         """
         # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
-        #  have been private actions before. Maybe we can make them public and do validation and calculation in
-        #  _post_init, here, instead inside the Filter/Parameter/Page models.
+        #  have been private actions before.
 
         self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
 
-        # Validate and calculate "targets"
-        self.targets = self._arguments.get("targets")
-        # Validate and calculate "filter_function"
+        # TODO-AV2: Should we rename it to `column`?
         # Validate and calculate "filter_column"
+        filter_column = self._arguments.get("filter_column")
+        if not filter_column or not isinstance(filter_column, str):
+            raise ValueError("'filter_column' must be a string.")
+
+        # TODO-AV2: Should we: 
+        #  1. Rename it to `filtering_function`?
+        #  2. Calculate it based on the 'filter_column' type (something similar we do in the Filter._pre_build() phase)?
+        # Validate and calculate "filter_function"
+        filter_function = self._arguments.get("filter_function")
+        if not filter_function or not callable(filter_function):
+            raise ValueError("'filter_function' must be a callable.")
+
+        # Validate and calculate "targets"
+        targets = self._arguments.get("targets")
+        if targets:
+            for target in targets:
+                if self._page_id != model_manager._get_model_page_id(model_id=target):
+                    raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
+        else:
+            targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
+        # targets are assigned to self.targets because self.targets is used in outputs calculation.
+        # targets are assigned to self._arguments["targets"] because targets could be calculated in this method so we
+        # should ensure that the calculated targets are used in pure_function.
+        self._arguments["targets"] = self.targets = targets
 
     @staticmethod
     def pure_function(
@@ -57,13 +78,12 @@ class FilterAction(CapturedActionCallable):
 
     @property
     def inputs(self):
+        from vizro.actions import filter_interaction, parameter_action
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
             _get_inputs_of_parameters,
         )
-        from vizro.actions.filter_interaction_action import FilterInteractionAction
-        from vizro.actions.parameter_action import ParameterAction
 
         # TODO-AV2-OQ: Consider the following inputs ctx form:
         #  ```
@@ -78,9 +98,9 @@ class FilterAction(CapturedActionCallable):
 
         page = model_manager[self._page_id]
         return {
-            "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
-            "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
+            "filters": _get_inputs_of_filters(page=page, action_class=filter_action),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=filter_interaction),
+            "parameters": _get_inputs_of_parameters(page=page, action_class=parameter_action),
             # TODO-AV2-OQ: Propagate theme_selector only if it exists on the page (could be overwritten by the user)
             "theme_selector": State("theme_selector", "checked"),
         }

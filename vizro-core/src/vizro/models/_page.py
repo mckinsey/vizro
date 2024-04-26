@@ -93,7 +93,6 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO-AV2-TICKET-CREATED: Handle overwriting default actions in the same way as in filter/parameter
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
         if targets and not self.actions:
             self.actions = [

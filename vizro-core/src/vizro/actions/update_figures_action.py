@@ -56,21 +56,19 @@ class UpdateFiguresAction(CapturedActionCallable):
 
     @property
     def inputs(self):
+        from vizro.actions import filter_action, filter_interaction, parameter_action
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_figure_interactions,
             _get_inputs_of_filters,
             _get_inputs_of_parameters,
         )
-        from vizro.actions.filter_action import FilterAction
-        from vizro.actions.filter_interaction_action import FilterInteractionAction
-        from vizro.actions.parameter_action import ParameterAction
 
         page = model_manager[self._page_id]
 
         return {
-            "filters": _get_inputs_of_filters(page=page, action_class=FilterAction),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=FilterInteractionAction),
-            "parameters": _get_inputs_of_parameters(page=page, action_class=ParameterAction),
+            "filters": _get_inputs_of_filters(page=page, action_class=filter_action),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_class=filter_interaction),
+            "parameters": _get_inputs_of_parameters(page=page, action_class=parameter_action),
             "theme_selector": State("theme_selector", "checked"),
         }
 

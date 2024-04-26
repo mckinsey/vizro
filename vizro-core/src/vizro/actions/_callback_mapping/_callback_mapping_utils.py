@@ -25,8 +25,6 @@ def _get_matching_page_actions_by_action_class(
 
 # TODO-AV2-TICKET-CREATED: Once "actions_info" is implemented, functions like:
 #  _get_inputs_of_filters, _get_inputs_of_parameters, _get_inputs_of_figure_interactions will become a single function.
-#  IMPORTANT: This approach should enable predefined actions to see custom actions if they are inherited from the
-#  predefined actions (which is a use case we want to achieve).
 def _get_inputs_of_filters(page: Page, action_class: CapturedActionCallable = None) -> List[State]:
     """Gets list of `States` for all components that have the `filter` action from the `Page`."""
     filter_actions_on_page = _get_matching_page_actions_by_action_class(

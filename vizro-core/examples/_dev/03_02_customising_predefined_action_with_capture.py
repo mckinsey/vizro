@@ -50,9 +50,9 @@ def _build_card_text_message(grid_cell_clicked: Optional[Dict] = None):
 #  self.inputs (List[States]) and self.function.inputs (Dict[str, List[State]]) at the same time. There are many ways
 #  to solve this, but it's not clear which one is the best.
 
-
 # TODO-AV-OQ: It seems like the only way to achieve a proper overwrite of the predefined action is to really inherit it
 #  from the base predefined action. In that case, it will be taken into account while applying other predefined actions.
+#  Should we introduce something like @capture("filter_interaction") then?
 #  See `04_taking_custom_filter_into_account.py` for more.
 @capture("action")
 def custom_filter_interaction(
