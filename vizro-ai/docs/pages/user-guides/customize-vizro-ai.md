@@ -1,26 +1,33 @@
-# How to customize VizroAI
+# How to customize Vizro-AI
 
-This guide explains how to customize `VizroAI`.
+## Which LLMs are supported by Vizro-AI?
+Vizro-AI currently supports OpenAI models as follows:
 
-`VizroAI` accepts a single argument named `model`. This `model` argument can either be a string that specifies the name of the `ChatOpenAI` model or an instantiated `ChatOpenAI` model.
+- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
+- `gpt-4-0613`
+- `gpt-3.5-turbo-1106` (under testing)
+- `gpt-4-1106-preview` (under testing, not suitable for production use)
+- `gpt-3.5-turbo-0125`
+- `gpt-3.5-turbo`
 
-We'll delve into customizing the `ChatOpenAI` model later; for now, let's concentrate on the default usage of `VizroAI`.
+We are working on supporting more models and more vendors. Stay tuned!
 
-## Default usage
+These models Vizro-AI supports offer different levels of performance and
+cost:
 
-`VizroAI`can be initialized without any arguments, in which case it will, by default, use OpenAI model `"gpt-3.5-turbo"` with a temperature setting of 0.
-`"gpt-3.5-turbo"` points to the latest model offering enhanced speed and accuracy in generating responses in requested formats, while maintaining cost-effective performance.
+* The **gpt-3.5** model series are good in both general tasks and chat-specific applications. These models have lower price point and higher speeds for providing answers.
 
+* Consider upgrading to the **gpt-4** models for more demanding tasks. While they are part of a more capable GPT model series, their response time is slower than gpt-3.5 models, and they come at a higher cost.
 
-## Choosing OpenAI model
+Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
 
-When choosing OpenAI model, there are few things to keep in mind; the complexity of the task, cost associated with it and the desired response time.
+## Default initialization
+`VizroAI`can be initialized without any arguments, in which case it uses `"gpt-3.5-turbo"` by default, with a temperature setting of 0. `"gpt-3.5-turbo"` offers enhanced speed and accuracy, and generates responses in requested formats while maintaining cost-effective performance.
 
-**gpt-3.5** model series are good in both general tasks and chat-specific applications. These models have lower price point and higher speeds for providing answers.
+## Customization at initialization
+To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated `ChatOpenAI` model.
 
-However, for more demanding tasks, consider upgrading to the **gpt-4** models. While they are part of a more capable GPT model series, their response time is slower than gpt-3.5 models, and they come at a higher cost.
-
-In the example below, we customized `VizroAI` by providing OpenAI model name in a string form. ( see for [models currently supported by Vizro-AI](../explanation/faq.md#which-llms-are-supported-by-vizro-ai)).
+The example below uses the OpenAI model name in a string form:
 
 !!! example "Customize with string"
 
@@ -31,12 +38,11 @@ In the example below, we customized `VizroAI` by providing OpenAI model name in 
         vizro_ai = VizroAI(model="gpt-3.5-turbo-0125")
         ```
 
-## Customize ChatOpenAI instance
+The example below customizes the `ChatOpenAI` instance, passing the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy.
 
-The `model` parameter in `VizroAI` can also take an initialized `ChatOpenAI` model, allowing for flexible customization by users. In the example below, we'll be customizing the `ChatOpenAI` instance.
-The `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy. To ensure a deterministic answer to our queries, we've set the temperature to 0.
-If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
-
+<!-- vale off -->
+To ensure a deterministic answer to our queries, we've set the temperature to 0. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
+<!-- vale on -->
 
 !!! example "model customization"
 
