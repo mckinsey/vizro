@@ -9,14 +9,14 @@ from vizro.models.types import capture
 import numpy as np
 import dash_bootstrap_components as dbc
 from dash import html
-from typing import Literal
+from typing import Literal, List
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
 df_complaints['Date Received'] = pd.to_datetime(df_complaints['Date Received'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
 df_complaints['Date Sumbited'] = pd.to_datetime(df_complaints['Date Sumbited'], format='%m/%d/%y').dt.strftime('%Y-%m-%d')
-df_complaints.rename(columns={"Date Sumbited": "Date Submitted"}, inplace=True)
+df_complaints.rename(columns={"Date Sumbited": "Date Submitted", "Submitted via": "Channel"}, inplace=True)
 print(df_complaints)
 
 def create_sales_df():
@@ -122,29 +122,11 @@ def heatmap(data_frame: pd.DataFrame = None, title: str = None):
 
 
 @capture("graph")
-def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 20):
+def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 20, color_discrete_sequence: List[str] = None):
     df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x).reset_index()
- #   df_top = df_agg.head(top_n)
 
-    # Sum counts for remaining rows
-  #  other_sum = df_agg.iloc[top_n:].sum()
-   # df_other = pd.DataFrame({y: ['Other'], x: [other_sum[x]]})
-
-    # Append to top_n dataframe
- #   df_top = pd.concat([df_top, df_other], ignore_index=True)
-
-    fig = px.bar(data_frame=df_agg, x=x, y=y, orientation="h")
-    #, barmode=barmode, color_discrete_sequence=["#a3a5a9", "#1A85FF"])
-    #fig.update_layout(xaxis_title=None, yaxis_title=None, margin=dict(l=0, r=0, t=0), title_pad_t=0,
-    #                  legend=dict(
-    #                      orientation="h",
-    #                      yanchor="bottom",
-    #                      y=-0.6,
-    #                      xanchor="left",
-    #                      x=-0.1
-    #                  )
-    #                  )
-    fig.update_layout(xaxis_title="# of Complaints")
+    fig = px.bar(data_frame=df_agg.head(top_n), x=x, y=y, orientation="h", text=x, color_discrete_sequence=color_discrete_sequence)
+    fig.update_layout(xaxis_title="# of Complaints", yaxis_title="")
     return fig
 
 
@@ -188,10 +170,34 @@ page_exec = vm.Page(
         KPI(title="Customers", value="24.759", icon="arrow_circle_down", sign="down", ref_value="-8.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
         KPI(title="Products", value="100.490", icon="arrow_circle_down", sign="down", ref_value="-3.5% vs. Last Year"),
-        vm.Container(
-            title="Complaints by Issue",
-            layout=vm.Layout(grid=[[0]], row_min_height="500px"),
-            components=[vm.Graph(id="bar_chart", figure=bar(data_frame=df_complaints, y="Issue", x="Complaint ID"))]
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="By Issue",
+                    components=[
+                        vm.Graph(id="bar-issue", figure=bar(data_frame=df_complaints, y="Issue", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
+                ),
+                vm.Container(
+                    title="By Sub-Issue",
+                    components=[
+                        vm.Graph(id="bar-subissue", figure=bar(data_frame=df_complaints, y="Sub-issue", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
+                ),
+                vm.Container(
+                    title="By Product",
+                    components=[
+                        vm.Graph(id="bar-product", figure=bar(data_frame=df_complaints, y="Product", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
+                ),
+                vm.Container(
+                    title="By Sub-Product",
+                    components=[
+                        vm.Graph(id="bar-subproduct", figure=bar(data_frame=df_complaints, y="Sub-product", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
+                ),
+                vm.Container(
+                    title="By Channel",
+                    components=[
+                        vm.Graph(id="bar-channel", figure=bar(data_frame=df_complaints, y="Channel", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
+                ),
+            ],
         ),
         vm.Graph(figure=stacked_bar(df)),
         vm.Graph(figure=chloropleth(df)),
@@ -249,7 +255,7 @@ cell_style = {
 
 column_defs = [{"field": "Complaint ID", "cellDataType": "text", "headerName": "ID"},
  {"field": "Date Received", "cellDataType": "text"}, # Why doesn't date work even after reformatting?
- {"field": "Submitted via", "cellDataType": "text", "headerName": "Channel"},
+ {"field": "Channel", "cellDataType": "text"},
  {"field": "State", "cellDataType": "text"},
  {"field": "Product", "cellDataType": "text"},
  {"field": "Sub-product", "cellDataType": "text"},
