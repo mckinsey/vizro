@@ -3,7 +3,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import UPDATE_FIGURES_ACTION_PREFIX
 from vizro._themes import dark, light
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
@@ -36,8 +36,8 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
 
 
 @pytest.fixture
-def ctx_on_page_load(request):
-    """Mock dash.ctx that represents on page load."""
+def ctx_update_figures(request):
+    """Mock dash.ctx that represents context when the page is loaded."""
     continent_filter, pop, y, x, template = request.param
     mock_ctx = {
         "args_grouping": {
@@ -92,7 +92,7 @@ def ctx_on_page_load(request):
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
+        "ctx_update_figures, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
         [
             (
                 ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
@@ -105,10 +105,10 @@ class TestOnPageLoad:
                 "vizro_light",
             ),
         ],
-        indirect=["ctx_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
+        indirect=["ctx_update_figures", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
     )
     def test_multiple_controls_one_target(
-        self, ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template, box_chart
+        self, ctx_update_figures, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template, box_chart
     ):
         # Creating and adding a Filter objects to the existing Page
         continent_filter = vm.Filter(
@@ -143,8 +143,8 @@ class TestOnPageLoad:
         y_parameter.pre_build()
         x_parameter.pre_build()
 
-        # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
+        # Run action by picking 'update_figures' default Page action function and executing it with ()
+        result = model_manager[f"{UPDATE_FIGURES_ACTION_PREFIX}_action_test_page"].function()
 
         box_chart.layout.template = template
         expected = {
@@ -156,7 +156,7 @@ class TestOnPageLoad:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_on_page_load, "
+        "ctx_update_figures, "
         "target_scatter_filtered_continent_and_pop_parameter_y_and_x, "
         "target_box_filtered_continent_and_pop_parameter_y_and_x",
         [
@@ -175,7 +175,7 @@ class TestOnPageLoad:
     )
     def test_multiple_controls_multiple_targets(
         self,
-        ctx_on_page_load,
+        ctx_update_figures,
         target_scatter_filtered_continent_and_pop_parameter_y_and_x,
         target_box_filtered_continent_and_pop_parameter_y_and_x,
     ):
@@ -207,8 +207,8 @@ class TestOnPageLoad:
         y_parameter.pre_build()
         x_parameter.pre_build()
 
-        # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
+        # Run action by picking 'update_figures' default Page action function and executing it with ()
+        result = model_manager[f"{UPDATE_FIGURES_ACTION_PREFIX}_action_test_page"].function()
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
             "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,

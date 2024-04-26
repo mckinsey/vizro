@@ -75,12 +75,12 @@ class ModelManager:
         return all_model_ids
 
     # TODO: Consider moving this method in the Dashboard model or some other util file
-    def _get_model_page_id(self, model_id: ModelID) -> ModelID:  # type: ignore[return]
-        """Gets the id of the page containing the model with "model_id"."""
+    def _get_model_page_id(self, model_id: ModelID) -> Optional[ModelID]:  # type: ignore[return]
+        """Gets the id of the page containing the model with "model_id". Returns None if the model doesn't exist."""
         from vizro.models import Page
 
         for page_id, page in model_manager._items_with_type(Page):
-            page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
+            page_model_ids = self._get_model_children(model_id=page_id)
 
             for actions_chain in self._get_page_actions_chains(page_id=page_id):
                 page_model_ids.append(actions_chain.id)
@@ -109,7 +109,9 @@ class ModelManager:
                 page_actions_chains.extend(model.actions)
 
         for control in page.controls:
-            if hasattr(control, "selector") and control.selector:
+            if hasattr(control, "actions") and control.actions:
+                page_actions_chains.extend(control.actions)
+            if hasattr(control, "selector") and control.selector and hasattr(control.selector, "actions"):
                 page_actions_chains.extend(control.selector.actions)
 
         return page_actions_chains

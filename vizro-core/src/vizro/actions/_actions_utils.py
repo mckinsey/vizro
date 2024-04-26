@@ -54,11 +54,8 @@ def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerD
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
+            # TODO-AV2: Handle if "action.function != "filter_action" until inputs refactoring
+            if target not in action.function.targets or ALL_OPTION in selector_value:
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -129,20 +126,20 @@ def _update_nested_graph_properties(
 
 
 def _get_parametrized_config(
-    targets: List[ModelID], parameters: List[CallbackTriggerDict]
+    targets: List[ModelID], ctds_parameters: List[CallbackTriggerDict]
 ) -> Dict[ModelID, Dict[str, Any]]:
     parameterized_config = {}
     for target in targets:
-        # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
+        # TODO-AV2 - avoid calling _captured_callable. Once we have done this and similar we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = deepcopy(model_manager[target].figure._arguments)
         if "data_frame" in graph_config:
             graph_config.pop("data_frame")
 
-        for ctd in parameters:
+        for ctd in ctds_parameters:
             selector_value = ctd[
                 "value"
-            ]  # TODO: needs to be refactored so that it is independent of implementation details
+            ]  # TODO-AV2: needs to be refactored so that it is independent of implementation details
             if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
                 selector: SelectorType = model_manager[ctd["id"]]
                 selector_value = selector.options
@@ -152,7 +149,8 @@ def _get_parametrized_config(
             for action in selector_actions:
                 action_targets = _create_target_arg_mapping(action.function["targets"])
 
-                if action.function._function.__name__ != "_parameter" or target not in action_targets:
+                # TODO-AV2: Handle if "action.function != "parameter_action" until inputs refactoring
+                if target not in action_targets:
                     continue
 
                 for action_targets_arg in action_targets[target]:
@@ -197,7 +195,7 @@ def _get_modified_page_figures(
         targets=targets, ctds_filters=ctds_filter, ctds_filter_interaction=ctds_filter_interaction
     )
 
-    parameterized_config = _get_parametrized_config(targets=targets, parameters=ctds_parameters)
+    parameterized_config = _get_parametrized_config(targets=targets, ctds_parameters=ctds_parameters)
 
     outputs: Dict[str, Any] = {}
     for target in targets:

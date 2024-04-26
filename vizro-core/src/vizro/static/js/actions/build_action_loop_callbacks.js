@@ -55,7 +55,7 @@ export function _gateway(
     }
     actions_chain_to_trigger = findStringInList(
       triggered_actions_chains_ids,
-      "on_page_load",
+      "update_figures",
     );
     remaining_actions =
       trigger_to_actions_chain_mapper[actions_chain_to_trigger];

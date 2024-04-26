@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+from abc import ABCMeta, abstractmethod
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
@@ -144,11 +145,10 @@ class CapturedCallable:
 
     @property
     def _arguments(self):
-        # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
-        # references are removed.
+        # TODO-AV2: The method should be removed when all references are removed.
         return self.__bound_arguments
 
-    # TODO-actions: Find a way how to compare CapturedCallable and function
+    # TODO-AV2-OQ: Find a way how to compare CapturedCallable and function
     @property
     def _function(self):
         return self.__function
@@ -216,6 +216,29 @@ class CapturedCallable:
             return captured_callable._captured_callable
         else:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
+
+
+class CapturedActionCallable(CapturedCallable, metaclass=ABCMeta):
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.pure_function, *args, **kwargs)
+
+    @staticmethod
+    @abstractmethod
+    # TODO-AV2: Rename to "function"
+    def pure_function(*args, **kwargs):
+        """This is the function that will be called when the action is triggered."""
+
+    @property
+    def inputs(self):
+        return []
+
+    @property
+    def outputs(self):
+        return []
+
+    @property
+    def components(self):
+        return []
 
 
 class capture:

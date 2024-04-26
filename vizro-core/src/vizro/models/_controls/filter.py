@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import _filter
+from vizro.actions import filter_action
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
@@ -62,6 +62,8 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
+# TODO-AV2-OQ: Consider introducing target dot notation for the Filter as well. This would allow to filter different
+#  targets with different columns.
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -87,6 +89,14 @@ class Filter(VizroBaseModel):
     selector: SelectorType = None
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
+    # TODO-AV2-OQ: Consider do we need to validate the targets (consider similar for Parameter and parameter_action):
+    #  1. in the filter.pre_build phase, or
+    #  2. in the action build phase?
+    #  Probably both, since vm.Filter(colum="X") means that the default selector has to be set as a Page control with
+    #  the default filter_action. To find the default selector, we need to know the column type. To know the column type
+    #  we need to know the targets. So, we need to validate the targets in the Filter.pre_build phase.
+    #  But, we also need to validate the targets in the action build phase (filter_action._post_init()),
+    #  because the `filter_action` is now public and could be used out of the box.
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:
@@ -179,6 +189,11 @@ class Filter(VizroBaseModel):
             self.selector.options = sorted(options)
 
     def _set_actions(self):
+        # TODO-AV2-OQ: Consider do we want to disallow overwriting default Filter/Parameter.selector.actions
+        #  (This would be a breaking change) It makes sense to apply this rule and to allow overwriting control actions
+        #  only if controls are directly specified as vizro.models._components (e.g. vm.Dropdown).It seems like it
+        #  doesn't make sense to overwrite Filter.selector.actions because then 'Filter.targets' and 'Filter.column'
+        #  arguments don't make sense anymore.
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
                 isinstance(self.selector, DatePicker) and self.selector.range
@@ -189,7 +204,9 @@ class Filter(VizroBaseModel):
 
             self.selector.actions = [
                 Action(
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
+                    function=filter_action(
+                        filter_column=self.column, targets=self.targets, filter_function=filter_function
+                    ),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 )
             ]

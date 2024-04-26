@@ -9,12 +9,12 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, root_validator, validator
 
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro._constants import UPDATE_FIGURES_ACTION_PREFIX
+from vizro.actions import update_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import DuplicateIDError, ModelID
 from vizro.models import Action, Layout, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain, Trigger
+from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, _validate_min_length
 
@@ -48,12 +48,16 @@ class Page(VizroBaseModel):
     controls: List[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
-    # TODO: Remove default on page load action if possible
-    actions: List[ActionsChain] = []
+    actions: List[Action] = []
 
     # Re-used validators
     _validate_components = validator("components", allow_reuse=True, always=True)(_validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+    _set_actions = _action_validator_factory(
+        trigger_property="data",
+        component_id_prefix=f"{UPDATE_FIGURES_ACTION_PREFIX}_trigger_",
+        actions_chain_id=f"{UPDATE_FIGURES_ACTION_PREFIX}_action_chain_id",
+    )
 
     @root_validator(pre=True)
     def set_id(cls, values):
@@ -89,20 +93,12 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO: Remove default on page load action if possible
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
-        if targets:
+        if targets and not self.actions:
             self.actions = [
-                ActionsChain(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-                    trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
-                    ),
-                    actions=[
-                        Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
-                        )
-                    ],
+                Action(
+                    id=f"{UPDATE_FIGURES_ACTION_PREFIX}_action_{self.id}",
+                    function=update_figures(targets=targets),
                 )
             ]
 
@@ -117,7 +113,7 @@ class Page(VizroBaseModel):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
         # Page specific CSS ID and Stores
-        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.children.append(dcc.Store(id=f"{UPDATE_FIGURES_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container], id=self.id)
 
@@ -130,9 +126,9 @@ class Page(VizroBaseModel):
         # flickering.
         # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
         # method defined. But at the moment this just means Graphs.
-        # TODO: consider making this clientside callback and then possibly we can remove the call to _update_theme in
-        #  Graph.__call__ without any flickering.
-        # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
+        # TODO-AV2-TICKET-CREATED-*: consider making this clientside callback and then possibly we can remove the
+        #  call to _update_theme in Graph.__call__ without any flickering.
+        #  If we do this then we should consider defining the callback in Graph itself rather than at Page
         #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
 
         themed_components = [
