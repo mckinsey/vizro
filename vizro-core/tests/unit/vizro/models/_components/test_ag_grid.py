@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.AgGrid."""
 
-import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
