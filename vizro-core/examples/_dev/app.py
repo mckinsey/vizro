@@ -342,10 +342,10 @@ page_region = vm.Page(
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
+            [6, 6, 6, 7, 7, 7],
         ],
         col_gap="32px",
         row_gap="32px",
@@ -372,8 +372,49 @@ page_region = vm.Page(
         KPI(title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up",
             ref_value="10.5% vs. Last Year"),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
-        vm.Card(text="Placeholder"),
-        vm.Card(text="Placeholder"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="By Issue",
+                    components=[
+                        vm.Graph(
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Issue",
+                                x="Complaint ID",
+                                color_discrete_sequence=["#1A85FF"],
+                            ),
+                        )
+                    ],
+                ),
+                vm.Container(
+                    title="By Product",
+                    components=[
+                        vm.Graph(
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Product",
+                                x="Complaint ID",
+                                color_discrete_sequence=["#1A85FF"],
+                            ),
+                        )
+                    ],
+                ),
+                vm.Container(
+                    title="By Channel",
+                    components=[
+                        vm.Graph(
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Channel",
+                                x="Complaint ID",
+                                color_discrete_sequence=["#1A85FF"],
+                            ),
+                        )
+                    ],
+                ),
+            ],
+        ),
     ],
     controls=[
         #vm.Filter(column="Region"),
