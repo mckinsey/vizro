@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fix bug that [prevented referring to columns in custom grids/tables](https://github.com/mckinsey/vizro/issues/435) ([#439](https://github.com/mckinsey/vizro/pull/439))
 
-
 <!--
 ### Security
 
