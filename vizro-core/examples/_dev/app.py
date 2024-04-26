@@ -9,7 +9,7 @@ from vizro.models.types import capture
 import numpy as np
 import dash_bootstrap_components as dbc
 from dash import html
-from typing import Literal, List
+from typing import Literal, List, Optional
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
@@ -21,9 +21,17 @@ df_complaints['Date Received YY-MM'] = pd.to_datetime(df_complaints['Date Receiv
 
 # TODO: Do everything vs. last year
 # TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
-# TODO: Bar - Reformat numbers with comas in bar chart
+# TODO: Bar - Reformat numbers with commas in bar chart
+# TODO: Bar - Left-align y-axis labels
+# TODO: Bar - Shorten labels
 # TODO: Line - Customise function to always show selected year vs. past year
+# TODO: Pie - Manipulate data to show sub-categories of closed company responses
+# TODO: Exec-view: Consolidate colors
 
+# TODO: Table - Check why date format does not work
+# TODO: Table - Check how to specify different % column widths while still using 100% of available screen width
+# TODO: Table - Replace with appropriate icons
+# TODO: Table - Find better color sequences for last column
 def create_sales_df():
     # Define months and years
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -136,6 +144,14 @@ def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequenc
 
 
 @capture("graph")
+def pie(names: str, values: str, data_frame: pd.DataFrame = None, color_discrete_sequence: List[str] = None, title: Optional[str] = None):
+    df_agg = data_frame.groupby([names]).aggregate({values: "count"}).reset_index()
+
+    fig = px.pie(data_frame=df_agg, names=names, values=values, color_discrete_sequence=color_discrete_sequence, title=title, hole=0.4)
+    return fig
+
+
+@capture("graph")
 def chloropleth(data_frame: pd.DataFrame = None):
     from urllib.request import urlopen
     import json
@@ -166,6 +182,7 @@ page_exec = vm.Page(
                            [4, 4, 5, 5, 5],
                            [4, 4, 5, 5, 5],
                            [4, 4, 6, 7, 8],
+                           [4, 4, 6, 7, 8],
                            [4, 4, 6, 7, 8]],
                      col_gap="32px", row_gap="32px"),
     components=[
@@ -181,19 +198,9 @@ page_exec = vm.Page(
                         vm.Graph(id="bar-issue", figure=bar(data_frame=df_complaints, y="Issue", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
                 ),
                 vm.Container(
-                    title="By Sub-Issue",
-                    components=[
-                        vm.Graph(id="bar-subissue", figure=bar(data_frame=df_complaints, y="Sub-issue", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
-                ),
-                vm.Container(
                     title="By Product",
                     components=[
                         vm.Graph(id="bar-product", figure=bar(data_frame=df_complaints, y="Product", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
-                ),
-                vm.Container(
-                    title="By Sub-Product",
-                    components=[
-                        vm.Graph(id="bar-subproduct", figure=bar(data_frame=df_complaints, y="Sub-product", x="Complaint ID", color_discrete_sequence=["#1A85FF"]))]
                 ),
                 vm.Container(
                     title="By Channel",
@@ -203,17 +210,14 @@ page_exec = vm.Page(
             ],
         ),
         vm.Graph(id="line-date", figure=line(data_frame=df_complaints, y="Complaint ID", x="Date Received YY-MM", color_discrete_sequence=["#1A85FF"])),
-        vm.Card(text="# Placeholder"),
-        vm.Card(text="# Placeholder"),
-        vm.Card(text="# Placeholder"),
+        vm.Graph(figure=pie(data_frame=df_complaints, values="Complaint ID", names="Consumer disputed?", title="Consumer Disputed")),
+        vm.Graph(figure=pie(data_frame=df_complaints, values="Complaint ID", names="Company response to consumer", title="Company Response")),
+        vm.Graph(figure=pie(data_frame=df_complaints, values="Complaint ID", names="Company response to consumer",
+                            title="Closed-Company Response")),
     ],
 )
 
 # TABLE --------------------------------------------------------------------------------------------
-# TODO: Check why date format does not work
-# TODO: Check how to specify different % column widths while still using 100% of available screen width
-# TODO: Replace with appropriate icons
-# TODO: Find better color sequences for last column
 rain =  "![alt text: rain](https://www.ag-grid.com/example-assets/weather/rain.png)"
 sun = "![alt text: sun](https://www.ag-grid.com/example-assets/weather/sun.png)"
 df_complaints["Timely response?"] = df_complaints["Timely response?"].apply(lambda x: f"No {rain} " if x == 'No' else f"Yes {sun} ")
