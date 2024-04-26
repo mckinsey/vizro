@@ -38,7 +38,7 @@ The example below uses the OpenAI model name in a string form:
         vizro_ai = VizroAI(model="gpt-3.5-turbo-0125")
         ```
 
-The example below customizes the `ChatOpenAI` instance, passing the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy.
+The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instatiation. We pass the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy.
 
 <!-- vale off -->
 To ensure a deterministic answer to our queries, we've set the temperature to 0. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
