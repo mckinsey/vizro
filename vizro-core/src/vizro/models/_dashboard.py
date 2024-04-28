@@ -205,7 +205,6 @@ class Dashboard(VizroBaseModel):
                         id="collapse-tooltip",
                         placement="right",
                         target="collapse-icon",
-                        className="collapse-button-tooltip",
                     ),
                 ],
                 className="collapse-icon-div",

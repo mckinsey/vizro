@@ -53,7 +53,7 @@ class TestBuildMethod:
             dbc.NavLink(
                 dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), href="https://www.google.com"
             ),
-            className="nav-card",
+            className="card-nav",
             id="card_id_outer",
         )
 
