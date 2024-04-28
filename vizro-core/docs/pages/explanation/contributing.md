@@ -42,7 +42,7 @@ Several example dashboards are given in [examples](https://github.com/mckinsey/v
 hatch run example features/yaml_version
 ```
 
-If no example is specified (`hatch run example`) then the [`_dev` example](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
+If no example dashboard is specified (`hatch run example`) then the [example dashboard in `_dev`](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
 
 ## Documentation
 
