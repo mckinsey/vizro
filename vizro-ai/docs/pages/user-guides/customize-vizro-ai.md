@@ -1,20 +1,19 @@
 # How to customize model usage
 
 ## Supported models
-Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows:
+Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows, although we are working on supporting more vendors:
 
+- `gpt-3.5-turbo` (default model)
 - `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
 - `gpt-4-0613`
 - `gpt-3.5-turbo-1106` (under testing)
 - `gpt-4-1106-preview` (under testing, not suitable for production use)
 - `gpt-3.5-turbo-0125`
-- `gpt-3.5-turbo`
 
-We are working on supporting more models and more vendors. Stay tuned!
 
-These models Vizro-AI supports offer different levels of performance and cost:
+These models offer different levels of performance and cost to Vizro-AI users:
 
-* The **gpt-3.5** model series are good in both general tasks and chat-specific applications. These models have lower price point and higher speeds for providing answers.
+* The **gpt-3.5** model series have lower price point and higher speeds for providing answers, but do not offer sophisticated charting.
 
 * Consider upgrading to the **gpt-4** models for more demanding tasks. While they are part of a more capable GPT model series, their response time is slower than gpt-3.5 models, and they come at a higher cost.
 
