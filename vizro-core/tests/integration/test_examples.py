@@ -3,7 +3,7 @@ import os
 import runpy
 from pathlib import Path
 
-import chromedriver_autoinstaller_fix
+import chromedriver_autoinstaller
 import pytest
 from vizro import Vizro
 
@@ -21,7 +21,7 @@ def setup_integration_test_environment(monkeypatch_session):
     monkeypatch_session.setenv("DASH_DEBUG", "false")
     # We only need to install chromedriver outside CI.
     if not os.getenv("CI"):
-        chromedriver_autoinstaller_fix.install()
+        chromedriver_autoinstaller.install()
 
 
 @pytest.fixture

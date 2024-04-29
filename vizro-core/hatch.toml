@@ -22,7 +22,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "dash[testing]",
-  "chromedriver-autoinstaller-fix",
+  "chromedriver-autoinstaller>=0.6.4",
   "toml",
   "pyyaml",
   "openpyxl"
