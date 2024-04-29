@@ -35,7 +35,7 @@ def _debug_helper(
     is_jupyter = _is_jupyter()
     for attempt in range(max_debug_retry):
         try:
-            _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=is_jupyter)
+            _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=is_jupyter)
             retry_success = True
             break
         except Exception as e:
@@ -48,7 +48,9 @@ def _debug_helper(
     return {"debug_status": retry_success, "code_string": code_string}
 
 
-def _exec_code(code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True) -> go.Figure:
+def _exec_code_and_retrieve_fig(
+    code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True
+) -> go.Figure:
     """Execute code in notebook with correct namespace."""
     from IPython import get_ipython
 
@@ -75,7 +77,7 @@ def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insight
     markdown_code = f"```\n{code_snippet}\n```"
     output_text = f"<h4>Insights:</h4>\n\n{biz_insights}\n<br><br><h4>Code:</h4>\n\n{code_explain}\n{markdown_code}"
     display(Markdown(output_text))
-    return _exec_code(code_snippet, local_args={"df": df}, is_notebook_env=_is_jupyter())
+    return _exec_code_and_retrieve_fig(code_snippet, local_args={"df": df}, is_notebook_env=_is_jupyter())
 
 
 class DebugFailure(Exception):
