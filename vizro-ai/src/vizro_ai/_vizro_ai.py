@@ -11,8 +11,8 @@ from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
     _debug_helper,
-    _display_markdown_and_chart,
     _exec_code_and_retrieve_fig,
+    _exec_fig_code_display_markdown,
     _is_jupyter,
 )
 
@@ -130,7 +130,7 @@ class VizroAI:
         if not explain:
             return _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
         if explain:
-            return _display_markdown_and_chart(
+            return _exec_fig_code_display_markdown(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
         # TODO Tentative for integration test

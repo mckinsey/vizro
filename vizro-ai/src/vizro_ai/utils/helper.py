@@ -65,7 +65,9 @@ def _exec_code_and_retrieve_fig(
     return dashboard_ready_fig
 
 
-def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str) -> go.Figure:
+def _exec_fig_code_display_markdown(
+    df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str
+) -> go.Figure:
     # TODO change default test str to other
     """Display chart and Markdown format description in jupyter."""
     try:

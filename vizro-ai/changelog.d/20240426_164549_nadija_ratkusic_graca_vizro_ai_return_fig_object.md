@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Return fig object by VizroAI `plot` function. ([#411](https://github.com/mckinsey/vizro/pull/441))
+- `VizroAI.plot` now returns `plotly.graph_objects` fig object. ([#411](https://github.com/mckinsey/vizro/pull/441))
 
 <!--
 ### Deprecated
