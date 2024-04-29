@@ -12,8 +12,7 @@ Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/mod
 
 We are working on supporting more models and more vendors. Stay tuned!
 
-These models Vizro-AI supports offer different levels of performance and
-cost:
+These models Vizro-AI supports offer different levels of performance and cost:
 
 * The **gpt-3.5** model series are good in both general tasks and chat-specific applications. These models have lower price point and higher speeds for providing answers.
 
@@ -22,10 +21,10 @@ cost:
 Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
 
 ## Default initialization
-`VizroAI`can be initialized without any arguments, in which case it uses `"gpt-3.5-turbo"` by default, with a temperature setting of 0. `"gpt-3.5-turbo"` offers enhanced speed and accuracy, and generates responses in requested formats while maintaining cost-effective performance.
+`VizroAI` can be initialized without any arguments, in which case it uses `"gpt-3.5-turbo"` by default, with a temperature setting of 0. `"gpt-3.5-turbo"` offers enhanced speed and accuracy, and generates responses in requested formats while maintaining cost-effective performance.
 
 ## Customization at initialization
-To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated `ChatOpenAI` model.
+To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated [`ChatOpenAI`](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html) model.
 
 The example below uses the OpenAI model name in a string form:
 
@@ -38,7 +37,8 @@ The example below uses the OpenAI model name in a string form:
         vizro_ai = VizroAI(model="gpt-3.5-turbo-0125")
         ```
 
-The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy.
+The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
+It's important to mention that any parameter that could be used in the `openai.create` call is also usable in `ChatOpenAI`. For more customization options for `ChatOpenAI`, refer to the [ChatOpenAI docs](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
 
 <!-- vale off -->
 To ensure a deterministic answer to our queries, we've set the temperature to 0. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
@@ -56,7 +56,8 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
 
         llm = ChatOpenAI(
             model_name="gpt-3.5-turbo-0125",
-            temperature=0
+            temperature=0,
+            max_retries=3,
         )
         vizro_ai = VizroAI(model=llm)
         vizro_ai.plot(df, "describe the composition of gdp in continent")
