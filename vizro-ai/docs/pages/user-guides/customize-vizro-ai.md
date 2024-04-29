@@ -38,7 +38,7 @@ The example below uses the OpenAI model name in a string form:
         ```
 
 The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-3.5-turbo-0125"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
-It's important to mention that any parameter that could be used in the `openai.create` call is also usable in `ChatOpenAI`. For more customization options for `ChatOpenAI`, refer to the [ChatOpenAI docs](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
+It's important to mention that any parameter that could be used in the `openai.create` call is also usable in `ChatOpenAI`. For more customization options for `ChatOpenAI`, refer to the [LangChain ChatOpenAI docs](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
 
 <!-- vale off -->
 To ensure a deterministic answer to our queries, we've set the temperature to 0. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
