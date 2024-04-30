@@ -4806,7 +4806,7 @@ textarea.form-control-lg {
   --bs-accordion-border-width: 0;
   --bs-accordion-border-radius: var(--bs-border-radius);
   --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - 0);
-  --bs-accordion-btn-padding-x: 0.5rem;
+  --bs-accordion-btn-padding-x: 0;
   --bs-accordion-btn-padding-y: 1rem;
   --bs-accordion-btn-color: var(--bs-body-color);
   --bs-accordion-btn-bg: var(--bs-accordion-bg);
@@ -12639,7 +12639,7 @@ li {
   padding: 0;
   align-items: center;
   display: flex;
-  height: 5rem;
+  height: 4rem;
   justify-content: center;
   color: var(--text-secondary);
 }
@@ -12775,7 +12775,10 @@ if the parent has a dark mode but the child is rendering a light mode
 }
 
 /** This is an auto-generated file, don't edit it. **/
-.form-control, .input-group-text {
+/** This is an auto-generated file, don't edit it. **/
+/** This is an auto-generated file, don't edit it. **/
+.form-control,
+.input-group-text {
   font-size: 14px;
   text-decoration: none;
   font-family: Inter;
@@ -12785,36 +12788,82 @@ if the parent has a dark mode but the child is rendering a light mode
   letter-spacing: -0.112px;
   line-height: 16px;
   background-color: var(--field-enabled);
-  color: var(--text-secondary);
-  padding: 0.5rem 0.75rem;
+  color: var(--text-primary);
+  padding: 0.5rem;
   box-shadow: var(--elevation-0);
   border: none;
 }
-.form-control:focus, .form-control.focus, .input-group-text:focus, .input-group-text.focus {
+.form-control::-moz-placeholder, .input-group-text::-moz-placeholder {
+  color: var(--text-placeholder);
+}
+.form-control::placeholder,
+.input-group-text::placeholder {
+  color: var(--text-placeholder);
+}
+.form-control:focus, .form-control.focus,
+.input-group-text:focus,
+.input-group-text.focus {
   background-color: var(--field-hover);
   color: var(--text-primary);
   box-shadow: 0 0 0 2px var(--focus) inset;
 }
-.form-control:hover, .form-control.hover, .input-group-text:hover, .input-group-text.hover {
+.form-control:hover, .form-control.hover,
+.input-group-text:hover,
+.input-group-text.hover {
   background-color: var(--field-hover);
 }
-.form-control:disabled, .form-control.disabled, .input-group-text:disabled, .input-group-text.disabled {
+.form-control:disabled, .form-control.disabled,
+.input-group-text:disabled,
+.input-group-text.disabled {
   background-color: var(--field-disabled);
   color: var(--text-disabled);
+}
+.form-control:focus-visible, .form-control.focus-visible,
+.input-group-text:focus-visible,
+.input-group-text.focus-visible {
+  outline: none;
 }
 
 .form-control.is-invalid {
   box-shadow: 0 0 0 2px var(--status-error) inset;
+  border: none;
 }
 .form-control.is-invalid:focus, .form-control.is-invalid.focus {
   box-shadow: 0 0 0 2px var(--status-error) inset;
 }
-
 .form-control.is-valid {
   box-shadow: 0 0 0 2px var(--status-success) inset;
 }
 .form-control.is-valid:focus, .form-control.is-valid.focus {
   box-shadow: 0 0 0 2px var(--status-success) inset;
+}
+
+.vizro_light .form-control.is-valid, [data-bs-theme=light] .form-control.is-valid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2326bf56' d='M421-311.463 690.537-581l-34.845-34.23L421-380.153 302.539-498.615l-33.846 34.23L421-311.463Zm59.067 211.462q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2326bf56' d='m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+.vizro_light .form-control.is-invalid, [data-bs-theme=light] .form-control.is-invalid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f03b3a' d='M331.539-299.539 480-448.001l148.461 148.462 32-32L511.999-480l148.462-148.461-32-32L480-511.999 331.539-660.461l-32 32L448.001-480 299.539-331.539l32 32Zm148.528 199.538q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f03b3a' d='m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.vizro_dark .form-control.is-valid, [data-bs-theme=dark] .form-control.is-valid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2340d86e' d='M421-311.463 690.537-581l-34.845-34.23L421-380.153 302.539-498.615l-33.846 34.23L421-311.463Zm59.067 211.462q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2340d86e' d='m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+.vizro_dark .form-control.is-invalid, [data-bs-theme=dark] .form-control.is-invalid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f56565' d='M331.539-299.539 480-448.001l148.461 148.462 32-32L511.999-480l148.462-148.461-32-32L480-511.999 331.539-660.461l-32 32L448.001-480 299.539-331.539l32 32Zm148.528 199.538q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f56565' d='m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.vizro_light .vizro_dark .form-control.is-valid, .vizro_light [data-bs-theme=dark] .form-control.is-valid, [data-bs-theme=light] .vizro_dark .form-control.is-valid, [data-bs-theme=light] [data-bs-theme=dark] .form-control.is-valid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2340d86e' d='M421-311.463 690.537-581l-34.845-34.23L421-380.153 302.539-498.615l-33.846 34.23L421-311.463Zm59.067 211.462q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2340d86e' d='m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+.vizro_light .vizro_dark .form-control.is-invalid, .vizro_light [data-bs-theme=dark] .form-control.is-invalid, [data-bs-theme=light] .vizro_dark .form-control.is-invalid, [data-bs-theme=light] [data-bs-theme=dark] .form-control.is-invalid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f56565' d='M331.539-299.539 480-448.001l148.461 148.462 32-32L511.999-480l148.462-148.461-32-32L480-511.999 331.539-660.461l-32 32L448.001-480 299.539-331.539l32 32Zm148.528 199.538q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f56565' d='m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.vizro_dark .vizro_light .form-control.is-valid, .vizro_dark [data-bs-theme=light] .form-control.is-valid, [data-bs-theme=dark] .vizro_light .form-control.is-valid, [data-bs-theme=dark] [data-bs-theme=light] .form-control.is-valid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2326bf56' d='M421-311.463 690.537-581l-34.845-34.23L421-380.153 302.539-498.615l-33.846 34.23L421-311.463Zm59.067 211.462q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%2326bf56' d='m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
+}
+.vizro_dark .vizro_light .form-control.is-invalid, .vizro_dark [data-bs-theme=light] .form-control.is-invalid, [data-bs-theme=dark] .vizro_light .form-control.is-invalid, [data-bs-theme=dark] [data-bs-theme=light] .form-control.is-invalid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f03b3a' d='M331.539-299.539 480-448.001l148.461 148.462 32-32L511.999-480l148.462-148.461-32-32L480-511.999 331.539-660.461l-32 32L448.001-480 299.539-331.539l32 32Zm148.528 199.538q-78.221 0-147.397-29.92-69.176-29.92-120.989-81.71-51.814-51.791-81.747-120.936-29.933-69.146-29.933-147.366 0-78.836 29.92-148.204 29.92-69.369 81.71-120.682 51.791-51.314 120.936-81.247 69.146-29.933 147.366-29.933 78.836 0 148.204 29.92 69.369 29.92 120.682 81.21 51.314 51.291 81.247 120.629 29.933 69.337 29.933 148.173 0 78.221-29.92 147.397-29.92 69.176-81.21 120.989-51.291 51.814-120.629 81.747-69.337 29.933-148.173 29.933ZM480-145.385q139.692 0 237.154-97.769Q814.615-340.923 814.615-480q0-139.692-97.461-237.154Q619.692-814.615 480-814.615q-139.077 0-236.846 97.461Q145.385-619.692 145.385-480q0 139.077 97.769 236.846T480-145.385ZM480-480Z'%3E%3C/path%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 -960 960 960'%3E%3Cpath fill='%23f03b3a' d='m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /** This is an auto-generated file, don't edit it. **/
