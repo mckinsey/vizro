@@ -64,7 +64,7 @@ You may prefer to integrate Vizro-AI into an application with a UI that users us
 
 There are two ways to integrate Vizro-AI into an application, directly and by accessing the chart code behind a `fig` object.
 
-1. Vizro-AI's `plot` method returns `plotly.graph_objects` fig object that can be directly used within `Vizro` dashboard.
+1. Vizro-AI's `plot` method returns a `plotly.graph_objects` object (`fig`) that can be used directly within a `Vizro` dashboard.
 
     !!! example "Direct application integration"
 
@@ -80,7 +80,7 @@ There are two ways to integrate Vizro-AI into an application, directly and by ac
             ```
 
 
-2. Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.
+2. Vizro-AI's `_get_chart_code` method returns a string of Python code that manipulates the data and creates the visualization. Vizro-AI validates the code to ensure that it is executable and can be integrated.
 
     !!! example "Application integration via chart code"
 
