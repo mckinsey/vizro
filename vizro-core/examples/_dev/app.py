@@ -12,12 +12,13 @@ iris = px.data.iris()
 
 
 class CustomInput(UserInput):
-    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+    """Custom Input that allows passing `className` as an argument."""
 
     type: Literal["other_input"] = "other_input"
     class_name: str = "form-control"
 
     def build(self):
+        """Build the component."""
         input_build_obj = super().build()
         input_build_obj[self.id].className = self.class_name
         return input_build_obj
