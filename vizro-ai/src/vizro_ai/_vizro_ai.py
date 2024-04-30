@@ -127,12 +127,13 @@ class VizroAI:
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
+
+        # TODO Tentative for integration test
+        if self._return_all_text:
+            return output_dict
         if not explain:
             return _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
         if explain:
             return _exec_fig_code_display_markdown(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
-        # TODO Tentative for integration test
-        if self._return_all_text:
-            return output_dict
