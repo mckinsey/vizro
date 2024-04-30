@@ -64,7 +64,7 @@ You may prefer to integrate Vizro-AI into an application with a UI that users us
 
 There are two ways to integrate Vizro-AI into an application, directly and by accessing the chart code behind a `fig` object.
 
-1. Vizro-AI's `plot` method returns plotly `go.Figure` object that can be directly used within `Vizro` dashboard.
+1. Vizro-AI's `plot` method returns `plotly.graph_objects` fig object that can be directly used within `Vizro` dashboard.
 
     !!! example "Direct application integration"
 
@@ -78,7 +78,6 @@ There are two ways to integrate Vizro-AI into an application, directly and by ac
             df = px.data.gapminder()
             fig = vizro_ai.plot(df, "describe life expectancy per continent over time")
             ```
-        ===
 
 
 2. Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.

@@ -51,7 +51,17 @@ def _debug_helper(
 def _exec_code_and_retrieve_fig(
     code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True
 ) -> go.Figure:
-    """Execute code in notebook with correct namespace."""
+    """Execute code in notebook with correct namespace and return fig object.
+
+    Args:
+        code: code string to be executed
+        local_args: additional local arguments
+        is_notebook_env: boolean flag indicating if code is run in Jupyter notebook
+
+    Returns:
+        go.Figure
+
+    """
     from IPython import get_ipython
 
     namespace = get_ipython().user_ns if is_notebook_env else globals()
@@ -69,7 +79,18 @@ def _exec_fig_code_display_markdown(
     df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str
 ) -> go.Figure:
     # TODO change default test str to other
-    """Display chart and Markdown format description in jupyter."""
+    """Display chart and Markdown format description in jupyter and returns fig object.
+
+    Args:
+        df: The dataframe to be analyzed.
+        code_snippet: code string to be executed
+        biz_insights: business insights to be displayed in markdown cell
+        code_explain: code explanation to be displayed in markdown cell
+
+    Returns:
+        go.Figure
+
+    """
     try:
         # pylint: disable=import-outside-toplevel
         from IPython.display import Markdown, display
