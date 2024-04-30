@@ -377,6 +377,9 @@ class TestPreBuildMethod:
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
+    # This test does add_type so ideally we would clean up after this to restore vizro.models to its previous state.
+    # This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
+    # https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
     def test_numerical_custom_selector(self, gapminder, managers_one_page_two_graphs):
         class RangeSliderNonCross(vm.RangeSlider):
             """Custom numerical multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
