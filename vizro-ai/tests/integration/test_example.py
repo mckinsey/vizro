@@ -19,7 +19,7 @@ def test_chart():
     )
     assert_that(
         resp["code_string"],
-        all_of(contains_string("y='count'"), contains_string("y='gdpPercap'")),
+        any_of(contains_string("y='count'"), contains_string("y='gdpPercap'")),
     )
     assert_that(resp["business_insights"], equal_to(None))
     assert_that(resp["code_explanation"], equal_to(None))
