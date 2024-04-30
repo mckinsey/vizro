@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Update design in dashboard layout. Visit the [PR](https://github.com/mckinsey/vizro/pull/433) for an overview of the updates. ([#433](https://github.com/mckinsey/vizro/pull/433))
+- Update design of dashboard layout. ([#433](https://github.com/mckinsey/vizro/pull/433))
 
 <a id='changelog-0.1.15'></a>
 
