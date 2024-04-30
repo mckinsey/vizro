@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Removed
 
-- Removal of classNames `checkboxes-list`, `radio-items-list` and `input-container` from Vizro stylesheets. ([#414](https://github.com/mckinsey/vizro/pull/414))
+- Remove class names `checkboxes-list`, `radio-items-list` and `input-container` from Vizro stylesheets. ([#414](https://github.com/mckinsey/vizro/pull/414))
 
 ## Changed
 
