@@ -5,7 +5,6 @@ import dash
 import dash_ag_grid as dag
 import pandas as pd
 from dash import html
-import dash_bootstrap_components as dbc
 
 
 # AG Grid as in core code
@@ -85,9 +84,12 @@ df = pd.DataFrame(data)
 # Testing out:
 # columnSize
 # Persistence
-grid = html.Div(dash_ag_grid(
-    data_frame=df, id="persistence-grid", columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
-), id="persistence-grid-div")
+grid = html.Div(
+    dash_ag_grid(
+        data_frame=df, id="persistence-grid", columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
+    ),
+    id="persistence-grid-div",
+)
 
 dash.register_page(__name__, path="/")
 
@@ -103,8 +105,12 @@ dash.register_page(__name__, path="/")
 # )
 
 
-layout = html.Div([html.H1("This is our Home page"), grid,
-                   # dbc.Button(
-                   #     "Click me", id="example-button", className="me-2", n_clicks=0
-                   # )
-                   ])
+layout = html.Div(
+    [
+        html.H1("This is our Home page"),
+        grid,
+        # dbc.Button(
+        #     "Click me", id="example-button", className="me-2", n_clicks=0
+        # )
+    ]
+)

@@ -41,7 +41,11 @@ page = vm.Page(
         vm.AgGrid(
             title="Dash AG Grid",
             figure=dash_ag_grid(
-                id = "grid1",data_frame=df,defaultColDef = {"flex": 1,"minWidth": 200}, persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local" #columnSize="autoSize"#
+                id="grid1",
+                data_frame=df,
+                defaultColDef={"flex": 1, "minWidth": 200},
+                persistence=True,
+                persisted_props=["filterModel", "columnSize"],  # ,persistence_type = "local" #columnSize="autoSize"#
             ),
         ),
     ],
@@ -53,7 +57,9 @@ page2 = vm.Page(
         vm.AgGrid(
             title="Dash AG Grid 2",
             figure=dash_ag_grid(
-                id = "grid2",data_frame=df, columnSize="autoSize"#, persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
+                id="grid2",
+                data_frame=df,
+                columnSize="autoSize",  # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
             ),
         ),
     ],
