@@ -4806,7 +4806,7 @@ textarea.form-control-lg {
   --bs-accordion-border-width: 0;
   --bs-accordion-border-radius: var(--bs-border-radius);
   --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - 0);
-  --bs-accordion-btn-padding-x: 0.5rem;
+  --bs-accordion-btn-padding-x: 0;
   --bs-accordion-btn-padding-y: 1rem;
   --bs-accordion-btn-color: var(--bs-body-color);
   --bs-accordion-btn-bg: var(--bs-accordion-bg);
@@ -12639,7 +12639,7 @@ li {
   padding: 0;
   align-items: center;
   display: flex;
-  height: 5rem;
+  height: 4rem;
   justify-content: center;
   color: var(--text-secondary);
 }
