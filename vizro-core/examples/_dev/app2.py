@@ -1,46 +1,20 @@
-import pandas as pd
-import vizro.models as vm
-from vizro import Vizro
-from vizro.tables import dash_ag_grid
+import dash
+from dash import Dash, dcc, html
 
-# Define some sample data
-data = {
-    "this_is_a_really_long_column_name_0": [1, 2, 3],
-    "short_col_name": [4, 5, 6],
-    "this_is_a_really_long_column_name_2": [7, 8, 9],
-    "short": [10, 11, 12],
-    "this_is_a_really_long_column_name_4": [13, 14, 15],
-}
+app = Dash(__name__, use_pages=True)
 
-# Create DataFrame
-df = pd.DataFrame(data)
-
-# df = px.data.gapminder()
-
-page = vm.Page(
-    title="Example of a Dash AG Grid",
-    components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                data_frame=df, columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
-            ),
+app.layout = html.Div(
+    [
+        html.H1("Multi-page app with Dash Pages"),
+        html.Div(
+            [
+                html.Div(dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"]))
+                for page in dash.page_registry.values()
+            ]
         ),
-    ],
-    # controls=[vm.Filter(column="continent")],
+        dash.page_container,
+    ]
 )
-page2 = vm.Page(
-    title="Example of a Dash AG Grid 2",
-    components=[
-        vm.AgGrid(
-            title="Dash AG Grid 2",
-            figure=dash_ag_grid(
-                data_frame=df, columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
-            ),
-        ),
-    ],
-    # controls=[vm.Filter(column="continent")],
-)
-dashboard = vm.Dashboard(pages=[page, page2])
 
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    app.run(debug=True)
