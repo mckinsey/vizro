@@ -63,10 +63,10 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         ```
 
 ## Azure OpenAI models
-To set up Azure OpenAI with VizroAI, you'll need to configure the AzureOpenAI instance by specifying your deployment name and model name using langchain. You can also set your environment variables for API configuration,
+To set up Azure OpenAI with VizroAI, you'll need to configure the AzureOpenAI instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
 such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
 Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
-For a detailed walk-through, refer to the [Langchain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai/) directly.
+For a detailed walk-through, refer to the [LangChain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai/) directly.
 
 Here is an example of how to set the LLM model to be an AzureOpenAI model:
 !!! example  "Use Azure OpenAI model"
