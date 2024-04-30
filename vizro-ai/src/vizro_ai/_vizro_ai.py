@@ -137,4 +137,3 @@ class VizroAI:
             return _exec_fig_code_display_markdown(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
-
