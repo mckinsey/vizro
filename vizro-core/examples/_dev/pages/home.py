@@ -5,6 +5,7 @@ import dash
 import dash_ag_grid as dag
 import pandas as pd
 from dash import html
+import dash_bootstrap_components as dbc
 
 
 # AG Grid as in core code
@@ -41,10 +42,10 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
             "flex": 1,
             "minWidth": 70,
         },
-        # "dashGridOptions": {
-        #     "animateRows": False,
-        #     "pagination": True,
-        # },
+        "dashGridOptions": {
+            "animateRows": False,
+            "pagination": True,
+        },
         # "style": {"height": "100%"},
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
@@ -84,10 +85,26 @@ df = pd.DataFrame(data)
 # Testing out:
 # columnSize
 # Persistence
-grid = dash_ag_grid(
+grid = html.Div(dash_ag_grid(
     data_frame=df, id="persistence-grid", columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
-)
+), id="persistence-grid-div")
 
 dash.register_page(__name__, path="/")
 
-layout = html.Div([html.H1("This is our Home page"), grid])
+
+# @dash.callback(
+#     dash.Output("persistence-grid-div", "children"),
+#             dash.Input("example-button", "n_clicks"))
+# def update_grid(n_clicks):
+#     if n_clicks is None:
+#         dash.exceptions.PreventUpdate
+#     return dash_ag_grid(
+#     data_frame=df, id="persistence-grid"#, columnSize="autoSize", persistence=True, persisted_props=["filterModel"]
+# )
+
+
+layout = html.Div([html.H1("This is our Home page"), grid,
+                   # dbc.Button(
+                   #     "Click me", id="example-button", className="me-2", n_clicks=0
+                   # )
+                   ])
