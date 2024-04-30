@@ -67,7 +67,7 @@ Finally, we call the `plot()` method with our English language instruction, to g
 vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
 ```
 
-!!! warning "Help! My LLM request was unauthorized"
+!!! warning "Help! The LLM request was unauthorized"
 
     If you see an error similar to this, your LLM API key is not valid:
 
