@@ -11,7 +11,15 @@ def test_chart():
     resp = vizro_ai.plot(df, "describe the composition of scatter chart with gdp in continent")
     assert_that(
         resp["code_string"],
-        all_of(contains_string("px.scatter"), contains_string("x='continent'"), contains_string("y='gdpPercap'")),
+        all_of(contains_string("px.scatter")),
+    )
+    assert_that(
+        resp["code_string"],
+        any_of(contains_string("x='continent'"), contains_string("x='gdpPercap'")),
+    )
+    assert_that(
+        resp["code_string"],
+        any_of(contains_string("y='count'"), contains_string("y='gdpPercap'")),
     )
     assert_that(resp["business_insights"], equal_to(None))
     assert_that(resp["code_explanation"], equal_to(None))

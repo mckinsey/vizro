@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update design in dashboard layout. Visit the [PR](https://github.com/mckinsey/vizro/pull/433) for an overview of the updates. ([#433](https://github.com/mckinsey/vizro/pull/433))
+- `VizroAI.plot` now returns `plotly.graph_objects` fig object. ([#411](https://github.com/mckinsey/vizro/pull/441))
 
 <!--
 ### Deprecated
