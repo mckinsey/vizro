@@ -84,4 +84,3 @@ Here is an example of how to set the LLM model to be an AzureOpenAI model:
         )
         vizro_ai = VizroAI(model=llm)
         ```
-
