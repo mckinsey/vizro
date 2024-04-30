@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.16'></a>
+
+# 0.1.16 — 2024-04-30
+
+## Removed
+
+- Removal of classNames `checkboxes-list`, `radio-items-list` and `input-container` from Vizro stylesheets. ([#414](https://github.com/mckinsey/vizro/pull/414))
+
+## Changed
+
+- Update design in dashboard layout. Visit the [PR](https://github.com/mckinsey/vizro/pull/433) for an overview of the updates. ([#433](https://github.com/mckinsey/vizro/pull/433))
+
 <a id='changelog-0.1.15'></a>
 
 # 0.1.15 — 2024-04-15
