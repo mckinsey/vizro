@@ -61,5 +61,5 @@ filterwarnings = [
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # TODO update all LLMChain class and remove this warning
   # Ignore LLMchian deprecation warning:
-  "ignore:.*langchain_core._api.deprecation.LangChainDeprecationWarning: The class `LLMChain` was deprecated in LangChain 0.1.17"
+  "ignore:.*The class `LLMChain` was deprecated in LangChain 0.1.17"
 ]
