@@ -160,8 +160,6 @@ def _get_parametrized_config(
                     )
                     # TODO: think if changing data_frame entirely to new source is ok. Probably don't allow for now
                     #  in case change how things work and want to disallow it in future.
-                    if action_targets_arg.startswith("data_frame"):
-                        graph_config["data_frame"][action_targets_arg.split(".", 1)[-1]] = selector_value
 
         parameterized_config[target] = graph_config
 
