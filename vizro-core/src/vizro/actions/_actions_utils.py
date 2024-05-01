@@ -175,7 +175,7 @@ def _get_filtered_data(
     filtered_data = {}
     for target in targets:
         data_source_name = model_manager[target]["data_frame"]
-        data_frame = data_manager[data_source_name].load(parameterized_config[target]["points"])
+        data_frame = data_manager[data_source_name].load(points=parameterized_config[target]["points"])
         data_frame = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filters, target=target)
         data_frame = _apply_filter_interaction(
             data_frame=data_frame, ctds_filter_interaction=ctds_filter_interaction, target=target
