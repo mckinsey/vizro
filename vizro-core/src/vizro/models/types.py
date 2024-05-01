@@ -142,6 +142,10 @@ class CapturedCallable:
         """Deletes a bound argument."""
         del self.__bound_arguments[arg_name]
 
+    def __setitem__(self, arg_name: str, value):
+        """Deletes a bound argument."""
+        self.__bound_arguments[arg_name] = value
+
     @property
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those

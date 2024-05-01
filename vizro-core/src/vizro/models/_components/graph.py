@@ -50,7 +50,10 @@ class Graph(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(str(self.id)))
+        # TODO: No longer need Graph.id so could now move some of the process_callable_data_frame code to
+        #  CapturedCallable
+        # itself? Also consider moving this DM lookup and/or defaulting behaviour to inside CapturedCallable.
+        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
         # Remove top margin if title is provided

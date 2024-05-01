@@ -45,7 +45,7 @@ def _process_callable_data_frame(captured_callable, values):
         data_source_name = str(uuid.uuid4())
         data_manager[data_source_name] = data_frame
 
-    data_manager._add_component(values["id"], data_source_name)
     # No need to keep the data in the captured function any more so remove it to save memory.
-    del captured_callable["data_frame"]
+    # Add as string instead.
+    captured_callable["data_frame"] = data_source_name
     return captured_callable

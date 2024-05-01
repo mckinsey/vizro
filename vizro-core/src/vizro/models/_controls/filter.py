@@ -112,14 +112,19 @@ class Filter(VizroBaseModel):
             for component_id in model_manager._get_page_model_ids_with_figure(
                 page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
             ):
-                data_frame = data_manager._get_component_data(component_id)
+                # TODO: centralise this data_frame stuff so it's not repeated so many times?
+                # Or make helper method to do mapping - could live in data_manager.
+                # Just allow data_manager[component_id] directly as shortcut? Probs too confusing.
+                data_source_name = model_manager[component_id]["data_frame"]
+                data_frame = data_manager[data_source_name].load()
                 if self.column in data_frame.columns:
                     self.targets.append(component_id)
             if not self.targets:
                 raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
 
     def _set_column_type(self):
-        data_frame = data_manager._get_component_data(self.targets[0])
+        data_source_name = model_manager[self.targets[0]]["data_frame"]
+        data_frame = data_manager[data_source_name].load()
 
         if is_numeric_dtype(data_frame[self.column]):
             self._column_type = "numerical"
@@ -146,7 +151,8 @@ class Filter(VizroBaseModel):
             min_values = []
             max_values = []
             for target_id in self.targets:
-                data_frame = data_manager._get_component_data(target_id)
+                data_source_name = model_manager[target_id]["data_frame"]
+                data_frame = data_manager[data_source_name].load()
                 min_values.append(data_frame[self.column].min())
                 max_values.append(data_frame[self.column].max())
 
@@ -173,7 +179,8 @@ class Filter(VizroBaseModel):
         if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
             options = set()
             for target_id in self.targets:
-                data_frame = data_manager._get_component_data(target_id)
+                data_source_name = model_manager[target_id]["data_frame"]
+                data_frame = data_manager[data_source_name].load()
                 options |= set(data_frame[self.column])
 
             self.selector.options = sorted(options)
