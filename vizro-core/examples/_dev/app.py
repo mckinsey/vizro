@@ -34,7 +34,7 @@ page = vm.Page(
     ],
     controls=[
         vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
-        vm.Parameter(targets=["graph.points"], selector=vm.Slider(min=1, max=10, step=1)),
+        vm.Parameter(targets=["graph.data_frame.points"], selector=vm.Slider(min=1, max=10, step=1)),
         vm.Filter(column="species"),
     ],
 )
