@@ -3,13 +3,16 @@ site_url: https://vizro-ai.readthedocs.io/en/latest/
 nav:
   - Vizro-AI: index.md
   - Tutorials:
-      - Install Vizro-AI: pages/user-guides/install.md
       - A first example: pages/tutorials/quickstart.md
   - How-to guides:
-      - Run methods: pages/user-guides/run-vizro-ai.md
-      - Create advanced charts: pages/user-guides/create-advanced-charts.md
-      - Use different languages: pages/user-guides/use-different-languages.md
-      - Use Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+      - FUNDAMENTALS:
+          - Install Vizro-AI: pages/user-guides/install.md
+          - Run methods: pages/user-guides/run-vizro-ai.md
+          - Customize models: pages/user-guides/customize-vizro-ai.md
+      - USAGE OPTIONS:
+          - Advanced charts: pages/user-guides/create-advanced-charts.md
+          - Different languages: pages/user-guides/use-different-languages.md
+          - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md

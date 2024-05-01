@@ -67,7 +67,7 @@ Finally, we call the `plot()` method with our English language instruction, to g
 vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
 ```
 
-!!! warning "Help! My LLM request was unauthorized"
+!!! warning "Help! The LLM request was unauthorized"
 
     If you see an error similar to this, your LLM API key is not valid:
 
@@ -79,7 +79,7 @@ vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each co
 
     The call above makes the API key available from that terminal instance. If you want to access Vizro-AI from a Notebook, you should then run `jupyter notebook`  (or just work within that terminal to run your Python script in `app.py`. When you restart the terminal, you'll need to call `export` again.
 
-And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and renders the chart by executing the generated code.
+And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and returns the chart by executing the generated code.
 
 !!! example "Vizro AI Syntax"
 
@@ -100,7 +100,7 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/get-started/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
 
 !!! example "Returned by Vizro-AI"
 
