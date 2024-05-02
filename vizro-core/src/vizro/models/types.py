@@ -132,17 +132,11 @@ class CapturedCallable:
             # since this will already raise error in the following function call.
             return self.__function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
 
-        #
-
         return self.__function(**{**self.__bound_arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
         """Gets the value of a bound argument."""
         return self.__bound_arguments[arg_name]
-
-    def __delitem__(self, arg_name: str):
-        """Deletes a bound argument."""
-        del self.__bound_arguments[arg_name]
 
     def __setitem__(self, arg_name: str, value):
         """Sets the value of a bound argument."""

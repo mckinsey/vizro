@@ -50,12 +50,10 @@ class Graph(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        # TODO: No longer need Graph.id so could now move some of the process_callable_data_frame code to
-        #  CapturedCallable
-        # itself? Also consider moving this DM lookup and/or defaulting behaviour to inside CapturedCallable.
-        # Not sure if this defaulting code is actually used anywhere though given that call always invoked with
-        # data_frame specified? Maybe it is for Table and AgGrid though.
-        #        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
+        # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
+        # specified. It's here to match Table and AgGrid and because we might want to use __call__ more in future.
+        # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
+        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
         # Remove top margin if title is provided
