@@ -92,15 +92,11 @@ class TestProcessTableDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         table = vm.Table(id="table", figure=dash_table_with_str_dataframe)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            table["data_frame"]
+        assert data_manager[table["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
         table = vm.Table(id="table", figure=standard_dash_table)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            table["data_frame"]
+        assert data_manager[table["data_frame"]].load().equals(gapminder)
 
 
 class TestPreBuildTable:

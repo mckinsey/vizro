@@ -120,7 +120,6 @@ class TestAttributesGraph:
 
 
 class TestProcessGraphDataFrame:
-    # TODO: check these tests still make sense
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
