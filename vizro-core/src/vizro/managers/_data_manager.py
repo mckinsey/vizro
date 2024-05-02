@@ -14,10 +14,8 @@ from vizro.managers._managers_utils import _state_modifier
 
 logger = logging.getLogger(__name__)
 
-# Really ComponentID and DataSourceName should be NewType and not just aliases but then for a user's code to type check
+# Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
-# TODO: remove these type aliases once have moved component to data mapping to models
-ComponentID = str
 DataSourceName = str
 pd_DataFrameCallable = Callable[[], pd.DataFrame]
 
@@ -104,7 +102,7 @@ class _DynamicData:
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
     @memoize
-    def load(self, *args, **kwargs) -> pd.DataFrame:
+    def load(self) -> pd.DataFrame:
         """Loads data.
 
         In future this will probably take arguments that are passed through to __load_data in order to re-run the
@@ -113,7 +111,7 @@ class _DynamicData:
         # Note you get the same "cache missed" message if NullCache is running or if data_manager._cache_has_app is
         # False.
         logger.debug("Cache miss; reloading data")
-        return self.__load_data(*args, **kwargs)
+        return self.__load_data()
 
     def __repr__(self):
         """Flask-caching uses repr to form the cache key, so this is very important to set correctly.
