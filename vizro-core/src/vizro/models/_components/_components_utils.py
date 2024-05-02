@@ -25,6 +25,10 @@ def _callable_mode_validator_factory(mode: str):
 
 
 def _process_callable_data_frame(captured_callable, values):
+    # Might move to CapturedCallable in future but probably only if have separate class for Action vs. Graph etc.
+    # Otherwise data_frame argument only relevant to some.
+    # If it moves then it will populate data_manager outside context of dashboard, which is maybe not what is desired
+    # anyway.
     data_frame = captured_callable["data_frame"]
 
     if isinstance(data_frame, str):
@@ -46,6 +50,6 @@ def _process_callable_data_frame(captured_callable, values):
         data_manager[data_source_name] = data_frame
 
     # No need to keep the data in the captured function any more so remove it to save memory.
-    # Add as string instead.
+    # Add as string instead. Only need to do this in else case actually.
     captured_callable["data_frame"] = data_source_name
     return captured_callable

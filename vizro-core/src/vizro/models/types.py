@@ -98,9 +98,6 @@ class CapturedCallable:
         # This is used to check that the mode of the capture decorator matches the inserted captured callable.
         self._mode = None
 
-        self.__name__ = self.__function.__name__
-        self.__qualname__ = self.__function.__qualname__
-
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
 
@@ -135,6 +132,8 @@ class CapturedCallable:
             # since this will already raise error in the following function call.
             return self.__function(**dict(zip(unbound_positional_arguments, args)), **self.__bound_arguments)
 
+        #
+
         return self.__function(**{**self.__bound_arguments, **kwargs})
 
     def __getitem__(self, arg_name: str):
@@ -146,7 +145,7 @@ class CapturedCallable:
         del self.__bound_arguments[arg_name]
 
     def __setitem__(self, arg_name: str, value):
-        """Deletes a bound argument."""
+        """Sets the value of a bound argument."""
         self.__bound_arguments[arg_name] = value
 
     @property

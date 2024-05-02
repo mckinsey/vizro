@@ -54,7 +54,7 @@ class Graph(VizroBaseModel):
         #  CapturedCallable
         # itself? Also consider moving this DM lookup and/or defaulting behaviour to inside CapturedCallable.
         # Not sure if this defaulting code is actually used anywhere though given that call always invoked with
-        # data_frame specified?
+        # data_frame specified? Maybe it is for Table and AgGrid though.
         #        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 

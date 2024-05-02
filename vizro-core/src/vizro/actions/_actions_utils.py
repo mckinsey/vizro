@@ -136,6 +136,8 @@ def _get_parametrized_config(
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = deepcopy(model_manager[target].figure._arguments)
+        # Not possible to update nested arguments for data_frame, just top-level ones. This is ok.
+        # TODO: Put in some check to raise error?
         graph_config["data_frame"] = {}
 
         for ctd in parameters:
