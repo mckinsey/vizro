@@ -103,8 +103,7 @@ class AgGrid(VizroBaseModel):
             Output(self._input_component_id, "className"),
             Input("theme_selector", "checked"),
         )
-        grid = self.__call__()
-        grid.rowData = []
+
         return dcc.Loading(
             [
                 html.H3(self.title, className="table-title") if self.title else None,
@@ -112,7 +111,7 @@ class AgGrid(VizroBaseModel):
                 # here) must have the same setting as the object that is built by the on-page-load mechanism using
                 # with the user settings and rendered finally. Otherwise the grid is not rendered correctly.
                 # Hence be careful when editing the line below.
-                html.Div(grid, id=self.id, className="table-container"),
+                html.Div(self.__call__(), id=self.id, className="table-container"),
             ],
             id=f"{self.id}_outer",
             color="grey",

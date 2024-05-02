@@ -120,13 +120,11 @@ class TestBuildAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
-        expected_ag_grid = dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")()
-        expected_ag_grid.rowData = []
-        expected_build_result = dcc.Loading(
+        expected_ag_grid = dcc.Loading(
             [
                 None,
                 html.Div(
-                    expected_ag_grid,
+                    dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")(),
                     id="text_ag_grid",
                     className="table-container",
                 ),
@@ -136,24 +134,20 @@ class TestBuildAgGrid:
             parent_className="loading-container",
         )
 
-        assert_component_equal(ag_grid, expected_build_result)
+        assert_component_equal(ag_grid, expected_ag_grid)
 
     def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
 
-        expected_ag_grid = dash_ag_grid(
-                        data_frame=gapminder, id="underlying_ag_grid_id",
-                    )()
-        expected_ag_grid.rowData = []
-
-
         expected_ag_grid = dcc.Loading(
             [
                 None,
                 html.Div(
-                    expected_ag_grid,
+                    dash_ag_grid(
+                        data_frame=gapminder, id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
+                    )(),
                     id="text_ag_grid",
                     className="table-container",
                 ),
