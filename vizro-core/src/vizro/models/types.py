@@ -98,6 +98,9 @@ class CapturedCallable:
         # This is used to check that the mode of the capture decorator matches the inserted captured callable.
         self._mode = None
 
+        self.__name__ = self.__function.__name__
+        self.__qualname__ = self.__function.__qualname__
+
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
 

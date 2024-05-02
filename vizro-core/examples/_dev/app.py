@@ -10,21 +10,22 @@ from vizro.models.types import CapturedCallable, capture
 
 # Note need to specify default value if have Filter since that calls data load function
 # Then have problem that filter options don't get updated when data source changes
-# @capture("action")
+@capture("action")
 def load_iris_data(points):
     iris = px.data.iris()
     return iris.sample(points)
 
 
-# load_iris_data.__name__ = "load_iris_data"
-# load_iris_data.__name__ = "load_iris_data"
-#
-cc = CapturedCallable(load_iris_data, 5)
-cc.__name__ = "load_iris_data"
-cc.__qualname__ = "load_iris_data"
+# Options if have Filter. For advanced users only:
+# 1. use CapturedCallable and load_iris(5) --> confusing because then looks like it's actually loading the data.
+# Better for reusing same callable across multiple data sources. Harder to compose together.
+# 2. use function with default arguments --> then will we ever use CC for it in future? Not to good for reusing same
+# callable.
+# One advantage of CC that's not relevant is ability to specify from YAML.
+# Catch that need to specify same default argument as in parameter value is same with both approachces.
 
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-data_manager["iris"] = cc
+data_manager["iris"] = load_iris_data(5)
 data_manager["iris"].timeout = 10
 
 page = vm.Page(
