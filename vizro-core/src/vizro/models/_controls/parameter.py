@@ -18,7 +18,8 @@ class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
 
     Examples:
-        >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))))
+        >>> print(repr(Parameter(
+        >>>    targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))))
 
     Args:
         type (Literal["parameter"]): Defaults to `"parameter"`.

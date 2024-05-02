@@ -11,21 +11,21 @@ from vizro.models.types import CapturedCallable, capture
 # Note need to specify default value if have Filter since that calls data load function
 # Then have problem that filter options don't get updated when data source changes
 # @capture("action")
-def load_iris_data(nested):
-    iris = px.data.iris() * nested["factor"]
-    return iris.sample(nested["points"])
+def load_iris_data(points):
+    iris = px.data.iris()
+    return iris.sample(points)
 
 
 # load_iris_data.__name__ = "load_iris_data"
 # load_iris_data.__name__ = "load_iris_data"
 #
-cc = CapturedCallable(load_iris_data, {"points": 5, "factor": 10})
+cc = CapturedCallable(load_iris_data, 5)
 cc.__name__ = "load_iris_data"
 cc.__qualname__ = "load_iris_data"
 
-# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 data_manager["iris"] = cc
-# data_manager["iris"].timeout = 10
+data_manager["iris"].timeout = 10
 
 page = vm.Page(
     title="My first page",
@@ -34,7 +34,7 @@ page = vm.Page(
     ],
     controls=[
         vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
-        vm.Parameter(targets=["graph.data_frame.nested.points"], selector=vm.Slider(min=1, max=10, step=1)),
+        vm.Parameter(targets=["graph.data_frame.points"], selector=vm.Slider(min=1, max=10, step=1)),
         vm.Filter(column="species"),
     ],
 )
