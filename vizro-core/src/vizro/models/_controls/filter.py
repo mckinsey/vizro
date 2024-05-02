@@ -112,9 +112,10 @@ class Filter(VizroBaseModel):
             for component_id in model_manager._get_page_model_ids_with_figure(
                 page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
             ):
-                # TODO: centralise this data_frame stuff so it's not repeated so many times?
-                # Or make helper method to do mapping - could live in data_manager.
-                # Just allow data_manager[component_id] directly as shortcut? Probs too confusing.
+                # TODO: consider making a helper method in data_manager or elsewhere to reduce this operation being
+                #  duplicated across Filter so much, and/or consider storing the result to avoid repeating it.
+                #  Need to think about this in connection with how to update filters on the fly and duplicated calls
+                #  issue outlined in https://github.com/mckinsey/vizro/pull/398#discussion_r1559120849.
                 data_source_name = model_manager[component_id]["data_frame"]
                 data_frame = data_manager[data_source_name].load()
                 if self.column in data_frame.columns:

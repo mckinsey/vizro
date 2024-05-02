@@ -51,7 +51,6 @@ class AgGrid(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        # TODO: same as Graph.
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id

@@ -227,36 +227,6 @@ class DataManager:
         except KeyError as exc:
             raise KeyError(f"Data source {name} does not exist.") from exc
 
-    # TODO: check Jupyter flow once have removed this.
-    # @_state_modifier
-    # def _add_component(self, component_id: ComponentID, name: DataSourceName):
-    #     """Adds a mapping from `component_id` to `name`."""
-    #     # TODO: once have removed self.__component_to_data, we shouldn't need this function any more.
-    #     #  Maybe always updated capturedcallable data_frame to  data source name string then.
-    #     if name not in self.__data:
-    #         raise KeyError(f"Data source {name} does not exist.")
-    #     if component_id in self.__component_to_data:
-    #         raise ValueError(
-    #             f"Component with id={component_id} already exists and is mapped to data "
-    #             f"{self.__component_to_data[component_id]}. Components must uniquely map to a data source across the "
-    #             f"whole dashboard. If you are working from a Jupyter Notebook, please either restart the kernel, or "
-    #             f"use 'from vizro import Vizro; Vizro._reset()`."
-    #         )
-    #     self.__component_to_data[component_id] = name
-
-    # TODO: think about where logging goes, if anywhere, and whether helper method here actually useful - see
-    #  comments in Filter.
-    # def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
-    #     # TODO: once have removed self.__component_to_data, we shouldn't need this function any more. Calling
-    #     #  functions would just do data_manager[name].load().
-    #     """Returns the original data for `component_id`."""
-    #     if component_id not in self.__component_to_data:
-    #         raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-    #     name = self.__component_to_data[component_id]
-    #
-    #     logger.debug("Loading data %s on process %s", name, os.getpid())
-    #     return self[name].load()
-
     def _clear(self):
         # We do not actually call self.cache.clear() because (a) it would only work when self._cache_has_app is True,
         # which is not the case when e.g. Vizro._reset is called, and (b) because we do not want to accidentally
