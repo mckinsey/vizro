@@ -76,7 +76,7 @@ class TestCustomDashAgGrid:
             [
                 None,
                 html.Div(
-                    dag.AgGrid(id="__input_custom_ag_grid", columnDefs=column_defs, rowData=row_data_date_raw),
+                    dag.AgGrid(id="__input_custom_ag_grid", columnDefs=column_defs, rowData=[]),
                     id=id,
                     className="table-container",
                 ),
@@ -114,7 +114,7 @@ class TestCustomDashAgGrid:
             [
                 None,
                 html.Div(
-                    dag.AgGrid(id="__input_custom_ag_grid", columnDefs=column_defs, rowData=row_data_date_raw),
+                    dag.AgGrid(id="__input_custom_ag_grid", columnDefs=column_defs, rowData=[]),
                     id=id,
                     className="table-container",
                 ),
