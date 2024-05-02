@@ -8,8 +8,8 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
 
-data_manager["iris"] = lambda: px.data.iris()
-data_manager["tips"] = lambda: px.data.tips()
+data_manager["iris"] = px.data.iris()
+data_manager["tips"] = px.data.tips()
 data_manager["stocks"] = px.data.stocks(datetimes=True)
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
