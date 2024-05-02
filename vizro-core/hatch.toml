@@ -22,7 +22,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "dash[testing]",
-  "chromedriver-autoinstaller-fix",
+  "chromedriver-autoinstaller>=0.6.4",
   "toml",
   "pyyaml",
   "openpyxl"
@@ -47,6 +47,9 @@ prep-release = [
 pypath = "python -c 'import sys; print(sys.executable)'"
 schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
 secrets = "hatch run lint:pre-commit run gitleaks --all-files"
+# Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
+# fix this, but we don't actually use `hatch run test` anywhere right now.
+# See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
