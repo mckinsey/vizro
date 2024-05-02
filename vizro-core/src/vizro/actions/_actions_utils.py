@@ -11,7 +11,7 @@ import pandas as pd
 from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import MultiValueType, SelectorType, SingleValueType, CapturedCallable
 
 if TYPE_CHECKING:
     from vizro.models import Action, VizroBaseModel
@@ -136,7 +136,16 @@ def _get_parametrized_config(
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely.
         graph_config = deepcopy(model_manager[target].figure._arguments)
-        graph_config["data_frame"] = {}
+
+        # It's possible to nested merge when dynamic data is a captured callable to allow targets subkeys of
+        # dictionary, but it's quite ugly and not important to enable since data loading function is written by user
+        # and can be configured to not use dictionary easily.
+        data_source_name = graph_config["data_frame"]
+        load_data_function = data_manager[data_source_name]._DynamicData__load_data
+        if isinstance(load_data_function, CapturedCallable):
+            graph_config["data_frame"] = load_data_function._arguments
+        else:
+            graph_config["data_frame"] = {}
 
         for ctd in parameters:
             selector_value = ctd[
@@ -160,6 +169,7 @@ def _get_parametrized_config(
                     )
                     # TODO: think if changing data_frame entirely to new source is ok. Probably don't allow for now
                     #  in case change how things work and want to disallow it in future.
+                    # Think also about what to do with graph.data_frame.key.subkey arguments.
 
         parameterized_config[target] = graph_config
 

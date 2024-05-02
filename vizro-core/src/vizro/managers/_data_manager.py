@@ -152,6 +152,7 @@ class _StaticData:
         self.__data = data
 
     def load(self) -> pd.DataFrame:
+        # TODO: would need to take *args, **kwargs to match?
         """Loads data.
 
         Returns a copy of the data. This is not necessary if we are careful to not do any inplace=True operations,
