@@ -1,11 +1,8 @@
+import vizro.models as vm
+import vizro.plotly.express as px
 from flask_caching import Cache
 from vizro import Vizro
-import pandas as pd
-import vizro.plotly.express as px
-import vizro.models as vm
-
 from vizro.managers import data_manager
-from vizro.models.types import CapturedCallable, capture
 
 
 # Note need to specify default value if have Filter since that calls data load function

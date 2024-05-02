@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import warnings
 from typing import Any, Callable, Dict, Optional, Protocol, Union
 
@@ -33,8 +32,7 @@ class BoundMethod(Protocol):
     __self__: object
     __func__: Callable[..., Any]
 
-    def __call__(self, *args, **kwargs):
-        ...
+    def __call__(self, *args, **kwargs): ...
 
 
 # wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
