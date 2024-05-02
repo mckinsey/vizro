@@ -1,8 +1,10 @@
+"""To try out the PR."""
+
 import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
-import vizro.plotly.express as px
 
 # DATA
 data = {
@@ -60,7 +62,8 @@ page2 = vm.Page(
             figure=dash_ag_grid(
                 id="grid2",
                 data_frame=px.data.gapminder(),
-                columnSize="autoSize",  # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
+                columnSize="autoSize",  # persistence=True, persisted_props=["filterModel","columnSize"],
+                # persistence_type = "local"
             ),
         ),
     ],
