@@ -6,6 +6,7 @@ If you're new to coding, Vizro-AI simplifies the process of creating charts that
 
 Vizro-AI uses a large language model and Plotly to generate code for an interactive chart that you can add into a [Vizro dashboard application](https://vizro.readthedocs.io). By using Vizro's themes, you can incorporate design best practices by default.
 
+<img src=".//assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
 <div class="grid cards" markdown>
 
