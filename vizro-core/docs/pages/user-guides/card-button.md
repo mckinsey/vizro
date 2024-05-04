@@ -616,7 +616,7 @@ img[src*="#my-image"] {
 ## Buttons
 
 To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
-action functions such as exporting chart data. To use currently available options on [`Actions`][vizro.models.Action] 
+action functions such as exporting chart data. To use currently available options on [`Actions`][vizro.models.Action]
 component, check out the [Reference of Actions API][vizro.actions] on for currently available options.
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the
