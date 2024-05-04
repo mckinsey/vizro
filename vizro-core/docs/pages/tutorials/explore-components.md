@@ -260,7 +260,7 @@ There are two types of control:
 * [`Parameters`][vizro.models.Parameter] enable users to change arguments or properties of the components, such as adjusting colors.
 
 
-The guides on [`How to use Filters`](../user-guides/filters.md) and [`How to use Parameters`](../user-guides/parameters.md) provide instructions on their application. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
+The guides on [`How to use Filters`](../user-guides/filters.md) and [`How to use Parameters`](../user-guides/parameters.md) offer instructions on their application. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 To link a control to a component, use the id assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
 
@@ -674,6 +674,6 @@ to [Navigation](../user-guides/navigation.md).
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
 - How to create you own components under [custom components](../user-guides/custom-components.md).
-- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or js files.
+- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
