@@ -150,7 +150,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
     === "Result"
          [![PageTitle]][PageTitle]
 
-    [CardCSS]: ../../assets/user_guides/assets/css_page_title.png
+    [PageTitle]: ../../assets/user_guides/assets/css_page_title.png
 
 
 ## Overwrite CSS properties in selective components
