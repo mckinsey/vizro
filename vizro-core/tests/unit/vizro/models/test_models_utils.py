@@ -24,6 +24,7 @@ class TestSharedValidators:
             model_with_layout(title="Page Title", components=[vm.Checklist()])
 
 
+@pytest.mark.parametrize("enable_url", [True, False])
 @pytest.mark.parametrize(
     "test_string, expected",
     [
@@ -36,23 +37,7 @@ class TestSharedValidators:
         ("", ""),
     ],
 )
-def test_clean_path_with_url_enabled(test_string, expected):
-    cleaned_string = _clean_path(path=test_string, allowed_characters="-_/", enable_url=True)
-    assert cleaned_string == f"/{expected}"
-
-
-@pytest.mark.parametrize(
-    "test_string, expected",
-    [
-        ("Title", "title"),
-        ("Page Title", "page-title"),
-        ("Page Title!", "page-title"),
-        ("Another123Title", "another123title"),
-        ("Some_Example%Title", "some_exampletitle"),
-        ("!@#$%^&*()_+=", "_"),
-        ("", ""),
-    ],
-)
-def test_clean_path_with_url_disabled(test_string, expected):
-    cleaned_string = _clean_path(path=test_string, allowed_characters="-_/", enable_url=False)
-    assert cleaned_string == expected
+def test_clean_path_with_url_enabled(test_string, expected, enable_url):
+    cleaned_string = _clean_path(path=test_string, allowed_characters="-_/", enable_url=enable_url)
+    expected_output = f"/{expected}" if enable_url else expected
+    assert cleaned_string == expected_output
