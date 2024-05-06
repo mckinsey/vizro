@@ -130,7 +130,7 @@
   width: 64px;
 }
 
-#page-container div[hidden] {
+#dashboard-container div[hidden] {
   display: none;
 }
 
