@@ -17,7 +17,7 @@ dependencies = [
   "pandas",
   "tabulate",
   "openai>=1.0.0",
-  "langchain>=0.1.0",
+  "langchain>=0.1.0, <0.3.0",  # TODO update all LLMChain class and remove upper bound
   "langchain-openai",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.4",  # TODO set upper bound later
@@ -58,5 +58,8 @@ filterwarnings = [
   # Ignore until pandas is made compatible with Python 3.12:
   "ignore:.*utcfromtimestamp:DeprecationWarning",
   # Ignore until pandas 3 is released:
-  "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning"
+  "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
+  # TODO update all LLMChain class and remove this warning
+  # Ignore LLMchian deprecation warning:
+  "ignore:.*The class `LLMChain` was deprecated in LangChain 0.1.17"
 ]
