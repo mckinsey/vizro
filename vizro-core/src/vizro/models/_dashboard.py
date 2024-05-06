@@ -21,7 +21,7 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _clean_path, _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 
 if TYPE_CHECKING:
@@ -172,7 +172,9 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(page.title, id="page-title")
-        page_id = html.Div(page.id, id="page-id")
+
+        # We need to clean the page-id before, otherwise it's not a valid CSS selector
+        page_id = html.Div(_clean_path(page.id, "-", enable_url=False), id="page-id")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
