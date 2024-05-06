@@ -53,9 +53,10 @@ _PageDivsType = TypedDict(
         "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
+        "logo": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
-        "logo": html.Div,
+        "page-id": html.Div,
     },
 )
 
@@ -171,6 +172,7 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(page.title, id="page-title")
+        page_id = html.Div(page.id, id="page-id")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
@@ -179,8 +181,9 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
+
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components, page_id]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
@@ -225,7 +228,7 @@ class Dashboard(VizroBaseModel):
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
         page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
-        return html.Div([page_header, page_main], id="page-container")
+        return html.Div([page_header, page_main], id=page_divs["page-id"].children, className="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
