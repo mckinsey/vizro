@@ -148,7 +148,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
           title: Page with shown title
         ```
     === "Result"
-         [![PageTitle]][PageTile]
+         [![PageTitle]][PageTitle]
 
     [CardCSS]: ../../assets/user_guides/assets/css_page_title.png
 

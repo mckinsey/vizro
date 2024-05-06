@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Store `page.id` in outer page container to enable targeting CSS selectors. ([#455](https://github.com/mckinsey/vizro/pull/455))
+- Store `page.id` in outer page container to enable page specific styling. ([#455](https://github.com/mckinsey/vizro/pull/455))
 
 <!--
 ### Deprecated
