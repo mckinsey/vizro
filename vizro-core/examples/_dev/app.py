@@ -6,7 +6,9 @@ from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.gapminder()
-df_aggregated = df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
+df_aggregated = (
+    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
+)
 
 page_aggrid = vm.Page(
     title="Ag Grid and Graph",
@@ -23,7 +25,7 @@ page_aggrid = vm.Page(
                 y="lifeExp",
                 color="continent",
                 labels={"lifeExp": "Life Expectancy", "continent": "Continent"},
-                title="Graph Title"
+                title="Graph Title",
             ),
         ),
     ],
@@ -44,7 +46,7 @@ page_data_table = vm.Page(
                 y="lifeExp",
                 color="continent",
                 labels={"lifeExp": "Life Expectancy", "continent": "Continent"},
-                title="Graph Title"
+                title="Graph Title",
             ),
         ),
     ],
