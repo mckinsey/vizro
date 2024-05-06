@@ -87,6 +87,71 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
 
+## Overwrite CSS properties for specific pages
+Each page is assigned a unique identifier (`page.id`), which is sanitized and then stored as the ID of an outer `<div>` element.
+This identifier is formatted according to CSS naming conventions by removing non-alphanumeric characters and replacing spaces with dashes.
+For instance, if a `page.id` is "Variable Analysis," it will be stored as a CSS ID of "variable-analysis."
+
+This unique identifier enables you to use CSS selectors to target specific pages and their components for styling.
+
+!!! note "Default Page ID"
+
+    If a page's ID is not explicitly set, it defaults to the page title.
+    Refer to our [user-guide on pages](pages.md) for more information on setting the page ID.
+
+
+Suppose you want to hide the page title on one page only. Here's how you can achieve this:
+
+1. Identify the CSS class or ID you need to target. For example, to hide the page title, you need to hide its parent container with the ID `right-header`.
+2. Use the unique identifier to target only the page you want to modify.
+
+
+!!! example "Hide page title on selected pages"
+    === "my_css_file.css"
+    ```css
+    #page-with-hidden-title #right-header {
+      display: none;
+    }
+    ```
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page_one = vm.Page(
+            title="Page with hidden title",
+            components=[vm.Card(text="""# Placeholder""")]
+        )
+
+        page_two = vm.Page(
+            title="Page with shown title",
+            components=[vm.Card(text="""# Placeholder""")]
+        )
+
+        dashboard = vm.Dashboard(pages=[page_one, page_two])
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+        - components:
+            - text: |
+                # Placeholder
+              type: card
+          title: Page with hidden title
+        - components:
+            - text: |
+                # Placeholder
+              type: card
+          title: Page with shown title
+        ```
+    === "Result"
+         [![PageTitle]][PageTile]
+
+    [CardCSS]: ../../assets/user_guides/assets/css_page_title.png
+
 
 ## Overwrite CSS properties in selective components
 To overwrite CSS properties of selective components, pass an ID to the relevant component and target the right CSS property.
