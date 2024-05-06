@@ -4,11 +4,12 @@
 Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows, although we are working on supporting more vendors:
 
 - `gpt-3.5-turbo` (default model)
-- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
-- `gpt-4-0613`
-- `gpt-3.5-turbo-1106` (under testing)
-- `gpt-4-1106-preview` (under testing, not suitable for production use)
+- `gpt-4-turbo` (recommended for best model performance)
 - `gpt-3.5-turbo-0125`
+- `gpt-3.5-turbo-1106`
+- `gpt-4-0613`
+- `gpt-4-1106-preview`
+- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
 
 
 These models offer different levels of performance and cost to Vizro-AI users:
