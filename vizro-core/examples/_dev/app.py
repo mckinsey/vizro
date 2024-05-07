@@ -7,6 +7,7 @@ from vizro.managers import data_manager
 
 
 def load_iris_data():
+    """Load a sample of the iris dataset."""
     iris = px.data.iris()
     return iris.sample(50)
 
