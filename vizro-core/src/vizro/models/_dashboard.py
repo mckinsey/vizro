@@ -56,7 +56,6 @@ _PageDivsType = TypedDict(
         "logo": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
-        "page-id": html.Div,
     },
 )
 
@@ -172,9 +171,6 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(page.title, id="page-title")
-
-        # We need to clean the page-id before, otherwise it's not a valid CSS selector
-        page_id = html.Div(_clean_path(page.id, "-", enable_url=False), id="page-id")
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
@@ -185,7 +181,7 @@ class Dashboard(VizroBaseModel):
         page_components = page_content["page-components"]
 
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components, page_id]
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
@@ -230,11 +226,15 @@ class Dashboard(VizroBaseModel):
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
         page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
-        return html.Div([page_header, page_main], id=page_divs["page-id"].children, className="page-container")
+        return html.Div([page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
-        return self._arrange_page_divs(page_divs=page_divs)
+        page_layout = self._arrange_page_divs(page_divs=page_divs)
+
+        # We need to clean the page-id before, otherwise it's not a valid CSS selector
+        page_layout.id = _clean_path(page.id, "-", enable_url=False)
+        return page_layout
 
     @staticmethod
     def _make_page_404_layout():

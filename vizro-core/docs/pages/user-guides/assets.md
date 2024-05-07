@@ -90,7 +90,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 ## Overwrite CSS properties for specific pages
 Each page is assigned a unique identifier (`page.id`), which is sanitized and then stored as the ID of an outer `<div>` element.
 This identifier is formatted according to CSS naming conventions by removing non-alphanumeric characters and replacing spaces with dashes.
-For instance, if a `page.id` is "Variable Analysis," it will be stored as a CSS ID of "variable-analysis."
+For instance, if a `page.id` is "Variable Analysis" it will be stored as a CSS ID of "variable-analysis".
 
 This unique identifier enables you to use CSS selectors to target specific pages and their components for styling.
 
