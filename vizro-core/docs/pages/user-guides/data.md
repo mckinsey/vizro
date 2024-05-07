@@ -63,7 +63,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         page = vm.Page(
             title="Static data example",
             components=[
-                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
+                vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")),
             ]
         )
 
@@ -112,7 +112,7 @@ If you would like to specify your dashboard configuration through YAML then you 
         pages:
         - components:
             - figure:
-                _target_: violin
+                _target_: box
                 data_frame: iris # (1)!
                 x: species
                 y: petal_width
@@ -157,7 +157,7 @@ The example below shows how data is fetched dynamically every time the page is r
         page = vm.Page(
             title="Update the chart on page refresh",
             components=[
-                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")) # (4)!
+                vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")) # (4)!
             ],
         )
 
@@ -208,7 +208,7 @@ In a development environment the easiest way to enable caching is to use a [simp
     page = vm.Page(
         title="Update the chart on page refresh",
         components=[
-            vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species"))
+            vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))
         ],
     )
 

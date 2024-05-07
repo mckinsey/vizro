@@ -17,7 +17,7 @@ data_manager["iris"] = load_iris_data
 page = vm.Page(
     title="Update the chart on page refresh",
     components=[
-        vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
+        vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")),
     ],
 )
 
