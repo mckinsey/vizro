@@ -61,11 +61,10 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         iris = pd.read_csv("iris.csv") # (1)!
 
         page = vm.Page(
-            title="My first page",
+            title="Static data example",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-            ],
-            controls=[vm.Filter(column="species")],
+                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -113,17 +112,13 @@ If you would like to specify your dashboard configuration through YAML then you 
         pages:
         - components:
             - figure:
-                _target_: scatter
+                _target_: violin
                 data_frame: iris # (1)!
-                x: sepal_length
+                x: species
                 y: petal_width
                 color: species
-              id: scatter_chart
               type: graph
-            controls:
-              - column: species
-                type: filter
-            title: My first page
+            title: Static data example
         ```
 
         1. Refer to the `"iris"` data source in the data manager.
