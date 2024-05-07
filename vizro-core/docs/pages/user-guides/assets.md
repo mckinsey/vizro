@@ -33,6 +33,14 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
+CSS properties will be applied with the last served file taking precedence. The order of serving is:
+
+1. Dash built-in stylesheets
+2. Vizro built-in stylesheets
+3. User assets folder stylesheets
+
+Within each of these categories, individual files are served in alphanumeric order.
+
 !!! example "Customizing global CSS properties"
     === "my_css_file.css"
     ```css
@@ -89,42 +97,43 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 
 
 ## Overwrite CSS properties in selective components
-To overwrite CSS properties of selective components, pass an ID to the relevant component and target the right CSS property.
+To adjust CSS properties for specific components, like altering the appearance of a selected [Card][vizro.models.Card] rather than all Cards,
+you'll need to target the correct CSS selector based on the component hierarchy.
+If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
 
-For more information, see this [CSS selectors tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure).
+Here's how you can do it:
+1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="my-card", ...)`
+2. Review the component's source code to find the appropriate CSS class or element you need to target.
+It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id:
+   - The `id` is provided to the `dcc.Markdown` component inside the `Card`.
+   - The `dcc.Markdown` component is wrapped inside a parent container with the class name `"card"`.
+   - The text is wrapped inside `<p>` elements that are descendants of the `dcc.Markdown` component.
 
-Let's say we want to change the background and font-color of one [`Card`][vizro.models.Card] instead of all existing Cards in the Dashboard.
-We can use the ID of the outermost Div to target the inner sub-components of the card. Note that all our components have an ID attached to the outermost Div,
-following the pattern `"{component_id}_outer"`.
-
-To achieve this, do the following:
-
-1. Pass a custom `id` to the relevant `Card`, for example: `Card(id="my_card", ...)`
-2. Take a look at the source code of the component to see which CSS Class you need to target such as `"card"`
-3. Use CSS selectors to target the right property by using the ID of the outermost Div `"my_card_outer"`
-
+For instance, if you aim to modify the background and font color of a specific card, you'll need to target the parent
+container with the class "card" and the `<p>` elements, which are children of the `dcc.Markdown` with the `id`.
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
-    #my_card_outer.card {
-      background-color: white;
+    /* Apply styling to parent */
+    .card:has(#my-card) {
+      background-color: red;
     }
 
-    #my_card_outer .card_text p {
+    /* Apply styling to children */
+    #my-card p {
       color: black;
     }
     ```
     === "app.py"
         ```py
-        import os
         import vizro.models as vm
         from vizro import Vizro
 
         page = vm.Page(
             title="Changing the card color",
             components=[
-                vm.Card(id="my_card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+                vm.Card(id="my-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
                 vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit.""")
                      ],
         )
@@ -142,7 +151,7 @@ To achieve this, do the following:
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
-              id: my_card
+              id: my-card
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
@@ -153,14 +162,6 @@ To achieve this, do the following:
 
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
-
-CSS properties will be applied with the last served file taking precedence. The order of serving is:
-
-1. Dash built-in stylesheets
-2. Vizro built-in stylesheets
-3. User assets folder stylesheets
-
-Within each of these categories, individual files are served in alphanumeric order.
 
 ## Change the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
