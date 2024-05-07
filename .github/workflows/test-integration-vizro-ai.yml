@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - vizro-ai/**
+
   pull_request:
     branches:
       - main
