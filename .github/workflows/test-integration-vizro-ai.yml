@@ -20,7 +20,6 @@ env:
 jobs:
   test-integration-vizro-ai:
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-
     environment: vizro_ai_secrets
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'skip vizro_ai tests') }}
