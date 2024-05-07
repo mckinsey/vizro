@@ -97,10 +97,10 @@ An HTML `id` is considered valid if the following conditions are met:
 - Provide a unique `id`
 
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
-1. Provide a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`
+1. Provide a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
 2. Identify the CSS class or ID you need to target. To hide the page title, you need to hide the container with the ID `right-header`.
-3. Use the `id` in combination with CSS selectors to change the relevant CSS properties
-4. Add your custom css file to the `assets` folder as explained above
+3. Use the `id` in combination with CSS selectors to change the relevant CSS properties.
+4. Add your custom css file to the `assets` folder as explained above.
 
 
 !!! example "Hide page title on selected pages"
