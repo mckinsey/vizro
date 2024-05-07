@@ -3,7 +3,7 @@
   margin-left: -8px;
 }
 
-/* Hide page title on Page with ID = "Ag Grid and Graph" */
-#ag-grid-and-graph #right-header {
+/* Hide page title on Page with ID = "page-with-hidden-title" */
+#page-with-hidden-title #right-header {
   display: none;
 }

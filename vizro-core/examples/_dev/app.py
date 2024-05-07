@@ -12,6 +12,7 @@ df_aggregated = (
 
 page_aggrid = vm.Page(
     title="Ag Grid and Graph",
+    id="page-with-hidden-title",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
         vm.AgGrid(

@@ -88,22 +88,19 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 
 
 ## Overwrite CSS properties for specific pages
-Each page is assigned a unique identifier (`page.id`), which is sanitized and then stored as the ID of an outer `<div>` element.
-This identifier is formatted according to CSS naming conventions by removing non-alphanumeric characters and replacing spaces with dashes.
-For instance, if a `page.id` is "Variable Analysis" it will be stored as a CSS ID of "variable-analysis".
+If you want to style specific pages only, you need to provide a valid `id` to the page you want to modify.
+This unique `id` enables you to use CSS selectors to target specific pages and their components for styling.
 
-This unique identifier enables you to use CSS selectors to target specific pages and their components for styling.
-
-!!! note "Default Page ID"
-
-    If a page's ID is not explicitly set, it defaults to the page title.
-    Refer to our [user-guide on pages](pages.md) for more information on setting the page ID.
-
+An HTML `id` is considered valid if the following conditions are met:
+- Use lowercase letters and hyphens
+- Avoid using special characters or spaces
+- Provide a unique `id`
 
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
-
-1. Identify the CSS class or ID you need to target. For example, to hide the page title, you need to hide its parent container with the ID `right-header`.
-2. Use the unique identifier to target only the page you want to modify.
+1. Provide a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`
+2. Identify the CSS class or ID you need to target. To hide the page title, you need to hide the container with the ID `right-header`.
+3. Use the `id` in combination with CSS selectors to change the relevant CSS properties
+4. Add your custom css file to the `assets` folder as explained above
 
 
 !!! example "Hide page title on selected pages"
@@ -119,6 +116,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         from vizro import Vizro
 
         page_one = vm.Page(
+            id="page-with-hidden-title",
             title="Page with hidden title",
             components=[vm.Card(text="""# Placeholder""")]
         )
@@ -141,6 +139,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
                 # Placeholder
               type: card
           title: Page with hidden title
+          id: page-with-hidden-title
         - components:
             - text: |
                 # Placeholder
