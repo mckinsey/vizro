@@ -20,25 +20,3 @@ def _validate_min_length(cls, field):
     if not field:
         raise ValueError("Ensure this value has at least 1 item.")
     return field
-
-
-# Based on how Github generates anchor links - see:
-# https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-def _clean_path(path: str, allowed_characters: str, enable_url: bool = True) -> str:
-    """Cleans up a given path for use as a relative link or CSS ID.
-
-    Args:
-        path (str): The initial str to clean.
-        allowed_characters (str): A string containing the characters to allow in the path. All others will be removed.
-        enable_url (bool, optional): If True, ensures path starts with "/". Defaults to True.
-
-    Returns:
-        str: The cleaned path.
-
-    """
-    path = path.strip().lower().replace(" ", "-")
-    path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-
-    if enable_url:
-        path = path if path.startswith("/") else "/" + path
-    return path
