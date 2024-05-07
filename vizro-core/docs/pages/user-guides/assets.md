@@ -88,13 +88,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 
 
 ## Overwrite CSS properties for specific pages
-If you want to style specific pages only, you need to provide a valid `id` to the page you want to modify.
-This unique `id` enables you to use CSS selectors to target specific pages and their components for styling.
-
-An HTML `id` is considered valid if the following conditions are met:
-- Use lowercase letters and hyphens
-- Avoid using special characters or spaces
-- Provide a unique `id`
+To style components for only a specific page, use the page's `id` in CSS selectors. By default, this is the [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier. A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
 
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
 1. Provide a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
