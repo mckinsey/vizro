@@ -102,22 +102,26 @@ you'll need to target the correct CSS selector based on the component hierarchy.
 If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
 
 Here's how you can do it:
-1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="my-card", ...)`
-2. Review the component's source code to find the appropriate CSS class or element you need to target.
-It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id:
-   - The `id` is provided to the `dcc.Markdown` component inside the `Card`.
-   - The `dcc.Markdown` component is wrapped inside a parent container with the class name `"card"`.
-   - The text is wrapped inside `<p>` elements that are descendants of the `dcc.Markdown` component.
 
-For instance, if you aim to modify the background and font color of a specific card, you'll need to target the parent
-container with the class "card" and the `<p>` elements, which are children of the `dcc.Markdown` with the `id`.
+1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="my-card", ...)`
+2. Review the component's source code to find the appropriate CSS class or element you need to target. 
+
+It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
+
+* The `id` is provided to the `dcc.Markdown` component inside the `Card`.
+* The `dcc.Markdown` component is wrapped inside a parent container with the class name `"card"`.
+* The card text is wrapped inside a `<p>` element that is a child of the `dcc.Markdown` component.
+
+For instance, if you aim to modify the background color of a specific card, you need to target the parent
+html element with the CSS class `card`. If you want to modify the font color, you need to target the `<p>` elements,
+which are children of the `dcc.Markdown` with the `id`.
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
     /* Apply styling to parent */
     .card:has(#my-card) {
-      background-color: red;
+      background-color: white;
     }
 
     /* Apply styling to children */

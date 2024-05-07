@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Remove all CSS classes from outer components with suffix `_outer`. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/#overwrite-css-properties-in-selective-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
+- Remove all CSS classes with suffix `_outer` from components. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/#overwrite-css-properties-in-selective-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
 
 <!--
 ### Added
