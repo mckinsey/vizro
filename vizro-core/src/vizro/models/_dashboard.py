@@ -21,7 +21,7 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
-from vizro.models._models_utils import _clean_path, _log_call
+from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 
 if TYPE_CHECKING:
@@ -231,9 +231,7 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
-
-        # We need to clean the page-id before, otherwise it's not a valid CSS selector
-        page_layout.id = _clean_path(page.id, "-", enable_url=False)
+        page_layout.id = page.id
         return page_layout
 
     @staticmethod
