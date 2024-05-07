@@ -10,12 +10,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Removed
 
-- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Remove all CSS classes from outer components with suffix `_outer`. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/#overwrite-css-properties-in-selective-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
 
--->
 <!--
 ### Added
 
