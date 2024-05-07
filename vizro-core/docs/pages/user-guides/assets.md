@@ -104,7 +104,7 @@ If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https:
 Here's how you can do it:
 
 1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="my-card", ...)`
-2. Review the component's source code to find the appropriate CSS class or element you need to target. 
+2. Review the component's source code to find the appropriate CSS class or element you need to target.
 
 It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
 
