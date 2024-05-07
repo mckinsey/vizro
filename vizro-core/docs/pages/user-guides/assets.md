@@ -103,8 +103,8 @@ If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https:
 
 Here's how you can do it:
 
-1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="my-card", ...)`
-2. Review the component's source code to find the appropriate CSS class or element you need to target. 
+1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="custom-card", ...)`
+2. Review the component's source code to find the appropriate CSS class or element you need to target.
 
 It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
 
@@ -112,20 +112,20 @@ It's essential to understand the relationship between the targeted CSS class or 
 * The `dcc.Markdown` component is wrapped inside a parent container with the class name `"card"`.
 * The card text is wrapped inside a `<p>` element that is a child of the `dcc.Markdown` component.
 
-For instance, if you aim to modify the background color of a specific card, you need to target the parent
-html element with the CSS class `card`. If you want to modify the font color, you need to target the `<p>` elements,
+For instance, if you want to change the background color of a specific card, you need to target the parent
+HTML element with the CSS class `card`. If you want to change the font color, you need to target the `<p>` elements,
 which are children of the `dcc.Markdown` with the `id`.
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
     /* Apply styling to parent */
-    .card:has(#my-card) {
+    .card:has(#custom-card) {
       background-color: white;
     }
 
     /* Apply styling to children */
-    #my-card p {
+    #custom-card p {
       color: black;
     }
     ```
@@ -137,7 +137,7 @@ which are children of the `dcc.Markdown` with the `id`.
         page = vm.Page(
             title="Changing the card color",
             components=[
-                vm.Card(id="my-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+                vm.Card(id="custom-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
                 vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit.""")
                      ],
         )
@@ -155,7 +155,7 @@ which are children of the `dcc.Markdown` with the `id`.
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
-              id: my-card
+              id: custom-card
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
