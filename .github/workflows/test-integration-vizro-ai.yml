@@ -5,8 +5,11 @@ defaults:
     working-directory: vizro-ai
 
 on:
+
   push:
     branches: [main]
+    paths:
+      - vizro-ai/**
   pull_request:
     branches:
       - main
@@ -22,7 +25,6 @@ jobs:
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
     environment: vizro_ai_secrets
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, '[skip_vizro_ai_tests]') }}
     strategy:
       fail-fast: false
       matrix:
