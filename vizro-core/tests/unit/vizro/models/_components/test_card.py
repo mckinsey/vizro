@@ -54,7 +54,6 @@ class TestBuildMethod:
                 dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), href="https://www.google.com"
             ),
             className="card-nav",
-            id="card_id_outer",
         )
 
         assert_component_equal(card, expected_card)
@@ -63,11 +62,7 @@ class TestBuildMethod:
         card = vm.Card(id="card_id", text="Hello")
         card = card.build()
 
-        expected_card = dbc.Card(
-            dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"),
-            className="card",
-            id="card_id_outer",
-        )
+        expected_card = dbc.Card(dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), className="card")
 
         assert_component_equal(card, expected_card)
 

@@ -45,4 +45,4 @@ class Card(VizroBaseModel):
         )
 
         card_class = "card-nav" if self.href else "card"
-        return dbc.Card(card_content, className=card_class, id=f"{self.id}_outer")
+        return dbc.Card(card_content, className=card_class)
