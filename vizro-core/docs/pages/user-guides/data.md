@@ -155,16 +155,15 @@ The example below shows how data is fetched dynamically every time the page is r
 
         def load_iris_data():
             iris = pd.read_csv("iris.csv") # (1)!
-            return iris.sample(30) # (2)!
+            return iris.sample(50) # (2)!
 
         data_manager["iris"] = load_iris_data # (3)!
 
         page = vm.Page(
-            title="My first page",
+            title="Update the chart on page refresh",
             components=[
-                vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")), # (4)!
+                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
             ],
-            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -206,17 +205,16 @@ In a development environment the easiest way to enable caching is to use a [simp
 
     def load_iris_data():
         iris = pd.read_csv("iris.csv")
-        return iris.sample(30)
+        return iris.sample(50)
 
     data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
     data_manager["iris"] = load_iris_data
 
     page = vm.Page(
-        title="My first page",
+        title="Update the chart on page refresh",
         components=[
-            vm.Graph(figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
+            vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
         ],
-        controls=[vm.Filter(column="species")],
     )
 
     dashboard = vm.Dashboard(pages=[page])
