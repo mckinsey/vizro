@@ -157,7 +157,7 @@ The example below shows how data is fetched dynamically every time the page is r
         page = vm.Page(
             title="Update the chart on page refresh",
             components=[
-                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
+                vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")) # (4)!
             ],
         )
 
