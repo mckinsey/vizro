@@ -208,7 +208,7 @@ In a development environment the easiest way to enable caching is to use a [simp
     page = vm.Page(
         title="Update the chart on page refresh",
         components=[
-            vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species")),
+            vm.Graph(figure=px.violin("iris", x="species", y="petal_width", color="species"))
         ],
     )
 
