@@ -72,7 +72,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
     [Graph]: ../../assets/user_guides/components/graph.png
 
 
-In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to connect a chart to data](data.md#supply-directly). For the YAML version, we [refer to the data source by name as `data_frame: iris`](data.md#reference-by-name). For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
+In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to supply data to a chart](data.md#supply-directly). For the YAML version, we [refer to the data source by name](data.md#reference-by-name) as `data_frame: iris`. For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
 
 
 ??? info "Vizro automatically sets the plotly default template"
