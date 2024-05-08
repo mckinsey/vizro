@@ -53,9 +53,9 @@ _PageDivsType = TypedDict(
         "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
+        "logo": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
-        "logo": html.Div,
     },
 )
 
@@ -179,8 +179,9 @@ class Dashboard(VizroBaseModel):
         page_content: _PageBuildType = page.build()
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
+
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, control_panel, page_components, logo]
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
@@ -225,11 +226,13 @@ class Dashboard(VizroBaseModel):
 
         page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
         page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
-        return html.Div([page_header, page_main], id="page-container")
+        return html.Div([page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
-        return self._arrange_page_divs(page_divs=page_divs)
+        page_layout = self._arrange_page_divs(page_divs=page_divs)
+        page_layout.id = page.id
+        return page_layout
 
     @staticmethod
     def _make_page_404_layout():
