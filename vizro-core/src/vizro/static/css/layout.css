@@ -1,4 +1,4 @@
-#page-container {
+.page-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -27,7 +27,7 @@
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-04);
+  gap: var(--spacing-05);
   padding: 24px;
   width: 100%;
 }
@@ -58,7 +58,7 @@
 
 #page-components {
   overflow: auto;
-  padding-top: var(--spacing-02);
+  padding-top: var(--spacing-01);
 }
 
 .grid-layout {
@@ -130,7 +130,7 @@
   width: 64px;
 }
 
-#page-container div[hidden] {
+#dashboard-container div[hidden] {
   display: none;
 }
 

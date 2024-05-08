@@ -76,17 +76,17 @@ Configuration can be written in multiple formats including **Pydantic models**, 
 
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - for flexible and scalable, Python enabled data visualization applications.
 
-Visit the ["Why Vizro"](https://vizro.readthedocs.io/en/latest/pages/explanation/why_vizro/) section to see a more detailed explanation of Vizro use cases.
+Visit ["Why should I use Vizro?"](https://vizro.readthedocs.io/en/stable/pages/explanation/faq/#why-should-i-use-vizro) for a more detailed explanation of Vizro use cases.
 
 ### What is Vizro-AI?
 
-[vizro-ai](https://vizro-ai.readthedocs.io/en/latest/) is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts.
+Vizro-AI is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts.
 
 <p align="center">
 <img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
 </p>
 
-See the [Vizro-AI documentation](https://vizro-ai.readthedocs.io/en/latest/) for more details.
+See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) for more details.
 
 ## Key benefits of Vizro
 
@@ -119,22 +119,22 @@ You can see Vizro in action by clicking on the following image or by visiting [v
 pip install vizro
 ```
 
-See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user_guides/install/) for more information.
+See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for more information.
 
-The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) explains how to create your first dashboard.
+The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/) explains how to create your first dashboard.
 
 ## Get hands on
 
-See the [how-to guides](https://vizro.readthedocs.io/en/stable/) for step-by-step instructions on the key Vizro features.
+See the [how-to guides](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for step-by-step instructions on the key Vizro features.
 
 ## Packages
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                           Version                                           |                        Documentation                        |
-| :------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------: |
-| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |    [Vizro Docs](https://vizro.readthedocs.io/en/stable/)    |
-|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro-ai.readthedocs.io/en/latest/) |
+|           Folder           |                                           Version                                           |                               Documentation                                |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :------------------------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |           [Vizro Docs](https://vizro.readthedocs.io/en/stable/)            |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) |
 
 ## Community and development
 
@@ -142,9 +142,9 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 
 ## Want to contribute to Vizro?
 
-The [contribution guidelines](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) explain how you can contribute to Vizro.
+The [contribution guidelines](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/) explain how you can contribute to Vizro.
 
-You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/development/authors/).
+You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/explanation/authors/).
 
 ## Want to report a security vulnerability?
 

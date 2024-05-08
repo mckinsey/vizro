@@ -4,11 +4,12 @@
 Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows, although we are working on supporting more vendors:
 
 - `gpt-3.5-turbo` (default model)
-- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
-- `gpt-4-0613`
-- `gpt-3.5-turbo-1106` (under testing)
-- `gpt-4-1106-preview` (under testing, not suitable for production use)
+- `gpt-4-turbo` (recommended for best model performance)
 - `gpt-3.5-turbo-0125`
+- `gpt-3.5-turbo-1106`
+- `gpt-4-0613`
+- `gpt-4-1106-preview`
+- `gpt-3.5-turbo-0613` (to be deprecated on June 13, 2024)
 
 
 These models offer different levels of performance and cost to Vizro-AI users:
@@ -60,4 +61,27 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         )
         vizro_ai = VizroAI(model=llm)
         vizro_ai.plot(df, "describe the composition of gdp in continent")
+        ```
+
+## Azure OpenAI models
+To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
+such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
+Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
+For a detailed walk-through, refer to the [LangChain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai/).
+
+Here is an example of how to set the LLM model to be an AzureOpenAI model:
+!!! example  "Use Azure OpenAI model"
+
+    === "python"
+        ```py linenums="1"
+        from langchain_openai import AzureOpenAI
+        from vizro_ai import VizroAI
+
+        # Create an instance of Azure OpenAI
+        # Replace the deployment name with your own
+        llm = AzureOpenAI(
+            deployment_name="td2",
+            model_name="gpt-3.5-turbo-instruct",
+        )
+        vizro_ai = VizroAI(model=llm)
         ```
