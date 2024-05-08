@@ -31,7 +31,7 @@ def create_template_common():
         title_yanchor="top",
         title_pad_l=0,
         title_pad_r=0,
-        title_pad_t=24,
+        title_pad_t=6,
         title_pad_b=0,
         showlegend=True,
         legend_font_family=primary_font,
