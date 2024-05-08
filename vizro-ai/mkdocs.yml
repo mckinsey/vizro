@@ -18,6 +18,8 @@ nav:
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
+  - API-reference:
+      - VizroAI: pages/API-reference/vizro-ai.md
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro:
