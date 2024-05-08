@@ -1,7 +1,7 @@
 # VizroAI
 
 <!-- vale off -->
-::: vizroai
+::: vizro_ai
     options:
       merge_init_into_class: false
       docstring_options:
