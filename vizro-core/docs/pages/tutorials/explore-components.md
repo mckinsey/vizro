@@ -42,7 +42,7 @@ The code below shows the steps necessary to add a box plot to the page:
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
             ],
         )
@@ -133,7 +133,7 @@ The code below adds two components to the page:
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
                     id="line_gdp",
@@ -229,7 +229,7 @@ Run the code below to apply the layout to the dashboard page:
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
                     id="line_gdp",
@@ -303,7 +303,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
                     id="line_gdp",
@@ -414,7 +414,7 @@ for parameters](../user-guides/parameters.md).
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
                     id="line_gdp",
@@ -593,7 +593,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
                 vm.Graph(
                     id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent":"Continent"}),
+                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
                     id="line_gdp",
