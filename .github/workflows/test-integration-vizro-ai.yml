@@ -7,6 +7,13 @@ defaults:
 on:
   push:
     branches: [main]
+    paths:
+      - vizro-ai/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - vizro-ai/**
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
@@ -17,8 +24,7 @@ env:
 jobs:
   test-integration-vizro-ai:
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-
-    environment: vizro_secrets
+    environment: vizro_ai_secrets
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
