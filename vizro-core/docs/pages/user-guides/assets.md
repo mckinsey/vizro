@@ -188,7 +188,7 @@ To adjust CSS properties for specific components, like altering the appearance o
 you need to use a CSS selector that targets the right CSS property.
 If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
 
-Let's say we want to change the background and font-color of a specific `Card`. 
+Let's say we want to change the background and font-color of a specific `Card`.
 
 Here's how you can do it:
 
