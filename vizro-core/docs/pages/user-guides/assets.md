@@ -29,17 +29,44 @@ The user's `assets` folder thus always takes precedence.
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see the [Dash documentation](https://dash.plotly.com/external-resources#changing-the-favicon).
 
+
+## Change the `assets` folder path
+If you do not want to place your `assets` folder in the root directory of your app, you can
+specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
+
+```python
+from vizro import Vizro
+import vizro.models as vm
+
+page = <INSERT CONFIGURATION HERE>
+dashboard = vm.Dashboard(pages=[page])
+
+app = Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
+
+```
+
+Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
+See more information in the [Pages User Guide](pages.md).
+
+
+## Include a meta tags image
+
+Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
+clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
+`logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+
+## Add a logo image
+
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+
+
 ## Overwrite global CSS properties
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
-
-CSS properties will be applied with the last served file taking precedence. The order of serving is:
-
-1. Dash built-in stylesheets
-2. Vizro built-in stylesheets
-3. User assets folder stylesheets
-
-Within each of these categories, individual files are served in alphanumeric order.
 
 !!! example "Customizing global CSS properties"
     === "my_css_file.css"
@@ -225,35 +252,12 @@ which are children of the `dcc.Markdown` with the `id`.
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
 
-## Change the `assets` folder path
-If you do not want to place your `assets` folder in the root directory of your app, you can
-specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
+??? note "Order of serving CSS files"
 
-```python
-from vizro import Vizro
-import vizro.models as vm
+    CSS properties will be applied with the last served file taking precedence. The order of serving is:
 
-page = <INSERT CONFIGURATION HERE>
-dashboard = vm.Dashboard(pages=[page])
-
-app = Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
-
-```
-
-Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
-See more information in the [Pages User Guide](pages.md).
-
-
-## Include a meta tags image
-
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
-clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
-`logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
-
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
-
-## Add a logo image
-
-Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
-
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+    1. Dash built-in stylesheets
+    2. Vizro built-in stylesheets
+    3. User assets folder stylesheets
+    
+    Within each of these categories, individual files are served in alphanumeric order.
