@@ -1,13 +1,12 @@
 # Explore VizroAI
 
-In this tutorial, we walk through the process of creating more complex plotly charts. The examples use data from the [plotly express data package](https://plotly.com/python-api-reference/generated/plotly.express.data.html).
-In the examples below we will use OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts.
+In this guide, we'll learn how to make more advanced charts with Plotly. We'll be using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html) for our examples.
+The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
 
-### Create polar bar chart with Vizro-AI
+### Create a polar bar chart
 
-Polar Bar Charts are mostly used to visualize data that has both magnitude and direction, such as wind speed and direction at specific locations.
-They are particularly effective for displaying cyclical or directional data as they provide intuitive way of visualizing patterns in data across different directions.
-Let's create one using Vizro-AI.
+A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
+It's suitable for quickly comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
 
 
 !!! example "Polar Bar Chart"
@@ -36,9 +35,9 @@ Let's create one using Vizro-AI.
     [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
 
 
-### Map chart with Vizro-AI
+### Create a geographical map chart
 
-Next chart we are going to explore is a map chart. Map charts allow us to explore and visualize the spatial relationships and patterns in the data, and often provide immediate insights that are not apparent when using other chart types.
+The next chart we'll look at is a geographical map chart. A geographical map chart helps us visualize spatial patterns in data, often revealing insights not seen in other charts.
 
 !!! example "Map chart"
 
@@ -67,10 +66,9 @@ Next chart we are going to explore is a map chart. Map charts allow us to explor
     [VizroAIChart2]: ../../assets/user_guides/map_chart.gif
 
 
-### Create surface plots with Vizro-AI
+### Create a surface plot
 
-With Vizro-AI you can create visually beautiful and engaging charts with a few commands. Let's explore the impressive surface plot VizroAI can generate for us.
-
+With Vizro-AI, you can create complex and captivating charts using few commands. Let's dive into the 3-dimensional surface plot that VizroAI can generate for us.
 
 !!! example "Surface plot"
 
@@ -90,6 +88,6 @@ With Vizro-AI you can create visually beautiful and engaging charts with a few c
 
         ```
     === "Resulting chart"
-        [![VizroAIChart4]][VizroAIChart4]
+        [![VizroAIChart3]][VizroAIChart3]
 
-    [VizroAIChart4]: ../../assets/user_guides/surface_plot.gif
+    [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
