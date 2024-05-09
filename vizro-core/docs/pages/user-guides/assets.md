@@ -123,11 +123,13 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 
 
 ## Overwrite CSS properties for specific pages
-To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier. A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
+To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
+A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
 
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
-1. Provide a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
-2. Identify the CSS class or ID you need to target. To hide the page title, you need to hide the container with the ID `right-header`.
+
+1. Give a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
+2. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the container with the `id `right-header`.
 3. Use the `id` in combination with CSS selectors to change the relevant CSS properties.
 4. Add your custom css file to the `assets` folder as explained above.
 
@@ -182,24 +184,35 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 
 
 ## Overwrite CSS properties in selective components
-To adjust CSS properties for specific components, like altering the appearance of a selected [Card][vizro.models.Card] rather than all Cards,
-you'll need to target the correct CSS selector based on the component hierarchy.
+To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all `Card`s,
+you need to use a CSS selector that targets the right CSS property.
 If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
+
+Let's say we want to change the background and font-color of a specific `Card`. 
 
 Here's how you can do it:
 
 1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="custom-card", ...)`
-2. Review the component's source code to find the appropriate CSS class or element you need to target.
+2. Review the HTML document structure in your browser to find the appropriate CSS class or element you need to target.
+We recommend using the [Chrome DevTools](https://developer.chrome.com/docs/devtools/) to do that.
+For guidance on how to get the CSS selector in Chrome, see this [thread](https://stackoverflow.com/questions/4500572/how-can-i-get-the-css-selector-in-chrome).
 
 It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
 
-* The `id` is provided to the `dcc.Markdown` component inside the `Card`.
-* The `dcc.Markdown` component is wrapped inside a parent container with the class name `"card"`.
-* The card text is wrapped inside a `<p>` element that is a child of the `dcc.Markdown` component.
+<!-- vale off -->
+```python title="HTML structure of a `Card`"
+<div class="card card">
+    <div id="custom-card">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+    </div>
+</div>
+```
+<!-- vale on -->
 
-For instance, if you want to change the background color of a specific card, you need to target the parent
-HTML element with the CSS class `card`. If you want to change the font color, you need to target the `<p>` elements,
-which are children of the `dcc.Markdown` with the `id`.
+* **Main element with `id`:** There is a `<div>` with our `id = custom-card`.
+* **Parent element:** That `<div>` is wrapped inside a parent `<div>` with the class name `"card"`. This is the element we need to target to change the background color.
+* **Child element:** The card text is wrapped inside a `<p>` that is a child of the `<div>` with our `id`. This is the element we need to target to change the font color.
+
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
@@ -209,7 +222,7 @@ which are children of the `dcc.Markdown` with the `id`.
       background-color: white;
     }
 
-    /* Apply styling to children */
+    /* Apply styling to child */
     #custom-card p {
       color: black;
     }
@@ -259,5 +272,5 @@ which are children of the `dcc.Markdown` with the `id`.
     1. Dash built-in stylesheets
     2. Vizro built-in stylesheets
     3. User assets folder stylesheets
-    
+
     Within each of these categories, individual files are served in alphanumeric order.

@@ -5,7 +5,7 @@
 
 /* Apply styling to parent */
 .card:has(#my-card) {
-  background-color: red;
+  background-color: white;
 }
 
 /* Apply styling to children */
