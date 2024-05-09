@@ -60,7 +60,7 @@ Next, we instantiate `VizroAI`:
 ```python
 vizro_ai = VizroAI()
 ```
-For customization of `VizroAI` class checkout out our guide on [how to customize models](../user-guides/customize-vizro-ai.md).
+For customization of the `VizroAI` class checkout out our guide on [how to customize models](../user-guides/customize-vizro-ai.md).
 
 Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
 

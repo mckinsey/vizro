@@ -123,10 +123,9 @@ Executing the code below will yield the identical dashboard as the initial examp
         import plotly.express as px
         import vizro_ai
         from vizro_ai import VizroAI
+
         from dotenv import load_dotenv
-
         load_dotenv()
-
         df = px.data.gapminder()
         vizro_ai = VizroAI(model="gpt-4-0613")
 
