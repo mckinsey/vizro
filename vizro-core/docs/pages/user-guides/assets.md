@@ -208,7 +208,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 ```
 <!-- vale on -->
 
-* **Main element with `id`:** There is a `<div>` with our `id = custom-card`.
+* **Main element with `id`:** There is a `<div>` with our `id="custom-card"`.
 * **Parent element:** That `<div>` is wrapped inside a parent `<div>` with the class name `"card"`. This is the element we need to target to change the background color.
 * **Child element:** The card text is wrapped inside a `<p>` that is a child of the `<div>` with our `id`. This is the element we need to target to change the font color.
 
