@@ -113,7 +113,6 @@ class AgGrid(VizroBaseModel):
                 # Hence be careful when editing the line below.
                 html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
             ],
-            id=f"{self.id}_outer",
             color="grey",
             parent_className="loading-container",
         )

@@ -50,5 +50,4 @@ class TextArea(VizroBaseModel):
                     debounce=True,
                 ),
             ],
-            id=f"{self.id}_outer",
         )

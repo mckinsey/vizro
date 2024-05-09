@@ -109,5 +109,4 @@ class DatePicker(VizroBaseModel):
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
             ],
             className="selector_container",
-            id=f"{self.id}_outer",
         )
