@@ -193,9 +193,8 @@ Let's say we want to change the background and font-color of a specific `Card`.
 Here's how you can do it:
 
 1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="custom-card", ...)`
-2. Review the HTML document structure in your browser to find the appropriate CSS class or element you need to target.
-We recommend using the [Chrome DevTools](https://developer.chrome.com/docs/devtools/) to do that.
-For guidance on how to get the CSS selector in Chrome, see this [thread](https://stackoverflow.com/questions/4500572/how-can-i-get-the-css-selector-in-chrome).
+2. Run your dashboard and open it in your browser
+3. View the HTML source to find the appropriate CSS class or element you need to target. For example, if you inspect a page with [Chrome DevTools](https://developer.chrome.com/docs/devtools/) then you can [directly copy the CSS selector](https://stackoverflow.com/questions/4500572/how-can-i-get-the-css-selector-in-chrome).
 
 It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
 
