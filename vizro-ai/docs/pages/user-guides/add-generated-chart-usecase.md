@@ -108,8 +108,8 @@ This object must then be passed to the `figure` argument of the Vizro [Graph](ht
 ### Direct use of `fig` object
 
 Additionally, we can assign the output of Vizro-AI `plot()` method directly to the fig variable, enabling its reuse in the `vm.Graph.figure` argument.
-This method offers streamlined efficiency, eliminating the need for code copying. However, it is important to note that each dashboard run triggers an API call to the OpenAI, potentially escalating costs.
-Also, this approach does not allow us to make modifications to the chart code without further API calls to OpenAI.
+This method offers streamlined efficiency, eliminating the need for code copying.
+However, it is important to note that each dashboard run triggers an API call to OpenAI, potentially escalating costs, but this only occurs if the fig object is not stored and is re-run by a Vizro-AI `plot()` call.
 
 Executing the code below will yield the identical dashboard as the initial example.
 
