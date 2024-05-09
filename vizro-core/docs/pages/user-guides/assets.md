@@ -199,7 +199,7 @@ Here's how you can do it:
 It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
 
 <!-- vale off -->
-```python title="HTML structure of a `Card`"
+```html title="HTML structure of a `Card`"
 <div class="card card">
     <div id="custom-card">
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
