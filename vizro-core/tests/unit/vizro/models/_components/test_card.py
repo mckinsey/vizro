@@ -61,10 +61,9 @@ class TestBuildMethod:
     def test_card_build_wo_href(self):
         card = vm.Card(id="card_id", text="Hello")
         card = card.build()
-
-        expected_card = dbc.Card(dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), className="card")
-
-        assert_component_equal(card, expected_card)
+        assert_component_equal(
+            card, dbc.Card(dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), className="")
+        )
 
     @pytest.mark.parametrize(
         "test_text, expected",

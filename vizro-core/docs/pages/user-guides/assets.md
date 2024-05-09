@@ -200,7 +200,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 <!-- vale off -->
 ```html title="HTML structure of a `Card`"
-<div class="card card">
+<div class="card">
     <div id="custom-card">
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
     </div>
