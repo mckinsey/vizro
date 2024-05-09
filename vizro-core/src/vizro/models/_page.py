@@ -119,7 +119,7 @@ class Page(VizroBaseModel):
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
-        return html.Div([control_panel, components_container], id=self.id)
+        return html.Div([control_panel, components_container])
 
     def _update_graph_theme(self):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is

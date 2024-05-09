@@ -20,7 +20,7 @@ enhancing the ability to manage related components.
 
 
 ## When to use containers
-In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
+In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone and is our
 recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
 `Page.layout` has a `grid` argument that sets the overall layout of the page.
@@ -40,7 +40,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
 2. Set a `title` for your `Container`
-3. Configure your `components`, see [the overview page on the various options](components.md)
+3. Configure your `components`, [read the overview page for various options](components.md)
 4. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
 
 !!! example "Container"
