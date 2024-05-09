@@ -3,7 +3,12 @@
   margin-left: -8px;
 }
 
-/* Hide page title on Page with ID = "page-with-hidden-title" */
-#page-with-hidden-title #right-header {
-  display: none;
+/* Apply styling to parent */
+.card:has(#my-card) {
+  background-color: white;
+}
+
+/* Apply styling to children */
+#my-card p {
+  color: black;
 }

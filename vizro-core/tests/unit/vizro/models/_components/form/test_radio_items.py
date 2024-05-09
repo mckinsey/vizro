@@ -140,8 +140,7 @@ class TestRadioItemsBuild:
                     persistence=True,
                     persistence_type="session",
                 ),
-            ],
-            id="radio_items_id_outer",
+            ]
         )
 
         assert_component_equal(radio_items, expected_radio_items)
