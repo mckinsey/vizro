@@ -13,6 +13,8 @@ nav:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Different languages: pages/user-guides/use-different-languages.md
           - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+  - API Reference:
+      - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md

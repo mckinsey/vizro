@@ -18,16 +18,17 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart/)
 
 
--   :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
+- :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
     [:octicons-arrow-right-24: Ways to run Vizro-AI](pages/user-guides/run-vizro-ai/)</br>
+    [:octicons-arrow-right-24: Customize models](pages/user-guides/customize-vizro-ai/)</br>
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts/)</br>
     [:octicons-arrow-right-24: Use different languages](pages/user-guides/use-different-languages/)</br>
     [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase/)
 
--   :material-format-font:{ .lg .middle } __Find out more__
+- :material-format-font:{ .lg .middle } __Find out more__
 
     ---
 
@@ -35,7 +36,7 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
     [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard/) </br>
     [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai//)
 
--   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
+- :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
 
     ---
 
