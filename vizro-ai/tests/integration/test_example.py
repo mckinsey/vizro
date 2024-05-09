@@ -9,6 +9,7 @@ df = px.data.gapminder()
 def test_chart():
     vizro_ai._return_all_text = True
     resp = vizro_ai.plot(df, "describe the composition of scatter chart with gdp in continent")
+    1/0
     assert_that(
         resp["code_string"],
         all_of(contains_string("px.scatter")),
