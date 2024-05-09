@@ -25,7 +25,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- `VizroAI.plot` now returns `plotly.graph_objects` fig object. ([#411](https://github.com/mckinsey/vizro/pull/441))
+- `VizroAI.plot` now generates and returns a `plotly.graph_objects.Figure` object. ([#411](https://github.com/mckinsey/vizro/pull/441)). This facilitates the integration of Vizro-AI charts into the `vizro` dashboard, visit [Use Vizro-AI dynamically to return a fig object](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/add-generated-chart-usecase/#use-vizro-ais-generated-code) for details.
 
 <a id='changelog-0.1.2'></a>
 
