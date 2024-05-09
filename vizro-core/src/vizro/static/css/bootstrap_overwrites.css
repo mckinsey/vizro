@@ -14,14 +14,6 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin-bottom: 0;
 }
 
-.navbar .nav-link {
-  height: 4rem;
-}
-
-.accordion-button {
-  padding: var(--bs-accordion-btn-padding-y) 0;
-}
-
 .accordion-item .nav-link {
   padding: 0.5rem 1rem;
 }

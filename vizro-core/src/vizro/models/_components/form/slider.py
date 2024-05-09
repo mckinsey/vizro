@@ -119,6 +119,5 @@ class Slider(VizroBaseModel):
                     persistence_type="session",
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
-            ],
-            id=f"{self.id}_outer",
+            ]
         )

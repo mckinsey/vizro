@@ -65,6 +65,7 @@ class TestPageInstantiation:
     @pytest.mark.parametrize(
         "test_path, expected",
         [
+            ("Title", "/title"),
             ("this-path-works", "/this-path-works"),
             ("2147abc", "/2147abc"),
             ("this_path_works", "/this_path_works"),
@@ -76,7 +77,9 @@ class TestPageInstantiation:
         page = vm.Page(title="Page 1/2", components=[vm.Button()], path=test_path)
         assert page.path == expected
 
-    @pytest.mark.parametrize("test_path", ["this needs? fixing*", " this needs fixing", "THIS NEEDS FIXING"])
+    @pytest.mark.parametrize(
+        "test_path", ["this needs? fixing*", " this needs fixing", "THIS NEEDS FIXING", "this-needs!@#$%^&*()+=-fixing"]
+    )
     def test_set_path_invalid(self, test_path):
         page = vm.Page(title="Page 1", components=[vm.Button()], path=test_path)
         assert page.path == "/this-needs-fixing"

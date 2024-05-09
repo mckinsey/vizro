@@ -50,7 +50,8 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
         vizro_ai = VizroAI()
 
         df = px.data.gapminder()
-        vizro_ai.plot(df, "describe life expectancy per continent over time")
+        fig = vizro_ai.plot(df, "describe life expectancy per continent over time")
+        fig.show()
         ```
     === "Result"
         [![LineChart]][LineChart]
@@ -61,28 +62,46 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
 
 You may prefer to integrate Vizro-AI into an application with a UI that users use to input prompts using a text field.
 
-Vizro-AI's `_get_chart_code` method returns the Python code string that can be used to prepare the data and create the visualization. This code is validated and debugged to ensure that it is executable and ready to be integrated.
+There are two ways to integrate Vizro-AI into an application, directly and by accessing the chart code behind a `fig` object.
 
-!!! example "Application integration"
+1. Vizro-AI's `plot` method returns a `plotly.graph_objects` object (`fig`) that can be used directly within a `Vizro` dashboard.
 
-    === "app.py"
-        ```py
-        import vizro.plotly.express as px
-        from vizro_ai import VizroAI
+    !!! example "Direct application integration"
 
-        vizro_ai = VizroAI()
+        === "app.py"
+            ```py
+            import vizro.plotly.express as px
+            from vizro_ai import VizroAI
 
-        df = px.data.gapminder()
-        code_string = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time")
-        ```
-    === "code_string"
-        [![ResultCode]][ResultCode]
+            vizro_ai = VizroAI()
 
-    [ResultCode]: ../../assets/user_guides/code_string_app_integration.png
+            df = px.data.gapminder()
+            fig = vizro_ai.plot(df, "describe life expectancy per continent over time")
+            ```
 
-The returned `code_string` can be used to dynamically render charts within your application. You may have the option to encapsulate the chart within a `fig` object or convert the figure into a JSON string for further integration.
 
-To use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(df, ..., explain=True)`, which returns a dictionary containing the code explanation and chart insights alongside the code.
+2. Vizro-AI's `_get_chart_code` method returns a string of Python code that manipulates the data and creates the visualization. Vizro-AI validates the code to ensure that it is executable and can be integrated.
+
+    !!! example "Application integration via chart code"
+
+        === "app.py"
+            ```py
+            import vizro.plotly.express as px
+            from vizro_ai import VizroAI
+
+            vizro_ai = VizroAI()
+
+            df = px.data.gapminder()
+            code_string = vizro_ai._get_chart_code(df, "describe life expectancy per continent over time")
+            ```
+        === "code_string"
+            [![ResultCode]][ResultCode]
+
+        [ResultCode]: ../../assets/user_guides/code_string_app_integration.png
+
+    The returned `code_string` can be used to dynamically render charts within your application. You may have the option to encapsulate the chart within a `fig` object or convert the figure into a JSON string for further integration.
+
+    To use the insights or code explanation, you can use `vizro_ai._run_plot_tasks(df, ..., explain=True)`, which returns a dictionary containing the code explanation and chart insights alongside the code.
 
 ### How to use `max_debug_retry` parameter in plot function
 - Default Value: 3

@@ -42,9 +42,7 @@ class TestUserInputBuild:
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="text-area",
                 ),
-            ],
-            id="text-area-id_outer",
+            ]
         )
         assert_component_equal(text_area, expected_text_area)
