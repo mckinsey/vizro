@@ -74,7 +74,7 @@ vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each co
 
     `INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"`
 
-    Make sure you have [set up access to a large language model](../user-guides/install/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
+    Make sure you have [set up access to a large language model](../user-guides/install.md/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
 
     `export OPENAI_API_KEY="sk-YOURKEY"`.
 
