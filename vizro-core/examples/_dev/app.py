@@ -1,3 +1,4 @@
+"""Dev app to try things out."""
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
