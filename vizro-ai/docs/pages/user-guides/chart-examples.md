@@ -1,14 +1,17 @@
-# Explore VizroAI
+# Gallery of examples
 
-In this guide, we'll learn how to make more advanced charts with Plotly using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
+Take a look at some more advanced charts that can be created with Vizro-AI using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
 
-### Create a polar bar chart
+### Polar bar chart
 
 A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
 It's suitable for quickly comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
 
 
 !!! example "Polar Bar Chart"
+
+    === "Resulting chart"
+        [![VizroAIChart1]][VizroAIChart1]
 
     === "Code for the cell"
         ```py
@@ -28,17 +31,18 @@ It's suitable for quickly comparing multiple variables across different categori
                          Improve layout by placing title to the left. Show legend""", explain=True)
 
         ```
-    === "Resulting chart"
-        [![VizroAIChart1]][VizroAIChart1]
 
     [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
 
 
-### Create a geographical map chart
+### Geographical map chart
 
 The next chart we'll look at is a geographical map chart to visualize spatial patterns in data, which often reveals insights not seen in other charts.
 
 !!! example "Map chart"
+
+    === "Resulting chart"
+        [![VizroAIChart2]][VizroAIChart2]
 
     === "Code for the cell"
         ```py
@@ -59,17 +63,18 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
                          Increase the width and height of the figure.""", explain=True)
 
         ```
-    === "Resulting chart"
-        [![VizroAIChart2]][VizroAIChart2]
 
     [VizroAIChart2]: ../../assets/user_guides/map_chart.gif
 
 
-### Create a surface plot
+### 3D surface plot
 
 Let's explore how to generate a 3-dimensional surface plot with VizroAI.
 
 !!! example "Surface plot"
+
+    === "Resulting chart"
+        [![VizroAIChart3]][VizroAIChart3]
 
     === "Code for the cell"
         ```py
@@ -86,7 +91,5 @@ Let's explore how to generate a 3-dimensional surface plot with VizroAI.
         vizro_ai.plot(df, "create a surface plot")
 
         ```
-    === "Resulting chart"
-        [![VizroAIChart3]][VizroAIChart3]
 
     [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
