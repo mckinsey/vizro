@@ -85,7 +85,6 @@ class TestCustomDashDataTable:
                     html.Div(expected_table_object, id=id),
                 ],
                 className="table-container",
-                id=f"{id}_outer",
             ),
             color="grey",
             parent_className="loading-container",
