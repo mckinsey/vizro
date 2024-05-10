@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
@@ -60,7 +61,8 @@ page2 = vm.Page(
             figure=dash_ag_grid(
                 id="grid2",
                 data_frame=df,
-                columnSize="autoSize",  # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
+                columnSize="autoSize",
+                # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
             ),
         ),
     ],
