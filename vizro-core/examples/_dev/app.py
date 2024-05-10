@@ -1,7 +1,8 @@
 """To try out the PR."""
+
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
 
 df = px.data.iris()
 
