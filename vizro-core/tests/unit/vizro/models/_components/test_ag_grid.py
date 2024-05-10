@@ -129,7 +129,6 @@ class TestBuildAgGrid:
                     className="table-container",
                 ),
             ],
-            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
         )
@@ -152,7 +151,6 @@ class TestBuildAgGrid:
                     className="table-container",
                 ),
             ],
-            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
         )

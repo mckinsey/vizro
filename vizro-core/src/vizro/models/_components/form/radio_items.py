@@ -61,6 +61,5 @@ class RadioItems(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                 ),
-            ],
-            id=f"{self.id}_outer",
+            ]
         )

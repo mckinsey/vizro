@@ -114,7 +114,6 @@ class Table(VizroBaseModel):
                     html.Div(self.__call__(), id=self.id),
                 ],
                 className="table-container",
-                id=f"{self.id}_outer",
             ),
             color="grey",
             parent_className="loading-container",

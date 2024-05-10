@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- `VizroAI.plot` now returns `plotly.graph_objects` fig object. ([#411](https://github.com/mckinsey/vizro/pull/441))
+- Store `page.id` in outer page container to enable page specific styling. ([#455](https://github.com/mckinsey/vizro/pull/455))
 
 <!--
 ### Deprecated

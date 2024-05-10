@@ -119,7 +119,6 @@ class TestCustomDashAgGrid:
                     className="table-container",
                 ),
             ],
-            id=f"{id}_outer",
             color="grey",
             parent_className="loading-container",
         )

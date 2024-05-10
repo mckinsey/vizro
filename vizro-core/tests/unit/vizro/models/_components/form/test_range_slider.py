@@ -66,8 +66,7 @@ def expected_range_slider_default():
                 persistence_type="session",
                 className="slider-track-without-marks",
             ),
-        ],
-        id="range_slider_outer",
+        ]
     )
 
 
@@ -124,8 +123,7 @@ def expected_range_slider_with_optional():
                 persistence_type="session",
                 className="slider-track-with-marks",
             ),
-        ],
-        id="range_slider_outer",
+        ]
     )
 
 
