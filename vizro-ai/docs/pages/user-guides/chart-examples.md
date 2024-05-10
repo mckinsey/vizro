@@ -1,7 +1,6 @@
 # Explore VizroAI
 
-In this guide, we'll learn how to make more advanced charts with Plotly. We'll be using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html) for our examples.
-The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
+In this guide, we'll learn how to make more advanced charts with Plotly using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
 
 ### Create a polar bar chart
 
@@ -37,7 +36,7 @@ It's suitable for quickly comparing multiple variables across different categori
 
 ### Create a geographical map chart
 
-The next chart we'll look at is a geographical map chart. A geographical map chart helps us visualize spatial patterns in data, often revealing insights not seen in other charts.
+The next chart we'll look at is a geographical map chart to visualize spatial patterns in data, which often reveals insights not seen in other charts.
 
 !!! example "Map chart"
 
@@ -68,7 +67,7 @@ The next chart we'll look at is a geographical map chart. A geographical map cha
 
 ### Create a surface plot
 
-With Vizro-AI, you can create complex and captivating charts using few commands. Let's dive into the 3-dimensional surface plot that VizroAI can generate for us.
+Let's explore how to generate a 3-dimensional surface plot with VizroAI.
 
 !!! example "Surface plot"
 
