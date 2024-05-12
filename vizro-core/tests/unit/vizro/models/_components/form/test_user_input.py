@@ -43,9 +43,7 @@ class TestUserInputBuild:
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="user_input",
                 ),
-            ],
-            id="user-input-id_outer",
+            ]
         )
         assert_component_equal(user_input, expected_user_input)

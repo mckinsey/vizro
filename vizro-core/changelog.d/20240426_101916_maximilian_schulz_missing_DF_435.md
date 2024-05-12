@@ -10,15 +10,18 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Removed
 
-- Removed `temperature` and `model_name` arguments of `VizroAI` class. For current configuration options, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#what-parameters-does-vizro-ai-support) ([#423](https://github.com/mckinsey/vizro/pull/423))
+- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
+<!--
 ### Added
 
-- Enable customization of LLM models provided to Vizro-AI class. ([#423](https://github.com/mckinsey/vizro/pull/423))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Changed
 
@@ -31,12 +34,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix bug that [prevented referring to columns in custom grids/tables](https://github.com/mckinsey/vizro/issues/435) ([#439](https://github.com/mckinsey/vizro/pull/439))
 
--->
 <!--
 ### Security
 
