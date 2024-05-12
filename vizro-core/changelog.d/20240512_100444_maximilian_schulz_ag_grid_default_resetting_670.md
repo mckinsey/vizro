@@ -27,7 +27,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Changed the default of the `dash_ag_grid` function to the default of the underlying Dash `dag.AgGrid`. ([#446](https://github.com/mckinsey/vizro/pull/446))
 
-
 <!--
 ### Deprecated
 
