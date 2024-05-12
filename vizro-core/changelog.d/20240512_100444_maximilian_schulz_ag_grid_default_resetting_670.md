@@ -27,6 +27,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Changed the default of the `dash_ag_grid` function to the default of the underlying Dash `dag.AgGrid`. ([#446](https://github.com/mckinsey/vizro/pull/446))
 
+
 <!--
 ### Deprecated
 
@@ -36,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed an issue that prevented the column widths of the AgGrid to render corrctly upon reloading a page. ([#446](https://github.com/mckinsey/vizro/pull/446))
+- Fixed an issue that prevented the column widths of the AgGrid to render correctly upon reloading a page. ([#446](https://github.com/mckinsey/vizro/pull/446))
 
 <!--
 ### Security
