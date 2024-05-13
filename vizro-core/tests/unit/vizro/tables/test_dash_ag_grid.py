@@ -29,8 +29,6 @@ row_data_date_raw = [
 default_col_defs = {
     "filter": True,
     "filterParams": {"buttons": ["apply", "reset"], "closeOnApply": True},
-    "flex": 1,
-    "minWidth": 70,
     "resizable": True,
     "sortable": True,
 }
