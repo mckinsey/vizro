@@ -138,6 +138,5 @@ class TestBuildMethod:
                 dcc.Store(id="datepicker_id_input_store", storage_type="session", data=value),
             ],
             className="selector_container",
-            id="datepicker_id_outer",
         )
         assert_component_equal(date_picker, expected_datepicker)
