@@ -14,6 +14,8 @@ Splendid! To raise a feature request, head to our [issues page](https://github.c
 
 Nice! We are happy to receive general questions around Vizro. Take a look at our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
 
+If you are already active on the Plotly Community Forum, you can alternatively ask your question over there in the [Dash Python category](https://community.plotly.com/c/python/25).
+
 ## How to interact with the repository
 
 The easiest way to get up and running is to [open the repository in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=626855142). This will create a temporary development environment with all the necessary configurations, making it especially convenient for tasks like reviewing pull requests.
