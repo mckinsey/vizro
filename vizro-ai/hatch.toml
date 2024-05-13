@@ -48,7 +48,8 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "linkchecker",
 ]
 detached = true
 
