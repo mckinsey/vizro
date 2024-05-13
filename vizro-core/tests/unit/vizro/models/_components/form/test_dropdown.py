@@ -160,8 +160,7 @@ class TestDropdownBuild:
                     persistence=True,
                     persistence_type="session",
                 ),
-            ],
-            id="dropdown_id_outer",
+            ]
         )
 
         assert_component_equal(dropdown, expected_dropdown)
@@ -179,8 +178,7 @@ class TestDropdownBuild:
                     persistence=True,
                     persistence_type="session",
                 ),
-            ],
-            id="dropdown_id_outer",
+            ]
         )
 
         assert_component_equal(dropdown, expected_dropdown)

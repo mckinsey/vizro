@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Table."""
 
-import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -114,7 +113,7 @@ class TestPreBuildTable:
 
 
 class TestBuildTable:
-    def test_table_build_mandatory_only(self, standard_dash_table):
+    def test_table_build_mandatory_only(self, standard_dash_table, gapminder):
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
         table = table.build()
@@ -122,10 +121,9 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_data_table(id="__input_text_table", data_frame=pd.DataFrame())(), id="text_table"),
+                    html.Div(dash_data_table(id="__input_text_table", data_frame=gapminder)(), id="text_table"),
                 ],
                 className="table-container",
-                id="text_table_outer",
             ),
             color="grey",
             parent_className="loading-container",
@@ -133,7 +131,7 @@ class TestBuildTable:
 
         assert_component_equal(table, expected_table)
 
-    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action):
+    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
         table.pre_build()
         table = table.build()
@@ -142,10 +140,9 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_data_table(id="underlying_table_id", data_frame=pd.DataFrame())(), id="text_table"),
+                    html.Div(dash_data_table(id="underlying_table_id", data_frame=gapminder)(), id="text_table"),
                 ],
                 className="table-container",
-                id="text_table_outer",
             ),
             color="grey",
             parent_className="loading-container",

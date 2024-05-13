@@ -110,10 +110,11 @@ class AgGrid(VizroBaseModel):
                 # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
                 # here) must have the same setting as the object that is built by the on-page-load mechanism using
                 # with the user settings and rendered finally. Otherwise the grid is not rendered correctly.
+                # Additionally, we cannot remove the DF from the ag grid object before returning it (to save sending
+                # data over the network), because it breaks filter persistence settings on page change.
                 # Hence be careful when editing the line below.
-                html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
+                html.Div(self.__call__(), id=self.id, className="table-container"),
             ],
-            id=f"{self.id}_outer",
             color="grey",
             parent_className="loading-container",
         )
