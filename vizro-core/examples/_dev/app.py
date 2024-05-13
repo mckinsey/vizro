@@ -1,13 +1,19 @@
-"""Rough example used by developers."""
+"""To try out the PR."""
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 
+df = px.data.iris()
+
 page = vm.Page(
-    title="Changing the card color",
+    title="My first dashboard",
     components=[
-        vm.Card(id="my-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
-        vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
     ],
 )
 
