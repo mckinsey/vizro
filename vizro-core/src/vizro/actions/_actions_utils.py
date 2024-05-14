@@ -173,8 +173,8 @@ def _get_filtered_data(
 ) -> Dict[ModelID, pd.DataFrame]:
     filtered_data = {}
     for target in targets:
-        data_frame = data_manager._get_component_data(target)
-
+        data_source_name = model_manager[target]["data_frame"]
+        data_frame = data_manager[data_source_name].load()
         data_frame = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filters, target=target)
         data_frame = _apply_filter_interaction(
             data_frame=data_frame, ctds_filter_interaction=ctds_filter_interaction, target=target
