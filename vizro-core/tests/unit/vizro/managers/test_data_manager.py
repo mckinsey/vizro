@@ -88,21 +88,34 @@ def make_random_data_with_args(label="x"):
 
 # This is important to test since it's like how kedro datasets work.
 class RandomData:
-    # This cannot be a static method since we want to test it as a bound method.
+    # This cannot be @staticmethod since we want to test it as a bound method.
     def load(self):
         return make_random_data()
 
 
 class RandomDataWithArgs:
-    # This cannot be a static method since we want to test it as a bound method.
+    # This cannot be @staticmethod since we want to test it as a bound method.
     def load(self, label="x"):
         return make_random_data_with_args(label)
+
+
+make_random_data_lambda = lambda: make_random_data()
+
+make_random_data_with_args_lambda = lambda label="x": make_random_data_with_args(label)
 
 
 # We test the function and bound method cases but not the unbound methods RandomData.load and RandomDataWithArgs.load
 # which are not important.
 @pytest.mark.parametrize(
-    "data_callable", [make_random_data, make_random_data_with_args, RandomData().load, RandomDataWithArgs().load]
+    "data_callable",
+    [
+        make_random_data,
+        make_random_data_with_args,
+        RandomData().load,
+        RandomDataWithArgs().load,
+        make_random_data_lambda,
+        make_random_data_with_args_lambda,
+    ],
 )
 class TestCacheNotOperational:
     def test_null_cache_no_app(self, data_callable):
@@ -143,9 +156,15 @@ def simple_cache():
     yield
 
 
-# We test the function and bound method cases but not the unbound method RandomData.load which is not
-# important.
-@pytest.mark.parametrize("data_callable", [make_random_data, RandomData().load])
+# We test the function and bound method cases but not the unbound method RandomData.load which is not important.
+@pytest.mark.parametrize(
+    "data_callable",
+    [
+        make_random_data,
+        RandomData().load,
+        make_random_data_lambda,
+    ],
+)
 class TestCache:
     def test_default_timeout(self, data_callable, simple_cache):
         data_manager["data"] = data_callable
@@ -188,10 +207,11 @@ class TestCache:
         assert_frame_not_equal(loaded_data_2, loaded_data_3)
 
 
-# We test the function and bound method cases but not the unbound method RandomDataWithArgs.load which is not
-# important.
+# We test the function and bound method cases but not the unbound method RandomDataWithArgs.load which is not important.
 @pytest.mark.usefixtures("simple_cache")
-@pytest.mark.parametrize("data_callable", [make_random_data_with_args, RandomDataWithArgs().load])
+@pytest.mark.parametrize(
+    "data_callable", [make_random_data_with_args, RandomDataWithArgs().load, make_random_data_with_args_lambda]
+)
 class TestCacheWithArguments:
     def test_default_timeout(self, data_callable):
         # Analogous to TestCache.test_default_timeout
@@ -279,25 +299,49 @@ class TestCacheWithArguments:
 
 
 class TestCacheIndependence:
-    @pytest.mark.parametrize("data_callable", [make_random_data_with_args, RandomDataWithArgs().load])
-    def test_shared_dynamic_data_callable_no_timeout(self, data_callable, simple_cache):
+    # Test both data callable with and without args in one test. The ones which don't take args are just passed an
+    # empty dictionary so it's like doing data_manager["data_x"].load() with no arguments.
+    @pytest.mark.parametrize(
+        "data_callable, kwargs",
+        [
+            (make_random_data, {}),
+            (RandomData().load, {}),
+            (make_random_data_lambda, {}),
+            (make_random_data_with_args, {"label": "z"}),
+            (RandomDataWithArgs().load, {"label": "z"}),
+            (make_random_data_with_args_lambda, {"label": "z"}),
+        ],
+    )
+    def test_shared_dynamic_data_callable_no_timeout(self, data_callable, kwargs, simple_cache):
         # Two data sources that share the same function or bound method are independent when neither times out.
         # It doesn't really matter if this test passes; it's mainly here just to document the current behaviour. The use
         # cases for actually wanting to do this seem limited.
         data_manager["data_x"] = data_callable
         data_manager["data_y"] = data_callable
 
-        loaded_data_x_1 = data_manager["data_x"].load()
-        loaded_data_y_1 = data_manager["data_y"].load()
-        loaded_data_x_2 = data_manager["data_x"].load()
-        loaded_data_y_2 = data_manager["data_y"].load()
+        loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
+        loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
         assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
         assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
         assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
 
-    @pytest.mark.parametrize("data_callable", [make_random_data_with_args, RandomDataWithArgs().load])
-    def test_shared_dynamic_data_callable_with_timeout(self, data_callable, simple_cache):
+    # Test both data callable with and without args in one test. The ones which don't take args are just passed an
+    # empty dictionary so it's like doing data_manager["data_x"].load() with no arguments.
+    @pytest.mark.parametrize(
+        "data_callable, kwargs",
+        [
+            (make_random_data, {}),
+            (RandomData().load, {}),
+            (make_random_data_lambda, {}),
+            (make_random_data_with_args, {"label": "z"}),
+            (RandomDataWithArgs().load, {"label": "z"}),
+            (make_random_data_with_args_lambda, {"label": "z"}),
+        ],
+    )
+    def test_shared_dynamic_data_callable_with_timeout(self, data_callable, kwargs, simple_cache):
         # Two data sources that share the same function or bound method are independent when one times out.
         # It doesn't really matter if this test passes; it's mainly here just to document the current behaviour. The use
         # cases for actually wanting to do this seem limited.
@@ -305,43 +349,57 @@ class TestCacheIndependence:
         data_manager["data_y"] = data_callable
         data_manager["data_y"].timeout = 1
 
-        loaded_data_x_1 = data_manager["data_x"].load()
-        loaded_data_y_1 = data_manager["data_y"].load()
+        loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
         time.sleep(1)
-        loaded_data_x_2 = data_manager["data_x"].load()
-        loaded_data_y_2 = data_manager["data_y"].load()
+        loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
         # Cache has expired for data_y but not data_x.
         assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
         assert_frame_not_equal(loaded_data_y_1, loaded_data_y_2)
 
-    def test_independent_dynamic_data_callable_no_timeout(self, simple_cache):
-        # Two data sources use same method but have different bound instances are independent when neither times out.
+    @pytest.mark.parametrize(
+        "random_data_cls, kwargs",
+        [
+            (RandomData, {}),
+            (RandomDataWithArgs, {"label": "z"}),
+        ],
+    )
+    def test_independent_dynamic_data_callable_no_timeout(self, simple_cache, random_data_cls, kwargs):
+        # Two data sources use same method but have *different* bound instances are independent when neither times out.
         # This is the same as test_shared_dynamic_data_callable_no_timeout but it *does* matter that this test passes.
-        data_manager["data_x"] = RandomData().load
-        data_manager["data_y"] = RandomData().load
+        data_manager["data_x"] = random_data_cls().load
+        data_manager["data_y"] = random_data_cls().load
 
-        loaded_data_x_1 = data_manager["data_x"].load()
-        loaded_data_y_1 = data_manager["data_y"].load()
-        loaded_data_x_2 = data_manager["data_x"].load()
-        loaded_data_y_2 = data_manager["data_y"].load()
+        loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
+        loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
         assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
         assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
         assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
 
-    def test_independent_dynamic_data_callable_with_timeout(self, simple_cache):
-        # Two data sources use same method but have different bound instances are independent when one times out.
-        # It *does* matter that this test passes.
-        data_manager["data_x"] = RandomData().load
-        data_manager["data_y"] = RandomData().load
+    @pytest.mark.parametrize(
+        "random_data_cls, kwargs",
+        [
+            (RandomData, {}),
+            (RandomDataWithArgs, {"label": "z"}),
+        ],
+    )
+    def test_independent_dynamic_data_callable_with_timeout(self, simple_cache, random_data_cls, kwargs):
+        # Two data sources use same method but have *different* bound instances are independent when one times out.
+        # This is the same as test_shared_dynamic_data_callable_with_timeout but it *does* matter that this test passes.
+        data_manager["data_x"] = random_data_cls().load
+        data_manager["data_y"] = random_data_cls().load
         data_manager["data_y"].timeout = 1
 
-        loaded_data_x_1 = data_manager["data_x"].load()
-        loaded_data_y_1 = data_manager["data_y"].load()
+        loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
         time.sleep(1)
-        loaded_data_x_2 = data_manager["data_x"].load()
-        loaded_data_y_2 = data_manager["data_y"].load()
+        loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
+        loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
         # Cache has expired for data_y but not data_x.
         assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
