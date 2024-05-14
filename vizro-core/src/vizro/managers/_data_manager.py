@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import os
-
-from functools import partial
-
 import logging
+import os
 import warnings
+from functools import partial
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
