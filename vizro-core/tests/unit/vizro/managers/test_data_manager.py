@@ -121,7 +121,7 @@ make_random_data_with_args_partial = partial(make_random_data_with_args)
 )
 class TestCacheNotOperational:
     def test_null_cache_no_app(self, data_callable):
-        # No app at all, so memoize decorator is bypassed completely as data_manager._cache_has_app is False.
+        # No app at all, so data_manager._cache_has_app is False.
         data_manager["data"] = data_callable
         loaded_data_1 = data_manager["data"].load()
         loaded_data_2 = data_manager["data"].load()

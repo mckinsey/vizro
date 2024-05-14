@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from functools import partial
 
 import logging
@@ -14,7 +16,19 @@ from flask_caching import Cache
 
 from vizro.managers._managers_utils import _state_modifier
 
-logger = logging.getLogger(__name__)
+
+#####################
+# Just for the purposes of easily seeing the right debug messages. Remove before merging to main and revert to this:
+# logger = logging.getLogger(__name__)
+class PrefixAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        return f"[DATA MANAGER] {msg}", kwargs
+
+
+logger = PrefixAdapter(logging.getLogger(__name__), {})
+logger.setLevel(logging.DEBUG)
+#####################
+
 
 # Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
@@ -23,13 +37,13 @@ pd_DataFrameCallable = Callable[..., pd.DataFrame]
 
 
 # TODO: consider merging with model_utils _log_call. Using wrapt.decorator is definitely better here. Might need
-#  messags that run before/after the wrapped function call.
+#  messages that run before/after the wrapped function call.
 # Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
 # for making a wrapt.decorator with arguments.
 def _log_call(message: str) -> Callable:
     @wrapt.decorator
     def wrapper(wrapped, instance, args, kwargs):
-        logging.debug(message)
+        logger.debug(message)
         # Might be useful if merged with model_utils _log_call.
         # logging.debug(message.format(wrapped=wrapped, instance=instance, args=args, kwargs=kwargs))
         return wrapped(*args, **kwargs)
@@ -64,20 +78,24 @@ class _DynamicData:
 
     def load(self, *args, **kwargs) -> pd.DataFrame:
         """Loads data."""
-        #  TODO: Think about whether to use wrapt at all (probably yes) and how to handle enabled=False.
         # Data source name can be extracted from the function's name since it was added there in
         # DataManager.__setitem__.
-        logger.debug("Requesting data for %s", self.__load_data.__name__.rpartition(".")[-1])
+        logger.debug(
+            "Looking in cache for data source %s on process %s",
+            self.__load_data.__name__.rpartition(".")[-1],
+            os.getpid(),
+        )
         # We don't memoize the load method itself as this is tricky to get working fully when load is called with
         # arguments, since we need the signature of the memoized function to match that of load_data. See
         # https://github.com/GrahamDumpleton/wrapt/issues/263.
         # It's also difficult to get memoize working correctly with bound methods anyway - see comment in
         # DataManager.__setitem__. It's much easier to ensure that self.__load_data is always just a function.
         if data_manager._cache_has_app:
+            # This includes the case of NullCache.
             load_data = _log_call("Cache miss; reloading data")(self.__load_data)
             load_data = data_manager.cache.memoize(timeout=self.timeout)(load_data)
         else:
-            logging.debug("Cache not active; reloading data")
+            logger.debug("Cache not active; reloading data")
             load_data = self.__load_data
         return load_data(*args, **kwargs)
 
