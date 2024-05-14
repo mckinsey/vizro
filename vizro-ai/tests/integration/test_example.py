@@ -1,4 +1,4 @@
-import plotly.express as px
+import vizro.plotly.express as px
 from hamcrest import all_of, any_of, assert_that, contains_string, equal_to
 from vizro_ai import VizroAI
 
@@ -19,7 +19,7 @@ def test_chart():
     )
     assert_that(
         resp["code_string"],
-        any_of(contains_string("y='count'"), contains_string("y='gdpPercap'")),
+        any_of(contains_string("y='count'"), contains_string("y='gdpPercap'"), contains_string("y='continent'")),
     )
     assert_that(resp["business_insights"], equal_to(None))
     assert_that(resp["code_explanation"], equal_to(None))

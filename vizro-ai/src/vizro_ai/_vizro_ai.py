@@ -114,7 +114,7 @@ class VizroAI:
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
 
         Returns:
-            go.Figure
+            Plotly Figure object or a dictionary containing data
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
