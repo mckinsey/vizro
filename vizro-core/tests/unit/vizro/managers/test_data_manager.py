@@ -95,11 +95,11 @@ class RandomDataWithArgs:
         return make_random_data_with_args(label)
 
 
-make_random_data_lambda = lambda: make_random_data()
+make_random_data_lambda = lambda: make_random_data()  # noqa: E731
 
 make_random_data_partial = partial(make_random_data)
 
-make_random_data_with_args_lambda = lambda label="x": make_random_data_with_args(label)
+make_random_data_with_args_lambda = lambda label="x": make_random_data_with_args(label)  # noqa: E731
 
 make_random_data_with_args_partial = partial(make_random_data_with_args)
 
