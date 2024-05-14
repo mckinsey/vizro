@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Any, Callable, Dict, Optional, Protocol, Union
+from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
 import wrapt
@@ -36,6 +36,7 @@ def memoize(*, timeout: Optional[int], make_name: Optional[Callable]) -> Callabl
 
     Returns:
          memoize decorator.
+
     """
 
     @wrapt.decorator(enabled=lambda: data_manager._cache_has_app)

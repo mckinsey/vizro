@@ -1,21 +1,16 @@
 """Unit tests for vizro.managers.data_manager."""
-from pathlib import Path
 
 import time
-import yaml
 from contextlib import suppress
 from functools import partial
 
 import numpy as np
 import pandas as pd
 import pytest
-from kedro.io import DataCatalog
-
 from asserts import assert_frame_not_equal
 from flask_caching import Cache
 from pandas.testing import assert_frame_equal
 from vizro import Vizro
-from vizro.integrations.kedro import datasets_from_catalog
 from vizro.managers import data_manager
 
 
