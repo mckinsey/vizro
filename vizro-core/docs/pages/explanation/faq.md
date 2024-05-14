@@ -35,7 +35,7 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
 ## Where I can find example dashboards?
 
-Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). 
+Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
 
 <!-- vale off -->
 ## Why should I use Vizro?

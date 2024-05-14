@@ -29,4 +29,3 @@ The [`examples/features` folder](https://github.com/mckinsey/vizro/tree/main/viz
 ## Examples from Vizro users
 
 We maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
-
