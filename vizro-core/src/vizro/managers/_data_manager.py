@@ -27,22 +27,21 @@ logger = PrefixAdapter(logging.getLogger(__name__), {})
 logger.setLevel(logging.DEBUG)
 #####################
 
-
 # Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 DataSourceName = str
 pd_DataFrameCallable = Callable[..., pd.DataFrame]
 
 
-# TODO: consider merging with model_utils _log_call. Using wrapt.decorator is definitely better here. Might need
-#  messages that run before/after the wrapped function call.
+# TODO: consider merging with model_utils _log_call. Using wrapt.decorator is probably better than functools here.
+#  Might need messages that run before/after the wrapped function call.
 # Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
 # for making a wrapt.decorator with arguments.
 def _log_call(message: str) -> Callable:
     @wrapt.decorator
     def wrapper(wrapped, instance, args, kwargs):
         logger.debug(message)
-        # Might be useful if merged with model_utils _log_call.
+        # Might be useful if merged with model_utils _log_call:
         # logging.debug(message.format(wrapped=wrapped, instance=instance, args=args, kwargs=kwargs))
         return wrapped(*args, **kwargs)
 
@@ -76,8 +75,7 @@ class _DynamicData:
 
     def load(self, *args, **kwargs) -> pd.DataFrame:
         """Loads data."""
-        # Data source name can be extracted from the function's name since it was added there in
-        # DataManager.__setitem__.
+        # Data source name can be extracted from the function's name since it was added there in DataManager.__setitem__
         logger.debug(
             "Looking in cache for data source %s on process %s",
             self.__load_data.__name__.rpartition(".")[-1],
@@ -172,15 +170,14 @@ class DataManager:
             # in case they change the underlying implementation to use it.
             # We use partial to effectively make an independent copy of the underlying data function. This means that
             # it's possible to set __qualname__ independently for each data source. This is not essential for
-            # functions other than lambda, but it is essential for bound method, as flask-caching cannot easily
+            # functions other than lambda, but it is essential for bound methods, as flask-caching cannot easily
             # independently timeout different instances with different bound methods but the same underlying function
-            # data.__func__.
+            # data.__func__. If we don't do this then the bound method case needs some uglier hacking to make work
+            # correctly - see https://github.com/mckinsey/vizro/blob/abb7eebb230ba7e6cfdf6150dc56b211a78b1cd5/
+            # vizro-core/src/vizro/managers/_data_manager.py.
             # Once partial has been used, all dynamic data sources are on equal footing since they're all treated as
             # functions rather than bound methods, e.g. by flask_caching.utils.function_namespace. This makes it much
             # simpler to use flask-caching reliably.
-            # If we don't do this then the bound method case needs some uglier hacking to make work correctly - see
-            # https://github.com/mckinsey/vizro/blob/abb7eebb230ba7e6cfdf6150dc56b211a78b1cd5/vizro-core/src/vizro/
-            # managers/_data_manager.py.
             # It's important the __qualname__ is the same across all workers, so use the data source name rather than
             # e.g. the repr method that includes the id of the instance so would only work in the case that gunicorn is
             # running with --preload.
