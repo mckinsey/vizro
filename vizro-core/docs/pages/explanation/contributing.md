@@ -1,18 +1,20 @@
-## Contributing guidelines
+# Contributing guidelines
 
 Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help. Use our [issues page](https://github.com/mckinsey/vizro/issues) to discuss any contributions. Before opening a pull request, ensure you've first opened an issue to discuss the contribution.
 
-### Found a bug?
+## Found a bug?
 
-Great! We would appreciate if you could head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would help us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will try to reproduce the bug you've reported and follow up with the next steps.
+Head over to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `bug report`. It would help us if you could first check if there are any existing issues with a similar description before submitting a new ticket. We will try to reproduce the bug you've reported and follow up with the next steps.
 
-### Request a feature
+## Want to request a feature?
 
-Splendid! To raise a feature request, head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+To raise a feature request, head to our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `feature request`. We would appreciate if you searched the existing issues for a similar description before raising a new ticket. The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
 
-### General question
+## Got a Vizro question?
 
-Nice! We are happy to receive general questions around Vizro. Take a look at our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
+We are happy to receive general questions around Vizro. Take a look at our [issues page](https://github.com/mckinsey/vizro/issues) and raise a ticket in the category `general question`. We would be grateful if you could check for any similar descriptions in the existing issues before opening a new ticket.
+
+If you are already active on the Plotly Community Forum, you can alternatively ask your question over there in the [Dash Python category](https://community.plotly.com/c/python/25).
 
 ## How to interact with the repository
 
@@ -34,17 +36,7 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 
 ---
 
-## Examples
-
-Several example dashboards are given in [examples](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples). To run, for instance, the `features/yaml_version` example, execute:
-
-```console
-hatch run example features/yaml_version
-```
-
-If no example dashboard is specified (`hatch run example`) then the [example dashboard in `_dev`](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_dev/app.py) is used.
-
-## Documentation
+## Contribute to documentation
 
 If you're modifying documentation, the following will do a hot-reloading build of the rendered docs:
 
@@ -179,7 +171,7 @@ To build the source distribution and wheel, run `hatch build`.
 
 The Vizro team pledges to foster and maintain a friendly community. We enforce a [Code of Conduct](https://github.com/mckinsey/vizro/tree/main/CODE_OF_CONDUCT.md) to ensure every Vizro contributor is welcomed and treated with respect.
 
-## Frequently asked questions
+## Frequently asked contribution questions
 
 <!-- vale off -->
 ### How do I add a dependency?

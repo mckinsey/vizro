@@ -2,7 +2,7 @@
 
 This is a short tutorial for you to create your first dashboard, showing you the basic setup so you can explore Vizro further.
 
-Once you've completed this tutorial, the following ["Explore Vizro" tutorial](./explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
+Once you've completed this tutorial, the following ["Explore Vizro" tutorial](explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
 
 
 ## Get started
@@ -87,4 +87,4 @@ Paste the following example into a Notebook cell, run it, and view the generated
 <!-- vale off -->
 ### 4. Explore further
 <!-- vale on -->
-You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](./explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
+You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
