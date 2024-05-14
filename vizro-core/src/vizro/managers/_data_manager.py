@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from functools import partial
-
 import logging
 import warnings
+from functools import partial
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
@@ -35,6 +34,7 @@ def memoize(*, timeout: Optional[int]) -> Callable:
 
     Returns:
          memoize decorator.
+
     """
 
     @wrapt.decorator(enabled=lambda: data_manager._cache_has_app)
