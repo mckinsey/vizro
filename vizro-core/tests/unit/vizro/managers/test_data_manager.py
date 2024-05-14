@@ -101,7 +101,11 @@ class RandomDataWithArgs:
 
 make_random_data_lambda = lambda: make_random_data()
 
+make_random_data_partial = partial(make_random_data)
+
 make_random_data_with_args_lambda = lambda label="x": make_random_data_with_args(label)
+
+make_random_data_with_args_partial = partial(make_random_data_with_args)
 
 
 # We test the function and bound method cases but not the unbound methods RandomData.load and RandomDataWithArgs.load
@@ -115,6 +119,8 @@ make_random_data_with_args_lambda = lambda label="x": make_random_data_with_args
         RandomDataWithArgs().load,
         make_random_data_lambda,
         make_random_data_with_args_lambda,
+        make_random_data_partial,
+        make_random_data_with_args_partial,
     ],
 )
 class TestCacheNotOperational:
@@ -163,6 +169,7 @@ def simple_cache():
         make_random_data,
         RandomData().load,
         make_random_data_lambda,
+        make_random_data_partial,
     ],
 )
 class TestCache:
@@ -210,7 +217,13 @@ class TestCache:
 # We test the function and bound method cases but not the unbound method RandomDataWithArgs.load which is not important.
 @pytest.mark.usefixtures("simple_cache")
 @pytest.mark.parametrize(
-    "data_callable", [make_random_data_with_args, RandomDataWithArgs().load, make_random_data_with_args_lambda]
+    "data_callable",
+    [
+        make_random_data_with_args,
+        RandomDataWithArgs().load,
+        make_random_data_with_args_lambda,
+        make_random_data_with_args_partial,
+    ],
 )
 class TestCacheWithArguments:
     def test_default_timeout(self, data_callable):
@@ -307,9 +320,11 @@ class TestCacheIndependence:
             (make_random_data, {}),
             (RandomData().load, {}),
             (make_random_data_lambda, {}),
+            (make_random_data_partial, {}),
             (make_random_data_with_args, {"label": "z"}),
             (RandomDataWithArgs().load, {"label": "z"}),
             (make_random_data_with_args_lambda, {"label": "z"}),
+            (make_random_data_with_args_partial, {"label": "z"}),
         ],
     )
     def test_shared_dynamic_data_callable_no_timeout(self, data_callable, kwargs, simple_cache):
@@ -336,9 +351,11 @@ class TestCacheIndependence:
             (make_random_data, {}),
             (RandomData().load, {}),
             (make_random_data_lambda, {}),
+            (make_random_data_partial, {}),
             (make_random_data_with_args, {"label": "z"}),
             (RandomDataWithArgs().load, {"label": "z"}),
             (make_random_data_with_args_lambda, {"label": "z"}),
+            (make_random_data_with_args_partial, {"label": "z"}),
         ],
     )
     def test_shared_dynamic_data_callable_with_timeout(self, data_callable, kwargs, simple_cache):
