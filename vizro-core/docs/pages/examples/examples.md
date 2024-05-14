@@ -1,4 +1,6 @@
-# Vizro examples
+# Example dashboard code
+
+This page explains the dashboard code examples found in the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
 
 ## Vizro live demo
 For an example of Vizro in action, take a look at the live demo running at [vizro.mckinsey.com](https://vizro.mckinsey.com), which uses the [Plotly gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
@@ -27,3 +29,4 @@ The [`examples/features` folder](https://github.com/mckinsey/vizro/tree/main/viz
 ## Examples from Vizro users
 
 We maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
+
