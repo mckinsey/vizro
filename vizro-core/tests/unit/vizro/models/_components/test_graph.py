@@ -123,15 +123,11 @@ class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
-        assert data_manager._get_component_data("graph").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            graph["data_frame"]
+        assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_px_chart, gapminder):
         graph = vm.Graph(id="graph", figure=standard_px_chart)
-        assert data_manager._get_component_data("graph").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            graph["data_frame"]
+        assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
 
 class TestBuild:
