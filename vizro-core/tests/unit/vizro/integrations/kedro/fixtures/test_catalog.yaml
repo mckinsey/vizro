@@ -3,5 +3,5 @@ companies:
   filepath: companies.json
 
 reviews:
-  type: pandas.JSONDataset
+  type: pickle.PickleDataset
   filepath: reviews.pkl
