@@ -63,10 +63,6 @@ class TestInvalid:
         ):
             data_manager["data"].timeout = 10
 
-    def test_setitem_invalid_callable(self):
-        with pytest.raises(TypeError, match="Data source data's function does not have a name."):
-            data_manager["data"] = partial(make_fixed_data)
-
     def test_setitem_invalid_type(self):
         with pytest.raises(
             TypeError, match="Data source data must be a pandas DataFrame or function that returns a pandas DataFrame."

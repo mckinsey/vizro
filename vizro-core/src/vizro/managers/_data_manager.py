@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from functools import partial
+
 import logging
 import warnings
-from functools import partial
 from typing import Callable, Dict, Optional, Union
 
 import pandas as pd
@@ -21,25 +22,17 @@ DataSourceName = str
 pd_DataFrameCallable = Callable[..., pd.DataFrame]
 
 
-def memoize(*, timeout: Optional[int]) -> Callable:
-    """Creates memoize decorator for use with data_manager.cache.
-
-    Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
-    or making a wrapt.decorator with arguments. This is just a wrapper for flask_caching.Cache.memoize with the timeout
-    and make_name arguments exposed as keyword-only arguments.
-
-    Args:
-       timeout: passed through to flask_caching.Cache.memoize. If set to None, will just use
-        the CACHE_DEFAULT_TIMEOUT; if set to an integer, will cache for that number of seconds.
-
-    Returns:
-         memoize decorator.
-
-    """
-
-    @wrapt.decorator(enabled=lambda: data_manager._cache_has_app)
+# TODO: consider merging with model_utils _log_call. Using wrapt.decorator is definitely better here. Might need
+#  messags that run before/after the wrapped function call.
+# Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
+# for making a wrapt.decorator with arguments.
+def _log_call(message: str) -> Callable:
+    @wrapt.decorator
     def wrapper(wrapped, instance, args, kwargs):
-        return data_manager.cache.memoize(timeout=timeout)(wrapped)(*args, **kwargs)
+        logging.debug(message)
+        # Might be useful if merged with model_utils _log_call.
+        # logging.debug(message.format(wrapped=wrapped, instance=instance, args=args, kwargs=kwargs))
+        return wrapped(*args, **kwargs)
 
     return wrapper
 
@@ -71,19 +64,22 @@ class _DynamicData:
 
     def load(self, *args, **kwargs) -> pd.DataFrame:
         """Loads data."""
-        # Note you get the same "cache missed" message if NullCache is running or if data_manager._cache_has_app is
-        # False.
-
         #  TODO: Think about whether to use wrapt at all (probably yes) and how to handle enabled=False.
-        # TODO: logger.debug("Cache miss; reloading data"). Could inject this with a decorator into load_data if wanted
-        # to.
-
+        # Data source name can be extracted from the function's name since it was added there in
+        # DataManager.__setitem__.
+        logger.debug("Requesting data for %s", self.__load_data.__name__.rpartition(".")[-1])
         # We don't memoize the load method itself as this is tricky to get working fully when load is called with
         # arguments, since we need the signature of the memoized function to match that of load_data. See
         # https://github.com/GrahamDumpleton/wrapt/issues/263.
         # It's also difficult to get memoize working correctly with bound methods anyway - see comment in
         # DataManager.__setitem__. It's much easier to ensure that self.__load_data is always just a function.
-        return memoize(timeout=self.timeout)(self.__load_data)(*args, **kwargs)
+        if data_manager._cache_has_app:
+            load_data = _log_call("Cache miss; reloading data")(self.__load_data)
+            load_data = data_manager.cache.memoize(timeout=self.timeout)(load_data)
+        else:
+            logging.debug("Cache not active; reloading data")
+            load_data = self.__load_data
+        return load_data(*args, **kwargs)
 
 
 class _StaticData:
