@@ -66,10 +66,17 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "linkchecker"
 ]
 detached = true
-scripts = {serve = "mkdocs serve --strict"}
+
+[envs.docs.scripts]
+build = "mkdocs build --strict"
+# Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
+# more advanced settings using a linkcheckerrc config file.
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1"
+serve = "mkdocs serve --strict"
 
 [envs.lint]
 dependencies = [
