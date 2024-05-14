@@ -17,60 +17,32 @@ logger = logging.getLogger(__name__)
 # Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 DataSourceName = str
-pd_DataFrameCallable = Callable[[], pd.DataFrame]
+pd_DataFrameCallable = Callable[..., pd.DataFrame]
 
 
-# memoize currently requires wrapped to be a bound method rather than just a function. A bound method has a __func__
-# attribute that gives the underlying function. In future memoize could be expanded to handle functions just by
-# applying the same logic but without looking inside the __func__ attribute.
-# The below is the best way to type-hint a bound method, based on:
-# https://stackoverflow.com/questions/62658540/how-to-combine-a-custom-protocol-with-the-callable-protocol
-# https://stackoverflow.com/questions/64225522/python-typing-how-to-type-hint-a-variable-as-a-bound-method
-class BoundMethod(Protocol):
-    __self__: object
-    __func__: Callable[..., Any]
+def memoize(*, timeout: Optional[int], make_name: Optional[Callable]) -> Callable:
+    """Creates memoize decorator for use with data_manager.cache.
 
-    def __call__(self, *args, **kwargs): ...
-
-
-# wrapt.decorator is the cleanest way to decorate a bound method when instance properties (here instance.timeout)
-# are required as arguments. The enabled argument bypasses the entire decorator when data_manager._cache_has_app
-# is False. This prevents Flask-Caching from trying to access a Flask app when one doesn't yet exist.
-@wrapt.decorator(enabled=lambda: data_manager._cache_has_app)
-def memoize(wrapped: BoundMethod, instance: _DynamicData, args, kwargs):
-    """Caches the result of wrapped function, taking its arguments into account in the cache key.
-
-    This delegates to flask_caching.memoize functionality, but with an important modification. flask_caching.memoize
-    is designed to apply the same timeout to every call of the function or bound method, but we want to have a
-    data source-dependent timeout. This means rewriting the wrapped function's __qualname__ so that different instances
-    of _DynamicData have completely independent caches. Without this, flask_caching.utils.function_namespace gives the
-    same namespace for each, which means that the timeouts cannot be set independently.
-
-    The following things *do not* work to achieve the same thing - there will still be interference between
-    different caches:
-    * altering wrapped.cache_timeout
-    * using make_name argument (since this is only applied after function_namespace is called)
-    * including self or self._name in the load_data arguments
-    * whenever function_namespace recognizes the memoized function as a bound method (even when __caching_id__ is
-    defined so that Flask Caching does not fall back on __repr__)
-
-    Another option would be to use flask_caching.cached rather than memoize, but that makes it harder to include
-    arguments in the cache key and only works inside a Flask request context.
+    Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
+    or making a wrapt.decorator with arguments. This is just a wrapper for flask_caching.Cache.memoize with the timeout
+    and make_name arguments exposed as keyword-only arguments.
 
     Args:
-        wrapped: bound method to memoize.
-        instance: _DynamicData object to which wrapped is bound.
-        args : positional arguments supplied to wrapped, taken into account for generating cache key.
-        kwargs : keyword arguments supplied to wrapped, taken into account for generating cache key.
+       timeout: passed through to flask_caching.Cache.memoize. If set to None, will just use
+        the CACHE_DEFAULT_TIMEOUT; if set to an integer, will cache for that number of seconds.
+       make_name: passed through to flask_caching.Cache.memoize. If set, this is a function that accepts
+        a single argument, the function name, and returns a new string to be used as the function name. This can be
+        used to set the cache key as we please.
 
-    Returns:  Memoized call.
-
+    Returns:
+         memoize decorator.
     """
-    # Before altering, wrapped.__func__.__qualname__ is "_DynamicData.__call__"
-    # After altering, it becomes _DynamicData.__call__._DynamicData("name", function_name)
-    # Note this doesn't work by using += since the qualname will just be appended to fresh every time the function is
-    wrapped.__func__.__qualname__ = ".".join([instance.__class__.__name__, wrapped.__func__.__name__, repr(instance)])
-    return data_manager.cache.memoize(timeout=instance.timeout)(wrapped)(*args, **kwargs)
+
+    @wrapt.decorator(enabled=lambda: data_manager._cache_has_app)
+    def wrapper(wrapped, instance, args, kwargs):
+        return data_manager.cache.memoize(timeout=timeout, make_name=make_name)(wrapped)(*args, **kwargs)
+
+    return wrapper
 
 
 class _DynamicData:
@@ -94,6 +66,16 @@ class _DynamicData:
     """
 
     def __init__(self, name: str, load_data: pd_DataFrameCallable):
+        # When load_data is a bound method (e.g. as it will be for a kedro dataset),
+        # flask_caching.utils.function_namespace generates a cache key based on __caching_id__ (if defined) or  __repr__
+        # of the instance to which it's bound. We need this to be something that uniquely labels the data source and
+        # is the same across all workers so use the data source name. Most repr methods include the id of the
+        # instance so would only work in the case that gunicorn is running with --preload: without preloading, the id
+        # of the same (e.g. kedro dataset) instance is not the same across different processes so the cache will not
+        # match up.
+        if hasattr(load_data, "__self__"):
+            load_data.__self__.__caching_id__ = lambda _: name
+
         self.__load_data: pd_DataFrameCallable = load_data
         # name is needed for the cache key and should not be modified by users.
         self._name = name
@@ -101,33 +83,23 @@ class _DynamicData:
         # We might also want a self.cache_arguments dictionary in future that allows user to customize more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
-    @memoize
-    def load(self) -> pd.DataFrame:
-        """Loads data.
-
-        In future this will probably take arguments that are passed through to __load_data in order to re-run the
-        loading function with different arguments. We might want to use CapturedCallable for self.__load_data then.
-        """
+    def load(self, *args, **kwargs) -> pd.DataFrame:
+        """Loads data."""
         # Note you get the same "cache missed" message if NullCache is running or if data_manager._cache_has_app is
         # False.
-        logger.debug("Cache miss; reloading data")
-        return self.__load_data()
 
-    def __repr__(self):
-        """Flask-caching uses repr to form the cache key, so this is very important to set correctly.
-
-        In particular, it must depend on something that uniquely labels the data source and is the same across all
-        workers: self._name. Using id(self), as in Python's default repr, only works in the case that gunicorn is
-        running with --preload: without preloading, the id of the same data source in different processes will be
-        different so the cache will not match up.
-
-        flask_caching make it possible to set a __cached_id__ attribute to handle this so that repr can be set
-        independently of cache key, but this doesn't seem to be well documented or work well, so it's better to rely
-        on __repr__.
-        """
-        # Note that using repr(self.__load_data) is not good since it depends on the id of self.__load_data and so
-        # would not be consistent across processes.
-        return f"{self.__class__.__name__}({self._name!r}, {self.__load_data.__qualname__})"
+        #  TODO: Think about whether to use wrapt at all (probably yes) and how to handle enabled=False.
+        # TODO: logger.debug("Cache miss; reloading data"). Could inject this with a decorator into load_data if wanted
+        # to.
+        # Including make_name here ensures that the cache key for two data sources with the same underlying function
+        # are different - see test_shared_dynamic_data_function and test_timeouts_do_not_interfere. This
+        # functionality is not particularly important to enable, but including make_name feels like a robust thing to
+        # do anyway: it's not  strictly needed to make work the case that load_data is a bound method but
+        # probably good to keep for that in case the way that flask-caching handles bound methods changes.
+        # We don't memoize the load method itself since this is tricky to get working fully when load is called with
+        # arguments, since we need the signature of the memoized function to match that of load_data. See
+        # https://github.com/GrahamDumpleton/wrapt/issues/263.
+        return memoize(timeout=self.timeout, make_name=lambda _: self._name)(self.__load_data)(*args, **kwargs)
 
 
 class _StaticData:
@@ -197,17 +169,14 @@ class DataManager:
     def __setitem__(self, name: DataSourceName, data: Union[pd.DataFrame, pd_DataFrameCallable]):
         """Adds `data` to the `DataManager` with key `name`."""
         if callable(data):
-            if not hasattr(data, "__name__") or not hasattr(data, "__qualname__"):
-                # lambda function has __name__ and __qualname__ so works well. partial does not unless explicitly
-                # assigned them and so will not work with flask_caching. The partial object's func attribute is the
-                # full function but does not contain the pre-set arguments so also does not work. We could manually
-                # set __name__ and __qualname__ based on the func attribute here if using partial proves to be a good
-                # pattern. Similarly for CapturedCallable, or that could instead set its own __name__ and  __qualname__.
-                raise TypeError(
-                    f"Data source {name}'s function does not have a name. If you have provide a `partial` object then "
-                    "either supply your partial function with `__name__` and `__qualname__` attributes or re-work your "
-                    "code to use a full function, e.g. using `lambda`."
-                )
+            if not hasattr(data, "__qualname__"):
+                # __qualname__ is required by flask-caching (even though we specify our own make_name) but
+                # not defined for partial functions and  just '<lambda>' for lambda functions. Defining __qualname__
+                # means it's possible to have non-interfering caches for partial and lambda functions (similarly if we
+                # end up using CapturedCallable, or that could instead set its own __qualname__).
+                data.__qualname__ = name
+                # TODO: write test for both partial and lambda
+
             self.__data[name] = _DynamicData(name, data)
         elif isinstance(data, pd.DataFrame):
             self.__data[name] = _StaticData(data)
