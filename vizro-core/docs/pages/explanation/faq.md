@@ -11,10 +11,13 @@ Here are some answers to frequently asked questions:
 
 * [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
 * [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
+* [Where can I find example dashboards?](#where-i-can-find-example-dashboards)
 * [Why should I use Vizro?](#why-should-i-use-vizro)
 * [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 * [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
 * [When would an alternative to Vizro be more suitable?](#when-would-an-alternative-to-vizro-be-more-suitable)
+* [I want to contribute to Vizro, how can I find out more?](contributing.md)
+* [I still have a question. Where can I ask it?](contributing.md/#got-a-vizro-question)
 
 <!-- vale on -->
 
@@ -29,6 +32,10 @@ We do not consider frontend changes (such as changing the appearance of a compon
 !!! note
 
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
+
+## Where I can find example dashboards?
+
+Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
 
 <!-- vale off -->
 ## Why should I use Vizro?
