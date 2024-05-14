@@ -67,8 +67,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
             },
-            "flex": 1,
-            "minWidth": 70,
         },
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,

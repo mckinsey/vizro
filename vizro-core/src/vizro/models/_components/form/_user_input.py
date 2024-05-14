@@ -51,5 +51,4 @@ class UserInput(VizroBaseModel):
                     debounce=True,
                 ),
             ],
-            id=f"{self.id}_outer",
         )

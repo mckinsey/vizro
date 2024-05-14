@@ -1,6 +1,6 @@
 """AI plot example."""
 
-import plotly.express as px
+import vizro.plotly.express as px
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()

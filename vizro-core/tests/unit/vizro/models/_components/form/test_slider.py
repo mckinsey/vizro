@@ -54,8 +54,7 @@ def expected_slider():
                 persistence_type="session",
                 className="slider-track-with-marks",
             ),
-        ],
-        id="slider_id_outer",
+        ]
     )
 
 

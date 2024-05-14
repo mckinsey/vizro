@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import warnings
 from functools import partial
 from typing import Callable, Dict, Optional, Union
@@ -15,7 +14,6 @@ from flask_caching import Cache
 from vizro.managers._managers_utils import _state_modifier
 
 
-#####################
 # Just for the purposes of easily seeing the right debug messages. Remove before merging to main and revert to this:
 # logger = logging.getLogger(__name__)
 class PrefixAdapter(logging.LoggerAdapter):
