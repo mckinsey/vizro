@@ -101,7 +101,7 @@ class GetVisualCode(VizroAiComponentBase):
 
 
 if __name__ == "__main__":
-    import plotly.express as px
+    import vizro.plotly.express as px
 
     from vizro_ai.chains._llm_models import _get_llm_model
 
