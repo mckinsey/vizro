@@ -138,9 +138,9 @@ class CapturedCallable:
         """Gets the value of a bound argument."""
         return self.__bound_arguments[arg_name]
 
-    def __delitem__(self, arg_name: str):
-        """Deletes a bound argument."""
-        del self.__bound_arguments[arg_name]
+    def __setitem__(self, arg_name: str, value):
+        """Sets the value of a bound argument."""
+        self.__bound_arguments[arg_name] = value
 
     @property
     def _arguments(self):

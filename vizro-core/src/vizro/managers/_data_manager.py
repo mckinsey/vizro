@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import warnings
 from typing import Any, Callable, Dict, Optional, Protocol, Union
 
@@ -15,10 +14,8 @@ from vizro.managers._managers_utils import _state_modifier
 
 logger = logging.getLogger(__name__)
 
-# Really ComponentID and DataSourceName should be NewType and not just aliases but then for a user's code to type check
+# Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
-# TODO: remove these type aliases once have moved component to data mapping to models
-ComponentID = str
 DataSourceName = str
 pd_DataFrameCallable = Callable[[], pd.DataFrame]
 
@@ -186,7 +183,6 @@ class DataManager:
 
     def __init__(self):
         self.__data: Dict[DataSourceName, Union[_DynamicData, _StaticData]] = {}
-        self.__component_to_data: Dict[ComponentID, DataSourceName] = {}
         self._frozen_state = False
         self.cache = Cache(config={"CACHE_TYPE": "NullCache"})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with
@@ -226,33 +222,6 @@ class DataManager:
             return self.__data[name]
         except KeyError as exc:
             raise KeyError(f"Data source {name} does not exist.") from exc
-
-    @_state_modifier
-    def _add_component(self, component_id: ComponentID, name: DataSourceName):
-        """Adds a mapping from `component_id` to `name`."""
-        # TODO: once have removed self.__component_to_data, we shouldn't need this function any more.
-        #  Maybe always updated capturedcallable data_frame to  data source name string then.
-        if name not in self.__data:
-            raise KeyError(f"Data source {name} does not exist.")
-        if component_id in self.__component_to_data:
-            raise ValueError(
-                f"Component with id={component_id} already exists and is mapped to data "
-                f"{self.__component_to_data[component_id]}. Components must uniquely map to a data source across the "
-                f"whole dashboard. If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._reset()`."
-            )
-        self.__component_to_data[component_id] = name
-
-    def _get_component_data(self, component_id: ComponentID) -> pd.DataFrame:
-        # TODO: once have removed self.__component_to_data, we shouldn't need this function any more. Calling
-        #  functions would just do data_manager[name].load().
-        """Returns the original data for `component_id`."""
-        if component_id not in self.__component_to_data:
-            raise KeyError(f"Component {component_id} does not exist. You need to call add_component first.")
-        name = self.__component_to_data[component_id]
-
-        logger.debug("Loading data %s on process %s", name, os.getpid())
-        return self[name].load()
 
     def _clear(self):
         # We do not actually call self.cache.clear() because (a) it would only work when self._cache_has_app is True,
