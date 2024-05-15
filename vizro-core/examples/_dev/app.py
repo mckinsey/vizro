@@ -4,7 +4,6 @@ import numpy as np
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.plotly.express import px
 from vizro.tables import dash_data_table
 
 df = px.data.gapminder()
