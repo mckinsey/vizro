@@ -26,8 +26,6 @@ graph TD
   classDef clickable color:#4051b5;
 ```
 
-[//]: # (TODO: add to this diagram?)
-
 ??? note "Static vs. dynamic data comparison"
 
     This table gives a full comparison between static and dynamic data. Do not worry if you do not yet understand everything in it; it will become clearer after reading more about [static data](#static-data) and [dynamic data](#dynamic-data)!
@@ -273,15 +271,16 @@ data_manager["no_expire_data"].timeout = 0
 You can supply arguments to your dynamic data loading function that can be modified from the dashboard. For example, if you are handling big data then you might like to load on demand only one chunk of the data.
 
 To add a parameter to control a dynamic data source, do the following:
+
 - add the appropriate argument to your dynamic data function.
 - add an `id` to all components that have a data source you wish to alter through a parameter.
-- [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md)
+- [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
 For example, let us extend the [dynamic data example](#dynamic-data) to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
 !!! example "Parametrized dynamic data"
     === "app.py"
-        ```py hl_lines="8, 10, 19"
+        ```py hl_lines="8 10 19"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
@@ -313,7 +312,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
         3. Sample points at random, where `number_of_points` gives the number of points selected.
         4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
         5. Give the graph `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
-        6. Create a `vm.Paramater` to target the `number_of_points` argument for the `data_frame` used in `graph`.
+        6. Create a `vm.Paramater` to target the `number_of_points` argument for the `data_frame` used in `graph`. 
 
     === "Result"
         [![DynamicData]][DynamicData]
@@ -322,7 +321,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
 
 <!-- TODO: update gif -->
 
-Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that, for example `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
+Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that, for example `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`. 
 
 !!! warning
 
@@ -330,14 +329,14 @@ Parametrized data loading is compatible with [caching](#configure-cache). The ca
 
 It is not possible to pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target top-level arguments of the data loading function and not address nested keys in a dictionary.
 
-#### Filters
+#### Filter limitations
 
 If your dashboard includes a [filter](filters.md) then you should be aware of some limitations that currently exist but should be lifted in future releases. If these limitations are problematic for you then please [raise an issue on our Github repo](https://github.com/mckinsey/vizro/issues/).
 
-The possible values shown on a filter's [selector](selectors.md) are fixed and do not update while the dashboard is running. Furthermore, all the arguments of your data loading function must be optional by defining default values. Regardless of the value of the `vm.Parameter`, these default values are used when the `vm.Filter` is built in order to determine the type of selector used in a filter and the options shown.
+The possible values shown on a filter's [selector](selectors.md) are fixed and do not update while the dashboard is running. Furthermore, all the arguments of your data loading function must be optional by defining default values. Regardless of the value of the `vm.Parameter`, these default values are used when the `vm.Filter` is built in order to determine the type of selector used in a filter and the options shown. 
 
-??? example "Parametrized dynamic data with a filter"
-    ```py hl_lines="8, 21"
+??? example "Parametrized dynamic data with a filter"   
+    ```py hl_lines="8 21"
     from vizro import Vizro
     import pandas as pd
     import vizro.plotly.express as px
