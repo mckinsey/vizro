@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Fixing `dash_data_table` dropdown menu to open on click. ([#481](https://github.com/mckinsey/vizro/pull/481))
+- Fix `dash_data_table` dropdown menu to open on click. ([#481](https://github.com/mckinsey/vizro/pull/481))
 
 <!--
 
