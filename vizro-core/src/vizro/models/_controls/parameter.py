@@ -19,6 +19,7 @@ class Parameter(VizroBaseModel):
 
     Examples:
         >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
+
     Args:
         type (Literal["parameter"]): Defaults to `"parameter"`.
         targets (List[str]): Targets in the form of `<target_component>.<target_argument>`.
