@@ -37,7 +37,7 @@ jobs:
           fi
           echo "my created pipeline"
           echo $CREATED_PIPELINE
-    
+
           created_workflow_status=$(curl --request GET \
               --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
               --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
