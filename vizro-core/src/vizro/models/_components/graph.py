@@ -50,7 +50,10 @@ class Graph(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(str(self.id)))
+        # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
+        # specified. It's here to match Table and AgGrid and because we might want to use __call__ more in future.
+        # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
+        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
         # Remove top margin if title is provided

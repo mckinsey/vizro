@@ -38,7 +38,8 @@ Vizro is a toolkit for creating modular data visualization applications.
     ---
 
     [:octicons-arrow-right-24: How is Vizro different to Streamlit?](pages/explanation/faq/#how-does-vizro-differ-from-dash-or-streamlit) <br/>
-    [:octicons-arrow-right-24: Other FAQs](/pages/explanation/faq/)
+    [:octicons-arrow-right-24: Other FAQs](pages/explanation/faq/) <br/>
+    [:octicons-arrow-right-24: Where can I ask a question?](pages/explanation/contributing/#got-a-vizro-question) <br/>
 
 
 

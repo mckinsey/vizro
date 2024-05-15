@@ -91,15 +91,11 @@ class TestProcessAgGridDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_ag_grid_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         ag_grid = vm.AgGrid(id="ag_grid", figure=dash_ag_grid_with_str_dataframe)
-        assert data_manager._get_component_data("ag_grid").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            ag_grid["data_frame"]
+        assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_ag_grid, gapminder):
         ag_grid = vm.AgGrid(id="ag_grid", figure=standard_ag_grid)
-        assert data_manager._get_component_data("ag_grid").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            ag_grid["data_frame"]
+        assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
 
 
 class TestPreBuildAgGrid:
