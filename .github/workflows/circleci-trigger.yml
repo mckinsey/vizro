@@ -37,6 +37,8 @@ jobs:
           fi
           echo "my created pipeline"
           echo $CREATED_PIPELINE
+          
+          sleep 30
     
           created_workflow_status=$(curl --request GET \
               --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
