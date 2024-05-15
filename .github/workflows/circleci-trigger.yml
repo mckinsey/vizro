@@ -44,9 +44,9 @@ jobs:
               --header "content-type: application/json" \
             | jq -r '.items[0].status'
           )
-    
+
           echo $created_workflow_status
-    
+
           if [[ "$created_workflow_status" == "running" ]]; then
             created_workflow_status_updated=$(curl --request GET \
                   --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
@@ -65,18 +65,18 @@ jobs:
               )
               echo $created_workflow_status_updated
             done
-    
+
             if [[ "$created_workflow_status_updated" != "success" ]]; then
               echo "Workflow not successful - ${created_workflow_status_updated}"
               (exit -1)
             fi
-    
+
             echo "Created workflow successful"
-    
+
           elif [[ "$created_workflow_status" != "success" ]]; then
               echo "Workflow not successful - ${created_workflow_status}"
               (exit -1)
-    
+
           elif [[ "$created_workflow_status" == "success" ]]; then
               echo "Created workflow successful"
           fi
