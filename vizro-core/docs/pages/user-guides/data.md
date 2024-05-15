@@ -26,6 +26,8 @@ graph TD
   classDef clickable color:#4051b5;
 ```
 
+[//]: # (TODO: add to this diagram?)
+
 ??? note "Static vs. dynamic data comparison"
 
     This table gives a full comparison between static and dynamic data. Do not worry if you do not yet understand everything in it; it will become clearer after reading more about [static data](#static-data) and [dynamic data](#dynamic-data)!
@@ -137,7 +139,6 @@ Unlike static data, dynamic data cannot be supplied directly into the `data_fram
 
 The example below shows how data is fetched dynamically every time the page is refreshed. When you run the code and refresh the page the function `load_iris_data` is re-run, which returns different data each time. The example uses the Iris data saved to a file `iris.csv` in the same directory as `app.py`. This data can be generated using `px.data.iris()` or [downloaded](../../assets/user_guides/data/iris.csv).
 
-
 !!! example "Dynamic data"
     === "app.py"
         ```py
@@ -167,7 +168,7 @@ The example below shows how data is fetched dynamically every time the page is r
         ```
 
         1. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
-        2. To demonstrate that dynamic data can change when the page is refreshed, select 30 points at random. This simulates what would happen if your file `iris.csv` were constantly changing.
+        2. To demonstrate that dynamic data can change when the page is refreshed, select 50 points at random. This simulates what would happen if your file `iris.csv` were constantly changing.
         3. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()`; doing so would result in static data that cannot be reloaded.
         4. Dynamic data is referenced by the name of the data source `"iris"`.
 
@@ -216,8 +217,6 @@ In a development environment the easiest way to enable caching is to use a [simp
 
     Vizro().build(dashboard).run()
     ```
-
-
 
 By default, when caching is turned on, dynamic data is cached in the data manager for 5 minutes. A refresh of the dashboard within this time interval will fetch the pandas DataFrame from the cache and _not_ re-run the data loading function. Once the cache timeout period has elapsed, the next refresh of the dashboard will re-execute the dynamic data loading function. The resulting pandas DataFrame will again be put into the cache and not expire until another 5 minutes has elapsed.
 
@@ -268,3 +267,104 @@ data_manager["slow_expire_data"].timeout = 60 * 60
 data_manager["no_expire_data"] = load_iris_data
 data_manager["no_expire_data"].timeout = 0
 ```
+
+### Parametrize data loading
+
+You can supply arguments to your dynamic data loading function that can be modified from the dashboard. For example, if you are handling big data then you might like to load on demand only one chunk of the data.
+
+To add a parameter to control a dynamic data source, do the following:
+- add the appropriate argument to your dynamic data function.
+- add an `id` to all components that have a data source you wish to alter through a parameter.
+- [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md) 
+
+For example, let us extend the [dynamic data example](#dynamic-data) to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+
+!!! example "Parametrized dynamic data"
+    === "app.py"
+        ```py hl_lines="8, 10, 19"
+        from vizro import Vizro
+        import pandas as pd
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        from vizro.managers import data_manager
+
+        def load_iris_data(number_of_points): # (1)!
+            iris = pd.read_csv("iris.csv") # (2)!
+            return iris.sample(number_of_points) # (3)!
+
+        data_manager["iris"] = load_iris_data # (4)!
+
+        page = vm.Page(
+            title="Update the chart on page refresh",
+            components=[
+                vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species")) # (5)!
+            ],
+            controls=[vm.Parameter(targets=["graph.data_frame.number_of_points"], selector=vm.Slider(min=1, max=20, value=10)], # (6)!
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+
+        1. `load_iris_data` now takes a single argument, `number_of_points`.
+        2. `iris` is still a pandas DataFrame created by reading from the CSV file `iris.csv`.
+        3. Sample points at random, where `number_of_points` gives the number of points selected.
+        4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
+        5. Give the graph `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
+        6. Create a `vm.Paramater` to target the `number_of_points` argument for the `data_frame` used in `graph`. 
+
+    === "Result"
+        [![DynamicData]][DynamicData]
+
+    [DynamicData]: ../../assets/user_guides/data/dynamic_data.gif
+
+<!-- TODO: update gif -->
+
+Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that, for example `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`. 
+
+!!! warning
+
+    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose as a parameter a filepath to load without, for example, passing it through [werkzeug.utils.secure_filename](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename); otherwise you might enable a user to access arbitrary files from your server.
+
+It is not possible to pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target top-level arguments of the data loading function and not address nested keys in a dictionary.
+
+#### Filters
+
+If your dashboard includes a [filter](filters.md) then you should be aware of some limitations that currently exist but should be lifted in future releases. If these limitations are problematic for you then please [raise an issue on our Github repo](https://github.com/mckinsey/vizro/issues/).
+
+The possible values shown on a filter's [selector](selectors.md) are fixed and do not update while the dashboard is running. Furthermore, all the arguments of your data loading function must be optional by defining default values. Regardless of the value of the `vm.Parameter`, these default values are used when the `vm.Filter` is built in order to determine the type of selector used in a filter and the options shown. 
+
+??? example "Parametrized dynamic data with a filter"   
+    ```py hl_lines="8, 21"
+    from vizro import Vizro
+    import pandas as pd
+    import vizro.plotly.express as px
+    import vizro.models as vm
+
+    from vizro.managers import data_manager
+
+    def load_iris_data(number_of_points=10):
+        iris = pd.read_csv("iris.csv")
+        return iris.sample(number_of_points)
+
+    data_manager["iris"] = load_iris_data
+
+    page = vm.Page(
+        title="Update the chart on page refresh",
+        components=[
+            vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))
+        ],
+        controls=[
+            vm.Parameter(targets=["graph.data_frame.number_of_points"], selector=vm.Slider(min=1, max=20, value=10),
+            vm.Filter(column="species"),
+        ],
+    )
+
+    dashboard = vm.Dashboard(pages=[page])
+
+    Vizro().build(dashboard).run()
+    ```
+
+Although a selector is automatically chosen for you in a filter, remember that [you can change it](filters.md#changing-selectors). For example, we could ensure that by explicitly specifying `vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])`.
