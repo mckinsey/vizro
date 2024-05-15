@@ -1,3 +1,5 @@
+<!-- TODO: mention and link to parameterized dynamic data somewhere on this page -->
+
 # How to use parameters
 
 This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function that creates the chart/component.
