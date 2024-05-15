@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import functools
+
 import logging
 import os
 import warnings
@@ -180,9 +182,15 @@ class DataManager:
             # It's important the __qualname__ is the same across all workers, so use the data source name rather than
             # e.g. the repr method that includes the id of the instance so would only work in the case that gunicorn is
             # running with --preload.
-            data = partial(data)
-            data.__name__ = ".".join([getattr(data.func, "__name__", "<unnamed>"), name])
-            data.__qualname__ = ".".join([getattr(data.func, "__qualname__", "<unnamed>"), name])
+            # __module__ is also required in flask_caching.utils.function_namespace and not defined for partial
+            # functions in some versions of Python.
+            # update_wrapper ensures that __module__, __name__, __qualname__, __annotations__ and __doc__ are
+            # assigned to the new partial(data) the same as they were in data. This isn't strictly necessary but makes
+            # inspecting these functions easier.
+            data = functools.update_wrapper(partial(data), data)
+            data.__module__ = getattr(data, "__module__", "<nomodule>")
+            data.__name__ = ".".join([getattr(data, "__name__", "<unnamed>"), name])
+            data.__qualname__ = ".".join([getattr(data, "__qualname__", "<unnamed>"), name])
             self.__data[name] = _DynamicData(data)
         elif isinstance(data, pd.DataFrame):
             self.__data[name] = _StaticData(data)
