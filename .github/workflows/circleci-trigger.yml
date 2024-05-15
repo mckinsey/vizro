@@ -1,9 +1,5 @@
 name: CircleCI tests trigger
 
-defaults:
-  run:
-    working-directory: vizro
-
 on:
   push:
     branches: [main]
