@@ -37,13 +37,9 @@ jobs:
           fi
           echo "my created pipeline"
           echo $CREATED_PIPELINE
-          mkdir ~/workspace
-          echo $CREATED_PIPELINE > pipeline.txt
-
-          triggered_pipeline_id=$(cat workspace/pipeline.txt)
     
           created_workflow_status=$(curl --request GET \
-              --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+              --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
               --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
               --header "content-type: application/json" \
             | jq -r '.items[0].status'
@@ -53,7 +49,7 @@ jobs:
     
           if [[ "$created_workflow_status" == "running" ]]; then
             created_workflow_status_updated=$(curl --request GET \
-                  --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+                  --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
                   --header "Circle-Token: $CIRCLECI_API_KEY" \
                   --header "content-type: application/json" \
                 | jq -r '.items[0].status'
@@ -62,7 +58,7 @@ jobs:
             do
               sleep 15
               created_workflow_status_updated=$(curl --request GET \
-                  --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+                  --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
                   --header "Circle-Token: $CIRCLECI_API_KEY" \
                   --header "content-type: application/json" \
                 | jq -r '.items[0].status'
