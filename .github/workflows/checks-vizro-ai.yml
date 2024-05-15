@@ -42,23 +42,17 @@ jobs:
       - name: Check requirements for Snyk are up to date
         run: hatch run all.py${{ env.PYTHON_VERSION }}:update-snyk-requirements --check
 
-      - name: Find added changelog fragments
-        id: added-files
+      - name: Find changed files to see if changelog fragment needed
+        id: changed-files
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
-          if ${{ github.event_name == 'pull_request' }}; then
-              echo "added_files=$(git diff --name-only --diff-filter=A -r HEAD^1 HEAD -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
-          else
-              echo "added_files=$(git diff --name-only --diff-filter=A ${{ github.event.before }} ${{ github.event.after }} -- changelog.d/*.md | xargs)" >> $GITHUB_OUTPUT
-          fi
+          echo "changelog_fragment_added=$(git diff --name-only --diff-filter=A -r HEAD^1 HEAD -- 'changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
+          echo "files_outside_docs_changed=$(git diff --name-only -r HEAD^1 HEAD -- ':!docs/*' | xargs)" >> $GITHUB_OUTPUT
 
-      - name: Fail if no fragment added in PR
+      - name: Fail if changelog fragment needed and wasn't added
+        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.files_outside_docs_changed && !steps.changed-files.outputs.changelog_fragment_added}}
         run: |
-          if [ -z "${{ steps.added-files.outputs.added_files }}" ];
-          then
-            echo "No changelog fragment .md file within changelog.d was detected.  Run 'hatch run changelog:add' to create such a fragment.";
-            echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
-            echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
-            exit 1
-          else
-          echo "${{ steps.added-files.outputs.added_files }} was added - ready to go!";
-          fi
+          echo "No changelog fragment .md file within changelog.d was detected. Run 'hatch run changelog:add' to create such a fragment."
+          echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."
+          echo "If your changes are not relevant for the CHANGELOG, please save and commit the file as is."
+          exit 1
