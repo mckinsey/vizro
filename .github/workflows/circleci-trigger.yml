@@ -40,50 +40,47 @@ jobs:
           mkdir ~/workspace
           echo $CREATED_PIPELINE > pipeline.txt
 
-  circleci-checker:
-    name: Check triggered workflow status
-    run: |
-      triggered_pipeline_id=$(cat workspace/pipeline.txt)
-
-      created_workflow_status=$(curl --request GET \
-          --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
-          --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
-          --header "content-type: application/json" \
-        | jq -r '.items[0].status'
-      )
-
-      echo $created_workflow_status
-
-      if [[ "$created_workflow_status" == "running" ]]; then
-        created_workflow_status_updated=$(curl --request GET \
+          triggered_pipeline_id=$(cat workspace/pipeline.txt)
+    
+          created_workflow_status=$(curl --request GET \
               --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
-              --header "Circle-Token: $CIRCLECI_API_KEY" \
+              --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
               --header "content-type: application/json" \
             | jq -r '.items[0].status'
           )
-        while [[ "$created_workflow_status_updated" == "running" ]]
-        do
-          sleep 15
-          created_workflow_status_updated=$(curl --request GET \
-              --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
-              --header "Circle-Token: $CIRCLECI_API_KEY" \
-              --header "content-type: application/json" \
-            | jq -r '.items[0].status'
-          )
-          echo $created_workflow_status_updated
-        done
-
-        if [[ "$created_workflow_status_updated" != "success" ]]; then
-          echo "Workflow not successful - ${created_workflow_status_updated}"
-          (exit -1)
-        fi
-
-        echo "Created workflow successful"
-
-      elif [[ "$created_workflow_status" != "success" ]]; then
-          echo "Workflow not successful - ${created_workflow_status}"
-          (exit -1)
-
-      elif [[ "$created_workflow_status" == "success" ]]; then
-          echo "Created workflow successful"
-      fi
+    
+          echo $created_workflow_status
+    
+          if [[ "$created_workflow_status" == "running" ]]; then
+            created_workflow_status_updated=$(curl --request GET \
+                  --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+                  --header "Circle-Token: $CIRCLECI_API_KEY" \
+                  --header "content-type: application/json" \
+                | jq -r '.items[0].status'
+              )
+            while [[ "$created_workflow_status_updated" == "running" ]]
+            do
+              sleep 15
+              created_workflow_status_updated=$(curl --request GET \
+                  --url "https://circleci.com/api/v2/pipeline/${triggered_pipeline_id}/workflow" \
+                  --header "Circle-Token: $CIRCLECI_API_KEY" \
+                  --header "content-type: application/json" \
+                | jq -r '.items[0].status'
+              )
+              echo $created_workflow_status_updated
+            done
+    
+            if [[ "$created_workflow_status_updated" != "success" ]]; then
+              echo "Workflow not successful - ${created_workflow_status_updated}"
+              (exit -1)
+            fi
+    
+            echo "Created workflow successful"
+    
+          elif [[ "$created_workflow_status" != "success" ]]; then
+              echo "Workflow not successful - ${created_workflow_status}"
+              (exit -1)
+    
+          elif [[ "$created_workflow_status" == "success" ]]; then
+              echo "Created workflow successful"
+          fi
