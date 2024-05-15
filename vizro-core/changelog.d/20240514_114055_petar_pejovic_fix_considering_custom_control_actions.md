@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed an issue of not considering actions that come from manually added control objects. ([#478](https://github.com/mckinsey/vizro/pull/478))
+- Fix actions associated with a manually added control. ([#478](https://github.com/mckinsey/vizro/pull/478))
 
 <!--
 ### Security
