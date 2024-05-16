@@ -76,24 +76,27 @@ class VizroAI:
 
         pass_validation = validated_code_dict.get("debug_status")
         code_string = validated_code_dict.get("code_string")
-        business_insights, code_explanation = None, None
 
-        if pass_validation is False:
+        if not pass_validation:
             raise DebugFailure(
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
 
-        if explain and pass_validation:
+        elif explain:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
                 chain_input=user_input, code_snippet=code_string
             )
 
-        return {
-            "business_insights": business_insights,
-            "code_explanation": code_explanation,
-            "code_string": code_string,
-        }
+            return {
+                "business_insights": business_insights,
+                "code_explanation": code_explanation,
+                "code_string": code_string,
+            }
+        else:
+            return {
+                "code_string": code_string,
+            }
 
     def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
@@ -129,8 +132,6 @@ class VizroAI:
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
         code_string = output_dict.get("code_string")
-        business_insights = output_dict.get("business_insights")
-        code_explanation = output_dict.get("code_explanation")
 
         fig_object = _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
 
@@ -138,10 +139,12 @@ class VizroAI:
             return fig_object
 
         if explain:
+            business_insights = output_dict.get("business_insights", None)
+            code_explanation = output_dict.get("code_explanation", None)
             _display_markdown(code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation)
             return fig_object
 
-    def get_all_output(
+    def get_outputs(
         self,
         df: pd.DataFrame,
         user_input: str,
@@ -165,5 +168,11 @@ class VizroAI:
         code_string = output_dict.get("code_string")
         fig_object = _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
         output_dict.update({"fig": fig_object})
+
+        if explain is False:
+            logger.info(
+                "Flag explain is set to False. business_insights and code_explanation will not be included in "
+                "output dictionary"
+            )
 
         return output_dict
