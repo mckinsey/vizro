@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Ping CircleCI pipeline
         run: |
-          if [[ ${{ github.ref_type }} == "tag" ]]; then
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
             github_tag=${{ github.ref_name }}
           else github_tag=""
           fi
