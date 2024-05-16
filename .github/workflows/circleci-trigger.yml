@@ -19,11 +19,16 @@ jobs:
     steps:
       - name: Ping CircleCI pipeline
         run: |
+          if [[ ${{ github.ref_type }} == "tag" ]]; then
+            github_tag=${{ github.ref_name }}
+          else github_tag=""
+          fi
+          
           CREATED_PIPELINE=$(curl --request POST \
             --url "${{ secrets.QA_PIPELINE_URL }}" \
             --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
             --header "content-type: application/json" \
-            --data '{"branch":"${{ github.head_ref }}", "parameters":{"branch":"${{ github.head_ref }}", "vizro_branch": "${{ github.head_ref }}", "tag": ""}}' \
+            --data '{"branch":"${{ github.head_ref }}", "parameters":{"branch":"${{ github.head_ref }}", "vizro_branch": "${{ github.head_ref }}", "tag": "$github_tag"}}' \
           | jq -r '.id'
           )
           if [[ "$CREATED_PIPELINE" == "null" ]]; then
@@ -31,14 +36,14 @@ jobs:
             --url "${{ secrets.QA_PIPELINE_URL }}" \
             --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
             --header "content-type: application/json" \
-            --data '{"branch":"main", "parameters":{"branch":"main", "vizro_branch": "${{ github.head_ref }}", "tag": ""}}' \
+            --data '{"branch":"main", "parameters":{"branch":"main", "vizro_branch": "${{ github.head_ref }}", "tag": "$github_tag"}}' \
             | jq -r '.id'
             )
           fi
           echo "my created pipeline"
           echo $CREATED_PIPELINE
 
-          sleep 30
+          sleep 60
 
           created_workflow_status=$(curl --request GET \
               --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
