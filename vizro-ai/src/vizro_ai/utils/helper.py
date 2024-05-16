@@ -75,14 +75,10 @@ def _exec_code_and_retrieve_fig(
     return dashboard_ready_fig
 
 
-def _exec_fig_code_display_markdown(
-    df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str
-) -> go.Figure:
-    # TODO change default test str to other
+def _display_markdown(code_snippet: str, biz_insights: str, code_explain: str) -> go.Figure:
     """Display chart and Markdown format description in jupyter and returns fig object.
 
     Args:
-        df: The dataframe to be analyzed.
         code_snippet: code string to be executed
         biz_insights: business insights to be displayed in markdown cell
         code_explain: code explanation to be displayed in markdown cell
@@ -100,7 +96,6 @@ def _exec_fig_code_display_markdown(
     markdown_code = f"```\n{code_snippet}\n```"
     output_text = f"<h4>Insights:</h4>\n\n{biz_insights}\n<br><br><h4>Code:</h4>\n\n{code_explain}\n{markdown_code}"
     display(Markdown(output_text))
-    return _exec_code_and_retrieve_fig(code_snippet, local_args={"df": df}, is_notebook_env=_is_jupyter())
 
 
 class DebugFailure(Exception):
