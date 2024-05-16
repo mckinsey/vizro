@@ -144,7 +144,7 @@ class VizroAI:
             _display_markdown(code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation)
             return fig_object
 
-    def get_outputs(
+    def get_plot_outputs(
         self,
         df: pd.DataFrame,
         user_input: str,
