@@ -172,7 +172,7 @@ class VizroAI:
         if explain is False:
             logger.info(
                 "Flag explain is set to False. business_insights and code_explanation will not be included in "
-                "output dictionary"
+                "the output dictionary"
             )
 
         return output_dict
