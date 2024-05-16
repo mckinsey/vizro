@@ -23,7 +23,7 @@ jobs:
             github_tag=${{ github.ref_name }}
           else github_tag=""
           fi
-          
+
           CREATED_PIPELINE=$(curl --request POST \
             --url "${{ secrets.QA_PIPELINE_URL }}" \
             --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
