@@ -11,8 +11,8 @@ from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
     _debug_helper,
+    _display_markdown,
     _exec_code_and_retrieve_fig,
-    _exec_fig_code_display_markdown,
     _is_jupyter,
 )
 
@@ -78,6 +78,12 @@ class VizroAI:
         code_string = validated_code_dict.get("code_string")
         business_insights, code_explanation = None, None
 
+        if pass_validation is False:
+            raise DebugFailure(
+                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
+                "or try to select a different model. Fallout response is provided: \n\n" + code_string
+            )
+
         if explain and pass_validation:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
                 chain_input=user_input, code_snippet=code_string
@@ -103,7 +109,11 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(
-        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        explain: bool = False,
+        max_debug_retry: int = 3,
     ) -> Union[go.Figure, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -114,7 +124,7 @@ class VizroAI:
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
 
         Returns:
-            Plotly Figure object or a dictionary containing data
+            go.Figure
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
@@ -122,18 +132,38 @@ class VizroAI:
         business_insights = output_dict.get("business_insights")
         code_explanation = output_dict.get("code_explanation")
 
-        if code_string.startswith("Failed to debug code"):
-            raise DebugFailure(
-                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
-                "or try to select a different model. Fallout response is provided: \n\n" + code_string
-            )
+        fig_object = _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
 
-        # TODO Tentative for integration test
-        if self._return_all_text:
-            return output_dict
         if not explain:
-            return _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+            return fig_object
+
         if explain:
-            return _exec_fig_code_display_markdown(
-                df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
-            )
+            _display_markdown(code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation)
+            return fig_object
+
+    def get_all_output(
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        explain: bool = False,
+        max_debug_retry: int = 3,
+    ):
+        """Executes plotting tasks based on user input and retrieves output dictionary.
+
+        Args:
+            df: The dataframe to be analyzed.
+            user_input: User input that dictates what operations to perform on the DataFrame.
+            explain: A flag to indicate whether to include explanations. Defaults to False.
+            max_debug_retry: Maximum number of retries for debugging the generated code. Defaults to 3.
+
+        Returns:
+            dict: A dictionary containing the generated code string, the figure object, and other text explanation
+            depending on whether explain flag is true.
+
+        """
+        output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
+        code_string = output_dict.get("code_string")
+        fig_object = _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+        output_dict.update({"fig": fig_object})
+
+        return output_dict
