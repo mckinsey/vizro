@@ -35,6 +35,7 @@ class TestDashDataTable:
                 columns=columns,
                 data=data_in_table,
                 style_as_list_view=True,
+                style_cell={"position": "static"},
                 style_data={"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
                 style_header={
                     "border_bottom": "1px solid var(--state-overlays-selected-hover)",

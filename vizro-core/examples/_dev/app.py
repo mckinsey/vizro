@@ -1,74 +1,66 @@
 """Dev app to try things out."""
 
-import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
+from flask_caching import Cache
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
+from vizro.managers import data_manager
 
-# DATA
-data = {
-    "this_is_a_really_long_column_name_0": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short_col_name": [4, 5, 6],
-    "this_is_a_really_long_column_name_2": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short": [10, 11, 12],
-    "this_is_a_really_long_column_name_4": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "this_is_a_really_long_column_name_6": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short4": [10, 11, 12],
-    "this_is_a_really_long_column_name_7": [13, 14, 15],
-}
 
-df = pd.DataFrame(data)
+def conf(title=""):
+    return {
+        "x": "gdpPercap",
+        "y": "lifeExp",
+        "color": "continent",
+        "title": title,
+    }
 
-# df = px.data.gapminder()
+
+def get_data_function():
+    return px.data.gapminder().sample(20)
+
+
+data_manager["static_df"] = px.data.gapminder()
+data_manager["dynamic_df"] = get_data_function
+data_manager["dynamic_df_2"] = get_data_function
+
+# data_manager["dynamic_df"] = lambda: px.data.gapminder().sample(20)
+# data_manager["dynamic_df_2"] = lambda: px.data.gapminder().sample(20)
+
+
+data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+# data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
+# data_manager["dynamic_df"].timeout = 30
+# data_manager["dynamic_df_2"].timeout = 10
+
 
 page = vm.Page(
-    title="Example of a Dash AG Grid",
+    title="Data Manager",
+    layout=vm.Layout(
+        grid=[
+            [0, 1],
+            [2, 3],
+            [4, 5],
+        ]
+    ),
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                id="grid1",
-                data_frame=df,
-                defaultColDef={"flex": 1, "minWidth": 200},
-                persistence=True,
-                persisted_props=["filterModel", "columnSize"],  # ,persistence_type = "local" #columnSize="autoSize"#
-            ),
+        vm.Graph(
+            id="graph_static_direct_1", figure=px.scatter(data_frame=px.data.gapminder(), **conf("Static direct 1"))
         ),
-    ],
-    controls=[vm.Filter(column="this_is_a_really_long_column_name_0")],
-)
-page2 = vm.Page(
-    title="Example of a Dash AG Grid 2",
-    components=[
-        vm.AgGrid(
-            title="Dash AG Grid 2",
-            figure=dash_ag_grid(
-                id="grid2",
-                data_frame=df,
-                columnSize="autoSize",
-                # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
-            ),
+        vm.Graph(
+            id="graph_static_direct_2", figure=px.scatter(data_frame=px.data.gapminder(), **conf("Static direct 2"))
         ),
+        vm.Graph(id="graph_static_dm_1", figure=px.scatter(data_frame="static_df", **conf("Static DM 1"))),
+        vm.Graph(id="graph_static_dm_2", figure=px.scatter(data_frame="static_df", **conf("Static DM 2"))),
+        vm.Graph(id="graph_dynamic_dm_1", figure=px.scatter(data_frame="dynamic_df", **conf("Dynamic DM 1"))),
+        vm.Graph(id="graph_dynamic_dm_2", figure=px.scatter(data_frame="dynamic_df_2", **conf("Dynamic DM 2"))),
     ],
-    # controls=[vm.Filter(column="continent")],
+    controls=[vm.Filter(column="continent")],
 )
-dashboard = vm.Dashboard(pages=[page, page2])
+
+dashboard = vm.Dashboard(pages=[page])
+app = Vizro().build(dashboard)
+server = app.dash.server
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app.run()
