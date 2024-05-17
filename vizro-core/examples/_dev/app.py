@@ -1,7 +1,7 @@
 """Dev app to try things out."""
 from flask_caching import Cache
 
-import pandas as pd
+import numpy as np
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
