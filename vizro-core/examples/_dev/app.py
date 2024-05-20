@@ -19,8 +19,13 @@ def load_iris_data(points=1):
 # TODO: double check cache works correctly.
 data_manager["iris"] = load_iris_data
 
+# SimpleCache
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+
+# RedisCache
 # data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
+
+# Timeout
 data_manager["iris"].timeout = 15
 
 
@@ -31,14 +36,22 @@ page = vm.Page(
         vm.Button(text="Export", actions=[vm.Action(function=export_data())])
     ],
     controls=[
-        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
-        vm.Parameter(targets=[
-            "graph.data_frame.points"
-        ], selector=vm.Slider(min=1, max=10, step=1)),
-        vm.Filter(column="species"),
+        vm.Parameter(
+            targets=["graph.x"],
+            selector=vm.RadioItems(options=["sepal_length", "sepal_width"])
+        ),
+        vm.Parameter(
+            targets=["graph.data_frame.points"],
+            selector=vm.Slider(min=1, max=10, step=1)
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+        ),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
 
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()

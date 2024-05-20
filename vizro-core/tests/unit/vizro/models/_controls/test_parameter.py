@@ -32,6 +32,15 @@ class TestParameterInstantiation:
         with pytest.raises(ValueError, match="Target scatter_chart_invalid not found in model_manager."):
             Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
+    @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
+    def test_check_data_frame_as_target_argument_failed(self, target):
+        with pytest.raises(
+            ValueError,
+            match=f"Invalid target {target}. 'data_frame' target must be supplied in the form of "
+                  "<target_component>.data_frame.<dynamic_data_argument>",
+        ):
+            Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+
     def test_duplicate_parameter_target_failed(self):
         with pytest.raises(ValueError, match="Duplicate parameter targets {'scatter_chart.x'} found."):
             Parameter(targets=["scatter_chart.x", "scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
