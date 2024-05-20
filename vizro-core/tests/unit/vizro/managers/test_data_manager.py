@@ -266,8 +266,8 @@ class TestCacheWithArguments:
     def test_timeout_expires_all(self, data_callable):
         # When the cache for one set of memoized arguments expires, the cache for the whole data source expires, even
         # for other values of memoized arguments.
-        # This behaviour is not particularly desirable (in fact it's maybe a bit annoying); the test is here just
-        # to document the current behaviour. It's not easy to change this behaviour within flask-caching.
+        # This behavior is not particularly desirable (in fact it's maybe a bit annoying); the test is here just
+        # to document the current behavior. It's not easy to change this behavior within flask-caching.
         # Loading sequence of data sources is as follows:
         # t=0: load x_1
         # t=1: load x_2     y_1  -> x cache has not expired
@@ -325,7 +325,7 @@ class TestCacheIndependence:
     )
     def test_shared_dynamic_data_callable_no_timeout(self, data_callable, kwargs, simple_cache):
         # Two data sources that share the same function or bound method are independent when neither times out.
-        # It doesn't really matter if this test passes; it's mainly here just to document the current behaviour. The use
+        # It doesn't really matter if this test passes; it's mainly here just to document the current behavior. The use
         # cases for actually wanting to do this seem limited.
         data_manager["data_x"] = data_callable
         data_manager["data_y"] = data_callable
@@ -356,7 +356,7 @@ class TestCacheIndependence:
     )
     def test_shared_dynamic_data_callable_with_timeout(self, data_callable, kwargs, simple_cache):
         # Two data sources that share the same function or bound method are independent when one times out.
-        # It doesn't really matter if this test passes; it's mainly here just to document the current behaviour. The use
+        # It doesn't really matter if this test passes; it's mainly here just to document the current behavior. The use
         # cases for actually wanting to do this seem limited.
         data_manager["data_x"] = data_callable
         data_manager["data_y"] = data_callable

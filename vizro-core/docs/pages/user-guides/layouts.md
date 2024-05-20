@@ -7,7 +7,7 @@ The [`Page`][vizro.models.Page] model accepts the `layout` argument, where you c
 
 ## Use the default layout
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components
-will automatically be [**vertically stacked**](layouts.md#stacking-components) down the page in one column.
+will automatically be [**vertically stacked**](layouts.md#stack-components) down the page in one column.
 If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
 
 !!! example "Default Layout"

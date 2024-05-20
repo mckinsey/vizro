@@ -37,7 +37,7 @@ pd_DataFrameCallable = Callable[..., pd.DataFrame]
 #  Might need messages that run before/after the wrapped function call.
 # Follows the pattern recommended in https://wrapt.readthedocs.io/en/latest/decorators.html#decorators-with-arguments
 # for making a wrapt.decorator with arguments.
-def _log_call(message: str) -> Callable:
+def _log_call(message: str):
     @wrapt.decorator
     def wrapper(wrapped, instance, args, kwargs):
         logger.debug(message)
