@@ -1,66 +1,44 @@
-"""Dev app to try things out."""
-
-import vizro.models as vm
-import vizro.plotly.express as px
 from flask_caching import Cache
 from vizro import Vizro
+import pandas as pd
+import vizro.plotly.express as px
+import vizro.models as vm
+
+from vizro.actions import export_data
 from vizro.managers import data_manager
+from vizro.models.types import CapturedCallable, capture
 
 
-def conf(title=""):
-    return {
-        "x": "gdpPercap",
-        "y": "lifeExp",
-        "color": "continent",
-        "title": title,
-    }
+# Note need to specify default value if have Filter since that calls data load function
+# Then have problem that filter options don't get updated when data source changes
+def load_iris_data(points=1):
+    iris = px.data.iris()
+    return iris.sample(points)
 
 
-def get_data_function():
-    return px.data.gapminder().sample(20)
-
-
-data_manager["static_df"] = px.data.gapminder()
-data_manager["dynamic_df"] = get_data_function
-data_manager["dynamic_df_2"] = get_data_function
-
-# data_manager["dynamic_df"] = lambda: px.data.gapminder().sample(20)
-# data_manager["dynamic_df_2"] = lambda: px.data.gapminder().sample(20)
-
+# TODO: double check cache works correctly.
+data_manager["iris"] = load_iris_data
 
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 # data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
-# data_manager["dynamic_df"].timeout = 30
-# data_manager["dynamic_df_2"].timeout = 10
+data_manager["iris"].timeout = 15
 
 
 page = vm.Page(
-    title="Data Manager",
-    layout=vm.Layout(
-        grid=[
-            [0, 1],
-            [2, 3],
-            [4, 5],
-        ]
-    ),
+    title="My first page",
     components=[
-        vm.Graph(
-            id="graph_static_direct_1", figure=px.scatter(data_frame=px.data.gapminder(), **conf("Static direct 1"))
-        ),
-        vm.Graph(
-            id="graph_static_direct_2", figure=px.scatter(data_frame=px.data.gapminder(), **conf("Static direct 2"))
-        ),
-        vm.Graph(id="graph_static_dm_1", figure=px.scatter(data_frame="static_df", **conf("Static DM 1"))),
-        vm.Graph(id="graph_static_dm_2", figure=px.scatter(data_frame="static_df", **conf("Static DM 2"))),
-        vm.Graph(id="graph_dynamic_dm_1", figure=px.scatter(data_frame="dynamic_df", **conf("Dynamic DM 1"))),
-        vm.Graph(id="graph_dynamic_dm_2", figure=px.scatter(data_frame="dynamic_df_2", **conf("Dynamic DM 2"))),
+        vm.Graph(id="graph", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")),
+        vm.Button(text="Export", actions=[vm.Action(function=export_data())])
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[
+        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
+        vm.Parameter(targets=[
+            "graph.data_frame.points"
+        ], selector=vm.Slider(min=1, max=10, step=1)),
+        vm.Filter(column="species"),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
-app = Vizro().build(dashboard)
-server = app.dash.server
 
-if __name__ == "__main__":
-    app.run()
+Vizro().build(dashboard).run()

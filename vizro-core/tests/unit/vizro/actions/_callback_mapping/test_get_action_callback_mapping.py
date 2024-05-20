@@ -151,27 +151,6 @@ def action_callback_outputs_expected(request):
         target["component_id"]: dash.Output(target["component_id"], target["component_property"]) for target in targets
     }
 
-
-@pytest.fixture
-def export_data_inputs_expected():
-    return {
-        "filters": [
-            dash.State("filter_continent_selector", "value"),
-            dash.State("filter_country_selector", "value"),
-        ],
-        "parameters": [],
-        "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
-            {
-                "active_cell": dash.State("underlying_table_id", "active_cell"),
-                "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
-                "modelID": dash.State("vizro_table", "id"),
-            },
-        ],
-        "theme_selector": [],
-    }
-
-
 @pytest.fixture
 def export_data_outputs_expected(request):
     return {
@@ -201,7 +180,7 @@ class TestCallbackMapping:
             ("filter_interaction_action", "action_callback_inputs_expected"),
             ("parameter_action_parameter_x", "action_callback_inputs_expected"),
             ("on_page_load_action_action_test_page", "action_callback_inputs_expected"),
-            ("export_data_action", "export_data_inputs_expected"),
+            ("export_data_action", "action_callback_inputs_expected"),
         ],
     )
     def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):

@@ -5,7 +5,7 @@ from dash._utils import AttributeDict
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
-from vizro.managers import model_manager
+from vizro.managers import data_manager, model_manager
 
 
 @pytest.fixture
@@ -18,6 +18,28 @@ def target_scatter_filter_and_filter_interaction(request, gapminder_2007):
         data = data[data["continent"].isin(continent_filter_interaction)]
     if country_table_filter_interaction:
         data = data[data["country"].isin(country_table_filter_interaction)]
+    return data
+
+
+@pytest.fixture
+def target_scatter_filter_and_parameter(request, gapminder_2007):
+    pop_filter, first_n_parameter = request.param
+    data = gapminder_2007
+    if first_n_parameter:
+        data = data.head(first_n_parameter)
+    if pop_filter:
+        data = data[data["pop"].between(pop_filter[0], pop_filter[1], inclusive="both")]
+    return data
+
+
+@pytest.fixture
+def target_box_filter_and_parameter(request, gapminder_2007):
+    pop_filter, first_n_parameter = request.param
+    data = gapminder_2007
+    if first_n_parameter:
+        data = data[:first_n_parameter]
+    if pop_filter:
+        data = data[data["pop"].between(pop_filter[0], pop_filter[1], inclusive="both")]
     return data
 
 
@@ -94,7 +116,50 @@ def ctx_export_data(request):
                     if pop_filter
                     else []
                 ),
+                "parameters": [],
                 "filter_interaction": args_grouping_filter_interaction,
+            }
+        },
+        "outputs_list": [
+            {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
+            for target in targets
+        ],
+    }
+
+    context_value.set(AttributeDict(**mock_ctx))
+    return context_value
+
+
+@pytest.fixture
+def ctx_export_data_filter_and_parameter(request):
+    """Mock dash.ctx that represents filters and parameter applied."""
+    targets, pop_filter, first_n_parameter = request.param
+    mock_ctx = {
+        "args_grouping": {
+            "external": {
+                "filters": (
+                    [
+                        CallbackTriggerDict(
+                            id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
+                        )
+                    ]
+                    if pop_filter
+                    else []
+                ),
+                "parameters": (
+                    [
+                        CallbackTriggerDict(
+                            id="first_n_parameter",
+                            property="value",
+                            value=first_n_parameter,
+                            str_id="first_n_parameter",
+                            triggered=False
+                        )
+                    ]
+                    if first_n_parameter
+                    else []
+                ),
+                "filter_interaction": [],
             }
         },
         "outputs_list": [
@@ -344,6 +409,76 @@ class TestExportData:
             "download_dataframe_box_chart": {
                 "filename": "box_chart.csv",
                 "content": target_box_filtered_pop.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize(
+        "ctx_export_data_filter_and_parameter, target_scatter_filter_and_parameter, target_box_filter_and_parameter",
+        [
+            (
+                [["scatter_chart", "box_chart"], [10**6, 10**7], None],
+                [[10**6, 10**7], None],
+                [[10**6, 10**7], None],
+            ),
+            (
+                [["scatter_chart", "box_chart"], None, 50],
+                [None, 50],
+                [None, 50],
+            ),
+            (
+                [["scatter_chart", "box_chart"], [10**6, 10**7], 50],
+                [[10**6, 10**7], 50],
+                [[10**6, 10**7], 50],
+            ),
+        ],
+        indirect=True,
+    )
+    def test_multiple_targets_with_filter_and_data_frame_parameter(
+        self,
+        ctx_export_data_filter_and_parameter,
+        target_scatter_filter_and_parameter,
+        target_box_filter_and_parameter,
+        gapminder_2007_dynamic_first_n
+    ):
+        # Adding dynamic data_frame to data_manager
+        data_manager["gapminder_2007_dynamic_first_n"] = gapminder_2007_dynamic_first_n
+
+        # Creating and adding a Filter object to the existing Page
+        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        model_manager["test_page"].controls = [pop_filter]
+        # Adds a default _filter Action to the filter selector objects
+        pop_filter.pre_build()
+
+        # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
+        first_n_parameter = vm.Parameter(
+            targets=["scatter_chart.data_frame.first_n", "box_chart.data_frame.first_n"],
+            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1)
+        )
+        model_manager["test_page"].controls.append(first_n_parameter)
+        first_n_parameter.pre_build()
+
+        # Add export_data action to relevant component
+        model_manager["button"].actions = [
+            vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
+        ]
+
+        # Run action by picking the above added export_data action function and executing it with ()
+        result = model_manager["test_action"].function()
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": target_scatter_filter_and_parameter.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": target_box_filter_and_parameter.to_csv(index=False),
                 "type": None,
                 "base64": False,
             },

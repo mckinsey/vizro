@@ -65,10 +65,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
     action_function = model_manager[action_id].function._function
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
-    if action_function == export_data.__wrapped__:
-        include_inputs = ["filters", "filter_interaction"]
-    else:
-        include_inputs = ["filters", "parameters", "filter_interaction", "theme_selector"]
+    include_inputs = {"filters", "parameters", "filter_interaction", "theme_selector"}
 
     action_input_mapping = {
         "filters": (_get_inputs_of_controls(page=page, control_type=Filter) if "filters" in include_inputs else []),
