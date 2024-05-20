@@ -151,6 +151,7 @@ def action_callback_outputs_expected(request):
         target["component_id"]: dash.Output(target["component_id"], target["component_property"]) for target in targets
     }
 
+
 @pytest.fixture
 def export_data_outputs_expected(request):
     return {

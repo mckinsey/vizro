@@ -37,7 +37,7 @@ class TestParameterInstantiation:
         with pytest.raises(
             ValueError,
             match=f"Invalid target {target}. 'data_frame' target must be supplied in the form of "
-                  "<target_component>.data_frame.<dynamic_data_argument>",
+            "<target_component>.data_frame.<dynamic_data_argument>",
         ):
             Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 

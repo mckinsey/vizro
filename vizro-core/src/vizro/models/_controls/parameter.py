@@ -51,7 +51,7 @@ class Parameter(VizroBaseModel):
     @validator("targets", each_item=True)
     def check_data_frame_as_target_argument(cls, target):
         targeted_argument = target.split(".", 1)[1]
-        if targeted_argument.startswith("data_frame") and targeted_argument.count('.') != 1:
+        if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
             raise ValueError(
                 f"Invalid target {target}. 'data_frame' target must be supplied in the form of "
                 "<target_component>.data_frame.<dynamic_data_argument>"

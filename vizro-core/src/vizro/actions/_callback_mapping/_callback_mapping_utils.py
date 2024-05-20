@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from dash import Output, State, dcc
 
-from vizro.actions import _parameter, export_data, filter_interaction
+from vizro.actions import _parameter, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, Page

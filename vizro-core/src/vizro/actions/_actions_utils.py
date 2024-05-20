@@ -201,8 +201,7 @@ def _get_targets_data_and_config(
     targets: Optional[List[ModelID]] = None,
 ):
     parameterized_config, parameterized_data_frame_arguments = _get_parametrized_config(
-        targets=targets,
-        parameters=ctds_parameters
+        targets=targets, parameters=ctds_parameters
     )
 
     filtered_data = _get_filtered_data(
@@ -213,6 +212,7 @@ def _get_targets_data_and_config(
     )
 
     return filtered_data, parameterized_config
+
 
 def _get_modified_page_figures(
     ctds_filter: List[CallbackTriggerDict],
