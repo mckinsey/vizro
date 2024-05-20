@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import inspect
+
 import functools
 import logging
 import os
@@ -67,9 +69,25 @@ class _DynamicData:
     object rather than doing an implicit conversion to _DynamicData.
     """
 
-    def __init__(self, load_data: pd_DataFrameCallable):
-        self.__load_data: pd_DataFrameCallable = load_data
+    def __init__(self, load_data: pd_DataFrameCallable, name):
+        def g(wrapped):
+            x = inspect.getfullargspec(wrapped)
+            x.args.insert(0, "name")
+
+            # args = argspec.args
+            # args.insert(0, "name")
+            # return inspect.ArgSpec(args, argspec.varargs, argspec.keywords, argspec.defaults)
+            return x
+
+        @wrapt.decorator(adapter=wrapt.adapter_factory(g))
+        def f(wrapped, instance, args, kwargs):
+            del kwargs["name"]
+            return wrapped(*args, **kwargs)
+
+        self.__load_data: pd_DataFrameCallable = f(load_data)
+        # self.__load_data = load_data
         self.timeout: Optional[int] = None
+        self._name = name
         # We might also want a self.cache_arguments dictionary in future that allows user to customize more than just
         # timeout, but no rush to do this since other arguments are unlikely to be useful.
 
@@ -93,7 +111,7 @@ class _DynamicData:
         else:
             logger.debug("Cache not active; reloading data")
             load_data = self.__load_data
-        return load_data(*args, **kwargs)
+        return load_data(name=self._name, *args, **kwargs)
 
 
 class _StaticData:
@@ -186,11 +204,16 @@ class DataManager:
             # update_wrapper ensures that __module__, __name__, __qualname__, __annotations__ and __doc__ are
             # assigned to the new partial(data) the same as they were in data. This isn't strictly necessary but makes
             # inspecting these functions easier.
-            data = functools.update_wrapper(partial(data), data)
-            data.__module__ = getattr(data, "__module__", "<nomodule>")
-            data.__name__ = ".".join([getattr(data, "__name__", "<unnamed>"), name])
-            data.__qualname__ = ".".join([getattr(data, "__qualname__", "<unnamed>"), name])
-            self.__data[name] = _DynamicData(data)
+
+            # data = functools.update_wrapper(partial(data), data)
+            # data.__module__ = getattr(data, "__module__", "<nomodule>")
+            # data.__name__ = ".".join([getattr(data, "__name__", "<unnamed>"), name])
+            # data.__qualname__ = ".".join([getattr(data, "__qualname__", "<unnamed>"), name])
+            # This is still needed to get partial functions working.
+            if not hasattr(data, "__qualname__"):
+                data.__qualname__ = "<unnamed>"
+                data.__name__ = "<unnamed>"
+            self.__data[name] = _DynamicData(data, name)
         elif isinstance(data, pd.DataFrame):
             self.__data[name] = _StaticData(data)
         else:
