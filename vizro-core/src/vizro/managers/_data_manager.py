@@ -16,16 +16,7 @@ from flask_caching import Cache
 from vizro.managers._managers_utils import _state_modifier
 
 
-# Just for the purposes of easily seeing the right debug messages. Remove before merging to main and revert to this:
-# logger = logging.getLogger(__name__)
-class PrefixAdapter(logging.LoggerAdapter):
-    def process(self, msg, kwargs):
-        return f"[DATA MANAGER] {msg}", kwargs
-
-
-logger = PrefixAdapter(logging.getLogger(__name__), {})
-logger.setLevel(logging.DEBUG)
-#####################
+logger = logging.getLogger(__name__)
 
 # Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
