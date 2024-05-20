@@ -50,7 +50,7 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager._get_component_data(self.id))
+        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id
         return figure
@@ -108,10 +108,12 @@ class Table(VizroBaseModel):
             html.Div(
                 [
                     html.H3(self.title, className="table-title") if self.title else None,
-                    html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id),
+                    # Please see vm.AgGrid build method as to why we are returning the call with the full data here
+                    # Most of the comments may not apply to the data table, but in order to be consistent, we are
+                    # handling the build method in the exact same way here
+                    html.Div(self.__call__(), id=self.id),
                 ],
                 className="table-container",
-                id=f"{self.id}_outer",
             ),
             color="grey",
             parent_className="loading-container",

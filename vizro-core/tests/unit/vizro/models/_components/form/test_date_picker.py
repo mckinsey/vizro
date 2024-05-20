@@ -2,6 +2,7 @@
 
 from datetime import date, datetime
 
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
@@ -120,7 +121,7 @@ class TestBuildMethod:
         additional_kwargs = {"allowSingleDateInRange": True} if range else {}
         expected_datepicker = html.Div(
             [
-                html.Label("Test title", htmlFor="datepicker_id"),
+                dbc.Label("Test title", html_for="datepicker_id"),
                 date_picker_class(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -137,6 +138,5 @@ class TestBuildMethod:
                 dcc.Store(id="datepicker_id_input_store", storage_type="session", data=value),
             ],
             className="selector_container",
-            id="datepicker_id_outer",
         )
         assert_component_equal(date_picker, expected_datepicker)

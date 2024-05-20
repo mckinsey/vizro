@@ -35,17 +35,14 @@ class TestUserInputBuild:
         text_area = TextArea(title="Title", placeholder="Placeholder", id="text-area-id").build()
         expected_text_area = html.Div(
             [
-                html.Label("Title", htmlFor="text-area-id"),
+                dbc.Label("Title", html_for="text-area-id"),
                 dbc.Textarea(
                     id="text-area-id",
                     placeholder="Placeholder",
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="text-area",
                 ),
-            ],
-            className="input-container",
-            id="text-area-id_outer",
+            ]
         )
         assert_component_equal(text_area, expected_text_area)

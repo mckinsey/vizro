@@ -1,56 +1,48 @@
-"""Example to show dashboard configuration."""
+"""Dev app to try things out."""
 
-from typing import Optional
-
-import pandas as pd
+import numpy as np
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
+from vizro.tables import dash_data_table
 
-gapminder_pos = px.data.gapminder()
-gapminder_neg = px.data.gapminder()
-gapminder_mixed = px.data.gapminder()
-gapminder_neg["lifeExp"] = gapminder_neg["lifeExp"] * (-1)
-gapminder_mixed.loc[:200, "lifeExp"] = gapminder_mixed.loc[:200, "lifeExp"] * (-1)
+df = px.data.gapminder()
 
+dropdown_column = "Label"
+dropdown_options = ["-- A --", "-- B --", "-- C --"]
 
-@capture("graph")
-def variable_map(data_frame: pd.DataFrame = None, color: Optional[str] = None, title: Optional[str] = None):
-    """Custom choropleth figure that needs post update calls."""
-    fig = px.choropleth(
-        data_frame,
-        locations="iso_alpha",
-        color=color,
-        hover_name="country",
-        labels={
-            "year": "year",
-            "lifeExp": "Life expectancy",
-            "pop": "Population",
-            "gdpPercap": "GDP per capita",
-        },
-        title="Global development over time",
-    )
-    fig.update_layout(showlegend=False, title=title)
-    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
-    return fig
+# Add a 'Label' column to the data where options are randomly selected between 'A', 'B', 'C'
+df[dropdown_column] = np.random.choice(dropdown_options, size=len(df))
+
+# Drop the 'iso_alpha' and 'iso_num' columns
+df.drop(["iso_alpha", "iso_num"], axis=1, inplace=True)
 
 
 page = vm.Page(
-    title="Autocolorscale",
-    layout=vm.Layout(grid=[[0, 1, 2]]),
+    title="Table Page",
     components=[
-        vm.Graph(
-            figure=variable_map(data_frame=gapminder_pos, color="lifeExp", title="Positive Life Expectancy"),
-        ),
-        vm.Graph(
-            figure=variable_map(data_frame=gapminder_neg, color="lifeExp", title="Negative Life Expectancy"),
-        ),
-        vm.Graph(
-            figure=variable_map(data_frame=gapminder_mixed, color="lifeExp", title="Mixed Life Expectancy"),
+        vm.Table(
+            title="Table",
+            figure=dash_data_table(
+                id="table",
+                data_frame=df,
+                columns=[
+                    {"name": i, "id": i, "presentation": "dropdown"} if i == dropdown_column else {"name": i, "id": i}
+                    for i in df.columns
+                ],
+                editable=True,
+                dropdown={
+                    dropdown_column: {
+                        "options": [{"label": i, "value": i} for i in dropdown_options],
+                        "clearable": False,
+                    },
+                },
+            ),
         ),
     ],
+    controls=[vm.Filter(column="continent")],
 )
+
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":

@@ -45,21 +45,25 @@ class TestCardInstantiation:
 class TestBuildMethod:
     """Tests build method."""
 
-    def test_card_build(self):
+    def test_card_build_with_href(self):
         card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
 
         expected_card = dbc.Card(
             dbc.NavLink(
-                dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
-                href="https://www.google.com",
-                className="card-link",
+                dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), href="https://www.google.com"
             ),
-            className="nav-card",
-            id="card_id_outer",
+            className="card-nav",
         )
 
         assert_component_equal(card, expected_card)
+
+    def test_card_build_wo_href(self):
+        card = vm.Card(id="card_id", text="Hello")
+        card = card.build()
+        assert_component_equal(
+            card, dbc.Card(dcc.Markdown("Hello", dangerously_allow_html=False, id="card_id"), className="")
+        )
 
     @pytest.mark.parametrize(
         "test_text, expected",

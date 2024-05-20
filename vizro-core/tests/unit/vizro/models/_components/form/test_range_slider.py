@@ -1,5 +1,6 @@
 """Unit tests for hyphen.models.slider."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -65,9 +66,7 @@ def expected_range_slider_default():
                 persistence_type="session",
                 className="slider-track-without-marks",
             ),
-        ],
-        className="input-container",
-        id="range_slider_outer",
+        ]
     )
 
 
@@ -78,7 +77,7 @@ def expected_range_slider_with_optional():
             dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    html.Label("Title", htmlFor="range_slider"),
+                    dbc.Label("Title", html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
@@ -124,9 +123,7 @@ def expected_range_slider_with_optional():
                 persistence_type="session",
                 className="slider-track-with-marks",
             ),
-        ],
-        className="input-container",
-        id="range_slider_outer",
+        ]
     )
 
 

@@ -35,7 +35,7 @@ class TestUserInputBuild:
         user_input = UserInput(title="Title", placeholder="Placeholder", id="user-input-id").build()
         expected_user_input = html.Div(
             [
-                html.Label("Title", htmlFor="user-input-id"),
+                dbc.Label("Title", html_for="user-input-id"),
                 dbc.Input(
                     id="user-input-id",
                     placeholder="Placeholder",
@@ -43,10 +43,7 @@ class TestUserInputBuild:
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="user_input",
                 ),
-            ],
-            className="input-container",
-            id="user-input-id_outer",
+            ]
         )
         assert_component_equal(user_input, expected_user_input)

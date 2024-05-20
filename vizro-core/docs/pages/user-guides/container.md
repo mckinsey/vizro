@@ -2,10 +2,10 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [`Container`][vizro.models.Container] complements the concept of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
- [`Page.layout`](layouts.md) provides a way to structure the overall layout of the page, and a `Container` allows for more granular control within a specific section of that page.
+A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
+ [`Page.layout`](layouts.md) offers a way to structure the overall layout of the page, and a `Container` enables more granular control within a specific section of that page.
 
-While there is currently no apparent difference in rendering, additional functionality will be added to the `Container` soon (e.g. controls specific to that container),
+While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container),
 enhancing the ability to manage related components.
 
 ??? note "Displaying multiple containers inside Tabs"
@@ -20,12 +20,12 @@ enhancing the ability to manage related components.
 
 
 ## When to use containers
-In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
-recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
+In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone and is our
+recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
 `Page.layout` has a `grid` argument that sets the overall layout of the page.
 `Container.layout` also has a `grid` argument. This enables you to insert a further `grid` into a component's space on the page,
-allowing for more granular control by breaking the overall page grid into subgrids.
+enabling more granular control by breaking the overall page grid into subgrids.
 
 Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
 
@@ -39,8 +39,8 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
-2. Provide a `title` to your `Container`
-3. Configure your `components`, see [the overview page on the various options](components.md)
+2. Set a `title` for your `Container`
+3. Configure your `components`, [read the overview page for various options](components.md)
 4. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
 
 !!! example "Container"
@@ -109,7 +109,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -156,14 +156,13 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 !!! note
 
-    Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md)
-    e.g. by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
+    Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
 
 ## Nested containers
 Containers can be nested, providing a hierarchical structure for organizing components.
-This nesting capability allows users to create more complex layouts and manage related components at any level of granularity.
+This nesting capability enables users to create more complex layouts and manage related components at any level of granularity.
 
-To create nested containers, simply add a `Container` to the `components` argument of another `Container`.
+To create nested containers, add a `Container` to the `components` argument of another `Container`.
 
 ```python title="Example"
 vm.Container(

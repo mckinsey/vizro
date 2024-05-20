@@ -1,10 +1,11 @@
 # How to use actions
 
-This guide shows you how to use actions, a concept that is similar, but not identical, to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
-Many components of a dashboard (e.g. [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
+This guide shows you how to use actions, an idea that is similar to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`.
+Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`Button`][vizro.models.Button]) have an optional `actions` argument, where you can enter the [`Action`][vizro.models.Action] model.
 
-In a nutshell, using the [`Action`][vizro.models.Action] model together with an action function allows you to create complex functionality on a variety of triggers in your dashboard.
-There is already a range of reusable action functions available.
+By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
+
+There are already lots of action functions you can reuse.
 
 ???+ info "Overview of currently available pre-defined action functions"
 
@@ -17,16 +18,17 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
-    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (e.g. for the `Button` it is `n_click`).
+    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
-The below sections are guides on how to leverage pre-defined action functions.
+The below sections are guides on how to use pre-defined action functions.
 
 ### Export data
 
-In order to enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
+To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
 a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -65,7 +67,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -117,7 +119,8 @@ actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]
 ```py
 Graph(figure=px.scatter(..., custom_data=["continent"]))
 ```
-Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the dataset of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
+
+Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! tip
     - You can reset your chart interaction filters by refreshing the page
@@ -126,6 +129,7 @@ Selecting a data point with a corresponding value of "Africa" in the continent c
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "Graph `filter_interaction`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -170,7 +174,7 @@ Here is an example of how to configure a chart interaction when the source is a 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -210,6 +214,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
 !!! example "AgGrid `filter_interaction`"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -251,7 +256,7 @@ Here is an example of how to configure a chart interaction when the source is an
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -283,9 +288,9 @@ Here is an example of how to configure a chart interaction when the source is an
 
     [Table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
 
+
 ## Customize pre-defined actions
-Many pre-defined actions are customizable which helps to achieve more specific desired goal. For specific options, please
-refer to the [API reference][vizro.actions] on this topic.
+Many pre-defined actions are customizable which helps to achieve a more specific goal. Refer to the [API reference][vizro.actions] for the options available.
 
 ### Chain actions
 The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
@@ -294,6 +299,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 
 
 !!! example "Actions chaining"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -382,4 +388,4 @@ The order of action execution is guaranteed, and the next action in the list wil
 
     [Graph3]: ../../assets/user_guides/actions/actions_chaining.png
 
-To enhance existing actions, please see the guide about [how to create custom actions](custom-actions.md).
+To enhance existing actions, see our how-to-guide on creating [custom actions](custom-actions.md).

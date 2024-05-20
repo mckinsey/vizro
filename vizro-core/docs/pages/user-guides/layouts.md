@@ -7,7 +7,7 @@ The [`Page`][vizro.models.Page] model accepts the `layout` argument, where you c
 
 ## Use the default layout
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components
-will automatically be [**vertically stacked**](layouts.md#stacking-components) down the page in one column.
+will automatically be [**vertically stacked**](layouts.md#stack-components) down the page in one column.
 If that is your desired layout, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
 
 !!! example "Default Layout"
@@ -28,7 +28,7 @@ If that is your desired layout, you can create your charts/components without pr
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -56,12 +56,12 @@ grid = [[0, 1],
         [0, 2]]
 ```
 
-- The `grid` needs to be provided as `List[List[int]]` (e.g. `grid = [[0, 1], [0, 2]]`)
+- The `grid` needs to be provided as `List[List[int]]` (for example, `grid = [[0, 1], [0, 2]]`)
 - The integers in the `grid` correspond to the index of the chart/component inside the list of `components` provided to [`Page`][vizro.models.Page]
 - The number of integers in the `grid` needs to match the number of chart/components provided
-- Each sub-list corresponds to a grid row (e.g. row 1 = `[0, 1]` and row 2 = `[0, 2]`)
-- Each element inside the sub-list corresponds to a grid column (e.g. column 1 = `[0, 0]` and column 2 = `[1, 2]`)
-- The integers in the `grid` need to be consecutive integers starting with 0 (e.g. `0`, `1`, `2`)
+- Each sub-list corresponds to a grid row (for example, row 1 = `[0, 1]` and row 2 = `[0, 2]`)
+- Each element inside the sub-list corresponds to a grid column (for example, column 1 = `[0, 0]` and column 2 = `[1, 2]`)
+- The integers in the `grid` need to be consecutive integers starting with 0 (for example, `0`, `1`, `2`)
 - Each chart/component will take the entire space of its grid area (empty spaces are currently not enabled)
 - The area spanned by a chart/component in the grid must be rectangular
 - The grid can be arbitrarily large, allowing arbitrarily granular control of the grid:
@@ -104,7 +104,7 @@ This defines a single row that occupies the entire width and height, divided int
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -127,7 +127,7 @@ This defines a single row that occupies the entire width and height, divided int
     [Grid]: ../../assets/user_guides/layout/one_left_two_right.png
 
 ### Grid - advanced example
-Generally, the `Layout` provides full control over the arrangement of top-level components within a page,
+The `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.
 
 If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md).
@@ -202,7 +202,7 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -259,6 +259,7 @@ See our section on [when to use `Containers` vs. `Page.layout`](container.md#whe
 
 ## Use custom layout examples
 Below is a table of examples you can take as a reference to create some selected layouts:
+<!-- vale off -->
 
 | Configuration                                              | Description            | Image                                                                                |
 |------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------|
@@ -275,6 +276,7 @@ Below is a table of examples you can take as a reference to create some selected
 | `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    | one_top_three_bottom   | <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
 | `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    | three_top_one_bottom   | <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
 
+<!--vale on -->
 
 ## Add empty spaces to the grid
 One approach to organize the dashboard's layout involves integrating empty spaces.
@@ -306,7 +308,7 @@ grid = [[0, 1, -1],
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -361,7 +363,7 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -401,12 +403,12 @@ squeezed in. You can control the scroll behavior of the grid by specifying the f
 
 
 ## Further customizations
-For further customizations, such as changing the gap between row and column, please refer to the
+For further customizations, such as changing the gap between row and column, refer to the
 documentation of the [`Layout`][vizro.models.Layout] model.
 
 ## Alternative layout approaches
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our
-recommended approach if you just want to arrange components on a page with consistent row and/or column spacing.
+recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
 

@@ -4,6 +4,7 @@ import traceback
 from typing import Callable, Dict, Optional
 
 import pandas as pd
+import plotly.graph_objects as go
 
 from .safeguard import _safeguard_check
 
@@ -34,7 +35,7 @@ def _debug_helper(
     is_jupyter = _is_jupyter()
     for attempt in range(max_debug_retry):
         try:
-            _exec_code(code=code_string, local_args={"df": df}, is_notebook_env=is_jupyter)
+            _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=is_jupyter)
             retry_success = True
             break
         except Exception as e:
@@ -47,16 +48,22 @@ def _debug_helper(
     return {"debug_status": retry_success, "code_string": code_string}
 
 
-def _exec_code(
-    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
-) -> None:
-    """Execute code in notebook with correct namespace."""
+def _exec_code_and_retrieve_fig(
+    code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True
+) -> go.Figure:
+    """Execute code in notebook with correct namespace and return fig object.
+
+    Args:
+        code: code string to be executed
+        local_args: additional local arguments
+        is_notebook_env: boolean flag indicating if code is run in Jupyter notebook
+
+    Returns:
+        go.Figure
+
+    """
     from IPython import get_ipython
 
-    if show_fig and "\nfig.show()" not in code:
-        code += "\nfig.show()"
-    elif not show_fig:
-        code = code.replace("fig.show()", "")
     namespace = get_ipython().user_ns if is_notebook_env else globals()
     if local_args:
         namespace.update(local_args)
@@ -64,10 +71,26 @@ def _exec_code(
 
     exec(code, namespace)  # nosec
 
+    dashboard_ready_fig = namespace["fig"]
+    return dashboard_ready_fig
 
-def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str) -> None:
+
+def _exec_fig_code_display_markdown(
+    df: pd.DataFrame, code_snippet: str, biz_insights: str, code_explain: str
+) -> go.Figure:
     # TODO change default test str to other
-    """Display chart and Markdown format description in jupyter."""
+    """Display chart and Markdown format description in jupyter and returns fig object.
+
+    Args:
+        df: The dataframe to be analyzed.
+        code_snippet: code string to be executed
+        biz_insights: business insights to be displayed in markdown cell
+        code_explain: code explanation to be displayed in markdown cell
+
+    Returns:
+        go.Figure
+
+    """
     try:
         # pylint: disable=import-outside-toplevel
         from IPython.display import Markdown, display
@@ -77,7 +100,7 @@ def _display_markdown_and_chart(df: pd.DataFrame, code_snippet: str, biz_insight
     markdown_code = f"```\n{code_snippet}\n```"
     output_text = f"<h4>Insights:</h4>\n\n{biz_insights}\n<br><br><h4>Code:</h4>\n\n{code_explain}\n{markdown_code}"
     display(Markdown(output_text))
-    _exec_code(code_snippet, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
+    return _exec_code_and_retrieve_fig(code_snippet, local_args={"df": df}, is_notebook_env=_is_jupyter())
 
 
 class DebugFailure(Exception):

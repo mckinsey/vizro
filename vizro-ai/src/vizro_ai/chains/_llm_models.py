@@ -1,88 +1,69 @@
-from typing import Callable, Dict, List, Union
+from typing import Dict, Optional, Union
 
 from langchain_openai import ChatOpenAI
-
-try:
-    from pydantic.v1 import BaseModel, Field
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
 
 # TODO add new wrappers in if new model support is added
 LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
-PREDEFINED_MODELS: List[Dict[str, any]] = [
-    {
-        "name": "gpt-3.5-turbo-0613",
+PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
+    "gpt-3.5-turbo-0613": {
         "max_tokens": 4096,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-4-0613",
+    "gpt-4-0613": {
         "max_tokens": 8192,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-3.5-turbo-1106",
+    "gpt-3.5-turbo-1106": {
         "max_tokens": 16385,
         "wrapper": ChatOpenAI,
     },
-    {
-        "name": "gpt-4-1106-preview",
+    "gpt-4-1106-preview": {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
-]
+    "gpt-3.5-turbo-0125": {
+        "max_tokens": 16385,
+        "wrapper": ChatOpenAI,
+    },
+    "gpt-3.5-turbo": {
+        "max_tokens": 16385,
+        "wrapper": ChatOpenAI,
+    },
+    "gpt-4-turbo": {
+        "max_tokens": 128000,
+        "wrapper": ChatOpenAI,
+    },
+}
+
+DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_TEMPERATURE = 0
 
 
-class LLM(BaseModel):
-    """Represents a Language Learning Model (LLM).
+def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> LLM_MODELS:
+    """Fetches and initializes an instance of the LLM.
 
-    Attributes
-        name (str): The name of the LLM.
-        max_tokens (int): The maximum number of tokens that the LLM can handle.
-        wrapper (callable): The langchain function used to instantiate the model.
+    Args:
+        model: Model instance or model name.
+
+    Returns:
+        The initialized instance of the LLM.
+
+    Raises:
+        ValueError: If the provided model string does not match any pre-defined model
 
     """
-
-    name: str
-    max_tokens: int
-    wrapper: Callable = Field(..., description="The langchain function used to instantiate the model.")
-
-
-class ModelConstructor:
-    """Manages available Language Learning Models (LLMs).
-
-    Provides methods to fetch LLM details and instantiate appropriate wrappers.
-    """
-
-    models: Dict[str, LLM]
-
-    def __init__(self):
-        """Initializes the model manager with a set of predefined LLMs."""
-        self.models = {model["name"]: LLM(**model) for model in PREDEFINED_MODELS}
-
-    def get_llm_model(self, model_name: str, temperature: float = 0) -> LLM_MODELS:
-        """Fetches and initializes an instance of the LLM.
-
-        Args:
-            model_name (str): The name of the LLM.
-            temperature (int, optional): A parameter for the wrapper. Defaults to 0.
-
-        Returns:
-            The initialized instance of the LLM.
-
-        Raises:
-            ValueError: If the model name is not found.
-
-        """
-        model = self.models.get(model_name.lower())
-        if model:
-            return model.wrapper(model_name=model.name, temperature=temperature)
-        else:
-            raise ValueError(f"Model {model_name} not found!")
+    if not model:
+        return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
+    if isinstance(model, ChatOpenAI):
+        return model
+    if isinstance(model, str) and model in PREDEFINED_MODELS:
+        return PREDEFINED_MODELS.get(model)["wrapper"](model_name=model, temperature=DEFAULT_TEMPERATURE)
+    raise ValueError(
+        f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#which-llms-are-supported-by-vizro-ai"
+    )
 
 
 if __name__ == "__main__":
-    model_manager = ModelConstructor()
-    llm_chat_openai = model_manager.get_llm_model("gpt-3.5-turbo-0613", temperature=0)
+    llm_chat_openai = _get_llm_model()
