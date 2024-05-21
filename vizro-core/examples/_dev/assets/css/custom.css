@@ -7,3 +7,51 @@
   border-left: 4px solid var(--text-primary);
   padding-left: 12px;
 }
+
+
+.card {
+  background: var(--bs-card-cap-bg);
+  display: flex;
+  gap: 4px;
+  height: 100%;
+  width: 100%;
+}
+
+.card .card-title {
+  height: 100%;
+}
+
+.card .card-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  height: 100%;
+  margin: 0;
+}
+
+.card-border-up {
+  border-left: 4px solid #1a85ff;
+}
+
+.card-border-down {
+  border-left: 4px solid #d41159;
+}
+
+.card .down {
+  color: #d41159;
+}
+
+.card .up {
+  color: #1a85ff;
+}
+
+.card .material-symbols-outlined {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.card .card-ref-value {
+  display: flex;
+  font-weight: 600;
+  gap: 4px;
+  line-height: 20px;
+}

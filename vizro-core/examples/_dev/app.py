@@ -9,10 +9,13 @@ from vizro.models.types import capture
 import pandas as pd
 import plotly.graph_objects as go
 
-from typing import Optional
+from typing import Optional, Literal
+from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 iris_df = px.data.iris()
 
+# Method 1: Using go.Indicator inside vm.Graph
 @capture("graph")
 def plt_kpi_card(
     column: str,
@@ -36,6 +39,34 @@ def plt_kpi_card(
     return fig
 
 
+# Method 2: Using custom component
+class CustomKPI(vm.VizroBaseModel):
+    """New custom component `KPI`."""
+
+    type: Literal["kpi"] = "kpi"
+    title: str
+    value: str
+    icon: str
+    sign: Literal["up", "down"]
+    ref_value: str
+
+    def build(self):
+        return dbc.Card(
+            [
+                html.H4(self.title, className="card-title"),
+                html.P(self.value, className="card-value"),
+                html.Span(
+                    [
+                        html.Span(self.icon, className=f"material-symbols-outlined {self.sign}"),
+                        html.Span(self.ref_value, className=self.sign),
+                    ],
+                    className="card-ref-value",
+                ),
+            ],
+            className=f"card-border-{self.sign}",
+        )
+
+vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
@@ -48,6 +79,7 @@ page = vm.Page(
                 title="Sepal Width AVG",
             ),
         ),
+        CustomKPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
     ],
     controls=[vm.Filter(column="species")],
 )
