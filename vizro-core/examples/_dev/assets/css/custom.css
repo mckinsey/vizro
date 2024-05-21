@@ -8,7 +8,6 @@
   padding-left: 12px;
 }
 
-
 .card {
   background: var(--bs-card-cap-bg);
   display: flex;
@@ -19,10 +18,11 @@
 
 .card .card-title {
   height: 100%;
+  font-size: 1.4rem;
 }
 
 .card .card-value {
-  font-size: 1.2rem;
+  font-size: 2rem;
   font-weight: 600;
   height: 100%;
   margin: 0;

@@ -1,19 +1,22 @@
 """Dev app to try things out."""
 
-import numpy as np
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_data_table
-from vizro.models.types import capture
+from typing import Literal, Optional
+
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
-
-from typing import Optional, Literal
-from dash import html, dcc
-import dash_bootstrap_components as dbc
+import vizro.models as vm
+import vizro.plotly.express as px
+from dash import html
+from vizro import Vizro
+from vizro.models.types import capture
 
 iris_df = px.data.iris()
+
+# Open questions -------
+# Shall we allow for automatic data aggregations? Or shall this be the user's responsibility? (data transformation to live inside / outside component)
+# Shall we actually just extend vm.Card and allow a figure attribute there? or shall the KPI Card be its own component?
+
 
 # Method 1: Using go.Indicator inside vm.Graph
 @capture("graph")
@@ -66,10 +69,12 @@ class CustomKPI(vm.VizroBaseModel):
             className=f"card-border-{self.sign}",
         )
 
+
 vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
+    layout=vm.Layout(grid=[[0, 1]] + [[-1, -1]] * 3),
     components=[
         vm.Graph(
             id="kpi-total",
@@ -79,7 +84,13 @@ page = vm.Page(
                 title="Sepal Width AVG",
             ),
         ),
-        CustomKPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
+        CustomKPI(
+            title="Total Complaints",
+            value="75.513",
+            icon="arrow_circle_up",
+            sign="up",
+            ref_value="5.5% vs. Last Year"
+        ),
     ],
     controls=[vm.Filter(column="species")],
 )
