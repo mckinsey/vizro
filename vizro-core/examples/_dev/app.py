@@ -20,7 +20,9 @@ data_manager["iris"] = load_iris_data
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
 # RedisCache
-data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
+data_manager.cache = Cache(
+    config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379}
+)
 
 # Timeout
 data_manager["iris"].timeout = 30

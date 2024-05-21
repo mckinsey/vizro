@@ -29,7 +29,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 !!! info
 
-    If data from [custom chart](custom-charts.md) is being downloaded, then the `data_frame` input argument represents the data that is going to be downloaded. 
+    If data from [custom chart](custom-charts.md) is being downloaded, then the `data_frame` input argument represents the data that is going to be downloaded.
 
 
 !!! example "`export_data`"

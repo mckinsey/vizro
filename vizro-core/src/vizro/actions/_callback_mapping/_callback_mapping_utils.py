@@ -62,7 +62,6 @@ def _get_inputs_of_figure_interactions(
 # TODO: Refactor this and util functions once we implement "_get_input_property" method in VizroBaseModel models
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[State, Dict[str, State]]]]:
     """Creates mapping of pre-defined action names and a list of `States`."""
-    action_function = model_manager[action_id].function._function
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
     include_inputs = {"filters", "parameters", "filter_interaction", "theme_selector"}

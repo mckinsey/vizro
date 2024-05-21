@@ -36,6 +36,7 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
     scatter_params["x"] = x
     return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
 
+
 @pytest.fixture
 def target_scatter_parameter_data_frame_first_n(request, gapminder_2007_dynamic_first_n, scatter_params):
     first_n = request.param
@@ -176,7 +177,7 @@ def ctx_parameter_data_frame_argument(request):
                         str_id="first_n_parameter",
                         triggered=False,
                     )
-                ]
+                ],
             }
         },
         "outputs_list": [

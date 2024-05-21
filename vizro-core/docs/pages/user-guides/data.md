@@ -312,7 +312,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
         3. Sample points at random, where `number_of_points` gives the number of points selected.
         4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
         5. Give the graph `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
-        6. Create a `vm.Paramater` to target the `number_of_points` argument for the `data_frame` used in `graph`.
+        6. Create a `vm.Parameter` to target the `number_of_points` argument for the `data_frame` used in `graph`.
 
     === "Result"
         [![DynamicData]][DynamicData]
