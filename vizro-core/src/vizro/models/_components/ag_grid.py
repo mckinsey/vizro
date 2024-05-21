@@ -118,5 +118,6 @@ class AgGrid(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
             delay_show=500,
+            delay_hide=500,
             overlay_style={"visibility": "visible", "filter": "blur(2px)"},
         )

@@ -137,6 +137,7 @@ class Graph(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
             delay_show=500,
+            delay_hide=500,
         )
 
     @staticmethod
