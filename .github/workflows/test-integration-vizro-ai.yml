@@ -7,13 +7,12 @@ defaults:
 on:
   push:
     branches: [main]
-    paths:
-      - vizro-ai/**
   pull_request:
     branches:
       - main
     paths:
       - vizro-ai/**
+      - !vizro-ai/docs/**
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
