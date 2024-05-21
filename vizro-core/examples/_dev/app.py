@@ -8,7 +8,7 @@ from vizro.tables import dash_data_table
 
 df = px.data.gapminder()
 
-dropdown_column = "Label"
+dropdown_column = "Label1"
 dropdown_options = ["-- A --", "-- B --", "-- C --"]
 
 # Add a 'Label' column to the data where options are randomly selected between 'A', 'B', 'C'
