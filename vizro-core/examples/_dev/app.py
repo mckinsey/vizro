@@ -5,42 +5,51 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_data_table
+from vizro.models.types import capture
+import pandas as pd
+import plotly.graph_objects as go
 
-df = px.data.gapminder()
+from typing import Optional
 
-dropdown_column = "Label"
-dropdown_options = ["-- A --", "-- B --", "-- C --"]
+iris_df = px.data.iris()
 
-# Add a 'Label' column to the data where options are randomly selected between 'A', 'B', 'C'
-df[dropdown_column] = np.random.choice(dropdown_options, size=len(df))
+@capture("graph")
+def plt_kpi_card(
+    column: str,
+    data_frame: pd.DataFrame = None,
+    title: Optional[str] = None,
+    align: str = "left",
+):
+    """Custom KPI card."""
+    # Do any data aggregation here
+    value = data_frame[column].mean()
 
-# Drop the 'iso_alpha' and 'iso_num' columns
-df.drop(["iso_alpha", "iso_num"], axis=1, inplace=True)
+    fig = go.Figure(
+        go.Indicator(
+            mode="number",
+            value=value,
+            number={"font": {"size": 32}},
+            title={"text": f"<br><span style='font-size:1rem;'>{title}</span><br>", "align": align},
+            align=align,
+        )
+    )
+    return fig
+
 
 
 page = vm.Page(
     title="Table Page",
     components=[
-        vm.Table(
-            title="Table",
-            figure=dash_data_table(
-                id="table",
-                data_frame=df,
-                columns=[
-                    {"name": i, "id": i, "presentation": "dropdown"} if i == dropdown_column else {"name": i, "id": i}
-                    for i in df.columns
-                ],
-                editable=True,
-                dropdown={
-                    dropdown_column: {
-                        "options": [{"label": i, "value": i} for i in dropdown_options],
-                        "clearable": False,
-                    },
-                },
+        vm.Graph(
+            id="kpi-total",
+            figure=plt_kpi_card(
+                data_frame=iris_df,
+                column="sepal_width",
+                title="Sepal Width AVG",
             ),
         ),
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

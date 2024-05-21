@@ -3,12 +3,7 @@
   margin-left: -8px;
 }
 
-/* Apply styling to parent */
-.card:has(#my-card) {
-  background-color: white;
-}
-
-/* Apply styling to children */
-#my-card p {
-  color: black;
+#kpi-total {
+  border-left: 4px solid var(--text-primary);
+  padding-left: 12px;
 }
