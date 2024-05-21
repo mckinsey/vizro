@@ -38,6 +38,8 @@ jobs:
             hatch-env: lower-bounds
             label: lower bounds
     steps:
+      - uses: actions/checkout@v4
+
       - name: Passed fork step
         run: echo "Success!"
 
