@@ -5,7 +5,7 @@ from dash._callback_context import context_value
 from dash._utils import AttributeDict
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._actions_utils import CallbackTriggerDict
-from vizro.managers import model_manager
+from vizro.managers import data_manager, model_manager
 
 
 @pytest.fixture
@@ -35,6 +35,17 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
     scatter_params["y"] = y
     scatter_params["x"] = x
     return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
+
+@pytest.fixture
+def target_scatter_parameter_data_frame_first_n(request, gapminder_2007_dynamic_first_n, scatter_params):
+    first_n = request.param
+    return px.scatter(gapminder_2007_dynamic_first_n(first_n), **scatter_params).update_layout(margin_t=24)
+
+
+@pytest.fixture
+def target_box_parameter_data_frame_first_n(request, gapminder_2007_dynamic_first_n, box_params):
+    first_n = request.param
+    return px.box(gapminder_2007_dynamic_first_n(first_n), **box_params).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -148,8 +159,38 @@ def ctx_parameter_y_and_x(request):
     return context_value
 
 
-@pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+@pytest.fixture
+def ctx_parameter_data_frame_argument(request):
+    """Mock dash.ctx that represents parameter applied."""
+    targets, first_n_parameter = request.param
+    mock_ctx = {
+        "args_grouping": {
+            "external": {
+                "filters": [],
+                "filter_interaction": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="first_n_parameter",
+                        property="value",
+                        value=first_n_parameter,
+                        str_id="first_n_parameter",
+                        triggered=False,
+                    )
+                ]
+            }
+        },
+        "outputs_list": [
+            {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
+            for target in targets
+        ],
+    }
+
+    context_value.set(AttributeDict(**mock_ctx))
+    return context_value
+
+
 class TestParameter:
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_y, target_scatter_parameter_y",
         [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
@@ -173,6 +214,7 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_hover_data, target_scatter_parameter_hover_data",
         [
@@ -205,6 +247,7 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_y, target_scatter_parameter_y, target_box_parameter_y",
         [("pop", "pop", "pop"), ("gdpPercap", "gdpPercap", "gdpPercap")],
@@ -228,6 +271,7 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x",
         [(["pop", "continent"], ["pop", "continent"]), (["gdpPercap", "country"], ["gdpPercap", "country"])],
@@ -257,6 +301,7 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
         [
@@ -291,6 +336,7 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
         "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x, target_box_parameter_y_and_x",
         [
@@ -327,5 +373,41 @@ class TestParameter:
 
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
         expected = {"box_chart": target_box_parameter_y_and_x}
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize(
+        "ctx_parameter_data_frame_argument, "
+        "target_scatter_parameter_data_frame_first_n, "
+        "target_box_parameter_data_frame_first_n",
+        [((["scatter_chart", "box_chart"], 50), 50, 50), ((["scatter_chart", "box_chart"], 100), 100, 100)],
+        indirect=True,
+    )
+    def test_one_data_frame_parameter_multiple_targets(
+        self,
+        ctx_parameter_data_frame_argument,
+        target_scatter_parameter_data_frame_first_n,
+        target_box_parameter_data_frame_first_n,
+        gapminder_2007_dynamic_first_n,
+    ):
+        data_manager["gapminder_2007_dynamic_first_n"] = gapminder_2007_dynamic_first_n
+
+        # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
+        first_n_parameter = vm.Parameter(
+            id="test_data_frame_parameter",
+            targets=["scatter_chart.data_frame.first_n", "box_chart.data_frame.first_n"],
+            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1),
+        )
+        model_manager["test_page"].controls.append(first_n_parameter)
+        first_n_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
+
+        expected = {
+            "scatter_chart": target_scatter_parameter_data_frame_first_n,
+            "box_chart": target_box_parameter_data_frame_first_n,
+        }
 
         assert result == expected

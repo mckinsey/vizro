@@ -457,7 +457,7 @@ class TestExportData:
         # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
         first_n_parameter = vm.Parameter(
             targets=["scatter_chart.data_frame.first_n", "box_chart.data_frame.first_n"],
-            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1),
+            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1, value=1),
         )
         model_manager["test_page"].controls.append(first_n_parameter)
         first_n_parameter.pre_build()
