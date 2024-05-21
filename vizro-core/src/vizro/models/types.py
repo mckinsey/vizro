@@ -248,7 +248,7 @@ class capture:
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid"]):
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "card"]):
         """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
         self._mode = mode
 
@@ -304,7 +304,7 @@ class capture:
                 return captured_callable
 
             return wrapped
-        elif self._mode in ["table", "ag_grid"]:
+        elif self._mode in ["table", "ag_grid", "card"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs):

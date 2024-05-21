@@ -10,7 +10,7 @@ import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
 from vizro.models.types import capture
-
+from vizro.cards import kpi_card
 iris_df = px.data.iris()
 
 # Open questions -------
@@ -74,7 +74,7 @@ vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
-    layout=vm.Layout(grid=[[0, 1]] + [[-1, -1]] * 3),
+    layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]] * 3),
     components=[
         vm.Graph(
             id="kpi-total",
@@ -85,12 +85,9 @@ page = vm.Page(
             ),
         ),
         CustomKPI(
-            title="Total Complaints",
-            value="75.513",
-            icon="arrow_circle_up",
-            sign="up",
-            ref_value="5.5% vs. Last Year"
+            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
         ),
+        vm.Card(figure=kpi_card(iris_df, value="sepal_width", title="Sepal Width AVG")),
     ],
     controls=[vm.Filter(column="species")],
 )
