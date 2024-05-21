@@ -19,6 +19,7 @@ jobs:
     steps:
       - name: Passed fork step
         run: echo "Success!"
+
   circleci-trigger:
     if: github.event.pull_request.head.repo.fork == false
     name: CircleCI tests trigger
