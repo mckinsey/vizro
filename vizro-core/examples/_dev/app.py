@@ -17,13 +17,13 @@ def load_iris_data(points=1):
 data_manager["iris"] = load_iris_data
 
 # SimpleCache
-data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
+# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
 # RedisCache
-# data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
+data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
 
 # Timeout
-data_manager["iris"].timeout = 15
+data_manager["iris"].timeout = 30
 
 
 page = vm.Page(

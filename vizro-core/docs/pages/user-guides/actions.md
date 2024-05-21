@@ -27,6 +27,11 @@ The below sections are guides on how to use pre-defined action functions.
 To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
 a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
+!!! info
+
+    If data from [custom chart](custom-charts.md) is being downloaded, then the `data_frame` input argument represents the data that is going to be downloaded. 
+
+
 !!! example "`export_data`"
 
     === "app.py"
