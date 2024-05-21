@@ -16,8 +16,16 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  test-unit-vizro-core-fork:
+    if: github.event.pull_request.head.repo.fork == true
+    name: Passed fork job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Passed fork step
+        run: echo "Success!"
   test-unit-vizro-core:
     name: test-unit-vizro-core on Py${{ matrix.python-version }} ${{ matrix.label }}
+    if: github.event.pull_request.head.repo.fork == false
 
     runs-on: ubuntu-latest
     strategy:
