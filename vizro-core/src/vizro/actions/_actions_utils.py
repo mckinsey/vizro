@@ -129,7 +129,7 @@ def _update_nested_graph_properties(
 
 
 def _get_parametrized_config(
-    targets: List[ModelID], parameters: List[CallbackTriggerDict]
+    targets: List[ModelID], ctds_parameters: List[CallbackTriggerDict]
 ) -> Dict[ModelID, Dict[str, Any]]:
     parameterized_config = {}
     parameterized_data_frame_arguments = {}
@@ -139,10 +139,9 @@ def _get_parametrized_config(
         graph_config = deepcopy(model_manager[target].figure._arguments)
 
         # Not possible to update nested arguments for data_frame, just top-level ones. This is ok.
-        # TODO: Put in some check to raise error?
         graph_config["data_frame"] = {}
 
-        for ctd in parameters:
+        for ctd in ctds_parameters:
             selector_value = ctd[
                 "value"
             ]  # TODO: needs to be refactored so that it is independent of implementation details
@@ -201,7 +200,7 @@ def _get_targets_data_and_config(
     targets: Optional[List[ModelID]] = None,
 ):
     parameterized_config, parameterized_data_frame_arguments = _get_parametrized_config(
-        targets=targets, parameters=ctds_parameters
+        targets=targets, ctds_parameters=ctds_parameters
     )
 
     filtered_data = _get_filtered_data(

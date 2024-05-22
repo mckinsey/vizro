@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -10,8 +11,8 @@ def gapminder_2007(gapminder):
 
 
 @pytest.fixture
-def gapminder_2007_dynamic_first_n(gapminder_2007):
-    return lambda first_n=None: gapminder_2007[:first_n] if first_n else gapminder_2007
+def gapminder_dynamic_first_n_last_n_function(gapminder):
+    return lambda first_n=None, last_n=None: pd.concat([gapminder[:first_n], gapminder[-last_n:]]) if last_n else gapminder[:first_n]
 
 
 @pytest.fixture
@@ -25,8 +26,8 @@ def box_chart(gapminder_2007, box_params):
 
 
 @pytest.fixture
-def box_chart_dynamic_data_frame(gapminder_2007_dynamic_first_n, box_params):
-    return px.box("gapminder_2007_dynamic_first_n", **box_params).update_layout(margin_t=24)
+def box_chart_dynamic_data_frame(box_params):
+    return px.box("gapminder_dynamic_first_n_last_n", **box_params).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -40,8 +41,8 @@ def scatter_chart(gapminder_2007, scatter_params):
 
 
 @pytest.fixture
-def scatter_chart_dynamic_data_frame(gapminder_2007_dynamic_first_n, scatter_params):
-    return px.scatter("gapminder_2007_dynamic_first_n", **scatter_params).update_layout(margin_t=24)
+def scatter_chart_dynamic_data_frame(scatter_params):
+    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params).update_layout(margin_t=24)
 
 
 @pytest.fixture

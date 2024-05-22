@@ -38,15 +38,21 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
 
 
 @pytest.fixture
-def target_scatter_parameter_data_frame_first_n(request, gapminder_2007_dynamic_first_n, scatter_params):
-    first_n = request.param
-    return px.scatter(gapminder_2007_dynamic_first_n(first_n), **scatter_params).update_layout(margin_t=24)
+def target_scatter_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, scatter_params):
+    first_n, last_n = request.param
+    return px.scatter(
+        gapminder_dynamic_first_n_last_n_function(first_n, last_n),
+        **scatter_params
+    ).update_layout(margin_t=24)
 
 
 @pytest.fixture
-def target_box_parameter_data_frame_first_n(request, gapminder_2007_dynamic_first_n, box_params):
-    first_n = request.param
-    return px.box(gapminder_2007_dynamic_first_n(first_n), **box_params).update_layout(margin_t=24)
+def target_box_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, box_params):
+    first_n, last_n = request.param
+    return px.box(
+        gapminder_dynamic_first_n_last_n_function(first_n, last_n),
+        **box_params
+    ).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -163,21 +169,35 @@ def ctx_parameter_y_and_x(request):
 @pytest.fixture
 def ctx_parameter_data_frame_argument(request):
     """Mock dash.ctx that represents parameter applied."""
-    targets, first_n_parameter = request.param
+    targets, first_n, last_n = request.param
+
+    parameters = [
+        CallbackTriggerDict(
+            id="first_n_parameter",
+            property="value",
+            value=first_n,
+            str_id="first_n_parameter",
+            triggered=False,
+        )
+    ]
+
+    if last_n:
+        parameters.append(
+            CallbackTriggerDict(
+                id="last_n_parameter",
+                property="value",
+                value=last_n,
+                str_id="last_n_parameter",
+                triggered=False,
+            )
+        )
+
     mock_ctx = {
         "args_grouping": {
             "external": {
                 "filters": [],
                 "filter_interaction": [],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="first_n_parameter",
-                        property="value",
-                        value=first_n_parameter,
-                        str_id="first_n_parameter",
-                        triggered=False,
-                    )
-                ],
+                "parameters": parameters
             }
         },
         "outputs_list": [
@@ -380,19 +400,30 @@ class TestParameter:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "ctx_parameter_data_frame_argument, "
-        "target_scatter_parameter_data_frame_first_n, "
-        "target_box_parameter_data_frame_first_n",
-        [((["scatter_chart", "box_chart"], 50), 50, 50), ((["scatter_chart", "box_chart"], 100), 100, 100)],
+        "target_scatter_parameter_data_frame_first_n_last_n, "
+        "target_box_parameter_data_frame_first_n_last_n",
+        [
+            (
+                (["scatter_chart", "box_chart"], 50, None),
+                (50, None),
+                (50, None),
+            ),
+            (
+                (["scatter_chart", "box_chart"], 100, None),
+                (100, None),
+                (100, None),
+            )
+        ],
         indirect=True,
     )
     def test_one_data_frame_parameter_multiple_targets(
         self,
         ctx_parameter_data_frame_argument,
-        target_scatter_parameter_data_frame_first_n,
-        target_box_parameter_data_frame_first_n,
-        gapminder_2007_dynamic_first_n,
+        target_scatter_parameter_data_frame_first_n_last_n,
+        target_box_parameter_data_frame_first_n_last_n,
+        gapminder_dynamic_first_n_last_n_function,
     ):
-        data_manager["gapminder_2007_dynamic_first_n"] = gapminder_2007_dynamic_first_n
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
 
         # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
         first_n_parameter = vm.Parameter(
@@ -407,8 +438,63 @@ class TestParameter:
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
 
         expected = {
-            "scatter_chart": target_scatter_parameter_data_frame_first_n,
-            "box_chart": target_box_parameter_data_frame_first_n,
+            "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
+            "box_chart": target_box_parameter_data_frame_first_n_last_n,
+        }
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize(
+        "ctx_parameter_data_frame_argument, "
+        "target_scatter_parameter_data_frame_first_n_last_n, "
+        "target_box_parameter_data_frame_first_n_last_n",
+        [
+            (
+                (["scatter_chart", "box_chart"], 50, 50),
+                (50, 50),
+                (50, 50),
+            ),
+            (
+                (["scatter_chart", "box_chart"], 100, 100),
+                (100, 100),
+                (100, 100),
+            )
+        ],
+        indirect=True,
+    )
+    def test_multiple_data_frame_parameters_multiple_targets(
+        self,
+        ctx_parameter_data_frame_argument,
+        target_scatter_parameter_data_frame_first_n_last_n,
+        target_box_parameter_data_frame_first_n_last_n,
+        gapminder_dynamic_first_n_last_n_function,
+    ):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+
+        # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
+        first_n_parameter = vm.Parameter(
+            id="test_data_frame_parameter_first_n",
+            targets=["scatter_chart.data_frame.first_n", "box_chart.data_frame.first_n"],
+            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1),
+        )
+        model_manager["test_page"].controls.append(first_n_parameter)
+        first_n_parameter.pre_build()
+
+        last_n_parameter = vm.Parameter(
+            id="test_data_frame_parameter_last_n",
+            targets=["scatter_chart.data_frame.last_n", "box_chart.data_frame.last_n"],
+            selector=vm.Slider(id="last_n_parameter", min=1, max=10, step=1),
+        )
+        model_manager["test_page"].controls.append(last_n_parameter)
+        last_n_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter_first_n"].function()
+
+        expected = {
+            "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
+            "box_chart": target_box_parameter_data_frame_first_n_last_n,
         }
 
         assert result == expected

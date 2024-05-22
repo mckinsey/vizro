@@ -1,5 +1,3 @@
-<!-- TODO: mention and link to parameterized dynamic data somewhere on this page -->
-
 # How to use parameters
 
 This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function that creates the chart/component.
@@ -179,3 +177,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
 In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
 Note that in the above example, one parameter affects multiple targets.
+
+## Data loading parameters
+
+If you are using [dynamic data](data.md/#dynamic-data) loading, you can customize the data being loaded by utilizing parameters. For detailed instructions on how to pass parameters to dynamic data functions from the user interface, refer to the [parametrize data loading](data.md/#parametrize-data-loading) section.
