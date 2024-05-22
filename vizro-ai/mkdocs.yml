@@ -37,8 +37,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: Inter Regular
   icon:
     repo: fontawesome/brands/github
   features:
