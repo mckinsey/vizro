@@ -1,4 +1,4 @@
-from vizro.cards._cards import kpi_card_agg, nav_card, text_card
+from vizro.cards._cards import kpi_card_agg, nav_card, text_card, kpi_card_ref
 
 # Please keep alphabetically ordered
-__all__ = ["text_card", "nav_card", "kpi_card_agg"]
+__all__ = ["text_card", "nav_card", "kpi_card_agg", "kpi_card_ref"]

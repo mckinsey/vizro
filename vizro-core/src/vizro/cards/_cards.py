@@ -58,9 +58,9 @@ def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_
 @capture("card")
 def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value = agg_fct(data_frame[value])
-    ref_value = agg_fct(data_frame[ref_value])
-    delta = (ref_value-value)/value * 100
+    value = round(agg_fct(data_frame[value]), 2)
+    ref_value = round(agg_fct(data_frame[ref_value]), 2)
+    delta = round((ref_value-value)/value * 100, 2)
     icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down"
 
     return dbc.Card(
@@ -69,11 +69,12 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_
                 html.P(value, className="card-value"),
                 html.Span(
                     [
-                        html.Span(icon, className=f"material-symbols-outlined {icon}"),
-                        html.Span(ref_value, className=icon),
+                        html.Span(icon, className=f"material-symbols-outlined"),
+                        html.Span(f"{delta} % vs. Reference ({ref_value})"),
                     ],
                     className="card-ref-value",
                 ),
             ],
+            id=id,
             className=f"card-{icon}",
         )

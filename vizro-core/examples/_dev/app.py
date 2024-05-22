@@ -9,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
-from vizro.cards import kpi_card_agg
+from vizro.cards import kpi_card_agg, kpi_card_ref
 from vizro.models.types import capture
 
 iris_df = px.data.iris()
@@ -35,7 +35,7 @@ def plt_kpi_card(
         go.Indicator(
             mode="number",
             value=value,
-            number={"font": {"size": 32}},
+            number={"font": {"size": 28}},
             title={"text": f"<br><span style='font-size:1rem;'>{title}</span><br>", "align": align},
             align=align,
         )
@@ -75,7 +75,7 @@ vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
-    #   layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]] * 3),
+       layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [-1, -1, -1]]),
     components=[
         # Method 1: Plotly Indicator inside vm.Graph
         vm.Graph(
@@ -94,6 +94,12 @@ page = vm.Page(
         vm.Card(
             figure=kpi_card_agg(
                 data_frame=iris_df, value="sepal_width", title="Sepal Width AVG", agg_fct=lambda x: x.mean()
+            )
+        ),
+        # Method 3: Using vm.Card with a figure attribute
+        vm.Card(
+            figure=kpi_card_ref(
+                data_frame=iris_df, value="sepal_width", ref_value="petal_width", title="Sepal Width AVG", agg_fct=lambda x: x.mean()
             )
         ),
         # TODO: This should still work without a figure argument
