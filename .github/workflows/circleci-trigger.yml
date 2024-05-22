@@ -14,7 +14,7 @@ env:
 jobs:
   circleci-trigger-fork:
     if: github.event.pull_request.head.repo.fork == true
-    name: Passed fork job
+    name: CircleCI tests trigger
     runs-on: ubuntu-latest
     steps:
       - name: Passed fork step
