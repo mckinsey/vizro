@@ -16,16 +16,9 @@
   width: 100%;
 }
 
-.card .card-title {
-  font-size: 1.4rem;
-  height: 100%;
-}
-
-.card .card-value {
-  font-size: 2rem;
+.kpi-value {
+  color: grey;
   font-weight: 600;
-  height: 100%;
-  margin: 0;
 }
 
 .card-border-up {

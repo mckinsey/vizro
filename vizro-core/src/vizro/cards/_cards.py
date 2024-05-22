@@ -40,14 +40,14 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str, id: str) -> dbc.Car
 @capture("card")
 def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value = agg_fct(data_frame[value])
+    value = round(agg_fct(data_frame[value]), 2)
 
     return dbc.Card(
         dcc.Markdown(
             f"""
-        ### {title}
+        ## {title}
 
-        ## {value}
+        # {value}
         """,
             dangerously_allow_html=False,
             id=id,
@@ -66,7 +66,7 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_
     return dbc.Card(
             [
                 html.H2(title),
-                html.H1(value),
+                html.H1(value, className="kpi-value"),
                 html.Span(
                     [
                         html.Span("arrow_circle_up" if delta > 0 else "arrow_circle_down", className=f"material-symbols-outlined"),
