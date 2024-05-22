@@ -19,4 +19,4 @@ With thanks to Sam Bourton and Stephen Xu for sponsorship, inspiration and guida
 
 
 ## Which large language models are supported by vizro-ai?
-Please refer to [supported models](../user-guides/customize-vizro-ai.md#supported-models) in `vizro-ai` docs.
+Refer to [supported models](../user-guides/customize-vizro-ai.md#supported-models) in `vizro-ai` docs.
