@@ -16,7 +16,8 @@
   width: 100%;
 }
 
-.kpi-card-agg h1, .kpi-value {
+.kpi-card-agg h1,
+.kpi-value {
   color: grey;
   font-weight: 600;
 }
@@ -49,9 +50,7 @@
   line-height: 20px;
 }
 
-
-
-/*Dynamic Card*/
+/* Dynamic Card */
 .card-up {
   border-left: 4px solid #1a85ff;
 }
