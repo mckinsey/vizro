@@ -38,9 +38,9 @@ jobs:
             local branch=$1
             local vizro_branch=$2
             local tag=$3
-            
+
             local json_data=$(jq -n --arg branch "$branch" --arg vizro_branch "$vizro_branch" --arg tag "$tag" '{branch: $branch, parameters: {branch: $branch, vizro_branch: $vizro_branch, tag: $tag}}')
-          
+
             curl --request POST \
               --url "${{ secrets.QA_PIPELINE_URL }}" \
               --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
@@ -48,10 +48,10 @@ jobs:
               --data "$json_data" \
             | jq -r '.id'
           }
-          
-          
+
+
           CREATED_PIPELINE=$(create_circleci_pipeline "${{ github.head_ref }}" "${{ github.head_ref }}" "$github_tag")
-          
+
           # we use this loop to trigger main branch in tests if tests repo doesn't contain current dev branch
           if [[ "$CREATED_PIPELINE" == "null" ]]; then
             CREATED_PIPELINE=$(create_circleci_pipeline "main" "${{ github.head_ref }}" "$github_tag")
