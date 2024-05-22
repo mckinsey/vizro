@@ -52,6 +52,7 @@ def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_
             dangerously_allow_html=False,
             id=id,
         ),
+        className="kpi-card-agg"
     )
 
 

@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-.kpi-value {
+.kpi-card-agg h1, .kpi-value {
   color: grey;
   font-weight: 600;
 }
