@@ -28,26 +28,33 @@ jobs:
     steps:
       - name: Ping CircleCI pipeline
         run: |
+          # github_tag is needed for tests after release
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             github_tag=${{ github.ref_name }}
           else github_tag=""
           fi
 
-          CREATED_PIPELINE=$(curl --request POST \
-            --url "${{ secrets.QA_PIPELINE_URL }}" \
-            --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
-            --header "content-type: application/json" \
-            --data '{"branch":"${{ github.head_ref }}", "parameters":{"branch":"${{ github.head_ref }}", "vizro_branch": "${{ github.head_ref }}", "tag": "$github_tag"}}' \
-          | jq -r '.id'
-          )
-          if [[ "$CREATED_PIPELINE" == "null" ]]; then
-            CREATED_PIPELINE=$(curl --request POST \
-            --url "${{ secrets.QA_PIPELINE_URL }}" \
-            --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
-            --header "content-type: application/json" \
-            --data '{"branch":"main", "parameters":{"branch":"main", "vizro_branch": "${{ github.head_ref }}", "tag": "$github_tag"}}' \
+          create_circleci_pipeline() {
+            local branch=$1
+            local vizro_branch=$2
+            local tag=$3
+            
+            local json_data=$(jq -n --arg branch "$branch" --arg vizro_branch "$vizro_branch" --arg tag "$tag" '{branch: $branch, parameters: {branch: $branch, vizro_branch: $vizro_branch, tag: $tag}}')
+          
+            curl --request POST \
+              --url "${{ secrets.QA_PIPELINE_URL }}" \
+              --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
+              --header "content-type: application/json" \
+              --data "$json_data" \
             | jq -r '.id'
-            )
+          }
+          
+          
+          CREATED_PIPELINE=$(create_circleci_pipeline "${{ github.head_ref }}" "${{ github.head_ref }}" "$github_tag")
+          
+          # we use this loop to trigger main branch in tests if tests repo doesn't contain current dev branch
+          if [[ "$CREATED_PIPELINE" == "null" ]]; then
+            CREATED_PIPELINE=$(create_circleci_pipeline "main" "${{ github.head_ref }}" "$github_tag")
           fi
           echo "my created pipeline"
           echo $CREATED_PIPELINE
