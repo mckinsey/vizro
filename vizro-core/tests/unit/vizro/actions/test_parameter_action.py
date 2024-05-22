@@ -38,21 +38,19 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
 
 
 @pytest.fixture
-def target_scatter_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, scatter_params):
+def target_scatter_parameter_data_frame_first_n_last_n(
+    request, gapminder_dynamic_first_n_last_n_function, scatter_params
+):
     first_n, last_n = request.param
-    return px.scatter(
-        gapminder_dynamic_first_n_last_n_function(first_n, last_n),
-        **scatter_params
-    ).update_layout(margin_t=24)
+    return px.scatter(gapminder_dynamic_first_n_last_n_function(first_n, last_n), **scatter_params).update_layout(
+        margin_t=24
+    )
 
 
 @pytest.fixture
 def target_box_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, box_params):
     first_n, last_n = request.param
-    return px.box(
-        gapminder_dynamic_first_n_last_n_function(first_n, last_n),
-        **box_params
-    ).update_layout(margin_t=24)
+    return px.box(gapminder_dynamic_first_n_last_n_function(first_n, last_n), **box_params).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -193,13 +191,7 @@ def ctx_parameter_data_frame_argument(request):
         )
 
     mock_ctx = {
-        "args_grouping": {
-            "external": {
-                "filters": [],
-                "filter_interaction": [],
-                "parameters": parameters
-            }
-        },
+        "args_grouping": {"external": {"filters": [], "filter_interaction": [], "parameters": parameters}},
         "outputs_list": [
             {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets
@@ -412,7 +404,7 @@ class TestParameter:
                 (["scatter_chart", "box_chart"], 100, None),
                 (100, None),
                 (100, None),
-            )
+            ),
         ],
         indirect=True,
     )
@@ -459,7 +451,7 @@ class TestParameter:
                 (["scatter_chart", "box_chart"], 100, 100),
                 (100, 100),
                 (100, 100),
-            )
+            ),
         ],
         indirect=True,
     )
