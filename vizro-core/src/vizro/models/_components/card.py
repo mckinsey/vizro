@@ -1,7 +1,7 @@
 from typing import Literal, Optional
 
 import pandas as pd
-from dash import dcc, html
+from dash import dcc
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator

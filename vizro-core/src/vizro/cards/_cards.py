@@ -1,5 +1,7 @@
 """Module containing default card components."""
+
 from typing import Callable
+
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dcc, get_relative_path, html
@@ -33,6 +35,7 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str, id: str) -> dbc.Car
 # LQ: All of the below don't have to be official Vizro KPI Cards, but can be examples of how to create custom cards
 # These can also just live in the docs as examples if not suitable for common usage.
 
+
 # Example 1: Aggregated KPI Card with Markdown
 @capture("card")
 def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
@@ -40,10 +43,37 @@ def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_
     value = agg_fct(data_frame[value])
 
     return dbc.Card(
-        dcc.Markdown(f"""
+        dcc.Markdown(
+            f"""
         ### {title}
-        
+
         ## {value}
         """,
-        dangerously_allow_html=False, id=id),
+            dangerously_allow_html=False,
+            id=id,
+        ),
     )
+
+
+@capture("card")
+def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_value: str, agg_fct: Callable = sum) -> dbc.Card:
+    """Dynamic text card in form of a KPI Card."""
+    value = agg_fct(data_frame[value])
+    ref_value = agg_fct(data_frame[ref_value])
+    delta = (ref_value-value)/value * 100
+    icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down"
+
+    return dbc.Card(
+            [
+                html.H4(title, className="card-title"),
+                html.P(value, className="card-value"),
+                html.Span(
+                    [
+                        html.Span(icon, className=f"material-symbols-outlined {icon}"),
+                        html.Span(ref_value, className=icon),
+                    ],
+                    className="card-ref-value",
+                ),
+            ],
+            className=f"card-{icon}",
+        )

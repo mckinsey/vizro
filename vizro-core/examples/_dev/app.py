@@ -91,7 +91,11 @@ page = vm.Page(
             title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
         ),
         # Method 3: Using vm.Card with a figure attribute
-        vm.Card(figure=kpi_card_agg(data_frame=iris_df, value="sepal_width", title="Sepal Width AVG", agg_fct=lambda x: x.mean())),
+        vm.Card(
+            figure=kpi_card_agg(
+                data_frame=iris_df, value="sepal_width", title="Sepal Width AVG", agg_fct=lambda x: x.mean()
+            )
+        ),
         # TODO: This should still work without a figure argument
         vm.Card(text="""Hello, this is a text card"""),
         vm.Card(text="""Hello, this is a nav card""", href="https://www.google.com"),
