@@ -6,9 +6,9 @@ from dash import dash_table, dcc, get_relative_path, html
 
 from vizro.models.types import capture
 
-# A few issues:
-# The data frame is not used in the function, but needs to be provided here
-# id is usually attached to Card.text
+# TODO: Check if we can get rid of any of these issues:
+# 1) The data frame is not used in the function, but needs to be provided here
+# 2) id is usually attached to Card.text, but we append it to the Card itself
 
 
 @capture("card")

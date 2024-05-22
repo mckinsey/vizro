@@ -9,8 +9,9 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.cards import kpi_card
+from vizro.models.types import capture
+
 iris_df = px.data.iris()
 
 # Open questions -------
@@ -74,8 +75,9 @@ vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
-    layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]] * 3),
+    #   layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]] * 3),
     components=[
+        # Method 1: Plotly Indicator inside vm.Graph
         vm.Graph(
             id="kpi-total",
             figure=plt_kpi_card(
@@ -84,10 +86,15 @@ page = vm.Page(
                 title="Sepal Width AVG",
             ),
         ),
+        # Method 2: Custom component without a figure attribute
         CustomKPI(
             title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
         ),
+        # Method 3: Using vm.Card with a figure attribute
         vm.Card(figure=kpi_card(iris_df, value="sepal_width", title="Sepal Width AVG")),
+        # TODO: This should still work without a figure argument
+        vm.Card(text="""Hello, this is a text card"""),
+        vm.Card(text="""Hello, this is a nav card""", href="https://www.google.com"),
     ],
     controls=[vm.Filter(column="species")],
 )
