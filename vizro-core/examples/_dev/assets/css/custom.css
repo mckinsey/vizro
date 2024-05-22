@@ -17,7 +17,7 @@
 }
 
 .kpi-card-agg h1, .kpi-value {
-  color: grey;
+  color: lightgrey;
   font-weight: 600;
 }
 
@@ -66,4 +66,21 @@
 
 .card-ref-value .down {
   color: #d41159;
+}
+
+
+/* Dynamic Card - Icon*/
+
+.kpi-title {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+h2.icon.material-symbols-outlined {
+  font-size: 28px;
+}
+
+.kpi-card-icon {
+  border-top: 4px solid lightgrey;
 }

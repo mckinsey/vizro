@@ -79,3 +79,24 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_
             id=id,
             className=f"card-{color}",
         )
+
+
+@capture("card")
+def kpi_card_icon(data_frame: pd.DataFrame, title: str, id: str, value: str, icon:str, agg_fct: Callable = sum) -> dbc.Card:
+    """Dynamic text card in form of a KPI Card."""
+    value = round(agg_fct(data_frame[value]), 2)
+
+    return dbc.Card(
+            [
+                html.Div(
+                    [
+                        html.H2(title),
+                        html.H2(icon, className=f"icon material-symbols-outlined"),
+                    ],
+                    className="kpi-title"
+                ),
+                html.H1(value, className=f"kpi-value"),
+            ],
+        className="kpi-card-icon",
+        id=id,
+        )

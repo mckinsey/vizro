@@ -9,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
-from vizro.cards import kpi_card_agg, kpi_card_ref
+from vizro.cards import kpi_card_agg, kpi_card_ref, kpi_card_icon
 from vizro.models.types import capture
 
 iris_df = px.data.iris()
@@ -75,7 +75,7 @@ vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
-       layout=vm.Layout(grid=[[0, 1, -1], [2, 3, -1], [4, 5, -1]]),
+       layout=vm.Layout(grid=[[0, 1, -1], [2, 3, -1], [4, 5, 6]]),
     components=[
         # TODO: This should still work without a figure argument
         vm.Card(text="""
@@ -104,13 +104,18 @@ page = vm.Page(
         # Method 3: Using vm.Card with a figure attribute
         vm.Card(
             figure=kpi_card_agg(
-                data_frame=iris_df, value="sepal_width", title="Dynamic Card - Simple", agg_fct=lambda x: x.mean()
+                data_frame=iris_df, value="sepal_width", title="Dynamic Card Agg.", agg_fct=lambda x: x.mean()
             )
         ),
-        # Method 3: Using vm.Card with a figure attribute
         vm.Card(
             figure=kpi_card_ref(
-                data_frame=iris_df, value="sepal_width", ref_value="petal_width", title="Dynamic Card - Styled", agg_fct=lambda x: x.mean()
+                data_frame=iris_df, value="sepal_width", ref_value="petal_width", title="Dynamic Card Ref.", agg_fct=lambda x: x.mean()
+            )
+        ),
+        vm.Card(
+            figure=kpi_card_icon(
+                data_frame=iris_df, value="sepal_width", icon="Home", title="Dynamic Card Icon",
+                agg_fct=lambda x: x.mean()
             )
         ),
     ],
