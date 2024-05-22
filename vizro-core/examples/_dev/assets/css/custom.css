@@ -55,3 +55,22 @@
   gap: 4px;
   line-height: 20px;
 }
+
+
+
+/*Dynamic Card*/
+.card-up {
+  border-left: 4px solid #1a85ff;
+}
+
+.card-ref-value .up {
+  color: #1a85ff;
+}
+
+.card-down {
+  border-left: 4px solid #d41159;
+}
+
+.card-ref-value .down {
+  color: #d41159;
+}

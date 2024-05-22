@@ -61,20 +61,20 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, id: str, value: str, ref_
     value = round(agg_fct(data_frame[value]), 2)
     ref_value = round(agg_fct(data_frame[ref_value]), 2)
     delta = round((ref_value-value)/value * 100, 2)
-    icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down"
+    color = "up" if delta > 0 else "down"
 
     return dbc.Card(
             [
-                html.H4(title, className="card-title"),
-                html.P(value, className="card-value"),
+                html.H2(title),
+                html.H1(value),
                 html.Span(
                     [
-                        html.Span(icon, className=f"material-symbols-outlined"),
+                        html.Span("arrow_circle_up" if delta > 0 else "arrow_circle_down", className=f"material-symbols-outlined"),
                         html.Span(f"{delta} % vs. Reference ({ref_value})"),
                     ],
-                    className="card-ref-value",
+                    className=f"card-ref-value {color}",
                 ),
             ],
             id=id,
-            className=f"card-{icon}",
+            className=f"card-{color}",
         )
