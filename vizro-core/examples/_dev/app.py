@@ -9,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
-from vizro.cards import kpi_card_agg, kpi_card_ref, kpi_card_icon
+from vizro.cards import kpi_card_agg, kpi_card_icon, kpi_card_ref
 from vizro.models.types import capture
 
 iris_df = px.data.iris()
@@ -37,7 +37,7 @@ def plt_kpi_card(
             value=value,
             number={"prefix": "$", "font": {"size": 32}},
             title={"text": f"<br><span style='font-size:1rem;'>{title}</span><br>", "align": align},
-            align=align
+            align=align,
         )
     )
     return fig
@@ -75,19 +75,22 @@ vm.Page.add_type("components", CustomKPI)
 
 page = vm.Page(
     title="Table Page",
-       layout=vm.Layout(grid=[[0, 1, -1], [2, 3, -1], [4, 5, 6]]),
+    layout=vm.Layout(grid=[[0, 1, -1], [2, 3, -1], [4, 5, 6]]),
     components=[
         # TODO: This should still work without a figure argument
-        vm.Card(text="""
+        vm.Card(
+            text="""
             # Text Card
             Hello, this is a text card.
-        """),
-        vm.Card(text="""
+        """
+        ),
+        vm.Card(
+            text="""
             # Nav Card
             Hello, this is a nav card.
         """,
-                href="https://www.google.com"),
-
+            href="https://www.google.com",
+        ),
         # Method 1: Plotly Indicator inside vm.Graph
         vm.Graph(
             id="kpi-total",
@@ -109,13 +112,20 @@ page = vm.Page(
         ),
         vm.Card(
             figure=kpi_card_ref(
-                data_frame=iris_df, value="sepal_width", ref_value="petal_width", title="Dynamic Card Ref.", agg_fct=lambda x: x.mean()
+                data_frame=iris_df,
+                value="sepal_width",
+                ref_value="petal_width",
+                title="Dynamic Card Ref.",
+                agg_fct=lambda x: x.mean(),
             )
         ),
         vm.Card(
             figure=kpi_card_icon(
-                data_frame=iris_df, value="sepal_width", icon="Home", title="Dynamic Card Icon",
-                agg_fct=lambda x: x.mean()
+                data_frame=iris_df,
+                value="sepal_width",
+                icon="Home",
+                title="Dynamic Card Icon",
+                agg_fct=lambda x: x.mean(),
             )
         ),
     ],

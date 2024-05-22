@@ -16,7 +16,8 @@
   width: 100%;
 }
 
-.kpi-card-agg h1, .kpi-value {
+.kpi-card-agg h1,
+.kpi-value {
   color: lightgrey;
   font-weight: 600;
 }
@@ -49,9 +50,7 @@
   line-height: 20px;
 }
 
-
-
-/*Dynamic Card*/
+/* Dynamic Card */
 .card-up {
   border-left: 4px solid #1a85ff;
 }
@@ -68,13 +67,12 @@
   color: #d41159;
 }
 
-
-/* Dynamic Card - Icon*/
+/* Dynamic Card - Icon */
 
 .kpi-title {
   display: flex;
-  justify-content: space-between;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 h2.icon.material-symbols-outlined {
