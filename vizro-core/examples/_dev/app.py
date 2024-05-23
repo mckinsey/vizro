@@ -1,8 +1,6 @@
-from vizro import Vizro
-import pandas as pd
-import vizro.plotly.express as px
 import vizro.models as vm
-
+import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
 
 
@@ -15,13 +13,10 @@ data_manager["iris"] = load_iris_data
 
 page = vm.Page(
     title="Update the chart on page refresh",
-    components=[
-        vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))
-    ],
+    components=[vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))],
     controls=[
         vm.Parameter(
-            targets=["graph.data_frame.number_of_points"],
-            selector=vm.Slider(min=1, max=20, step=1, value=10)
+            targets=["graph.data_frame.number_of_points"], selector=vm.Slider(min=1, max=20, step=1, value=10)
         ),
         vm.Filter(column="species"),
     ],
