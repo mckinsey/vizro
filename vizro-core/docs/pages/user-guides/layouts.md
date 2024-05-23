@@ -69,8 +69,11 @@ grid = [[0, 1],
 As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows:
 
 ```python title="Default grid"
-grid = [[0], [1], [2]]
-```
+grid = [
+             [0], 
+             [1],
+             [2]
+       ]
 
 Th layout has three equally sized rows, each containing a component spanning the entire width.
 
