@@ -334,7 +334,7 @@ It is not possible to pass [nested parameters](parameters.md#nested-parameters) 
 
 ### Filter update limitation
 
-If your dashboard includes a [filter](filters.md) then the values shown on a filter's [selector](selectors.md) _do not_ update while the dashboard is running. This is a known limitation that will be lifted in future releases, but if is problematic for you already then please [raise an issue on our Github repo](https://github.com/mckinsey/vizro/issues/).
+If your dashboard includes a [filter](filters.md) then the values shown on a filter's [selector](selectors.md) _do not_ update while the dashboard is running. This is a known limitation that will be lifted in future releases, but if is problematic for you already then [raise an issue on our GitHub repo](https://github.com/mckinsey/vizro/issues/).
 
 This limitation is why all arguments of your dynamic data loading function must have a default value. Regardless of the value of the `vm.Parameter` selected in the dashboard, these default parameter values are used when the `vm.Filter` is built. This determines the type of selector used in a filter and the options shown, which cannot currently be changed while the dashboard is running.
 
