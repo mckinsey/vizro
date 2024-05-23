@@ -50,7 +50,7 @@ jobs:
             CREATED_PIPELINE=$(create_circleci_pipeline "main" "${{ github.head_ref }}" "$github_tag")
           fi
           echo "Started pipeline with id $CREATED_PIPELINE"
-          
+
           echo "CREATED_PIPELINE=$CREATED_PIPELINE" >> $GITHUB_ENV
 
       - name: Wait for pipeline to run
@@ -70,7 +70,7 @@ jobs:
             echo $pipeline_status
             sleep 15
           done
-          
+
           if [[ "$created_pipeline_status" != "success" ]]; then
               echo "Pipeline not completed sucessfully - status was ${created_pipeline_status}"
               exit 1
