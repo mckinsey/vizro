@@ -164,7 +164,7 @@ class VizroAI:
             max_debug_retry: Maximum number of retries for debugging the generated code. Defaults to 3.
 
         Returns:
-            dict: A dictionary containing the generated code string, the figure object, and other text explanation
+            A dictionary containing the generated code string, the figure object, and other text explanation
             depending on whether explain flag is true.
 
         """
