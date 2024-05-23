@@ -28,12 +28,6 @@ jobs:
     steps:
       - name: Ping CircleCI pipeline
         run: |
-          # github_tag is needed for tests after release
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            github_tag=${{ github.ref_name }}
-          else github_tag=""
-          fi
-
           create_circleci_pipeline() {
             local branch=$1
             local vizro_branch=$2
