@@ -67,17 +67,11 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
     include_inputs = {"filters", "parameters", "filter_interaction", "theme_selector"}
 
     action_input_mapping = {
-        "filters": (_get_inputs_of_controls(page=page, control_type=Filter) if "filters" in include_inputs else []),
-        "parameters": (
-            _get_inputs_of_controls(page=page, control_type=Parameter) if "parameters" in include_inputs else []
-        ),
+        "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+        "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
         # TODO: Probably need to adjust other inputs to follow the same structure List[Dict[str, State]]
-        "filter_interaction": (
-            _get_inputs_of_figure_interactions(page=page, action_function=filter_interaction.__wrapped__)
-            if "filter_interaction" in include_inputs
-            else []
-        ),
-        "theme_selector": State("theme_selector", "checked") if "theme_selector" in include_inputs else [],
+        "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_function=filter_interaction.__wrapped__),
+        "theme_selector": State("theme_selector", "checked"),
     }
     return action_input_mapping
 
