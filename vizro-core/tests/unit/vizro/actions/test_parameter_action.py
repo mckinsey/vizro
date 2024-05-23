@@ -414,7 +414,7 @@ class TestParameter:
             "target_box_parameter_data_frame_first_n_last_n",
         ],
     )
-    def test_one_data_frame_parameter_multiple_targets(
+    def test_data_frame_parameters_multiple_targets(
         self,
         ctx_parameter_data_frame_argument,
         target_scatter_parameter_data_frame_first_n_last_n,

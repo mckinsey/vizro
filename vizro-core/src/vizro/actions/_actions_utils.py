@@ -148,9 +148,12 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: List[CallbackTrigg
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
+            if action.function._function.__name__ != "_parameter":
+                continue
+
             action_targets = _create_target_arg_mapping(action.function["targets"])
 
-            if action.function._function.__name__ != "_parameter" or target not in action_targets:
+            if target not in action_targets:
                 continue
 
             for action_targets_arg in action_targets[target]:
