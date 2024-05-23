@@ -31,14 +31,11 @@ def minimal_example(data_frame:pd.DataFrame=None):
 
 Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
 
+If you wish to alter the data contained in the `data_frame` argument then you should also consider using a [Filter](filters.md) or [parametrized data loading](data.md/#parametrize-data-loading) and [dynamic data](data.md/#dynamic-data). The `data_frame` argument input to a custom chart contains the data after filters and parameters have been applied. 
+
 !!! tip
 
     Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.
-
-!!! info
-
-    The required function argument `data_frame` contains already preprocessed data. This means that the `data_frame` has already been filtered using the [Filters](filters.md) and further parametrized using the [parametrize data loading](data.md/#parametrize-data-loading) feature for [dynamic data](data.md/#dynamic-data).
-
 
 ## Enhanced `plotly.express` chart with reference line
 
