@@ -70,7 +70,7 @@ As described above, when no `Layout` is specified, components are presented **ve
 
 ```python title="Vertical stacking"
 grid = [
-             [0], 
+             [0],
              [1],
              [2]
        ]
