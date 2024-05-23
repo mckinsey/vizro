@@ -288,7 +288,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
 
         from vizro.managers import data_manager
 
-        def load_iris_data(number_of_points): # (1)!
+        def load_iris_data(number_of_points=10): # (1)!
             iris = pd.read_csv("iris.csv") # (2)!
             return iris.sample(number_of_points) # (3)!
 
@@ -299,7 +299,12 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
             components=[
                 vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species")) # (5)!
             ],
-            controls=[vm.Parameter(targets=["graph.data_frame.number_of_points"], selector=vm.Slider(min=1, max=20, value=10)], # (6)!
+            controls=[
+                vm.Parameter(
+                    targets=["graph.data_frame.number_of_points"], # (6)!
+                    selector=vm.Slider(min=1, max=20, step=1, value=10)
+                )
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -356,7 +361,10 @@ The possible values shown on a filter's [selector](selectors.md) are fixed and d
             vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))
         ],
         controls=[
-            vm.Parameter(targets=["graph.data_frame.number_of_points"], selector=vm.Slider(min=1, max=20, value=10),
+            vm.Parameter(
+                targets=["graph.data_frame.number_of_points"],
+                selector=vm.Slider(min=1, max=20, step=1, value=10)
+            ),
             vm.Filter(column="species"),
         ],
     )

@@ -22,9 +22,9 @@ def target_scatter_filter_and_filter_interaction(request, gapminder_2007):
 
 
 @pytest.fixture
-def target_scatter_filter_and_parameter(request, gapminder_2007):
+def target_scatter_filter_and_parameter(request, gapminder):
     pop_filter, first_n_parameter = request.param
-    data = gapminder_2007
+    data = gapminder
     if first_n_parameter:
         data = data.head(first_n_parameter)
     if pop_filter:
@@ -33,9 +33,9 @@ def target_scatter_filter_and_parameter(request, gapminder_2007):
 
 
 @pytest.fixture
-def target_box_filter_and_parameter(request, gapminder_2007):
+def target_box_filter_and_parameter(request, gapminder):
     pop_filter, first_n_parameter = request.param
-    data = gapminder_2007
+    data = gapminder
     if first_n_parameter:
         data = data[:first_n_parameter]
     if pop_filter:
@@ -443,10 +443,10 @@ class TestExportData:
         ctx_export_data_filter_and_parameter,
         target_scatter_filter_and_parameter,
         target_box_filter_and_parameter,
-        gapminder_2007_dynamic_first_n,
+        gapminder_dynamic_first_n_last_n_function,
     ):
         # Adding dynamic data_frame to data_manager
-        data_manager["gapminder_2007_dynamic_first_n"] = gapminder_2007_dynamic_first_n
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
 
         # Creating and adding a Filter object to the existing Page
         pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))

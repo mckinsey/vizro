@@ -473,6 +473,7 @@ class TestParameter:
         model_manager["test_page"].controls.append(first_n_parameter)
         first_n_parameter.pre_build()
 
+        # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
         last_n_parameter = vm.Parameter(
             id="test_data_frame_parameter_last_n",
             targets=["scatter_chart.data_frame.last_n", "box_chart.data_frame.last_n"],
