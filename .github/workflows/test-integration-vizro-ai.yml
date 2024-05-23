@@ -20,7 +20,7 @@ env:
 
 jobs:
   test-integration-vizro-ai-fork:
-    if: github.event.pull_request.head.repo.fork == true
+    if: ${{ github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
     runs-on: ubuntu-latest
     strategy:
@@ -45,7 +45,7 @@ jobs:
         run: echo "Success!"
 
   test-integration-vizro-ai:
-    if: github.event.pull_request.head.repo.fork == false
+    if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
     environment: vizro_ai_secrets
     runs-on: ubuntu-latest
