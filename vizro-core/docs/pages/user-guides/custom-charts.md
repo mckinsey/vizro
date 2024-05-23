@@ -31,7 +31,7 @@ def minimal_example(data_frame:pd.DataFrame=None):
 
 Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
 
-If you wish to alter the data contained in the `data_frame` argument then you should also consider using a [Filter](filters.md) or [parametrized data loading](data.md/#parametrize-data-loading) and [dynamic data](data.md/#dynamic-data). The `data_frame` argument input to a custom chart contains the data after filters and parameters have been applied. 
+If you wish to alter the data contained in the `data_frame` argument then you should also consider using a [Filter](filters.md) or [parametrized data loading](data.md/#parametrize-data-loading) and [dynamic data](data.md/#dynamic-data). The `data_frame` argument input to a custom chart contains the data after filters and parameters have been applied.
 
 !!! tip
 
