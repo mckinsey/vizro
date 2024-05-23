@@ -5,9 +5,9 @@ pydantic models, Python dictionaries, YAML, or JSON.
 To create a dashboard:
 
 1. Choose one of the possible configuration syntaxes
-2. Create your `pages`, see our guide on [Pages](pages.md)
-3. (optional) Choose a `theme`, see our guide on [Themes](themes.md)
-4. (optional) Customize your `navigation`, see our guide on [Navigation](navigation.md)
+2. Create your `pages`, see our [guide on Pages](pages.md)
+3. (optional) Choose a `theme`, see our [guide on Themes](themes.md)
+4. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
 5. (optional) Set a `title` for your dashboard
 6. Add your `dashboard` to the `build` call of Vizro
 
@@ -190,7 +190,7 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 
 ## Add a dashboard logo
 
-Vizro will automatically incorporate the dashboard [logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro will [automatically incorporate the dashboard logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
