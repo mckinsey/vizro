@@ -24,7 +24,6 @@ page = vm.Page(
         vm.Table(
             title="Table",
             figure=dash_data_table(
-                id="table",
                 data_frame=df,
                 columns=[
                     {"name": i, "id": i, "presentation": "dropdown"} if i == dropdown_column else {"name": i, "id": i}
