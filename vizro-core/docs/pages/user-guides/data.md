@@ -63,7 +63,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         page = vm.Page(
             title="Static data example",
             components=[
-                vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")),
+                vm.Graph(figure=px.box(iris, x="species", y="petal_width", color="species")),
             ]
         )
 
@@ -272,7 +272,7 @@ You can supply arguments to your dynamic data loading function that can be modif
 
 To add a parameter to control a dynamic data source, do the following:
 
-- add the appropriate argument to your dynamic data function.
+- add the appropriate argument to your dynamic data function and specify a default value for the argument.
 - add an `id` to all components that have a data source you wish to alter through a parameter.
 - [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
@@ -280,7 +280,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
 
 !!! example "Parametrized dynamic data"
     === "app.py"
-        ```py hl_lines="8 10 19"
+        ```py hl_lines="8 10 21"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
@@ -312,7 +312,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
         Vizro().build(dashboard).run()
         ```
 
-        1. `load_iris_data` now takes a single argument, `number_of_points`.
+        1. `load_iris_data` now takes a single argument, `number_of_points=10` (with the default value of 10).
         2. `iris` is still a pandas DataFrame created by reading from the CSV file `iris.csv`.
         3. Sample points at random, where `number_of_points` gives the number of points selected.
         4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
