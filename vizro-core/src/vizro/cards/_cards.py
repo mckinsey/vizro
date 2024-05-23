@@ -69,8 +69,8 @@ def kpi_card_ref(
 
     return dbc.Card(
         [
-            html.H2(title),
-            html.H1(value, className="kpi-value"),
+            html.H2(title, className="kpi-title"),
+            html.P(value, className="kpi-value"),
             html.Span(
                 [
                     html.Span(
@@ -78,11 +78,11 @@ def kpi_card_ref(
                     ),
                     html.Span(f"{delta} % vs. Reference ({ref_value})"),
                 ],
-                className=f"card-ref-value {color}",
+                className=f"kpi-ref-value {color}",
             ),
         ],
         id=id,
-        className=f"card-{color}",
+        className=f"kpi-{color}",
     )
 
 
@@ -97,12 +97,12 @@ def kpi_card_icon(
         [
             html.Div(
                 [
-                    html.H2(icon, className="icon material-symbols-outlined"),
+                    html.P(icon, className="icon material-symbols-outlined"),
                     html.H2(title),
                 ],
                 className="kpi-title",
             ),
-            html.H1(value, className="kpi-value"),
+            html.P(value, className="kpi-value"),
         ],
         className="kpi-card-icon",
         id=id,

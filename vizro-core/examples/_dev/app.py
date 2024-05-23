@@ -61,13 +61,13 @@ class CustomKPI(vm.VizroBaseModel):
                 html.H1(self.value, className="kpi-value"),
                 html.Span(
                     [
-                        html.Span(self.icon, className=f"material-symbols-outlined {self.sign}"),
-                        html.Span(self.ref_value, className=self.sign),
+                        html.Span(self.icon, className=f"material-symbols-outlined"),
+                        html.Span(self.ref_value),
                     ],
-                    className="card-ref-value",
+                    className=f"kpi-ref-value {self.sign}",
                 ),
             ],
-            className=f"card-border-{self.sign}",
+            className=f"kpi-{self.sign}",
         )
 
 
