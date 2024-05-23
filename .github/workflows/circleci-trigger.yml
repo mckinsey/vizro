@@ -13,7 +13,7 @@ env:
 
 jobs:
   circleci-trigger-fork:
-    if: github.event.pull_request.head.repo.fork == true
+    if: ${{ github.event.pull_request.head.repo.fork }}
     name: CircleCI tests trigger
     runs-on: ubuntu-latest
     steps:
@@ -21,12 +21,12 @@ jobs:
         run: echo "Success!"
 
   circleci-trigger:
-    if: github.event.pull_request.head.repo.fork == false
+    if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: CircleCI tests trigger
     environment: circleci_secrets
     runs-on: ubuntu-latest
     steps:
-      - name: Ping CircleCI pipeline
+      - name: Start CircleCI pipeline
         run: |
           create_circleci_pipeline() {
             local branch=$1
@@ -35,7 +35,7 @@ jobs:
 
             local json_data=$(jq -n --arg branch "$branch" --arg vizro_branch "$vizro_branch" --arg tag "$tag" '{branch: $branch, parameters: {branch: $branch, vizro_branch: $vizro_branch, tag: $tag}}')
 
-            curl --request POST \
+            curl --silent --request POST \
               --url "${{ secrets.QA_PIPELINE_URL }}" \
               --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
               --header "content-type: application/json" \
@@ -43,19 +43,22 @@ jobs:
             | jq -r '.id'
           }
 
-
           CREATED_PIPELINE=$(create_circleci_pipeline "${{ github.head_ref }}" "${{ github.head_ref }}" "$github_tag")
 
-          # we use this loop to trigger main branch in tests if tests repo doesn't contain current dev branch
+          # If the above returns null then the QA repo doesn't contain current dev branch, so we use main branch.
           if [[ "$CREATED_PIPELINE" == "null" ]]; then
             CREATED_PIPELINE=$(create_circleci_pipeline "main" "${{ github.head_ref }}" "$github_tag")
           fi
-          echo "my created pipeline"
-          echo $CREATED_PIPELINE
+          echo "Started pipeline with id $CREATED_PIPELINE"
+          
+          echo "CREATED_PIPELINE=$CREATED_PIPELINE" >> $GITHUB_ENV
 
-          sleep 60
+      - name: Wait for pipeline to run
+        run: sleep 60
 
-          get_workflow_status() {
+      - name: Check pipeline status
+        run: |
+          get_pipeline_status() {
             curl --silent --request GET \
                  --url "https://circleci.com/api/v2/pipeline/$CREATED_PIPELINE/workflow" \
                  --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
@@ -63,15 +66,12 @@ jobs:
               | jq -r '.items[0].status'
           }
 
-          while created_workflow_status=$(get_workflow_status); [[ "$created_workflow_status" == "running" ]]; do
-            echo $created_workflow_status
+          while pipeline_status=$(get_pipeline_status); [[ "$pipeline_status" == "running" ]]; do
+            echo $pipeline_status
             sleep 15
           done
-
-          if [[ "$created_workflow_status" != "success" ]]; then
-              echo "Workflow not successful - ${created_workflow_status}"
-              (exit -1)
-
-          elif [[ "$created_workflow_status" == "success" ]]; then
-              echo "Created workflow successful"
+          
+          if [[ "$created_pipeline_status" != "success" ]]; then
+              echo "Pipeline not completed sucessfully - status was ${created_pipeline_status}"
+              exit 1
           fi
