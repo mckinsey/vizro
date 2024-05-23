@@ -320,9 +320,9 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
         6. Create a `vm.Parameter` to target the `number_of_points` argument for the `data_frame` used in `graph`.
 
     === "Result"
-        [![DynamicData]][DynamicData]
+        [![ParametrizedDynamicData]][ParametrizedDynamicData]
 
-    [DynamicData]: ../../assets/user_guides/data/dynamic_data.gif
+    [ParametrizedDynamicData]: ../../assets/user_guides/data/parametrized_dynamic_data.gif
 
 <!-- TODO: update gif -->
 
