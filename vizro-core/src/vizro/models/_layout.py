@@ -196,8 +196,7 @@ class Layout(VizroBaseModel):
     # Another alternative is to take [component.build() for component in components] as an argument
     # in the build method here.
     @_log_call
-    def build(self):
-        """Creates empty container with inline style to later position components in."""
+    def build(self):  # creates empty container with inline style to later position components in.
         components_content = [
             html.Div(
                 id=f"{self.id}_{component_idx}",
