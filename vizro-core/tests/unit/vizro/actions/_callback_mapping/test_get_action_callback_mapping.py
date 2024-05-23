@@ -175,13 +175,13 @@ class TestCallbackMapping:
     """Tests action callback mapping for predefined and custom actions."""
 
     @pytest.mark.parametrize(
-        "action_id, callback_mapping_inputs_expected",
+        "action_id",
         [
-            ("filter_action_filter_continent", "action_callback_inputs_expected"),
-            ("filter_interaction_action", "action_callback_inputs_expected"),
-            ("parameter_action_parameter_x", "action_callback_inputs_expected"),
-            ("on_page_load_action_action_test_page", "action_callback_inputs_expected"),
-            ("export_data_action", "action_callback_inputs_expected"),
+            "filter_action_filter_continent",
+            "filter_interaction_action",
+            "parameter_action_parameter_x",
+            "on_page_load_action_action_test_page",
+            "export_data_action",
         ],
     )
     def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):
