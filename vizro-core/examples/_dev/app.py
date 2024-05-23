@@ -1,3 +1,5 @@
+"""Example to show dashboard configuration."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from flask_caching import Cache
@@ -9,6 +11,7 @@ from vizro.managers import data_manager
 # Note need to specify default value if have Filter since that calls data load function
 # Then have problem that filter options don't get updated when data source changes
 def load_iris_data(points=1, additional_points=1):
+    """Load iris data."""
     iris = px.data.iris()
     return iris.sample(points + additional_points)
 

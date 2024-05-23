@@ -64,8 +64,6 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
     """Creates mapping of pre-defined action names and a list of `States`."""
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
-    include_inputs = {"filters", "parameters", "filter_interaction", "theme_selector"}
-
     action_input_mapping = {
         "filters": _get_inputs_of_controls(page=page, control_type=Filter),
         "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
