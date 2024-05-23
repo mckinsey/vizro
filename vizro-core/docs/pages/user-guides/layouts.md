@@ -75,7 +75,7 @@ grid = [
              [2]
        ]
 
-Th layout has three equally sized rows, each containing a component spanning the entire width.
+The layout has three equally sized rows, each containing a component spanning the entire width.
 
 To present components **horizontally** in one row:
 
