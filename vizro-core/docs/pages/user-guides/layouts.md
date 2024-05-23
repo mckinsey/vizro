@@ -56,7 +56,7 @@ grid = [[0, 1],
 
 - The `grid` must be provided as `List[List[int]]` (for example, `grid = [[0, 1], [0, 2]]`).
 - The integers in the `grid` must be consecutive integers starting with 0 (for example, `0`, `1`, `2`).
-    - The integers correspond to the index of the chart/component inside the list of `components` provided to [`Page`][vizro.models.Page]. 
+    - The integers correspond to the index of the chart/component inside the list of `components` provided to [`Page`][vizro.models.Page].
     - The number of integers in the `grid` needs to match the number of chart/components provided.
 - Each sub-list corresponds to a grid row (in the example above, row 1 = `[0, 1]` and row 2 = `[0, 2]`)
 - Each element inside the sub-list corresponds to a grid column (for example, column 1 = `[0, 0]` and column 2 = `[1, 2]`)
@@ -66,7 +66,7 @@ grid = [[0, 1],
 - The grid can be arbitrarily large, allowing arbitrarily granular control of the grid.
 
 
-## Vertical and horizontal stacking 
+## Vertical and horizontal stacking
 As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows:
 
 ```python title="Default grid"
@@ -89,7 +89,7 @@ This defines a single row that occupies the entire width and height, divided int
 
 ## Grid - basic example
 !!! example "Grid Arrangement - Basic Example"
-    
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -135,9 +135,9 @@ This defines a single row that occupies the entire width and height, divided int
 ## Grid - advanced example
 
 !!! tip "When to use Containers"
-    
+
     If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
-    
+
 The `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.
 
@@ -296,7 +296,7 @@ grid = [[0, 1, -1],
 ```
 
 !!! example "Adding Empty Spaces"
-    
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -346,7 +346,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 - `col_min_width`: Sets a chart/component's minimum width. Defaults to 0px.
 
 !!! example "Activate Scrolling"
-    
+
     === "app.py"
         ```py
         import vizro.models as vm
