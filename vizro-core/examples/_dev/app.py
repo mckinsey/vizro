@@ -14,12 +14,10 @@ from vizro.models.types import capture
 
 iris_df = px.data.iris()
 
-# Open questions -------
-# Shall we allow for automatic data aggregations? Or shall this be the user's responsibility? (data transformation to live inside / outside component)
-# Shall we actually just extend vm.Card and allow a figure attribute there? or shall the KPI Card be its own component?
-
 
 # Method 1: Using go.Indicator inside vm.Graph
+# (+) Can already be used with vm.Graph, dynamic, possibility to add other traces
+# (-) Resizing doesn't seem to work well, difficulties customising style, not visib
 @capture("graph")
 def plt_kpi_card(
     column: str,
@@ -44,6 +42,8 @@ def plt_kpi_card(
 
 
 # Method 2: Using custom component
+# (+) Fully customisable in style and layout, possibility to add other traces via adding dcc.Graph
+# (-) Static
 class CustomKPI(vm.VizroBaseModel):
     """New custom component `KPI`."""
 
@@ -73,11 +73,30 @@ class CustomKPI(vm.VizroBaseModel):
 
 vm.Page.add_type("components", CustomKPI)
 
+# Method 3: Extend vm.Card with figure attribute
+# (+) Fully customisable in style and layout, possibility to add other traces via adding dcc.Graph, dynamic
+# (-) Requires CapturedCallable for static cards now as well
+
+# Most common arguments for CapturedCallable
+# kpi_card_ref(
+#     data_frame=iris_df,              | YES
+#     value="sepal_width",             | YES
+#     ref_value="petal_width",         | YES
+#     title="Dynamic Card Ref.",       | MAYBE - Eventually better to use Mkd text for this, so they can flexibly use a title / subtitle etc.
+#     agg_fct=lambda x: x.mean(),      | MAYBE - Useful if our CapturedCallables should work out of the box without custom code
+#     icon="Home"                      | MAYBE
+# )
+
+
+# Method 4: Create new custom component with figure attribute
+# Aligned with A. not to do this for now as it would require a higher-level model that does not fit into our
+# scheme of components for now. We could consider this in the future if we see a need for it.
+
 page = vm.Page(
-    title="Table Page",
-    layout=vm.Layout(grid=[[0, 1, -1], [2, 3, -1], [4, 5, 6]]),
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, -1], [2, -1, -1], [3, 4, 5]]),
     components=[
-        # TODO: This should still work without a figure argument
+        # This should still work without a figure argument
         vm.Card(
             text="""
             # Text Card
@@ -90,15 +109,6 @@ page = vm.Page(
             Hello, this is a nav card.
         """,
             href="https://www.google.com",
-        ),
-        # Method 1: Plotly Indicator inside vm.Graph
-        vm.Graph(
-            id="kpi-total",
-            figure=plt_kpi_card(
-                data_frame=iris_df,
-                column="sepal_width",
-                title="Plotly Indicator",
-            ),
         ),
         # Method 2: Custom component without a figure attribute
         CustomKPI(
@@ -132,7 +142,23 @@ page = vm.Page(
     controls=[vm.Filter(column="species")],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+another_page = vm.Page(
+    title="Plotly Indicator",
+    components=[
+        # Method 1: Plotly indicator inside vm.Graph
+        vm.Graph(
+            id="kpi-total",
+            figure=plt_kpi_card(
+                data_frame=iris_df,
+                column="sepal_width",
+                title="Plotly Indicator",
+            ),
+        ),
+    ],
+)
+
+
+dashboard = vm.Dashboard(pages=[page, another_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

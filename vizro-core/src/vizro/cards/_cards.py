@@ -31,12 +31,13 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str, id: str) -> dbc.Car
     )
 
 
-# TODO: Add 1-2 other KPI card stylings
 # LQ: All of the below don't have to be official Vizro KPI Cards, but can be examples of how to create custom cards
 # These can also just live in the docs as examples if not suitable for common usage.
 
 
 # Example 1: Aggregated KPI Card with Markdown
+# (+) Allows for unlimited customisation on text
+# (-) Custom styling becomes difficult
 @capture("card")
 def kpi_card_agg(data_frame: pd.DataFrame, title: str, id: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
@@ -96,8 +97,8 @@ def kpi_card_icon(
         [
             html.Div(
                 [
-                    html.H2(title),
                     html.H2(icon, className="icon material-symbols-outlined"),
+                    html.H2(title),
                 ],
                 className="kpi-title",
             ),

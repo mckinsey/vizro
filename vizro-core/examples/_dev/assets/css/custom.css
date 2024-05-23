@@ -3,6 +3,7 @@
   margin-left: -8px;
 }
 
+/*Ignore all of the CSS code for now, it's not made for scale for now.*/
 #kpi-total {
   border-left: 4px solid var(--text-primary);
   padding-left: 12px;
@@ -72,7 +73,7 @@
 .kpi-title {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 8px;
 }
 
 h2.icon.material-symbols-outlined {
