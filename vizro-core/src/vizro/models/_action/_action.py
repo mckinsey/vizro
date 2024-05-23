@@ -144,10 +144,14 @@ class Action(VizroBaseModel):
         # This could be a list of outputs, dictionary of outputs or any single value including None.
         return return_value
 
-    # Builds a callback for the Action model and returns required components for the callback.
-    # Returns a list of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
     @_log_call
-    def build(self):
+    def build(self) -> html.Div:
+        """Builds a callback for the Action model and returns required components for the callback.
+
+        Returns
+            Div containing a list of required components (e.g. dcc.Download) for the Action model
+
+        """
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {
             "external": external_callback_inputs,
