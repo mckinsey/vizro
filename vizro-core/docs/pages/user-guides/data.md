@@ -273,14 +273,14 @@ You can supply arguments to your dynamic data loading function that can be modif
 To add a parameter to control a dynamic data source, do the following:
 
 - add the appropriate argument to your dynamic data function and specify a default value for the argument.
-- add an `id` to all components that have a data source you wish to alter through a parameter.
+- give an `id` to all components that have the data source you wish to alter through a parameter.
 - [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+For example, let us extend the [dynamic data example](#dynamic-data) above to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
 !!! example "Parametrized dynamic data"
     === "app.py"
-        ```py hl_lines="8 10 21"
+        ```py hl_lines="8 10 20-23"
         from vizro import Vizro
         import pandas as pd
         import vizro.plotly.express as px
@@ -302,7 +302,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
             controls=[
                 vm.Parameter(
                     targets=["graph.data_frame.number_of_points"], # (6)!
-                    selector=vm.Slider(min=1, max=20, step=1, value=10)
+                    selector=vm.Slider(min=1, max=20, step=1, value=10),
                 )
             ],
         )
@@ -312,11 +312,11 @@ For example, let us extend the [dynamic data example](#dynamic-data) to show how
         Vizro().build(dashboard).run()
         ```
 
-        1. `load_iris_data` now takes a single argument, `number_of_points=10` (with the default value of 10).
+        1. `load_iris_data` now takes a single argument, `number_of_points`, with a default value of 10.
         2. `iris` is still a pandas DataFrame created by reading from the CSV file `iris.csv`.
         3. Sample points at random, where `number_of_points` gives the number of points selected.
-        4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
-        5. Give the graph `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
+        4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()` or `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
+        5. Give the `vm.Graph` component `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
         6. Create a `vm.Parameter` to target the `number_of_points` argument for the `data_frame` used in `graph`.
 
     === "Result"
@@ -330,48 +330,18 @@ Parametrized data loading is compatible with [caching](#configure-cache). The ca
 
 !!! warning
 
-    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose as a parameter a filepath to load without, for example, passing it through [werkzeug.utils.secure_filename](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename); otherwise you might enable a user to access arbitrary files from your server.
+    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose as a parameter a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename); otherwise you might enable a user to access arbitrary files on your server.
 
 It is not possible to pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target top-level arguments of the data loading function and not address nested keys in a dictionary.
 
-#### Filter limitations
+### Filter update limitation
 
-If your dashboard includes a [filter](filters.md) then you should be aware of some limitations that currently exist but should be lifted in future releases. If these limitations are problematic for you then please [raise an issue on our Github repo](https://github.com/mckinsey/vizro/issues/).
+If your dashboard includes a [filter](filters.md) then the values shown on a filter's [selector](selectors.md) _do not_ update while the dashboard is running. This is a known limitation that will be lifted in future releases, but if is problematic for you already then please [raise an issue on our Github repo](https://github.com/mckinsey/vizro/issues/).
 
-The possible values shown on a filter's [selector](selectors.md) are fixed and do not update while the dashboard is running. Furthermore, all the arguments of your data loading function must be optional by defining default values. Regardless of the value of the `vm.Parameter`, these default values are used when the `vm.Filter` is built in order to determine the type of selector used in a filter and the options shown.
+This limitation is why all arguments of your dynamic data loading function must have a default value. Regardless of the value of the `vm.Parameter` selected in the dashboard, these default parameter values are used when the `vm.Filter` is built. This determines the type of selector used in a filter and the options shown, which cannot currently be changed while the dashboard is running.
 
-??? example "Parametrized dynamic data with a filter"
-    ```py hl_lines="8 21"
-    from vizro import Vizro
-    import pandas as pd
-    import vizro.plotly.express as px
-    import vizro.models as vm
+Although a selector is automatically chosen for you in a filter when your dashboard is built, remember that [you can change this choice](filters.md#changing-selectors). For example, we could ensure that a dropdown always contains the options "setosa", "versicolor" and "virginica" by explicitly specifying your filter as follows.
 
-    from vizro.managers import data_manager
-
-    def load_iris_data(number_of_points=10):
-        iris = pd.read_csv("iris.csv")
-        return iris.sample(number_of_points)
-
-    data_manager["iris"] = load_iris_data
-
-    page = vm.Page(
-        title="Update the chart on page refresh",
-        components=[
-            vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))
-        ],
-        controls=[
-            vm.Parameter(
-                targets=["graph.data_frame.number_of_points"],
-                selector=vm.Slider(min=1, max=20, step=1, value=10)
-            ),
-            vm.Filter(column="species"),
-        ],
-    )
-
-    dashboard = vm.Dashboard(pages=[page])
-
-    Vizro().build(dashboard).run()
-    ```
-
-Although a selector is automatically chosen for you in a filter, remember that [you can change it](filters.md#changing-selectors). For example, we could ensure that by explicitly specifying `vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])`.
+```py
+vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+```
