@@ -35,19 +35,25 @@ data_manager["iris"].timeout = 30
 page_1 = vm.Page(
     title="My first page",
     components=[
-        vm.Graph(id="graph_1", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="graph_2", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(
+            id="graph_1", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")
+        ),
+        vm.Graph(
+            id="graph_2", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")
+        ),
         vm.Button(text="Export", actions=[vm.Action(function=export_data())]),
     ],
     controls=[
-        vm.Parameter(targets=["graph_1.x", "graph_2.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
+        vm.Parameter(
+            targets=["graph_1.x", "graph_2.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])
+        ),
         vm.Parameter(
             targets=["graph_1.data_frame.points", "graph_1.data_frame.additional_points"],
-            selector=vm.Slider(title="Graph 1 points / Graph 1 additional_points", min=1, max=10, step=1)
+            selector=vm.Slider(title="Graph 1 points / Graph 1 additional_points", min=1, max=10, step=1),
         ),
         vm.Parameter(
             targets=["graph_2.data_frame.points", "graph_2.data_frame.additional_points"],
-            selector=vm.Slider(title="Graph 2 points / Graph 2 additional_points", min=1, max=10, step=1)
+            selector=vm.Slider(title="Graph 2 points / Graph 2 additional_points", min=1, max=10, step=1),
         ),
         vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])),
     ],
@@ -56,19 +62,28 @@ page_1 = vm.Page(
 page_2 = vm.Page(
     title="My second page",
     components=[
-        vm.Graph(id="graph_second_1", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="graph_second_2", figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(
+            id="graph_second_1",
+            figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species"),
+        ),
+        vm.Graph(
+            id="graph_second_2",
+            figure=px.scatter(data_frame="iris", x="sepal_length", y="petal_width", color="species"),
+        ),
         vm.Button(text="Export", actions=[vm.Action(function=export_data())]),
     ],
     controls=[
-        vm.Parameter(targets=["graph_second_1.x", "graph_second_2.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
+        vm.Parameter(
+            targets=["graph_second_1.x", "graph_second_2.x"],
+            selector=vm.RadioItems(options=["sepal_length", "sepal_width"]),
+        ),
         vm.Parameter(
             targets=["graph_second_1.data_frame.points", "graph_second_2.data_frame.points"],
-            selector=vm.Slider(title="Graph 1 points / Graph 2 points", min=1, max=10, step=1)
+            selector=vm.Slider(title="Graph 1 points / Graph 2 points", min=1, max=10, step=1),
         ),
         vm.Parameter(
             targets=["graph_second_1.data_frame.additional_points", "graph_second_2.data_frame.additional_points"],
-            selector=vm.Slider(title="Graph 1 additional_points / Graph 2 additional_points", min=1, max=10, step=1)
+            selector=vm.Slider(title="Graph 1 additional_points / Graph 2 additional_points", min=1, max=10, step=1),
         ),
         vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])),
     ],
