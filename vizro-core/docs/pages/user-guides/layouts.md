@@ -66,16 +66,15 @@ grid = [[0, 1],
 
 
 ## Vertical and horizontal stacking
-As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows:
+As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
 
-```python title="Default grid"
+```python title="Vertical stacking"
 grid = [
              [0], 
              [1],
              [2]
        ]
-
-The layout has three equally sized rows, each containing a component spanning the entire width.
+```
 
 To present components **horizontally** in one row:
 
