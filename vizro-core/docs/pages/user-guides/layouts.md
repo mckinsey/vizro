@@ -60,8 +60,7 @@ grid = [[0, 1],
     - The number of integers in the `grid` needs to match the number of chart/components provided.
 - Each sub-list corresponds to a grid row (in the example above, row 1 = `[0, 1]` and row 2 = `[0, 2]`)
 - Each element inside the sub-list corresponds to a grid column (for example, column 1 = `[0, 0]` and column 2 = `[1, 2]`)
-
-- Each chart/component will take the entire space of its grid area (spaces are not enabled).
+- Each chart/component will take the entire space of its grid area but you can use [empty sections](#add-empty-sections-to-the-grid) for extra separation.
 - The area spanned by a chart/component in the grid must be rectangular.
 - The grid can be arbitrarily large, allowing arbitrarily granular control of the grid.
 
