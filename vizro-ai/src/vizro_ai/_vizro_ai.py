@@ -117,7 +117,7 @@ class VizroAI:
         user_input: str,
         explain: bool = False,
         max_debug_retry: int = 3,
-    ) -> Union[go.Figure, Dict[str, Any]]:
+    ) -> go.Figure:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -154,7 +154,7 @@ class VizroAI:
         user_input: str,
         explain: bool = False,
         max_debug_retry: int = 3,
-    ):
+    ) -> Dict[str, Any]:
         """Executes plotting tasks based on user input and retrieves output dictionary.
 
         Args:
