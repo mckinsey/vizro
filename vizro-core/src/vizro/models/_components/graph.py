@@ -138,6 +138,7 @@ class Graph(VizroBaseModel):
             parent_className="loading-container",
             delay_show=500,
             delay_hide=500,
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
     @staticmethod
