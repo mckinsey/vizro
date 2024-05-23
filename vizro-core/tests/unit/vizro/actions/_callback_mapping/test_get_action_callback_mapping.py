@@ -184,11 +184,9 @@ class TestCallbackMapping:
             "export_data_action",
         ],
     )
-    def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):
+    def test_action_callback_mapping_inputs(self, action_id, action_callback_inputs_expected):
         result = _get_action_callback_mapping(action_id=action_id, argument="inputs")
-
-        callback_mapping_inputs_expected = request.getfixturevalue(callback_mapping_inputs_expected)
-        assert result == callback_mapping_inputs_expected
+        assert result == action_callback_inputs_expected
 
     @pytest.mark.parametrize(
         "action_id, action_callback_outputs_expected",
