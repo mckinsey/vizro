@@ -36,8 +36,7 @@ class Parameter(VizroBaseModel):
     def check_dot_notation(cls, target):
         if "." not in target:
             raise ValueError(
-                f"Invalid target {target}. Targets must be supplied in the from of "
-                "<target_component>.<target_argument>"
+                f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
             )
         return target
 
@@ -53,7 +52,7 @@ class Parameter(VizroBaseModel):
         targeted_argument = target.split(".", 1)[1]
         if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
             raise ValueError(
-                f"Invalid target {target}. 'data_frame' target must be supplied in the form of "
+                f"Invalid target {target}. 'data_frame' target must be supplied in the form "
                 "<target_component>.data_frame.<dynamic_data_argument>"
             )
         return target
