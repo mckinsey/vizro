@@ -1,6 +1,6 @@
 # How to use layouts
 
-The [`Page`][vizro.models.Page] model accepts a `layout` argument so that you can supply it with a custom grid. This guide shows how to use [`Layout`][vizro.models.Layout] to arrange charts and components on the screen so you can customize the grid specifications.
+The [`Page`][vizro.models.Page] model accepts a `layout` argument that allows for custom arrangement of charts and components on the screen. This guide shows how to customize the grid sepcifications in the [`Layout`][vizro.models.Layout].
 
 ## The default layout
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components are automatically [**stacked vertically**](layouts.md#stack-components) on the page in one column.
