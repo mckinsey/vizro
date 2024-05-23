@@ -1,4 +1,4 @@
-/*Ignore all of the CSS code for now, it's not made for scale for now.*/
+/* Ignore all of the CSS code for now, it's not made for scale for now. */
 #kpi-total {
   border-left: 4px solid var(--text-primary);
   padding-left: 12px;
@@ -12,15 +12,15 @@
   margin: 0;
 }
 
-.kpi-value {
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 16px;
-  font-size: 8vh;
-  height: 100%;
-  line-height: unset;
-  display: flex;
+.kpi-value, .kpi-card-agg h1 {
   align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-grow: 1;
+  font-size: 16px;
+  font-size: 5vh;
+  font-weight: 600;
+  line-height: unset;
 }
 
 .kpi-ref-value {
@@ -54,8 +54,19 @@
 /* Dynamic Card - Icon */
 h2.icon.material-symbols-outlined {
   font-size: 28px;
+  line-height: 32px;
 }
 
 .kpi-card-icon {
-  border-top: 4px solid var(--text-secondary);
+  border-left: 4px solid var(--text-secondary);
+}
+
+
+/* Markdown card*/
+.kpi-card-agg {
+  border-left: 4px solid var(--text-secondary);
+}
+
+p.kpi-icon.material-symbols-outlined {
+  line-height: 32px;
 }

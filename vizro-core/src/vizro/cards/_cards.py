@@ -97,7 +97,7 @@ def kpi_card_icon(
         [
             html.Div(
                 [
-                    html.P(icon, className="icon material-symbols-outlined"),
+                    html.P(icon, className="kpi-icon material-symbols-outlined"),
                     html.H2(title),
                 ],
                 className="kpi-title",
