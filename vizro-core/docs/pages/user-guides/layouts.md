@@ -269,7 +269,7 @@ allowing arbitrarily granular control of the grid by creating larger grids.
     [GridAdv]: ../../assets/user_guides/layout/grid_advanced.png
 
 ## Custom layout examples
-Here is a reference table of examples layouts:
+Here is a reference table of example layouts:
 <!-- vale off -->
 
 | Configuration                                              | Image                                                                                |
