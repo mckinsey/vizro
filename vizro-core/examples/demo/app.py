@@ -438,7 +438,7 @@ def create_benchmark_analysis():
         components=[
             vm.AgGrid(
                 title="Click on a cell in country column:",
-                figure=dash_ag_grid(id="dash_ag_grid_country", data_frame=gapminder, columnDefs=columnsDefs),
+                figure=dash_ag_grid(data_frame=gapminder, columnDefs=columnsDefs),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(
