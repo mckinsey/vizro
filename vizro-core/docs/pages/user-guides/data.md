@@ -324,7 +324,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) above to sh
 
     [ParametrizedDynamicData]: ../../assets/user_guides/data/parametrized_dynamic_data.gif
 
-Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that, for example `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
+Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
 
 !!! warning
 
