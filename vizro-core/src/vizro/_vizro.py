@@ -11,6 +11,10 @@ from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
 
+import dash_mantine_components as dmc
+from dash import _dash_renderer
+
+_dash_renderer._set_react_version("18.2.0")
 logger = logging.getLogger(__name__)
 
 
@@ -81,7 +85,7 @@ class Vizro:
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
 
-        self.dash.layout = dashboard.build()
+        self.dash.layout = dmc.MantineProvider(dashboard.build())
 
         return self
 
