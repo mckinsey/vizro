@@ -272,9 +272,9 @@ You can supply arguments to your dynamic data loading function that can be modif
 
 To add a parameter to control a dynamic data source, do the following:
 
-- add the appropriate argument to your dynamic data function and specify a default value for the argument.
-- give an `id` to all components that have the data source you wish to alter through a parameter.
-- [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
+1. add the appropriate argument to your dynamic data function and specify a default value for the argument.
+2. give an `id` to all components that have the data source you wish to alter through a parameter.
+3. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
 For example, let us extend the [dynamic data example](#dynamic-data) above to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
@@ -328,7 +328,7 @@ Parametrized data loading is compatible with [caching](#configure-cache). The ca
 
 !!! warning
 
-    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose as a parameter a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename); otherwise you might enable a user to access arbitrary files on your server.
+    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename), or you might enable arbitrary access to files on your server.
 
 It is not possible to pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target top-level arguments of the data loading function and not address nested keys in a dictionary.
 

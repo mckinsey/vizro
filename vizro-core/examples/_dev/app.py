@@ -18,6 +18,9 @@ def load_iris_data(points=1, additional_points=1):
 
 data_manager["iris"] = load_iris_data
 
+# If you want to cache the data on the page_2 differently from page_1, you can define another data_manager entry with
+# the same function and assign it to the page_2 graphs. e.g. `data_manager["iris_2"] = load_iris_data`
+
 # SimpleCache
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
