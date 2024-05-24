@@ -1,48 +1,47 @@
-"""Dev app to try things out."""
+from datetime import date
+from typing import Literal
+from pydantic import BaseModel, Field
+from dash import Dash, html, dcc, callback, Output, Input
+import plotly.express as px
+import pandas as pd
 
-import numpy as np
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_data_table
-
-df = px.data.gapminder()
-
-dropdown_column = "Label"
-dropdown_options = ["-- A --", "-- B --", "-- C --"]
-
-# Add a 'Label' column to the data where options are randomly selected between 'A', 'B', 'C'
-df[dropdown_column] = np.random.choice(dropdown_options, size=len(df))
-
-# Drop the 'iso_alpha' and 'iso_num' columns
-df.drop(["iso_alpha", "iso_num"], axis=1, inplace=True)
+from dash_pydantic_form import ModelForm
 
 
-page = vm.Page(
-    title="Table Page",
-    components=[
-        vm.Table(
-            title="Table",
-            figure=dash_data_table(
-                data_frame=df,
-                columns=[
-                    {"name": i, "id": i, "presentation": "dropdown"} if i == dropdown_column else {"name": i, "id": i}
-                    for i in df.columns
-                ],
-                editable=True,
-                dropdown={
-                    dropdown_column: {
-                        "options": [{"label": i, "value": i} for i in dropdown_options],
-                        "clearable": False,
-                    },
-                },
-            ),
-        ),
-    ],
-    controls=[vm.Filter(column="continent")],
+class Employee(BaseModel):
+    first_name: str = Field(title="First name")
+    last_name: str = Field(title="Last name")
+    office: Literal["au", "uk", "us", "fr"] = Field(title="Office")
+    joined: date = Field(title="Employment date")
+
+
+# somewhere in your layout:
+form = ModelForm(
+    Employee,
+    aio_id="employees",
+    form_id="new_employee",
 )
 
-dashboard = vm.Dashboard(pages=[page])
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
+
+app = Dash()
+
+app.layout = [
+    html.H1(children='Title of Dash App', style={'textAlign':'center'}),
+    dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
+    dcc.Graph(id='graph-content'),
+    form
+]
+
+@callback(
+    Output('graph-content', 'figure'),
+    Input('dropdown-selection', 'value')
+)
+def update_graph(value):
+    dff = df[df.country==value]
+    return px.line(dff, x='year', y='pop')
+
+if __name__ == '__main__':
+    app.run(debug=True)

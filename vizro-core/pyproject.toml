@@ -8,8 +8,6 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12"
@@ -21,28 +19,29 @@ dependencies = [
   "dash-ag-grid>=31.0.0",
   "pandas",
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
-  "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
+  "dash_mantine_components",  # 0.13.0 is not compatible with 0.12
   "flask_caching>=2",
   "wrapt>=1",
   "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
   "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
-  "werkzeug>=3.0.1"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
+  "werkzeug>=3.0.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
+  "dash-pydantic-form"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
-[project.optional-dependencies]
-kedro = [
-  "kedro>=0.17.3",
-  "kedro-datasets",  # no longer a dependency of kedro for kedro>=0.19.2
-  "wheel>=0.38.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413,
-  "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
-  "tornado>=6.3.2"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
-]
+#[project.optional-dependencies]
+#kedro = [
+#  "kedro>=0.17.3",
+#  "kedro-datasets",  # no longer a dependency of kedro for kedro>=0.19.2
+#  "wheel>=0.38.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413,
+#  "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
+#  "tornado>=6.3.2"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
+#]
 
 [project.urls]
 Documentation = "https://github.com/mckinsey/vizro#readme"
