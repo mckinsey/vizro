@@ -29,7 +29,7 @@ a result, when a dashboard user now clicks the button, all data on the page will
 
 !!! info
 
-    When data from a [custom chart](custom-charts.md) is exported then the content of the `data_frame` input argument is what will be exported. Any transformations to the `data_frame` done inside the chart function will not be reflected in the exported data.
+    When data from a [custom chart](custom-charts.md) is exported it is the contents of the `data_frame` input argument that is exported. Transformations to the `data_frame` done inside the chart function are not reflected in the exported data.
 
 
 !!! example "`export_data`"
