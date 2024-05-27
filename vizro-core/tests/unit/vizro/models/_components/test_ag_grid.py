@@ -127,6 +127,7 @@ class TestBuildAgGrid:
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)
@@ -149,6 +150,7 @@ class TestBuildAgGrid:
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)
