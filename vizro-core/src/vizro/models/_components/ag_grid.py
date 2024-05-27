@@ -117,4 +117,5 @@ class AgGrid(VizroBaseModel):
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
