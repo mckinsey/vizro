@@ -45,7 +45,7 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
 
 </div>
 
-!!!! notice "Notice"
+!!! notice "Notice"
 
     Review the [disclaimer](pages/explanation/disclaimer.md)
     before using the `vizro-ai` package.
