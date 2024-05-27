@@ -96,7 +96,7 @@ class VizroAI:
 
         Args:
             df: The dataframe to be analyzed
-            user_input: User questions or descriptions of the desired visual
+            user_input: User questions or description of the desired visual
 
         """
         # TODO refine and update error handling
