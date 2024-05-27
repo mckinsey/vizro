@@ -11,8 +11,8 @@ on:
     branches:
       - main
     paths:
-      - 'vizro-ai/**'
-      - '!vizro-ai/docs/**'
+      - "vizro-ai/**"
+      - "!vizro-ai/docs/**"
 
 env:
   PYTHONUNBUFFERED: 1
