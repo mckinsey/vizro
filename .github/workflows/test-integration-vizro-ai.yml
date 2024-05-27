@@ -12,7 +12,8 @@ on:
       - main
     paths:
       - vizro-ai/**
-      - !vizro-ai/docs/**
+    paths-ignore:
+      - vizro-ai/docs/**
 
 env:
   PYTHONUNBUFFERED: 1
