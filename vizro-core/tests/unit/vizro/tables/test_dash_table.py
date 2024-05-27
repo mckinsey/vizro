@@ -89,6 +89,7 @@ class TestCustomDashDataTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_table, expected_table)
@@ -132,6 +133,7 @@ class TestCustomDashDataTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_table, expected_table)
