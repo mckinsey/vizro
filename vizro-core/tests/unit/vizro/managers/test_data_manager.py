@@ -1,5 +1,6 @@
 """Unit tests for vizro.managers.data_manager."""
 
+import datetime
 import time
 from contextlib import suppress
 from functools import partial
@@ -9,9 +10,24 @@ import pandas as pd
 import pytest
 from asserts import assert_frame_not_equal
 from flask_caching import Cache
+from freezegun import freeze_time
 from pandas.testing import assert_frame_equal
 from vizro import Vizro
 from vizro.managers import data_manager
+
+
+# TODO: Consider putting this inside the global 'tests/conftest.py' file with a scope of "session"?
+@pytest.fixture(autouse=True)
+def freeze_and_patch_time(monkeypatch):
+    with freeze_time("2024-01-01 12:00:00", tick=False) as frozen_time:
+
+        def advance_time(seconds):
+            # Advance the frozen time by the given number of seconds
+            frozen_time.move_to(frozen_time.time_to_freeze + datetime.timedelta(seconds=seconds))
+
+        # Patch time.sleep to use advance_time instead of actual sleeping
+        monkeypatch.setattr(time, "sleep", advance_time)
+        yield
 
 
 @pytest.fixture(autouse=True)
