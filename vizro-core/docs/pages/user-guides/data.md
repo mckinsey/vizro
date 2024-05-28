@@ -312,8 +312,8 @@ For example, let us extend the [dynamic data example](#dynamic-data) above to sh
         Vizro().build(dashboard).run()
         ```
 
-        1. `load_iris_data` now takes a single argument, `number_of_points`, with a default value of 10.
-        2. `iris` is still a pandas DataFrame created by reading from the CSV file `iris.csv`.
+        1. `load_iris_data` takes a single argument, `number_of_points`, with a default value of 10.
+        2. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
         3. Sample points at random, where `number_of_points` gives the number of points selected.
         4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()` or `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
         5. Give the `vm.Graph` component `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
