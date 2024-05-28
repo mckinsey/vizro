@@ -19,7 +19,7 @@ class TestTextAreaInstantiation:
         assert text_area.actions == []
 
     def test_create_text_area_mandatory_and_optional(self):
-        text_area = TextArea(title="Title", placeholder="Placeholder", id="text-area-id")
+        text_area = TextArea(id="text-area-id", title="Title", placeholder="Placeholder")
 
         assert text_area.id == "text-area-id"
         assert text_area.type == "text_area"
@@ -32,7 +32,7 @@ class TestUserInputBuild:
     """Tests model build method."""
 
     def test_text_area_build(self):
-        text_area = TextArea(title="Title", placeholder="Placeholder", id="text-area-id").build()
+        text_area = TextArea(id="text-area-id", title="Title", placeholder="Placeholder").build()
         expected_text_area = html.Div(
             [
                 dbc.Label("Title", html_for="text-area-id"),

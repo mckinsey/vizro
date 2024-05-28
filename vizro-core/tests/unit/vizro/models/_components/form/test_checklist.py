@@ -28,7 +28,7 @@ class TestChecklistInstantiation:
         assert checklist.actions == []
 
     def test_create_checklist_mandatory_and_optional(self):
-        checklist = Checklist(options=["A", "B", "C"], value=["A"], title="Title", id="checklist-id")
+        checklist = Checklist(id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title")
 
         assert checklist.id == "checklist-id"
         assert checklist.type == "checklist"

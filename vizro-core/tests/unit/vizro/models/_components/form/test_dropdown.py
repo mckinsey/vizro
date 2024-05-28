@@ -29,7 +29,7 @@ class TestDropdownInstantiation:
         assert dropdown.actions == []
 
     def test_create_dropdown_mandatory_and_optional(self):
-        dropdown = Dropdown(options=["A", "B", "C"], value="A", multi=False, title="Title", id="dropdown-id")
+        dropdown = Dropdown(id="dropdown-id", options=["A", "B", "C"], value="A", multi=False, title="Title")
 
         assert dropdown.id == "dropdown-id"
         assert dropdown.type == "dropdown"

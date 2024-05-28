@@ -43,7 +43,7 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):
-        graph = vm.Graph(figure=standard_px_chart, id=id, actions=[])
+        graph = vm.Graph(id=id, figure=standard_px_chart, actions=[])
 
         assert graph.id == id
         assert graph.type == "graph"

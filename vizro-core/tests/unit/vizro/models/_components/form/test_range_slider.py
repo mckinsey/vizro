@@ -17,7 +17,7 @@ import vizro.models as vm
 def expected_range_slider_default():
     return html.Div(
         [
-            dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": None, "max": None}),
+            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": None, "max": None}),
             html.Div(
                 [
                     None,
@@ -74,7 +74,7 @@ def expected_range_slider_default():
 def expected_range_slider_with_optional():
     return html.Div(
         [
-            dcc.Store("range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
+            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
                     dbc.Label("Title", html_for="range_slider"),
@@ -145,24 +145,24 @@ class TestRangeSliderInstantiation:
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(
+            id="range_slider_id",
             min=0,
             max=10,
             step=1,
             marks={1: "1", 5: "5", 10: "10"},
             value=[1, 9],
             title="Test title",
-            id="range_slider_id",
         )
 
+        assert range_slider.id == "range_slider_id"
+        assert range_slider.type == "range_slider"
         assert range_slider.min == 0
         assert range_slider.max == 10
         assert range_slider.step == 1
         assert range_slider.marks == {1: "1", 5: "5", 10: "10"}
         assert range_slider.value == [1, 9]
         assert range_slider.title == "Test title"
-        assert range_slider.id == "range_slider_id"
         assert range_slider.actions == []
-        assert range_slider.type == "range_slider"
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",
@@ -289,13 +289,13 @@ class TestRangeSliderBuild:
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
         range_slider = vm.RangeSlider(
+            id="range_slider",
             min=0,
             max=10,
             step=2,
-            value=[0, 10],
-            id="range_slider",
-            title="Title",
             marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
         ).build()
 
         assert_component_equal(range_slider, expected_range_slider_with_optional)

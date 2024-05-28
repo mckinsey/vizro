@@ -28,7 +28,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.actions == []
 
     def test_create_radio_items_mandatory_and_optional(self):
-        radio_items = RadioItems(options=["A", "B", "C"], value="A", title="Title", id="radio_items_id")
+        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], value="A", title="Title")
 
         assert radio_items.id == "radio_items_id"
         assert radio_items.type == "radio_items"
