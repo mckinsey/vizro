@@ -1,0 +1,75 @@
+name: CircleCI tests trigger
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+
+jobs:
+  circleci-trigger-fork:
+    if: ${{ github.event.pull_request.head.repo.fork }}
+    name: CircleCI tests trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Passed fork step
+        run: echo "Success!"
+
+  circleci-trigger:
+    if: ${{ ! github.event.pull_request.head.repo.fork }}
+    name: CircleCI tests trigger
+    environment: circleci_secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start CircleCI pipeline
+        run: |
+          create_circleci_pipeline() {
+            local branch=$1
+
+            local json_data=$(jq -n --arg branch "$branch" --arg vizro_branch "${{ github.head_ref }}" '{branch: $branch, parameters: {branch: $branch, vizro_branch: $vizro_branch}}')
+
+            curl --silent --request POST \
+              --url "${{ secrets.QA_PIPELINE_URL }}" \
+              --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
+              --header "content-type: application/json" \
+              --data "$json_data" \
+            | jq -r '.id'
+          }
+
+          PIPELINE=$(create_circleci_pipeline "${{ github.head_ref }}")
+
+          # If the above returns null then the QA repo doesn't contain current dev branch, so we use main branch.
+          if [[ "$PIPELINE" == "null" ]]; then
+            PIPELINE=$(create_circleci_pipeline "main")
+          fi
+          echo "Started pipeline with id $PIPELINE"
+
+          echo "PIPELINE=$PIPELINE" >> $GITHUB_ENV
+
+      - name: Wait for pipeline to run
+        run: sleep 60
+
+      - name: Check pipeline status
+        run: |
+          get_pipeline_status() {
+            curl --silent --request GET \
+                 --url "https://circleci.com/api/v2/pipeline/$PIPELINE/workflow" \
+                 --header "Circle-Token: ${{ secrets.CIRCLECI_API_KEY }}" \
+                 --header "content-type: application/json" \
+              | jq -r '.items[0].status'
+          }
+
+          while pipeline_status=$(get_pipeline_status); [[ "$pipeline_status" == "running" ]]; do
+            echo $pipeline_status
+            sleep 15
+          done
+
+          if [[ "$pipeline_status" != "success" ]]; then
+              echo "Pipeline not completed successfully - status was ${pipeline_status}"
+              exit 1
+          fi
