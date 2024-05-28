@@ -302,7 +302,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) above to sh
             controls=[
                 vm.Parameter(
                     targets=["graph.data_frame.number_of_points"], # (6)!
-                    selector=vm.Slider(min=1, max=20, step=1, value=10),
+                    selector=vm.Slider(min=10, max=100, step=10, value=10),
                 )
             ],
         )
