@@ -268,7 +268,8 @@ data_manager["no_expire_data"].timeout = 0
 
 ### Parametrize data loading
 
-You can supply arguments to your dynamic data loading function that can be modified from the dashboard. For example, if you are handling big data then you might like to load on demand only one chunk of the data.
+You can supply arguments to your dynamic data loading function that can be modified from the dashboard. 
+For example, if you are handling big data then you can use an argument to specify the number of entries or size of chunk of data.
 
 To add a parameter to control a dynamic data source, do the following:
 
