@@ -82,7 +82,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width")),
             ],
             controls=[
-                vm.Filter(column="species",selector=vm.RadioItems()),
+                vm.Filter(column="species", selector=vm.RadioItems()),
             ],
         )
 
