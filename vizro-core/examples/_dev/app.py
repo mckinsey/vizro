@@ -8,7 +8,6 @@ from vizro.actions import export_data
 from vizro.managers import data_manager
 
 
-
 # Note need to specify default value if have Filter since that calls data load function
 # Then have problem that filter options don't get updated when data source changes
 def load_iris_data(points=1, additional_points=1):
