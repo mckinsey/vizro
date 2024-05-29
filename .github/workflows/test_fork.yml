@@ -1,0 +1,28 @@
+name: Test fork
+
+defaults:
+  run:
+    working-directory: vizro
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+
+jobs:
+  test-fork:
+    name: test-fork
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run command
+        run: echo "Run GHA for fork!"
