@@ -16,3 +16,7 @@
 [Petar Pejovic](https://github.com/petar-qb).
 
 With thanks to Sam Bourton and Stephen Xu for sponsorship, inspiration and guidance, plus everyone else who helped to test, guide, support and encourage development.
+
+
+## Which large language models are supported by vizro-ai?
+Refer to [supported models](../user-guides/customize-vizro-ai.md#supported-models) in `vizro-ai` docs.
