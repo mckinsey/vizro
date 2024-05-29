@@ -127,6 +127,7 @@ class TestBuildTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)
@@ -146,6 +147,7 @@ class TestBuildTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)

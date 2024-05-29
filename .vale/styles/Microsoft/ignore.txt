@@ -87,3 +87,7 @@ Plotly's
 Gunicorn
 dataframe
 streamlit
+memoization
+setosa
+versicolor
+virginica
