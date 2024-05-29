@@ -2,7 +2,7 @@ name: Test fork
 
 defaults:
   run:
-    working-directory: vizro
+    working-directory: vizro-core
 
 on:
   pull_request:
