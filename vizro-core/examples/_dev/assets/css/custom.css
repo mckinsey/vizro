@@ -1,14 +1,11 @@
-#logo {
-  height: 40px;
-  margin-left: -8px;
+.card:has(#comp-zero) {
+  background-color: #8993ff;
 }
 
-/* Apply styling to parent */
-.card:has(#my-card) {
-  background-color: white;
+.card:has(#comp-one) {
+  background-color: #accbff;
 }
 
-/* Apply styling to children */
-#my-card p {
-  color: black;
+.card:has(#comp-two) {
+  background-color: #dbedff;
 }
