@@ -1,9 +1,17 @@
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, TypedDict, List, Tuple
 
 import pandas as pd
 import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.graph import END, StateGraph
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableConfig
+from langchain_core.pydantic_v1 import BaseModel, Field
+
+from vizro_ai.dashboard.data_summary import requirement_sum_prompt, DataSummary, FullDataSummary, _get_df_info
 
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
@@ -17,6 +25,20 @@ from vizro_ai.utils.helper import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class GraphState(TypedDict):
+    """
+    Represents the state of dashboard graph.
+
+    Attributes:
+        messages : With user question, error messages, reasoning
+        dfs : Dataframes to be analyzed
+    """
+
+    messages: List
+    dfs: List[pd.DataFrame]
+
 
 
 class VizroAI:
@@ -137,3 +159,97 @@ class VizroAI:
             return _exec_fig_code_display_markdown(
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
+
+
+
+    def dashboard(
+        self,
+        dfs: List[pd.DataFrame],
+        user_input: str,
+    ) -> str:
+        """Create dashboard using vizro via english descriptions, english to dashboard translation.
+
+        Args:
+            dfs: The dataframes to be analyzed.
+            user_input: User questions or descriptions of the desired visual.
+
+        Returns:
+            Dashboard code snippet.
+            
+        """
+        print("Dashboard code snippet")
+
+        def generate_data_summary(state: GraphState) -> GraphState:
+            """
+            Generate a summary of the dataframes provided.
+
+            Args:
+                state (dict): The current graph state
+
+            Returns:
+                state (dict): New key added to state, generation
+            """
+            messages = state["messages"]
+            requirement_sum_chain = requirement_sum_prompt | self.model.with_structured_output(FullDataSummary)
+
+            
+            df_schemas, df_heads = _get_df_info(dfs)
+            data_requirement_summary = requirement_sum_chain.invoke(
+            {"df_heads": df_heads, "df_schemas": df_schemas, "messages": [("user",user_input)]}
+            )
+            messages += [
+                (
+                    "assistant",
+                    data_requirement_summary,
+                )
+            ]
+            return {"messages": messages}
+
+        graph = StateGraph(GraphState)
+        # graph = StateGraph(GraphState, config_schema=ConfigSchema)
+
+        graph.add_node("generate_data_summary", generate_data_summary)
+        graph.add_edge("generate_data_summary", END)
+
+        graph.set_entry_point("generate_data_summary")
+
+        runnable = graph.compile()
+
+        message_res = runnable.invoke({"messages": [("user", dfs), ("user", user_input)]})
+        # message_res =  runnable.invoke({"messages": [("user", dfs), ("user", user_input)]}, {"configurable": {"dfs": dfs}})
+        return message_res
+    
+# class ConfigSchema(BaseModel):
+#     dfs: List[pd.DataFrame]
+
+#     class Config:
+#         arbitrary_types_allowed = True
+
+# def generate_data_summary(state: GraphState, config: RunnableConfig) -> GraphState:
+#     """
+#     Generate a summary of the dataframes provided.
+
+#     Args:
+#         state: The current graph state
+#         config (RunnableConfig): The configuration schema
+
+#     Returns:
+#         state: New key added to state, generation
+#     """
+#     messages = state["messages"]
+
+#     model_to_use = _get_llm_model()
+#     requirement_sum_chain = requirement_sum_prompt | model_to_use.with_structured_output(FullDataSummary)
+
+    
+#     df_schemas, df_heads = _get_df_info(config["configurable"].get("dfs", [pd.DataFrame()]))
+#     data_requirement_summary = requirement_sum_chain.invoke(
+#     {"df_heads": df_heads, "df_schemas": df_schemas, "messages": [("user",state["messages"])]}
+#     )
+#     messages += [
+#         (
+#             "assistant",
+#             data_requirement_summary,
+#         )
+#     ]
+#     return {"messages": messages}
