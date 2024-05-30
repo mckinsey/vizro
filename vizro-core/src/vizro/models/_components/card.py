@@ -18,7 +18,6 @@ from vizro.models.types import CapturedCallable
 CLASSNAME_LOOKUP = {
     "text_card": "",
     "nav_card": "card-nav",
-    "kpi_card_agg": "kpi-card-agg",
     "kpi_card_icon": "kpi-card-icon",
     "kpi_card_ref": "kpi-card-ref",
 }

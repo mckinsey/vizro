@@ -1,6 +1,6 @@
 """Module containing default card components."""
 
-from typing import Callable
+from typing import Callable, Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -8,10 +8,7 @@ from dash import dcc, get_relative_path, html
 
 from vizro.models.types import capture
 
-# TODO: Check if we can get rid of any of these issues:
-# 1) The data frame is not used in the function, but needs to be provided here
-
-
+# LQ: The data frame is not used in the function, but needs to be provided here. I guess that is unavoidable for now?
 @capture("card")
 def text_card(data_frame: pd.DataFrame, text: str) -> dbc.Card:
     """Static text card."""
@@ -27,15 +24,11 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str) -> dbc.Card:
     )
 
 
-# LQ: All of the below don't have to be official Vizro KPI Cards, but can be examples of how to create custom cards
-# These can also just live in the docs as examples if not suitable for common usage.
-
-
 # Example 1: Aggregated KPI Card with Markdown
 # (+) Allows for unlimited customisation on text
 # (-) Custom styling becomes difficult
 @capture("card")
-def kpi_card_agg(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
+def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
     # LQ: Think about exposing an argument that allows for custom formatting such as formatting as currency
     value = round(agg_fct(data_frame[value]), 2)
@@ -74,14 +67,14 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: st
 
 
 @capture("card")
-def kpi_card_icon(data_frame: pd.DataFrame, title: str, value: str, icon: str, agg_fct: Callable = sum) -> dbc.Card:
+def kpi_card_icon(data_frame: pd.DataFrame, title: str, value: str, icon: Optional[str] = None, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
     value = round(agg_fct(data_frame[value]), 2)
 
     return [
         html.Div(
             [
-                html.P(icon, className="material-symbols-outlined"),
+                html.P(icon, className="material-symbols-outlined") if icon else None,
                 html.H2(title),
             ],
         ),
