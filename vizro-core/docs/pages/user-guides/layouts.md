@@ -277,7 +277,7 @@ Here is a reference table of example layouts:
 | `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     |  <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
 | `layout=Layout(grid=[[0,1]])`                              |  <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
 | `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |  <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
-| `layout=Layout(grid=[[0,1],[0,2]])`                        |  <img src="../../../assets/user_guides/layout/one_left_two_right.png" width="400"/>   |
+| `[0,1],` <br/> `[0,2]`                        |  <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" width="400"/>   |
 | `layout=Layout(grid=[[0,0],[1,2]])`                        |  <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
 | `layout=Layout(grid=[[0,1],[2,2]])`                        |  <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
 | `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  |  <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
