@@ -20,7 +20,7 @@ from vizro.managers import data_manager
 # test with very low timeouts and time.sleep(1), and this is flaky since flask-caching is not designed to
 # handle such small intervals (e.g. it rounds times to the nearest second).
 # We use tick=True so that time continues to pass between directly consecutive calls to a load function. This makes the
-# behaviour in tests as close as possible to real world.
+# behavior in tests as close as possible to real world.
 @pytest.fixture
 def freezer():
     with freeze_time(tick=True) as frozen_time:
