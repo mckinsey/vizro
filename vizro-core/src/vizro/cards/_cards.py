@@ -24,9 +24,9 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str) -> dbc.Card:
     )
 
 
-# Example 1: Aggregated KPI Card with Markdown
+# Example 1: KPI Card with Markdown
 # (+) Allows for unlimited customisation on text
-# (-) Custom styling becomes difficult
+# (-) Custom styling becomes difficult due to className provision
 @capture("card")
 def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
@@ -42,7 +42,9 @@ def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Call
         dangerously_allow_html=False,
     )
 
-
+# Example 2: KPI Card with HTML
+# (-) Customisation on text requires a new captured Callable to be created
+# (+) Allows for indefinite custom styling
 @capture("card")
 def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
@@ -53,7 +55,7 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: st
 
     return [
         html.H2(title),
-        html.P(value, className="kpi-value"),
+        html.P(value),
         html.Span(
             [
                 html.Span(
@@ -61,7 +63,7 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: st
                 ),
                 html.Span(f"{delta} % vs. reference ({ref_value})"),
             ],
-            className=f"kpi-ref-value {color}",
+            className=f"{color}",
         ),
     ]
 

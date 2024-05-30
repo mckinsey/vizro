@@ -1,58 +1,23 @@
-/* Ignore all of the CSS code for now, it's not made for scale for now. */
-#kpi-total {
-  border-left: 4px solid var(--text-primary);
-  padding-left: 12px;
-}
-
-/* Dynamic Card */
-
-
-.kpi-value,
-.kpi-card-agg h1 {
-  align-items: center;
-  color: var(--text-secondary);
-  display: flex;
-  flex-grow: 1;
-  font-size: 16px;
-  font-size: 5vh;
-  font-weight: 600;
-  line-height: unset;
-}
-
-.kpi-ref-value {
+/* Refactored CSS for KPI Card functions */
+.kpi-card-ref > span {
   display: flex;
   font-weight: 600;
   gap: 4px;
-  line-height: 20px;
 }
 
-.kpi-ref-value .material-symbols-outlined {
+.kpi-card-ref .up {
+  color: #1a85ff;
+}
+
+.kpi-card-ref .down {
+  color: #d41159;
+}
+
+.kpi-card-ref .material-symbols-outlined {
   font-size: 20px;
   font-weight: 600;
 }
 
-.kpi-up {
-  border-left: 4px solid #1a85ff;
-}
-
-.kpi-ref-value.up {
-  color: #1a85ff;
-}
-
-.kpi-down {
-  border-left: 4px solid #d41159;
-}
-
-.kpi-ref-value.down {
-  color: #d41159;
-}
-
-/* Markdown card */
-.kpi-card-agg {
-  border-left: 4px solid var(--text-secondary);
-}
-
-/*Refactored CSS*/
 .kpi-card-icon {
   border-left: 4px solid var(--text-secondary);
 }
@@ -68,7 +33,7 @@
   margin: 0;
 }
 
-.kpi-card-icon > p {
+.kpi-card-icon > p, .kpi-card-ref > p {
   align-items: center;
   color: var(--text-secondary);
   display: flex;
@@ -77,4 +42,11 @@
   font-size: 5vh;
   font-weight: 600;
   line-height: unset;
+}
+
+
+/* CSS for temporary solutions */
+#kpi-total {
+  border-left: 4px solid var(--text-primary);
+  padding-left: 12px;
 }

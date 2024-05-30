@@ -62,39 +62,20 @@ class CustomKPI(vm.VizroBaseModel):
         return dbc.Card(
             [
                 html.H2(self.title),
-                html.H1(self.value, className="kpi-value"),
+                html.P(self.value),
                 html.Span(
                     [
                         html.Span(self.icon, className="material-symbols-outlined"),
                         html.Span(self.ref_value),
                     ],
-                    className=f"kpi-ref-value {self.sign}",
+                    className=f"{self.sign}",
                 ),
             ],
-            className=f"kpi-{self.sign}",
+            className=f"kpi-card-ref {self.sign}",
         )
 
 
 vm.Page.add_type("components", CustomKPI)
-
-# Method 3: Extend vm.Card with figure attribute
-# (+) Fully customisable in style and layout, possibility to add other traces via adding dcc.Graph, dynamic
-# (-) Requires CapturedCallable for static cards now as well
-
-# Most common arguments for CapturedCallable
-# kpi_card_ref(
-#     data_frame=iris_df,              | YES
-#     value="sepal_width",             | YES
-#     ref_value="petal_width",         | YES
-#     title="Dynamic Card Ref.",       | MAYBE - Eventually better to use Mkd text for this, so they can flexibly use a title / subtitle etc.
-#     agg_fct=lambda x: x.mean(),      | MAYBE - Useful if our CapturedCallables should work out of the box without custom code
-#     icon="Home"                      | MAYBE
-# )
-
-
-# Method 4: Create new custom component with figure attribute
-# Aligned with A. not to do this for now as it would require a higher-level model that does not fit into our
-# scheme of components for now. We could consider this in the future if we see a need for it.
 
 page = vm.Page(
     title="KPI Indicators",
