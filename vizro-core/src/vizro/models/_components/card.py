@@ -80,9 +80,7 @@ class Card(VizroBaseModel):
     @_log_call
     def build(self):
         # LQ: Don't really like this - is there a better way to do this? I need to provide different classNames to the outer
-        # dbc.Card based on the CapturedCallable provided. This is a bit hacky and doesn't fully work for the KPI Cards where
-        # the left-border needs to be colored differently based on the delta value as the outer container doesn't have access
-        # to the calculated value inside the CapturedCallable. Any ideas?
+        # dbc.Card based on the CapturedCallable provided. This is a bit hacky.
         function_name = self.figure._function.__name__
 
         # LQ: Previously discussed to insert dbc.Card directly here and provide self.id to the outer container.

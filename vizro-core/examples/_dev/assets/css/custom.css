@@ -41,6 +41,14 @@
   line-height: unset;
 }
 
+.kpi-card-ref:has(.up) {
+    border-left: 4px solid #1a85ff;
+}
+
+.kpi-card-ref:has(.down) {
+    border-left: 4px solid #d41159;
+}
+
 /* CSS for temporary solutions */
 #kpi-total {
   border-left: 4px solid var(--text-primary);
