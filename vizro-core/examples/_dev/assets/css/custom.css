@@ -12,7 +12,8 @@
   margin: 0;
 }
 
-.kpi-value, .kpi-card-agg h1 {
+.kpi-value,
+.kpi-card-agg h1 {
   align-items: center;
   color: var(--text-secondary);
   display: flex;
@@ -61,8 +62,7 @@ h2.icon.material-symbols-outlined {
   border-left: 4px solid var(--text-secondary);
 }
 
-
-/* Markdown card*/
+/* Markdown card */
 .kpi-card-agg {
   border-left: 4px solid var(--text-secondary);
 }

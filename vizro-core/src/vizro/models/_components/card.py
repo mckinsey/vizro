@@ -1,5 +1,5 @@
 from typing import Literal, Optional
-
+import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dcc
 
@@ -15,6 +15,13 @@ from vizro.models._components._components_utils import _callable_mode_validator_
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
+CLASSNAME_LOOKUP = {
+    "text_card": "",
+    "nav_card": "card-nav",
+    "kpi_card_agg": "kpi-card-agg",
+    "kpi_card_icon": "kpi-card-icon",
+    "kpi_card_ref": "kpi-card-ref",
+}
 
 class Card(VizroBaseModel):
     """Creates a card object to be displayed on dashboard.
@@ -47,9 +54,9 @@ class Card(VizroBaseModel):
     def validate_figure(cls, figure, values):
         if figure is None:
             return (
-                vc.nav_card(text=values["text"], href=values["href"], data_frame=pd.DataFrame(), id=values["id"])
+                vc.nav_card(text=values["text"], href=values["href"], data_frame=pd.DataFrame())
                 if values["href"]
-                else vc.text_card(text=values["text"], data_frame=pd.DataFrame(), id=values["id"])
+                else vc.text_card(text=values["text"], data_frame=pd.DataFrame())
             )
         return figure
 
@@ -71,8 +78,14 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # LQ: Normally we insert the self.id in the outer html.Div. In the context of the card, it doesn't make sense
-        # to have the id on the outer div, as it's not the responsive sub-component. Instead the id needs to be passed
-        # on through the child. But this now requires an `id` argument in the CapturedCallable which is not ideal.
-        # Any ideas on how to solve this?
-        return dcc.Loading(self.__call__(id=self.id), color="grey", parent_className="loading-container")
+        # LQ: Don't really like this - is there a better way to do this? I need to provide different classNames to the outer
+        # dbc.Card based on the CapturedCallable provided. This is a bit hacky and doesn't fully work for the KPI Cards where
+        # the left-border needs to be colored differently based on the delta value as the outer container doesn't have access
+        # to the calculated value inside the CapturedCallable. Any ideas?
+        function_name = self.figure._function.__name__
+
+        # LQ: Previously discussed to insert dbc.Card directly here and provide self.id to the outer container.
+        # However, this can affect several custom actions that rely on the id being previously provided to the inner
+        # text component instead of the outer card component. Shall we keep as is or pass the id through the relevant inner
+        # components? The last would require to provide an id argument to each CapturedCallable, which is also not optimal.
+        return dcc.Loading(dbc.Card(self.__call__(), id=self.id, className=CLASSNAME_LOOKUP[function_name]), color="grey", parent_className="loading-container")
