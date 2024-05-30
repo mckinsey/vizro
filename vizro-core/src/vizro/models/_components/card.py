@@ -1,4 +1,5 @@
 from typing import Literal, Optional
+
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dcc
@@ -18,9 +19,10 @@ from vizro.models.types import CapturedCallable
 CLASSNAME_LOOKUP = {
     "text_card": "",
     "nav_card": "card-nav",
-    "kpi_card_icon": "kpi-card-icon",
+    "kpi_card": "kpi-card-icon",
     "kpi_card_ref": "kpi-card-ref",
 }
+
 
 class Card(VizroBaseModel):
     """Creates a card object to be displayed on dashboard.
@@ -87,4 +89,8 @@ class Card(VizroBaseModel):
         # However, this can affect several custom actions that rely on the id being previously provided to the inner
         # text component instead of the outer card component. Shall we keep as is or pass the id through the relevant inner
         # components? The last would require to provide an id argument to each CapturedCallable, which is also not optimal.
-        return dcc.Loading(dbc.Card(self.__call__(), id=self.id, className=CLASSNAME_LOOKUP[function_name]), color="grey", parent_className="loading-container")
+        return dcc.Loading(
+            dbc.Card(self.__call__(), id=self.id, className=CLASSNAME_LOOKUP[function_name]),
+            color="grey",
+            parent_className="loading-container",
+        )

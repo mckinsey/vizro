@@ -9,7 +9,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
-from vizro.cards import kpi_card_icon, kpi_card_ref
+from vizro.cards import kpi_card, kpi_card_ref
 from vizro.models.types import capture
 
 iris_df = px.data.iris()
@@ -83,9 +83,9 @@ page = vm.Page(
     components=[
         # Method 3: Using vm.Card with a figure attribute - value only
         # Style 1: Value Only
-        vm.Card(figure=kpi_card_icon(data_frame=df, value="Actual", title="Value I", agg_fct=lambda x: x.sum())),
-        vm.Card(figure=kpi_card_icon(data_frame=df, value="Actual", title="Value II", agg_fct=lambda x: x.mean())),
-        vm.Card(figure=kpi_card_icon(data_frame=df, value="Actual", title="Value III", agg_fct=lambda x: x.median())),
+        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value I", agg_fct=lambda x: x.sum())),
+        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value II", agg_fct=lambda x: x.mean())),
+        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value III", agg_fct=lambda x: x.median())),
         # Style 2: Value and reference value
         vm.Card(
             figure=kpi_card_ref(
@@ -112,11 +112,12 @@ page = vm.Page(
                 ref_value="Reference",
                 title="Ref. Value III",
                 agg_fct=lambda x: x.median(),
+                icon="shopping_cart",
             )
         ),
         # Style 3: Value and icon
         vm.Card(
-            figure=kpi_card_icon(
+            figure=kpi_card(
                 data_frame=df,
                 value="Actual",
                 icon="shopping_cart",
@@ -125,7 +126,7 @@ page = vm.Page(
             )
         ),
         vm.Card(
-            figure=kpi_card_icon(
+            figure=kpi_card(
                 data_frame=df,
                 value="Actual",
                 icon="payment",
@@ -134,7 +135,7 @@ page = vm.Page(
             )
         ),
         vm.Card(
-            figure=kpi_card_icon(
+            figure=kpi_card(
                 data_frame=df,
                 value="Actual",
                 icon="monitoring",

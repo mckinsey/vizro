@@ -1,4 +1,3 @@
-/* Refactored CSS for KPI Card functions */
 .kpi-card-ref > span {
   display: flex;
   font-weight: 600;
@@ -13,27 +12,25 @@
   color: #d41159;
 }
 
-.kpi-card-ref .material-symbols-outlined {
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .kpi-card-icon {
   border-left: 4px solid var(--text-secondary);
 }
 
-.kpi-card-icon .material-symbols-outlined  {
-  line-height: 32px;
+.kpi-card-icon .material-symbols-outlined,
+.kpi-card-ref div .material-symbols-outlined {
+  line-height: 28px;
 }
 
-.kpi-card-icon > div {
+.kpi-card-icon > div,
+.kpi-card-ref > div {
   display: flex;
   flex-direction: row;
   gap: 8px;
   margin: 0;
 }
 
-.kpi-card-icon > p, .kpi-card-ref > p {
+.kpi-card-icon > p,
+.kpi-card-ref > p {
   align-items: center;
   color: var(--text-secondary);
   display: flex;
@@ -43,7 +40,6 @@
   font-weight: 600;
   line-height: unset;
 }
-
 
 /* CSS for temporary solutions */
 #kpi-total {

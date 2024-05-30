@@ -8,6 +8,7 @@ from dash import dcc, get_relative_path, html
 
 from vizro.models.types import capture
 
+
 # LQ: The data frame is not used in the function, but needs to be provided here. I guess that is unavoidable for now?
 @capture("card")
 def text_card(data_frame: pd.DataFrame, text: str) -> dbc.Card:
@@ -42,34 +43,14 @@ def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Call
         dangerously_allow_html=False,
     )
 
+
 # Example 2: KPI Card with HTML
 # (-) Customisation on text requires a new captured Callable to be created
 # (+) Allows for indefinite custom styling
 @capture("card")
-def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: str, agg_fct: Callable = sum) -> dbc.Card:
-    """Dynamic text card in form of a KPI Card."""
-    value = round(agg_fct(data_frame[value]), 2)
-    ref_value = round(agg_fct(data_frame[ref_value]), 2)
-    delta = round((ref_value - value) / value * 100, 2)
-    color = "up" if delta > 0 else "down"
-
-    return [
-        html.H2(title),
-        html.P(value),
-        html.Span(
-            [
-                html.Span(
-                    "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
-                ),
-                html.Span(f"{delta} % vs. reference ({ref_value})"),
-            ],
-            className=f"{color}",
-        ),
-    ]
-
-
-@capture("card")
-def kpi_card_icon(data_frame: pd.DataFrame, title: str, value: str, icon: Optional[str] = None, agg_fct: Callable = sum) -> dbc.Card:
+def kpi_card(
+    data_frame: pd.DataFrame, title: str, value: str, icon: Optional[str] = None, agg_fct: Callable = sum
+) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
     value = round(agg_fct(data_frame[value]), 2)
 
@@ -81,4 +62,41 @@ def kpi_card_icon(data_frame: pd.DataFrame, title: str, value: str, icon: Option
             ],
         ),
         html.P(value),
+    ]
+
+
+# LQ: Not sure if the removal of classNames is a better approach. It seems more unstable as it depends
+# on the component hierarchy not changing now. I slightly prefer to explictly provide classNames to the subcomponents here.
+@capture("card")
+def kpi_card_ref(
+    data_frame: pd.DataFrame,
+    title: str,
+    value: str,
+    ref_value: str,
+    agg_fct: Callable = sum,
+    icon: Optional[str] = None,
+) -> dbc.Card:
+    """Dynamic text card in form of a KPI Card."""
+    value = round(agg_fct(data_frame[value]), 2)
+    ref_value = round(agg_fct(data_frame[ref_value]), 2)
+    delta = round((ref_value - value) / value * 100, 2)
+    color = "up" if delta > 0 else "down"
+
+    return [
+        html.Div(
+            [
+                html.P(icon, className="material-symbols-outlined") if icon else None,
+                html.H2(title),
+            ],
+        ),
+        html.P(value),
+        html.Span(
+            [
+                html.Span(
+                    "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
+                ),
+                html.Span(f"{delta} % vs. reference ({ref_value})"),
+            ],
+            className=f"{color}",
+        ),
     ]
