@@ -33,11 +33,13 @@ class GraphState(TypedDict):
 
     Attributes:
         messages : With user question, error messages, reasoning
-        dfs : Dataframes to be analyzed
+        df_schemas : Schema of the dataframes
+        df_heads : Data sample of the dataframes
     """
 
     messages: List
-    dfs: List[pd.DataFrame]
+    df_schemas: List[str]
+    df_heads: List[str]
 
 
 
@@ -161,7 +163,6 @@ class VizroAI:
             )
 
 
-
     def dashboard(
         self,
         dfs: List[pd.DataFrame],
@@ -178,32 +179,9 @@ class VizroAI:
             
         """
         print("Dashboard code snippet")
+        df_schemas, df_heads = _get_df_info(dfs)
 
-        def generate_data_summary(state: GraphState) -> GraphState:
-            """
-            Generate a summary of the dataframes provided.
-
-            Args:
-                state (dict): The current graph state
-
-            Returns:
-                state (dict): New key added to state, generation
-            """
-            messages = state["messages"]
-            requirement_sum_chain = requirement_sum_prompt | self.model.with_structured_output(FullDataSummary)
-
-            
-            df_schemas, df_heads = _get_df_info(dfs)
-            data_requirement_summary = requirement_sum_chain.invoke(
-            {"df_heads": df_heads, "df_schemas": df_schemas, "messages": [("user",user_input)]}
-            )
-            messages += [
-                (
-                    "assistant",
-                    data_requirement_summary,
-                )
-            ]
-            return {"messages": messages}
+        
 
         graph = StateGraph(GraphState)
         # graph = StateGraph(GraphState, config_schema=ConfigSchema)
@@ -215,41 +193,36 @@ class VizroAI:
 
         runnable = graph.compile()
 
-        message_res = runnable.invoke({"messages": [("user", dfs), ("user", user_input)]})
+        message_res = runnable.invoke({"df_schemas": df_schemas, "df_heads": df_heads, "messages": [("user", user_input)]})
         # message_res =  runnable.invoke({"messages": [("user", dfs), ("user", user_input)]}, {"configurable": {"dfs": dfs}})
         return message_res
     
-# class ConfigSchema(BaseModel):
-#     dfs: List[pd.DataFrame]
 
-#     class Config:
-#         arbitrary_types_allowed = True
 
-# def generate_data_summary(state: GraphState, config: RunnableConfig) -> GraphState:
-#     """
-#     Generate a summary of the dataframes provided.
+def generate_data_summary(state: GraphState):
+    """
+    Generate a summary of the dataframes provided.
 
-#     Args:
-#         state: The current graph state
-#         config (RunnableConfig): The configuration schema
+    Args:
+        state (dict): The current graph state
 
-#     Returns:
-#         state: New key added to state, generation
-#     """
-#     messages = state["messages"]
-
-#     model_to_use = _get_llm_model()
-#     requirement_sum_chain = requirement_sum_prompt | model_to_use.with_structured_output(FullDataSummary)
+    Returns:
+        state (dict): New key added to state, generation
+    """
+    messages = state["messages"]
+    df_schemas = state["df_schemas"]
+    df_heads = state["df_heads"]
+    requirement_sum_chain = requirement_sum_prompt | _get_llm_model().with_structured_output(FullDataSummary)
 
     
-#     df_schemas, df_heads = _get_df_info(config["configurable"].get("dfs", [pd.DataFrame()]))
-#     data_requirement_summary = requirement_sum_chain.invoke(
-#     {"df_heads": df_heads, "df_schemas": df_schemas, "messages": [("user",state["messages"])]}
-#     )
-#     messages += [
-#         (
-#             "assistant",
-#             data_requirement_summary,
-#         )
-#     ]
-#     return {"messages": messages}
+    # df_schemas, df_heads = _get_df_info(dfs)
+    data_requirement_summary = requirement_sum_chain.invoke(
+    {"df_heads": df_heads, "df_schemas": df_schemas, "messages": messages}
+    )
+    messages += [
+        (
+            "assistant",
+            data_requirement_summary,
+        )
+    ]
+    return {"messages": messages}
