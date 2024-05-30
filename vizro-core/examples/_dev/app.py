@@ -6,7 +6,6 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
-import vizro.plotly.express as px
 from dash import html
 from vizro import Vizro
 from vizro.cards import kpi_card, kpi_card_ref
