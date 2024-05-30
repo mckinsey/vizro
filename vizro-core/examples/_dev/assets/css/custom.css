@@ -12,16 +12,16 @@
   color: #d41159;
 }
 
-.kpi-card-icon {
+.kpi-card {
   border-left: 4px solid var(--text-secondary);
 }
 
-.kpi-card-icon .material-symbols-outlined,
+.kpi-card .material-symbols-outlined,
 .kpi-card-ref div .material-symbols-outlined {
   line-height: 28px;
 }
 
-.kpi-card-icon > div,
+.kpi-card > div,
 .kpi-card-ref > div {
   display: flex;
   flex-direction: row;
@@ -29,7 +29,7 @@
   margin: 0;
 }
 
-.kpi-card-icon > p,
+.kpi-card > p,
 .kpi-card-ref > p {
   align-items: center;
   color: var(--text-secondary);
@@ -42,11 +42,11 @@
 }
 
 .kpi-card-ref:has(.delta-pos) {
-    border-left: 4px solid #1a85ff;
+  border-left: 4px solid #1a85ff;
 }
 
 .kpi-card-ref:has(.delta-neg) {
-    border-left: 4px solid #d41159;
+  border-left: 4px solid #d41159;
 }
 
 /* CSS for temporary solutions */

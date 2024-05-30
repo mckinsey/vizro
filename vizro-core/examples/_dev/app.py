@@ -71,7 +71,7 @@ class CustomKPI(vm.VizroBaseModel):
                     className=self.sign,
                 ),
             ],
-            className=f"kpi-card-ref",
+            className="kpi-card-ref",
         )
 
 
@@ -178,7 +178,11 @@ another_page = vm.Page(
         ),
         # Method 2: Custom component without a figure attribute
         CustomKPI(
-            title="Custom component", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. Last Year"
+            title="Custom component",
+            value="75.513",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="5.5% vs. Last Year",
         ),
     ],
 )
