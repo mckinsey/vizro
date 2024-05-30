@@ -123,6 +123,7 @@ page = vm.Page(
                 icon="shopping_cart",
                 title="Icon I",
                 agg_fct=lambda x: x.sum(),
+                value_format="${:.2f}",
             )
         ),
         vm.Card(
@@ -132,6 +133,7 @@ page = vm.Page(
                 icon="payment",
                 title="Icon II",
                 agg_fct=lambda x: x.mean(),
+                value_format="{:.0f}€",
             )
         ),
         vm.Card(
