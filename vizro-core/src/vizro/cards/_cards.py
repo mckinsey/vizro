@@ -37,6 +37,7 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str) -> dbc.Card:
 @capture("card")
 def kpi_card_agg(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
+    # LQ: Think about exposing an argument that allows for custom formatting such as formatting as currency
     value = round(agg_fct(data_frame[value]), 2)
 
     return dcc.Markdown(
@@ -58,14 +59,14 @@ def kpi_card_ref(data_frame: pd.DataFrame, title: str, value: str, ref_value: st
     color = "up" if delta > 0 else "down"
 
     return [
-        html.H2(title, className="kpi-title"),
+        html.H2(title),
         html.P(value, className="kpi-value"),
         html.Span(
             [
                 html.Span(
                     "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
                 ),
-                html.Span(f"{delta} % vs. Reference ({ref_value})"),
+                html.Span(f"{delta} % vs. reference ({ref_value})"),
             ],
             className=f"kpi-ref-value {color}",
         ),
@@ -80,10 +81,9 @@ def kpi_card_icon(data_frame: pd.DataFrame, title: str, value: str, icon: str, a
     return [
         html.Div(
             [
-                html.P(icon, className="kpi-icon material-symbols-outlined"),
+                html.P(icon, className="material-symbols-outlined"),
                 html.H2(title),
             ],
-            className="kpi-title",
         ),
-        html.P(value, className="kpi-value"),
+        html.P(value),
     ]
