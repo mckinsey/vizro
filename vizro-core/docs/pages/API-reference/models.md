@@ -4,6 +4,8 @@
 API reference for all [`pydantic`](https://docs.pydantic.dev/latest/) models used.
 
 ::: vizro.models
+    options:
+      filters: ["!^_","!build"] # Don't show underscore methods and build method
 
 ::: vizro.models.types
     options:
