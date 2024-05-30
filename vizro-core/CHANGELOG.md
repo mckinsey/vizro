@@ -11,6 +11,34 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.17'></a>
+
+# 0.1.17 — 2024-05-30
+
+## Highlights ✨
+
+- Enable dynamic data parametrization, so that different data can be loaded while the dashboard is running. ([#482](https://github.com/mckinsey/vizro/pull/482))
+
+## Removed
+
+- Remove all CSS classes with suffix `_outer` from components. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/#overwrite-css-properties-in-selective-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
+
+## Changed
+
+- Store `page.id` in outer page container to enable page specific styling. ([#455](https://github.com/mckinsey/vizro/pull/455))
+
+- Change the default of the `dash_ag_grid` function to the default of the underlying Dash `dag.AgGrid`. ([#446](https://github.com/mckinsey/vizro/pull/446))
+
+## Fixed
+
+- Fix `dash_data_table` cell dropdown menu to open on click. ([#481](https://github.com/mckinsey/vizro/pull/481))
+
+- Fix bug that [prevented referring to columns in custom grids/tables](https://github.com/mckinsey/vizro/issues/435). ([#439](https://github.com/mckinsey/vizro/pull/439))
+
+- Fix an issue that prevented the column widths of the AgGrid to render correctly upon reloading a page. ([#446](https://github.com/mckinsey/vizro/pull/446))
+
+- Fix actions associated with a manually added control. ([#478](https://github.com/mckinsey/vizro/pull/478))
+
 <a id='changelog-0.1.16'></a>
 
 # 0.1.16 — 2024-04-30
