@@ -55,7 +55,7 @@ class CustomKPI(vm.VizroBaseModel):
     title: str
     value: str
     icon: str
-    sign: Literal["up", "down"]
+    sign: Literal["delta-pos", "delta-neg"]
     ref_value: str
 
     def build(self):
@@ -68,10 +68,10 @@ class CustomKPI(vm.VizroBaseModel):
                         html.Span(self.icon, className="material-symbols-outlined"),
                         html.Span(self.ref_value),
                     ],
-                    className=f"{self.sign}",
+                    className=self.sign,
                 ),
             ],
-            className=f"kpi-card-ref {self.sign}",
+            className=f"kpi-card-ref",
         )
 
 
@@ -178,7 +178,7 @@ another_page = vm.Page(
         ),
         # Method 2: Custom component without a figure attribute
         CustomKPI(
-            title="Custom component", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
+            title="Custom component", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. Last Year"
         ),
     ],
 )

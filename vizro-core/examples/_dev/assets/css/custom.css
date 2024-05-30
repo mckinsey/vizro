@@ -4,11 +4,11 @@
   gap: 4px;
 }
 
-.kpi-card-ref .up {
+.kpi-card-ref .delta-pos {
   color: #1a85ff;
 }
 
-.kpi-card-ref .down {
+.kpi-card-ref .delta-neg {
   color: #d41159;
 }
 
@@ -41,11 +41,11 @@
   line-height: unset;
 }
 
-.kpi-card-ref:has(.up) {
+.kpi-card-ref:has(.delta-pos) {
     border-left: 4px solid #1a85ff;
 }
 
-.kpi-card-ref:has(.down) {
+.kpi-card-ref:has(.delta-neg) {
     border-left: 4px solid #d41159;
 }
 

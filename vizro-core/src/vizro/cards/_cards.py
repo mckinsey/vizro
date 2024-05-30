@@ -94,7 +94,7 @@ def kpi_card_ref(
     ref_value = agg_fct(data_frame[ref_value])
     # LQ: Make it configurable so people can choose percentage or absolute delta?
     delta = round((ref_value - value) / value * 100, 2)
-    color = "up" if delta > 0 else "down"
+    delta_sign = "delta-pos" if delta > 0 else "delta-neg"
 
     return [
         html.Div(
@@ -114,6 +114,6 @@ def kpi_card_ref(
                 # Provid function?
                 html.Span(f"{delta} % vs. reference ({ref_value})"),
             ],
-            className=f"{color}",
+            className=delta_sign,
         ),
     ]
