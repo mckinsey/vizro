@@ -1,6 +1,5 @@
 """Unit tests for vizro.managers.data_manager."""
 
-import time
 from contextlib import suppress
 from functools import partial
 
@@ -16,15 +15,15 @@ from vizro.managers import data_manager
 
 
 # Fixture that freezes the time so that tests involving time.sleep can run quickly. Instead of time.sleep,
-# tests should use freezer.tick() to advance time.
-# This means it is possible to test with realistic timeouts that flask-caching can handle well. Otherwise we
-# would testing with very low timeouts and time.sleep(1), and this is flaky since flask-caching is not designed to
+# tests should use freezer.tick() to advance time. This is very similar to the fixture in the pytest-freezegun package.
+# This makes it possible to test with realistic timeouts that flask-caching can handle well. Otherwise we
+# test with very low timeouts and time.sleep(1), and this is flaky since flask-caching is not designed to
 # handle such small intervals (e.g. it rounds times to the nearest second).
-# This is very similar to what's done in https://pypi.org/project/pytest-freezegun/.
-# TODO: try tick=True
+# We use tick=True so that time continues to pass between directly consecutive calls to a load function. This makes the
+# behaviour in tests as close as possible to real world.
 @pytest.fixture
 def freezer():
-    with freeze_time() as frozen_time:
+    with freeze_time(tick=True) as frozen_time:
         yield frozen_time
 
 
