@@ -53,8 +53,8 @@ jobs:
         # --no-renames is required so that an empty changelog file added in a release PR always counts as added rather
         # than a renamed version of an already-existing empty changelog file.
         run: |
-          echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'changelog.d/*.md' | cat)" >> $GITHUB_OUTPUT
-          echo "files_outside_docs_changed=$(git diff --name-only HEAD^1 HEAD -- ':!docs' | cat)" >> $GITHUB_OUTPUT
+          echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
+          echo "files_outside_docs_changed=$(git diff --name-only HEAD^1 HEAD -- ':!docs' | xargs)" >> $GITHUB_OUTPUT
 
       - name: Fail if changelog fragment needed and wasn't added
         if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.files_outside_docs_changed && !steps.changed-files.outputs.changelog_fragment_added}}
