@@ -12,9 +12,6 @@ from vizro import Vizro
 from vizro.cards import kpi_card, kpi_card_ref
 from vizro.models.types import capture
 
-iris_df = px.data.iris()
-
-
 # Create the pandas DataFrame
 df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 
@@ -171,8 +168,8 @@ another_page = vm.Page(
         vm.Graph(
             id="kpi-total",
             figure=plt_kpi_card(
-                data_frame=iris_df,
-                column="sepal_width",
+                data_frame=df,
+                column="Actual",
                 title="Plotly Indicator",
             ),
         ),
