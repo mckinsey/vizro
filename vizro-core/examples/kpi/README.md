@@ -6,22 +6,10 @@ It uses fictional budget data to demonstrate the capabilities of Vizro using rea
 Special thanks to the [#RWFD Real World Fake Data initiative](https://opendatainitiative.io/), a community project that
 provides high-quality fake data for creating realistic dashboard examples for real-world applications.
 
-Note: The data has been additionally been edited for the purpose of this example.
+Note: The data has been additionally edited for the purpose of this example.
 
 ## How to run the example locally
 
 1. Download the `Financial Consumer Complaints.csv` file from [this link](https://data.world/markbradbourne/rwfd-real-world-fake-data/workspace/file?filename=Financial+Consumer+Complaints.csv) and place it in the `data` folder
 2. If you have `hatch` set up, run the example with the command `hatch run example kpi`. Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
 3. You should now be able to access the app locally via http://127.0.0.1:8050/.
-
-## Notes for further iterations
-
-- TODO: Enable selection of year filter
-- TODO: Enable current year vs. past year comparison
-- TODO: Enable dynamic KPI Cards
-- TODO: Make KPI Card row horizontally scrollable if no space
-- TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
-- TODO: Bar - Reformat numbers with commas in bar chart
-- TODO: Bar - Left-align y-axis labels
-- TODO: Bar - Shorten labels
-- TODO: Line - Customize function to always show selected year vs. past year
