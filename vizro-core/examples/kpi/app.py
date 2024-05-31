@@ -190,15 +190,17 @@ page_region = vm.Page(
     title="Regional View",
     layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 4),
     components=[
-        vm.Card(text="""
-        
-        #### Click on a state inside the map to filter the bar charts on the right. 
-        
+        vm.Card(
+            text="""
+
+        #### Click on a state inside the map to filter the bar charts on the right.
+
         - Which state has the most complaints?
         - What are the three biggest issues in California?
         - What is the product with the most complaints in Texas?
-        
-        """),
+
+        """
+        ),
         vm.Graph(
             id="map-region",
             figure=chloropleth(
@@ -247,7 +249,7 @@ page_region = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="Region"), vm.Filter(column="State")]
+    controls=[vm.Filter(column="Region"), vm.Filter(column="State")],
 )
 
 
