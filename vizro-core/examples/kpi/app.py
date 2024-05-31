@@ -2,7 +2,7 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import KPI, bar, chloropleth, line, pie, COLUMN_DEFS
+from utils._charts import COLUMN_DEFS, KPI, bar, chloropleth, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
