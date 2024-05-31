@@ -1,20 +1,18 @@
 """Example to show dashboard configuration."""
 
-from typing import List, Literal, Optional
-
-import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
-from dash import html
+from utils._charts import KPI, bar, chloropleth, line, pie, COLUMN_DEFS
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
 df_complaints = clean_data_and_add_columns(df_complaints)
+
+vm.Page.add_type("components", KPI)
+vm.Container.add_type("components", KPI)
 
 # TODO: Overall - Do everything vs. last year
 # TODO: Overall - Consolidate colors and gaps
@@ -23,119 +21,13 @@ df_complaints = clean_data_and_add_columns(df_complaints)
 # TODO: Bar - Reformat numbers with commas in bar chart
 # TODO: Bar - Left-align y-axis labels
 # TODO: Bar - Shorten labels
-# TODO: Line - Customise function to always show selected year vs. past year
+# TODO: Line - Customize function to always show selected year vs. past year
 # TODO: Pie - Manipulate data to show sub-categories of closed company responses
 
 # TODO: Table-view - Check why date format does not work
 # TODO: Table-view - Check how to specify different % column widths while still using 100% of available screen width
 # TODO: Table-view - Replace with appropriate icons
 # TODO: Table-view - Find better color sequences for last column
-
-
-# Note: This is a static KPI Card only (it will not be reactive to controls). A new dynamic KPI Card component
-# is currently in development.
-class KPI(vm.VizroBaseModel):
-    """Static custom `KPI` Card."""
-
-    type: Literal["kpi"] = "kpi"
-    title: str
-    value: str
-    icon: str
-    sign: Literal["delta-pos", "delta-neg"]
-    ref_value: str
-
-    def build(self):
-        return dbc.Card(
-            [
-                html.H2(self.title),
-                html.P(self.value),
-                html.Span(
-                    [
-                        html.Span(self.icon, className="material-symbols-outlined"),
-                        html.Span(self.ref_value),
-                    ],
-                    className=self.sign,
-                ),
-            ],
-            className="kpi-card-ref",
-        )
-
-
-vm.Page.add_type("components", KPI)
-vm.Container.add_type("components", KPI)
-
-
-@capture("graph")
-def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 15, color_discrete_sequence: List[str] = None):
-    df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x, ascending=False).reset_index()
-
-    fig = px.bar(
-        data_frame=df_agg.head(top_n),
-        x=x,
-        y=y,
-        orientation="h",
-        text=x,
-        color_discrete_sequence=color_discrete_sequence,
-    )
-    fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))
-    return fig
-
-
-@capture("graph")
-def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequence: List[str] = None):
-    df_agg = data_frame.groupby([x]).aggregate({y: "count"}).reset_index()
-    fig = px.area(
-        data_frame=df_agg,
-        x=x,
-        y=y,
-        color_discrete_sequence=color_discrete_sequence,
-        title="Complaints over time - monthly",
-    )
-    fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
-    return fig
-
-
-@capture("graph")
-def pie(
-    names: str,
-    values: str,
-    data_frame: pd.DataFrame = None,
-    color_discrete_sequence: List[str] = None,
-    title: Optional[str] = None,
-):
-    df_agg = data_frame.groupby([names]).aggregate({values: "count"}).reset_index()
-
-    fig = px.pie(
-        data_frame=df_agg,
-        names=names,
-        values=values,
-        color_discrete_sequence=color_discrete_sequence,
-        title=title,
-        hole=0.4,
-    )
-
-    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=4, margin=dict(l=0, r=24, t=40, b=16))
-    return fig
-
-
-@capture("graph")
-def chloropleth(locations: str, color: str, data_frame: pd.DataFrame = None):
-
-    df_agg = data_frame.groupby([locations]).aggregate({color: "count"}).reset_index()
-    df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
-
-    fig = px.choropleth(
-        data_frame=df_agg,
-        locations=locations,
-        color=color,
-        #    color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
-        scope="usa",
-        locationmode="USA-states",
-    )
-
-    #   fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
-    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
-    return fig
 
 
 page_exec = vm.Page(
@@ -277,76 +169,13 @@ page_exec = vm.Page(
     ],
 )
 
-# TABLE --------------------------------------------------------------------------------------------
-rain = "![alt text: rain](https://www.ag-grid.com/example-assets/weather/rain.png)"
-sun = "![alt text: sun](https://www.ag-grid.com/example-assets/weather/sun.png)"
-df_complaints["Timely response?"] = df_complaints["Timely response?"].apply(
-    lambda x: f"No {rain} " if x == "No" else f"Yes {sun} "
-)
-
-cell_style = {
-    "styleConditions": [
-        {
-            "condition": "params.value == 'Closed with explanation'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'Closed with monetary relief'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'Closed with non-monetary relief'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'Closed without relief'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'Closed with relief'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'Closed'",
-            "style": {"backgroundColor": "#78a9ff"},
-        },
-        {
-            "condition": "params.value == 'In progress'",
-            "style": {"backgroundColor": "orange"},
-        },
-        {
-            "condition": "params.value == 'Untimely response'",
-            "style": {"backgroundColor": "#D41159"},
-        },
-    ]
-}
-
-
-column_defs = [
-    {"field": "Complaint ID", "cellDataType": "text", "headerName": "ID"},
-    {"field": "Date Received", "cellDataType": "text"},  # Why doesn't date work even after reformatting?
-    {"field": "Channel", "cellDataType": "text"},
-    {"field": "State", "cellDataType": "text"},
-    {"field": "Product", "cellDataType": "text"},
-    {"field": "Sub-product", "cellDataType": "text"},
-    {"field": "Issue", "cellDataType": "text"},
-    {"field": "Sub-issue", "cellDataType": "text"},
-    {"field": "Timely response?", "cellRenderer": "markdown"},
-    {
-        "field": "Company response - detailed",
-        "cellDataType": "text",
-        "cellStyle": cell_style,
-        "headerName": "Company response",
-    },
-]
-
 page_table = vm.Page(
     title="List of complaints",
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(
                 data_frame=df_complaints,
-                columnDefs=column_defs,
+                columnDefs=COLUMN_DEFS,
                 columnSize="autoSize",
                 defaultColDef={"minWidth": 0, "flex": 1},
             )
@@ -391,7 +220,13 @@ page_region = vm.Page(
             sign="delta-neg",
             ref_value="-4.5% vs. Last Year",
         ),
-        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Timely Response",
+            value="98.1%",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="10.5% vs. Last Year",
+        ),
         KPI(
             title="Resolved at no cost",
             value="84.5%",

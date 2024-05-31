@@ -43,5 +43,5 @@
 }
 
 .kpi-card-ref:has(.delta-neg) {
-  border-left: 4
+  border-left: 4;
 }
