@@ -76,11 +76,9 @@ class TestDunderMethods:
         with pytest.raises(KeyError):
             captured_callable["c"]
 
-    def test_delitem(self, captured_callable):
-        del captured_callable["a"]
-
-        with pytest.raises(KeyError):
-            captured_callable["a"]
+    def test_setitem(self, captured_callable):
+        captured_callable["a"] = 2
+        assert captured_callable["a"] == 2
 
 
 @pytest.mark.parametrize(

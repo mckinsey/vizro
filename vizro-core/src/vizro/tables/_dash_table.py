@@ -13,6 +13,7 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs) -> dash_table.DataTable:
     defaults = {
         "columns": [{"name": col, "id": col} for col in data_frame.columns],
         "style_as_list_view": True,
+        "style_cell": {"position": "static"},
         "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
         "style_header": {
             "border_bottom": "1px solid var(--state-overlays-selected-hover)",

@@ -49,7 +49,7 @@ nav:
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
   - Examples:
-      - Examples: pages/examples/examples.md
+      - Example dashboard code: pages/examples/examples.md
       - Examples from Vizro users: pages/examples/your-examples.md
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
@@ -63,8 +63,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: Inter Regular
   icon:
     repo: fontawesome/brands/github
   features:

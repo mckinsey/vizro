@@ -16,6 +16,7 @@ gapminder_mean = (
     .agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"})
     .reset_index()
 )
+gapminder_mean_2007 = gapminder_mean.query("year == 2007")
 
 gapminder_transformed = gapminder.copy()
 gapminder_transformed["lifeExp"] = gapminder.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
@@ -84,7 +85,7 @@ def variable_boxplot(y: str, data_frame: pd.DataFrame = None):
 def variable_bar(x: str, data_frame: pd.DataFrame = None):
     """Custom bar figure that needs post update calls."""
     fig = px.bar(
-        data_frame.query("year == 2007"),
+        data_frame,
         x=x,
         y="continent",
         orientation="h",
@@ -254,7 +255,7 @@ def create_variable_analysis():
             ),
             vm.Graph(
                 id="variable_bar",
-                figure=variable_bar(data_frame=gapminder_mean, x="lifeExp"),
+                figure=variable_bar(data_frame=gapminder_mean_2007, x="lifeExp"),
             ),
         ],
         controls=[
@@ -438,7 +439,7 @@ def create_benchmark_analysis():
         components=[
             vm.AgGrid(
                 title="Click on a cell in country column:",
-                figure=dash_ag_grid(id="dash_ag_grid_country", data_frame=gapminder, columnDefs=columnsDefs),
+                figure=dash_ag_grid(data_frame=gapminder, columnDefs=columnsDefs),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(

@@ -6,13 +6,14 @@ This is the style guide we apply to the [Vizro documentation](https://vizro.read
 
 We ask anyone kind enough to contribute documentation changes to follow this style for consistency and simplicity.
 
-What follows is a set of lightweight guidelines rather than rules. There are always edge cases and exceptions, and if it's not obvious what the style should be, consult the [Microsoft style guide](https://docs.microsoft.com/en-gb/style-guide/welcome/) for an example of good practice. We also use the [INCITS Inclusive Terminology Guidelines](https://standards.incits.org/apps/group_public/download.php/131246/eb-2021-00288-001-INCITS-Inclusive-Terminology-Guidelines.pdf).
+What follows is a set of lightweight guidelines rather than rules. There are always edge cases and exceptions, and if it's not obvious what the style should be, consult the [Microsoft style guide](https://docs.microsoft.com/en-gb/style-guide/welcome/) for an example of good practice. We also [ensure inclusive terminology](https://developers.google.com/style/inclusive-documentation) with the Google developer documentation style guide.
 
 ## Vizro lexicon
 
 The names of our products are **Vizro** and **Vizro-AI**.
 
 We refer to other products using their preferred capitalization. For example:
+
 * Dash and Pydantic are always capitalized, except where given as Python package names `dash` and `pydantic`.
 * pandas DataFrame has a lowercase "p" and camelcase "DataFrame".
 

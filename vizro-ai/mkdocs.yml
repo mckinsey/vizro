@@ -13,11 +13,15 @@ nav:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Different languages: pages/user-guides/use-different-languages.md
           - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+  - API Reference:
+      - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
+  - Examples:
+      - Chart examples: pages/user-guides/chart-examples.md
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro:
@@ -33,8 +37,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: Inter Regular
   icon:
     repo: fontawesome/brands/github
   features:

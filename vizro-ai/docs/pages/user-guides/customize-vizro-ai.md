@@ -51,7 +51,7 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         from vizro_ai import VizroAI
         from langchain_openai import ChatOpenAI
 
-        import plotly.express as px
+        import vizro.plotly.express as px
         df = px.data.gapminder()
 
         llm = ChatOpenAI(

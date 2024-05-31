@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Table."""
 
-import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -92,15 +91,11 @@ class TestProcessTableDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
         table = vm.Table(id="table", figure=dash_table_with_str_dataframe)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            table["data_frame"]
+        assert data_manager[table["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_dash_table, gapminder):
         table = vm.Table(id="table", figure=standard_dash_table)
-        assert data_manager._get_component_data("table").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            table["data_frame"]
+        assert data_manager[table["data_frame"]].load().equals(gapminder)
 
 
 class TestPreBuildTable:
@@ -118,7 +113,7 @@ class TestPreBuildTable:
 
 
 class TestBuildTable:
-    def test_table_build_mandatory_only(self, standard_dash_table):
+    def test_table_build_mandatory_only(self, standard_dash_table, gapminder):
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
         table = table.build()
@@ -126,17 +121,18 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_data_table(id="__input_text_table", data_frame=pd.DataFrame())(), id="text_table"),
+                    html.Div(dash_data_table(id="__input_text_table", data_frame=gapminder)(), id="text_table"),
                 ],
                 className="table-container",
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)
 
-    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action):
+    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
         table.pre_build()
         table = table.build()
@@ -145,12 +141,13 @@ class TestBuildTable:
             html.Div(
                 [
                     None,
-                    html.Div(dash_data_table(id="underlying_table_id", data_frame=pd.DataFrame())(), id="text_table"),
+                    html.Div(dash_data_table(id="underlying_table_id", data_frame=gapminder)(), id="text_table"),
                 ],
                 className="table-container",
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)

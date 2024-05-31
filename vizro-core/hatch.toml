@@ -21,6 +21,7 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
+  "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
   "toml",
@@ -66,10 +67,17 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "linkchecker"
 ]
 detached = true
-scripts = {serve = "mkdocs serve --strict"}
+
+[envs.docs.scripts]
+build = "mkdocs build --strict"
+# Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
+# more advanced settings using a linkcheckerrc config file.
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1"
+serve = "mkdocs serve --strict"
 
 [envs.lint]
 dependencies = [
@@ -81,7 +89,7 @@ scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 [envs.lower-bounds]
 extra-dependencies = [
   "pydantic==1.10.13",
-  "dash==2.14.1"
+  "dash==2.17.0"
 ]
 
 [publish.index]
