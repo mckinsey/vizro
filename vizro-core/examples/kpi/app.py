@@ -47,33 +47,34 @@ page_exec = vm.Page(
         ],
     ),
     components=[
+        # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
         KPI(
             title="Total Complaints",
             value="75.513",
             icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="5.5% vs. LY",
+            sign="delta-neg",
+            ref_value="6.8% vs. LY",
         ),
         KPI(
             title="Closed Complaints",
             value="99.6%",
-            icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-4.5% vs. LY",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="+0.2% vs. LY",
         ),
         KPI(
             title="Open Complaints",
             value="0.4%",
             icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-4.5% vs. LY",
+            sign="delta-pos",
+            ref_value="-0.2% vs. LY",
         ),
         KPI(
             title="Timely Response",
             value="98.1%",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="10.5% vs. LY",
+            ref_value="+10.5% vs. LY",
         ),
         KPI(
             title="Closed w/o cost",
@@ -86,8 +87,8 @@ page_exec = vm.Page(
             title="Consumer disputed",
             value="9.5%",
             icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="10.5% vs. LY",
+            sign="delta-neg",
+            ref_value="+2.3% vs. LY",
         ),
         vm.Tabs(
             tabs=[
@@ -200,33 +201,34 @@ page_region = vm.Page(
         ],
     ),
     components=[
+        # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
         KPI(
             title="Total Complaints",
             value="75.513",
             icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="5.5% vs. LY",
+            sign="delta-neg",
+            ref_value="6.8% vs. LY",
         ),
         KPI(
             title="Closed Complaints",
             value="99.6%",
-            icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-4.5% vs. LY",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="+0.2% vs. LY",
         ),
         KPI(
             title="Open Complaints",
             value="0.4%",
             icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-4.5% vs. LY",
+            sign="delta-pos",
+            ref_value="-0.2% vs. LY",
         ),
         KPI(
             title="Timely Response",
             value="98.1%",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="10.5% vs. LY",
+            ref_value="+10.5% vs. LY",
         ),
         KPI(
             title="Closed w/o cost",
@@ -239,8 +241,8 @@ page_region = vm.Page(
             title="Consumer disputed",
             value="9.5%",
             icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="10.5% vs. LY",
+            sign="delta-neg",
+            ref_value="+2.3% vs. LY",
         ),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
         vm.Tabs(
