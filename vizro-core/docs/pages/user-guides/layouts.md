@@ -271,20 +271,20 @@ allowing arbitrarily granular control of the grid by creating larger grids.
 Here is a reference table of example layouts:
 <!-- vale off -->
 
-| Configuration                                              | Image                                                                                |
-|------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| `layout=Layout(grid=[[0]])` or <br/> `layout=None`         |  <img src="../../../assets/user_guides/layout/one_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0],[1]])` or <br/> `layout=None`     |  <img src="../../../assets/user_guides/layout/two_left.png" width="400"/>             |
-| `layout=Layout(grid=[[0,1]])`                              |  <img src="../../../assets/user_guides/layout/two_top.png" width="400"/>              |
-| `layout=Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |  <img src="../../../assets/user_guides/layout/three_left.png" width="400"/>           |
-| <img src="../../../assets/user_guides/layout/1l_2r_grid.png" width="200"/>  |  <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" width="400"/>   |
-| `layout=Layout(grid=[[0,0],[1,2]])`                        |  <img src="../../../assets/user_guides/layout/one_top_two_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[2,2]])`                        |  <img src="../../../assets/user_guides/layout/two_top_one_bottom.png" width="400"/>   |
-| `layout=Layout(grid=[[0,1],[0,2],[0,3]])`                  |  <img src="../../../assets/user_guides/layout/one_left_three_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,1],[2,3]])`                        |  <img src="../../../assets/user_guides/layout/two_left_two_right.png" width="400"/>   |
-| `layout=Layout(grid=[[0,3],[1,3],[2,3]])`                  |  <img src="../../../assets/user_guides/layout/three_left_one_right.png" width="400"/> |
-| `layout=Layout(grid=[[0,0,0],[1,2,3]])`                    |  <img src="../../../assets/user_guides/layout/one_top_three_bottom.png" width="400"/> |
-| `layout=Layout(grid=[[0,1,2],[3,3,3]])`                    |  <img src="../../../assets/user_guides/layout/three_top_one_bottom.png" width="400"/> |
+| Layout needed | Grid | Code  |
+|--------------------------------|----------------------------|-------------------------------------------------------------------------------------|
+| <img src="../../../assets/user_guides/layout/one_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/two_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/two_top_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1]])` |
+| <img src="../../../assets/user_guides/layout/three_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2]])` |
+| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0],[1,2]])` |
+| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,2]])` |
+| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2],[0,3]])` |
+| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,3]])` |
+| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,3],[1,3],[2,3]])` |
+| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0,0],[1,2,3]])` |
+| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1,2],[3,3,3]])` |
 
 <!--vale on -->
 
