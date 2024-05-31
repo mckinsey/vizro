@@ -1,10 +1,8 @@
-from typing import List, Union, Literal
-import os
+from typing import Union
 
 from langchain.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_core.pydantic_v1 import BaseModel, Field, validator
-from langchain_openai import ChatOpenAI
+from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.exceptions import OutputParserException
 from pydantic.v1 import BaseModel as BaseModelV1
 
@@ -30,16 +28,3 @@ def get_model(query: str, model, result_model: Union[BaseModel, BaseModelV1], ma
         except OutputParserException as e:
             validation_error = e
     return validation_error
-
-
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-    load_dotenv()
-    import vizro.models as vm
-
-    query = "I want a card with some random text that starts with quack"
-    model = ChatOpenAI()
-    result_model = vm.Card
-
-    res = get_model(query, model, result_model)
-    print(repr(res))

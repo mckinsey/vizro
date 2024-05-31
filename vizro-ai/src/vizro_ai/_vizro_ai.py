@@ -1,17 +1,11 @@
 import logging
-from typing import Any, Dict, Optional, Union, TypedDict, List, Tuple
+from typing import Any, Dict, Optional, Union, List
 
 import pandas as pd
 import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END
 from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableConfig
-from langchain_core.pydantic_v1 import BaseModel, Field
-
-from vizro_ai.dashboard.vizro_ai_db import VizroAIDashboard
 
 from vizro_ai.dashboard.graph.dashboard_code_generation import _create_and_compile_graph
 from vizro_ai.dashboard.data_summary import _get_df_info
@@ -165,7 +159,6 @@ class VizroAI:
             Dashboard code snippet.
             
         """
-        print("Dashboard code snippet")
         df_schemas, df_heads = _get_df_info(dfs)
 
         runnable = _create_and_compile_graph()

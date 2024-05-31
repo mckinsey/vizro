@@ -1,9 +1,6 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Tuple
 
 import pandas as pd
-from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import END, StateGraph
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.pydantic_v1 import BaseModel, Field
 
@@ -42,7 +39,6 @@ class DataSummary(BaseModel):
     data_sample: str = Field(description="Sample data (first 5 rows) from the dataset provided")
     data_schema: str = Field(description="Schema of the dataset provided")
     dataset_vizro_model_mapping: str = Field(description="Mapping of dataset name to Vizro model")
-    # user_question: str = Field(description="Raw user question")
 
 
 class FullDataSummary(BaseModel):

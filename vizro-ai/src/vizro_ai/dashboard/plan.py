@@ -1,16 +1,13 @@
 """Module containing the planner functionality."""
-from typing import Literal, List, Union, Optional
+from typing import Literal, List, Union
 from pydantic.v1 import BaseModel as BaseModelV1
 from pydantic.v1 import Field, validator, create_model
 from .model import get_model
 
 from langchain_openai import ChatOpenAI
-# from langchain_anthropic import ChatAnthropic
 import vizro.models as vm
 from vizro.tables import dash_ag_grid
-from vizro.models.types import SelectorType
 from vizro.managers import model_manager
-# from emoji import emojize
 
 component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
@@ -26,7 +23,6 @@ class Component(BaseModelV1):
     def create(self, model, df):
         if self.component_name == "Graph":
             return vm.Graph()
-            # return vm.Graph(id=self.component_id, figure=fig_builder.plot(df, self.component_description))
         elif self.component_name == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(df))
         elif self.component_name == "Card":
@@ -101,47 +97,8 @@ def get_dashboard_plan(query: str, model: Union[ChatOpenAI],
 
 def print_dashboard_plan(dashboard_plan):
     for i, page in enumerate(dashboard_plan.pages):
-        # print(
-        #     f"{emojize(':page_facing_up::page_facing_up:')} " + '\033[1m' + f" PAGE: {page.title} " + '\033[0m' + f"{emojize(':page_facing_up::page_facing_up:')} ")
-        # print(emojize(':package::package::package::package:  COMPONENTS :package::package::package::package:',
-        #               language='alias'))
         for j in page.components.components:
             print("--> "+repr(j))
-        # available_components = [comp.component_id for comp in dashboard_plan.pages[0].components.components]
-        # print(emojize(':control_knobs::control_knobs::control_knobs::control_knobs:  CONTROLS :control_knobs::control_knobs::control_knobs::control_knobs:',
-        #               language='alias'))
         for j in page.controls.controls:
             print("--> "+repr(j))
         print("\n")
-
-
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    # from vizro_ai import VizroAI
-    from vizro import Vizro
-    import plotly.express as px
-
-    query = "I need a page with a bar chart shoing the population per continent "
-    "and a scatter chart showing the life expectency per country as a function gdp. "
-    "Make a filter on the GDP column and use a dropdown as selector. This filter should only "
-    "apply to the bar chart. The bar chart should be a stacked bar chart, while "
-    "the scatter chart should be colored by the column 'continent'. I also want "
-    "a table that shows the data. The title of the page should be `My wonderful "
-    "jolly dashboard showing a lot of data`."
-
-    model = ChatOpenAI(model="gpt-4-turbo", temperature=0)
-
-    # model = ChatAnthropic(
-    #     model='claude-3-opus-20240229',
-    #     anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY"),
-    #     anthropic_api_url=os.environ.get("ANTHROPIC_API_BASE")
-    # )
-
-    # fig_builder = VizroAI(model=model)
-    gapminder = px.data.gapminder()
-
-    plan = get_dashboard_plan(query, model)
-
-    print_dashboard_plan(plan)

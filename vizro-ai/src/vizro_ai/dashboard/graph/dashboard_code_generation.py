@@ -1,12 +1,10 @@
-import logging
-from typing import Any, Dict, Optional, Union, TypedDict, List, Tuple
+from typing import TypedDict, List
 import pandas as pd
 
-from vizro_ai.dashboard.data_summary import requirement_sum_prompt, DataSummary, FullDataSummary, _get_df_info
+from vizro_ai.dashboard.data_summary import requirement_sum_prompt, FullDataSummary
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.dashboard.vizro_ai_db import VizroAIDashboard
 from langgraph.graph import END, StateGraph
-# from vizro_ai._vizro_ai import VizroAI
 
 
 model_for_testing = "gpt-4o"
@@ -74,7 +72,6 @@ def generate_dashboard_code(state: GraphState):
 
     first_df = dfs[0]
     model = _get_llm_model(model=model_default)
-    # fig_builder = VizroAI(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
     dashboard = vizro_ai_dashboard.build_dashboard(first_df, messages[0])
     dashboard_code_string = dashboard.dict_obj(exclude_unset = True)
