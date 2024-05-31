@@ -23,9 +23,10 @@ class Component(BaseModelV1):
     component_id: str = Field(pattern=r'^[a-z]+(_[a-z]+)?$',
                               description="Small snake case description of this component")
 
-    def create(self, fig_builder, model, df):
+    def create(self, model, df):
         if self.component_name == "Graph":
-            return vm.Graph(id=self.component_id, figure=fig_builder.plot(df, self.component_description))
+            return vm.Graph()
+            # return vm.Graph(id=self.component_id, figure=fig_builder.plot(df, self.component_description))
         elif self.component_name == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(df))
         elif self.component_name == "Card":
@@ -118,7 +119,7 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
 
     load_dotenv()
-    from vizro_ai import VizroAI
+    # from vizro_ai import VizroAI
     from vizro import Vizro
     import plotly.express as px
 
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     #     anthropic_api_url=os.environ.get("ANTHROPIC_API_BASE")
     # )
 
-    fig_builder = VizroAI(model=model)
+    # fig_builder = VizroAI(model=model)
     gapminder = px.data.gapminder()
 
     plan = get_dashboard_plan(query, model)

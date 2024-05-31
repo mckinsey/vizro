@@ -5,11 +5,11 @@ from vizro_ai.utils.helper import DebugFailure
 
 
 class PageBuilder:
-    def __init__(self, model, data, page_plan, fig_builder):
+    def __init__(self, model, data, page_plan):
         self._model = model
         self._data = data
         self._page_plan = page_plan
-        self._fig_builder = fig_builder
+        # self._fig_builder = fig_builder
         self._components = None
         self._controls = None
         self._page = None
@@ -26,8 +26,10 @@ class PageBuilder:
                         desc=f"Building components of page: {self._page_plan.title}"):
             try:
                 components.append(
-                    self._page_plan.components.components[i].create(fig_builder=self._fig_builder, df=self._data,
-                                                                    model=self._model))
+                    self._page_plan.components.components[i].create(
+                        # fig_builder=self._fig_builder, 
+                        df=self._data,
+                        model=self._model))
             except DebugFailure as e:
                 components.append(vm.Card(id=self._page_plan.components.components[i].component_id,
                                           text=f"Failed to build component: {e}"))
@@ -63,11 +65,11 @@ class PageBuilder:
 
 
 class DashboardBuilder:
-    def __init__(self, model, data, dashboard_plan, fig_builder):
+    def __init__(self, model, data, dashboard_plan):
         self._model = model
         self._data = data
         self._dashboard_plan = dashboard_plan
-        self._fig_builder = fig_builder
+        # self._fig_builder = fig_builder
         self._pages = None
 
     @property
@@ -79,8 +81,13 @@ class DashboardBuilder:
     def _build_pages(self):
         pages = []
         for i in trange(len(self._dashboard_plan.pages), desc="Building pages"):
-            pages.append(PageBuilder(model=self._model, data=self._data, page_plan=self._dashboard_plan.pages[i],
-                                     fig_builder=self._fig_builder).page)
+            pages.append(
+                PageBuilder(
+                    model=self._model,
+                    data=self._data, 
+                    page_plan=self._dashboard_plan.pages[i],
+                    # fig_builder=self._fig_builder
+                    ).page)
         return pages
 
     @property
