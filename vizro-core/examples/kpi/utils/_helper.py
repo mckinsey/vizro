@@ -53,7 +53,8 @@ def clean_data_and_add_columns(data: pd.DataFrame):
 
     # Create additional columns
     data["Year-Month Received"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y-%m")
-    data["Region"] = data["State"].map(REGION_MAPPING)
+    data["Region"] = data["State"].map(REGION_MAPPING).fillna("N/A")
+
     data["Company response"] = np.where(
         data["Company response - detailed"].str.contains("Closed"), "Closed", data["Company response - detailed"]
     )

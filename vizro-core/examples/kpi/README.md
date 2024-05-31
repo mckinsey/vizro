@@ -15,3 +15,13 @@ Note: The data has been additionally been edited for the purpose of this example
 3. You should now be able to access the app locally via http://127.0.0.1:8050/.
 
 ## Notes for further iterations
+
+- TODO: Enable selection of year filter
+- TODO: Enable current year vs. past year comparison
+- TODO: Enable dynamic KPI Cards
+- TODO: Make KPI Card row horizontally scrollable if no space
+- TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
+- TODO: Bar - Reformat numbers with commas in bar chart
+- TODO: Bar - Left-align y-axis labels
+- TODO: Bar - Shorten labels
+- TODO: Line - Customize function to always show selected year vs. past year

@@ -5,6 +5,7 @@ import vizro.models as vm
 from utils._charts import COLUMN_DEFS, KPI, bar, chloropleth, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
+from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
@@ -17,17 +18,12 @@ vm.Container.add_type("components", KPI)
 # TODO: Enable selection of year filter
 # TODO: Enable current year vs. past year comparison
 # TODO: Enable dynamic KPI Cards
-# TODO: Overall - Consolidate colors and gaps
-
-# TODO: KPI - Encode logic of bad/good
+# TODO: Make KPI Card row horizontally scrollable if no space
 # TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
 # TODO: Bar - Reformat numbers with commas in bar chart
 # TODO: Bar - Left-align y-axis labels
 # TODO: Bar - Shorten labels
 # TODO: Line - Customize function to always show selected year vs. past year
-# TODO: Pie - Manipulate data to show sub-categories of closed company responses
-
-
 
 
 page_exec = vm.Page(
@@ -159,8 +155,14 @@ page_exec = vm.Page(
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
-                color_discrete_sequence=['#1a85ff', '#7ea1ee', '#adbedc', '#df658c', '#d41159'],
-                custom_order=["Closed with explanation", "Closed without relief", "Closed with non-monetary relief", "Closed with relief", "Closed with monetary relief"],
+                color_discrete_sequence=["#1a85ff", "#7ea1ee", "#adbedc", "#df658c", "#d41159"],
+                custom_order=[
+                    "Closed with explanation",
+                    "Closed without relief",
+                    "Closed with non-monetary relief",
+                    "Closed with relief",
+                    "Closed with monetary relief",
+                ],
                 values="Complaint ID",
                 names="Company response - Closed",
                 title="Closed company responses",
@@ -186,71 +188,32 @@ page_table = vm.Page(
 
 page_region = vm.Page(
     title="Regional View",
-    layout=vm.Layout(
-        grid=[
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-        ],
-    ),
+    layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 5),
     components=[
-        # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
-        KPI(
-            title="Total Complaints",
-            value="75.513",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="6.8% vs. LY",
-        ),
-        KPI(
-            title="Closed Complaints",
-            value="99.6%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+0.2% vs. LY",
-        ),
-        KPI(
-            title="Open Complaints",
-            value="0.4%",
-            icon="arrow_circle_down",
-            sign="delta-pos",
-            ref_value="-0.2% vs. LY",
-        ),
-        KPI(
-            title="Timely Response",
-            value="98.1%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+10.5% vs. LY",
-        ),
-        KPI(
-            title="Closed w/o cost",
-            value="84.5%",
-            icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-8.5% vs. LY",
-        ),
-        KPI(
-            title="Consumer disputed",
-            value="9.5%",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="+2.3% vs. LY",
-        ),
-        vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
+        vm.Card(text="""Placeholder"""),
         vm.Tabs(
             tabs=[
+                vm.Container(
+                    title="By Region",
+                    components=[
+                        vm.Graph(
+                            id="regional-region",
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Region",
+                                x="Complaint ID",
+                                color_discrete_sequence=["#1A85FF"],
+                                custom_data=["Region"],
+                            ),
+                            actions=[vm.Action(function=filter_interaction(targets=["map-region"]))],
+                        )
+                    ],
+                ),
                 vm.Container(
                     title="By Issue",
                     components=[
                         vm.Graph(
+                            id="regional-issue",
                             figure=bar(
                                 data_frame=df_complaints,
                                 y="Issue",
@@ -264,6 +227,7 @@ page_region = vm.Page(
                     title="By Product",
                     components=[
                         vm.Graph(
+                            id="regional-product",
                             figure=bar(
                                 data_frame=df_complaints,
                                 y="Product",
@@ -273,26 +237,23 @@ page_region = vm.Page(
                         )
                     ],
                 ),
-                vm.Container(
-                    title="By Channel",
-                    components=[
-                        vm.Graph(
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Channel",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                            ),
-                        )
-                    ],
-                ),
             ],
         ),
-    ],
-    controls=[
-        # vm.Filter(column="Region"),
-        vm.Filter(column="State"),
-        vm.Filter(column="ZIP code"),
+        vm.Graph(
+            id="map-region",
+            figure=chloropleth(
+                data_frame=df_complaints,
+                locations="State",
+                color="Complaint ID",
+                title="Complaints by State",
+                custom_data=["State"],
+            ),
+            actions=[
+                vm.Action(
+                    function=filter_interaction(targets=["regional-product", "regional-issue", "regional-region"])
+                )
+            ],
+        ),
     ],
 )
 

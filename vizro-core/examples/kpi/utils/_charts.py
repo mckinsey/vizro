@@ -42,7 +42,14 @@ class KPI(vm.VizroBaseModel):
 
 # CUSTOM CHARTS ----------------------------------------------------------------
 @capture("graph")
-def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 15, color_discrete_sequence: List[str] = None):
+def bar(  # noqa: PLR0913
+    x: str,
+    y: str,
+    data_frame: pd.DataFrame,
+    top_n: int = 15,
+    color_discrete_sequence: Optional[List[str]] = None,
+    custom_data: Optional[List[str]] = None,
+):
     df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x, ascending=False).reset_index()
 
     fig = px.bar(
@@ -52,13 +59,14 @@ def bar(x: str, y: str, data_frame: pd.DataFrame = None, top_n: int = 15, color_
         orientation="h",
         text=x,
         color_discrete_sequence=color_discrete_sequence,
+        custom_data=custom_data,
     )
-    fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))
+    fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))  # noqa: C408
     return fig
 
 
 @capture("graph")
-def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequence: List[str] = None):
+def line(x: str, y: str, data_frame: pd.DataFrame, color_discrete_sequence: Optional[List[str]] = None):
     df_agg = data_frame.groupby([x]).aggregate({y: "count"}).reset_index()
     fig = px.area(
         data_frame=df_agg,
@@ -72,20 +80,20 @@ def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequenc
 
 
 @capture("graph")
-def pie(
+def pie(  # noqa: PLR0913
     names: str,
     values: str,
     data_frame: pd.DataFrame = None,
-    color_discrete_sequence: List[str] = None,
+    color_discrete_sequence: Optional[List[str]] = None,
     title: Optional[str] = None,
-    custom_order: List[str] = None,
+    custom_order: Optional[List[str]] = None,
 ):
     df_agg = data_frame.groupby([names]).aggregate({values: "count"}).reset_index()
 
     # Apply custom order
     order_mapping = {category: index for index, category in enumerate(custom_order)}
-    df_agg['order'] = df_agg[names].map(order_mapping)
-    df_sorted = df_agg.sort_values('order')
+    df_agg["order"] = df_agg[names].map(order_mapping)
+    df_sorted = df_agg.sort_values("order")
 
     fig = px.pie(
         data_frame=df_sorted,
@@ -96,16 +104,19 @@ def pie(
         hole=0.4,
     )
 
-    fig.update_layout(legend_x=1, legend_y=1,
-                      title_pad_t=2,
-                      margin=dict(l=0, r=0, t=60, b=0)
-                      )
+    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin=dict(l=0, r=0, t=60, b=0))  # noqa: C408
     fig.update_traces(sort=False)
     return fig
 
 
 @capture("graph")
-def chloropleth(locations: str, color: str, data_frame: pd.DataFrame = None):
+def chloropleth(
+    locations: str,
+    color: str,
+    data_frame: pd.DataFrame = None,
+    title: Optional[str] = None,
+    custom_data: Optional[List[str]] = None,
+):
 
     df_agg = data_frame.groupby([locations]).aggregate({color: "count"}).reset_index()
     df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
@@ -114,12 +125,13 @@ def chloropleth(locations: str, color: str, data_frame: pd.DataFrame = None):
         data_frame=df_agg,
         locations=locations,
         color=color,
-        #    color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
+        color_continuous_scale=["#ded6d8", "#f7b0bf", "#fd8ca7", "#ff6591", "#f14f7e", "#e3366b", "#d41159"],
         scope="usa",
         locationmode="USA-states",
+        title=title,
+        custom_data=custom_data,
     )
 
-    #   fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
     fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
     return fig
 
@@ -129,27 +141,27 @@ CELL_STYLE = {
     "styleConditions": [
         {
             "condition": "params.value == 'Closed with explanation'",
-            "style": {"backgroundColor": '#1a85ff'},
+            "style": {"backgroundColor": "#1a85ff"},
         },
         {
             "condition": "params.value == 'Closed with monetary relief'",
-            "style": {"backgroundColor": '#d41159'},
+            "style": {"backgroundColor": "#d41159"},
         },
         {
             "condition": "params.value == 'Closed with non-monetary relief'",
-            "style": {"backgroundColor": '#adbedc'},
+            "style": {"backgroundColor": "#adbedc"},
         },
         {
             "condition": "params.value == 'Closed without relief'",
-            "style": {"backgroundColor": '#7ea1ee'},
+            "style": {"backgroundColor": "#7ea1ee"},
         },
         {
             "condition": "params.value == 'Closed with relief'",
-            "style": {"backgroundColor": '#df658c'},
+            "style": {"backgroundColor": "#df658c"},
         },
         {
             "condition": "params.value == 'Closed'",
-            "style": {"backgroundColor": '#1a85ff'},
+            "style": {"backgroundColor": "#1a85ff"},
         },
     ]
 }
@@ -167,7 +179,7 @@ COLUMN_DEFS = [
         "cellDataType": "text",
         "cellStyle": CELL_STYLE,
         "headerName": "Company response",
-        "flex": 6
+        "flex": 6,
     },
     {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "Timely", "flex": 2},
 ]
