@@ -14,7 +14,9 @@ df_complaints = clean_data_and_add_columns(df_complaints)
 vm.Page.add_type("components", KPI)
 vm.Container.add_type("components", KPI)
 
-# TODO: Overall - Do everything vs. last year
+# TODO: Enable selection of year filter
+# TODO: Enable current year vs. past year comparison
+# TODO: Enable dynamic KPI Cards
 # TODO: Overall - Consolidate colors and gaps
 
 # TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
@@ -24,10 +26,7 @@ vm.Container.add_type("components", KPI)
 # TODO: Line - Customize function to always show selected year vs. past year
 # TODO: Pie - Manipulate data to show sub-categories of closed company responses
 
-# TODO: Table-view - Check why date format does not work
-# TODO: Table-view - Check how to specify different % column widths while still using 100% of available screen width
-# TODO: Table-view - Replace with appropriate icons
-# TODO: Table-view - Find better color sequences for last column
+
 
 
 page_exec = vm.Page(
@@ -169,6 +168,10 @@ page_exec = vm.Page(
     ],
 )
 
+
+# TODO: Table-view - Check why date format does not work on `Date Received`
+# TODO: Table-view - Add icons to `Timely` column
+# TODO: Table-view - Find better color sequences for last column
 page_table = vm.Page(
     title="List of complaints",
     components=[
@@ -176,8 +179,6 @@ page_table = vm.Page(
             figure=dash_ag_grid(
                 data_frame=df_complaints,
                 columnDefs=COLUMN_DEFS,
-                columnSize="autoSize",
-                defaultColDef={"minWidth": 0, "flex": 1},
             )
         )
     ],
@@ -204,7 +205,7 @@ page_region = vm.Page(
     ),
     components=[
         KPI(
-            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
+            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. Last Year"
         ),
         KPI(
             title="Closed Complaints",
@@ -235,7 +236,7 @@ page_region = vm.Page(
             ref_value="-8.5% vs. Last Year",
         ),
         KPI(
-            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"
+            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. Last Year"
         ),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
         vm.Tabs(

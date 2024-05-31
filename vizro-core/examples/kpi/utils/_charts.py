@@ -154,19 +154,18 @@ CELL_STYLE = {
 
 
 COLUMN_DEFS = [
-    {"field": "Complaint ID", "cellDataType": "text", "headerName": "ID"},
-    {"field": "Date Received", "cellDataType": "text"},  # Why doesn't date work even after reformatting?
-    {"field": "Channel", "cellDataType": "text"},
-    {"field": "State", "cellDataType": "text"},
-    {"field": "Product", "cellDataType": "text"},
-    {"field": "Sub-product", "cellDataType": "text"},
-    {"field": "Issue", "cellDataType": "text"},
-    {"field": "Sub-issue", "cellDataType": "text"},
-    {"field": "Timely response?", "cellRenderer": "markdown"},
+    {"field": "Complaint ID", "cellDataType": "text", "headerName": "ID", "flex": 1},
+    {"field": "Date Received", "cellDataType": "text", "flex": 2},
+    {"field": "Channel", "cellDataType": "text", "flex": 1},
+    {"field": "State", "cellDataType": "text", "flex": 1},
+    {"field": "Product", "cellDataType": "text", "flex": 3},
+    {"field": "Issue", "cellDataType": "text", "flex": 3},
     {
         "field": "Company response - detailed",
         "cellDataType": "text",
         "cellStyle": CELL_STYLE,
         "headerName": "Company response",
+        "flex": 3
     },
+    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "Timely", "flex": 1},
 ]
