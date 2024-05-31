@@ -119,35 +119,35 @@ CELL_STYLE = {
     "styleConditions": [
         {
             "condition": "params.value == 'Closed with explanation'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#00b4ff"},
         },
         {
             "condition": "params.value == 'Closed with monetary relief'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#ff9222"},
         },
         {
             "condition": "params.value == 'Closed with non-monetary relief'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#3949ab"},
         },
         {
             "condition": "params.value == 'Closed without relief'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#ff5267"},
         },
         {
             "condition": "params.value == 'Closed with relief'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#08bdba"},
         },
         {
             "condition": "params.value == 'Closed'",
-            "style": {"backgroundColor": "#78a9ff"},
+            "style": {"backgroundColor": "#00b4ff"},
         },
         {
             "condition": "params.value == 'In progress'",
-            "style": {"backgroundColor": "orange"},
+            "style": {"backgroundColor": "grey"},
         },
         {
             "condition": "params.value == 'Untimely response'",
-            "style": {"backgroundColor": "#D41159"},
+            "style": {"backgroundColor": "grey"},
         },
     ]
 }

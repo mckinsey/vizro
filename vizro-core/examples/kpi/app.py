@@ -162,7 +162,7 @@ page_exec = vm.Page(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
                 values="Complaint ID",
                 names="Company response - Closed",
-                title="Resolved Company Responses",
+                title="Closed Company Responses",
             )
         ),
     ],
