@@ -1,0 +1,14 @@
+#logo {
+  height: 40px;
+  margin-left: -8px;
+}
+
+/* Apply styling to parent */
+.card:has(#my-card) {
+  background-color: white;
+}
+
+/* Apply styling to children */
+#my-card p {
+  color: black;
+}

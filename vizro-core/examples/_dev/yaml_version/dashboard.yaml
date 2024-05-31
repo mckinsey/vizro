@@ -1,0 +1,19 @@
+# Still requires a .py to register data connector in Data Manager and parse yaml configuration
+# See yaml_version example
+pages:
+  - components:
+      - figure:
+          _target_: line
+          data_frame: df_stocks_long
+          x: date
+          y: value
+          color: stocks
+        type: graph
+    controls:
+      - column: stocks
+        type: filter
+      - column: value
+        type: filter
+      - column: date
+        type: filter
+    title: My first page
