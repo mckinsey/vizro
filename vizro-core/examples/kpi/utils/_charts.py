@@ -154,18 +154,18 @@ CELL_STYLE = {
 
 
 COLUMN_DEFS = [
-    {"field": "Complaint ID", "cellDataType": "text", "headerName": "ID", "flex": 1},
-    {"field": "Date Received", "cellDataType": "text", "flex": 2},
-    {"field": "Channel", "cellDataType": "text", "flex": 1},
-    {"field": "State", "cellDataType": "text", "flex": 1},
-    {"field": "Product", "cellDataType": "text", "flex": 3},
-    {"field": "Issue", "cellDataType": "text", "flex": 3},
+    {"field": "Complaint ID", "cellDataType": "text", "headerName": "ID", "flex": 3},
+    {"field": "Date Received", "cellDataType": "text", "headerName": "Date", "flex": 3},
+    {"field": "Channel", "cellDataType": "text", "flex": 3},
+    {"field": "State", "cellDataType": "text", "flex": 2},
+    {"field": "Product", "cellDataType": "text", "flex": 5},
+    {"field": "Issue", "cellDataType": "text", "flex": 5},
     {
         "field": "Company response - detailed",
         "cellDataType": "text",
         "cellStyle": CELL_STYLE,
         "headerName": "Company response",
-        "flex": 3
+        "flex": 6
     },
-    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "Timely", "flex": 1},
+    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "Timely", "flex": 2},
 ]
