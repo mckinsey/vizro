@@ -17,6 +17,7 @@ from vizro.managers._managers_utils import _state_modifier
 
 logger = logging.getLogger(__name__)
 
+
 # Really DataSourceName should be NewType and not just aliases but then for a user's code to type check
 # correctly they would need to cast all strings to these types.
 DataSourceName = str

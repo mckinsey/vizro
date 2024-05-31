@@ -128,61 +128,71 @@ def _update_nested_graph_properties(
     return graph_config
 
 
-def _get_parametrized_config(
-    targets: List[ModelID], parameters: List[CallbackTriggerDict]
-) -> Dict[ModelID, Dict[str, Any]]:
-    parameterized_config = {}
-    for target in targets:
-        # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
-        #  CapturedCallable entirely.
-        graph_config = deepcopy(model_manager[target].figure._arguments)
-        if "data_frame" in graph_config:
-            graph_config.pop("data_frame")
+def _get_parametrized_config(target: ModelID, ctd_parameters: List[CallbackTriggerDict]) -> Dict[str, Any]:
+    # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
+    #  CapturedCallable entirely.
+    config = deepcopy(model_manager[target].figure._arguments)
 
-        for ctd in parameters:
-            selector_value = ctd[
-                "value"
-            ]  # TODO: needs to be refactored so that it is independent of implementation details
-            if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
-                selector: SelectorType = model_manager[ctd["id"]]
-                selector_value = selector.options
-            selector_value = _validate_selector_value_none(selector_value)
-            selector_actions = _get_component_actions(model_manager[ctd["id"]])
+    # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
+    # data_frame.x.
+    config["data_frame"] = {}
 
-            for action in selector_actions:
-                action_targets = _create_target_arg_mapping(action.function["targets"])
+    for ctd in ctd_parameters:
+        selector_value = ctd[
+            "value"
+        ]  # TODO: needs to be refactored so that it is independent of implementation details
+        if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
+            selector: SelectorType = model_manager[ctd["id"]]
+            selector_value = selector.options
+        selector_value = _validate_selector_value_none(selector_value)
+        selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
-                if action.function._function.__name__ != "_parameter" or target not in action_targets:
-                    continue
+        for action in selector_actions:
+            if action.function._function.__name__ != "_parameter":
+                continue
 
-                for action_targets_arg in action_targets[target]:
-                    graph_config = _update_nested_graph_properties(
-                        graph_config=graph_config, dot_separated_string=action_targets_arg, value=selector_value
-                    )
+            action_targets = _create_target_arg_mapping(action.function["targets"])
 
-        parameterized_config[target] = graph_config
+            if target not in action_targets:
+                continue
 
-    return parameterized_config
+            for action_targets_arg in action_targets[target]:
+                config = _update_nested_graph_properties(
+                    graph_config=config, dot_separated_string=action_targets_arg, value=selector_value
+                )
+
+    return config
 
 
 # Helper functions used in pre-defined actions ----
-def _get_filtered_data(
-    targets: List[ModelID],
-    ctds_filters: List[CallbackTriggerDict],
+def _get_targets_data_and_config(
+    ctds_filter: List[CallbackTriggerDict],
     ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
-) -> Dict[ModelID, pd.DataFrame]:
-    filtered_data = {}
+    ctds_parameters: List[CallbackTriggerDict],
+    targets: List[ModelID],
+):
+    all_filtered_data = {}
+    all_parameterized_config = {}
+
     for target in targets:
+        # parametrized_config includes a key "data_frame" that is used in the data loading function.
+        parameterized_config = _get_parametrized_config(target=target, ctd_parameters=ctds_parameters)
         data_source_name = model_manager[target]["data_frame"]
-        data_frame = data_manager[data_source_name].load()
-        data_frame = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filters, target=target)
-        data_frame = _apply_filter_interaction(
-            data_frame=data_frame, ctds_filter_interaction=ctds_filter_interaction, target=target
+        data_frame = data_manager[data_source_name].load(**parameterized_config["data_frame"])
+
+        filtered_data = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filter, target=target)
+        filtered_data = _apply_filter_interaction(
+            data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
         )
 
-        filtered_data[target] = data_frame
+        # Parameters affecting data_frame have already been used above in data loading and so are excluded from
+        # all_parameterized_config.
+        all_filtered_data[target] = filtered_data
+        all_parameterized_config[target] = {
+            key: value for key, value in parameterized_config.items() if key != "data_frame"
+        }
 
-    return filtered_data
+    return all_filtered_data, all_parameterized_config
 
 
 def _get_modified_page_figures(
@@ -191,13 +201,14 @@ def _get_modified_page_figures(
     ctds_parameters: List[CallbackTriggerDict],
     targets: Optional[List[ModelID]] = None,
 ) -> Dict[str, Any]:
-    if not targets:
-        targets = []
-    filtered_data = _get_filtered_data(
-        targets=targets, ctds_filters=ctds_filter, ctds_filter_interaction=ctds_filter_interaction
-    )
+    targets = targets or []
 
-    parameterized_config = _get_parametrized_config(targets=targets, parameters=ctds_parameters)
+    filtered_data, parameterized_config = _get_targets_data_and_config(
+        ctds_filter=ctds_filter,
+        ctds_filter_interaction=ctds_filter_interaction,
+        ctds_parameters=ctds_parameters,
+        targets=targets,
+    )
 
     outputs: Dict[str, Any] = {}
     for target in targets:
