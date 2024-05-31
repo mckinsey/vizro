@@ -35,6 +35,10 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
+    "gpt-4o": {
+        "max_tokens": 128000,
+        "wrapper": ChatOpenAI,
+    },
 }
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
