@@ -26,7 +26,7 @@ class KPI(vm.VizroBaseModel):
     def build(self):
         return dbc.Card(
             [
-                html.H2(self.title),
+                html.H4(self.title),
                 html.P(self.value),
                 html.Span(
                     [
@@ -78,11 +78,17 @@ def pie(
     data_frame: pd.DataFrame = None,
     color_discrete_sequence: List[str] = None,
     title: Optional[str] = None,
+    custom_order: List[str] = None,
 ):
     df_agg = data_frame.groupby([names]).aggregate({values: "count"}).reset_index()
 
+    # Apply custom order
+    order_mapping = {category: index for index, category in enumerate(custom_order)}
+    df_agg['order'] = df_agg[names].map(order_mapping)
+    df_sorted = df_agg.sort_values('order')
+
     fig = px.pie(
-        data_frame=df_agg,
+        data_frame=df_sorted,
         names=names,
         values=values,
         color_discrete_sequence=color_discrete_sequence,
@@ -90,7 +96,11 @@ def pie(
         hole=0.4,
     )
 
-    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=4, margin=dict(l=0, r=24, t=40, b=16))
+    fig.update_layout(legend_x=1, legend_y=1,
+                      title_pad_t=4,
+                      margin=dict(l=0, r=0, t=60, b=0)
+                      )
+    fig.update_traces(sort=False)
     return fig
 
 
@@ -119,35 +129,27 @@ CELL_STYLE = {
     "styleConditions": [
         {
             "condition": "params.value == 'Closed with explanation'",
-            "style": {"backgroundColor": "#00b4ff"},
+            "style": {"backgroundColor": '#1a85ff'},
         },
         {
             "condition": "params.value == 'Closed with monetary relief'",
-            "style": {"backgroundColor": "#ff9222"},
+            "style": {"backgroundColor": '#d41159'},
         },
         {
             "condition": "params.value == 'Closed with non-monetary relief'",
-            "style": {"backgroundColor": "#3949ab"},
+            "style": {"backgroundColor": '#adbedc'},
         },
         {
             "condition": "params.value == 'Closed without relief'",
-            "style": {"backgroundColor": "#ff5267"},
+            "style": {"backgroundColor": '#7ea1ee'},
         },
         {
             "condition": "params.value == 'Closed with relief'",
-            "style": {"backgroundColor": "#08bdba"},
+            "style": {"backgroundColor": '#df658c'},
         },
         {
             "condition": "params.value == 'Closed'",
-            "style": {"backgroundColor": "#00b4ff"},
-        },
-        {
-            "condition": "params.value == 'In progress'",
-            "style": {"backgroundColor": "grey"},
-        },
-        {
-            "condition": "params.value == 'Untimely response'",
-            "style": {"backgroundColor": "grey"},
+            "style": {"backgroundColor": '#1a85ff'},
         },
     ]
 }

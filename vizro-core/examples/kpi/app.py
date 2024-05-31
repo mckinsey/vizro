@@ -45,8 +45,8 @@ page_exec = vm.Page(
             [6, 6, 6, 8, 8, 8],
             [6, 6, 6, 8, 8, 8],
         ],
-        col_gap="32px",
-        row_gap="32px",
+        col_gap="28px",
+        row_gap="28px",
     ),
     components=[
         KPI(
@@ -54,42 +54,42 @@ page_exec = vm.Page(
             value="75.513",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="5.5% vs. Last Year",
+            ref_value="5.5% vs. LY",
         ),
         KPI(
             title="Closed Complaints",
-            value="75.230 (99.6%)",
+            value="99.6%",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-4.5% vs. Last Year",
+            ref_value="-4.5% vs. LY",
         ),
         KPI(
             title="Open Complaints",
-            value="283 (0.4%)",
+            value="0.4%",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-4.5% vs. Last Year",
+            ref_value="-4.5% vs. LY",
         ),
         KPI(
             title="Timely Response",
             value="98.1%",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="10.5% vs. Last Year",
+            ref_value="10.5% vs. LY",
         ),
         KPI(
             title="Resolved at no cost",
             value="84.5%",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-8.5% vs. Last Year",
+            ref_value="-8.5% vs. LY",
         ),
         KPI(
             title="Consumer disputed",
             value="9.5%",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="10.5% vs. Last Year",
+            ref_value="10.5% vs. LY",
         ),
         vm.Tabs(
             tabs=[
@@ -160,6 +160,8 @@ page_exec = vm.Page(
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
+                color_discrete_sequence=['#1a85ff', '#7ea1ee', '#adbedc', '#df658c', '#d41159'],
+                custom_order=["Closed with explanation", "Closed without relief", "Closed with non-monetary relief", "Closed with relief", "Closed with monetary relief"],
                 values="Complaint ID",
                 names="Company response - Closed",
                 title="Closed Company Responses",
@@ -171,7 +173,6 @@ page_exec = vm.Page(
 
 # TODO: Table-view - Check why date format does not work on `Date Received`
 # TODO: Table-view - Add icons to `Timely` column
-# TODO: Table-view - Find better color sequences for last column
 page_table = vm.Page(
     title="List of complaints",
     components=[
@@ -200,43 +201,43 @@ page_region = vm.Page(
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
         ],
-        col_gap="32px",
-        row_gap="32px",
+        col_gap="28px",
+        row_gap="28px",
     ),
     components=[
         KPI(
-            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. Last Year"
+            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. LY"
         ),
         KPI(
             title="Closed Complaints",
             value="75.230 (99.6%)",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-4.5% vs. Last Year",
+            ref_value="-4.5% vs. LY",
         ),
         KPI(
             title="Open Complaints",
             value="283 (0.4%)",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-4.5% vs. Last Year",
+            ref_value="-4.5% vs. LY",
         ),
         KPI(
             title="Timely Response",
             value="98.1%",
             icon="arrow_circle_up",
             sign="delta-pos",
-            ref_value="10.5% vs. Last Year",
+            ref_value="10.5% vs. LY",
         ),
         KPI(
-            title="Resolved at no cost",
+            title="Closed w/o cost",
             value="84.5%",
             icon="arrow_circle_down",
             sign="delta-neg",
-            ref_value="-8.5% vs. Last Year",
+            ref_value="-8.5% vs. LY",
         ),
         KPI(
-            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. Last Year"
+            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. LY"
         ),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
         vm.Tabs(

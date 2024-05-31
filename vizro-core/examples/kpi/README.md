@@ -6,6 +6,8 @@ It uses fictional budget data to demonstrate the capabilities of Vizro using rea
 Special thanks to the [#RWFD Real World Fake Data initiative](https://opendatainitiative.io/), a community project that
 provides high-quality fake data for creating realistic dashboard examples for real-world applications.
 
+Note: The data has been additionally been edited for the purpose of this example.
+
 ## How to run the example locally
 
 1. Download the `Financial Consumer Complaints.csv` file from [this link](https://data.world/markbradbourne/rwfd-real-world-fake-data/workspace/file?filename=Financial+Consumer+Complaints.csv) and place it in the `data` folder

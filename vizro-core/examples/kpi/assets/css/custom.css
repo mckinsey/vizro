@@ -17,7 +17,8 @@
 }
 
 .kpi-card-ref div .material-symbols-outlined {
-  line-height: 28px;
+  line-height: 20px;
+  font-size: 16px;
 }
 
 .kpi-card-ref > div {
@@ -32,8 +33,8 @@
   color: var(--text-secondary);
   display: flex;
   flex-grow: 1;
-  font-size: 16px;
-  font-size: 5vh;
+  font-size: 12px;
+  font-size: 3vh;
   font-weight: 600;
   line-height: unset;
 }
@@ -43,5 +44,5 @@
 }
 
 .kpi-card-ref:has(.delta-neg) {
-  border-left: 4;
+  border-left: 4px solid #d41159;
 }

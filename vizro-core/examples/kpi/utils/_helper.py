@@ -60,5 +60,4 @@ def clean_data_and_add_columns(data: pd.DataFrame):
     data["Company response - Closed"] = np.where(
         data["Company response - detailed"].str.contains("Closed"), data["Company response - detailed"], "Not closed"
     )
-
     return data
