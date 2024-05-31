@@ -125,7 +125,7 @@ def chloropleth(
         data_frame=df_agg,
         locations=locations,
         color=color,
-        color_continuous_scale=["#ded6d8", "#f7b0bf", "#fd8ca7", "#ff6591", "#f14f7e", "#e3366b", "#d41159"],
+        color_continuous_scale=['#ded6d8', '#f3bdcb', '#f7a9be', '#f894b1', '#f780a3', '#f46b94', '#ee517f', '#e94777', '#e43d70', '#df3168', '#d92460', '#d41159'],
         scope="usa",
         locationmode="USA-states",
         title=title,

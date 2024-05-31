@@ -188,27 +188,34 @@ page_table = vm.Page(
 
 page_region = vm.Page(
     title="Regional View",
-    layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 5),
+    layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 4),
     components=[
-        vm.Card(text="""Placeholder"""),
+        vm.Card(text="""
+        
+        #### Click on a state inside the map to filter the bar charts on the right. 
+        
+        - Which state has the most complaints?
+        - What are the three biggest issues in California?
+        - What is the product with the most complaints in Texas?
+        
+        """),
+        vm.Graph(
+            id="map-region",
+            figure=chloropleth(
+                data_frame=df_complaints,
+                locations="State",
+                color="Complaint ID",
+                title="Complaints by State",
+                custom_data=["State"],
+            ),
+            actions=[
+                vm.Action(
+                    function=filter_interaction(targets=["regional-issue", "regional-product"]),
+                )
+            ],
+        ),
         vm.Tabs(
             tabs=[
-                vm.Container(
-                    title="By Region",
-                    components=[
-                        vm.Graph(
-                            id="regional-region",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Region",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                                custom_data=["Region"],
-                            ),
-                            actions=[vm.Action(function=filter_interaction(targets=["map-region"]))],
-                        )
-                    ],
-                ),
                 vm.Container(
                     title="By Issue",
                     components=[
@@ -239,22 +246,8 @@ page_region = vm.Page(
                 ),
             ],
         ),
-        vm.Graph(
-            id="map-region",
-            figure=chloropleth(
-                data_frame=df_complaints,
-                locations="State",
-                color="Complaint ID",
-                title="Complaints by State",
-                custom_data=["State"],
-            ),
-            actions=[
-                vm.Action(
-                    function=filter_interaction(targets=["regional-product", "regional-issue", "regional-region"])
-                )
-            ],
-        ),
     ],
+    controls=[vm.Filter(column="Region"), vm.Filter(column="State")]
 )
 
 
