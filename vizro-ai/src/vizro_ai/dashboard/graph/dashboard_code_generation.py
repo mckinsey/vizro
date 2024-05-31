@@ -1,25 +1,24 @@
-from typing import TypedDict, List
+from typing import List, TypedDict
+
 import pandas as pd
-
-from vizro_ai.dashboard.data_summary import requirement_sum_prompt, FullDataSummary
-from vizro_ai.chains._llm_models import _get_llm_model
-from vizro_ai.dashboard.vizro_ai_db import VizroAIDashboard
 from langgraph.graph import END, StateGraph
-
+from vizro_ai.chains._llm_models import _get_llm_model
+from vizro_ai.dashboard.data_summary import FullDataSummary, requirement_sum_prompt
+from vizro_ai.dashboard.vizro_ai_db import VizroAIDashboard
 
 model_for_testing = "gpt-4o"
 model_default = "gpt-3.5-turbo"
 
 
 class GraphState(TypedDict):
-    """
-    Represents the state of dashboard graph.
+    """Represents the state of dashboard graph.
 
-    Attributes:
+    Attributes
         messages : With user question, error messages, reasoning
         df_schemas : Schema of the dataframes
         df_heads : Data sample of the dataframes
         dfs : Dataframes
+
     """
 
     messages: List
@@ -29,22 +28,24 @@ class GraphState(TypedDict):
 
 
 def generate_data_summary(state: GraphState):
-    """
-    Generate a summary of the dataframes provided.
+    """Generate a summary of the dataframes provided.
 
     Args:
         state (dict): The current graph state
 
     Returns:
         state (dict): New key added to state, generation
+
     """
     messages = state["messages"]
     df_schemas = state["df_schemas"]
     df_heads = state["df_heads"]
-    requirement_sum_chain = requirement_sum_prompt | _get_llm_model(model=model_default).with_structured_output(FullDataSummary)
+    requirement_sum_chain = requirement_sum_prompt | _get_llm_model(model=model_default).with_structured_output(
+        FullDataSummary
+    )
 
     data_requirement_summary = requirement_sum_chain.invoke(
-    {"df_heads": df_heads, "df_schemas": df_schemas, "messages": messages}
+        {"df_heads": df_heads, "df_schemas": df_schemas, "messages": messages}
     )
     # messages += [
     #     (
@@ -56,14 +57,14 @@ def generate_data_summary(state: GraphState):
 
 
 def generate_dashboard_code(state: GraphState):
-    """
-    Generate a dashboard code snippet.
+    """Generate a dashboard code snippet.
 
     Args:
         state (dict): The current graph state
 
     Returns:
         state (dict): New key added to state, generation
+
     """
     messages = state["messages"]
     df_schemas = state["df_schemas"]
@@ -74,7 +75,7 @@ def generate_dashboard_code(state: GraphState):
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
     dashboard = vizro_ai_dashboard.build_dashboard(first_df, messages[0])
-    dashboard_code_string = dashboard.dict_obj(exclude_unset = True)
+    dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
 
     messages += [
         (
@@ -83,6 +84,7 @@ def generate_dashboard_code(state: GraphState):
         )
     ]
     return {"messages": messages}
+
 
 def _create_and_compile_graph():
     graph = StateGraph(GraphState)

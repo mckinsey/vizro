@@ -1,17 +1,14 @@
 import logging
-from typing import Any, Dict, Optional, Union, List
+from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
-from langgraph.graph import END
-from langchain_openai import ChatOpenAI
-
-from vizro_ai.dashboard.graph.dashboard_code_generation import _create_and_compile_graph
-from vizro_ai.dashboard.data_summary import _get_df_info
 
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
+from vizro_ai.dashboard.data_summary import _get_df_info
+from vizro_ai.dashboard.graph.dashboard_code_generation import _create_and_compile_graph
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
@@ -143,7 +140,6 @@ class VizroAI:
                 df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
             )
 
-
     def dashboard(
         self,
         dfs: List[pd.DataFrame],
@@ -157,12 +153,13 @@ class VizroAI:
 
         Returns:
             Dashboard code snippet.
-            
+
         """
         df_schemas, df_heads = _get_df_info(dfs)
 
         runnable = _create_and_compile_graph()
 
-        message_res = runnable.invoke({"dfs": dfs, "df_schemas": df_schemas, "df_heads": df_heads, "messages": [("user", user_input)]})
+        message_res = runnable.invoke(
+            {"dfs": dfs, "df_schemas": df_schemas, "df_heads": df_heads, "messages": [("user", user_input)]}
+        )
         return message_res
-    

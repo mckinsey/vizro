@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cov
 
 from enum import Enum
 
-from typing_extensions import Annotated, no_type_check, Optional
+from typing_extensions import Annotated, Optional, no_type_check
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
@@ -112,8 +112,8 @@ class VizroBaseModel(BaseModel):
         v: Any,
         to_dict: bool,
         by_alias: bool,
-        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
-        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
+        include: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],
+        exclude: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],
         exclude_unset: bool,
         exclude_defaults: bool,
         exclude_none: bool,
@@ -177,7 +177,7 @@ class VizroBaseModel(BaseModel):
 
             return v.__class__(*seq_args) if is_namedtuple(v.__class__) else v.__class__(seq_args)
 
-        elif isinstance(v, Enum) and getattr(cls.Config, 'use_enum_values', False):
+        elif isinstance(v, Enum) and getattr(cls.Config, "use_enum_values", False):
             return v.value
 
         else:
@@ -186,9 +186,9 @@ class VizroBaseModel(BaseModel):
     @staticmethod
     def transform_dict(d):
         if isinstance(d, dict):
-            if '_add_key' in d:
+            if "_add_key" in d:
                 # Prepare the string format by extracting '_add_key' and other content
-                add_key_value = d.pop('_add_key')
+                add_key_value = d.pop("_add_key")
                 other_content = ", ".join(f"{key}={VizroBaseModel.transform_dict(value)}" for key, value in d.items())
                 return f"{add_key_value}({other_content})"
             else:
@@ -201,7 +201,7 @@ class VizroBaseModel(BaseModel):
             # Base case: if it's not a dictionary or list, return the item itself
             return repr(d)  # Use repr to ensure proper representation of strings and other data types
 
-    def dict_obj(self,**kwargs):
+    def dict_obj(self, **kwargs):
         d = self.dict(**kwargs)
         d["_add_key"] = self.__class__.__name__
         return VizroBaseModel.transform_dict(d)

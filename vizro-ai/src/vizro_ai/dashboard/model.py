@@ -1,13 +1,16 @@
 from typing import Union
 
 from langchain.output_parsers import PydanticOutputParser
+from langchain_core.exceptions import OutputParserException
 from langchain_core.prompts import PromptTemplate
 from langchain_core.pydantic_v1 import BaseModel
-from langchain_core.exceptions import OutputParserException
 from pydantic.v1 import BaseModel as BaseModelV1
 
-MODEL_PROMPT = "Answer the user query. Remember to only respond with JSON and NOTHING else.\n{format_instructions}\n{query}\n"
+MODEL_PROMPT = (
+    "Answer the user query. Remember to only respond with JSON and NOTHING else.\n{format_instructions}\n{query}\n"
+)
 MODEL_REPROMPT = MODEL_PROMPT + "Pay special attention to the following error\n{validation_error}\n"
+
 
 def get_model(query: str, model, result_model: Union[BaseModel, BaseModelV1], max_retry: int = 3) -> BaseModel:
     parser = PydanticOutputParser(pydantic_object=result_model)
@@ -22,8 +25,11 @@ def get_model(query: str, model, result_model: Union[BaseModel, BaseModelV1], ma
 
             chain = prompt | model | parser
 
-            res = chain.invoke({"query": query}) if i == 0 else chain.invoke(
-                {"query": query, "validation_error": str(validation_error)})
+            res = (
+                chain.invoke({"query": query})
+                if i == 0
+                else chain.invoke({"query": query, "validation_error": str(validation_error)})
+            )
             return res
         except OutputParserException as e:
             validation_error = e

@@ -1,6 +1,8 @@
 """Module that contains the builder functionality."""
-from tqdm.autonotebook import trange
+
 import vizro.models as vm
+from tqdm.autonotebook import trange
+
 from vizro_ai.utils.helper import DebugFailure
 
 
@@ -21,16 +23,17 @@ class PageBuilder:
 
     def _build_components(self):
         components = []
-        for i in trange(len(self._page_plan.components.components),
-                        desc=f"Building components of page: {self._page_plan.title}"):
+        for i in trange(
+            len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
+        ):
             try:
-                components.append(
-                    self._page_plan.components.components[i].create(
-                        df=self._data,
-                        model=self._model))
+                components.append(self._page_plan.components.components[i].create(df=self._data, model=self._model))
             except DebugFailure as e:
-                components.append(vm.Card(id=self._page_plan.components.components[i].component_id,
-                                          text=f"Failed to build component: {e}"))
+                components.append(
+                    vm.Card(
+                        id=self._page_plan.components.components[i].component_id, text=f"Failed to build component: {e}"
+                    )
+                )
         return components
 
     @property
@@ -45,20 +48,20 @@ class PageBuilder:
 
     def _build_controls(self):
         controls = []
-        for i in trange(len(self._page_plan.controls.controls),
-                        desc=f"Building controls of page: {self._page_plan.title}"):
-            controls.append(self._page_plan.controls.controls[i].create(df=self._data, model=self._model,
-                                                                        available_components=self.available_components))
+        for i in trange(
+            len(self._page_plan.controls.controls), desc=f"Building controls of page: {self._page_plan.title}"
+        ):
+            controls.append(
+                self._page_plan.controls.controls[i].create(
+                    df=self._data, model=self._model, available_components=self.available_components
+                )
+            )
         return controls
 
     @property
     def page(self):
         if self._page is None:
-            self._page = vm.Page(
-                title=self._page_plan.title,
-                components=self.components,
-                controls=self.controls
-            )
+            self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls)
         return self._page
 
 
@@ -81,9 +84,10 @@ class DashboardBuilder:
             pages.append(
                 PageBuilder(
                     model=self._model,
-                    data=self._data, 
+                    data=self._data,
                     page_plan=self._dashboard_plan.pages[i],
-                    ).page)
+                ).page
+            )
         return pages
 
     @property
