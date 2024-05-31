@@ -65,7 +65,7 @@ def line(x: str, y: str, data_frame: pd.DataFrame = None, color_discrete_sequenc
         x=x,
         y=y,
         color_discrete_sequence=color_discrete_sequence,
-        title="Complaints over time - monthly",
+        title="Complaints over time",
     )
     fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
     return fig
@@ -97,7 +97,7 @@ def pie(
     )
 
     fig.update_layout(legend_x=1, legend_y=1,
-                      title_pad_t=4,
+                      title_pad_t=2,
                       margin=dict(l=0, r=0, t=60, b=0)
                       )
     fig.update_traces(sort=False)

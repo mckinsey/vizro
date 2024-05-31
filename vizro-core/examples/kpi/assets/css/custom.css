@@ -2,6 +2,14 @@
   padding-left: 4px;
 }
 
+.kpi-card-ref.card {
+  padding: 8px;
+}
+
+.kpi-card-ref h4 {
+  margin: 0;
+}
+
 .kpi-card-ref > span {
   display: flex;
   font-weight: 600;
@@ -16,7 +24,7 @@
   color: #d41159;
 }
 
-.kpi-card-ref div .material-symbols-outlined {
+.kpi-card-ref .material-symbols-outlined {
   line-height: 20px;
   font-size: 16px;
 }
@@ -34,7 +42,7 @@
   display: flex;
   flex-grow: 1;
   font-size: 12px;
-  font-size: 3vh;
+  font-size: 4vh;
   font-weight: 600;
   line-height: unset;
 }

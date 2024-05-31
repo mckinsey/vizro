@@ -19,6 +19,7 @@ vm.Container.add_type("components", KPI)
 # TODO: Enable dynamic KPI Cards
 # TODO: Overall - Consolidate colors and gaps
 
+# TODO: KPI - Encode logic of bad/good
 # TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
 # TODO: Bar - Reformat numbers with commas in bar chart
 # TODO: Bar - Left-align y-axis labels
@@ -39,14 +40,11 @@ page_exec = vm.Page(
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 8, 8, 8],
             [6, 6, 6, 8, 8, 8],
             [6, 6, 6, 8, 8, 8],
             [6, 6, 6, 8, 8, 8],
         ],
-        col_gap="28px",
-        row_gap="28px",
     ),
     components=[
         KPI(
@@ -78,7 +76,7 @@ page_exec = vm.Page(
             ref_value="10.5% vs. LY",
         ),
         KPI(
-            title="Resolved at no cost",
+            title="Closed w/o cost",
             value="84.5%",
             icon="arrow_circle_down",
             sign="delta-neg",
@@ -164,7 +162,7 @@ page_exec = vm.Page(
                 custom_order=["Closed with explanation", "Closed without relief", "Closed with non-monetary relief", "Closed with relief", "Closed with monetary relief"],
                 values="Complaint ID",
                 names="Company response - Closed",
-                title="Closed Company Responses",
+                title="Closed company responses",
             )
         ),
     ],
@@ -199,25 +197,26 @@ page_region = vm.Page(
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
             [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
         ],
-        col_gap="28px",
-        row_gap="28px",
     ),
     components=[
         KPI(
-            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="delta-pos", ref_value="5.5% vs. LY"
+            title="Total Complaints",
+            value="75.513",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="5.5% vs. LY",
         ),
         KPI(
             title="Closed Complaints",
-            value="75.230 (99.6%)",
+            value="99.6%",
             icon="arrow_circle_down",
             sign="delta-neg",
             ref_value="-4.5% vs. LY",
         ),
         KPI(
             title="Open Complaints",
-            value="283 (0.4%)",
+            value="0.4%",
             icon="arrow_circle_down",
             sign="delta-neg",
             ref_value="-4.5% vs. LY",
@@ -237,7 +236,11 @@ page_region = vm.Page(
             ref_value="-8.5% vs. LY",
         ),
         KPI(
-            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. LY"
+            title="Consumer disputed",
+            value="9.5%",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="10.5% vs. LY",
         ),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
         vm.Tabs(
@@ -294,7 +297,7 @@ page_region = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial - Complaints",
+    title="Cumulus Financial",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
