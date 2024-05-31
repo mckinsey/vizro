@@ -271,20 +271,22 @@ allowing arbitrarily granular control of the grid by creating larger grids.
 Here is a reference table of example layouts:
 <!-- vale off -->
 
+one row with one component, second row with two components stacked horizontally
+
 | Layout needed | Grid | Code  |
 |--------------------------------|----------------------------|-------------------------------------------------------------------------------------|
-| <img src="../../../assets/user_guides/layout/one_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0]])` or <br/> `layout=None` |
-| <img src="../../../assets/user_guides/layout/two_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1]])` or <br/> `layout=None` |
-| <img src="../../../assets/user_guides/layout/two_top_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1]])` |
-| <img src="../../../assets/user_guides/layout/three_left_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |
-| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2]])` |
-| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0],[1,2]])` |
-| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,2]])` |
-| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2],[0,3]])` |
-| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,3]])` |
-| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,3],[1,3],[2,3]])` |
-| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0,0],[1,2,3]])` |
-| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" width="400"/> | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1,2],[3,3,3]])` |
+| <img src="../../../assets/user_guides/layout/one_left_color.png" alt="one component" width="400"/> | <img src="../../../assets/user_guides/layout/1l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/two_left_color.png" alt="two horizontally stacked rows, each with one component" width="400"/> | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/two_top_color.png" alt="one row with two components set horizontally" width="400"/> | <img src="../../../assets/user_guides/layout/2t_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1]])` |
+| <img src="../../../assets/user_guides/layout/three_left_color.png" alt="three horizontally stacked rows, each with one component" width="400"/> | <img src="../../../assets/user_guides/layout/3l_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" alt="one row divided into two separate columns where the left column is one component and the right is two stacked components" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2]])` |
+| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" alt="two rows with the top as a single component and the bottom divided into two components" width="400"/> | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0],[1,2]])` |
+| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" alt="two rows with the top divided into two columns where each holds one component, and the bottom as a single component" width="400"/> | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,2]])` |
+| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" alt="two columns where the left is a single component and the right is a set of three horizontally stacked components" width="400"/> | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2],[0,3]])` |
+| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" alt="two rows where each row is two components" width="400"/> | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1],[2,3]])` |
+| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" alt="two colums where the left is a set of three horizontally stacked components and the right is a single component" width="400"/> | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,3],[1,3],[2,3]])` |
+| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" alt="two rows where the top is a single component and the bottom is three separate components" width="400"/> | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,0,0],[1,2,3]])` |
+| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" alt="two rows where the top is three separate components and the bottom is a single component" width="400"/> | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" width="100"/> | `layout=vm.Layout(grid=[[0,1,2],[3,3,3]])` |
 
 <!--vale on -->
 
