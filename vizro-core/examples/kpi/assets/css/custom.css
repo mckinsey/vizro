@@ -1,0 +1,47 @@
+#page-header {
+  padding-left: 4px;
+}
+
+.kpi-card-ref > span {
+  display: flex;
+  font-weight: 600;
+  gap: 4px;
+}
+
+.kpi-card-ref .delta-pos {
+  color: #1a85ff;
+}
+
+.kpi-card-ref .delta-neg {
+  color: #d41159;
+}
+
+.kpi-card-ref div .material-symbols-outlined {
+  line-height: 28px;
+}
+
+.kpi-card-ref > div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: 0;
+}
+
+.kpi-card-ref > p {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-grow: 1;
+  font-size: 16px;
+  font-size: 5vh;
+  font-weight: 600;
+  line-height: unset;
+}
+
+.kpi-card-ref:has(.delta-pos) {
+  border-left: 4px solid #1a85ff;
+}
+
+.kpi-card-ref:has(.delta-neg) {
+  border-left: 4
+}

@@ -3,9 +3,7 @@
 from typing import List, Literal, Optional
 
 import dash_bootstrap_components as dbc
-import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
@@ -34,37 +32,37 @@ df_complaints = clean_data_and_add_columns(df_complaints)
 # TODO: Table-view - Find better color sequences for last column
 
 
-# TODO: Think more about potential API - this is just a quick mock-up. Types will likely change.
+# Note: This is a static KPI Card only (it will not be reactive to controls). A new dynamic KPI Card component
+# is currently in development.
 class KPI(vm.VizroBaseModel):
-    """New custom component `KPI`."""
+    """Static custom `KPI` Card."""
 
     type: Literal["kpi"] = "kpi"
     title: str
     value: str
     icon: str
-    sign: Literal["up", "down"]
+    sign: Literal["delta-pos", "delta-neg"]
     ref_value: str
 
     def build(self):
         return dbc.Card(
             [
-                html.H4(self.title, className="card-title"),
-                html.P(self.value, className="card-value"),
+                html.H2(self.title),
+                html.P(self.value),
                 html.Span(
                     [
-                        html.Span(self.icon, className=f"material-symbols-outlined {self.sign}"),
-                        html.Span(self.ref_value, className=self.sign),
+                        html.Span(self.icon, className="material-symbols-outlined"),
+                        html.Span(self.ref_value),
                     ],
-                    className="card-ref-value",
+                    className=self.sign,
                 ),
             ],
-            className=f"card-border-{self.sign}",
+            className="kpi-card-ref",
         )
 
 
 vm.Page.add_type("components", KPI)
 vm.Container.add_type("components", KPI)
-
 
 
 @capture("graph")
@@ -126,17 +124,16 @@ def chloropleth(locations: str, color: str, data_frame: pd.DataFrame = None):
     df_agg = data_frame.groupby([locations]).aggregate({color: "count"}).reset_index()
     df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
 
-
     fig = px.choropleth(
         data_frame=df_agg,
         locations=locations,
         color=color,
-    #    color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
+        #    color_continuous_scale=["#d41159", "#d41159", "#d41159", "#d3d3d3", "#1a85ff", "#1a85ff", "#1a85ff"],
         scope="usa",
         locationmode="USA-states",
     )
 
- #   fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
+    #   fig.update_layout(title_text="Change in revenue by ZIP code", margin=dict(l=0, r=0, t=0), title_pad_t=20)
     fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
     return fig
 
@@ -161,22 +158,48 @@ page_exec = vm.Page(
         row_gap="32px",
     ),
     components=[
-        KPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"),
         KPI(
-            title="Closed Complaints", value="75.230 (99.6%)", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"
+            title="Total Complaints",
+            value="75.513",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="5.5% vs. Last Year",
         ),
         KPI(
-            title="Open Complaints", value="283 (0.4%)", icon="arrow_circle_down", sign="down", ref_value="-4.5% vs. Last Year"
+            title="Closed Complaints",
+            value="75.230 (99.6%)",
+            icon="arrow_circle_down",
+            sign="delta-neg",
+            ref_value="-4.5% vs. Last Year",
         ),
-        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Open Complaints",
+            value="283 (0.4%)",
+            icon="arrow_circle_down",
+            sign="delta-neg",
+            ref_value="-4.5% vs. Last Year",
+        ),
+        KPI(
+            title="Timely Response",
+            value="98.1%",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="10.5% vs. Last Year",
+        ),
         KPI(
             title="Resolved at no cost",
             value="84.5%",
             icon="arrow_circle_down",
-            sign="down",
+            sign="delta-neg",
             ref_value="-8.5% vs. Last Year",
         ),
-        KPI(title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Consumer disputed",
+            value="9.5%",
+            icon="arrow_circle_up",
+            sign="delta-pos",
+            ref_value="10.5% vs. Last Year",
+        ),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -351,26 +374,34 @@ page_region = vm.Page(
         row_gap="32px",
     ),
     components=[
-        KPI(title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up",
-            ref_value="5.5% vs. Last Year"),
         KPI(
-            title="Closed Complaints", value="75.230 (99.6%)", icon="arrow_circle_down", sign="down",
-            ref_value="-4.5% vs. Last Year"
+            title="Total Complaints", value="75.513", icon="arrow_circle_up", sign="up", ref_value="5.5% vs. Last Year"
         ),
         KPI(
-            title="Open Complaints", value="283 (0.4%)", icon="arrow_circle_down", sign="down",
-            ref_value="-4.5% vs. Last Year"
+            title="Closed Complaints",
+            value="75.230 (99.6%)",
+            icon="arrow_circle_down",
+            sign="delta-neg",
+            ref_value="-4.5% vs. Last Year",
         ),
-        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Open Complaints",
+            value="283 (0.4%)",
+            icon="arrow_circle_down",
+            sign="delta-neg",
+            ref_value="-4.5% vs. Last Year",
+        ),
+        KPI(title="Timely Response", value="98.1%", icon="arrow_circle_up", sign="delta-pos", ref_value="10.5% vs. Last Year"),
         KPI(
             title="Resolved at no cost",
             value="84.5%",
             icon="arrow_circle_down",
-            sign="down",
+            sign="delta-neg",
             ref_value="-8.5% vs. Last Year",
         ),
-        KPI(title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up",
-            ref_value="10.5% vs. Last Year"),
+        KPI(
+            title="Consumer disputed", value="9.5%", icon="arrow_circle_up", sign="up", ref_value="10.5% vs. Last Year"
+        ),
         vm.Graph(figure=chloropleth(data_frame=df_complaints, locations="State", color="Complaint ID")),
         vm.Tabs(
             tabs=[
@@ -417,10 +448,10 @@ page_region = vm.Page(
         ),
     ],
     controls=[
-        #vm.Filter(column="Region"),
-              vm.Filter(column="State"),
-              vm.Filter(column="ZIP code")
-              ]
+        # vm.Filter(column="Region"),
+        vm.Filter(column="State"),
+        vm.Filter(column="ZIP code"),
+    ],
 )
 
 
