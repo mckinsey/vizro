@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable feature to get all possible outputs from VizroAI.plot() using VizroAI.get_plot_outputs() ([#488](https://github.com/mckinsey/vizro/pull/488)). It returns a dictionary that contains code string, fig object, business insights, code explanation.
+- Enable feature to get all possible outputs from VizroAI.plot() using by specifying 'return_plot_components = True' ([#488](https://github.com/mckinsey/vizro/pull/488)). It returns a datalcass that contains code string, fig object, business insights, and code explanation.
 
 <!--
 ### Changed
