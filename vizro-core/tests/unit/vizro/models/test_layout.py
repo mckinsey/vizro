@@ -178,9 +178,15 @@ class TestLayoutBuild:
         expected = html.Div(
             id="layout_id",
             children=[
-                html.Div(id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3"}),
-                html.Div(id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2"}),
-                html.Div(id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3"}),
+                html.Div(
+                    id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"}
+                ),
+                html.Div(
+                    id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2", "height": "100%", "width": "100%"}
+                ),
+                html.Div(
+                    id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3", "height": "100%", "width": "100%"}
+                ),
             ],
             style={
                 "gridRowGap": "24px",
