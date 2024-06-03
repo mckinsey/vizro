@@ -152,10 +152,12 @@ class Dashboard(VizroBaseModel):
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
-            html.H2(self.title, id="dashboard-title") if self.title else html.H2(hidden=True, id="dashboard-title")
+            html.H2(id="dashboard-title", children=self.title)
+            if self.title
+            else html.H2(id="dashboard-title", hidden=True)
         )
         settings = html.Div(
-            dmc.Switch(
+            children=dmc.Switch(
                 id="theme_selector",
                 checked=self.theme == "vizro_light",
                 persistence=True,
@@ -166,11 +168,11 @@ class Dashboard(VizroBaseModel):
         )
         logo_img = self._infer_image(filename="logo")
         path_to_logo = get_asset_url(logo_img) if logo_img else None
-        logo = html.Img(src=path_to_logo, id="logo", hidden=not path_to_logo)
+        logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_title = html.H2(page.title, id="page-title")
+        page_title = html.H2(id="page-title", children=page.title)
         navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
@@ -186,7 +188,7 @@ class Dashboard(VizroBaseModel):
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
         logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
-        page_header_divs = [html.Div(logo_title, id="logo-and-title", hidden=_all_hidden(logo_title))]
+        page_header_divs = [html.Div(id="logo-and-title", children=logo_title, hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]
         right_header_divs = [page_divs["page-title"]]
@@ -199,11 +201,13 @@ class Dashboard(VizroBaseModel):
 
         collapsable_icon = (
             html.Div(
-                [
-                    html.Span("keyboard_double_arrow_left", className="material-symbols-outlined", id="collapse-icon"),
+                children=[
+                    html.Span(
+                        id="collapse-icon", children="keyboard_double_arrow_left", className="material-symbols-outlined"
+                    ),
                     dbc.Tooltip(
-                        "Hide Menu",
                         id="collapse-tooltip",
+                        children="Hide Menu",
                         placement="right",
                         target="collapse-icon",
                     ),
@@ -214,19 +218,21 @@ class Dashboard(VizroBaseModel):
             else None
         )
 
-        left_sidebar = html.Div(left_sidebar_divs, id="left-sidebar", hidden=_all_hidden(left_sidebar_divs))
-        left_main = html.Div(left_main_divs, id="left-main", hidden=_all_hidden(left_main_divs))
-        left_side = html.Div([left_sidebar, left_main], id="left-side")
+        left_sidebar = html.Div(id="left-sidebar", children=left_sidebar_divs, hidden=_all_hidden(left_sidebar_divs))
+        left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
+        left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
-        collapsable_left_side = dbc.Collapse(left_side, id="collapsable-left-side", is_open=True, dimension="width")
+        collapsable_left_side = dbc.Collapse(
+            id="collapsable-left-side", children=left_side, is_open=True, dimension="width"
+        )
 
-        right_header = html.Div(right_header_divs, id="right-header")
+        right_header = html.Div(id="right-header", children=right_header_divs)
         right_main = page_divs["page-components"]
-        right_side = html.Div([right_header, right_main], id="right-side")
+        right_side = html.Div(id="right-side", children=[right_header, right_main])
 
-        page_header = html.Div(page_header_divs, id="page-header", hidden=_all_hidden(page_header_divs))
-        page_main = html.Div([collapsable_left_side, collapsable_icon, right_side], id="page-main")
-        return html.Div([page_header, page_main], className="page-container")
+        page_header = html.Div(id="page-header", children=page_header_divs, hidden=_all_hidden(page_header_divs))
+        page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
+        return html.Div(children=[page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page):
         page_divs = self._get_page_divs(page=page)
@@ -242,13 +248,13 @@ class Dashboard(VizroBaseModel):
                 html.Div(
                     [
                         html.Div(
-                            [
+                            children=[
                                 html.H3("This page could not be found.", className="heading-3-600"),
                                 html.P("Make sure the URL you entered is correct."),
                             ],
                             className="error_text_container",
                         ),
-                        dbc.Button("Take me home", href=get_relative_path("/")),
+                        dbc.Button(children="Take me home", href=get_relative_path("/")),
                     ],
                     className="error_content_container",
                 ),

@@ -229,7 +229,7 @@ class TestDashboardBuild:
         expected_dashboard_container = html.Div(
             id="dashboard-container",
             children=[
-                html.Div(vizro.__version__, id="vizro_version", hidden=True),
+                html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],

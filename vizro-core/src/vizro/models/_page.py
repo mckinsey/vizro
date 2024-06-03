@@ -110,7 +110,7 @@ class Page(VizroBaseModel):
     def build(self) -> _PageBuildType:
         self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(children=controls_content, id="control-panel", hidden=not controls_content)
+        control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
