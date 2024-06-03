@@ -176,7 +176,8 @@ class TestLayoutBuild:
     def test_layout_build(self):
         result = vm.Layout(id="layout_id", grid=[[0, 1], [0, 2]]).build()
         expected = html.Div(
-            [
+            id="layout_id",
+            children=[
                 html.Div(
                     id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"}
                 ),
