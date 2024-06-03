@@ -142,7 +142,8 @@ class TestBuildAgGrid:
                 None,
                 html.Div(
                     dash_ag_grid(
-                        data_frame=gapminder, id="underlying_ag_grid_id",
+                        data_frame=gapminder,
+                        id="underlying_ag_grid_id",
                     )(),
                     id="text_ag_grid",
                     className="table-container",
