@@ -1,12 +1,23 @@
 """Helper Functions For Vizro AI."""
 
 import traceback
+from dataclasses import dataclass, field
 from typing import Callable, Dict, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
 
 from .safeguard import _safeguard_check
+
+
+@dataclass
+class Plot:
+    """Data class about a vizro ai plot."""
+
+    code_string: str
+    fig: go.Figure = field(default=None)
+    business_insights: str = field(default=None)
+    code_explanation: str = field(default=None)
 
 
 # Taken from rich.console. See https://github.com/Textualize/rich.
@@ -49,22 +60,29 @@ def _debug_helper(
 
 
 def _exec_code_and_retrieve_fig(
-    code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True
+    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
 ) -> go.Figure:
     """Execute code in notebook with correct namespace and return fig object.
 
     Args:
         code: code string to be executed
         local_args: additional local arguments
+        show_fig: Boolean to flag whether to add show fig code line
         is_notebook_env: boolean flag indicating if code is run in Jupyter notebook
 
     Returns:
-        go.Figure
+        Plotly go figure
 
     """
     from IPython import get_ipython
 
+    if show_fig and "\nfig.show()" not in code:
+        code += "\nfig.show()"
+    elif not show_fig:
+        code = code.replace("fig.show()", "")
+
     namespace = get_ipython().user_ns if is_notebook_env else globals()
+
     if local_args:
         namespace.update(local_args)
     _safeguard_check(code)
@@ -75,16 +93,13 @@ def _exec_code_and_retrieve_fig(
     return dashboard_ready_fig
 
 
-def _display_markdown(code_snippet: str, biz_insights: str, code_explain: str) -> go.Figure:
+def _display_markdown(code_snippet: str, biz_insights: str, code_explain: str) -> None:
     """Display chart and Markdown format description in jupyter and returns fig object.
 
     Args:
         code_snippet: code string to be executed
         biz_insights: business insights to be displayed in markdown cell
         code_explain: code explanation to be displayed in markdown cell
-
-    Returns:
-        go.Figure
 
     """
     try:
