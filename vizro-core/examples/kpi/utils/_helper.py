@@ -5,7 +5,10 @@ import pandas as pd
 
 REGION_MAPPING = {
     **{state: "North East" for state in ["CT", "ME", "MA", "NH", "RI", "VT", "NJ", "NY", "PA"]},
-    **{state: "Mid West" for state in ["IL", "IN", "MI", "OH", "WI", "IA", "KS", "MN", "MO", "NE", "ND", "SD"]},
+    **{
+        state: "Mid West"
+        for state in ["IL", "IN", "MI", "OH", "WI", "IA", "KS", "MN", "MO", "NE", "ND", "SD"]  # codespell:ignore
+    },
     **{
         state: "South"
         for state in [
