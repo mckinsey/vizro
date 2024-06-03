@@ -79,6 +79,51 @@ Sometimes a parameter may not work because it requires a callback to function. I
 
     [AGGrid]: ../../assets/user_guides/table/aggrid.png
 
+### Enable pagination
+Pagination is a visual alternative to using vertical scroll. It can also improve loading time if you have many rows.
+You can turn it on by setting `dashGridOptions={"pagination": True}`.
+
+!!! example "Basic Dash AG Grid"
+
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder()
+
+        page = vm.Page(
+            title="Example of a Dash AG Grid",
+            components=[
+                vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True})),
+            ]
+        )
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+        - components:
+          - figure:
+              _target_: dash_ag_grid
+              data_frame: gapminder
+              dashGridOptions:
+                 pagination: true
+            title: Dash AG Grid
+            type: ag_grid
+          title: Example of a Dash AG Grid
+        ```
+    === "Result"
+        [![AGGrid]][AGGrid]
+
+    [AGGrid]: ../../assets/user_guides/table/aggrid-pagination.png
+
 ### Formatting columns
 
 #### Numbers
