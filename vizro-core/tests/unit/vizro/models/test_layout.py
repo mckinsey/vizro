@@ -174,9 +174,10 @@ class TestSharedLayoutHelpers:
 
 class TestLayoutBuild:
     def test_layout_build(self):
-        result = vm.Layout(grid=[[0, 1], [0, 2]], id="layout_id").build()
+        result = vm.Layout(id="layout_id", grid=[[0, 1], [0, 2]]).build()
         expected = html.Div(
-            [
+            id="layout_id",
+            children=[
                 html.Div(id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3"}),
                 html.Div(id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2"}),
                 html.Div(id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3"}),
@@ -188,6 +189,5 @@ class TestLayoutBuild:
                 "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
             },
             className="grid-layout",
-            id="layout_id",
         )
         assert_component_equal(result, expected)

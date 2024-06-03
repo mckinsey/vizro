@@ -185,4 +185,4 @@ class Action(VizroBaseModel):
                 return {"internal": {"action_finished": None}, "external": return_value}
             return {"internal": {"action_finished": None}}
 
-        return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)
+        return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)
