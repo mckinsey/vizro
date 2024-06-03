@@ -55,8 +55,7 @@ Sometimes a parameter may not work because it requires a callback to function. I
             title="Example of a Dash AG Grid",
             components=[
                 vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
-            ],
-            controls=[vm.Filter(column="continent")],
+            ]
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -73,9 +72,6 @@ Sometimes a parameter may not work because it requires a callback to function. I
               data_frame: gapminder
             title: Dash AG Grid
             type: ag_grid
-          controls:
-            - column: continent
-              type: filter
           title: Example of a Dash AG Grid
         ```
     === "Result"
