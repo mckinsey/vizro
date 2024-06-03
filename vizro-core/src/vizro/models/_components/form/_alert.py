@@ -33,7 +33,7 @@ class Alert(VizroBaseModel):
     @_log_call
     def build(self):
         return html.Div(
-            [
+            children=[
                 dbc.Alert(
                     id=self.id,
                     children=[html.P(self.text)],

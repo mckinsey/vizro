@@ -52,4 +52,4 @@ class Form(VizroBaseModel):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-        return html.Div(components_container, id=self.id)
+        return html.Div(id=self.id, children=components_container)

@@ -105,7 +105,7 @@ class AgGrid(VizroBaseModel):
         )
 
         return dcc.Loading(
-            [
+            children=[
                 html.H3(self.title, className="table-title") if self.title else None,
                 # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
                 # here) must have the same setting as the object that is built by the on-page-load mechanism using

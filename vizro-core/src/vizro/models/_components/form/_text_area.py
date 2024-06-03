@@ -40,7 +40,7 @@ class TextArea(VizroBaseModel):
     @_log_call
     def build(self):
         return html.Div(
-            [
+            children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dbc.Textarea(
                     id=self.id,
