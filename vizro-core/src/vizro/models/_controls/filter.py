@@ -197,7 +197,7 @@ class Filter(VizroBaseModel):
 
             self.selector.actions = [
                 Action(
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                 )
             ]

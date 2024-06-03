@@ -77,4 +77,4 @@ class NavBar(VizroBaseModel):
 
         # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
         # to create a horizontal NavBar.
-        return html.Div(children=[dbc.Navbar(nav_links, id="nav-bar", className="flex-column"), nav_panel])
+        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className="flex-column"), nav_panel])

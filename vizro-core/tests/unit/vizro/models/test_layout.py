@@ -174,7 +174,7 @@ class TestSharedLayoutHelpers:
 
 class TestLayoutBuild:
     def test_layout_build(self):
-        result = vm.Layout(grid=[[0, 1], [0, 2]], id="layout_id").build()
+        result = vm.Layout(id="layout_id", grid=[[0, 1], [0, 2]]).build()
         expected = html.Div(
             [
                 html.Div(id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3"}),

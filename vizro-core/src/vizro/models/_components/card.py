@@ -34,7 +34,7 @@ class Card(VizroBaseModel):
 
     @_log_call
     def build(self):
-        text = dcc.Markdown(self.text, dangerously_allow_html=False, id=self.id)
+        text = dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False)
         card_content = (
             dbc.NavLink(
                 children=text,
