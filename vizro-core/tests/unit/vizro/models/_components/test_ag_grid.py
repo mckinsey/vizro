@@ -142,9 +142,7 @@ class TestBuildAgGrid:
                 None,
                 html.Div(
                     id="text_ag_grid",
-                    children=dash_ag_grid(
-                        data_frame=gapminder, id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
-                    )(),
+                    children=dash_ag_grid(data_frame=gapminder, id="underlying_ag_grid_id")(),
                     className="table-container",
                 ),
             ],

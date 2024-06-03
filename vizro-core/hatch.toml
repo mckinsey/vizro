@@ -30,7 +30,7 @@ dependencies = [
 ]
 
 [envs.default.env-vars]
-DASH_DEBUG = "false"
+DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
