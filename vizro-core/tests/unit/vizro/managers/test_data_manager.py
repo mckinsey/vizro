@@ -1,6 +1,5 @@
 """Unit tests for vizro.managers.data_manager."""
 
-import time
 from contextlib import suppress
 from functools import partial
 
@@ -9,9 +8,23 @@ import pandas as pd
 import pytest
 from asserts import assert_frame_not_equal
 from flask_caching import Cache
+from freezegun import freeze_time
 from pandas.testing import assert_frame_equal
 from vizro import Vizro
 from vizro.managers import data_manager
+
+
+# Fixture that freezes the time so that tests involving time.sleep can run quickly. Instead of time.sleep,
+# tests should use freezer.tick() to advance time. This is very similar to the fixture in the pytest-freezegun package.
+# This makes it possible to test with realistic timeouts that flask-caching can handle well. Otherwise we
+# test with very low timeouts and time.sleep(1), and this is flaky since flask-caching is not designed to
+# handle such small intervals (e.g. it rounds times to the nearest second).
+# We use tick=True so that time continues to pass between directly consecutive calls to a load function. This makes the
+# behavior in tests as close as possible to real world.
+@pytest.fixture
+def freezer():
+    with freeze_time(tick=True) as frozen_time:
+        yield frozen_time
 
 
 @pytest.fixture(autouse=True)
@@ -169,23 +182,13 @@ def simple_cache():
     ],
 )
 class TestCache:
-    def test_default_timeout(self, data_callable, simple_cache):
+    def test_default_timeout(self, data_callable, simple_cache, freezer):
         data_manager["data"] = data_callable
 
         loaded_data_1 = data_manager["data"].load()
         loaded_data_2 = data_manager["data"].load()
-
-        # Cache does not expire.
-        assert_frame_equal(loaded_data_1, loaded_data_2)
-
-    def test_change_non_default_timeout(self, data_callable):
-        data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 1})
-        Vizro()
-        data_manager["data"] = data_callable
-
-        loaded_data_1 = data_manager["data"].load()
-        loaded_data_2 = data_manager["data"].load()
-        time.sleep(1)
+        # Default timeout is 300, so wait for longer than that.
+        freezer.tick(300 + 50)
         loaded_data_3 = data_manager["data"].load()
         loaded_data_4 = data_manager["data"].load()
 
@@ -194,13 +197,29 @@ class TestCache:
         assert_frame_equal(loaded_data_3, loaded_data_4)
         assert_frame_not_equal(loaded_data_2, loaded_data_3)
 
-    def test_change_individual_timeout(self, data_callable, simple_cache):
+    def test_change_non_default_timeout(self, data_callable, freezer):
+        data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 100})
+        Vizro()
         data_manager["data"] = data_callable
-        data_manager["data"].timeout = 1
 
         loaded_data_1 = data_manager["data"].load()
         loaded_data_2 = data_manager["data"].load()
-        time.sleep(1)
+        freezer.tick(100 + 50)
+        loaded_data_3 = data_manager["data"].load()
+        loaded_data_4 = data_manager["data"].load()
+
+        # Cache has expired between loaded_data_2 and loaded_data_3 only.
+        assert_frame_equal(loaded_data_1, loaded_data_2)
+        assert_frame_equal(loaded_data_3, loaded_data_4)
+        assert_frame_not_equal(loaded_data_2, loaded_data_3)
+
+    def test_change_individual_timeout(self, data_callable, simple_cache, freezer):
+        data_manager["data"] = data_callable
+        data_manager["data"].timeout = 100
+
+        loaded_data_1 = data_manager["data"].load()
+        loaded_data_2 = data_manager["data"].load()
+        freezer.tick(100 + 50)
         loaded_data_3 = data_manager["data"].load()
         loaded_data_4 = data_manager["data"].load()
 
@@ -222,30 +241,16 @@ class TestCache:
     ],
 )
 class TestCacheWithArguments:
-    def test_default_timeout(self, data_callable):
+    def test_default_timeout(self, data_callable, freezer):
         # Analogous to TestCache.test_default_timeout
         data_manager["data"] = data_callable
 
         loaded_data_x_1 = data_manager["data"].load("x")
-        loaded_data_y_1 = data_manager["data"].load("y")
-        loaded_data_x_2 = data_manager["data"].load("x")
-        loaded_data_y_2 = data_manager["data"].load("y")
-
-        # Memoization of arguments works correctly.
-        assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
-        assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
-        assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
-
-    def test_change_individual_timeout(self, data_callable):
-        # Analogous to TestCache.test_change_individual_timeout.
-        data_manager["data"] = data_callable
-        data_manager["data"].timeout = 1
-
-        loaded_data_x_1 = data_manager["data"].load("x")
         loaded_data_x_2 = data_manager["data"].load("x")
         loaded_data_y_1 = data_manager["data"].load("y")
         loaded_data_y_2 = data_manager["data"].load("y")
-        time.sleep(1)
+        # Default timeout is 300, so wait for longer than that.
+        freezer.tick(300 + 50)
         loaded_data_x_3 = data_manager["data"].load("x")
         loaded_data_x_4 = data_manager["data"].load("x")
         loaded_data_y_3 = data_manager["data"].load("y")
@@ -263,27 +268,54 @@ class TestCacheWithArguments:
         assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
         assert_frame_not_equal(loaded_data_x_3, loaded_data_y_3)
 
-    def test_timeout_expires_all(self, data_callable):
+    def test_change_individual_timeout(self, data_callable, freezer):
+        # Analogous to TestCache.test_change_individual_timeout.
+        data_manager["data"] = data_callable
+        data_manager["data"].timeout = 100
+
+        loaded_data_x_1 = data_manager["data"].load("x")
+        loaded_data_x_2 = data_manager["data"].load("x")
+        loaded_data_y_1 = data_manager["data"].load("y")
+        loaded_data_y_2 = data_manager["data"].load("y")
+        freezer.tick(100 + 50)
+        loaded_data_x_3 = data_manager["data"].load("x")
+        loaded_data_x_4 = data_manager["data"].load("x")
+        loaded_data_y_3 = data_manager["data"].load("y")
+        loaded_data_y_4 = data_manager["data"].load("y")
+
+        # For both x and y, cache has expired between loaded_data_2 and loaded_data_3 only.
+        assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
+        assert_frame_equal(loaded_data_x_3, loaded_data_x_4)
+        assert_frame_not_equal(loaded_data_x_2, loaded_data_x_3)
+
+        assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
+        assert_frame_equal(loaded_data_y_3, loaded_data_y_4)
+        assert_frame_not_equal(loaded_data_y_2, loaded_data_y_3)
+
+        assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
+        assert_frame_not_equal(loaded_data_x_3, loaded_data_y_3)
+
+    def test_timeout_expires_all(self, data_callable, freezer):
         # When the cache for one set of memoized arguments expires, the cache for the whole data source expires, even
         # for other values of memoized arguments.
         # This behavior is not particularly desirable (in fact it's maybe a bit annoying); the test is here just
         # to document the current behavior. It's not easy to change this behavior within flask-caching.
+        # Remember the default timeout is 300s.
         # Loading sequence of data sources is as follows:
-        # t=0: load x_1
-        # t=1: load x_2     y_1  -> x cache has not expired
-        # t=2: load x_3     y_2  -> x cache has expired. y cache might be expected to not expire but also has.
-        # t=3: load         y_3
+        # t=0:      load x_1
+        # t=200:    load x_2     y_1  -> x cache has not expired
+        # t=400:    load x_3     y_2  -> x cache has expired. y cache might be expected to not expire but also has.
+        # t=600:    load         y_3
         data_manager["data"] = data_callable
-        data_manager["data"].timeout = 2
 
         loaded_data_x_1 = data_manager["data"].load("x")
-        time.sleep(1)
+        freezer.tick(150 + 50)
         loaded_data_x_2 = data_manager["data"].load("x")
         loaded_data_y_1 = data_manager["data"].load("y")
-        time.sleep(1)
+        freezer.tick(150 + 50)
         loaded_data_x_3 = data_manager["data"].load("x")
         loaded_data_y_2 = data_manager["data"].load("y")
-        time.sleep(1)
+        freezer.tick(150 + 50)
         loaded_data_y_3 = data_manager["data"].load("y")
 
         # These are as you would expect.
@@ -354,17 +386,17 @@ class TestCacheIndependence:
             (make_random_data_with_args_partial, {"label": "z"}),
         ],
     )
-    def test_shared_dynamic_data_callable_with_timeout(self, data_callable, kwargs, simple_cache):
-        # Two data sources that share the same function or bound method are independent when one times out.
+    def test_shared_dynamic_data_callable_with_timeout(self, data_callable, kwargs, simple_cache, freezer):
+        # Two data sources that share the same function or bound method are independent when only one times out.
         # It doesn't really matter if this test passes; it's mainly here just to document the current behavior. The use
         # cases for actually wanting to do this seem limited.
         data_manager["data_x"] = data_callable
         data_manager["data_y"] = data_callable
-        data_manager["data_y"].timeout = 1
+        data_manager["data_y"].timeout = 100
 
         loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
         loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
-        time.sleep(1)
+        freezer.tick(100 + 50)
         loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
         loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
@@ -401,16 +433,16 @@ class TestCacheIndependence:
             (RandomDataWithArgs, {"label": "z"}),
         ],
     )
-    def test_independent_dynamic_data_callable_with_timeout(self, simple_cache, random_data_cls, kwargs):
-        # Two data sources use same method but have *different* bound instances are independent when one times out.
+    def test_independent_dynamic_data_callable_with_timeout(self, simple_cache, random_data_cls, kwargs, freezer):
+        # Two data sources use same method but have *different* bound instances are independent when only one times out.
         # This is the same as test_shared_dynamic_data_callable_with_timeout but it *does* matter that this test passes.
         data_manager["data_x"] = random_data_cls().load
         data_manager["data_y"] = random_data_cls().load
-        data_manager["data_y"].timeout = 1
+        data_manager["data_y"].timeout = 100
 
         loaded_data_x_1 = data_manager["data_x"].load(**kwargs)
         loaded_data_y_1 = data_manager["data_y"].load(**kwargs)
-        time.sleep(1)
+        freezer.tick(100 + 50)
         loaded_data_x_2 = data_manager["data_x"].load(**kwargs)
         loaded_data_y_2 = data_manager["data_y"].load(**kwargs)
 
