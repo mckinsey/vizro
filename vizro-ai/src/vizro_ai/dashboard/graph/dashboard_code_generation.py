@@ -4,10 +4,10 @@ import pandas as pd
 from langgraph.graph import END, StateGraph
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.dashboard.data_summary import FullDataSummary, requirement_sum_prompt
-from vizro_ai.dashboard.vizro_ai_db import VizroAIDashboard
+from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
-model_for_testing = "gpt-4o"
-model_default = "gpt-3.5-turbo"
+# model_default = "gpt-3.5-turbo"
+model_default = "gpt-4o"
 
 
 class GraphState(TypedDict):
