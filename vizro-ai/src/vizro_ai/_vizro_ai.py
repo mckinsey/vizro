@@ -86,7 +86,7 @@ class VizroAI:
             )
         else:
             fig_object = _exec_code_and_retrieve_fig(
-                code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter()
+                code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter()
             )
             if explain:
                 business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
