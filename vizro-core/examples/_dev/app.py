@@ -1,8 +1,8 @@
 """Example to show dashboard configuration."""
 
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
 
 df = px.data.iris()
 print(df.head())
