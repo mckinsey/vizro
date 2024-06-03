@@ -103,8 +103,8 @@ class DatePicker(VizroBaseModel):
         )
 
         return html.Div(
-            [
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+            children=[
+                dbc.Label(children=self.title, html_for=self.id) if self.title else None,
                 date_picker,
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
             ],

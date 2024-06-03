@@ -27,7 +27,7 @@ class TestActionsChainInstantiation:
         assert actions_chain.actions == []
 
     def test_create_action_chains_mandatory_and_optional(self, test_trigger, test_action):
-        actions_chain = ActionsChain(trigger=test_trigger, actions=[test_action], id="actions_chain_id")
+        actions_chain = ActionsChain(id="actions_chain_id", trigger=test_trigger, actions=[test_action])
 
         assert actions_chain.id == "actions_chain_id"
         assert actions_chain.trigger == test_trigger
