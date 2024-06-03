@@ -5,7 +5,6 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 df = px.data.iris()
-print(df.head())
 
 page = vm.Page(
     title="My first dashboard",
