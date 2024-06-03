@@ -1,12 +1,12 @@
 # Still requires a .py to register data connector in Data Manager and parse yaml configuration
 # See yaml_version example
 pages:
-- components:
-  - figure:
-      _target_: dash_ag_grid
-      data_frame: gapminder
-      dashGridOptions:
-         pagination: true
-    title: Dash AG Grid
-    type: ag_grid
-  title: Example of a Dash AG Grid
+  - components:
+      - figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder
+          dashGridOptions:
+            pagination: true
+        title: Dash AG Grid
+        type: ag_grid
+    title: Example of a Dash AG Grid
