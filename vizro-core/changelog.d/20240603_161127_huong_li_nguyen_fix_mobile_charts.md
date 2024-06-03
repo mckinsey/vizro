@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix the disappearance of charts after the theme switch on the mobile version. ([#507](https://github.com/mckinsey/vizro/pull/507))
+- Fix disappearance of charts after theme switch on the mobile version. ([#507](https://github.com/mckinsey/vizro/pull/507))
 
 
 <!--
