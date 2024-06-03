@@ -115,7 +115,7 @@ class VizroAI:
         # TODO retained for some chat application integration, need deprecation handling
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
-    def plot(
+    def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
         self,
         df: pd.DataFrame,
         user_input: str,
@@ -153,12 +153,12 @@ class VizroAI:
                 code_explain=vizro_plot.code_explanation,
             )
 
+        # TODO Tentative for integration test, will be updated/removed for new tests
+        if self._return_all_text:
+            return asdict(vizro_plot)
+
         if return_plot_components:
             return vizro_plot
 
         else:
             return vizro_plot.fig
-
-        # TODO Tentative for integration test, will be updated/removed for new tests
-        if self._return_all_text:
-            return asdict(vizro_plot)
