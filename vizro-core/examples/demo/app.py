@@ -301,12 +301,6 @@ def create_relation_analysis():
                 ),
             ),
             vm.Parameter(
-                targets=["scatter_relation.y"],
-                selector=vm.Dropdown(
-                    options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
-                ),
-            ),
-            vm.Parameter(
                 targets=["scatter_relation.size"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
@@ -424,12 +418,12 @@ def create_benchmark_analysis():
         ]
     }
     columnsDefs = [
-        {"field": "country"},
-        {"field": "continent"},
-        {"field": "year"},
-        {"field": "lifeExp", "cellDataType": "numeric"},
-        {"field": "gdpPercap", "cellDataType": "dollar", "cellStyle": cellStyle},
-        {"field": "pop"},
+        {"field": "country", "flex": 3},
+        {"field": "continent", "flex": 3},
+        {"field": "year", "flex": 2},
+        {"field": "lifeExp", "cellDataType": "numeric", "flex": 3},
+        {"field": "gdpPercap", "cellDataType": "dollar", "cellStyle": cellStyle, "flex": 3},
+        {"field": "pop", "flex": 3},
     ]
 
     page_country = vm.Page(
@@ -439,7 +433,7 @@ def create_benchmark_analysis():
         components=[
             vm.AgGrid(
                 title="Click on a cell in country column:",
-                figure=dash_ag_grid(data_frame=gapminder, columnDefs=columnsDefs),
+                figure=dash_ag_grid(data_frame=gapminder, columnDefs=columnsDefs, dashGridOptions={"pagination": True}),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(
