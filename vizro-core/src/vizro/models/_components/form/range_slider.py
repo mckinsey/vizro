@@ -36,6 +36,7 @@ class RangeSlider(VizroBaseModel):
         value (Optional[List[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+
     """
 
     type: Literal["range_slider"] = "range_slider"
