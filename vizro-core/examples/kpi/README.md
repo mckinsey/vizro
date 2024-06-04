@@ -25,3 +25,4 @@ Note: The data has been additionally edited for the purpose of this example.
 - Line - Customize function to always show selected year vs. past year
 - Table-view - Check why date format does not work on `Date Received`
 - Table-view - Add icons to `On time?` column
+- Table-view - Improve speed by applying cache or overcome limitation that entire data set is loaded in

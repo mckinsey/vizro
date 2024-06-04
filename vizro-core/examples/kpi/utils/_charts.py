@@ -189,5 +189,5 @@ COLUMN_DEFS = [
         "headerName": "Company response",
         "flex": 6,
     },
-    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "On time?", "flex": 2},
+    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "On time?", "flex": 3},
 ]
