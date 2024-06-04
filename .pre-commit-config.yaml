@@ -49,7 +49,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.3
+    rev: v0.4.7
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -79,7 +79,7 @@ repos:
           - pydantic==1.10.14
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.2
+    rev: v8.18.3
     hooks:
       - id: gitleaks
         name: gitleaks (protect)
