@@ -81,11 +81,11 @@ class Slider(VizroBaseModel):
         )
 
         return html.Div(
-            [
+            children=[
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
-                    [
-                        dbc.Label(self.title, html_for=self.id) if self.title else None,
+                    children=[
+                        dbc.Label(children=self.title, html_for=self.id) if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(

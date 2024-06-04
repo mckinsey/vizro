@@ -19,7 +19,7 @@ class TestUserInputInstantiation:
         assert user_input.actions == []
 
     def test_create_user_input_mandatory_and_optional(self):
-        user_input = UserInput(title="Title", placeholder="Placeholder", id="user-input-id")
+        user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder")
 
         assert user_input.id == "user-input-id"
         assert user_input.type == "user_input"
@@ -32,7 +32,7 @@ class TestUserInputBuild:
     """Tests model build method."""
 
     def test_user_input_build(self):
-        user_input = UserInput(title="Title", placeholder="Placeholder", id="user-input-id").build()
+        user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder").build()
         expected_user_input = html.Div(
             [
                 dbc.Label("Title", html_for="user-input-id"),

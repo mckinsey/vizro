@@ -22,7 +22,7 @@ from typing_extensions import Annotated, TypedDict
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
 
-# Used to describe _DashboardReadyFigure so we can keep CapturedCallable generic rather than referring to
+# Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
 # _DashboardReadyFigure explicitly.
 @runtime_checkable
 class _SupportsCapturedCallable(Protocol):
