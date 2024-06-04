@@ -1,5 +1,6 @@
 """Helper functions for models inside form folder."""
 
+from datetime import date
 from typing import Union
 
 from vizro._constants import ALL_OPTION
@@ -60,21 +61,26 @@ def validate_value(cls, value, values):
 
 
 def validate_max(cls, max, values):
-    """Reusable validator for the "max" argument for sliders."""
+    """Validates that the `max` is not below the `min` for a range-based input."""
     if max is None:
         return max
 
     if values["min"] is not None and max < values["min"]:
-        raise ValueError("Maximum value of slider is required to be larger than minimum value.")
+        raise ValueError("Maximum value of selector is required to be larger than minimum value.")
     return max
 
 
-def validate_slider_value(cls, value, values):
-    """Reusable validator for the "value" argument for sliders."""
+def validate_range_value(cls, value, values):
+    """Validates a value or range of values to ensure they lie within specified bounds (min/max)."""
+    EXPECTED_VALUE_LENGTH = 2
     if value is None:
         return value
 
-    lvalue, hvalue = (value[0], value[1]) if isinstance(value, list) else (value, value)
+    lvalue, hvalue = (
+        (value[0], value[1])
+        if isinstance(value, list) and len(value) == EXPECTED_VALUE_LENGTH
+        else (value[0], value[0]) if isinstance(value, list) and len(value) == 1 else (value, value)
+    )
 
     if (values["min"] is not None and not lvalue >= values["min"]) or (
         values["max"] is not None and not hvalue <= values["max"]
@@ -100,3 +106,14 @@ def set_default_marks(cls, marks, values):
     if not marks and values.get("step") is None:
         marks = None
     return marks
+
+
+def validate_date_picker_range(cls, range, values):
+    #
+    if range and values.get("value") and (isinstance(values["value"], (date, str)) or len(values["value"]) == 1):
+        raise ValueError("Please set range=False if providing single date value.")
+
+    if not range and isinstance(values.get("value"), list):
+        raise ValueError("Please set range=True if providing list of date values.")
+
+    return range
