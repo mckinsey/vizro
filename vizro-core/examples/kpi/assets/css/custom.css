@@ -3,6 +3,7 @@
 }
 
 .kpi-card-ref.card {
+  min-width: 168px;
   padding: 8px;
 }
 
@@ -41,8 +42,8 @@
   color: var(--text-secondary);
   display: flex;
   flex-grow: 1;
-  font-size: 12px;
-  font-size: 4vh;
+  font-size: 1rem;
+  font-size: 3.6vh;
   font-weight: 600;
   line-height: unset;
 }
@@ -53,4 +54,23 @@
 
 .kpi-card-ref:has(.delta-neg) {
   border-left: 4px solid #d41159;
+}
+
+.card ul {
+  margin-bottom: 0;
+}
+
+#kpi-banner .container__title {
+  display: none;
+}
+
+#kpi-banner .grid-layout {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+}
+
+#kpi-banner > ::-webkit-scrollbar-thumb {
+  border: 6px solid;
+  border-color: var(--main-container-bg-color);
 }

@@ -11,38 +11,12 @@ from vizro.tables import dash_ag_grid
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
-
-vm.Page.add_type("components", KPI)
 vm.Container.add_type("components", KPI)
 
-# TODO: Enable selection of year filter
-# TODO: Enable current year vs. past year comparison
-# TODO: Enable dynamic KPI Cards
-# TODO: Make KPI Card row horizontally scrollable if no space
-# TODO: Bar - How to enable drill-downs for Issue/Sub-issue and Product/Sub-product?
-# TODO: Bar - Reformat numbers with commas in bar chart
-# TODO: Bar - Left-align y-axis labels
-# TODO: Bar - Shorten labels
-# TODO: Line - Customize function to always show selected year vs. past year
-# TODO: Table-view - Check why date format does not work on `Date Received`
-# TODO: Table-view - Add icons to `Timely` column
-
-page_exec = vm.Page(
-    title="Executive View",
-    layout=vm.Layout(
-        grid=[
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 7, 7, 7],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
-            [6, 6, 6, 8, 8, 8],
-        ],
-    ),
+# SUB-SECTIONS ------------------------------------------------------------------------------------
+kpi_banner = vm.Container(
+    id="kpi-banner",
+    title="",
     components=[
         # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
         KPI(
@@ -87,76 +61,81 @@ page_exec = vm.Page(
             sign="delta-neg",
             ref_value="+2.3% vs. LY",
         ),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="By Issue",
-                    components=[
-                        vm.Graph(
-                            id="bar-issue",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Issue",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                            ),
-                        )
-                    ],
-                ),
-                vm.Container(
-                    title="By Product",
-                    components=[
-                        vm.Graph(
-                            id="bar-product",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Product",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                            ),
-                        )
-                    ],
-                ),
-                vm.Container(
-                    title="By Channel",
-                    components=[
-                        vm.Graph(
-                            id="bar-channel",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Channel",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                            ),
-                        )
-                    ],
-                ),
-                vm.Container(
-                    title="By Region",
-                    components=[
-                        vm.Graph(
-                            id="bar-region",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Region",
-                                x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
-                            ),
-                        )
-                    ],
-                ),
+    ],
+)
+
+bar_charts_tabbed = vm.Tabs(
+    tabs=[
+        vm.Container(
+            title="By Issue",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Issue",
+                        x="Complaint ID",
+                    ),
+                )
             ],
         ),
-        vm.Graph(
-            id="line-date",
-            figure=line(
-                data_frame=df_complaints, y="Complaint ID", x="Year-Month Received", color_discrete_sequence=["#1A85FF"]
-            ),
+        vm.Container(
+            title="By Product",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Product",
+                        x="Complaint ID",
+                    ),
+                )
+            ],
         ),
+        vm.Container(
+            title="By Channel",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Channel",
+                        x="Complaint ID",
+                    ),
+                )
+            ],
+        ),
+        vm.Container(
+            title="By Region",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Region",
+                        x="Complaint ID",
+                    ),
+                )
+            ],
+        ),
+    ],
+)
+
+# PAGES --------------------------------------------------------------------------------------
+page_exec = vm.Page(
+    title="Executive View",
+    layout=vm.Layout(
+        grid=[
+            [0, 0],
+            [1, 2],
+            [1, 2],
+            [1, 3],
+            [1, 3],
+        ],
+    ),
+    components=[
+        kpi_banner,
+        bar_charts_tabbed,
+        vm.Graph(figure=line(data_frame=df_complaints, y="Complaint ID", x="Year-Month Received")),
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
-                color_discrete_sequence=["#1a85ff", "#7ea1ee", "#adbedc", "#df658c", "#d41159"],
                 custom_order=[
                     "Closed with explanation",
                     "Closed without relief",
@@ -178,17 +157,14 @@ page_region = vm.Page(
     components=[
         vm.Card(
             text="""
-
-        #### Click on a state inside the map to filter the bar charts on the right.
+        ##### Click on a state inside the map to filter the bar charts on the right.
 
         - Which state has the most complaints?
         - What are the three biggest issues in California?
         - What is the product with the most complaints in Texas?
-
         """
         ),
         vm.Graph(
-            id="map-region",
             figure=choropleth(
                 data_frame=df_complaints,
                 locations="State",
@@ -213,7 +189,6 @@ page_region = vm.Page(
                                 data_frame=df_complaints,
                                 y="Issue",
                                 x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
                             ),
                         )
                     ],
@@ -227,7 +202,6 @@ page_region = vm.Page(
                                 data_frame=df_complaints,
                                 y="Product",
                                 x="Complaint ID",
-                                color_discrete_sequence=["#1A85FF"],
                             ),
                         )
                     ],
@@ -235,7 +209,12 @@ page_region = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="Region"), vm.Filter(column="State")],
+    controls=[
+        vm.Filter(column="Region", selector=vm.Checklist()),
+        vm.Filter(column="State"),
+        vm.Filter(column="Product"),
+        vm.Filter(column="Issue"),
+    ],
 )
 
 page_table = vm.Page(
