@@ -58,7 +58,7 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Plot:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -84,23 +84,23 @@ class VizroAI:
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
-        else:
-            fig_object = _exec_code_and_retrieve_fig(
-                code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter()
-            )
-            if explain:
-                business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
-                    chain_input=user_input, code_snippet=code_string
-                )
 
-                return Plot(
-                    code_string=code_string,
-                    fig=fig_object,
-                    business_insights=business_insights,
-                    code_explanation=code_explanation,
-                )
-            else:
-                return Plot(code_string=code_string, fig=fig_object)
+        fig_object = _exec_code_and_retrieve_fig(
+            code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter()
+        )
+        if explain:
+            business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
+                chain_input=user_input, code_snippet=code_string
+            )
+
+            return Plot(
+                code_string=code_string,
+                fig=fig_object,
+                business_insights=business_insights,
+                code_explanation=code_explanation,
+            )
+
+        return Plot(code_string=code_string, fig=fig_object)
 
     def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
@@ -116,12 +116,12 @@ class VizroAI:
         return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
 
     def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
-        self,
-        df: pd.DataFrame,
-        user_input: str,
-        explain: bool = False,
-        max_debug_retry: int = 3,
-        return_plot_components: bool = False,
+            self,
+            df: pd.DataFrame,
+            user_input: str,
+            explain: bool = False,
+            max_debug_retry: int = 3,
+            return_plot_components: bool = False,
     ) -> Union[go.Figure, Plot]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -140,7 +140,7 @@ class VizroAI:
             df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry
         )
 
-        if explain is False:
+        if not explain:
             logger.info(
                 "Flag explain is set to False. business_insights and code_explanation will not be included in "
                 "the output dataclass."
@@ -157,8 +157,4 @@ class VizroAI:
         if self._return_all_text:
             return asdict(vizro_plot)
 
-        if return_plot_components:
-            return vizro_plot
-
-        else:
-            return vizro_plot.fig
+        return vizro_plot if return_plot_components else vizro_plot.fig
