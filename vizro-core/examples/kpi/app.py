@@ -24,7 +24,8 @@ vm.Container.add_type("components", KPI)
 # TODO: Bar - Left-align y-axis labels
 # TODO: Bar - Shorten labels
 # TODO: Line - Customize function to always show selected year vs. past year
-
+# TODO: Table-view - Check why date format does not work on `Date Received`
+# TODO: Table-view - Add icons to `Timely` column
 
 page_exec = vm.Page(
     title="Executive View",
@@ -237,9 +238,6 @@ page_region = vm.Page(
     controls=[vm.Filter(column="Region"), vm.Filter(column="State")],
 )
 
-
-# TODO: Table-view - Check why date format does not work on `Date Received`
-# TODO: Table-view - Add icons to `Timely` column
 page_table = vm.Page(
     title="List of complaints",
     components=[

@@ -50,7 +50,7 @@ def bar(  # noqa: PLR0913
     color_discrete_sequence: Optional[List[str]] = None,
     custom_data: Optional[List[str]] = None,
 ):
-    df_agg = data_frame.groupby([y]).aggregate({x: "count"}).sort_values(by=x, ascending=False).reset_index()
+    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
 
     fig = px.bar(
         data_frame=df_agg.head(top_n),
@@ -67,7 +67,7 @@ def bar(  # noqa: PLR0913
 
 @capture("graph")
 def line(x: str, y: str, data_frame: pd.DataFrame, color_discrete_sequence: Optional[List[str]] = None):
-    df_agg = data_frame.groupby([x]).aggregate({y: "count"}).reset_index()
+    df_agg = data_frame.groupby(x).agg({y: "count"}).reset_index()
     fig = px.area(
         data_frame=df_agg,
         x=x,
@@ -88,7 +88,7 @@ def pie(  # noqa: PLR0913
     title: Optional[str] = None,
     custom_order: Optional[List[str]] = None,
 ):
-    df_agg = data_frame.groupby([names]).aggregate({values: "count"}).reset_index()
+    df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
 
     # Apply custom order
     order_mapping = {category: index for index, category in enumerate(custom_order)}
@@ -118,7 +118,7 @@ def choropleth(
     custom_data: Optional[List[str]] = None,
 ):
 
-    df_agg = data_frame.groupby([locations]).aggregate({color: "count"}).reset_index()
+    df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
     df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
 
     fig = px.choropleth(
