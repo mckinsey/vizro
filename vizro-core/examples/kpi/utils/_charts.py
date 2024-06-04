@@ -110,7 +110,7 @@ def pie(  # noqa: PLR0913
 
 
 @capture("graph")
-def chloropleth(
+def choropleth(
     locations: str,
     color: str,
     data_frame: pd.DataFrame = None,

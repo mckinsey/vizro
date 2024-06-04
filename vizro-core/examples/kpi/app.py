@@ -2,7 +2,7 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, chloropleth, line, pie
+from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
 from vizro.actions import filter_interaction
@@ -188,7 +188,7 @@ page_region = vm.Page(
         ),
         vm.Graph(
             id="map-region",
-            figure=chloropleth(
+            figure=choropleth(
                 data_frame=df_complaints,
                 locations="State",
                 color="Complaint ID",
