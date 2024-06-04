@@ -121,7 +121,7 @@ class VizroAI:
         user_input: str,
         explain: bool = False,
         max_debug_retry: int = 3,
-        return_plot_components: bool = False,
+        return_elements: bool = False,
     ) -> Union[go.Figure, Plot]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -130,7 +130,7 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
-            return_plot_components: Flag to return plot dataclass that includes all components.
+            return_elements: Flag to return plot dataclass that includes all components.
 
         Returns:
            go.Figure or Plot dataclass
@@ -157,4 +157,4 @@ class VizroAI:
         if self._return_all_text:
             return asdict(vizro_plot)
 
-        return vizro_plot if return_plot_components else vizro_plot.figure
+        return vizro_plot if return_elements else vizro_plot.figure
