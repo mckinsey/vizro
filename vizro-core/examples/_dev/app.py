@@ -3,24 +3,29 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid, dash_data_table
 
-df = px.data.iris()
+df = px.data.gapminder()
 
-page = vm.Page(
-    title="My first dashboard",
+page_one = vm.Page(
+    title="Dash AG Grid",
+    layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
     components=[
-        # components consist of vm.Graph or  vm.Table
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
-    ],
-    controls=[
-        # controls consist of vm.Filter or vm.Parameter
-        # filter the dataframe (df) of the target graph (histogram), by column sepal_width, using the dropdown
-        vm.Filter(column="sepal_width", selector=vm.Dropdown(), targets=["hist_chart"]),
+        vm.AgGrid(title="Equal Title One", figure=dash_ag_grid(data_frame=df)),
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_two = vm.Page(
+    title="Dash Data Table",
+    layout=vm.Layout(grid=[[0, 1]]),
+    components=[
+        vm.Table(title="Equal Title One", figure=dash_data_table(data_frame=df)),
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
+    ],
+)
+dashboard = vm.Dashboard(pages=[page_one, page_two])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
