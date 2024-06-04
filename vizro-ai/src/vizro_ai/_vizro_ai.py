@@ -155,6 +155,8 @@ class VizroAI:
 
         # TODO Tentative for integration test, will be updated/removed for new tests
         if self._return_all_text:
-            return asdict(vizro_plot)
+            output_dict = asdict(vizro_plot)
+            output_dict["code_string"] = vizro_plot.code
+            return output_dict
 
         return vizro_plot if return_elements else vizro_plot.figure
