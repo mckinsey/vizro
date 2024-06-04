@@ -9,7 +9,7 @@ from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
-df_complaints = pd.read_csv("data/Financial Consumer Complaints.csv")
+df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
 
 vm.Page.add_type("components", KPI)
@@ -171,21 +171,6 @@ page_exec = vm.Page(
     ],
 )
 
-
-# TODO: Table-view - Check why date format does not work on `Date Received`
-# TODO: Table-view - Add icons to `Timely` column
-page_table = vm.Page(
-    title="List of complaints",
-    components=[
-        vm.AgGrid(
-            figure=dash_ag_grid(
-                data_frame=df_complaints,
-                columnDefs=COLUMN_DEFS,
-            )
-        )
-    ],
-)
-
 page_region = vm.Page(
     title="Regional View",
     layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 4),
@@ -252,6 +237,20 @@ page_region = vm.Page(
     controls=[vm.Filter(column="Region"), vm.Filter(column="State")],
 )
 
+
+# TODO: Table-view - Check why date format does not work on `Date Received`
+# TODO: Table-view - Add icons to `Timely` column
+page_table = vm.Page(
+    title="List of complaints",
+    components=[
+        vm.AgGrid(
+            figure=dash_ag_grid(
+                data_frame=df_complaints,
+                columnDefs=COLUMN_DEFS,
+            )
+        )
+    ],
+)
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],

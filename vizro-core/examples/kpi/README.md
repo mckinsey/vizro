@@ -10,6 +10,5 @@ Note: The data has been additionally edited for the purpose of this example.
 
 ## How to run the example locally
 
-1. Download the `Financial Consumer Complaints.csv` file from [this link](https://data.world/markbradbourne/rwfd-real-world-fake-data/workspace/file?filename=Financial+Consumer+Complaints.csv) and place it in the `data` folder
-2. If you have `hatch` set up, run the example with the command `hatch run example kpi`. Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
-3. You should now be able to access the app locally via http://127.0.0.1:8050/.
+1. If you have `hatch` set up, run the example with the command `hatch run example kpi`. Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
+2. You should now be able to access the app locally via http://127.0.0.1:8050/.
