@@ -52,10 +52,8 @@ Sometimes a parameter may not work because it requires a callback to function. I
         df = px.data.gapminder()
 
         page = vm.Page(
-            title="Example of a Dash AG Grid",
-            components=[
-                vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
-            ]
+            title="Default Dash AG Grid",
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df))]
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -70,9 +68,8 @@ Sometimes a parameter may not work because it requires a callback to function. I
           - figure:
               _target_: dash_ag_grid
               data_frame: gapminder
-            title: Dash AG Grid
             type: ag_grid
-          title: Example of a Dash AG Grid
+          title: Default Dash AG Grid
         ```
     === "Result"
         [![AGGrid]][AGGrid]
@@ -95,10 +92,8 @@ You can turn it on by setting `dashGridOptions={"pagination": True}`.
         df = px.data.gapminder()
 
         page = vm.Page(
-            title="Example of a Dash AG Grid",
-            components=[
-                vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True})),
-            ]
+            title="Dash AG Grid with pagination",
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}))]
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -115,9 +110,8 @@ You can turn it on by setting `dashGridOptions={"pagination": True}`.
               data_frame: gapminder
               dashGridOptions:
                  pagination: true
-            title: Dash AG Grid
             type: ag_grid
-          title: Example of a Dash AG Grid
+          title: Dash AG Grid with pagination
         ```
     === "Result"
         [![AGGrid]][AGGrid]
