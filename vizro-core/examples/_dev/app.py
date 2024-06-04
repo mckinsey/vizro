@@ -12,7 +12,7 @@ page_one = vm.Page(
     layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
     components=[
         vm.AgGrid(title="Equal Title One", figure=dash_ag_grid(data_frame=df)),
-        vm.Graph(figure=px.box(df,x="continent", y="lifeExp", title="Equal Title One"))
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
     ],
 )
 
@@ -21,7 +21,7 @@ page_two = vm.Page(
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
         vm.Table(title="Equal Title One", figure=dash_data_table(data_frame=df)),
-        vm.Graph(figure=px.box(df,x="continent", y="lifeExp", title="Equal Title One"))
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
     ],
 )
 dashboard = vm.Dashboard(pages=[page_one, page_two])
