@@ -222,8 +222,8 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`,
-    `"ag_grid"` and `"action"`.
+    Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
+    `"ag_grid"`, `"card"` and `"action"`.
 
     Examples
         >>> @capture("graph")
@@ -235,6 +235,9 @@ class capture:
         >>> @capture("ag_grid")
         >>> def ag_grid_function():
         >>>     ...
+        >>> @capture("card")
+        >>> def card_function():
+        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
@@ -243,13 +246,15 @@ class capture:
     [custom graphs](../user-guides/custom-charts.md).
     For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
     [custom tables](../user-guides/custom-tables.md).
+    For further help on the use of `@capture("card")`, you can refer to the guide on
+    [cards](../user-guides/card-button.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user-guides/custom-actions.md).
 
     """
 
     def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "card"]):
-        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
+        """Decorator to capture a function call."""
         self._mode = mode
 
     def __call__(self, func, /):
