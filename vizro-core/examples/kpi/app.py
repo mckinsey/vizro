@@ -2,8 +2,8 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
-from utils._helper import clean_data_and_add_columns
+from .utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
+from .utils._helper import clean_data_and_add_columns
 from vizro import Vizro
 from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
