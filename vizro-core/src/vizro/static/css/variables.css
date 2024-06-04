@@ -153,4 +153,5 @@
   --status-success: var(--status-light-mode-success);
   --tags-text-color: var(--tags-light-mode-text-color);
   --status-warning: var(--status-light-mode-warning);
+  --inverse-color: invert(100%);
 }

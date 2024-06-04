@@ -94,7 +94,6 @@ class TestNavLinkBuildMethod:
             ],
             active=True,
             href="/",
-            className="nav-bar-icon-link",
             id="nav-link",
         )
         assert_component_equal(built_nav_link["nav-link"], expected_nav_link)
@@ -116,7 +115,6 @@ class TestNavLinkBuildMethod:
             ],
             active=False,
             href="/",
-            className="nav-bar-icon-link",
             id="nav-link",
         )
         assert_component_equal(built_nav_link["nav-link"], expected_button)

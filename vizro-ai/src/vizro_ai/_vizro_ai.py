@@ -1,13 +1,20 @@
 import logging
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
+import plotly.graph_objects as go
+from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains import ModelConstructor
-from vizro_ai.chains._llm_models import LLM_MODELS
+from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.utils.helper import DebugFailure, _debug_helper, _display_markdown_and_chart, _exec_code, _is_jupyter
+from vizro_ai.utils.helper import (
+    DebugFailure,
+    _debug_helper,
+    _exec_code_and_retrieve_fig,
+    _exec_fig_code_display_markdown,
+    _is_jupyter,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -15,25 +22,22 @@ logger = logging.getLogger(__name__)
 class VizroAI:
     """Vizro-AI main class."""
 
-    model_constructor: ModelConstructor = ModelConstructor()
     pipeline_manager: PipelineManager = PipelineManager()
     _return_all_text: bool = False
 
-    def __init__(self, model_name: str = "gpt-3.5-turbo-0613", temperature: int = 0):
+    def __init__(self, model: Optional[Union[ChatOpenAI, str]] = None):
         """Initialization of VizroAI.
 
         Args:
-            model_name: Model name in string format.
-            temperature: Temperature parameter for LLM.
+            model: model instance or model name.
 
         """
-        self.model_name = model_name
-        self.temperature = temperature
+        self.model = _get_llm_model(model=model)
         self.components_instances = {}
-        self._llm_to_use = None
+
         # TODO add pending URL link to docs
         logger.info(
-            f"You have selected {self.model_name},"
+            f"You have selected {self.model.model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
@@ -41,19 +45,14 @@ class VizroAI:
         )
         self._set_task_pipeline_llm()
 
-    @property
-    def llm_to_use(self) -> LLM_MODELS:
-        _llm_to_use = self.model_constructor.get_llm_model(self.model_name, self.temperature)
-        return _llm_to_use
-
     def _set_task_pipeline_llm(self) -> None:
-        self.pipeline_manager.llm = self.llm_to_use
+        self.pipeline_manager.llm = self.model
 
     # TODO delete after adding debug in pipeline
     def _lazy_get_component(self, component_class: Any) -> Any:  # TODO configure component_class type
         """Lazy initialization of components."""
         if component_class not in self.components_instances:
-            self.components_instances[component_class] = component_class(llm=self.llm_to_use)
+            self.components_instances[component_class] = component_class(llm=self.model)
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
@@ -105,7 +104,7 @@ class VizroAI:
 
     def plot(
         self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
-    ) -> Union[None, Dict[str, Any]]:
+    ) -> Union[go.Figure, Dict[str, Any]]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -113,6 +112,9 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
+
+        Returns:
+            Plotly Figure object or a dictionary containing data
 
         """
         output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
@@ -125,12 +127,13 @@ class VizroAI:
                 "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
-        if not explain:
-            _exec_code(code=code_string, local_args={"df": df}, show_fig=True, is_notebook_env=_is_jupyter())
-        if explain:
-            _display_markdown_and_chart(
-                df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
-            )
+
         # TODO Tentative for integration test
         if self._return_all_text:
             return output_dict
+        if not explain:
+            return _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
+        if explain:
+            return _exec_fig_code_display_markdown(
+                df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
+            )

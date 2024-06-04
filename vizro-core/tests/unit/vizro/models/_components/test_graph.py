@@ -43,7 +43,7 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):
-        graph = vm.Graph(figure=standard_px_chart, id=id, actions=[])
+        graph = vm.Graph(id=id, figure=standard_px_chart, actions=[])
 
         assert graph.id == id
         assert graph.type == "graph"
@@ -78,9 +78,9 @@ class TestDunderMethodsGraph:
 
         assert graph.layout.margin.t == expected
         assert graph.layout.template.layout.margin.t == 64
-        assert graph.layout.template.layout.margin.l == 80
+        assert graph.layout.template.layout.margin.l == 24
         assert graph.layout.template.layout.margin.b == 64
-        assert graph.layout.template.layout.margin.r == 12
+        assert graph.layout.template.layout.margin.r == 24
 
     def test_update_theme_outside_callback(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart).__call__()
@@ -119,18 +119,15 @@ class TestAttributesGraph:
         assert "modelID" in graph._filter_interaction_input
 
 
-class TestProcessFigureDataFrame:
+class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
-        graph_with_str_df = vm.Graph(id="text_graph", figure=standard_px_chart_with_str_dataframe)
-        assert data_manager._get_component_data("text_graph").equals(gapminder)
-        assert graph_with_str_df["data_frame"] == "gapminder"
+        graph = vm.Graph(id="graph", figure=standard_px_chart_with_str_dataframe)
+        assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_px_chart, gapminder):
-        graph_with_df = vm.Graph(id="text_graph", figure=standard_px_chart)
-        assert data_manager._get_component_data("text_graph").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            graph_with_df.figure["data_frame"]
+        graph = vm.Graph(id="graph", figure=standard_px_chart)
+        assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
 
 class TestBuild:
@@ -157,5 +154,6 @@ class TestBuild:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph)

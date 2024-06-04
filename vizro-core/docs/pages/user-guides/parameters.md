@@ -1,8 +1,8 @@
 # How to use parameters
 
-This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function that creates the chart/component.
+This guide shows you how to add parameters to your dashboard. One main way to interact with the charts/components on your page is by changing the parameters of the underlying function (`figure` argument) that creates the chart/component. Parameters can also be used to [modify the data loaded into the dashboard itself](data.md/#parametrize-data-loading).
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. If e.g. the charting function has a `title` argument, you could configure a parameter that allows the user to select the chart title via e.g. a dropdown.
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Parameter`][vizro.models.Parameter] model. For example, if the charting function has a `title` argument, you could configure a parameter that enables the user to select the chart title with a dropdown.
 
 ## Basic parameters
 
@@ -12,7 +12,7 @@ To add a parameter to your page, do the following:
 - add the `targets` argument
 - add a selector model to the `selector` argument.
 
-In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (eg. `scatter_chart.title`).
+In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
@@ -50,7 +50,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -78,11 +78,11 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
     [Parameter]: ../../assets/user_guides/control/control4.png
 
 !!! tip
-    If you would like to pass `None` as a parameter, e.g. in order to make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
+    If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
 ## Nested parameters
 
-If you want to modify nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
+If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
 
 !!! example "Nested Parameters for multiple targets"
     === "app.py"
@@ -136,7 +136,7 @@ If you want to modify nested parameters, you can specify the `targets` argument 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -174,6 +174,10 @@ If you want to modify nested parameters, you can specify the `targets` argument 
 
     [Nested]: ../../assets/user_guides/control/control5.png
 
-In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (eg. `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
+In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
 Note that in the above example, one parameter affects multiple targets.
+
+## Dynamic data parameters
+
+If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).

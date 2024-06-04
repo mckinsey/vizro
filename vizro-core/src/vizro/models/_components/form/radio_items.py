@@ -1,11 +1,13 @@
 from typing import List, Literal, Optional
 
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, root_validator, validator
+
+import dash_bootstrap_components as dbc
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -49,18 +51,15 @@ class RadioItems(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=False)
 
-        return html.Div(
-            [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
-                dcc.RadioItems(
+        return html.Fieldset(
+            children=[
+                html.Legend(children=self.title, className="form-label") if self.title else None,
+                dbc.RadioItems(
                     id=self.id,
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
-                    className="radio-items-list",
                 ),
-            ],
-            className="input-container",
-            id=f"{self.id}_outer",
+            ]
         )

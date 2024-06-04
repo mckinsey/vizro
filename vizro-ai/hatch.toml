@@ -29,7 +29,7 @@ prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  'echo "Now raise a PR to merge into main with title: Release of vizro-ai $(hatch version)"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
@@ -48,10 +48,18 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "linkchecker"
 ]
 detached = true
-scripts = {serve = "mkdocs serve"}
+
+[envs.docs.scripts]
+build = "mkdocs build --strict"
+# Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
+# more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
+# throwing 403 errors, but these are not real errors.
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
+serve = "mkdocs serve --strict"
 
 [envs.lint]
 dependencies = [

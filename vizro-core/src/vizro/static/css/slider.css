@@ -108,6 +108,7 @@ input.dash-input:invalid {
   display: flex;
   flex-direction: row;
   gap: var(--spacing-01);
+  margin-bottom: var(--spacing-03);
 }
 
 .slider-text-input-field {

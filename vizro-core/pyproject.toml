@@ -16,12 +16,14 @@ classifiers = [
 ]
 dependencies = [
   # Temporarily set an upper limit on dash: https://github.com/plotly/dash/issues/2778
-  "dash>=2.14.1, !=2.16.0",  # 2.14.1 needed for compatibility with werkzeug
+  "dash>=2.17.0",  # 2.17.0 needed for new features on loading spinner
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas",
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
-  "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12
+  "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
+  "flask_caching>=2",
+  "wrapt>=1",
   "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
   "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
   "werkzeug>=3.0.1"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177

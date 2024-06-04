@@ -20,7 +20,6 @@ export function _collapse_nav_panel(n_clicks, is_open) {
         false,
         {
           transform: "rotate(180deg)",
-          left: "4px",
           transition: "transform 0.35s ease-in-out",
         },
         "Show Menu",
@@ -33,7 +32,6 @@ export function _collapse_nav_panel(n_clicks, is_open) {
       false,
       {
         transform: "rotate(180deg)",
-        left: "4px",
         transition: "transform 0.35s ease-in-out",
       },
       "Show Menu",

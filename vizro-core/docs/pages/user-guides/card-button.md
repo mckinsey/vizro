@@ -4,7 +4,7 @@ This guide shows you how to use cards and buttons to visualize and interact with
 
 ## Cards
 
-The [`Card`][vizro.models.Card] is a flexible and extensible component, allowing for customization via Markdown text.
+The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text.
 Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/).
 
 You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
@@ -34,7 +34,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -49,11 +49,11 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     [Card]: ../../assets/user_guides/components/card.png
 
-### How to customize card text
+### Customize card text
 
-The [`Card`][vizro.models.Card] utilizes the `dcc.Markdown` component from Dash as its underlying text component.
+The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component.
 For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown).
-Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
+Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
 - Headers
 - Emphasis
@@ -132,7 +132,7 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -183,13 +183,13 @@ Based on the provided examples from Dash, the [`Card`][vizro.models.Card] model 
 
     [CardText]: ../../assets/user_guides/components/card_text.png
 
-### How to place an image on a card
+### Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
 
 `![Image ALT text](Image URL)`
 
-An image ALT text provides a description to your image and serves e.g. as a text placeholder or to improve the
+An image ALT text offers a description to your image and serves as a text placeholder or to improve the
 accessibility of your app. Providing an image ALT text is optional.
 
 1. To use a relative Image URL, place an image of your choice into your `assets` folder first
@@ -227,7 +227,7 @@ accessibility of your app. Providing an image ALT text is optional.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -253,16 +253,17 @@ accessibility of your app. Providing an image ALT text is optional.
     Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed
     to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
 
-You might notice that the image is quite large, find out how to style images (e.g. position and size) in the next section!
+You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
-### How to style a card image
 
-To change the styling of the image (e.g. size or position), add a URL hash to your image like this:
+### Style a card image
+
+To change the size or position of the image, add a URL hash to your image like this:
 
 `![Image ALT text](Image URL#my-image)`
 
 Note the added URL hash `#my-image`. Now create a CSS file placed in your `assets` folder
-and provide an attribute selector to select images with that matching URL hash.
+and give an attribute selector to select images with that matching URL hash.
 
 !!! example "Card with styled image"
     === "images.css"
@@ -302,7 +303,7 @@ and provide an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -368,7 +369,7 @@ and provide an attribute selector to select images with that matching URL hash.
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -395,7 +396,7 @@ and provide an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-### How to create a navigation card
+### Create a navigation card
 
 !!! note
 
@@ -404,12 +405,12 @@ and provide an attribute selector to select images with that matching URL hash.
     [guide on navigation](navigation.md).
 
 
-A navigation card allows you to navigate to a different page via a click on the card area.
+A navigation card enables you to navigate to a different page via a click on the card area.
 To create a navigation card, do the following:
 
 - Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page]
-- Provide the `text` parameter with a title and some description
-- Provide the `href` parameter (relative or absolute URL)
+- Pass your markdown text to the `Card.text`
+- Pass a relative or absolute URL to the `Card.href`
 
 !!! example "Navigation Card"
     === "app.py"
@@ -455,7 +456,7 @@ To create a navigation card, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -494,11 +495,13 @@ If you now click on the card area, you should automatically be redirected to the
 
     When using the [`Card`][vizro.models.Card], keep the following considerations in mind:
 
-    - If the href provided is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
-    - If the href provided is an absolute link, it should start with `https://` or an equivalent protocol.
+    - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
+    - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
-### How to add an icon
-If you want to add an icon to your card, just add your image as described in the [previous section](#placing-images)
+
+### Add an icon
+If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
 !!! example "Navigation Card with Icon"
@@ -550,7 +553,7 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
         ```
     === "app.yaml"
         ```yaml hl_lines="5 13"
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
@@ -590,13 +593,33 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
 in the app with `path = filters-and-parameters` and the second one to an external link.
 
+#### Add an icon responsive to theme switch
+
+To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
+
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+
+Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+
+```css
+img[src*="#my-image"] {
+  filter: var(--inverse-color);
+}
+```
+
+??? example "Responsive icon"
+    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
+
+
 ## Buttons
 
 To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
-action functions such as e.g. exporting chart data. Please refer to the [user guide][vizro.actions] on
-[`Actions`][vizro.models.Action] for currently available options.
+action functions such as exporting chart data. To use the currently available options for the [`Actions`][vizro.models.Action]
+component, check out the [API reference][vizro.actions].
 
-To add a [`Button`][vizro.models.Button], simply insert it into the `components` argument of the
+To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the
 [`Page`][vizro.models.Page].
 
 You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button] and the
@@ -607,6 +630,7 @@ In the below example we show how to configure a button to export the filtered da
 
 
 !!! example "Button"
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -644,7 +668,7 @@ In the below example we show how to configure a button to export the filtered da
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
@@ -688,7 +712,7 @@ In the below example we show how to configure a button to export the filtered da
 The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard.
 However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
 
-In this case, simply follow the user-guide outlined for [custom components](custom-components.md) and manually add the `Button` as a valid type to the `controls` argument by running the following lines before your dashboard configurations:
+In this case, follow the user-guide outlined for [creating custom components](custom-components.md) and manually add the `Button` as a valid type to the `controls` argument by running the following lines before your dashboard configurations:
 
 ```python
 from vizro import Vizro

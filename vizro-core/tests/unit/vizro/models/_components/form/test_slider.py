@@ -1,5 +1,6 @@
 """Unit tests for hyphen.models.slider."""
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -16,10 +17,10 @@ import vizro.models as vm
 def expected_slider():
     return html.Div(
         [
-            dcc.Store("slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
+            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    html.Label("Test title", htmlFor="slider_id"),
+                    dbc.Label("Test title", html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -53,9 +54,7 @@ def expected_slider():
                 persistence_type="session",
                 className="slider-track-with-marks",
             ),
-        ],
-        className="input-container",
-        id="slider_id_outer",
+        ]
     )
 
 
@@ -173,6 +172,6 @@ class TestSliderInstantiation:
 
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
-        slider = vm.Slider(min=0, max=10, step=1, value=5, id="slider_id", title="Test title").build()
+        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Test title").build()
 
         assert_component_equal(slider, expected_slider)

@@ -145,11 +145,11 @@ class Action(VizroBaseModel):
         return return_value
 
     @_log_call
-    def build(self):
+    def build(self) -> html.Div:
         """Builds a callback for the Action model and returns required components for the callback.
 
         Returns
-            List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard` container.
+            Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
@@ -185,4 +185,4 @@ class Action(VizroBaseModel):
                 return {"internal": {"action_finished": None}, "external": return_value}
             return {"internal": {"action_finished": None}}
 
-        return html.Div(children=action_components, id=f"{self.id}_action_model_components_div", hidden=True)
+        return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)

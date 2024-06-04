@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from dash import Output, State, dcc
 
-from vizro.actions import _parameter, export_data, filter_interaction
+from vizro.actions import _parameter, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, Page
@@ -62,26 +62,16 @@ def _get_inputs_of_figure_interactions(
 # TODO: Refactor this and util functions once we implement "_get_input_property" method in VizroBaseModel models
 def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[State, Dict[str, State]]]]:
     """Creates mapping of pre-defined action names and a list of `States`."""
-    action_function = model_manager[action_id].function._function
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
-    if action_function == export_data.__wrapped__:
-        include_inputs = ["filters", "filter_interaction"]
-    else:
-        include_inputs = ["filters", "parameters", "filter_interaction", "theme_selector"]
-
     action_input_mapping = {
-        "filters": (_get_inputs_of_controls(page=page, control_type=Filter) if "filters" in include_inputs else []),
-        "parameters": (
-            _get_inputs_of_controls(page=page, control_type=Parameter) if "parameters" in include_inputs else []
-        ),
+        "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+        "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
         # TODO: Probably need to adjust other inputs to follow the same structure List[Dict[str, State]]
-        "filter_interaction": (
-            _get_inputs_of_figure_interactions(page=page, action_function=filter_interaction.__wrapped__)
-            if "filter_interaction" in include_inputs
-            else []
+        "filter_interaction": _get_inputs_of_figure_interactions(
+            page=page, action_function=filter_interaction.__wrapped__
         ),
-        "theme_selector": State("theme_selector", "checked") if "theme_selector" in include_inputs else [],
+        "theme_selector": State("theme_selector", "checked"),
     }
     return action_input_mapping
 

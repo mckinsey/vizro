@@ -22,7 +22,7 @@ from typing_extensions import Annotated, TypedDict
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
 
-# Used to describe _DashboardReadyFigure so we can keep CapturedCallable generic rather than referring to
+# Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
 # _DashboardReadyFigure explicitly.
 @runtime_checkable
 class _SupportsCapturedCallable(Protocol):
@@ -138,9 +138,9 @@ class CapturedCallable:
         """Gets the value of a bound argument."""
         return self.__bound_arguments[arg_name]
 
-    def __delitem__(self, arg_name: str):
-        """Deletes a bound argument."""
-        del self.__bound_arguments[arg_name]
+    def __setitem__(self, arg_name: str, value):
+        """Sets the value of a bound argument."""
+        self.__bound_arguments[arg_name] = value
 
     @property
     def _arguments(self):
@@ -282,10 +282,8 @@ class capture:
 
                 if isinstance(captured_callable["data_frame"], str):
                     # Enable running e.g. px.scatter("iris") from the Python API. Don't actually run the function
-                    # because it won't get work as there's no data. It's vital we don't fetch data from the data manager
-                    # yet either, because otherwise all lazy data will be loaded before the dashboard is started.
-                    # This case is not relevant for the JSON/YAML API, which is handled separately through validation of
-                    # CapturedCallable.
+                    # because it won't work as there's no data. This case is not relevant for the JSON/YAML API,
+                    # which is handled separately through validation of CapturedCallable.
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).

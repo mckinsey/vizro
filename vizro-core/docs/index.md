@@ -2,64 +2,59 @@
 
 Vizro is a toolkit for creating modular data visualization applications.
 
+<div class="grid cards" markdown>
 
-<div class="card-section-wrapper" style="display: block;">
-<div class="responsive-grid">
+-   :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro?__
 
-<a class="card-wrapper" href="pages/tutorials/first-dashboard/">
-  <div class="card">
-    <div class="card-content">
-      <h5>Get Started</h5>
-      <p>
-        New to Vizro? Tutorials to get started and to explore the key features.
-      </p>
-    </div>
-  </div>
-</a>
+    ---
 
-<a class="card-wrapper" href="pages/user-guides/install/">
-  <div class="card">
-    <div class="card-content">
-      <h5>How-to Guides</h5>
-      <p>
-        Step-by-step instructions on how to use Vizro features.
-      </p>
-    </div>
-  </div>
-</a>
+    [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install/) </br>
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard/)
 
-<a class="card-wrapper" href="pages/API-reference/vizro/">
-  <div class="card">
-    <div class="card-content">
-      <h5>API Reference</h5>
-      <p>
-        Detailed reference of the Vizro API and our pydantic models.
-      </p>
-    </div>
-  </div>
-</a>
 
-<a class="card-wrapper" href="pages/explanation/why-vizro/">
-  <div class="card">
-    <div class="card-content">
-      <h5>Explanation</h5>
-      <p>
-        Background information and answers to your "why..?" questions.
-      </p>
-    </div>
-  </div>
-</a>
 
-<a class="card-wrapper" href="pages/development/contributing/">
-  <div class="card">
-    <div class="card-content">
-      <h5>Contribute</h5>
-      <p>
-        Contribution guidelines and all our current and past contributors.
-      </p>
-    </div>
-  </div>
-</a>
+-   :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
 
-</div>
+    ---
+
+    [:octicons-arrow-right-24: Fundamentals](pages/user-guides/dashboard/)</br>
+    [:octicons-arrow-right-24: Components overview](pages/user-guides/components/)</br>
+    [:octicons-arrow-right-24: Filters, parameters and selectors](pages/user-guides/filters/)</br>
+    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/layouts/)
+
+
+
+-   :fontawesome-solid-microscope:{ .lg .middle } __Hands-on code__
+
+    ---
+
+    [:octicons-arrow-right-24: Tutorials](pages/tutorials/explore-components/) <br/>
+    [:octicons-arrow-right-24: Examples](pages/examples/examples/)
+
+
+
+-   :material-scale-balance:{ .lg .middle } __FAQs__
+
+    ---
+
+    [:octicons-arrow-right-24: How is Vizro different to Streamlit?](pages/explanation/faq/#how-does-vizro-differ-from-dash-or-streamlit) <br/>
+    [:octicons-arrow-right-24: Other FAQs](pages/explanation/faq/) <br/>
+    [:octicons-arrow-right-24: Where can I ask a question?](pages/explanation/contributing/#got-a-vizro-question) <br/>
+
+
+
+-   :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
+
+    ---
+
+    [:octicons-arrow-right-24: Contribute code](pages/explanation/contributing/) <br/>
+    [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide/)
+
+-   :fontawesome-solid-chart-column:{ .lg .middle } __Vizro-AI__
+
+    ---
+
+    [:octicons-arrow-right-24: Vizro-AI: Use natural language queries to build Plotly charts](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
+
+
 </div>

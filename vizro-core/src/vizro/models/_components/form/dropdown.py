@@ -7,6 +7,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, root_validator, validator
 
+import dash_bootstrap_components as dbc
+
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -61,8 +63,8 @@ class Dropdown(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
         return html.Div(
-            [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+            children=[
+                dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,
@@ -70,9 +72,6 @@ class Dropdown(VizroBaseModel):
                     multi=self.multi,
                     persistence=True,
                     persistence_type="session",
-                    className="selector_body_dropdown",
                 ),
-            ],
-            className="input-container",
-            id=f"{self.id}_outer",
+            ]
         )

@@ -1,6 +1,6 @@
 # How to use selectors
 
-This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they allow to change how the input is given to other models, e.g. the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
+This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
 
 The [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model accept the `selector` argument, where a selector model can be entered to choose how the user should input their choices for the respective models.
 
@@ -21,8 +21,8 @@ For more information, refer to the API reference of the selector, or the documen
 
     When configuring the `options` of the categorical selectors, you can either provide:
 
-    - a list of values e.g. `options = ['Value A', 'Value B', 'Value C']`
-    - or a dictionary of label-value mappings e.g. `options=[{'label': 'True', 'value': True}, {'label': 'False', 'value': False}]`
+    - a list of values `options = ['Value A', 'Value B', 'Value C']`
+    - or a dictionary of label-value mappings `options=[{'label': 'True', 'value': True}, {'label': 'False', 'value': False}]`
 
     The later is required if you want to provide different display labels to your option values or in case you want to
     provide boolean values as options. In this case, you need to provide a string label for your boolean values as
@@ -42,7 +42,7 @@ For more information, refer to the API reference of the selector, or the documen
     To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and
     [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size accordingly.
 
-## Temporal Selectors
+## Temporal selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
@@ -52,7 +52,7 @@ For more information, refer to the API reference of the selector, or the documen
 
     When the [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`. When `range=False` the underlying component is `dmc.DatePicker`.
 
-    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (e.g. `datetime.datetime(2024, 01, 01)`).
+    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
 ## Default selectors
 
@@ -117,7 +117,7 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -143,4 +143,4 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
     [Filter]: ../../assets/user_guides/selectors/default_filter_selectors.png
 
 
-To enhance existing selectors, please see our How-to-guide on creating [custom components](custom_components.md).
+To enhance existing selectors, see our [how-to-guide on creating custom components](custom-components.md).

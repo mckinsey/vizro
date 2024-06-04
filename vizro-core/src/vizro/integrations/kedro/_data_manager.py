@@ -5,7 +5,7 @@ from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
 from kedro.io import DataCatalog
 
-from vizro.managers._data_manager import pd_LazyDataFrame
+from vizro.managers._data_manager import pd_DataFrameCallable
 
 
 def catalog_from_project(
@@ -18,7 +18,7 @@ def catalog_from_project(
         return session.load_context().catalog
 
 
-def datasets_from_catalog(catalog: DataCatalog) -> Dict[str, pd_LazyDataFrame]:
+def datasets_from_catalog(catalog: DataCatalog) -> Dict[str, pd_DataFrameCallable]:
     datasets = {}
     for name in catalog.list():
         dataset = catalog._get_dataset(name, suggest=False)

@@ -40,8 +40,8 @@ class UserInput(VizroBaseModel):
     @_log_call
     def build(self):
         return html.Div(
-            [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+            children=[
+                dbc.Label(children=self.title, html_for=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,
@@ -49,9 +49,6 @@ class UserInput(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="user_input",
                 ),
             ],
-            className="input-container",
-            id=f"{self.id}_outer",
         )

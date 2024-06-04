@@ -2,6 +2,7 @@ import json
 
 import dash.development
 import plotly
+from pandas.testing import assert_frame_equal
 
 STRIP_ALL = object()
 
@@ -42,3 +43,15 @@ def assert_component_equal(left, right, *, keys_to_strip=None):
     left = _strip_keys(_component_to_dict(left), keys_to_strip)
     right = _strip_keys(_component_to_dict(right), keys_to_strip)
     assert left == right
+
+
+# Taken from https://stackoverflow.com/questions/38778266/assert-two-frames-are-not-equal.
+def assert_frame_not_equal(*args, **kwargs):
+    try:
+        assert_frame_equal(*args, **kwargs)
+    except AssertionError:
+        # frames are not equal
+        pass
+    else:
+        # frames are equal
+        raise AssertionError

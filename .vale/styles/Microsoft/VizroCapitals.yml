@@ -1,0 +1,15 @@
+extends: existence
+message: Consider your capitalization of '%s'
+level: suggestion
+tokens:
+  - kedro
+  - kedro-viz
+  - vizro
+  - vizro-AI
+  - jupyter
+  - notebook
+  - github
+  - python
+  - quantumblack
+exceptions:
+  - "vizro-*"

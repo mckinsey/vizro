@@ -153,26 +153,6 @@ def action_callback_outputs_expected(request):
 
 
 @pytest.fixture
-def export_data_inputs_expected():
-    return {
-        "filters": [
-            dash.State("filter_continent_selector", "value"),
-            dash.State("filter_country_selector", "value"),
-        ],
-        "parameters": [],
-        "filter_interaction": [
-            {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
-            {
-                "active_cell": dash.State("underlying_table_id", "active_cell"),
-                "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
-                "modelID": dash.State("vizro_table", "id"),
-            },
-        ],
-        "theme_selector": [],
-    }
-
-
-@pytest.fixture
 def export_data_outputs_expected(request):
     return {
         f"download_dataframe_{target}": dash.Output(
@@ -195,20 +175,18 @@ class TestCallbackMapping:
     """Tests action callback mapping for predefined and custom actions."""
 
     @pytest.mark.parametrize(
-        "action_id, callback_mapping_inputs_expected",
+        "action_id",
         [
-            ("filter_action_filter_continent", "action_callback_inputs_expected"),
-            ("filter_interaction_action", "action_callback_inputs_expected"),
-            ("parameter_action_parameter_x", "action_callback_inputs_expected"),
-            ("on_page_load_action_action_test_page", "action_callback_inputs_expected"),
-            ("export_data_action", "export_data_inputs_expected"),
+            "filter_action_filter_continent",
+            "filter_interaction_action",
+            "parameter_action_parameter_x",
+            "on_page_load_action_action_test_page",
+            "export_data_action",
         ],
     )
-    def test_action_callback_mapping_inputs(self, action_id, callback_mapping_inputs_expected, request):
+    def test_action_callback_mapping_inputs(self, action_id, action_callback_inputs_expected):
         result = _get_action_callback_mapping(action_id=action_id, argument="inputs")
-
-        callback_mapping_inputs_expected = request.getfixturevalue(callback_mapping_inputs_expected)
-        assert result == callback_mapping_inputs_expected
+        assert result == action_callback_inputs_expected
 
     @pytest.mark.parametrize(
         "action_id, action_callback_outputs_expected",

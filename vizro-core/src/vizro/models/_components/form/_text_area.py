@@ -40,17 +40,14 @@ class TextArea(VizroBaseModel):
     @_log_call
     def build(self):
         return html.Div(
-            [
-                html.Label(self.title, htmlFor=self.id) if self.title else None,
+            children=[
+                dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dbc.Textarea(
                     id=self.id,
                     placeholder=self.placeholder,
                     persistence=True,
                     persistence_type="session",
                     debounce=True,
-                    className="text-area",
                 ),
             ],
-            className="input-container",
-            id=f"{self.id}_outer",
         )

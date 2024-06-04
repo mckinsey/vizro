@@ -5,7 +5,7 @@ with which you would like to enhance/change the appearance of your dashboard.
 
 To add images, custom CSS or JS files, create a folder named `assets` in the root of your app directory and insert your files.
 Assets included in that folder are automatically served after serving Vizro's static files via the `external_stylesheets`  and `external_scripts` arguments of [Dash](https://dash.plotly.com/external-resources#adding-external-css/javascript).
-The user-provided `assets` folder thus always takes precedence.
+The user's `assets` folder thus always takes precedence.
 
 ```text title="Example folder structure"
 ├── app.py
@@ -22,14 +22,49 @@ The user-provided `assets` folder thus always takes precedence.
 
 !!! warning "Dash Bootstrap Themes"
 
-    Please note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
+    Note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
     Adding a Bootstrap stylesheet will have no visual effect on the [components](https://vizro.readthedocs.io/en/stable/pages/user_guides/components/) included in Vizro.
 
-## How to change the favicon
+## Change the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see the [Dash documentation](https://dash.plotly.com/external-resources#changing-the-favicon).
 
-## How to overwrite global CSS properties
+
+## Change the `assets` folder path
+If you do not want to place your `assets` folder in the root directory of your app, you can
+specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
+
+```python
+from vizro import Vizro
+import vizro.models as vm
+
+page = <INSERT CONFIGURATION HERE>
+dashboard = vm.Dashboard(pages=[page])
+
+app = Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
+
+```
+
+Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
+See more information in the [Pages User Guide](pages.md).
+
+
+## Include a meta tags image
+
+Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
+clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
+`logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+
+## Add a logo image
+
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+
+
+## Overwrite global CSS properties
 To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
@@ -68,7 +103,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
@@ -87,42 +122,119 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
 
-## How to overwrite CSS properties in selective components
-To overwrite CSS properties of selective components, provide an ID to the relevant component and target the right CSS property.
-For more information, see this [CSS selectors tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure).
+## Overwrite CSS properties for specific pages
+To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
+A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
 
-Let's say we want to change the background and font-color of one [`Card`][vizro.models.Card] instead of all existing Cards in the Dashboard.
-We can use the ID of the outermost Div to target the inner sub-components of the card. Note that all our components have an ID attached to the outermost Div,
-following the pattern `"{component_id}_outer"`.
+Suppose you want to hide the page title on one page only. Here's how you can achieve this:
 
-To achieve this, do the following:
+1. Give a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
+2. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the container with the `id `right-header`.
+3. Use the `id` in combination with CSS selectors to change the relevant CSS properties.
+4. Add your custom css file to the `assets` folder as explained above.
 
-1. Provide a custom `id` to the relevant `Card` e.g `Card(id="my_card", ...)`
-2. Take a look at the source code of the component to see which CSS Class you need to target e.g. `"card"` or `"card_text"`
-3. Use CSS selectors to target the right property e.g. by leveraging the ID of the outermost Div `"my_card_outer"`
+
+!!! example "Hide page title on selected pages"
+    === "my_css_file.css"
+    ```css
+    #page-with-hidden-title #right-header {
+      display: none;
+    }
+    ```
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page_one = vm.Page(
+            id="page-with-hidden-title",
+            title="Page with hidden title",
+            components=[vm.Card(text="""# Placeholder""")]
+        )
+
+        page_two = vm.Page(
+            title="Page with shown title",
+            components=[vm.Card(text="""# Placeholder""")]
+        )
+
+        dashboard = vm.Dashboard(pages=[page_one, page_two])
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+        - components:
+            - text: |
+                # Placeholder
+              type: card
+          title: Page with hidden title
+          id: page-with-hidden-title
+        - components:
+            - text: |
+                # Placeholder
+              type: card
+          title: Page with shown title
+        ```
+    === "Result"
+         [![PageTitle]][PageTitle]
+
+    [PageTitle]: ../../assets/user_guides/assets/css_page_title.png
+
+
+## Overwrite CSS properties in selective components
+To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all `Card`s,
+you need to use a CSS selector that targets the right CSS property.
+If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
+
+Let's say we want to change the background and font-color of a specific `Card`.
+
+Here's how you can do it:
+
+1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="custom-card", ...)`
+2. Run your dashboard and open it in your browser
+3. View the HTML source to find the appropriate CSS class or element you need to target. For example, if you inspect a page with [Chrome DevTools](https://developer.chrome.com/docs/devtools/) then you can [directly copy the CSS selector](https://stackoverflow.com/questions/4500572/how-can-i-get-the-css-selector-in-chrome).
+
+It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
+
+<!-- vale off -->
+```html title="HTML structure of a `Card`"
+<div class="card">
+    <div id="custom-card">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+    </div>
+</div>
+```
+<!-- vale on -->
+
+* **Main element with `id`:** There is a `<div>` with our `id="custom-card"`.
+* **Parent element:** That `<div>` is wrapped inside a parent `<div>` with the class name `"card"`. This is the element we need to target to change the background color.
+* **Child element:** The card text is wrapped inside a `<p>` that is a child of the `<div>` with our `id`. This is the element we need to target to change the font color.
 
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
     ```css
-    #my_card_outer.card {
+    /* Apply styling to parent */
+    .card:has(#custom-card) {
       background-color: white;
     }
 
-    #my_card_outer .card_text p {
+    /* Apply styling to child */
+    #custom-card p {
       color: black;
     }
     ```
     === "app.py"
         ```py
-        import os
         import vizro.models as vm
         from vizro import Vizro
 
         page = vm.Page(
             title="Changing the card color",
             components=[
-                vm.Card(id="my_card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+                vm.Card(id="custom-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
                 vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit.""")
                      ],
         )
@@ -133,14 +245,14 @@ To achieve this, do the following:
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
-              id: my_card
+              id: custom-card
             - text: |
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
               type: card
@@ -152,43 +264,12 @@ To achieve this, do the following:
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
 
-CSS properties will be applied with the last served file taking precedence. The order of serving is:
+??? note "Order of serving CSS files"
 
-1. Dash built-in stylesheets
-2. Vizro built-in stylesheets
-3. User assets folder stylesheets
+    CSS properties will be applied with the last served file taking precedence. The order of serving is:
 
-Within each of these categories, individual files are served in alphanumerical order.
+    1. Dash built-in stylesheets
+    2. Vizro built-in stylesheets
+    3. User assets folder stylesheets
 
-## How to change the `assets` folder path
-If you do not want to place your `assets` folder in the root directory of your app, you can
-specify an alternative path through the `assets_folder` argument of the [`Vizro`][vizro.Vizro] class.
-
-```python
-from vizro import Vizro
-import vizro.models as vm
-
-page = <INSERT CONFIGURATION HERE>
-dashboard = vm.Dashboard(pages=[page])
-
-app = Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
-
-```
-
-Note that in the example above, you still need to configure your [`Page`][vizro.models.Page].
-See more information in the [Pages User Guide](pages.md).
-
-
-## How to include a meta tags image
-
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
-clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
-`logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
-
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
-
-## How to add a logo image
-
-Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
-
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+    Within each of these categories, individual files are served in alphanumeric order.

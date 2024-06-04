@@ -18,8 +18,7 @@ class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].
 
     Examples:
-        >>> print(repr(Parameter(
-        >>>    targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))))
+        >>> Parameter(targets=["scatter.x"], selector=Slider(min=0, max=1, default=0.8, title="Bubble opacity"))
 
     Args:
         type (Literal["parameter"]): Defaults to `"parameter"`.
@@ -37,8 +36,7 @@ class Parameter(VizroBaseModel):
     def check_dot_notation(cls, target):
         if "." not in target:
             raise ValueError(
-                f"Invalid target {target}. Targets must be supplied in the from of "
-                "<target_component>.<target_argument>"
+                f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
             )
         return target
 
@@ -47,6 +45,16 @@ class Parameter(VizroBaseModel):
         target_id = target.split(".")[0]
         if target_id not in model_manager:
             raise ValueError(f"Target {target_id} not found in model_manager.")
+        return target
+
+    @validator("targets", each_item=True)
+    def check_data_frame_as_target_argument(cls, target):
+        targeted_argument = target.split(".", 1)[1]
+        if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
+            raise ValueError(
+                f"Invalid target {target}. 'data_frame' target must be supplied in the form "
+                "<target_component>.data_frame.<dynamic_data_argument>"
+            )
         return target
 
     @validator("targets")

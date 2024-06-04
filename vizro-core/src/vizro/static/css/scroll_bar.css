@@ -20,7 +20,7 @@
   border-color: var(--surfaces-bg-card);
 }
 
-.nav-card::-webkit-scrollbar-thumb {
+.card-nav::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-card);
 }
 

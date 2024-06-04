@@ -49,7 +49,7 @@ jobs:
       - name: Install Chrome and chromedriver
         run: |
           export chrome_version=119.0.6045.105
-          sudo apt-get update
+          sudo apt-get update || true
           sudo apt-get install libu2f-udev -y
           wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_$chrome_version-1_amd64.deb"
           sudo apt-get install -y --allow-downgrades ./google-chrome-stable_$chrome_version-1_amd64.deb

@@ -26,11 +26,11 @@ class TestCardInstantiation:
 
     @pytest.mark.parametrize("id, href", [("id_1", "/page_1_reference"), ("id_2", "https://www.google.de/")])
     def test_create_card_mandatory_and_optional(self, id, href):
-        card = vm.Card(text="Text to test card", id=id, href=href)
+        card = vm.Card(id=id, text="Text to test card", href=href)
 
+        assert card.id == id
         assert card.type == "card"
         assert card.text == "Text to test card"
-        assert card.id == id
         assert card.href == href
 
     def test_mandatory_text_missing(self):
@@ -45,21 +45,26 @@ class TestCardInstantiation:
 class TestBuildMethod:
     """Tests build method."""
 
-    def test_card_build(self):
+    def test_card_build_with_href(self):
         card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
 
         expected_card = dbc.Card(
             dbc.NavLink(
-                dcc.Markdown("Hello", className="card_text", dangerously_allow_html=False, id="card_id"),
+                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False),
                 href="https://www.google.com",
-                className="card-link",
             ),
-            className="nav-card",
-            id="card_id_outer",
+            className="card-nav",
         )
 
         assert_component_equal(card, expected_card)
+
+    def test_card_build_wo_href(self):
+        card = vm.Card(id="card_id", text="Hello")
+        card = card.build()
+        assert_component_equal(
+            card, dbc.Card(dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False), className="")
+        )
 
     @pytest.mark.parametrize(
         "test_text, expected",
@@ -79,7 +84,7 @@ class TestBuildMethod:
         ],
     )
     def test_markdown_setting(self, test_text, expected):
-        card = vm.Card(text=test_text, id="id_valid")
+        card = vm.Card(id="id_valid", text=test_text)
         card = card.build()
         card_markdown = card["id_valid"]
 
@@ -96,7 +101,7 @@ class TestBuildMethod:
         ],
     )
     def test_markdown_build_invalid(self, test_text, expected):
-        card = vm.Card(text=test_text, id="test_id")
+        card = vm.Card(id="test_id", text=test_text)
         card = card.build()
         card_markdown = card["test_id"]
 

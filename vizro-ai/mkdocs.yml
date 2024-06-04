@@ -2,21 +2,30 @@ site_name: Vizro-AI
 site_url: https://vizro-ai.readthedocs.io/en/latest/
 nav:
   - Vizro-AI: index.md
-  - Get started:
-      - Install Vizro-AI: pages/get-started/install.md
-      - A first example: pages/get-started/quickstart.md
+  - Tutorials:
+      - A first example: pages/tutorials/quickstart.md
   - How-to guides:
-      - Run methods: pages/user-guides/run-vizro-ai.md
-      - Create advanced charts: pages/user-guides/create-advanced-charts.md
-      - Use different languages: pages/user-guides/use-different-languages.md
+      - FUNDAMENTALS:
+          - Install Vizro-AI: pages/user-guides/install.md
+          - Run methods: pages/user-guides/run-vizro-ai.md
+          - Customize models: pages/user-guides/customize-vizro-ai.md
+      - USAGE OPTIONS:
+          - Advanced charts: pages/user-guides/create-advanced-charts.md
+          - Different languages: pages/user-guides/use-different-languages.md
+          - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+  - API Reference:
+      - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
-  - Contribute:
-      #      - Contributing: pages/contribute/contributing.md
-      - Authors: pages/contribute/authors.md
+  - Examples:
+      - Chart examples: pages/user-guides/chart-examples.md
+  #- Contribute:
+  #      - Contributing: pages/contribute/contributing.md
+  - Vizro:
+      - Vizro: https://vizro.readthedocs.io
 
 #  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
@@ -28,8 +37,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: Inter Regular
   icon:
     repo: fontawesome/brands/github
   features:
@@ -64,6 +73,9 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
   - search
@@ -81,6 +93,7 @@ plugins:
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
+              warn_unknown_params: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

@@ -3,7 +3,7 @@
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
 The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
-This model allows the automatic creation of [selectors](../user-guides/selectors.md) (e.g. Dropdown, RadioItems, Slider, ...) that operate upon the charts/components on the screen.
+This model enables the automatic creation of [selectors](../user-guides/selectors.md) (such as Dropdown, RadioItems, Slider, ...) that operate upon the charts/components on the screen.
 
 
 ## Basic filters
@@ -14,7 +14,7 @@ To add a filter to your page, do the following:
 - configure the `column` argument, which denotes the target column to be filtered
 
 By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen
-automatically based on the target column, e.g. a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.
+automatically based on the target column, for example, a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.
 
 !!! example "Basic Filter"
     === "app.py"
@@ -41,7 +41,7 @@ automatically based on the target column, e.g. a dropdown for categorical data, 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -64,7 +64,7 @@ automatically based on the target column, e.g. a dropdown for categorical data, 
 
 ## Changing selectors
 
-If you want to have a different selector for your filter, you can provide the `selector` argument of the [`Filter`][vizro.models.Filter] with a different selector model.
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model.
 Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
 
 !!! example "Filter with custom Selector"
@@ -82,7 +82,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width")),
             ],
             controls=[
-                vm.Filter(column="species",selector=vm.RadioItems()),
+                vm.Filter(column="species", selector=vm.RadioItems()),
             ],
         )
 
@@ -92,7 +92,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
@@ -118,8 +118,8 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
 
 For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] reference. Some popular choices are:
 
-- determine which component the filter will apply to by using `targets`
-- determine what the target column type is, hence choosing the default selector by using `column_type`
+- select which component the filter will apply to by using `targets`
+- select what the target column type is, hence choosing the default selector by using `column_type`
 - choose options of lower level components, such as the `selector` models
 
 Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
@@ -150,7 +150,7 @@ Below is an advanced example where we only target one page component, and where 
         ```
     === "app.yaml"
         ```yaml
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:

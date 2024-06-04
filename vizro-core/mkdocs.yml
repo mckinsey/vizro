@@ -2,12 +2,12 @@ site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
 nav:
   - Vizro: index.md
-  - Get started:
-      - Install Vizro: pages/user-guides/install.md
+  - Tutorials:
       - A first dashboard: pages/tutorials/first-dashboard.md
       - Explore Vizro: pages/tutorials/explore-components.md
   - How-to guides:
       - FUNDAMENTALS:
+          - Install Vizro: pages/user-guides/install.md
           - Dashboards: pages/user-guides/dashboard.md
           - Pages: pages/user-guides/pages.md
           - Run methods: pages/user-guides/run.md
@@ -30,9 +30,9 @@ nav:
           - Assets: pages/user-guides/assets.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
-      - DATA CONNECTIONS:
+      - DATA:
           - Data: pages/user-guides/data.md
-          - Integrations: pages/user-guides/integration.md
+          - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md
@@ -41,16 +41,18 @@ nav:
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Data manager: pages/API-reference/manager.md
       - Actions: pages/API-reference/actions.md
       - Table functions: pages/API-reference/captured-callables.md
   - Explanation:
-      - Why Vizro?: pages/explanation/why-vizro.md
-      - Compatibility: pages/explanation/compatibility.md
-  - Contribute:
-      - Contribute to Vizro: pages/development/contributing.md
-      - Documentation style: pages/development/documentation-style-guide.md
-      - Authors: pages/development/authors.md
+      - FAQs: pages/explanation/faq.md
+      - Contribute to Vizro: pages/explanation/contributing.md
+      - Documentation style: pages/explanation/documentation-style-guide.md
+      - Authors: pages/explanation/authors.md
+  - Examples:
+      - Example dashboard code: pages/examples/examples.md
+      - Examples from Vizro users: pages/examples/your-examples.md
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
@@ -61,8 +63,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Inter
+    code: Inter Regular
   icon:
     repo: fontawesome/brands/github
   features:
@@ -91,7 +93,11 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -117,6 +123,8 @@ plugins:
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
+              warn_unknown_params: false
+              returns_named_value: false
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false

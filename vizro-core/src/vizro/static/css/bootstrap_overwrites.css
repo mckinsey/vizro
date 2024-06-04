@@ -1,0 +1,23 @@
+/* This file contains overwrites, which we want to have as defaults for vizro
+but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough. */
+
+.card .nav-link {
+  height: 100%;
+}
+
+.form-check:last-of-type {
+  margin-bottom: 0;
+}
+
+/* TO DO: Check if this should live in vizro-bootstrap */
+.card p:last-of-type {
+  margin-bottom: 0;
+}
+
+.accordion-item .nav-link {
+  padding: 0.5rem 1rem;
+}
+
+.accordion-item .nav-link.active {
+  border-left: 2px solid var(--border-enabled);
+}

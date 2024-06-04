@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.AgGrid."""
 
-import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -91,15 +90,12 @@ class TestAttributesAgGrid:
 class TestProcessAgGridDataFrame:
     def test_process_figure_data_frame_str_df(self, dash_ag_grid_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
-        ag_grid_with_str_df = vm.AgGrid(id="ag_grid", figure=dash_ag_grid_with_str_dataframe)
-        assert data_manager._get_component_data("ag_grid").equals(gapminder)
-        assert ag_grid_with_str_df["data_frame"] == "gapminder"
+        ag_grid = vm.AgGrid(id="ag_grid", figure=dash_ag_grid_with_str_dataframe)
+        assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
 
     def test_process_figure_data_frame_df(self, standard_ag_grid, gapminder):
-        ag_grid_with_str_df = vm.AgGrid(id="ag_grid", figure=standard_ag_grid)
-        assert data_manager._get_component_data("ag_grid").equals(gapminder)
-        with pytest.raises(KeyError, match="'data_frame'"):
-            ag_grid_with_str_df.figure["data_frame"]
+        ag_grid = vm.AgGrid(id="ag_grid", figure=standard_ag_grid)
+        assert data_manager[ag_grid["data_frame"]].load().equals(gapminder)
 
 
 class TestPreBuildAgGrid:
@@ -116,7 +112,7 @@ class TestPreBuildAgGrid:
 
 
 class TestBuildAgGrid:
-    def test_ag_grid_build_mandatory_only(self, standard_ag_grid):
+    def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -124,19 +120,19 @@ class TestBuildAgGrid:
             [
                 None,
                 html.Div(
-                    dash_ag_grid(data_frame=pd.DataFrame(), id="__input_text_ag_grid")(),
                     id="text_ag_grid",
+                    children=dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")(),
                     className="table-container",
                 ),
             ],
-            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)
 
-    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action):
+    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
@@ -145,16 +141,16 @@ class TestBuildAgGrid:
             [
                 None,
                 html.Div(
-                    dash_ag_grid(
-                        data_frame=pd.DataFrame(), id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
-                    )(),
                     id="text_ag_grid",
+                    children=dash_ag_grid(
+                        data_frame=gapminder, id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
+                    )(),
                     className="table-container",
                 ),
             ],
-            id="text_ag_grid_outer",
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)

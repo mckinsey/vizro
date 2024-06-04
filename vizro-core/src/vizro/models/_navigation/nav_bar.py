@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Dict, List, Literal
 
+import dash_bootstrap_components as dbc
 from dash import html
 
 try:
@@ -10,7 +11,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
-import dash_bootstrap_components as dbc
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -75,4 +75,6 @@ class NavBar(VizroBaseModel):
             # Active page is not in navigation at all, so hide navigation panel.
             nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
-        return html.Div([dbc.Navbar(nav_links, id="nav-bar"), nav_panel])
+        # `flex-column` ensures that we return a vertical NavBar. In the future, we could use that className
+        # to create a horizontal NavBar.
+        return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className="flex-column"), nav_panel])

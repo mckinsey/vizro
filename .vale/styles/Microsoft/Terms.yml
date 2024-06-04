@@ -45,7 +45,11 @@ swap:
   python: Python
   leverage: use
   leverages: uses
+  leveraging: using
   utilize: use
   utilizes: uses
   Markdown: markdown
   How-to guide: how-to guide
+  utilizing: using
+  utilising: using
+  dataset: data (or data source)

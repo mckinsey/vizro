@@ -13,7 +13,7 @@ from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-GAP_DEFAULT = "12px"
+GAP_DEFAULT = "24px"
 MIN_DEFAULT = "0px"
 
 
@@ -204,6 +204,8 @@ class Layout(VizroBaseModel):
                 style={
                     "gridColumn": f"{grid_coord.col_start}/{grid_coord.col_end}",
                     "gridRow": f"{grid_coord.row_start}/{grid_coord.row_end}",
+                    "height": "100%",
+                    "width": "100%",
                 },
             )
             for component_idx, grid_coord in enumerate(self.component_grid_lines)

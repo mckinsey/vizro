@@ -1,10 +1,11 @@
 import logging
+import warnings
 from pathlib import Path
 from typing import List
 
 import dash
-import dash_bootstrap_components as dbc
 import flask
+from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
@@ -20,7 +21,7 @@ class Vizro:
         """Initializes Dash app, stored in `self.dash`.
 
         Args:
-            kwargs: Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
+            **kwargs : Passed through to `Dash.__init__`, e.g. `assets_folder`, `url_base_pathname`. See
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
@@ -28,9 +29,6 @@ class Vizro:
         self.dash.config.external_stylesheets.extend(
             [
                 "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-                # Bootstrap theme has no effect on styling as it gets overwritten by our CSS. However, it is
-                # necessary to add a default theme here so that added dbc components work properly.
-                dbc.themes.BOOTSTRAP,
             ]
         )
 
@@ -39,6 +37,10 @@ class Vizro:
         vizro_assets_folder = Path(__file__).with_name("static")
         requests_pathname_prefix = self.dash.config.requests_pathname_prefix
         vizro_css = [requests_pathname_prefix + path for path in self._get_external_assets(vizro_assets_folder, "css")]
+
+        # Ensure vizro-bootstrap.min.css is loaded in first to allow overwrites
+        vizro_css.sort(key=lambda x: not x.endswith("vizro-bootstrap.min.css"))
+
         vizro_js = [
             {"src": requests_pathname_prefix + path, "type": "module"}
             for path in self._get_external_assets(vizro_assets_folder, "js")
@@ -60,6 +62,8 @@ class Vizro:
             )
         )
 
+        data_manager.cache.init_app(self.dash.server)
+
     def build(self, dashboard: Dashboard):
         """Builds the `dashboard`.
 
@@ -67,7 +71,7 @@ class Vizro:
             dashboard (Dashboard): [`Dashboard`][vizro.models.Dashboard] object.
 
         Returns:
-            Vizro: App object
+            self: Vizro app
 
         """
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
@@ -85,12 +89,19 @@ class Vizro:
         """Runs the dashboard.
 
         Args:
-            args: Passed through to `dash.run`.
-            kwargs: Passed through to `dash.run`.
+            *args : Passed through to `dash.run`.
+            **kwargs : Passed through to `dash.run`.
 
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
+
+        if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:
+            warnings.warn(
+                "`SimpleCache` is designed to support only single process environments. If you would like to use"
+                " multiple processes then you should change to a cache that supports it such as `FileSystemCache` or "
+                "`RedisCache`."
+            )
 
         self.dash.run(*args, **kwargs)
 
@@ -109,7 +120,11 @@ class Vizro:
 
     @staticmethod
     def _reset():
-        """Private method that clears all state in the `Vizro` app."""
+        """Private method that clears all state in the `Vizro` app.
+
+        This deliberately does not clear the data manager cache - see comments in data_manager._clear for
+        explanation.
+        """
         data_manager._clear()
         model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []

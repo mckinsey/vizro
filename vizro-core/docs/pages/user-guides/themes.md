@@ -35,7 +35,7 @@ you can still switch between the themes via the toggle button in the upper-right
         ```
     === "app.yaml"
         ```yaml hl_lines="11"
-        # Still requires a .py to register data connector in Data Manager and parse yaml configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
         - components:

@@ -18,7 +18,7 @@ file_extensions = [
     "sqlite3",
     "orc",
 ]
-whitelist_folders = ["/venv"]  # starting from project root dir
+whitelist_folders = ["/venv", "/vizro-core/docs"]  # starting from project root dir
 
 
 def check_for_data_files():

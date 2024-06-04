@@ -9,8 +9,8 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.models import Dashboard
 
-data_manager["iris"] = px.data.iris
-data_manager["gapminder"] = px.data.gapminder
+data_manager["iris"] = px.data.iris()
+data_manager["gapminder"] = px.data.gapminder()
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 
 

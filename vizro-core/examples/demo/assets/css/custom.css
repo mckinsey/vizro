@@ -5,7 +5,6 @@ img[src*="#my-image"] {
   width: 100px;
 }
 
-#logo {
-  height: 40px;
-  margin-left: -8px;
+#page-header {
+  padding-left: 8px;
 }

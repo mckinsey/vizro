@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 from dash import ctx, dcc
 from typing_extensions import Literal
 
-from vizro.actions._actions_utils import _get_filtered_data
+from vizro.actions._actions_utils import _get_targets_data_and_config
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
@@ -41,10 +41,11 @@ def export_data(
         if target not in model_manager:
             raise ValueError(f"Component '{target}' does not exist.")
 
-    data_frames = _get_filtered_data(
+    data_frames, _ = _get_targets_data_and_config(
         targets=targets,
-        ctds_filters=ctx.args_grouping["external"]["filters"],
+        ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )
 
     outputs = {}

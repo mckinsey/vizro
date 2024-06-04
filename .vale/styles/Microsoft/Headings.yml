@@ -31,6 +31,7 @@ exceptions:
   - Azure App Service Plan
   - Azure Blob Storage
   - Azure Event Hub
+  - CSS
   - CI/CD
   - DataCatalog
   - Data Catalog
@@ -42,6 +43,8 @@ exceptions:
   - Docker Compose
   - Docker Swarm
   - Dockerfile
+  - Filter
+  - Flask
   - FAQ
   - GitHub
   - GitHub Actions

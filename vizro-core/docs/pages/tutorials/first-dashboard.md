@@ -2,17 +2,19 @@
 
 This is a short tutorial for you to create your first dashboard, showing you the basic setup so you can explore Vizro further.
 
-Once you've completed this tutorial, the following [Explore Vizro tutorial](../tutorials/explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
+Once you've completed this tutorial, the following ["Explore Vizro" tutorial](explore-components.md) creates a more complex dashboard so you can explore Vizro's features.
 
 
 ## Get started
 
+<!-- vale off -->
 ### 1. Install Vizro and its dependencies
-
+<!-- vale on -->
 If you haven't already installed Vizro, follow the [installation guide](../user-guides/install.md).
 
+<!-- vale off -->
 ### 2. Open a Jupyter Notebook
-
+<!-- vale on -->
 A good way to initially explore Vizro is from inside a Jupyter Notebook.
 
 ??? "Install and run Jupyter"
@@ -48,8 +50,9 @@ You should see a return output of the form `x.y.z`.
 
     If you are following this tutorial in a Jupyter Notebook, you need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
 
+<!-- vale off -->
 ### 3. Create your first dashboard
-
+<!-- vale on -->
 Paste the following example into a Notebook cell, run it, and view the generated dashboard by typing `localhost:8050` into your browser.
 
 !!! example "Dashboard Configuration Syntaxes"
@@ -81,7 +84,7 @@ Paste the following example into a Notebook cell, run it, and view the generated
 
     [Dashboard]: ../../assets/user_guides/dashboard/dashboard.png
 
-
+<!-- vale off -->
 ### 4. Explore further
-
-You are now ready to explore Vizro further, by working through the [Explore Vizro tutorial](../tutorials/explore-components.md) or by consulting the [how-to guides](../first-dashboard/).
+<!-- vale on -->
+You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).

@@ -27,17 +27,17 @@ class TestPageInstantiation:
 
     def test_create_page_mandatory_and_optional(self):
         page = vm.Page(
+            id="my-id",
             title="Page 1",
             components=[vm.Button(), vm.Button()],
-            id="my-id",
             layout=vm.Layout(grid=[[0, 1]]),
             path="my-path",
         )
         assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
         assert page.controls == []
         assert page.title == "Page 1"
-        assert page.id == "my-id"
         assert page.path == "/my-path"
         assert page.actions == []
 
@@ -50,8 +50,8 @@ class TestPageInstantiation:
             vm.Page(title="Page 1")
 
     def test_set_id_duplicate_title_valid(self):
-        vm.Page(title="Page 1", components=[vm.Button()], id="my-id-1")
-        vm.Page(title="Page 1", components=[vm.Button()], id="my-id-2")
+        vm.Page(id="my-id-1", title="Page 1", components=[vm.Button()])
+        vm.Page(id="my-id-2", title="Page 1", components=[vm.Button()])
 
     def test_set_id_duplicate_title_invalid(self):
         with pytest.raises(
@@ -65,6 +65,7 @@ class TestPageInstantiation:
     @pytest.mark.parametrize(
         "test_path, expected",
         [
+            ("Title", "/title"),
             ("this-path-works", "/this-path-works"),
             ("2147abc", "/2147abc"),
             ("this_path_works", "/this_path_works"),
@@ -76,7 +77,9 @@ class TestPageInstantiation:
         page = vm.Page(title="Page 1/2", components=[vm.Button()], path=test_path)
         assert page.path == expected
 
-    @pytest.mark.parametrize("test_path", ["this needs? fixing*", " this needs fixing", "THIS NEEDS FIXING"])
+    @pytest.mark.parametrize(
+        "test_path", ["this needs? fixing*", " this needs fixing", "THIS NEEDS FIXING", "this-needs!@#$%^&*()+=-fixing"]
+    )
     def test_set_path_invalid(self, test_path):
         page = vm.Page(title="Page 1", components=[vm.Button()], path=test_path)
         assert page.path == "/this-needs-fixing"

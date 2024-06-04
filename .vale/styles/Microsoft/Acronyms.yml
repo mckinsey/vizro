@@ -15,6 +15,7 @@ exceptions:
   - CLI
   - CPU
   - CSS
+  - css
   - CSV
   - DEBUG
   - DOM
@@ -24,6 +25,7 @@ exceptions:
   - GDB
   - GDP
   - GET
+  - GPT
   - GPU
   - GTK
   - GUI

@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.2.0'></a>
+
+# 0.2.0 — 2024-05-09
+
+## Removed
+
+- Removed `temperature` and `model_name` arguments of `VizroAI` class. For current configuration options, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#what-parameters-does-vizro-ai-support) ([#423](https://github.com/mckinsey/vizro/pull/423))
+
+## Added
+
+- Enable customization of LLM models provided to Vizro-AI class. ([#423](https://github.com/mckinsey/vizro/pull/423))
+
+## Changed
+
+- `VizroAI.plot` now generates and returns a `plotly.graph_objects.Figure` object. ([#411](https://github.com/mckinsey/vizro/pull/441)). This facilitates the integration of Vizro-AI charts into the `vizro` dashboard, visit [Use Vizro-AI dynamically to return a fig object](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/add-generated-chart-usecase/#use-vizro-ais-generated-code) for details.
+
 <a id='changelog-0.1.2'></a>
 
 # 0.1.2 — 2024-03-13

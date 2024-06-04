@@ -1,41 +1,41 @@
 # How to create custom components
 
-Vizro's public API is deliberately kept small in order to facilitate quick and easy configuration of a dashboard. However,
-at the same time, Vizro is easily extensible, so that you can tweak any component to your liking or even create entirely new ones.
+Vizro's public API is kept small to enable quick and easy configuration of a dashboard. However,
+at the same time, Vizro is extensible, so that you can tweak any component to your liking or even create entirely new ones.
 
 If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
 This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
-In general, you can create a custom component based on any dash-compatible component (e.g. [dash-core-components](https://dash.plotly.com/dash-core-components),
-[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components), etc.).
+In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
+[dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)).
 
 
 All our components are based on `Dash`, and they are shipped with a set of sensible defaults that can be modified. If you would like to overwrite one of those defaults,
-or if you would like to use additional `args` or `kwargs` of those components, then this is the correct way to include those. You can very easily use any existing attribute of any underlying Dash component with this method.
+or if you would like to use extra `args` or `kwargs` of those components, then this is the correct way to include those. You can use any existing attribute of any underlying Dash component with this method.
 
 !!!note
 
-    There are always **three general steps** to consider in order to create a custom component:
+    There are always **three general steps** to consider to create a custom component:
 
     1. **Sub-class to create** your component
-    2. **Enhance or build** the component (e.g. add/change model fields, overwrite pre-build/build method, etc.) to your desire
+    2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method) to your desire
     3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
         - you must ensure your component has a `type` field
         - you must register the new type with its parent model's relevant field (where the new component is entered into) with [`add_type`][vizro.models.VizroBaseModel.add_type]
 
     We will refer back to these three steps in the two examples below.
 
-[^1]: You can easily check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (e.g. `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
+[^1]: You can check if your new component will be part of a discriminated union by consulting our [API reference on models](../API-reference/models.md). Check whether the relevant model field (for example, `selectors` in [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter]) is described as a discriminated union (in this case the [`SelectorType`][vizro.models.types.SelectorType] is, but for example [`OptionsType`][vizro.models.types.OptionsType] is not).
 
 
-## How to extend an existing component
+## Extend an existing component
 ??? info "When to choose this strategy"
 
     You may want to use this strategy to:
 
-    - extend an existing component (e.g. adding a button to [`Card`][vizro.models.Card])
-    - change configurations we have set by default (e.g. setting `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
-    - change any fields of any models (e.g. changing the title field from `Optional` to have a default)
+    - extend an existing component (for example, to add a button to [`Card`][vizro.models.Card])
+    - change configurations we have set by default (for example, to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
+    - change any fields of any models (for example, to change the title field from `Optional` to have a default)
 
 
 You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
@@ -147,7 +147,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
     [CustomComponent1]: ../../assets/user_guides/custom_components/customcomponent_1.png
 
 
-## How to create a new component
+## Create a new component
 
 ??? info "When to choose this strategy"
 
@@ -164,10 +164,10 @@ The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-compo
 ???note "Note on `build` and `pre_build` methods"
     Note that when creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
 
-    - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], etc.
-    - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card], etc.
+    - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems].
+    - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card].
 
-    For components that only create other components, you do not need to define a `build` method, e.g. for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
+    For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
     If you would like to have access to other components, you may want to define a `pre_build` method. This method is automatically run for all models and makes them internally consistent. Notable existing models
     with `pre_build` methods are [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
@@ -266,6 +266,224 @@ vm.Page.add_type("components", Jumbotron)
     [CustomComponent2]: ../../assets/user_guides/custom_components/customcomponent_2.png
 
 
+## Using custom components with custom actions
+
+Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
+
+### Custom components as inputs/outputs of custom actions
+
+Following the instructions above to create a custom component, results in this `OffCanvas` component:
+
+```py
+class OffCanvas(vm.VizroBaseModel):
+    type: Literal["offcanvas"] = "offcanvas"
+    title: str
+    content: str
+
+    def build(self):
+        return html.Div(
+            [
+                dbc.Offcanvas(
+                    children=html.P(self.content),
+                    id=self.id,
+                    title=self.title,
+                    is_open=False,
+                ),
+            ]
+        )
+```
+
+After you have completed the steps above, it is time to write your [custom action](../user-guides/custom-actions.md).
+
+   ```py
+    @capture("action")
+    def open_offcanvas(n_clicks, is_open):
+        if n_clicks:
+            return not is_open
+        return is_open
+   ```
+
+Add the custom action `open_offcanvas` as a `function` argument inside the [`Action`][vizro.models.Action] model.
+
+
+??? example "Example of the use of custom component with actions"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from dash import html
+        from vizro import Vizro
+
+        from vizro.models import Action
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class OffCanvas(vm.VizroBaseModel):
+            type: Literal["offcanvas"] = "offcanvas"
+            title: str
+            content: str
+
+            def build(self):
+                return html.Div(
+                    [
+                        dbc.Offcanvas(
+                            children=html.P(self.content),
+                            id=self.id,
+                            title=self.title,
+                            is_open=False,
+                        ),
+                    ]
+                )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", OffCanvas)
+
+        # 3. Create custom action
+        @capture("action")
+        def open_offcanvas(n_clicks, is_open):
+            if n_clicks:
+                return not is_open
+            return is_open
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Button(
+                    text="Open Offcanvas",
+                    id="open_button",
+                    actions=[
+                        vm.Action(
+                            function=open_offcanvas(),
+                            inputs=["open_button.n_clicks", "offcanvas.is_open"],
+                            outputs=["offcanvas.is_open"],
+                        )
+                    ],
+                ),
+                OffCanvas(
+                    id="offcanvas",
+                    content="OffCanvas content",
+                    title="Offcanvas Title",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+
+        ```
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomComponent3]][CustomComponent3]
+
+    [CustomComponent3]: ../../assets/user_guides/custom_components/customcomponent_3.gif
+
+
+### Trigger actions with a custom component
+
+As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some extra code:
+
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
+   ```py
+    actions: List[Action] = []
+   ```
+2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+   ```py
+    _set_actions = _action_validator_factory("active_index")
+   ```
+
+
+??? example "Example of triggering action with custom component"
+
+    === "app.py"
+        ``` py
+        from typing import List, Literal
+
+        import dash_bootstrap_components as dbc
+        import vizro.models as vm
+        from dash import html
+        from vizro import Vizro
+
+        try:
+            from pydantic.v1 import Field, PrivateAttr
+        except ImportError:
+            from pydantic import PrivateAttr
+
+        from vizro.models import Action
+        from vizro.models._action._actions_chain import _action_validator_factory
+        from vizro.models.types import capture
+
+
+        # 1. Create new custom component
+        class Carussel(vm.VizroBaseModel):
+            type: Literal["carussel"] = "carussel"
+            items: List
+            actions: List[Action] = []
+
+            _set_actions = _action_validator_factory("active_index")  # (1)!
+
+            def build(self):
+                return dbc.Carousel(
+                    id=self.id,
+                    items=self.items,
+                )
+
+
+        # 2. Add new components to expected type - here the selector of the parent components
+        vm.Page.add_type("components", Carussel)
+
+        # 3. Create custom action
+        @capture("action")
+        def carussel(active_index):
+            if active_index:
+                return "Second slide"
+
+            return "First slide
+
+        page = vm.Page(
+            title="Custom Component",
+            components=[
+                vm.Card(text="First slide", id="carussel-card"),
+                Carussel(
+                    id="carrusel",
+                    items=[
+                        {"key": "1", "src": "path_to_your_image"},
+                        {"key": "2", "src": "path_to_your_image"},
+                    ],
+                    actions=[
+                        vm.Action(
+                            function=carussel(),
+                            inputs=["carrusel.active_index"],
+                            outputs=["carussel-card.children"]
+                        )
+                    ]
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+
+        1.  Here we set the action so a change in the `active_index` property of the custom component triggers the action.
+    === "yaml"
+        ```yaml
+        # Custom components are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomComponent4]][CustomComponent4]
+
+    [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.gif
 
 ???+ warning
 

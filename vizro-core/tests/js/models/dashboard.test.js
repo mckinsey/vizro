@@ -15,7 +15,6 @@ describe("_collapse_nav_panel function", () => {
       false,
       {
         transform: "rotate(180deg)",
-        left: "12px",
         transition: "transform 0.35s ease-in-out",
       },
       "Show Menu",

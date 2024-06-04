@@ -3,30 +3,23 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
 
-df = px.data.gapminder()
+df = px.data.iris()
 
 page = vm.Page(
-    title="Enhanced AG Grid",
+    title="My first dashboard",
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                data_frame=df,
-                columnDefs=[
-                    {"field": "country", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "continent", "floatingFilter": True, "suppressHeaderMenuButton": True},
-                    {"field": "year"},
-                    {"field": "lifeExp", "cellDataType": "numeric"},
-                    {"field": "pop", "cellDataType": "numeric"},
-                    {"field": "gdpPercap", "cellDataType": "euro"},
-                ],
-            ),
-        ),
+        # components consist of vm.Graph or  vm.Table
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[
+        # controls consist of vm.Filter or vm.Parameter
+        # filter the dataframe (df) of the target graph (histogram), by column sepal_width, using the dropdown
+        vm.Filter(column="sepal_width", selector=vm.Dropdown(), targets=["hist_chart"]),
+    ],
 )
+
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
