@@ -6,8 +6,8 @@ from vizro import Vizro
 from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
 
-from .utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
-from .utils._helper import clean_data_and_add_columns
+from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
+from utils._helper import clean_data_and_add_columns
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")

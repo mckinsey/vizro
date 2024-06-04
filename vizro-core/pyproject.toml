@@ -81,4 +81,4 @@ filterwarnings = [
   "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
-pythonpath = ["tests/tests_utils"]
+pythonpath = ["tests/tests_utils", "examples/kpi"]
