@@ -42,12 +42,11 @@ class KPI(vm.VizroBaseModel):
 
 # CUSTOM CHARTS ----------------------------------------------------------------
 @capture("graph")
-def bar(  # noqa: PLR0913
+def bar(
     x: str,
     y: str,
     data_frame: pd.DataFrame,
     top_n: int = 15,
-    color_discrete_sequence: Optional[List[str]] = None,
     custom_data: Optional[List[str]] = None,
 ):
     df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
@@ -58,7 +57,7 @@ def bar(  # noqa: PLR0913
         y=y,
         orientation="h",
         text=x,
-        color_discrete_sequence=color_discrete_sequence,
+        color_discrete_sequence=["#1A85FF"],
         custom_data=custom_data,
     )
     fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))  # noqa: C408
@@ -66,13 +65,13 @@ def bar(  # noqa: PLR0913
 
 
 @capture("graph")
-def line(x: str, y: str, data_frame: pd.DataFrame, color_discrete_sequence: Optional[List[str]] = None):
+def line(x: str, y: str, data_frame: pd.DataFrame):
     df_agg = data_frame.groupby(x).agg({y: "count"}).reset_index()
     fig = px.area(
         data_frame=df_agg,
         x=x,
         y=y,
-        color_discrete_sequence=color_discrete_sequence,
+        color_discrete_sequence=["#1A85FF"],
         title="Complaints over time",
     )
     fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
@@ -80,26 +79,24 @@ def line(x: str, y: str, data_frame: pd.DataFrame, color_discrete_sequence: Opti
 
 
 @capture("graph")
-def pie(  # noqa: PLR0913
+def pie(
     names: str,
     values: str,
     data_frame: pd.DataFrame = None,
-    color_discrete_sequence: Optional[List[str]] = None,
     title: Optional[str] = None,
     custom_order: Optional[List[str]] = None,
 ):
     df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
 
-    # Apply custom order
+    # Apply custom order so colors are applied correctly to the pie chart
     order_mapping = {category: index for index, category in enumerate(custom_order)}
-    df_agg["order"] = df_agg[names].map(order_mapping)
-    df_sorted = df_agg.sort_values("order")
+    df_sorted = df_agg.sort_values(by=names, key=lambda names: names.map(order_mapping))
 
     fig = px.pie(
         data_frame=df_sorted,
         names=names,
         values=values,
-        color_discrete_sequence=color_discrete_sequence,
+        color_discrete_sequence=["#1a85ff", "#7ea1ee", "#adbedc", "#df658c", "#d41159"],
         title=title,
         hole=0.4,
     )
@@ -117,9 +114,7 @@ def choropleth(
     title: Optional[str] = None,
     custom_data: Optional[List[str]] = None,
 ):
-
     df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
-    df_agg = df_agg[~df_agg["State"].isin(["N/A", "UNITED STATES MINOR OUTLYING ISLANDS"])]
 
     fig = px.choropleth(
         data_frame=df_agg,
@@ -194,5 +189,5 @@ COLUMN_DEFS = [
         "headerName": "Company response",
         "flex": 6,
     },
-    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "Timely", "flex": 2},
+    {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "On time?", "flex": 2},
 ]
