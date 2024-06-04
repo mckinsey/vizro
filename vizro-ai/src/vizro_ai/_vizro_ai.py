@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
-from vizro_ai.dashboard.data_summary import _get_df_info
+from vizro_ai.dashboard.nodes.data_summary import _get_df_info
 from vizro_ai.dashboard.graph.dashboard_code_generation import _create_and_compile_graph
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
