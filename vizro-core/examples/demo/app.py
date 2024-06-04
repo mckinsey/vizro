@@ -282,7 +282,7 @@ def create_relation_analysis():
             vm.Card(
                 text="""
                     Population, GDP per capita, and life expectancy are interconnected metrics that provide insights
-                    into the socio-economic well-being of a country.
+                    into the socioeconomic well-being of a country.
                     Rapid population growth can strain resources and infrastructure, impacting GDP per capita. Higher
                     GDP per capita often enables better healthcare and improved life expectancy, but other factors such
                     as healthcare quality and social policies also play significant roles.
@@ -329,7 +329,7 @@ def create_continent_summary():
                     ### Africa
                     ![](assets/images/continents/africa.svg#my-image)
 
-                    Africa, a diverse and expansive continent, faces both challenges and progress in its socio-economic
+                    Africa, a diverse and expansive continent, faces both challenges and progress in its socioeconomic
                     landscape. In 2007, Africa's GDP per capita was approximately $3,000, reflecting relatively slower
                     growth compared to other continents like Oceania and Europe.
 
@@ -362,7 +362,7 @@ def create_continent_summary():
                     and population has been significant, outpacing many other continents. In 2007, it boasted the
                     highest population among all continents, with countries like China and India leading the way.
 
-                    Despite facing various socio-economic challenges, Asia's increasing life expectancy from 46 years
+                    Despite facing various socioeconomic challenges, Asia's increasing life expectancy from 46 years
                     to 70 over the years reflects advancements in healthcare and overall well-being, making it a vital
                     region driving global progress and development.
                 """
