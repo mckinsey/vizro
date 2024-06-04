@@ -52,8 +52,8 @@ class RadioItems(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=self.options, multi=False)
 
         return html.Fieldset(
-            [
-                html.Legend(self.title, className="form-label") if self.title else None,
+            children=[
+                html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.RadioItems(
                     id=self.id,
                     options=full_options,

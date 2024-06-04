@@ -63,7 +63,7 @@ class Dropdown(VizroBaseModel):
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
         return html.Div(
-            [
+            children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
