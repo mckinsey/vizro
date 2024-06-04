@@ -58,7 +58,7 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-            self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
     ) -> Plot:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -86,7 +86,7 @@ class VizroAI:
             )
 
         fig_object = _exec_code_and_retrieve_fig(
-            code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter()
+            code=code_string, local_args={"df": df}, show_fig=_is_jupyter(), is_notebook_env=_is_jupyter()
         )
         if explain:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
@@ -94,13 +94,13 @@ class VizroAI:
             )
 
             return Plot(
-                code_string=code_string,
-                fig=fig_object,
+                code=code_string,
+                figure=fig_object,
                 business_insights=business_insights,
                 code_explanation=code_explanation,
             )
 
-        return Plot(code_string=code_string, fig=fig_object)
+        return Plot(code=code_string, figure=fig_object)
 
     def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
@@ -113,15 +113,15 @@ class VizroAI:
 
         """
         # TODO retained for some chat application integration, need deprecation handling
-        return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
+        return self._run_plot_tasks(df, user_input, explain=False).code
 
     def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
-            self,
-            df: pd.DataFrame,
-            user_input: str,
-            explain: bool = False,
-            max_debug_retry: int = 3,
-            return_plot_components: bool = False,
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        explain: bool = False,
+        max_debug_retry: int = 3,
+        return_plot_components: bool = False,
     ) -> Union[go.Figure, Plot]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -148,7 +148,7 @@ class VizroAI:
 
         else:
             _display_markdown(
-                code_snippet=vizro_plot.code_string,
+                code_snippet=vizro_plot.code,
                 biz_insights=vizro_plot.business_insights,
                 code_explain=vizro_plot.code_explanation,
             )
@@ -157,4 +157,4 @@ class VizroAI:
         if self._return_all_text:
             return asdict(vizro_plot)
 
-        return vizro_plot if return_plot_components else vizro_plot.fig
+        return vizro_plot if return_plot_components else vizro_plot.figure
