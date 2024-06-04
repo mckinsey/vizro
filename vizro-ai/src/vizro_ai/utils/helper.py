@@ -11,8 +11,8 @@ from .safeguard import _safeguard_check
 
 
 @dataclass
-class Plot:
-    """Data class about a vizro ai plot."""
+class PlotOutputs:
+    """Dataclass containing all possible `VizroAI.plot()` output."""
 
     code: str
     figure: go.Figure
@@ -71,7 +71,7 @@ def _exec_code_and_retrieve_fig(
         is_notebook_env: boolean flag indicating if code is run in Jupyter notebook
 
     Returns:
-        Plotly go figure
+        go.Figure
 
     """
     from IPython import get_ipython

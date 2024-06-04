@@ -11,7 +11,7 @@ from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
-    Plot,
+    PlotOutputs,
     _debug_helper,
     _display_markdown,
     _exec_code_and_retrieve_fig,
@@ -59,7 +59,7 @@ class VizroAI:
 
     def _run_plot_tasks(
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
-    ) -> Plot:
+    ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
         chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
@@ -93,14 +93,14 @@ class VizroAI:
                 chain_input=user_input, code_snippet=code_string
             )
 
-            return Plot(
+            return PlotOutputs(
                 code=code_string,
                 figure=fig_object,
                 business_insights=business_insights,
                 code_explanation=code_explanation,
             )
 
-        return Plot(code=code_string, figure=fig_object)
+        return PlotOutputs(code=code_string, figure=fig_object)
 
     def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
@@ -122,7 +122,7 @@ class VizroAI:
         explain: bool = False,
         max_debug_retry: int = 3,
         return_elements: bool = False,
-    ) -> Union[go.Figure, Plot]:
+    ) -> Union[go.Figure, PlotOutputs]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -130,10 +130,10 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
-            return_elements: Flag to return plot dataclass that includes all components.
+            return_elements: Flag to return PlotOutputs dataclass that includes all possible elements generated.
 
         Returns:
-           go.Figure or Plot dataclass
+           go.Figure or PlotOutputs dataclass
 
         """
         vizro_plot = self._run_plot_tasks(

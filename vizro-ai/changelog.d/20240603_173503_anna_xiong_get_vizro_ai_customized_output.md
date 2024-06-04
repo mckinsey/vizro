@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable feature to get all possible outputs from VizroAI.plot() using by specifying 'return_elements = True' ([#488](https://github.com/mckinsey/vizro/pull/488)). It returns a datalcass that contains code string, figure object, business insights, and code explanation.
+- Enable feature to get PlotOutputs dataclass from `VizroAI.plot()`. Add argument `return_elements`to`VizroAI.plot()`, when it is set to`True`, the return type will be changed to a `dataclass` containing the code string, figure object, business insights, and code explanation. ([#488](https://github.com/mckinsey/vizro/pull/488))
 
 <!--
 ### Changed
