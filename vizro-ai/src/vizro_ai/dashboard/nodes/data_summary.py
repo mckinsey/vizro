@@ -57,3 +57,29 @@ def _get_df_info(dfs: List[pd.DataFrame]) -> Tuple[List[str], List[str]]:
         schema_strings.append(schema_string)
         head_strings.append(df.head().to_markdown())
     return schema_strings, head_strings
+
+df_sum_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a data assistant with expertise pandas dataframe. \n
+            Here is the dataframe sample:  \n ------- \n  {df_head} \n ------- \n
+            Here is the schema:  \n ------- \n  {df_schema} \n ------- \n
+            Inspect the user \n
+            question based on the above provided data and give a short unique name to the dataset. \n
+            Names currently in use: \n ------- \n {current_df_names} \n ------- \n
+            \n ------- \n
+            Here is the user question:""",
+        ),
+        ("placeholder", "{messages}"),
+    ]
+)
+
+class DfInfo(BaseModel):
+    """Data Info output"""
+
+    dataset_name: str = Field(description="Name of the dataset provided")
+    # data_sample: str = Field(description="Sample data (first 5 rows) from the dataset provided")
+    # data_schema: str = Field(description="Schema of the dataset provided")
+    # dataset_vizro_model_mapping: str = Field(description="Mapping of dataset name to Vizro model")
+

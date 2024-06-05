@@ -17,6 +17,7 @@ from vizro_ai.utils.helper import (
     _exec_fig_code_display_markdown,
     _is_jupyter,
 )
+from vizro.managers._data_manager import DataManager
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,9 @@ class VizroAI:
 
         runnable = _create_and_compile_graph()
 
+        data_manager: DataManager = DataManager()
+
         message_res = runnable.invoke(
-            {"dfs": dfs, "df_schemas": df_schemas, "df_heads": df_heads, "messages": [("user", user_input)]}
+            {"dfs": dfs, "df_schemas": df_schemas, "df_heads": df_heads, "data_manager": data_manager, "messages": [("user", user_input)]}
         )
         return message_res

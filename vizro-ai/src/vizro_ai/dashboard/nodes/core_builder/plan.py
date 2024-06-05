@@ -107,7 +107,7 @@ class DashboardPlanner(BaseModelV1):
     pages: List[PagePlanner]
 
 
-def get_dashboard_plan(query: str, model: Union[ChatOpenAI], max_retry: int = 3) -> PagePlanner:
+def get_dashboard_plan(query: str, model: Union[ChatOpenAI], max_retry: int = 3) -> DashboardPlanner:
     return get_model(query, model, result_model=DashboardPlanner, max_retry=max_retry)
 
 

@@ -17,8 +17,8 @@ model_sum_prompt = ChatPromptTemplate.from_messages(
             'Card',
             'Filter',
             'Graph',
-            'Page',
-            'Dashboard',
+            'Page', # always required
+            'Dashboard', # always required
             ]  \n ------- \n
             Here is the user question:""",
         ),

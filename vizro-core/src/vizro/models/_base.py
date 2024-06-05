@@ -17,6 +17,7 @@ from typing_extensions import Annotated, Optional, no_type_check
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
+from vizro.models.types import CapturedCallable
 
 
 class VizroBaseModel(BaseModel):
@@ -197,6 +198,9 @@ class VizroBaseModel(BaseModel):
         elif isinstance(d, list):
             # Recurse through the list, ensure it's formatted as a list but without quotes on strings
             return "[" + ", ".join(VizroBaseModel.transform_dict(item) for item in d) + "]"
+        elif isinstance(d, CapturedCallable) and "dash_ag_grid" in repr(d._function):
+            # placeholder for captured callable
+            return f"dash_ag_grid(data_frame=pd.DataFrame())"
         else:
             # Base case: if it's not a dictionary or list, return the item itself
             return repr(d)  # Use repr to ensure proper representation of strings and other data types
