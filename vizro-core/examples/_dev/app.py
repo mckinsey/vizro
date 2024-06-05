@@ -81,7 +81,6 @@ page = vm.Page(
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value I", agg_func="sum")),
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value II", agg_func="mean")),
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value III", agg_func="median")),
-
         # Style 2: Value and reference value
         vm.Card(
             figure=kpi_card_compare(
@@ -111,7 +110,6 @@ page = vm.Page(
                 icon="shopping_cart",
             )
         ),
-
         # Style 3: Value and icon
         vm.Card(
             figure=kpi_card(

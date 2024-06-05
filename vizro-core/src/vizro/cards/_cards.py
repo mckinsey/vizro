@@ -64,7 +64,6 @@ def kpi_card(
 # on the component hierarchy not changing now. I slightly prefer to explictly provide classNames to the subcomponents here.
 
 
-
 # TBD: names like
 # value, value_format, column
 # reference, reference_format or comparison_format, reference_column
@@ -74,6 +73,7 @@ def kpi_card(
 # Can we remove any arguments easily? Don't want them to get too complicated.
 
 # We maybe also need an argument positive_delta_is_good: bool = True(not sure about name) as per #505 (comment).
+
 
 @capture("card")
 def kpi_card_compare(
@@ -97,22 +97,30 @@ def kpi_card_compare(
     # Variables available in both comparison_format and value_format are value, reference_value, delta, delta_relative
     return dbc.Card(
         [
-        html.Div(
-            [
-                html.P(icon, className="material-symbols-outlined") if icon else None,
-                html.H2(title),
-            ],
-        ),
-        html.P(value_format.format(value=value, reference_value=reference_value, delta=delta,
-                                   delta_relative=delta_relative)),
-        html.Span(
-            [
-                html.Span(
-                    "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
-                ),
-                html.Span(comparison_format.format(value=value, reference_value=reference_value, delta=delta,
-                                                   delta_relative=delta_relative)),
-            ],
-            className="delta-pos" if delta > 0 else "delta-neg",
-        ),
-    ], className="kpi-card-compare")
+            html.Div(
+                [
+                    html.P(icon, className="material-symbols-outlined") if icon else None,
+                    html.H2(title),
+                ],
+            ),
+            html.P(
+                value_format.format(
+                    value=value, reference_value=reference_value, delta=delta, delta_relative=delta_relative
+                )
+            ),
+            html.Span(
+                [
+                    html.Span(
+                        "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
+                    ),
+                    html.Span(
+                        comparison_format.format(
+                            value=value, reference_value=reference_value, delta=delta, delta_relative=delta_relative
+                        )
+                    ),
+                ],
+                className="delta-pos" if delta > 0 else "delta-neg",
+            ),
+        ],
+        className="kpi-card-compare",
+    )
