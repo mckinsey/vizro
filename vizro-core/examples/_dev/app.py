@@ -12,14 +12,14 @@ page = vm.Page(
     layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
         # Style 1: Value Only
-        vm.Figure(figure=kpi_card(data_frame=df, column="Actual", title="Value I", agg_func="sum")),
-        vm.Figure(figure=kpi_card(data_frame=df, column="Actual", title="Value II", agg_func="mean")),
-        vm.Figure(figure=kpi_card(data_frame=df, column="Actual", title="Value III", agg_func="median")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value I", agg_func="sum")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value II", agg_func="mean")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value III", agg_func="median")),
         # Style 2: Value and reference value
         vm.Figure(
             figure=kpi_card_reference(
                 data_frame=df,
-                column="Reference",
+                value_column="Reference",
                 reference_column="Actual",
                 title="Ref. Value II",
                 agg_func="sum",
@@ -28,7 +28,7 @@ page = vm.Page(
         vm.Figure(
             figure=kpi_card_reference(
                 data_frame=df,
-                column="Actual",
+                value_column="Actual",
                 reference_column="Reference",
                 title="Ref. Value I",
                 agg_func="sum",
@@ -37,7 +37,7 @@ page = vm.Page(
         vm.Figure(
             figure=kpi_card_reference(
                 data_frame=df,
-                column="Actual",
+                value_column="Actual",
                 reference_column="Reference",
                 title="Ref. Value III",
                 agg_func="median",
@@ -48,7 +48,7 @@ page = vm.Page(
         vm.Figure(
             figure=kpi_card(
                 data_frame=df,
-                column="Actual",
+                value_column="Actual",
                 icon="shopping_cart",
                 title="Icon I",
                 agg_func="sum",
@@ -58,7 +58,7 @@ page = vm.Page(
         vm.Figure(
             figure=kpi_card(
                 data_frame=df,
-                column="Actual",
+                value_column="Actual",
                 icon="payment",
                 title="Icon II",
                 agg_func="mean",
@@ -68,7 +68,7 @@ page = vm.Page(
         vm.Figure(
             figure=kpi_card(
                 data_frame=df,
-                column="Actual",
+                value_column="Actual",
                 icon="monitoring",
                 title="Icon III",
                 agg_func="median",
