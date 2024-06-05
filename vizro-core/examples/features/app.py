@@ -37,7 +37,7 @@ home = vm.Page(
 
                 ### Components
 
-                Main components of Vizro include **charts**, **tables**, **card**, **containers**,
+                Main components of Vizro include **charts**, **tables**, **cards**, **containers**,
                 **buttons** and **tabs**.
                 """,
             href="/graphs",

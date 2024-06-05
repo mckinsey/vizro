@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 from dash import dcc
 
@@ -28,10 +28,8 @@ class Figure(VizroBaseModel):
     """
 
     type: Literal["figure"] = "figure"
-    figure: Optional[CapturedCallable] = Field(
-        None,
-        import_path=vf,
-        description="Function that returns a figure-like object to be visualized in the dashboard.",
+    figure: CapturedCallable = Field(
+        import_path=vf, description="Function that returns a figure-like object to be visualized in the dashboard."
     )
 
     # Component properties for actions and interactions

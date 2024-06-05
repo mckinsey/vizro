@@ -8,26 +8,29 @@ from dash import html
 
 from vizro.models.types import capture
 
+# TODO: Simplify classNames
+# TODO: positive_delta_is_good: bool = True(not sure about name) -> maybe show in docs or CSS only
+
 
 @capture("figure")
 def kpi_card(
     data_frame: pd.DataFrame,
-    column: str,
+    value_column: str,
+    value_format: str = "{value}",
+    agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
-    agg_func: str = "sum",
-    value_format: str = "{value}",
 ) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value = data_frame[column].agg(agg_func)
-    title = title or column.title()
+    value = data_frame[value_column].agg(agg_func)
+    title = title or value_column.title()
 
     return dbc.Card(
         [
             html.Div(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title),
+                    html.H2(title) if title else None,
                 ],
             ),
             html.P(value_format.format(value=value)),
@@ -42,31 +45,26 @@ def kpi_card(
     )
 
 
-# TODO: Simplify classNames
-# TODO: Change to value_column, value_format, reference_column, reference_format, delta, delta_relative -> {value} {reference}
-# TODO: positive_delta_is_good: bool = True(not sure about name) -> maybe show in docs or CSS only
-
-
 @capture("figure")
 def kpi_card_reference(
     data_frame: pd.DataFrame,
-    column: str,
-    # These two are new:
+    value_column: str,
     reference_column: str,
-    comparison_format: str = "{delta_relative:.1%} vs. reference ({reference_value})",  # Note you do percentage
-    # calculation using Python formation language itself: https://docs.python.org/3/library/string.html#format-specification-mini-language
+    value_format: str = "{value}",
+    reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
+    agg_func: str = "sum",
+    # Note you do percentage calculation using Python formation language itself:
+    # https://docs.python.org/3/library/string.html#format-specification-mini-language
     title: Optional[str] = None,
     icon: Optional[str] = None,
-    agg_func: str = "sum",
-    value_format: str = "{value}",
 ) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value, reference_value = data_frame[[column, reference_column]].agg(agg_func)
-    title = title or column.title()
-    delta = value - reference_value
-    delta_relative = delta / reference_value
+    value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
+    title = title or value_column.title()
+    delta = value - reference
+    delta_relative = delta / reference
 
-    # Variables available in both comparison_format and value_format are value, reference_value, delta, delta_relative
+    # Variables available in both reference_format and value_format are value, reference, delta, delta_relative
     return dbc.Card(
         [
             html.Div(
@@ -75,24 +73,20 @@ def kpi_card_reference(
                     html.H2(title),
                 ],
             ),
-            html.P(
-                value_format.format(
-                    value=value, reference_value=reference_value, delta=delta, delta_relative=delta_relative
-                )
-            ),
+            html.P(value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)),
             html.Span(
                 [
                     html.Span(
                         "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
                     ),
                     html.Span(
-                        comparison_format.format(
-                            value=value, reference_value=reference_value, delta=delta, delta_relative=delta_relative
+                        reference_format.format(
+                            value=value, reference=reference, delta=delta, delta_relative=delta_relative
                         )
                     ),
                 ],
                 className="delta-pos" if delta > 0 else "delta-neg",
             ),
         ],
-        className="kpi-card-compare",
+        className="kpi-card-reference",
     )

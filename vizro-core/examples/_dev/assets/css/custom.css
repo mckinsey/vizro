@@ -1,14 +1,14 @@
-.kpi-card-compare > span {
+.kpi-card-reference > span {
   display: flex;
   font-weight: 600;
   gap: 4px;
 }
 
-.kpi-card-compare .delta-pos {
+.kpi-card-reference .delta-pos {
   color: #1a85ff;
 }
 
-.kpi-card-compare .delta-neg {
+.kpi-card-reference .delta-neg {
   color: #d41159;
 }
 
@@ -17,12 +17,12 @@
 }
 
 .kpi-card .material-symbols-outlined,
-.kpi-card-compare div .material-symbols-outlined {
+.kpi-card-reference div .material-symbols-outlined {
   line-height: 28px;
 }
 
 .kpi-card > div,
-.kpi-card-compare > div {
+.kpi-card-reference > div {
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -30,7 +30,7 @@
 }
 
 .kpi-card > p,
-.kpi-card-compare > p {
+.kpi-card-reference > p {
   align-items: center;
   color: var(--text-secondary);
   display: flex;
@@ -41,11 +41,11 @@
   line-height: unset;
 }
 
-.kpi-card-compare:has(.delta-pos) {
+.kpi-card-reference:has(.delta-pos) {
   border-left: 4px solid #1a85ff;
 }
 
-.kpi-card-compare:has(.delta-neg) {
+.kpi-card-reference:has(.delta-neg) {
   border-left: 4px solid #d41159;
 }
 
