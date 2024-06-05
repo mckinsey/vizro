@@ -104,7 +104,17 @@ class Filter(VizroBaseModel):
         self._set_actions()
 
     @_log_call
-    def build(self):
+    def build(self, **kwargs):
+        # if self.dynamic:
+            # Effectively modifies state in model_manager, hence won't be shared across processes - is this ok? Yes
+            # because just gets updated on calling process so will be updated every time. No caching in terms of
+            # setting options, just in terms of data loading.
+            # Setting options itself could be heavy processing as relies on finding min/max but in that case should
+            # just set them upfront statically.
+            # In future could also add other things to data_manager cache like dataset's min/max for different columns
+            # in memoized way. But ultimately probably wouldn't want to use pandas for such situations anyway.
+        self._set_categorical_selectors_options(force_update=True, **kwargs)
+
         return self.selector.build()
 
     def _set_targets(self):
@@ -174,14 +184,17 @@ class Filter(VizroBaseModel):
             if self.selector.max is None:
                 self.selector.max = max(max_values)
 
-    def _set_categorical_selectors_options(self):
+    def _set_categorical_selectors_options(self, force_update=False, **kwargs):
         # If the selector is a categorical selector, and the options are not set, then set them
         # N.B. All custom selectors inherit from categorical selector should also pass this check
-        if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
+        if isinstance(self.selector, SELECTORS["categorical"]) and (not self.selector.options or force_update):
             options = set()
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
-                data_frame = data_manager[data_source_name].load()
+                if target_id == "scatter_chart":
+                    data_frame = data_manager[data_source_name].load(**kwargs)
+                else:
+                    data_frame = data_manager[data_source_name].load()
                 options |= set(data_frame[self.column])
 
             self.selector.options = sorted(options)

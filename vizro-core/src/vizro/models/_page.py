@@ -107,9 +107,9 @@ class Page(VizroBaseModel):
             ]
 
     @_log_call
-    def build(self) -> _PageBuildType:
+    def build(self, **kwargs) -> _PageBuildType:
         self._update_graph_theme()
-        controls_content = [control.build() for control in self.controls]
+        controls_content = [control.build(**kwargs) for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
         components_container = self.layout.build()

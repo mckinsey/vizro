@@ -78,11 +78,11 @@ class RangeSlider(VizroBaseModel):
             State(f"{self.id}_callback_data", "data"),
         ]
 
-        clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_range_slider_values"),
-            output=output,
-            inputs=inputs,
-        )
+        # clientside_callback(
+        #     ClientsideFunction(namespace="clientside", function_name="update_range_slider_values"),
+        #     output=output,
+        #     inputs=inputs,
+        # )
 
         return html.Div(
             children=[

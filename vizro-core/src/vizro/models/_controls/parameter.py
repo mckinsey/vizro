@@ -75,7 +75,7 @@ class Parameter(VizroBaseModel):
         self._set_actions()
 
     @_log_call
-    def build(self):
+    def build(self, **kwargs):
         return self.selector.build()
 
     def _check_numerical_and_temporal_selectors_values(self):

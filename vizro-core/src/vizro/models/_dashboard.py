@@ -149,7 +149,7 @@ class Dashboard(VizroBaseModel):
             className=self.theme,
         )
 
-    def _get_page_divs(self, page: Page) -> _PageDivsType:
+    def _get_page_divs(self, page: Page, **kwargs) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
             html.H2(id="dashboard-title", children=self.title)
@@ -178,7 +178,7 @@ class Dashboard(VizroBaseModel):
         nav_panel = navigation["nav-panel"]
 
         # Different across pages
-        page_content: _PageBuildType = page.build()
+        page_content: _PageBuildType = page.build(**kwargs)
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
@@ -234,8 +234,8 @@ class Dashboard(VizroBaseModel):
         page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
-    def _make_page_layout(self, page: Page):
-        page_divs = self._get_page_divs(page=page)
+    def _make_page_layout(self, page: Page, **kwargs):
+        page_divs = self._get_page_divs(page=page, **kwargs)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
         return page_layout
