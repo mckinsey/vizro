@@ -2,42 +2,42 @@
   padding-left: 4px;
 }
 
-.kpi-card-compare.card {
+.kpi-card-ref.card {
   min-width: 168px;
   padding: 8px;
 }
 
-.kpi-card-compare h4 {
+.kpi-card-ref h4 {
   margin: 0;
 }
 
-.kpi-card-compare > span {
+.kpi-card-ref > span {
   display: flex;
   font-weight: 600;
   gap: 4px;
 }
 
-.kpi-card-compare .delta-pos {
+.kpi-card-ref .delta-pos {
   color: #1a85ff;
 }
 
-.kpi-card-compare .delta-neg {
+.kpi-card-ref .delta-neg {
   color: #d41159;
 }
 
-.kpi-card-compare .material-symbols-outlined {
+.kpi-card-ref .material-symbols-outlined {
   font-size: 16px;
   line-height: 20px;
 }
 
-.kpi-card-compare > div {
+.kpi-card-ref > div {
   display: flex;
   flex-direction: row;
   gap: 8px;
   margin: 0;
 }
 
-.kpi-card-compare > p {
+.kpi-card-ref > p {
   align-items: center;
   color: var(--text-secondary);
   display: flex;
@@ -48,11 +48,11 @@
   line-height: unset;
 }
 
-.kpi-card-compare:has(.delta-pos) {
+.kpi-card-ref:has(.delta-pos) {
   border-left: 4px solid #1a85ff;
 }
 
-.kpi-card-compare:has(.delta-neg) {
+.kpi-card-ref:has(.delta-neg) {
   border-left: 4px solid #d41159;
 }
 

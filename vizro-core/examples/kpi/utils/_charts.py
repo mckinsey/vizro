@@ -36,7 +36,7 @@ class KPI(vm.VizroBaseModel):
                     className=self.sign,
                 ),
             ],
-            className="kpi-card-compare",
+            className="kpi-card-ref",
         )
 
 
