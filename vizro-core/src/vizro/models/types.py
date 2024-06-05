@@ -247,13 +247,13 @@ class capture:
     For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
     [custom tables](../user-guides/custom-tables.md).
     For further help on the use of `@capture("card")`, you can refer to the guide on
-    [cards](../user-guides/card-button.md).
+    [figures](../user-guides/card-button.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user-guides/custom-actions.md).
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "card"]):
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
         """Decorator to capture a function call."""
         self._mode = mode
 

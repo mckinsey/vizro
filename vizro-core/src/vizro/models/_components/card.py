@@ -1,67 +1,47 @@
 from typing import Literal, Optional
 
 import pandas as pd
-from dash import dcc
+from dash import dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-import vizro.cards as vc
+import vizro.figures as vc
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
+# components, dynamic components, reactive components, reactive
+# ReactiveComponent, Reactive, Figure, ReactiveFigure, ReactiveObject, ReactiveHTML, ReactiveDiv
 
-class Card(VizroBaseModel):
+class Figure(VizroBaseModel):
     """Creates a card object to be displayed on dashboard.
 
     Args:
         type (Literal["card"]): Defaults to `"card"`.
-        text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
-        href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
-            only. Defaults to `""`.
         figure (CapturedCallable): Card like object to be displayed. Defaults to `None`. For more information see
-            available card callables in [`vizro.cards`](vizro.cards).
+            available card callables in [`vizro.figures`](vizro.figures).
 
     """
-
-    type: Literal["card"] = "card"
-    text: str = Field("", description="Markdown string to create card text that should adhere to the CommonMark Spec.")
-    href: str = Field(
-        "",
-        description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
-    )
+    type: Literal["figure"] = "figure"
     figure: Optional[CapturedCallable] = Field(
-        None, import_path=vc, description="Dynamic card function to be visualized on dashboard."
+        None, import_path=vf, description="Dynamic card function to be visualized on dashboard."
     )
-
-    _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
     # Validators
-    @validator("figure")
-    def validate_figure(cls, figure, values):
-        if figure is None:
-            return (
-                vc.nav_card(text=values["text"], href=values["href"], data_frame=pd.DataFrame())
-                if values["href"]
-                else vc.text_card(text=values["text"], data_frame=pd.DataFrame())
-            )
-        return figure
-
-    _validate_callable_mode = _callable_mode_validator_factory("card")
+    _validate_callable_mode = _callable_mode_validator_factory("reactive_figure")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
-        figure = self.figure(**kwargs) if self.figure else None
-        figure.id = self._input_component_id
+        figure = self.figure(**kwargs)
         return figure
 
     def __getitem__(self, arg_name: str):
@@ -73,17 +53,11 @@ class Card(VizroBaseModel):
             return self.figure[arg_name]
 
     @_log_call
-    def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
-
-    @_log_call
     def build(self):
-        # LQ: Previously discussed to insert dbc.Card directly here and provide self.id to the outer container.
-        # However, this can affect several custom actions that rely on the id being previously provided to the inner
-        # text component instead of the outer card component. Shall we keep as is or pass the id through the relevant inner
-        # components? The last would require to provide an id argument to each CapturedCallable, which is also not optimal.
         return dcc.Loading(
             self.__call__(),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+            id=self.id
         )

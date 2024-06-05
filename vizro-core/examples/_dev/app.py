@@ -3,7 +3,7 @@
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
-from vizro.cards import kpi_card, kpi_card_compare
+from vizro.figures import kpi_card, kpi_card_compare
 
 df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 

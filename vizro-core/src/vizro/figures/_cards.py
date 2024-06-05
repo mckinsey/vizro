@@ -60,22 +60,12 @@ def kpi_card(
     )
 
 
-# LQ: Not sure if the removal of classNames is a better approach. It seems more unstable as it depends
-# on the component hierarchy not changing now. I slightly prefer to explictly provide classNames to the subcomponents here.
+# TODO: Simplify classNames
+# TODO: Change to value_column, value_format, reference_column, reference_format, delta, delta_relative -> {value} {reference}
+# TODO: positive_delta_is_good: bool = True(not sure about name) -> maybe show in docs or CSS only
 
 
-# TBD: names like
-# value, value_format, column
-# reference, reference_format or comparison_format, reference_column
-
-# TBD merge these two functions into just one? Since the second is just the same as the first with two additional
-# arguments. Not sure if good idea or not.
-# Can we remove any arguments easily? Don't want them to get too complicated.
-
-# We maybe also need an argument positive_delta_is_good: bool = True(not sure about name) as per #505 (comment).
-
-
-@capture("card")
+@capture("figure")
 def kpi_card_compare(
     data_frame: pd.DataFrame,
     column: str,
