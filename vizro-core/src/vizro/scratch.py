@@ -1,4 +1,5 @@
 """Code dump of previous iterations."""
+
 from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
@@ -21,7 +22,7 @@ CLASSNAME_LOOKUP = {
     "text_card": "",
     "nav_card": "card-nav",
     "kpi_card": "kpi-card",
-    "kpi_card_ref": "kpi-card-ref",
+    "kpi_card_ref": "kpi-card-compare",
 }
 
 

@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import vizro.models as vm
 from dash import html
 from vizro import Vizro
-from vizro.cards import kpi_card, kpi_card_ref
+from vizro.cards import kpi_card, kpi_card_compare
 from vizro.models.types import capture
 
 # Create the pandas DataFrame
@@ -67,7 +67,7 @@ class CustomKPI(vm.VizroBaseModel):
                     className=self.sign,
                 ),
             ],
-            className="kpi-card-ref",
+            className="kpi-card-compare",
         )
 
 
@@ -77,40 +77,41 @@ page = vm.Page(
     title="KPI Indicators",
     layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
-        # Method 3: Using vm.Card with a figure attribute - value only
         # Style 1: Value Only
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value I", agg_func="sum")),
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value II", agg_func="mean")),
         vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value III", agg_func="median")),
+
         # Style 2: Value and reference value
         vm.Card(
-            figure=kpi_card_ref(
+            figure=kpi_card_compare(
                 data_frame=df,
-                value="Reference",
-                ref_value="Actual",
+                column="Reference",
+                reference_column="Actual",
                 title="Ref. Value II",
-                agg_func=lambda x: x.sum(),
+                agg_func="sum",
             )
         ),
         vm.Card(
-            figure=kpi_card_ref(
+            figure=kpi_card_compare(
                 data_frame=df,
-                value="Actual",
-                ref_value="Reference",
+                column="Actual",
+                reference_column="Reference",
                 title="Ref. Value I",
-                agg_func=lambda x: x.sum(),
+                agg_func="sum",
             )
         ),
         vm.Card(
-            figure=kpi_card_ref(
+            figure=kpi_card_compare(
                 data_frame=df,
-                value="Actual",
-                ref_value="Reference",
+                column="Actual",
+                reference_column="Reference",
                 title="Ref. Value III",
-                agg_func=lambda x: x.median(),
+                agg_func="median",
                 icon="shopping_cart",
             )
         ),
+
         # Style 3: Value and icon
         vm.Card(
             figure=kpi_card(
