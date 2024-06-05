@@ -43,7 +43,7 @@ page = vm.Page(
                 title="Ref. Value III",
                 agg_func="median",
                 icon="shopping_cart",
-            )
+            ),
         ),
         # Style 3: Value and icon
         vm.Figure(
