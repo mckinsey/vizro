@@ -4,9 +4,10 @@ from typing import Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import dcc, get_relative_path, html
+from dash import html
 
 from vizro.models.types import capture
+
 
 @capture("figure")
 def kpi_card(

@@ -1,7 +1,6 @@
 from typing import Literal, Optional
 
-import pandas as pd
-from dash import dcc, html
+from dash import dcc
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -27,9 +26,12 @@ class Figure(VizroBaseModel):
             available figure callables in [`vizro.figures`](vizro.figures).
 
     """
+
     type: Literal["figure"] = "figure"
     figure: Optional[CapturedCallable] = Field(
-        None, import_path=vf, description="Function that returns a figure-like object to be visualized in the dashboard."
+        None,
+        import_path=vf,
+        description="Function that returns a figure-like object to be visualized in the dashboard.",
     )
 
     # Component properties for actions and interactions
@@ -59,5 +61,5 @@ class Figure(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
-            id=self.id
+            id=self.id,
         )
