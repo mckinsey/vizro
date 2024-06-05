@@ -1,14 +1,12 @@
 from typing import Literal, Optional
 
-import pandas as pd
-from dash import dcc, html
+from dash import dcc
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-import vizro.figures as vc
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
@@ -17,6 +15,7 @@ from vizro.models.types import CapturedCallable
 
 # components, dynamic components, reactive components, reactive
 # ReactiveComponent, Reactive, Figure, ReactiveFigure, ReactiveObject, ReactiveHTML, ReactiveDiv
+
 
 class Figure(VizroBaseModel):
     """Creates a card object to be displayed on dashboard.
@@ -27,6 +26,7 @@ class Figure(VizroBaseModel):
             available card callables in [`vizro.figures`](vizro.figures).
 
     """
+
     type: Literal["figure"] = "figure"
     figure: Optional[CapturedCallable] = Field(
         None, import_path=vf, description="Dynamic card function to be visualized on dashboard."
@@ -59,5 +59,5 @@ class Figure(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
-            id=self.id
+            id=self.id,
         )
