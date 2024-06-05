@@ -2,9 +2,12 @@
   padding-left: 4px;
 }
 
-.kpi-card-ref.card {
-  min-width: 168px;
+.card {
   padding: 8px;
+}
+
+.kpi-card-ref {
+  min-width: 168px;
 }
 
 .kpi-card-ref h4 {
