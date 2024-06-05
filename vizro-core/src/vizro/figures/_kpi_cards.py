@@ -8,48 +8,47 @@ from dash import html
 
 from vizro.models.types import capture
 
-# TODO: Simplify classNames
 # TODO: positive_delta_is_good: bool = True(not sure about name) -> maybe show in docs or CSS only
 
 
 @capture("figure")
-def kpi_card(
+def kpi_card(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
+    # You could specify e.g. value_format = "£{value:0.2f}". Note that arbitrary Python is not allowed here,
+    # e.g. you couldn't do something like "{something if value > 0 else something_else}"
+    # We might still want some warning about not allowing untrusted user input for your value format string due to
+    # https://stackoverflow.com/questions/15356649/can-pythons-string-format-be-made-safe-for-untrusted-format-strings
+    # But maybe that's not worth worrying about in practice.
     value_format: str = "{value}",
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
 ) -> dbc.Card:
-    """Dynamic text card in form of a KPI Card."""
+    """Creates default KPI card."""
     value = data_frame[value_column].agg(agg_func)
     title = title or value_column.title()
 
     return dbc.Card(
         [
-            html.Div(
+            dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
                     html.H2(title) if title else None,
                 ],
             ),
-            html.P(value_format.format(value=value)),
-            # You could specify e.g. value_format = "£{value:0.2f}". Note that
-            # arbitrary Python is not allowed here, e.g. you couldn't do something like "{something if value > 0 else
-            # something_else}"
-            # We might still want some warning about not allowing untrusted user input for your value format string due to
-            # https://stackoverflow.com/questions/15356649/can-pythons-string-format-be-made-safe-for-untrusted-format-strings
-            # But maybe that's not worth worrying about in practice.
+            dbc.CardBody(value_format.format(value=value)),
         ],
-        className="kpi-card",
+        className="card-kpi",
     )
 
 
 @capture("figure")
-def kpi_card_reference(
+def kpi_card_reference(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
     reference_column: str,
+    # Variables available in both reference_format and value_format are value, reference, delta, delta_relative
     value_format: str = "{value}",
     reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
     agg_func: str = "sum",
@@ -58,23 +57,24 @@ def kpi_card_reference(
     title: Optional[str] = None,
     icon: Optional[str] = None,
 ) -> dbc.Card:
-    """Dynamic text card in form of a KPI Card."""
+    """Creates default KPI card with a comparison to a reference value."""
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     title = title or value_column.title()
     delta = value - reference
     delta_relative = delta / reference
 
-    # Variables available in both reference_format and value_format are value, reference, delta, delta_relative
     return dbc.Card(
         [
-            html.Div(
+            dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title),
+                    html.H2(title) if title else None,
                 ],
             ),
-            html.P(value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)),
-            html.Span(
+            dbc.CardBody(
+                value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
+            ),
+            dbc.CardFooter(
                 [
                     html.Span(
                         "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
@@ -85,8 +85,8 @@ def kpi_card_reference(
                         )
                     ),
                 ],
-                className="delta-pos" if delta > 0 else "delta-neg",
+                className="color-pos" if delta > 0 else "color-neg",
             ),
         ],
-        className="kpi-card-reference",
+        className="card-kpi",
     )

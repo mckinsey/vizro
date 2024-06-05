@@ -35,6 +35,7 @@ page = vm.Page(
             )
         ),
         vm.Figure(
+            id="kpi-card-reverse-coloring",
             figure=kpi_card_reference(
                 data_frame=df,
                 value_column="Actual",

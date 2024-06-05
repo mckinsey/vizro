@@ -59,5 +59,5 @@ class Figure(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
-            id=self.id,
+            id=self.id,  # TODO: Investigate - this does not seem to work?
         )
