@@ -1,3 +1,4 @@
+"""Code dump of previous iterations."""
 from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
@@ -92,3 +93,22 @@ class Card(VizroBaseModel):
             color="grey",
             parent_className="loading-container",
         )
+
+
+# Example 1: KPI Card with Markdown
+# (+) Allows for unlimited customisation on text
+# (-) Custom styling becomes difficult due to className provision
+@capture("card")
+def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
+    """Dynamic text card in form of a KPI Card."""
+    # LQ: Think about exposing an argument that allows for custom formatting such as formatting as currency
+    value = round(agg_fct(data_frame[value]), 2)
+
+    return dcc.Markdown(
+        f"""
+        ## {title}
+
+        # {value}
+        """,
+        dangerously_allow_html=False,
+    )

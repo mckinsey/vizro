@@ -28,43 +28,18 @@ def nav_card(data_frame: pd.DataFrame, text: str, href: str) -> dbc.Card:
     )
 
 
-# Example 1: KPI Card with Markdown
-# (+) Allows for unlimited customisation on text
-# (-) Custom styling becomes difficult due to className provision
-@capture("card")
-def kpi_card_mkd(data_frame: pd.DataFrame, title: str, value: str, agg_fct: Callable = sum) -> dbc.Card:
-    """Dynamic text card in form of a KPI Card."""
-    # LQ: Think about exposing an argument that allows for custom formatting such as formatting as currency
-    value = round(agg_fct(data_frame[value]), 2)
-
-    return dcc.Markdown(
-        f"""
-        ## {title}
-
-        # {value}
-        """,
-        dangerously_allow_html=False,
-    )
-
-
-# Example 2: KPI Card with HTML
-# (-) Customisation on text requires a new captured Callable to be created
-# (+) Allows for indefinite custom styling
-
-
-# LQ: Do we want all of these arguments? `title` and `value` are required, but the rest is extra functionality that
-# we could also outsource to creating their own CapturedCallable with that logic. It would be just more cumbersome to create these.
 @capture("card")
 def kpi_card(
     data_frame: pd.DataFrame,
-    title: str,
-    value: str,
+    column: str,
+    title: Optional[str] = None,
     icon: Optional[str] = None,
-    agg_fct: Callable = sum,
-    value_format: Optional[str] = None,
+    agg_func: str = "sum",
+    value_format: str = "{value}",
 ) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value = agg_fct(data_frame[value])
+    value = data_frame[column].agg(agg_func)
+    title = title or column.title()
 
     return dbc.Card(
         [
@@ -74,7 +49,13 @@ def kpi_card(
                     html.H2(title),
                 ],
             ),
-            html.P(value_format.format(value) if value_format else value),
+            html.P(value_format.format(value=value)),
+            # You could specify e.g. value_format = "£{value:0.2f}". Note that
+            # arbitrary Python is not allowed here, e.g. you couldn't do something like "{something if value > 0 else
+            # something_else}"
+            # We might still want some warning about not allowing untrusted user input for your value format string due to
+            # https://stackoverflow.com/questions/15356649/can-pythons-string-format-be-made-safe-for-untrusted-format-strings
+            # But maybe that's not worth worrying about in practice.
         ],
         className="kpi-card",
     )
@@ -93,11 +74,11 @@ def kpi_card_ref(
     value: str,
     ref_value: str,
     icon: Optional[str] = None,
-    agg_fct: Callable = sum,
+    agg_func: Callable = sum,
 ) -> dbc.Card:
     """Dynamic text card in form of a KPI Card."""
-    value = agg_fct(data_frame[value])
-    ref_value = agg_fct(data_frame[ref_value])
+    value = agg_func(data_frame[value])
+    ref_value = agg_func(data_frame[ref_value])
     # LQ: Make it configurable so people can choose percentage or absolute delta?
     delta = round((ref_value - value) / value * 100, 2)
     delta_sign = "delta-pos" if delta > 0 else "delta-neg"

@@ -79,9 +79,9 @@ page = vm.Page(
     components=[
         # Method 3: Using vm.Card with a figure attribute - value only
         # Style 1: Value Only
-        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value I", agg_fct=lambda x: x.sum())),
-        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value II", agg_fct=lambda x: x.mean())),
-        vm.Card(figure=kpi_card(data_frame=df, value="Actual", title="Value III", agg_fct=lambda x: x.median())),
+        vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value I", agg_func="sum")),
+        vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value II", agg_func="mean")),
+        vm.Card(figure=kpi_card(data_frame=df, column="Actual", title="Value III", agg_func="median")),
         # Style 2: Value and reference value
         vm.Card(
             figure=kpi_card_ref(
@@ -89,7 +89,7 @@ page = vm.Page(
                 value="Reference",
                 ref_value="Actual",
                 title="Ref. Value II",
-                agg_fct=lambda x: x.sum(),
+                agg_func=lambda x: x.sum(),
             )
         ),
         vm.Card(
@@ -98,7 +98,7 @@ page = vm.Page(
                 value="Actual",
                 ref_value="Reference",
                 title="Ref. Value I",
-                agg_fct=lambda x: x.sum(),
+                agg_func=lambda x: x.sum(),
             )
         ),
         vm.Card(
@@ -107,7 +107,7 @@ page = vm.Page(
                 value="Actual",
                 ref_value="Reference",
                 title="Ref. Value III",
-                agg_fct=lambda x: x.median(),
+                agg_func=lambda x: x.median(),
                 icon="shopping_cart",
             )
         ),
@@ -115,30 +115,30 @@ page = vm.Page(
         vm.Card(
             figure=kpi_card(
                 data_frame=df,
-                value="Actual",
+                column="Actual",
                 icon="shopping_cart",
                 title="Icon I",
-                agg_fct=lambda x: x.sum(),
-                value_format="${:.2f}",
+                agg_func="sum",
+                value_format="${value:.2f}",
             )
         ),
         vm.Card(
             figure=kpi_card(
                 data_frame=df,
-                value="Actual",
+                column="Actual",
                 icon="payment",
                 title="Icon II",
-                agg_fct=lambda x: x.mean(),
-                value_format="{:.0f}€",
+                agg_func="mean",
+                value_format="{value:.0f}€",
             )
         ),
         vm.Card(
             figure=kpi_card(
                 data_frame=df,
-                value="Actual",
+                column="Actual",
                 icon="monitoring",
                 title="Icon III",
-                agg_fct=lambda x: x.median(),
+                agg_func="median",
             )
         ),
         # This should still work without a figure argument
