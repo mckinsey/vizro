@@ -13,15 +13,18 @@ from vizro.models.types import capture
 @capture("card")
 def text_card(data_frame: pd.DataFrame, text: str) -> dbc.Card:
     """Static text card."""
-    return dcc.Markdown(text, dangerously_allow_html=False)
+    return dbc.Card(dcc.Markdown(text, dangerously_allow_html=False))
 
 
 @capture("card")
 def nav_card(data_frame: pd.DataFrame, text: str, href: str) -> dbc.Card:
     """Static navigation card."""
-    return dbc.NavLink(
-        dcc.Markdown(text, dangerously_allow_html=False),
-        href=get_relative_path(href) if href.startswith("/") else href,
+    return dbc.Card(
+        dbc.NavLink(
+            dcc.Markdown(text, dangerously_allow_html=False),
+            href=get_relative_path(href) if href.startswith("/") else href,
+        ),
+        className="card-nav",
     )
 
 
@@ -63,15 +66,18 @@ def kpi_card(
     """Dynamic text card in form of a KPI Card."""
     value = agg_fct(data_frame[value])
 
-    return [
-        html.Div(
-            [
-                html.P(icon, className="material-symbols-outlined") if icon else None,
-                html.H2(title),
-            ],
-        ),
-        html.P(value_format.format(value) if value_format else value),
-    ]
+    return dbc.Card(
+        [
+            html.Div(
+                [
+                    html.P(icon, className="material-symbols-outlined") if icon else None,
+                    html.H2(title),
+                ],
+            ),
+            html.P(value_format.format(value) if value_format else value),
+        ],
+        className="kpi-card",
+    )
 
 
 # LQ: Not sure if the removal of classNames is a better approach. It seems more unstable as it depends
@@ -96,24 +102,27 @@ def kpi_card_ref(
     delta = round((ref_value - value) / value * 100, 2)
     delta_sign = "delta-pos" if delta > 0 else "delta-neg"
 
-    return [
-        html.Div(
-            [
-                html.P(icon, className="material-symbols-outlined") if icon else None,
-                html.H2(title),
-            ],
-        ),
-        html.P(value),
-        html.Span(
-            [
-                html.Span(
-                    "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
-                ),
-                # LQ: Do we want to make this entire string configurable? e.g. enable provision of fstring?
-                # If yes, check how we evaluate f string only here instead of when being provided.
-                # Provid function?
-                html.Span(f"{delta} % vs. reference ({ref_value})"),
-            ],
-            className=delta_sign,
-        ),
-    ]
+    return dbc.Card(
+        [
+            html.Div(
+                [
+                    html.P(icon, className="material-symbols-outlined") if icon else None,
+                    html.H2(title),
+                ],
+            ),
+            html.P(value),
+            html.Span(
+                [
+                    html.Span(
+                        "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
+                    ),
+                    # LQ: Do we want to make this entire string configurable? e.g. enable provision of fstring?
+                    # If yes, check how we evaluate f string only here instead of when being provided.
+                    # Provid function?
+                    html.Span(f"{delta} % vs. reference ({ref_value})"),
+                ],
+                className=delta_sign,
+            ),
+        ],
+        className="kpi-card-ref",
+    )

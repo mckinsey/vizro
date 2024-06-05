@@ -1,5 +1,6 @@
 from typing import Literal, Optional
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dcc
 
@@ -14,6 +15,13 @@ from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
+
+CLASSNAME_LOOKUP = {
+    "text_card": "",
+    "nav_card": "card-nav",
+    "kpi_card": "kpi-card",
+    "kpi_card_ref": "kpi-card-ref",
+}
 
 
 class Card(VizroBaseModel):
@@ -39,8 +47,6 @@ class Card(VizroBaseModel):
         None, import_path=vc, description="Dynamic card function to be visualized on dashboard."
     )
 
-    _input_component_id: str = PrivateAttr()
-
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
@@ -61,7 +67,6 @@ class Card(VizroBaseModel):
     def __call__(self, **kwargs):
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         figure = self.figure(**kwargs) if self.figure else None
-        figure.id = self._input_component_id
         return figure
 
     def __getitem__(self, arg_name: str):
@@ -73,17 +78,17 @@ class Card(VizroBaseModel):
             return self.figure[arg_name]
 
     @_log_call
-    def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
-
-    @_log_call
     def build(self):
+        # LQ: Don't really like this - is there a better way to do this? I need to provide different classNames to the outer
+        # dbc.Card based on the CapturedCallable provided. This is a bit hacky.
+        function_name = self.figure._function.__name__
+
         # LQ: Previously discussed to insert dbc.Card directly here and provide self.id to the outer container.
         # However, this can affect several custom actions that rely on the id being previously provided to the inner
         # text component instead of the outer card component. Shall we keep as is or pass the id through the relevant inner
         # components? The last would require to provide an id argument to each CapturedCallable, which is also not optimal.
         return dcc.Loading(
-            self.__call__(),
+            dbc.Card(self.__call__(), id=self.id, className=CLASSNAME_LOOKUP[function_name]),
             color="grey",
             parent_className="loading-container",
         )
