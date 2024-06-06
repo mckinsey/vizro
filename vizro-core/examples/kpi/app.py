@@ -224,6 +224,7 @@ page_table = vm.Page(
             figure=dash_ag_grid(
                 data_frame=df_complaints,
                 columnDefs=COLUMN_DEFS,
+                dashGridOptions={"pagination": True},
             )
         )
     ],
