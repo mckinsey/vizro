@@ -4,12 +4,12 @@ import re
 import pandas as pd
 from langgraph.graph import END, StateGraph
 from vizro_ai.chains._llm_models import _get_llm_model
-from vizro_ai.dashboard.nodes.data_summary import FullDataSummary, requirement_sum_prompt, DfInfo, df_sum_prompt, _get_df_info
+from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df_info
 from vizro_ai.dashboard.nodes.model_summary import ModelSummary, model_sum_prompt
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
-model_default = "gpt-3.5-turbo"
-# model_default = "gpt-4o"
+# model_default = "gpt-3.5-turbo"
+model_default = "gpt-4-turbo"
 
 
 class GraphState(TypedDict):
@@ -158,20 +158,13 @@ def store_df_info(state: GraphState):
 def _create_and_compile_graph():
     graph = StateGraph(GraphState)
 
-    ### dashboard code generation ###
     graph.add_node("generate_model_summary", generate_model_summary)
     graph.add_node("compose_imports_code", compose_imports_code)
     graph.add_node("generate_dashboard_code", generate_dashboard_code)
 
-    # graph.add_edge("generate_model_summary", "generate_dashboard_code")
-    # graph.add_edge("generate_dashboard_code", END)
     graph.add_edge("generate_model_summary", "compose_imports_code")
     graph.add_edge("compose_imports_code", "generate_dashboard_code")
     graph.add_edge("generate_dashboard_code", END)
-
-    # graph.set_entry_point("generate_model_summary")
-
-    ### dashboard code generation ###
 
     graph.add_node("store_df_info", store_df_info)
     graph.add_edge("store_df_info", "generate_model_summary")

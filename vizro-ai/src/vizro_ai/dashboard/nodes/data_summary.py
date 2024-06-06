@@ -30,21 +30,6 @@ requirement_sum_prompt = ChatPromptTemplate.from_messages(
 )
 
 
-# Data model
-class DataSummary(BaseModel):
-    """Data summary output"""
-
-    dataset_provided: str = Field(description="Names of the datasets provided")
-    data_sample: str = Field(description="Sample data (first 5 rows) from the dataset provided")
-    data_schema: str = Field(description="Schema of the dataset provided")
-
-
-class FullDataSummary(BaseModel):
-    """Full data summary output"""
-
-    full_data_summary: List[DataSummary]
-
-
 def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
     """Get the dataframe schema and head info as strings."""
     formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
@@ -57,8 +42,7 @@ df_sum_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             """You are a data assistant with expertise naming a pandas dataframe. \n
-            Inspect the user \n
-            question based on the above provided data and give a short unique name to the dataset. \n
+            Inspect the provided data and give a short unique name to the dataset. \n
             Here is the dataframe sample:  \n ------- \n  {df_head} \n ------- \n
             Here is the schema:  \n ------- \n  {df_schema} \n ------- \n
             Names currently in use: \n ------- \n {current_df_names} \n ------- \n
