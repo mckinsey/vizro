@@ -7,6 +7,8 @@ from dash import ctx
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
+from vizro.managers import model_manager
+
 
 
 @capture("action")
@@ -24,9 +26,24 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
     """
     target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 
-    return _get_modified_page_figures(
+    figures_outputs = _get_modified_page_figures(
         targets=target_ids,
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
         ctds_parameters=ctx.args_grouping["external"]["parameters"],
     )
+
+    for target in targets:
+        target_id, targeted_argument = target.split(".", 1)
+        if targeted_argument.startswith("data_frame"):
+            from vizro.models._controls import Filter
+            for filter in model_manager._items_with_type(Filter):
+                filter = filter[1]
+                if target_id in filter.targets:
+                    filter._set_categorical_selectors_options(
+                        force_update=True,
+                        data_load_kwargs={"points": ctx.args_grouping["external"]["parameters"][0]["value"]}
+                    )
+                    figures_outputs[filter.selector.id] = ["ALL"] + filter.selector.options
+
+    return figures_outputs

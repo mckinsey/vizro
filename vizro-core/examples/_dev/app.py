@@ -1,31 +1,55 @@
 """Example to show dashboard configuration."""
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.managers import data_manager
+from vizro.actions import filter_interaction
 
-df = px.data.gapminder()
 
-page_one = vm.Page(
-    title="Dash AG Grid",
-    layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
+def load_data(points=0):
+    return px.data.iris().head(points)
+
+
+data_manager['my_data'] = load_data
+graph_config = dict(x="sepal_length", y="petal_width", color="species")
+
+
+page = vm.Page(
+    title="My first dashboard",
     components=[
-        vm.AgGrid(title="Equal Title One", figure=dash_ag_grid(data_frame=df)),
-        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
+        vm.Graph(
+            id="scatter_chart",
+            figure=px.scatter('my_data', **graph_config)
+        ),
+        vm.Graph(
+            id="scatter_chart_2",
+            figure=px.scatter(px.data.iris().tail(50), custom_data=["species"], **graph_config),
+            actions=[
+                vm.Action(
+                    function=filter_interaction(targets=["scatter_chart_3"]),
+                )
+            ]
+        ),
+        vm.Graph(
+            id="scatter_chart_3",
+            figure=px.scatter(px.data.iris(), **graph_config),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="species", targets=["scatter_chart", "scatter_chart_2"]),
+        vm.Parameter(
+            targets=['scatter_chart.data_frame.points'],
+            selector=vm.Slider(
+                id="parameter_points",
+                min=0,
+                max=150,
+                step=10,
+            )
+        ),
     ],
 )
 
-page_two = vm.Page(
-    title="Dash Data Table",
-    layout=vm.Layout(grid=[[0, 1]]),
-    components=[
-        vm.Table(title="Equal Title One", figure=dash_data_table(data_frame=df)),
-        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
-    ],
-)
-dashboard = vm.Dashboard(pages=[page_one, page_two])
-
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

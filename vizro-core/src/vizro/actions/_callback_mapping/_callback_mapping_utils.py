@@ -104,6 +104,32 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     }
 
 
+def _get_parameter_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
+    figures_outputs = {}
+
+    for target in model_manager[action_id].function["targets"]:
+        target_id, targeted_argument = target.split(".", 1)
+        figures_outputs[target_id] = Output(
+            component_id=target_id,
+            component_property=model_manager[target_id]._output_component_property,
+            allow_duplicate=True,
+        )
+
+        if targeted_argument.startswith("data_frame"):
+            from vizro.models._controls import Filter
+            for filter in model_manager._items_with_type(Filter):
+                filter = filter[1]
+                if target_id in filter.targets:
+                    figures_outputs[filter.selector.id] = Output(
+                        component_id=filter.selector.id,
+                        # TODO: Add _output_property for all models and reuse it here
+                        component_property="options",
+                        allow_duplicate=True,
+                    )
+
+    return figures_outputs
+
+
 def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     """Gets mapping of relevant output target name and `Outputs` for `export_data` action."""
     action = model_manager[action_id]
