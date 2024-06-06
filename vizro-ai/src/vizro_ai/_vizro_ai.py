@@ -162,3 +162,29 @@ class VizroAI:
             return output_dict
 
         return vizro_plot if return_elements else vizro_plot.figure
+
+    def dashboard(
+        self,
+        dfs: List[pd.DataFrame],
+        user_input: str,
+    ) -> str:
+        """Create dashboard using vizro via english descriptions, english to dashboard translation.
+
+        Args:
+            dfs: The dataframes to be analyzed.
+            user_input: User questions or descriptions of the desired visual.
+
+        Returns:
+            Dashboard code snippet.
+
+        """
+        runnable = _create_and_compile_graph()
+
+        message_res = runnable.invoke(
+            {
+                "dfs": dfs, 
+                "df_metadata": [],
+                "messages": [("user", user_input)]
+            }
+        )
+        return message_res

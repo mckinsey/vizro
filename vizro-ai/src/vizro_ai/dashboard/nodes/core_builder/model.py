@@ -3,8 +3,10 @@ from typing import Union
 from langchain.output_parsers import PydanticOutputParser
 from langchain_core.exceptions import OutputParserException
 from langchain_core.prompts import PromptTemplate
-from langchain_core.pydantic_v1 import BaseModel
-from pydantic.v1 import BaseModel as BaseModelV1
+try:
+    from pydantic.v1 import BaseModel
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel
 from typing import Dict, List
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -21,7 +23,7 @@ MODEL_REPROMPT = MODEL_PROMPT + "Pay special attention to the following error\n{
 def get_model(
         query: str, 
         model, 
-        result_model: Union[BaseModel, BaseModelV1], 
+        result_model: BaseModel, 
         df_metadata: List[Dict[str, str]],
         max_retry: int = 3,
         ) -> BaseModel:
@@ -66,7 +68,7 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
 def get_component_model(
         query: str, 
         model, 
-        result_model: Union[BaseModel, BaseModelV1], 
+        result_model: BaseModel, 
         df_metadata: List[Dict[str, str]],
         max_retry: int = 3,
         ) -> BaseModel:

@@ -4,7 +4,10 @@ from typing import Dict, List, Literal, Union
 
 import vizro.models as vm
 from langchain_openai import ChatOpenAI
-from pydantic.v1 import BaseModel as BaseModelV1
+try:
+    from pydantic.v1 import BaseModel, Field
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, Field
 from pydantic.v1 import Field, create_model, validator
 from vizro.managers import model_manager
 from vizro.tables import dash_ag_grid
@@ -16,7 +19,7 @@ component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
 
 
-# def create_proxy_model(original_model: VizroBaseModel) -> BaseModelV1:
+# def create_proxy_model(original_model: VizroBaseModel) -> BaseModel:
 #     """
 #     Create a new Pydantic model that contains the same fields and docstring as the original model,
 #     but without any methods.
@@ -38,7 +41,7 @@ control_type = Literal["Filter"]
     
 #     return proxy_model
 
-class CardProxyModel(BaseModelV1):
+class CardProxyModel(BaseModel):
     type: Literal["card"] = "card"
     text: str = Field(
         ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
@@ -51,7 +54,7 @@ class CardProxyModel(BaseModelV1):
 # CardProxyModel = create_proxy_model(vm.Card)
 
 
-class Component(BaseModelV1):
+class Component(BaseModel):
     component_name: component_type
     component_description: str = Field(
         ...,
@@ -74,7 +77,7 @@ class Component(BaseModelV1):
             return get_component_model(query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata)
 
 
-class Components(BaseModelV1):
+class Components(BaseModel):
     components: List[Component]
 
 
@@ -106,7 +109,7 @@ def create_filter_proxy(df, available_components):
     )
 
 
-class Control(BaseModelV1):
+class Control(BaseModel):
     control_name: control_type
     control_description: str = Field(
         ..., description="Description of the control. Include everything that seems to relate to this control."
@@ -130,11 +133,11 @@ class Control(BaseModelV1):
         return actual
 
 
-class Controls(BaseModelV1):
+class Controls(BaseModel):
     controls: List[Control]
 
 
-class PagePlanner(BaseModelV1):
+class PagePlanner(BaseModel):
     title: str = Field(
         ...,
         description="Title of the page. If no description is provided, make a short and concise title from the components.",
@@ -143,7 +146,7 @@ class PagePlanner(BaseModelV1):
     controls: Controls  # Optional[List[FilterPlanner]]#List[Control]#
 
 
-class DashboardPlanner(BaseModelV1):
+class DashboardPlanner(BaseModel):
     title: str = Field(
         ...,
         description="Title of the dashboard. If no description is provided, make a short and concise title from the content of the pages.",

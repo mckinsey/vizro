@@ -2,7 +2,10 @@ from typing import List, Tuple
 
 import pandas as pd
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.pydantic_v1 import BaseModel, Field
+try:
+    from pydantic.v1 import BaseModel, Field
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, Field
 
 requirement_sum_prompt = ChatPromptTemplate.from_messages(
     [
