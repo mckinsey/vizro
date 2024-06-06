@@ -8,6 +8,8 @@ provides high-quality fake data for creating realistic dashboard examples for re
 
 Note: The data has been additionally edited for the purpose of this example.
 
+<img src="./assets/images/kpi_dashboard.gif" alt="Gif to KPI dashboard">
+
 ## How to run the example locally
 
 1. If you have `hatch` set up, run the example with the command `hatch run example kpi`. Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
