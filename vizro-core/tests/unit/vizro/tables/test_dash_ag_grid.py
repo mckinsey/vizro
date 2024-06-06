@@ -81,6 +81,7 @@ class TestCustomDashAgGrid:
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_grid, expected_grid)
@@ -118,6 +119,7 @@ class TestCustomDashAgGrid:
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_grid, expected_grid)

@@ -37,7 +37,7 @@ class TestTableInstantiation:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
-        table = vm.Table(figure=standard_dash_table, id=id, actions=[])
+        table = vm.Table(id=id, figure=standard_dash_table, actions=[])
 
         assert table.id == id
         assert table.type == "table"
@@ -127,6 +127,7 @@ class TestBuildTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)
@@ -146,6 +147,7 @@ class TestBuildTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(table, expected_table)

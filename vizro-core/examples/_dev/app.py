@@ -1,74 +1,31 @@
-"""Dev app to try things out."""
+"""Example to show dashboard configuration."""
 
-import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
+from vizro.tables import dash_ag_grid, dash_data_table
 
-# DATA
-data = {
-    "this_is_a_really_long_column_name_0": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short_col_name": [4, 5, 6],
-    "this_is_a_really_long_column_name_2": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short": [10, 11, 12],
-    "this_is_a_really_long_column_name_4": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "this_is_a_really_long_column_name_6": [
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-        "sdfjalskdfnaksnfa;sldknfalksdnfl;kasdnfl;kasndflkasdf",
-    ],
-    "short4": [10, 11, 12],
-    "this_is_a_really_long_column_name_7": [13, 14, 15],
-}
+df = px.data.gapminder()
 
-df = pd.DataFrame(data)
-
-# df = px.data.gapminder()
-
-page = vm.Page(
-    title="Example of a Dash AG Grid",
+page_one = vm.Page(
+    title="Dash AG Grid",
+    layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(
-                id="grid1",
-                data_frame=df,
-                defaultColDef={"flex": 1, "minWidth": 200},
-                persistence=True,
-                persisted_props=["filterModel", "columnSize"],  # ,persistence_type = "local" #columnSize="autoSize"#
-            ),
-        ),
+        vm.AgGrid(title="Equal Title One", figure=dash_ag_grid(data_frame=df)),
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
     ],
-    controls=[vm.Filter(column="this_is_a_really_long_column_name_0")],
 )
-page2 = vm.Page(
-    title="Example of a Dash AG Grid 2",
+
+page_two = vm.Page(
+    title="Dash Data Table",
+    layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.AgGrid(
-            title="Dash AG Grid 2",
-            figure=dash_ag_grid(
-                id="grid2",
-                data_frame=df,
-                columnSize="autoSize",
-                # , persistence=True, persisted_props=["filterModel","columnSize"]#,persistence_type = "local"
-            ),
-        ),
+        vm.Table(title="Equal Title One", figure=dash_data_table(data_frame=df)),
+        vm.Graph(figure=px.box(df, x="continent", y="lifeExp", title="Equal Title One")),
     ],
-    # controls=[vm.Filter(column="continent")],
 )
-dashboard = vm.Dashboard(pages=[page, page2])
+dashboard = vm.Dashboard(pages=[page_one, page_two])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

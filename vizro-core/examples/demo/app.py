@@ -16,6 +16,7 @@ gapminder_mean = (
     .agg({"lifeExp": "mean", "pop": "mean", "gdpPercap": "mean"})
     .reset_index()
 )
+gapminder_mean_2007 = gapminder_mean.query("year == 2007")
 
 gapminder_transformed = gapminder.copy()
 gapminder_transformed["lifeExp"] = gapminder.groupby(by=["continent", "year"])["lifeExp"].transform("mean")
@@ -84,7 +85,7 @@ def variable_boxplot(y: str, data_frame: pd.DataFrame = None):
 def variable_bar(x: str, data_frame: pd.DataFrame = None):
     """Custom bar figure that needs post update calls."""
     fig = px.bar(
-        data_frame.query("year == 2007"),
+        data_frame,
         x=x,
         y="continent",
         orientation="h",
@@ -254,7 +255,7 @@ def create_variable_analysis():
             ),
             vm.Graph(
                 id="variable_bar",
-                figure=variable_bar(data_frame=gapminder_mean, x="lifeExp"),
+                figure=variable_bar(data_frame=gapminder_mean_2007, x="lifeExp"),
             ),
         ],
         controls=[
@@ -281,7 +282,7 @@ def create_relation_analysis():
             vm.Card(
                 text="""
                     Population, GDP per capita, and life expectancy are interconnected metrics that provide insights
-                    into the socio-economic well-being of a country.
+                    into the socioeconomic well-being of a country.
                     Rapid population growth can strain resources and infrastructure, impacting GDP per capita. Higher
                     GDP per capita often enables better healthcare and improved life expectancy, but other factors such
                     as healthcare quality and social policies also play significant roles.
@@ -297,12 +298,6 @@ def create_relation_analysis():
                 targets=["scatter_relation.x"],
                 selector=vm.Dropdown(
                     options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
-                ),
-            ),
-            vm.Parameter(
-                targets=["scatter_relation.y"],
-                selector=vm.Dropdown(
-                    options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
                 ),
             ),
             vm.Parameter(
@@ -328,7 +323,7 @@ def create_continent_summary():
                     ### Africa
                     ![](assets/images/continents/africa.svg#my-image)
 
-                    Africa, a diverse and expansive continent, faces both challenges and progress in its socio-economic
+                    Africa, a diverse and expansive continent, faces both challenges and progress in its socioeconomic
                     landscape. In 2007, Africa's GDP per capita was approximately $3,000, reflecting relatively slower
                     growth compared to other continents like Oceania and Europe.
 
@@ -361,7 +356,7 @@ def create_continent_summary():
                     and population has been significant, outpacing many other continents. In 2007, it boasted the
                     highest population among all continents, with countries like China and India leading the way.
 
-                    Despite facing various socio-economic challenges, Asia's increasing life expectancy from 46 years
+                    Despite facing various socioeconomic challenges, Asia's increasing life expectancy from 46 years
                     to 70 over the years reflects advancements in healthcare and overall well-being, making it a vital
                     region driving global progress and development.
                 """
@@ -423,12 +418,12 @@ def create_benchmark_analysis():
         ]
     }
     columnsDefs = [
-        {"field": "country"},
-        {"field": "continent"},
-        {"field": "year"},
-        {"field": "lifeExp", "cellDataType": "numeric"},
-        {"field": "gdpPercap", "cellDataType": "dollar", "cellStyle": cellStyle},
-        {"field": "pop"},
+        {"field": "country", "flex": 3},
+        {"field": "continent", "flex": 3},
+        {"field": "year", "flex": 2},
+        {"field": "lifeExp", "cellDataType": "numeric", "flex": 3},
+        {"field": "gdpPercap", "cellDataType": "dollar", "cellStyle": cellStyle, "flex": 3},
+        {"field": "pop", "flex": 3},
     ]
 
     page_country = vm.Page(
@@ -438,7 +433,7 @@ def create_benchmark_analysis():
         components=[
             vm.AgGrid(
                 title="Click on a cell in country column:",
-                figure=dash_ag_grid(id="dash_ag_grid_country", data_frame=gapminder, columnDefs=columnsDefs),
+                figure=dash_ag_grid(data_frame=gapminder, columnDefs=columnsDefs, dashGridOptions={"pagination": True}),
                 actions=[vm.Action(function=filter_interaction(targets=["line_country"]))],
             ),
             vm.Graph(

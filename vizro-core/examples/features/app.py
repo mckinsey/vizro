@@ -104,8 +104,7 @@ ag_grid = vm.Page(
     title="AG Grid",
     components=[
         vm.AgGrid(
-            title="Dash AG Grid",
-            figure=dash_ag_grid(data_frame=gapminder_2007),
+            title="Dash AG Grid", figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True})
         )
     ],
     controls=[vm.Filter(column="continent")],

@@ -35,6 +35,7 @@ class TestDashDataTable:
                 columns=columns,
                 data=data_in_table,
                 style_as_list_view=True,
+                style_cell={"position": "static"},
                 style_data={"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
                 style_header={
                     "border_bottom": "1px solid var(--state-overlays-selected-hover)",
@@ -88,6 +89,7 @@ class TestCustomDashDataTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_table, expected_table)
@@ -131,6 +133,7 @@ class TestCustomDashDataTable:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(custom_table, expected_table)

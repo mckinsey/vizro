@@ -109,7 +109,9 @@ class ModelManager:
                 page_actions_chains.extend(model.actions)
 
         for control in page.controls:
-            if hasattr(control, "selector") and control.selector:
+            if hasattr(control, "actions") and control.actions:
+                page_actions_chains.extend(control.actions)
+            if hasattr(control, "selector") and control.selector and hasattr(control.selector, "actions"):
                 page_actions_chains.extend(control.selector.actions)
 
         return page_actions_chains

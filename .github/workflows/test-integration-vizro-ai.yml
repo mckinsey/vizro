@@ -7,22 +7,45 @@ defaults:
 on:
   push:
     branches: [main]
-    paths:
-      - vizro-ai/**
   pull_request:
     branches:
       - main
     paths:
-      - vizro-ai/**
-  schedule:
-    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
+      - "vizro-ai/**"
+      - "!vizro-ai/docs/**"
 
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
 
 jobs:
+  test-integration-vizro-ai-fork:
+    if: ${{ github.event.pull_request.head.repo.fork }}
+    name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.9"
+            hatch-env: all.py3.9
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+          - python-version: "3.11"
+            hatch-env: lower-bounds
+            label: lower bounds
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Passed fork step
+        run: echo "Success!"
+
   test-integration-vizro-ai:
+    if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
     environment: vizro_ai_secrets
     runs-on: ubuntu-latest
@@ -44,8 +67,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5

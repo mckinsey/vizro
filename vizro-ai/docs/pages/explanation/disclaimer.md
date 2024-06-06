@@ -1,6 +1,6 @@
 # Disclaimer
 
-Users must select one of the [supported large language models (LLMs)](./faq.md#which-llms-are-supported-by-vizro-ai) to use the `vizro_ai` package,
+Users must select one of the [supported large language models (LLMs)](../user-guides/customize-vizro-ai.md#supported-models) to use the `vizro_ai` package,
 and are responsible for obtaining their own suitable API key for the relevant model.
 
 <!-- vale off -->

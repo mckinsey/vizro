@@ -1,4 +1,5 @@
 import logging
+from dataclasses import asdict
 from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
@@ -12,9 +13,10 @@ from vizro_ai.dashboard.graph.dashboard_code_generation import _create_and_compi
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
+    PlotOutputs,
     _debug_helper,
+    _display_markdown,
     _exec_code_and_retrieve_fig,
-    _exec_fig_code_display_markdown,
     _is_jupyter,
 )
 
@@ -25,7 +27,7 @@ class VizroAI:
     """Vizro-AI main class."""
 
     pipeline_manager: PipelineManager = PipelineManager()
-    _return_all_text: bool = False
+    _return_all_text: bool = False  # TODO deleted after adding new integration test
 
     def __init__(self, model: Optional[Union[ChatOpenAI, str]] = None):
         """Initialization of VizroAI.
@@ -59,7 +61,7 @@ class VizroAI:
 
     def _run_plot_tasks(
         self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
-    ) -> Dict[str, Any]:
+    ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
         chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
@@ -78,18 +80,29 @@ class VizroAI:
 
         pass_validation = validated_code_dict.get("debug_status")
         code_string = validated_code_dict.get("code_string")
-        business_insights, code_explanation = None, None
 
-        if explain and pass_validation:
+        if not pass_validation:
+            raise DebugFailure(
+                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
+                "or try to select a different model. Fallout response is provided: \n\n" + code_string
+            )
+
+        fig_object = _exec_code_and_retrieve_fig(
+            code=code_string, local_args={"df": df}, show_fig=_is_jupyter(), is_notebook_env=_is_jupyter()
+        )
+        if explain:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
                 chain_input=user_input, code_snippet=code_string
             )
 
-        return {
-            "business_insights": business_insights,
-            "code_explanation": code_explanation,
-            "code_string": code_string,
-        }
+            return PlotOutputs(
+                code=code_string,
+                figure=fig_object,
+                business_insights=business_insights,
+                code_explanation=code_explanation,
+            )
+
+        return PlotOutputs(code=code_string, figure=fig_object)
 
     def _get_chart_code(self, df: pd.DataFrame, user_input: str) -> str:
         """Get Chart code of vizro via english descriptions, English to chart translation.
@@ -101,12 +114,17 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual
 
         """
-        # TODO refine and update error handling
-        return self._run_plot_tasks(df, user_input, explain=False).get("code_string")
+        # TODO retained for some chat application integration, need deprecation handling
+        return self._run_plot_tasks(df, user_input, explain=False).code
 
-    def plot(
-        self, df: pd.DataFrame, user_input: str, explain: bool = False, max_debug_retry: int = 3
-    ) -> Union[go.Figure, Dict[str, Any]]:
+    def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        explain: bool = False,
+        max_debug_retry: int = 3,
+        return_elements: bool = False,
+    ) -> Union[go.Figure, PlotOutputs]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -114,54 +132,33 @@ class VizroAI:
             user_input: User questions or descriptions of the desired visual.
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
+            return_elements: Flag to return PlotOutputs dataclass that includes all possible elements generated.
 
         Returns:
-            Plotly Figure object or a dictionary containing data
+           go.Figure or PlotOutputs dataclass
 
         """
-        output_dict = self._run_plot_tasks(df, user_input, explain=explain, max_debug_retry=max_debug_retry)
-        code_string = output_dict.get("code_string")
-        business_insights = output_dict.get("business_insights")
-        code_explanation = output_dict.get("code_explanation")
-
-        if code_string.startswith("Failed to debug code"):
-            raise DebugFailure(
-                "Chart creation failed. Retry debugging has reached maximum limit. Try to rephrase the prompt, "
-                "or try to select a different model. Fallout response is provided: \n\n" + code_string
-            )
-
-        # TODO Tentative for integration test
-        if self._return_all_text:
-            return output_dict
-        if not explain:
-            return _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
-        if explain:
-            return _exec_fig_code_display_markdown(
-                df=df, code_snippet=code_string, biz_insights=business_insights, code_explain=code_explanation
-            )
-
-    def dashboard(
-        self,
-        dfs: List[pd.DataFrame],
-        user_input: str,
-    ) -> str:
-        """Create dashboard using vizro via english descriptions, english to dashboard translation.
-
-        Args:
-            dfs: The dataframes to be analyzed.
-            user_input: User questions or descriptions of the desired visual.
-
-        Returns:
-            Dashboard code snippet.
-
-        """
-        runnable = _create_and_compile_graph()
-
-        message_res = runnable.invoke(
-            {
-                "dfs": dfs, 
-                "df_metadata": [],
-                "messages": [("user", user_input)]
-            }
+        vizro_plot = self._run_plot_tasks(
+            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry
         )
-        return message_res
+
+        if not explain:
+            logger.info(
+                "Flag explain is set to False. business_insights and code_explanation will not be included in "
+                "the output dataclass."
+            )
+
+        else:
+            _display_markdown(
+                code_snippet=vizro_plot.code,
+                biz_insights=vizro_plot.business_insights,
+                code_explain=vizro_plot.code_explanation,
+            )
+
+        # TODO Tentative for integration test, will be updated/removed for new tests
+        if self._return_all_text:
+            output_dict = asdict(vizro_plot)
+            output_dict["code_string"] = vizro_plot.code
+            return output_dict
+
+        return vizro_plot if return_elements else vizro_plot.figure

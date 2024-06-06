@@ -21,6 +21,7 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
+  "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
   "toml",
@@ -88,7 +89,7 @@ scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 [envs.lower-bounds]
 extra-dependencies = [
   "pydantic==1.10.13",
-  "dash==2.14.1"
+  "dash==2.17.0"
 ]
 
 [publish.index]

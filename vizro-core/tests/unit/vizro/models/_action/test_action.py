@@ -32,12 +32,12 @@ def custom_action_function_mock_return(request):
 
 @pytest.fixture
 def custom_action_build_expected():
-    return html.Div(children=[], id="action_test_action_model_components_div", hidden=True)
+    return html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
 
 
 @pytest.fixture
 def predefined_action_build_expected():
-    return html.Div(children=[], id="filter_action_test_filter_action_model_components_div", hidden=True)
+    return html.Div(id="filter_action_test_filter_action_model_components_div", children=[], hidden=True)
 
 
 class TestActionInstantiation:

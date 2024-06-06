@@ -43,7 +43,7 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):
-        graph = vm.Graph(figure=standard_px_chart, id=id, actions=[])
+        graph = vm.Graph(id=id, figure=standard_px_chart, actions=[])
 
         assert graph.id == id
         assert graph.type == "graph"
@@ -154,5 +154,6 @@ class TestBuild:
             ),
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph)

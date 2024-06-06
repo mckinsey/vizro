@@ -76,6 +76,8 @@ pages:
       - figure:
           _target_: dash_ag_grid
           data_frame: gapminder_2007
+          dashGridOptions:
+            pagination: true
         title: Dash AG Grid
         type: ag_grid
     controls:

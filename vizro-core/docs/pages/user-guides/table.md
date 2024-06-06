@@ -52,11 +52,8 @@ Sometimes a parameter may not work because it requires a callback to function. I
         df = px.data.gapminder()
 
         page = vm.Page(
-            title="Example of a Dash AG Grid",
-            components=[
-                vm.AgGrid(title="Dash AG Grid", figure=dash_ag_grid(data_frame=df)),
-            ],
-            controls=[vm.Filter(column="continent")],
+            title="Default Dash AG Grid",
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df))]
         )
         dashboard = vm.Dashboard(pages=[page])
 
@@ -71,17 +68,55 @@ Sometimes a parameter may not work because it requires a callback to function. I
           - figure:
               _target_: dash_ag_grid
               data_frame: gapminder
-            title: Dash AG Grid
             type: ag_grid
-          controls:
-            - column: continent
-              type: filter
-          title: Example of a Dash AG Grid
+          title: Default Dash AG Grid
         ```
     === "Result"
         [![AGGrid]][AGGrid]
 
     [AGGrid]: ../../assets/user_guides/table/aggrid.png
+
+### Enable pagination
+Pagination is a visual alternative to using vertical scroll. It can also improve loading time if you have many rows.
+You can turn it on by setting `dashGridOptions={"pagination": True}`.
+
+!!! example "Basic Dash AG Grid"
+
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        df = px.data.gapminder()
+
+        page = vm.Page(
+            title="Dash AG Grid with pagination",
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}))]
+        )
+        dashboard = vm.Dashboard(pages=[page])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+        - components:
+          - figure:
+              _target_: dash_ag_grid
+              data_frame: gapminder
+              dashGridOptions:
+                 pagination: true
+            type: ag_grid
+          title: Dash AG Grid with pagination
+        ```
+    === "Result"
+        [![AGGrid]][AGGrid]
+
+    [AGGrid]: ../../assets/user_guides/table/aggrid-pagination.png
 
 ### Formatting columns
 
@@ -176,7 +211,7 @@ to format displayed strings automatically.
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find
 an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
-There are many more ways to alter the grid beyond this showcase.
+There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](./assets.md#Overwrite CSS properties in selective components).
 
 ??? example "Styled and modified Dash AG Grid"
 

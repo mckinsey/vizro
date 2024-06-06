@@ -120,13 +120,14 @@ class TestBuildAgGrid:
             [
                 None,
                 html.Div(
-                    dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")(),
                     id="text_ag_grid",
+                    children=dash_ag_grid(data_frame=gapminder, id="__input_text_ag_grid")(),
                     className="table-container",
                 ),
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)
@@ -140,15 +141,14 @@ class TestBuildAgGrid:
             [
                 None,
                 html.Div(
-                    dash_ag_grid(
-                        data_frame=gapminder, id="underlying_ag_grid_id", dashGridOptions={"pagination": True}
-                    )(),
                     id="text_ag_grid",
+                    children=dash_ag_grid(data_frame=gapminder, id="underlying_ag_grid_id")(),
                     className="table-container",
                 ),
             ],
             color="grey",
             parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
         assert_component_equal(ag_grid, expected_ag_grid)

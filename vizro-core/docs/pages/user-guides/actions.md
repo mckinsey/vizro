@@ -5,7 +5,7 @@ Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`
 
 By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
 
-There are already lots of action functions you can reuse.
+There are already a few action functions you can reuse.
 
 ???+ info "Overview of currently available pre-defined action functions"
 
@@ -24,8 +24,12 @@ The below sections are guides on how to use pre-defined action functions.
 
 ### Export data
 
-To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as
-a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
+To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component.
+Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
+
+When data from a [custom chart](custom-charts.md) is exported it is the contents of the `data_frame` input argument that is exported.
+Therefore, the exported data will reflect any native filters and parameters, but no transformations to the `data_frame` done inside the chart function.
+
 
 !!! example "`export_data`"
 
