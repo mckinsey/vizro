@@ -69,11 +69,10 @@ class PageBuilder:
 
 
 class DashboardBuilder:
-    def __init__(self, model, data, dashboard_plan, data_manager):
+    def __init__(self, model, data, dashboard_plan):
         self._model = model
         self._data = data
         self._dashboard_plan = dashboard_plan
-        self.data_manager = data_manager
         self._pages = None
 
     @property

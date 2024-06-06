@@ -7,8 +7,6 @@ from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.dashboard.nodes.data_summary import FullDataSummary, requirement_sum_prompt, DfInfo, df_sum_prompt
 from vizro_ai.dashboard.nodes.model_summary import ModelSummary, model_sum_prompt
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
-from vizro.managers import data_manager
-from vizro.managers._data_manager import DataManager
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4o"
@@ -29,7 +27,7 @@ class GraphState(TypedDict):
     df_schemas: List[str]
     df_heads: List[str]
     dfs: List[pd.DataFrame]
-    data_manager: DataManager
+    # data_manager: DataManager
     cleaned_df_names: List[str]
 
 
@@ -142,13 +140,13 @@ def generate_dashboard_code(state: GraphState):
     # df_schemas = state["df_schemas"]
     # df_heads = state["df_heads"]
     dfs = state["dfs"]
-    data_manager = state["data_manager"]
+    # data_manager = state["data_manager"]
     cleaned_df_names = state["cleaned_df_names"]
 
     first_df = dfs[0]
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
-    dashboard = vizro_ai_dashboard.build_dashboard(dfs, messages[0], data_manager, cleaned_df_names)
+    dashboard = vizro_ai_dashboard.build_dashboard(dfs, messages[0], cleaned_df_names)
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     print(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
@@ -177,7 +175,7 @@ def store_df_info(state: GraphState):
     dfs = state["dfs"]
     messages = state["messages"]
     # print(type(state["data_manager"]))
-    data_manager = state["data_manager"]
+    # data_manager = state["data_manager"]
     current_df_names = []
     cleaned_df_names = state["cleaned_df_names"]
     for i, df in enumerate(dfs):
@@ -199,8 +197,8 @@ def store_df_info(state: GraphState):
         cleaned_df_name = cleaned_df_name.strip('_')
         print(f"cleaned_df_name: {cleaned_df_name}")
         cleaned_df_names.append(cleaned_df_name)
-        data_manager[cleaned_df_name] = df
-    return {"data_manager": data_manager, "cleaned_df_names": cleaned_df_names}
+        # data_manager[cleaned_df_name] = df
+    return {"cleaned_df_names": cleaned_df_names}
 
 
 

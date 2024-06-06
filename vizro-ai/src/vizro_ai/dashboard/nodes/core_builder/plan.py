@@ -8,7 +8,6 @@ from pydantic.v1 import BaseModel as BaseModelV1
 from pydantic.v1 import Field, create_model, validator
 from vizro.managers import model_manager
 from vizro.tables import dash_ag_grid
-from vizro.managers._data_manager import DataManager
 from vizro.models import VizroBaseModel
 
 from .model import get_model, get_component_model
@@ -155,7 +154,6 @@ class DashboardPlanner(BaseModelV1):
 def get_dashboard_plan(
         query: str, 
         model: Union[ChatOpenAI], 
-        data_manager: DataManager,
         cleaned_df_names: List[str],
         max_retry: int = 3
         ) -> DashboardPlanner:
