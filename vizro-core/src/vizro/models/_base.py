@@ -200,7 +200,8 @@ class VizroBaseModel(BaseModel):
             return "[" + ", ".join(VizroBaseModel.transform_dict(item) for item in d) + "]"
         elif isinstance(d, CapturedCallable) and "dash_ag_grid" in repr(d._function):
             # placeholder for captured callable
-            return f"dash_ag_grid(data_frame=pd.DataFrame())"
+            args = ", ".join(f"{k}='{v}'" for k, v in d._CapturedCallable__bound_arguments.items())
+            return f"dash_ag_grid({args})"
         else:
             # Base case: if it's not a dictionary or list, return the item itself
             return repr(d)  # Use repr to ensure proper representation of strings and other data types

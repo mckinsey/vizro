@@ -27,7 +27,7 @@ class PageBuilder:
             len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
         ):
             try:
-                components.append(self._page_plan.components.components[i].create(df=self._data, model=self._model))
+                components.append(self._page_plan.components.components[i].create(data_frame=self._data, model=self._model))
             except DebugFailure as e:
                 components.append(
                     vm.Card(
@@ -61,15 +61,19 @@ class PageBuilder:
     @property
     def page(self):
         if self._page is None:
+            print(f"Building page: {self._page_plan.title}")
+            print(f"Components: {self.components}")
+            print(f"Controls: {self.controls}")
             self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls)
         return self._page
 
 
 class DashboardBuilder:
-    def __init__(self, model, data, dashboard_plan):
+    def __init__(self, model, data, dashboard_plan, data_manager):
         self._model = model
         self._data = data
         self._dashboard_plan = dashboard_plan
+        self.data_manager = data_manager
         self._pages = None
 
     @property

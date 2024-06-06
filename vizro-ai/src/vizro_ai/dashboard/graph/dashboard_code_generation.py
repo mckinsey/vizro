@@ -30,6 +30,7 @@ class GraphState(TypedDict):
     df_heads: List[str]
     dfs: List[pd.DataFrame]
     data_manager: DataManager
+    cleaned_df_names: List[str]
 
 
 def generate_model_summary(state: GraphState):
@@ -141,11 +142,13 @@ def generate_dashboard_code(state: GraphState):
     # df_schemas = state["df_schemas"]
     # df_heads = state["df_heads"]
     dfs = state["dfs"]
+    data_manager = state["data_manager"]
+    cleaned_df_names = state["cleaned_df_names"]
 
     first_df = dfs[0]
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
-    dashboard = vizro_ai_dashboard.build_dashboard(first_df, messages[0])
+    dashboard = vizro_ai_dashboard.build_dashboard(dfs, messages[0], data_manager, cleaned_df_names)
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     print(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
@@ -176,7 +179,7 @@ def store_df_info(state: GraphState):
     # print(type(state["data_manager"]))
     data_manager = state["data_manager"]
     current_df_names = []
-    cleaned_df_names = []
+    cleaned_df_names = state["cleaned_df_names"]
     for i, df in enumerate(dfs):
         df_schema = df_schemas[i]
         df_head = df_heads[i]
@@ -197,7 +200,7 @@ def store_df_info(state: GraphState):
         print(f"cleaned_df_name: {cleaned_df_name}")
         cleaned_df_names.append(cleaned_df_name)
         data_manager[cleaned_df_name] = df
-    return {"data_manager": data_manager}
+    return {"data_manager": data_manager, "cleaned_df_names": cleaned_df_names}
 
 
 
@@ -218,13 +221,14 @@ def _create_and_compile_graph():
     graph.add_edge("generate_dashboard_code", END)
 
     # graph.set_entry_point("generate_data_summary")
-    graph.set_entry_point("generate_model_summary")
+    # graph.set_entry_point("generate_model_summary")
 
     ### dashboard code generation ###
 
-    # graph.add_node("store_df_info", store_df_info)
+    graph.add_node("store_df_info", store_df_info)
+    graph.add_edge("store_df_info", "generate_model_summary")
     # graph.add_edge("store_df_info", END)
-    # graph.set_entry_point("store_df_info")
+    graph.set_entry_point("store_df_info")
 
     runnable = graph.compile()
 

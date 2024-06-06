@@ -163,6 +163,13 @@ class VizroAI:
         data_manager: DataManager = DataManager()
 
         message_res = runnable.invoke(
-            {"dfs": dfs, "df_schemas": df_schemas, "df_heads": df_heads, "data_manager": data_manager, "messages": [("user", user_input)]}
+            {
+                "dfs": dfs, 
+                "df_schemas": df_schemas, 
+                "df_heads": df_heads, 
+                "data_manager": data_manager,
+                "cleaned_df_names": [], 
+                "messages": [("user", user_input)]
+            }
         )
         return message_res
