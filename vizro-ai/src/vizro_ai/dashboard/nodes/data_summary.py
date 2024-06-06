@@ -37,7 +37,6 @@ class DataSummary(BaseModel):
     dataset_provided: str = Field(description="Names of the datasets provided")
     data_sample: str = Field(description="Sample data (first 5 rows) from the dataset provided")
     data_schema: str = Field(description="Schema of the dataset provided")
-    dataset_vizro_model_mapping: str = Field(description="Mapping of dataset name to Vizro model")
 
 
 class FullDataSummary(BaseModel):
@@ -46,40 +45,30 @@ class FullDataSummary(BaseModel):
     full_data_summary: List[DataSummary]
 
 
-def _get_df_info(dfs: List[pd.DataFrame]) -> Tuple[List[str], List[str]]:
-    """Get the dataframe schema and head info as string."""
-    schema_strings = []
-    head_strings = []
-    for _, df in enumerate(dfs):
-        formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
-        schema_string = "\n".join(formatted_pairs)
-
-        schema_strings.append(schema_string)
-        head_strings.append(df.head().to_markdown())
-    return schema_strings, head_strings
+def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
+    """Get the dataframe schema and head info as strings."""
+    formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
+    schema_string = "\n".join(formatted_pairs)
+    head_string = df.sample(5).to_markdown()
+    return schema_string, head_string
 
 df_sum_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are a data assistant with expertise pandas dataframe. \n
-            Here is the dataframe sample:  \n ------- \n  {df_head} \n ------- \n
-            Here is the schema:  \n ------- \n  {df_schema} \n ------- \n
+            """You are a data assistant with expertise naming a pandas dataframe. \n
             Inspect the user \n
             question based on the above provided data and give a short unique name to the dataset. \n
+            Here is the dataframe sample:  \n ------- \n  {df_head} \n ------- \n
+            Here is the schema:  \n ------- \n  {df_schema} \n ------- \n
             Names currently in use: \n ------- \n {current_df_names} \n ------- \n
             \n ------- \n
-            Here is the user question:""",
+            """,
         ),
-        ("placeholder", "{messages}"),
     ]
 )
 
 class DfInfo(BaseModel):
     """Data Info output"""
 
-    dataset_name: str = Field(description="Name of the dataset provided")
-    # data_sample: str = Field(description="Sample data (first 5 rows) from the dataset provided")
-    # data_schema: str = Field(description="Schema of the dataset provided")
-    # dataset_vizro_model_mapping: str = Field(description="Mapping of dataset name to Vizro model")
-
+    dataset_name: str = Field(description="Name of the dataset")

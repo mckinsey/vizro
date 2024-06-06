@@ -7,9 +7,9 @@ from vizro_ai.utils.helper import DebugFailure
 
 
 class PageBuilder:
-    def __init__(self, model, data, page_plan):
+    def __init__(self, model, df_metadata, page_plan):
         self._model = model
-        self._data = data
+        self.df_metadata = df_metadata
         self._page_plan = page_plan
         self._components = None
         self._controls = None
@@ -27,7 +27,7 @@ class PageBuilder:
             len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
         ):
             try:
-                components.append(self._page_plan.components.components[i].create(data_frame=self._data, model=self._model))
+                components.append(self._page_plan.components.components[i].create(df_metadata=self.df_metadata, model=self._model))
             except DebugFailure as e:
                 components.append(
                     vm.Card(
@@ -53,7 +53,8 @@ class PageBuilder:
         ):
             controls.append(
                 self._page_plan.controls.controls[i].create(
-                    df=self._data, model=self._model, available_components=self.available_components
+                    df=self.df_metadata, model=self._model, available_components=self.available_components,
+                    df_metadata=self.df_metadata
                 )
             )
         return controls
@@ -69,9 +70,9 @@ class PageBuilder:
 
 
 class DashboardBuilder:
-    def __init__(self, model, data, dashboard_plan):
+    def __init__(self, model, df_metadata, dashboard_plan):
         self._model = model
-        self._data = data
+        self.df_metadata = df_metadata
         self._dashboard_plan = dashboard_plan
         self._pages = None
 
@@ -87,7 +88,7 @@ class DashboardBuilder:
             pages.append(
                 PageBuilder(
                     model=self._model,
-                    data=self._data,
+                    df_metadata=self.df_metadata,
                     page_plan=self._dashboard_plan.pages[i],
                 ).page
             )

@@ -155,16 +155,12 @@ class VizroAI:
             Dashboard code snippet.
 
         """
-        df_schemas, df_heads = _get_df_info(dfs)
-
         runnable = _create_and_compile_graph()
 
         message_res = runnable.invoke(
             {
                 "dfs": dfs, 
-                "df_schemas": df_schemas, 
-                "df_heads": df_heads, 
-                "cleaned_df_names": [], 
+                "df_metadata": [],
                 "messages": [("user", user_input)]
             }
         )

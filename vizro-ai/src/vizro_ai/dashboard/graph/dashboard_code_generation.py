@@ -1,10 +1,10 @@
-from typing import List, TypedDict
+from typing import List, TypedDict, Dict
 import re
 
 import pandas as pd
 from langgraph.graph import END, StateGraph
 from vizro_ai.chains._llm_models import _get_llm_model
-from vizro_ai.dashboard.nodes.data_summary import FullDataSummary, requirement_sum_prompt, DfInfo, df_sum_prompt
+from vizro_ai.dashboard.nodes.data_summary import FullDataSummary, requirement_sum_prompt, DfInfo, df_sum_prompt, _get_df_info
 from vizro_ai.dashboard.nodes.model_summary import ModelSummary, model_sum_prompt
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
@@ -17,18 +17,14 @@ class GraphState(TypedDict):
 
     Attributes
         messages : With user question, error messages, reasoning
-        df_schemas : Schema of the dataframes
-        df_heads : Data sample of the dataframes
         dfs : Dataframes
+        df_metadata : Cleaned dataframe names and their metadata
 
     """
 
     messages: List
-    df_schemas: List[str]
-    df_heads: List[str]
     dfs: List[pd.DataFrame]
-    # data_manager: DataManager
-    cleaned_df_names: List[str]
+    df_metadata: List[Dict[str, str]]
 
 
 def generate_model_summary(state: GraphState):
@@ -45,7 +41,6 @@ def generate_model_summary(state: GraphState):
     model_sum_chain = model_sum_prompt | _get_llm_model(model=model_default).with_structured_output(ModelSummary)
 
     model_summary = model_sum_chain.invoke({"messages": messages})
-    # print(f"model_summary: {model_summary}")
     messages += [
         (
             "assistant",
@@ -96,57 +91,20 @@ def compose_imports_code(state: GraphState):
     return {"messages": messages}
 
 
-def generate_data_summary(state: GraphState):
-    """Generate a summary of the dataframes provided.
-
-    Args:
-        state (dict): The current graph state
-
-    Returns:
-        state (dict): New key added to state, generation
-
-    """
-    messages = state["messages"]
-    df_schemas = state["df_schemas"]
-    df_heads = state["df_heads"]
-    requirement_sum_chain = requirement_sum_prompt | _get_llm_model(model=model_default).with_structured_output(
-        FullDataSummary
-    )
-
-    data_requirement_summary = requirement_sum_chain.invoke(
-        {"df_heads": df_heads, "df_schemas": df_schemas, "messages": messages}
-    )
-    messages += [
-        (
-            "assistant",
-            data_requirement_summary,
-        )
-    ]
-    return {"messages": messages}
-
-
 def generate_dashboard_code(state: GraphState):
     """Generate a dashboard code snippet.
 
     Args:
         state (dict): The current graph state
-
-    Returns:
-        state (dict): New key added to state, generation
-
     """
     messages = state["messages"]
     _, import_statement = messages[-1]
-    # df_schemas = state["df_schemas"]
-    # df_heads = state["df_heads"]
     dfs = state["dfs"]
-    # data_manager = state["data_manager"]
-    cleaned_df_names = state["cleaned_df_names"]
+    df_metadata = state["df_metadata"]
 
-    first_df = dfs[0]
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
-    dashboard = vizro_ai_dashboard.build_dashboard(dfs, messages[0], cleaned_df_names)
+    dashboard = vizro_ai_dashboard.build_dashboard(messages[0], df_metadata)
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     print(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
@@ -164,23 +122,14 @@ def store_df_info(state: GraphState):
     """Store information about the dataframes.
 
     Args:
-        dfs (list): List of dataframes
-
-    Returns:
-        dict: Dictionary containing the dataframes
-
+        state (dict): The current graph state.
     """
-    df_schemas = state["df_schemas"]
-    df_heads = state["df_heads"]
     dfs = state["dfs"]
     messages = state["messages"]
-    # print(type(state["data_manager"]))
-    # data_manager = state["data_manager"]
     current_df_names = []
-    cleaned_df_names = state["cleaned_df_names"]
-    for i, df in enumerate(dfs):
-        df_schema = df_schemas[i]
-        df_head = df_heads[i]
+    df_metadata = state["df_metadata"]
+    for _, df in enumerate(dfs):
+        df_schema, df_head = _get_df_info(df)
         data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(
             DfInfo
         )
@@ -196,9 +145,13 @@ def store_df_info(state: GraphState):
         cleaned_df_name = re.sub(r'\W+', '_', cleaned_df_name)
         cleaned_df_name = cleaned_df_name.strip('_')
         print(f"cleaned_df_name: {cleaned_df_name}")
-        cleaned_df_names.append(cleaned_df_name)
-        # data_manager[cleaned_df_name] = df
-    return {"cleaned_df_names": cleaned_df_names}
+        df_metadata.append({
+            "cleaned_df_name": cleaned_df_name,
+            "df_schema": df_schema,
+            "df_head": df_head
+        })
+
+    return {"df_metadata": df_metadata}
 
 
 
@@ -206,26 +159,22 @@ def _create_and_compile_graph():
     graph = StateGraph(GraphState)
 
     ### dashboard code generation ###
-    # graph.add_node("generate_data_summary", generate_data_summary)
     graph.add_node("generate_model_summary", generate_model_summary)
     graph.add_node("compose_imports_code", compose_imports_code)
     graph.add_node("generate_dashboard_code", generate_dashboard_code)
 
-    # graph.add_edge("generate_data_summary", "generate_dashboard_code")
     # graph.add_edge("generate_model_summary", "generate_dashboard_code")
     # graph.add_edge("generate_dashboard_code", END)
     graph.add_edge("generate_model_summary", "compose_imports_code")
     graph.add_edge("compose_imports_code", "generate_dashboard_code")
     graph.add_edge("generate_dashboard_code", END)
 
-    # graph.set_entry_point("generate_data_summary")
     # graph.set_entry_point("generate_model_summary")
 
     ### dashboard code generation ###
 
     graph.add_node("store_df_info", store_df_info)
     graph.add_edge("store_df_info", "generate_model_summary")
-    # graph.add_edge("store_df_info", END)
     graph.set_entry_point("store_df_info")
 
     runnable = graph.compile()
