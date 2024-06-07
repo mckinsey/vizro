@@ -1,6 +1,6 @@
 from typing import Literal
 
-from dash import dcc
+from dash import dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -55,9 +55,12 @@ class Figure(VizroBaseModel):
     @_log_call
     def build(self):
         return dcc.Loading(
-            self.__call__(),
+            # Optimally, we would like to provide id=self.id directly here such that we can target the CSS
+            # of the children via ID as well, but the `id` doesn't seem  to be passed on to the loading component.
+            # I've raised an issue on dash here: https://github.com/plotly/dash/issues/2878
+            # In the meantime, we are adding an extra html.div here.
+            html.Div(self.__call__(), id=self.id),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
-            id=self.id,  # TODO: Investigate - this does not seem to work?
         )
