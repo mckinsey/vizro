@@ -2,11 +2,11 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
+from dash import Input, Output, callback, no_update
+from utils._charts import COLUMN_DEFS, KPI, AgGridPage, bar, choropleth, infinite_scroll_ag_grid, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
 from vizro.actions import filter_interaction
-from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
@@ -217,14 +217,15 @@ page_region = vm.Page(
     ],
 )
 
-page_table = vm.Page(
+page_table = AgGridPage(
     title="List of complaints",
     components=[
         vm.AgGrid(
-            figure=dash_ag_grid(
-                data_frame=df_complaints,
+            figure=infinite_scroll_ag_grid(
+                id="kpi_grid",
+                data_frame=pd.DataFrame(),
                 columnDefs=COLUMN_DEFS,
-                dashGridOptions={"pagination": True},
+                getRowId="params.data.Complaint ID",
             )
         )
     ],
@@ -244,5 +245,19 @@ dashboard = vm.Dashboard(
     ),
 )
 
+
+# CALLBACKS -----------------------------------------------------------------------------------
+@callback(
+    Output("kpi_grid", "getRowsResponse"),
+    Input("kpi_grid", "getRowsRequest"),
+)
+def infinite_scroll(request):
+    """Infinite scroll callback mechanism for the AG Grid."""
+    if request is None:
+        return no_update
+    partial = df_complaints.iloc[request["startRow"] : request["endRow"]]
+    return {"rowData": partial.to_dict("records"), "rowCount": len(df_complaints.index)}
+
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=False)

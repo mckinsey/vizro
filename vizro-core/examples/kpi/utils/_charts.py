@@ -2,12 +2,15 @@
 
 from typing import List, Literal, Optional
 
+import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
 from vizro.models.types import capture
+from vizro.tables._dash_ag_grid import _DATA_TYPE_DEFINITIONS
+from vizro.tables._utils import _set_defaults_nested
 
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
@@ -38,6 +41,13 @@ class KPI(vm.VizroBaseModel):
             ],
             className="kpi-card-ref",
         )
+
+
+class AgGridPage(vm.Page):
+    """Page without the on_page_load mechanism."""
+
+    def pre_build(self):
+        pass
 
 
 # CUSTOM CHARTS ----------------------------------------------------------------
@@ -191,3 +201,36 @@ COLUMN_DEFS = [
     },
     {"field": "Timely response?", "cellRenderer": "markdown", "headerName": "On time?", "flex": 3},
 ]
+
+
+@capture("ag_grid")
+def infinite_scroll_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
+    """Implementation of infinite scroll AgGrid with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid]."""
+    defaults = {
+        "className": "ag-theme-quartz-dark ag-theme-vizro",
+        "columnDefs": [{"field": col} for col in data_frame.columns],
+        "rowModelType": "infinite",
+        "defaultColDef": {
+            "resizable": True,
+            "sortable": False,
+            "filter": False,
+            "filterParams": {
+                "buttons": ["apply", "reset"],
+                "closeOnApply": True,
+            },
+        },
+        "dashGridOptions": {
+            "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
+            "animateRows": False,
+            "rowSelection": "multiple",
+            "rowBuffer": 0,
+            "cacheBlockSize": 100,
+            "cacheOverflowSize": 2,
+            "maxConcurrentDatasourceRequests": 2,
+            "infiniteInitialRowCount": 100,
+            "maxBlocksInCache": 10,
+        },
+        "style": {"height": "100%"},
+    }
+    kwargs = _set_defaults_nested(kwargs, defaults)
+    return dag.AgGrid(**kwargs)
