@@ -13,7 +13,7 @@ from vizro.managers import model_manager
 from vizro.tables import dash_ag_grid
 from vizro.models import VizroBaseModel
 
-from .model import get_model, get_component_model
+from .model import get_component_model
 
 component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
@@ -158,9 +158,8 @@ def get_dashboard_plan(
         query: str, 
         model: Union[ChatOpenAI], 
         df_metadata: List[Dict[str, str]],
-        max_retry: int = 3
         ) -> DashboardPlanner:
-    return get_model(query, model, result_model=DashboardPlanner, df_metadata=df_metadata, max_retry=max_retry)
+    return get_component_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
 def print_dashboard_plan(dashboard_plan):

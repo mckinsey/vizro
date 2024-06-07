@@ -7,31 +7,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
-requirement_sum_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """You are a data assistant with expertise dashboard design and a vizualization library named Vizro. \n
-            Here are the dataframes:  \n ------- \n  {df_heads} \n ------- \n
-            Here are the schemas:  \n ------- \n  {df_schemas} \n ------- \n
-            Inspect the user \n
-            question based on the above provided data and summarize which dataset to use for each Vizro model. \n
-            First name each dataset with a user friendly name. \n
-            Then provide a summary of the user question and the dataset to use for each Vizro model. \n
-            Available Vizro models to choose from: \n ------- \n
-            [
-            'AgGrid' # for table creation,
-            'Card',
-            'Filter',
-            'Graph',
-            'Page',
-            ]  \n ------- \n
-            Here is the user question:""",
-        ),
-        ("placeholder", "{messages}"),
-    ]
-)
-
 
 def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
     """Get the dataframe schema and head info as strings."""
