@@ -223,7 +223,7 @@ page_table = AgGridPage(
         vm.AgGrid(
             figure=infinite_scroll_ag_grid(
                 id="kpi_grid",
-                data_frame=pd.DataFrame(),
+                data_frame=df_complaints,
                 columnDefs=COLUMN_DEFS,
                 getRowId="params.data.Complaint ID",
             )
@@ -260,4 +260,4 @@ def infinite_scroll(request):
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=False)
+    Vizro().build(dashboard).run()

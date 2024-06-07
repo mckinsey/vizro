@@ -44,7 +44,7 @@ class KPI(vm.VizroBaseModel):
 
 
 class AgGridPage(vm.Page):
-    """Page without the on_page_load mechanism."""
+    """Page without the on page load mechanism."""
 
     def pre_build(self):
         pass
