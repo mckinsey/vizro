@@ -218,7 +218,6 @@ class CapturedCallable:
             raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
 
 
-# TODO: Write figure.md file and link here
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
