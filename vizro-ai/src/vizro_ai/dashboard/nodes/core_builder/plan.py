@@ -13,7 +13,7 @@ from vizro.managers import model_manager
 from vizro.tables import dash_ag_grid
 from vizro.models import VizroBaseModel
 
-from .model import get_component_model
+from .model import get_model
 
 component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
@@ -74,7 +74,7 @@ class Component(BaseModel):
         elif self.component_name == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_name == "Card":
-            return get_component_model(query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata)
+            return get_model(query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata)
 
 
 class Components(BaseModel):
@@ -125,7 +125,7 @@ class Control(BaseModel):
             f"Create a filter from the following instructions: {self.control_description}. Do not make up "
             f"things that are optional and DO NOT configure actions, action triggers or action chains. If no options are specified, leave them out."
         )
-        proxy = get_component_model(filter_prompt, model, result_model=create_filter_proxy(df, available_components), df_metadata=df_metadata)
+        proxy = get_model(filter_prompt, model, result_model=create_filter_proxy(df, available_components), df_metadata=df_metadata)
         actual = vm.Filter.parse_obj(
             proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
         )
@@ -159,7 +159,7 @@ def get_dashboard_plan(
         model: Union[ChatOpenAI], 
         df_metadata: List[Dict[str, str]],
         ) -> DashboardPlanner:
-    return get_component_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
+    return get_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
 def print_dashboard_plan(dashboard_plan):
