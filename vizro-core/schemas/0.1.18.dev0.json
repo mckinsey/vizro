@@ -174,7 +174,7 @@
     },
     "Figure": {
       "title": "Figure",
-      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): Figure like object to be displayed. Defaults to `None`. For more information see\n        available figure callables in [`vizro.figures`](vizro.figures).",
+      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): Figure like object to be displayed. Defaults to `None`. For more information see\n        available figure callables in `vizro.figures`.",
       "type": "object",
       "properties": {
         "id": {
