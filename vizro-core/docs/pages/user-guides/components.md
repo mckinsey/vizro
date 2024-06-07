@@ -30,6 +30,14 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View User Guide](card-button.md)
 
+- :material-table-large:{ .lg .middle } __Figure__
+
+    ---
+
+    Use Figure to visualize your make any dash component reactive.
+
+    [:octicons-arrow-right-24: View User Guide](figure.md)
+
 - :octicons-table-16:{ .lg .middle } __Container__
 
     ---
