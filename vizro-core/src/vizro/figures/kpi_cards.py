@@ -9,8 +9,6 @@ from dash import html
 
 from vizro.models.types import capture
 
-# TODO: positive_delta_is_good: bool = True(not sure about name) -> maybe show in docs or CSS only
-
 FORMATTING_WARNING = (
     "Custom format string detected. Note that the format string is being evaluated, so ensure that "
     "only trusted user input is provided to prevent potential security risks."
