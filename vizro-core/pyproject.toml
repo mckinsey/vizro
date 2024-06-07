@@ -78,7 +78,9 @@ filterwarnings = [
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore until plotly fixes so the warning is no longer raised:
-  "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning"
+  "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning",
+  # Ignore warning when providing a custom format string to the KPI Cards:
+  "ignore:Custom format string detected."
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils", "examples/kpi"]
