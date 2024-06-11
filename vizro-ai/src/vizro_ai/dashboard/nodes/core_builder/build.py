@@ -63,8 +63,6 @@ class PageBuilder:
     def page(self):
         if self._page is None:
             print(f"Building page: {self._page_plan.title}")
-            print(f"Components: {self.components}")
-            print(f"Controls: {self.controls}")
             self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls)
         return self._page
 

@@ -149,3 +149,26 @@ def _create_and_compile_graph():
     runnable = graph.compile()
 
     return runnable
+
+
+if __name__ == "__main__":
+    test_state = {
+        'messages': [
+            ('user',
+            '\nI need a page with a table showing the population per continent \nI also want a second page with two \ncards on it. One should be a card saying: `This was the jolly data dashboard, it was created in Vizro which is amazing` \n, and the second card should link to `https://vizro.readthedocs.io/`. The title of the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n'),
+            ('assistant',
+            'from vizro import Vizro\nfrom vizro.models import AgGrid, Card, Dashboard, Page\nfrom vizro.tables import dash_ag_grid\nimport pandas as pd\n'),],
+        'dfs': [pd.DataFrame(),],
+        'df_metadata': {'globaldemographics': {'df_schema': {'country': 'object',
+            'continent': 'object',
+            'year': 'int64',
+            'lifeExp': 'float64',
+            'pop': 'int64',
+            'gdpPercap': 'float64',
+            'iso_alpha': 'object',
+            'iso_num': 'int64'},
+            'df_sample': '|      | country   | continent   |   year |   lifeExp |      pop |   gdpPercap | iso_alpha   |   iso_num |\n|-----:|:----------|:------------|-------:|----------:|---------:|------------:|:------------|----------:|\n|  215 | Burundi   | Africa      |   2007 |    49.58  |  8390505 |     430.071 | BDI         |       108 |\n| 1545 | Togo      | Africa      |   1997 |    58.39  |  4320890 |     982.287 | TGO         |       768 |\n|  772 | Italy     | Europe      |   1972 |    72.19  | 54365564 |   12269.3   | ITA         |       380 |\n| 1322 | Senegal   | Africa      |   1962 |    41.454 |  3430243 |    1654.99  | SEN         |       686 |\n|  732 | Iraq      | Asia        |   1952 |    45.32  |  5441766 |    4129.77  | IRQ         |       368 |'},},
+    }
+    sample_state = GraphState(**test_state)
+    message = generate_dashboard_code(sample_state)
+    print(message)

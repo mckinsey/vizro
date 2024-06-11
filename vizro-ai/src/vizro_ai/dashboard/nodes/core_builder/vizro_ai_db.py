@@ -11,7 +11,7 @@ class VizroAIDashboard:
 
     def build_dashboard(self, query: str, df_metadata: Dict[str, Dict[str, str]]):
         self.dashboard_plan = get_dashboard_plan(query=query, model=self.model, df_metadata=df_metadata)
-        print_dashboard_plan(self.dashboard_plan)
+        # print_dashboard_plan(self.dashboard_plan)
         dashboard = DashboardBuilder(
             model=self.model,
             df_metadata=df_metadata,

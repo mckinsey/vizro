@@ -12,6 +12,8 @@ from pydantic.v1 import Field, create_model, validator
 from vizro.managers import model_manager
 from vizro.tables import dash_ag_grid
 from vizro.models import VizroBaseModel
+from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
+import numpy as np
 
 from .model import get_model
 
@@ -152,6 +154,25 @@ class Controls(BaseModel):
     controls: List[Control]
 
 
+class Layout(BaseModel):
+    grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")
+
+    @validator('grid')
+    def validate_grid(cls, grid):
+        if len({len(row) for row in grid}) > 1:
+            raise ValueError("All rows must be of same length.")
+
+        # Validate grid type and values
+        unique_grid_idx = _get_unique_grid_component_ids(grid)
+        if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange((unique_grid_idx.max() + 1))):
+            raise ValueError("Grid must contain consecutive integers starting from 0.")
+
+        # Validates grid areas spanned by components and spaces
+        component_grid_lines, space_grid_lines = _get_grid_lines(grid)
+        _validate_grid_areas(component_grid_lines + space_grid_lines)
+        return grid
+
+
 class PagePlanner(BaseModel):
     title: str = Field(
         ...,
@@ -159,6 +180,7 @@ class PagePlanner(BaseModel):
     )
     components: Components  # List[Component]#
     controls: Controls  # Optional[List[FilterPlanner]]#List[Control]#
+    layout: Layout = Field(None, description="Layout to place components in.")
 
 
 class DashboardPlanner(BaseModel):
