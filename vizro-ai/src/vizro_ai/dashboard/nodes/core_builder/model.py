@@ -23,7 +23,7 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def get_model(
+def _get_model(
         query: str, 
         model, 
         result_model: BaseModel, 

@@ -9,11 +9,12 @@ from vizro_ai.utils.helper import DebugFailure
 class PageBuilder:
     def __init__(self, model, df_metadata, page_plan):
         self._model = model
-        self.df_metadata = df_metadata
+        self._df_metadata = df_metadata
         self._page_plan = page_plan
         self._components = None
         self._controls = None
         self._page = None
+        self._layout = None
 
     @property
     def components(self):
@@ -27,7 +28,7 @@ class PageBuilder:
             len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
         ):
             try:
-                components.append(self._page_plan.components.components[i].create(df_metadata=self.df_metadata, model=self._model))
+                components.append(self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model))
             except DebugFailure as e:
                 components.append(
                     vm.Card(
@@ -35,6 +36,16 @@ class PageBuilder:
                     )
                 )
         return components
+    
+    @property
+    def layout(self):
+        if self._layout is None:
+            self._layout = self._build_layout()
+        return self._layout
+    
+    def _build_layout(self):
+        print(f"Building layout: {self._page_plan}")
+        return self._page_plan.layout.create(model=self._model, df_metadata=self._df_metadata)
 
     @property
     def controls(self):
@@ -54,7 +65,7 @@ class PageBuilder:
             controls.append(
                 self._page_plan.controls.controls[i].create(
                     model=self._model, available_components=self.available_components,
-                    df_metadata=self.df_metadata
+                    df_metadata=self._df_metadata
                 )
             )
         return controls
@@ -63,14 +74,14 @@ class PageBuilder:
     def page(self):
         if self._page is None:
             print(f"Building page: {self._page_plan.title}")
-            self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls)
+            self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls, layout=self.layout)
         return self._page
 
 
 class DashboardBuilder:
     def __init__(self, model, df_metadata, dashboard_plan):
         self._model = model
-        self.df_metadata = df_metadata
+        self._df_metadata = df_metadata
         self._dashboard_plan = dashboard_plan
         self._pages = None
 
@@ -86,7 +97,7 @@ class DashboardBuilder:
             pages.append(
                 PageBuilder(
                     model=self._model,
-                    df_metadata=self.df_metadata,
+                    df_metadata=self._df_metadata,
                     page_plan=self._dashboard_plan.pages[i],
                 ).page
             )

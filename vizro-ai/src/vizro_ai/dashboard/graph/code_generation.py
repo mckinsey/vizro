@@ -5,7 +5,7 @@ import pandas as pd
 from langgraph.graph import END, StateGraph
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df_info
-from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, generate_import_statement
+from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, _generate_import_statement
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
 try:
@@ -13,8 +13,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, validator
 
-# model_default = "gpt-3.5-turbo"
-model_default = "gpt-4-turbo"
+model_default = "gpt-3.5-turbo"
+# model_default = "gpt-4-turbo"
 
 
 # def add(existing: Dict, new: Dict[str, Dict[str, str]]):
@@ -48,7 +48,7 @@ class GraphState(BaseModel):
         return v
 
 
-def store_df_info(state: GraphState):
+def _store_df_info(state: GraphState):
     """Store information about the dataframes.
 
     Args:
@@ -80,7 +80,7 @@ def store_df_info(state: GraphState):
     return {"df_metadata": df_metadata}
 
 
-def compose_imports_code(state: GraphState):
+def _compose_imports_code(state: GraphState):
     """Generate code snippet for imports.
 
     Args:
@@ -95,7 +95,7 @@ def compose_imports_code(state: GraphState):
 
     vizro_model_summary = model_sum_chain.invoke({"messages": messages})
 
-    import_statement = generate_import_statement(vizro_model_summary)
+    import_statement = _generate_import_statement(vizro_model_summary)
 
     messages += [
         (
@@ -106,7 +106,7 @@ def compose_imports_code(state: GraphState):
     return {"messages": messages}
 
 
-def generate_dashboard_code(state: GraphState):
+def _generate_dashboard_code(state: GraphState):
     """Generate a dashboard code snippet.
 
     Args:
@@ -119,7 +119,7 @@ def generate_dashboard_code(state: GraphState):
 
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
-    dashboard = vizro_ai_dashboard.build_dashboard(messages[0][1], df_metadata)
+    dashboard = vizro_ai_dashboard._build_dashboard(messages[0][1], df_metadata)
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     print(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
@@ -136,15 +136,15 @@ def generate_dashboard_code(state: GraphState):
 def _create_and_compile_graph():
     graph = StateGraph(GraphState)
 
-    graph.add_node("store_df_info", store_df_info)
-    graph.add_node("compose_imports_code", compose_imports_code)
-    graph.add_node("generate_dashboard_code", generate_dashboard_code)
+    graph.add_node("_store_df_info", _store_df_info)
+    graph.add_node("_compose_imports_code", _compose_imports_code)
+    graph.add_node("_generate_dashboard_code", _generate_dashboard_code)
 
-    graph.add_edge("store_df_info", "compose_imports_code")
-    graph.add_edge("compose_imports_code", "generate_dashboard_code")
-    graph.add_edge("generate_dashboard_code", END)
+    graph.add_edge("_store_df_info", "_compose_imports_code")
+    graph.add_edge("_compose_imports_code", "_generate_dashboard_code")
+    graph.add_edge("_generate_dashboard_code", END)
 
-    graph.set_entry_point("store_df_info")
+    graph.set_entry_point("_store_df_info")
 
     runnable = graph.compile()
 
@@ -155,7 +155,12 @@ if __name__ == "__main__":
     test_state = {
         'messages': [
             ('user',
-            '\nI need a page with a table showing the population per continent \nI also want a second page with two \ncards on it. One should be a card saying: `This was the jolly data dashboard, it was created in Vizro which is amazing` \n, and the second card should link to `https://vizro.readthedocs.io/`. The title of the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n'),
+            '\nI need a page with a table showing the population per continent \n'
+            'I also want a page with two \ncards on it. One should be a card saying: '
+            '`This was the jolly data dashboard, it was created in Vizro which is amazing` \n, '
+            'and the second card should link to `https://vizro.readthedocs.io/`. The title of '
+            'the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n'
+            'The layout of this page should use `grid=[[0,1]]`'),
             ('assistant',
             'from vizro import Vizro\nfrom vizro.models import AgGrid, Card, Dashboard, Page\nfrom vizro.tables import dash_ag_grid\nimport pandas as pd\n'),],
         'dfs': [pd.DataFrame(),],
@@ -170,5 +175,5 @@ if __name__ == "__main__":
             'df_sample': '|      | country   | continent   |   year |   lifeExp |      pop |   gdpPercap | iso_alpha   |   iso_num |\n|-----:|:----------|:------------|-------:|----------:|---------:|------------:|:------------|----------:|\n|  215 | Burundi   | Africa      |   2007 |    49.58  |  8390505 |     430.071 | BDI         |       108 |\n| 1545 | Togo      | Africa      |   1997 |    58.39  |  4320890 |     982.287 | TGO         |       768 |\n|  772 | Italy     | Europe      |   1972 |    72.19  | 54365564 |   12269.3   | ITA         |       380 |\n| 1322 | Senegal   | Africa      |   1962 |    41.454 |  3430243 |    1654.99  | SEN         |       686 |\n|  732 | Iraq      | Asia        |   1952 |    45.32  |  5441766 |    4129.77  | IRQ         |       368 |'},},
     }
     sample_state = GraphState(**test_state)
-    message = generate_dashboard_code(sample_state)
+    message = _generate_dashboard_code(sample_state)
     print(message)
