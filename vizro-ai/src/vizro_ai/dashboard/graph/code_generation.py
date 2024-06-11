@@ -1,4 +1,4 @@
-from typing import List, TypedDict, Dict
+from typing import Any, List, Dict
 import re
 
 import pandas as pd
@@ -8,11 +8,19 @@ from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df
 from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, generate_import_statement
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
-model_default = "gpt-3.5-turbo"
-# model_default = "gpt-4-turbo"
+try:
+    from pydantic.v1 import BaseModel, validator
+except ImportError:  # pragma: no cov
+    from pydantic import BaseModel, validator
+
+# model_default = "gpt-3.5-turbo"
+model_default = "gpt-4-turbo"
 
 
-class GraphState(TypedDict):
+# def add(existing: Dict, new: Dict[str, Dict[str, str]]):
+#     return new
+
+class GraphState(BaseModel):
     """Represents the state of dashboard graph.
 
     Attributes
@@ -24,7 +32,20 @@ class GraphState(TypedDict):
 
     messages: List
     dfs: List[pd.DataFrame]
-    df_metadata: Dict[str, Dict[str, str]]
+    # df_metadata: Annotated[Dict[str, Dict[str, Any]], add]
+    df_metadata: Dict[str, Dict[str, Any]]
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    @validator('dfs')
+    def check_dataframes(cls, v):
+        if not isinstance(v, list):
+            raise ValueError('dfs must be a list')
+        for df in v:
+            if not isinstance(df, pd.DataFrame):
+                raise ValueError('Each element in dfs must be a Pandas DataFrame')
+        return v
 
 
 def store_df_info(state: GraphState):
@@ -33,10 +54,10 @@ def store_df_info(state: GraphState):
     Args:
         state (dict): The current graph state.
     """
-    dfs = state["dfs"]
-    messages = state["messages"]
+    dfs = state.dfs
+    messages = state.messages
+    df_metadata = state.df_metadata
     current_df_names = []
-    df_metadata = state["df_metadata"]
     for _, df in enumerate(dfs):
         df_schema, df_sample = _get_df_info(df)
         data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(
@@ -69,7 +90,7 @@ def compose_imports_code(state: GraphState):
         state (dict): New key added to state, generation
 
     """
-    messages = state["messages"]
+    messages = state.messages
     model_sum_chain = model_sum_prompt | _get_llm_model(model=model_default).with_structured_output(ModelSummary)
 
     vizro_model_summary = model_sum_chain.invoke({"messages": messages})
@@ -91,10 +112,10 @@ def generate_dashboard_code(state: GraphState):
     Args:
         state (dict): The current graph state
     """
-    messages = state["messages"]
+    messages = state.messages
     _, import_statement = messages[-1]
-    dfs = state["dfs"]
-    df_metadata = state["df_metadata"]
+    # dfs = state["dfs"]
+    df_metadata = state.df_metadata
 
     model = _get_llm_model(model=model_default)
     vizro_ai_dashboard = VizroAIDashboard(model)
