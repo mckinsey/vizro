@@ -38,13 +38,13 @@ def store_df_info(state: GraphState):
     current_df_names = []
     df_metadata = state["df_metadata"]
     for _, df in enumerate(dfs):
-        df_schema, df_head = _get_df_info(df)
+        df_schema, df_sample = _get_df_info(df)
         data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(
             DfInfo
         )
 
         df_name = data_sum_chain.invoke(
-            {"df_schema": df_schema, "df_head": df_head, "messages": messages, "current_df_names": current_df_names}
+            {"df_schema": df_schema, "df_sample": df_sample, "messages": messages, "current_df_names": current_df_names}
         )
 
         print(f"df_name: {df_name}")
@@ -54,7 +54,7 @@ def store_df_info(state: GraphState):
         cleaned_df_name = re.sub(r'\W+', '_', cleaned_df_name)
         df_id = cleaned_df_name.strip('_')
         print(f"df_id: {df_id}")
-        df_metadata[df_id] = {"df_schema": df_schema, "df_head": df_head}
+        df_metadata[df_id] = {"df_schema": df_schema, "df_sample": df_sample}
 
     return {"df_metadata": df_metadata}
 

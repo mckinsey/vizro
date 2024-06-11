@@ -81,7 +81,7 @@ class Components(BaseModel):
     components: List[Component]
 
 
-def create_filter_proxy(df_cols, df_head, available_components):
+def create_filter_proxy(df_cols, df_sample, available_components):
     def validate_targets(v):
         if v not in available_components:
             raise ValueError(f"targets must be one of {available_components}")
@@ -135,9 +135,9 @@ class Control(BaseModel):
             f"Create a filter from the following instructions: {self.control_description}. Do not make up "
             f"things that are optional and DO NOT configure actions, action triggers or action chains. If no options are specified, leave them out."
         )
-        df_schema, df_head = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_head"]
+        df_schema, df_sample = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_sample"]
         df_cols = list(df_schema.keys())
-        # proxy = get_model(filter_prompt, model, result_model=create_filter_proxy(df_cols=df_cols, df_head=df_head, available_components=available_components), df_metadata=df_metadata)
+        # proxy = get_model(filter_prompt, model, result_model=create_filter_proxy(df_cols=df_cols, df_sample=df_sample, available_components=available_components), df_metadata=df_metadata)
         proxy = get_model(filter_prompt, model, result_model=FilterProxyModel, df_metadata=df_metadata)
 
         print(proxy.dict())
