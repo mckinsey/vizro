@@ -2,7 +2,7 @@
 
 import pandas as pd
 import vizro.models as vm
-from dash import Input, Output, callback, no_update
+from dash import Input, Output, callback
 from utils._charts import COLUMN_DEFS, KPI, AgGridPage, bar, choropleth, infinite_scroll_ag_grid, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
