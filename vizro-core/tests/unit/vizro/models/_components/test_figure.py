@@ -58,6 +58,21 @@ class TestFigureInstantiation:
             vm.Figure(figure=standard_go_chart)
 
 
+class TestDunderMethodsFigure:
+    def test_getitem_known_args(self, kpi_card_with_dataframe):
+        figure = vm.Figure(figure=kpi_card_with_dataframe)
+        assert figure["value_column"] == "lifeExp"
+        assert figure["agg_func"] == "mean"
+        assert figure["title"] == "Life Expectancy"
+        assert figure["value_format"] == "{value:.3f}"
+        assert figure["type"] == "figure"
+
+    def test_getitem_unknown_args(self, kpi_card_with_dataframe):
+        figure = vm.Figure(figure=kpi_card_with_dataframe)
+        with pytest.raises(KeyError):
+            figure["unknown_args"]
+
+
 class TestProcessFigureDataFrame:
     def test_process_figure_data_frame_str_df(self, kpi_card_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder

@@ -112,8 +112,8 @@ def kpi_card_reference(  # noqa: PLR0913
             on the left side of the KPI title. If not provided, no icon is displayed.
 
     Raises:
-        UserWarning: If a custom `value_format` is provided, a warning is raised to make aware that only trusted user
-            input should be provided.
+        UserWarning: If a custom `value_format` or `reference_format` is provided, a warning is raised to make aware
+            that only trusted user input should be provided.
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
