@@ -212,8 +212,8 @@ def infinite_scroll_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
         "rowModelType": "infinite",
         "defaultColDef": {
             "resizable": True,
-            "sortable": False,
-            "filter": False,
+            "sortable": True,
+            "filter": True,
             "filterParams": {
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
