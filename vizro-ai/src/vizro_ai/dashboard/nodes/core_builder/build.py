@@ -44,7 +44,7 @@ class PageBuilder:
 
     @property
     def available_components(self):
-        return [comp.id for comp in self.components if isinstance(comp, vm.Graph)]
+        return [comp.id for comp in self.components if isinstance(comp, (vm.Graph, vm.AgGrid))]
 
     def _build_controls(self):
         controls = []
@@ -53,7 +53,7 @@ class PageBuilder:
         ):
             controls.append(
                 self._page_plan.controls.controls[i].create(
-                    df=self.df_metadata, model=self._model, available_components=self.available_components,
+                    model=self._model, available_components=self.available_components,
                     df_metadata=self.df_metadata
                 )
             )

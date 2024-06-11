@@ -8,8 +8,8 @@ from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df
 from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, generate_import_statement
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
-# model_default = "gpt-3.5-turbo"
-model_default = "gpt-4-turbo"
+model_default = "gpt-3.5-turbo"
+# model_default = "gpt-4-turbo"
 
 
 class GraphState(TypedDict):
@@ -24,7 +24,7 @@ class GraphState(TypedDict):
 
     messages: List
     dfs: List[pd.DataFrame]
-    df_metadata: List[Dict[str, str]]
+    df_metadata: Dict[str, Dict[str, str]]
 
 
 def store_df_info(state: GraphState):
@@ -54,11 +54,7 @@ def store_df_info(state: GraphState):
         cleaned_df_name = re.sub(r'\W+', '_', cleaned_df_name)
         df_id = cleaned_df_name.strip('_')
         print(f"df_id: {df_id}")
-        df_metadata.append({
-            "df_id": df_id,
-            "df_schema": df_schema,
-            "df_head": df_head
-        })
+        df_metadata[df_id] = {"df_schema": df_schema, "df_head": df_head}
 
     return {"df_metadata": df_metadata}
 

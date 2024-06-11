@@ -81,16 +81,15 @@ class Components(BaseModel):
     components: List[Component]
 
 
-def create_filter_proxy(df, available_components):
+def create_filter_proxy(df_cols, df_head, available_components):
     def validate_targets(v):
         if v not in available_components:
             raise ValueError(f"targets must be one of {available_components}")
         return v
-
+    
     def validate_column(v):
-        if v not in df.columns:
-            raise ValueError(f"column must be one of {list(df.columns)}")
-        return v
+        if v not in df_cols:
+            raise ValueError(f"column must be one of {df_cols}")
 
     # TODO: properly check this - e.g. what is the best way to ideally dynamically include the available components
     # even in the schema
@@ -109,10 +108,21 @@ def create_filter_proxy(df, available_components):
     )
 
 
+class FilterProxyModel(BaseModel):
+    type: Literal["filter"] = "filter"
+    column: str = Field(..., description="Column of DataFrame to filter.")
+    targets: List[str] = Field(
+        [],
+        description="Target component to be affected by filter. "
+        "If none are given then target all components on the page that use `column`.",
+    )
+    selector: Literal["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"] = None
+
+
 class Control(BaseModel):
     control_name: control_type
     control_description: str = Field(
-        ..., description="Description of the control. Include everything that seems to relate to this control."
+        ..., description="Description of the filter. Include everything that seems to relate to this filter."
     )
     data_frame: str = Field(
         ...,
@@ -120,16 +130,21 @@ class Control(BaseModel):
     )
 
     # TODO: there is definitely room for dynamic model creation, e.g. with literals for targets
-    def create(self, df, model, available_components, df_metadata):
+    def create(self, model, available_components, df_metadata):
         filter_prompt = (
             f"Create a filter from the following instructions: {self.control_description}. Do not make up "
             f"things that are optional and DO NOT configure actions, action triggers or action chains. If no options are specified, leave them out."
         )
-        proxy = get_model(filter_prompt, model, result_model=create_filter_proxy(df, available_components), df_metadata=df_metadata)
+        df_schema, df_head = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_head"]
+        df_cols = list(df_schema.keys())
+        # proxy = get_model(filter_prompt, model, result_model=create_filter_proxy(df_cols=df_cols, df_head=df_head, available_components=available_components), df_metadata=df_metadata)
+        proxy = get_model(filter_prompt, model, result_model=FilterProxyModel, df_metadata=df_metadata)
+
+        print(proxy.dict())
         actual = vm.Filter.parse_obj(
             proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
         )
-        del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
+        # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
         return actual
 
 
@@ -157,7 +172,7 @@ class DashboardPlanner(BaseModel):
 def get_dashboard_plan(
         query: str, 
         model: Union[ChatOpenAI], 
-        df_metadata: List[Dict[str, str]],
+        df_metadata: Dict[str, Dict[str, str]],
         ) -> DashboardPlanner:
     return get_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 

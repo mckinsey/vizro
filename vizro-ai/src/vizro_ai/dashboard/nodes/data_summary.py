@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import pandas as pd
 from langchain_core.prompts import ChatPromptTemplate
@@ -8,12 +8,12 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
 
-def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
+def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], str]:
     """Get the dataframe schema and head info as strings."""
-    formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
-    schema_string = "\n".join(formatted_pairs)
+    # create a dictionary of column names and data types pairs
+    formatted_pairs = {col_name: str(dtype) for col_name, dtype in df.dtypes.items()}
     head_string = df.sample(5).to_markdown()
-    return schema_string, head_string
+    return formatted_pairs, head_string
 
 df_sum_prompt = ChatPromptTemplate.from_messages(
     [

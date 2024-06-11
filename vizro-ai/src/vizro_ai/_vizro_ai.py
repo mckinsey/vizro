@@ -182,7 +182,7 @@ class VizroAI:
         message_res = runnable.invoke(
             {
                 "dfs": dfs, 
-                "df_metadata": [],
+                "df_metadata": {},
                 "messages": [("user", user_input)]
             }
         )

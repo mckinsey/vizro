@@ -20,8 +20,6 @@ model_sum_prompt = ChatPromptTemplate.from_messages(
             'Card',
             'Filter',
             'Graph',
-            'Page', # always required
-            'Dashboard', # always required
             ]  \n ------- \n
             Here is the user question:""",
         ),
@@ -42,7 +40,7 @@ class ModelSummary(BaseModel):
 def generate_import_statement(models):
         import_statement = f"from vizro import Vizro\n"
 
-        required_models = []
+        required_models = ["Page", "Dashboard"]
         for model_name in models.model_summary:
             model_name = model_name.model_required
             required_models.append(model_name)

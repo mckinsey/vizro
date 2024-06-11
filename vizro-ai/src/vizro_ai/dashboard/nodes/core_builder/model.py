@@ -27,7 +27,7 @@ def get_model(
         query: str, 
         model, 
         result_model: BaseModel, 
-        df_metadata: List[Dict[str, str]],
+        df_metadata: Dict[str, Dict[str, str]],
         ) -> BaseModel:
     model_component_chain = SINGLE_MODEL_PROMPT | model.with_structured_output(result_model)
 
