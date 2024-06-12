@@ -8,6 +8,8 @@ from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df
 from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, _generate_import_statement
 from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
 
+from langchain.globals import set_debug
+
 try:
     from pydantic.v1 import BaseModel, validator
 except ImportError:  # pragma: no cov
@@ -15,6 +17,7 @@ except ImportError:  # pragma: no cov
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
+set_debug(True)
 
 
 # def add(existing: Dict, new: Dict[str, Dict[str, str]]):

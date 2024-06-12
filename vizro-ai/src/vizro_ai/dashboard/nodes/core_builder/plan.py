@@ -58,7 +58,7 @@ class CardProxyModel(BaseModel):
 
 
 class Component(BaseModel):
-    component_name: component_type
+    component_type: component_type
     component_description: str = Field(
         ...,
         description="Description of the component. Include everything that relates to this component. If possible do not paraphrase and keep the original description. Keep any links as original links.",
@@ -72,11 +72,11 @@ class Component(BaseModel):
     )
 
     def create(self, model, df_metadata):
-        if self.component_name == "Graph":
+        if self.component_type == "Graph":
             return vm.Graph()
-        elif self.component_name == "AgGrid":
+        elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
-        elif self.component_name == "Card":
+        elif self.component_type == "Card":
             return _get_model(query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata)
 
 
@@ -123,7 +123,7 @@ class FilterProxyModel(BaseModel):
 
 
 class Control(BaseModel):
-    control_name: control_type
+    control_type: control_type
     control_description: str = Field(
         ..., description="Description of the filter. Include everything that seems to relate to this filter."
     )
@@ -140,15 +140,21 @@ class Control(BaseModel):
         )
         _df_schema, _df_sample = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_sample"]
         _df_cols = list(_df_schema.keys())
-        # proxy = _get_model(filter_prompt, model, result_model=create_filter_proxy(df_cols=_df_cols, df_sample=_df_sample, available_components=available_components), df_metadata=df_metadata)
-        proxy = _get_model(query=filter_prompt, model=model, result_model=FilterProxyModel, df_metadata=df_metadata)
+        try:
+            # proxy = _get_model(query=filter_prompt, model=model, result_model=create_filter_proxy(df_cols=_df_cols, df_sample=_df_sample, available_components=available_components), df_metadata=df_metadata)
+            proxy = _get_model(query=filter_prompt, model=model, result_model=FilterProxyModel, df_metadata=df_metadata)
 
-        print(proxy.dict())
-        actual = vm.Filter.parse_obj(
-            proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
-        )
-        # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
+            print(proxy.dict())
+            actual = vm.Filter.parse_obj(
+                proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
+            )
+            # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
+            
+        except ValidationError as e:
+            print("Validation failed, returning default values. Error details:", e)
+            actual = None
         return actual
+        
 
 
 class Controls(BaseModel):
@@ -178,7 +184,7 @@ class Layout(BaseModel):
         ...,
         description="Description of the layout. Include everything that seems to relate to this layout AS IS. If layout not provided, specify `NO layout`."
     )
-    
+
     def create(self, model, df_metadata):
         try:
             proxy = _get_model(query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata)

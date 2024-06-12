@@ -62,12 +62,13 @@ class PageBuilder:
         for i in trange(
             len(self._page_plan.controls.controls), desc=f"Building controls of page: {self._page_plan.title}"
         ):
-            controls.append(
-                self._page_plan.controls.controls[i].create(
+            control = self._page_plan.controls.controls[i].create(
                     model=self._model, available_components=self.available_components,
                     df_metadata=self._df_metadata
                 )
-            )
+            if control:
+                controls.append(control)
+                
         return controls
 
     @property
