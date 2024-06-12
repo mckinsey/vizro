@@ -22,28 +22,6 @@ component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
 
 
-# def create_proxy_model(original_model: VizroBaseModel) -> BaseModel:
-#     """
-#     Create a new Pydantic model that contains the same fields and docstring as the original model,
-#     but without any methods.
-
-#     Args:
-#         original_model (VizroBaseModel): The original Vizro model to copy fields and docstring from.
-
-#     Returns:
-#         BaseModel: A new Pydantic model with the same fields and docstring as the original model.
-#     """
-#     # Create the new model dynamically
-#     proxy_model = create_model(
-#         f'{original_model.__name__}Proxy',
-#         **{field: (original_model.__annotations__[field], getattr(original_model, field, ...))
-#            for field in original_model.__annotations__}
-#     )
-#     # Set the original docstring
-#     proxy_model.__doc__ = original_model.__doc__
-    
-#     return proxy_model
-
 class CardProxyModel(BaseModel):
     type: Literal["card"] = "card"
     text: str = Field(
@@ -53,8 +31,6 @@ class CardProxyModel(BaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
-
-# CardProxyModel = create_proxy_model(vm.Card)
 
 
 class Component(BaseModel):

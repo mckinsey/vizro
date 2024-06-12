@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cov
 
 def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], str]:
     """Get the dataframe schema and head info as strings."""
-    # create a dictionary of column names and data types pairs
     formatted_pairs = {col_name: str(dtype) for col_name, dtype in df.dtypes.items()}
     df_sample = df.sample(5).to_markdown()
     return formatted_pairs, df_sample
