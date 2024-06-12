@@ -4,6 +4,7 @@ import warnings
 from typing import Optional
 
 import dash_bootstrap_components as dbc
+import numpy as np
 import pandas as pd
 from dash import html
 
@@ -128,7 +129,7 @@ def kpi_card_reference(  # noqa: PLR0913
     title = title or value_column.title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
-    delta_relative = delta / reference
+    delta_relative = np.nan if reference == 0 else delta / reference
 
     return dbc.Card(
         [
