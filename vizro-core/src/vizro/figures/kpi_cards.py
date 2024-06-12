@@ -14,13 +14,16 @@ FORMATTING_WARNING = (
     "only trusted user input is provided to prevent potential security risks."
 )
 
+VALUE_FORMAT_DEFAULT = "{value}"
+REFERENCE_FORMAT_DEFAULT = "{delta_relative:.1%} vs. reference ({reference})"
+
 
 @capture("figure")
 def kpi_card(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
     *,
-    value_format: str = "{value}",
+    value_format: str = VALUE_FORMAT_DEFAULT,
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
@@ -54,7 +57,7 @@ def kpi_card(  # noqa: PLR0913
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
 
     """
-    if value_format != "{value}":
+    if value_format != VALUE_FORMAT_DEFAULT:
         warnings.warn(FORMATTING_WARNING, UserWarning)
 
     title = title or value_column.title()
@@ -65,7 +68,7 @@ def kpi_card(  # noqa: PLR0913
             dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title) if title else None,
+                    html.H2(title),
                 ],
             ),
             dbc.CardBody(value_format.format(value=value)),
@@ -80,7 +83,7 @@ def kpi_card_reference(  # noqa: PLR0913
     value_column: str,
     reference_column: str,
     *,
-    value_format: str = "{value}",
+    value_format: str = VALUE_FORMAT_DEFAULT,
     reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
     agg_func: str = "sum",
     title: Optional[str] = None,
@@ -119,7 +122,7 @@ def kpi_card_reference(  # noqa: PLR0913
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
 
     """
-    if value_format != "{value}" or reference_format != "{delta_relative:.1%} vs. reference ({reference})":
+    if value_format != VALUE_FORMAT_DEFAULT or reference_format != REFERENCE_FORMAT_DEFAULT:
         warnings.warn(FORMATTING_WARNING, UserWarning)
 
     title = title or value_column.title()
@@ -132,7 +135,7 @@ def kpi_card_reference(  # noqa: PLR0913
             dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title) if title else None,
+                    html.H2(title),
                 ],
             ),
             dbc.CardBody(
