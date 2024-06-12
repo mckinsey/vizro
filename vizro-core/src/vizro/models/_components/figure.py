@@ -15,8 +15,6 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
 
-# TODO: Align on naming - really difficult one:
-# ReactiveComponent, Reactive, Figure, ReactiveFigure, ReactiveObject, ReactiveHTML, ReactiveDiv, any other ideas?
 class Figure(VizroBaseModel):
     """Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.
 
@@ -45,7 +43,7 @@ class Figure(VizroBaseModel):
         return figure
 
     def __getitem__(self, arg_name: str):
-        # pydantic discriminated union validation seems to try Graph["type"], which throws an error unless we
+        # pydantic discriminated union validation seems to try Figure["type"], which throws an error unless we
         # explicitly redirect it to the correct attribute.
         if self.figure:
             if arg_name == "type":

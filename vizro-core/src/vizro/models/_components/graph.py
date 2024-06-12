@@ -73,8 +73,7 @@ class Graph(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
-        # pydantic discriminated union validation seems to try Graph["type"], which throws an error unless we
-        # explicitly redirect it to the correct attribute.
+        # See figure implementation for more details.
         if arg_name == "type":
             return self.type
         return self.figure[arg_name]
