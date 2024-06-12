@@ -1,6 +1,5 @@
 """Unit tests for vizro.models.Figure."""
 
-import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -85,23 +84,19 @@ class TestProcessFigureDataFrame:
 
 
 class TestFigureBuild:
-    def test_figure_build(self, kpi_card_with_dataframe):
+    def test_figure_build(self, kpi_card_with_dataframe, gapminder):
         figure = vm.Figure(id="figure-id", figure=kpi_card_with_dataframe).build()
 
         expected_figure = dcc.Loading(
             html.Div(
-                dbc.Card(
-                    [
-                        dbc.CardHeader(
-                            [
-                                None,
-                                html.H2("Life Expectancy"),
-                            ],
-                        ),
-                        dbc.CardBody("59.474"),
-                    ],
-                    className="card-kpi",
-                ),
+                kpi_card(
+                    data_frame=gapminder,
+                    value_column="lifeExp",
+                    agg_func="mean",
+                    title="Life Expectancy",
+                    value_format="{value:.3f}",
+                )(),
+                className="loading-container",
                 id="figure-id",
             ),
             color="grey",
