@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 from .build import DashboardBuilder
 from .plan import _get_dashboard_plan, _print_dashboard_plan

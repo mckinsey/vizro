@@ -4,19 +4,16 @@ from typing import Dict, List, Literal, Union
 
 import vizro.models as vm
 from langchain_openai import ChatOpenAI
+
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError
-from pydantic.v1 import Field, create_model, validator
-from vizro.managers import model_manager
-from vizro.tables import dash_ag_grid
-from vizro.models import VizroBaseModel
-from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 import numpy as np
-
+from pydantic.v1 import Field, create_model, validator
+from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
+from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard.nodes.core_builder.model import _get_model
-
 
 component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
@@ -53,7 +50,9 @@ class Component(BaseModel):
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
-            return _get_model(query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata)
+            return _get_model(
+                query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
+            )
 
 
 class Components(BaseModel):
@@ -65,7 +64,7 @@ def create_filter_proxy(df_cols, df_sample, available_components):
         if v not in available_components:
             raise ValueError(f"targets must be one of {available_components}")
         return v
-    
+
     def validate_column(v):
         if v not in df_cols:
             raise ValueError(f"column must be one of {df_cols}")
@@ -125,12 +124,11 @@ class Control(BaseModel):
                 proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
             )
             # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
-            
+
         except ValidationError as e:
             print("Validation failed, returning default values. Error details:", e)
             actual = None
         return actual
-        
 
 
 class Controls(BaseModel):
@@ -140,7 +138,7 @@ class Controls(BaseModel):
 class LayoutProxyModel(BaseModel):
     grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")
 
-    @validator('grid')
+    @validator("grid")
     def validate_grid(cls, grid):
         if len({len(row) for row in grid}) > 1:
             raise ValueError("All rows must be of same length.")
@@ -155,22 +153,23 @@ class LayoutProxyModel(BaseModel):
         _validate_grid_areas(component_grid_lines + space_grid_lines)
         return grid
 
+
 class Layout(BaseModel):
     layout_description: str = Field(
         ...,
-        description="Description of the layout. Include everything that seems to relate to this layout AS IS. If layout not provided, specify `NO layout`."
+        description="Description of the layout. Include everything that seems to relate to this layout AS IS. If layout not provided, specify `NO layout`.",
     )
 
     def create(self, model, df_metadata):
         try:
-            proxy = _get_model(query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata)
-            actual = vm.Layout.parse_obj(
-                proxy.dict(exclude={})
+            proxy = _get_model(
+                query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
+            actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except ValidationError as e:
             print("Validation failed, returning default values. Error details:", e)
             actual = None
-        
+
         return actual
 
 
@@ -181,7 +180,7 @@ class PagePlanner(BaseModel):
     )
     components: Components  # List[Component]#
     controls: Controls  # Optional[List[FilterPlanner]]#List[Control]#
-    layout: Layout #= Field(default=None, description="Layout to place components in.")
+    layout: Layout  # = Field(default=None, description="Layout to place components in.")
 
 
 class DashboardPlanner(BaseModel):
@@ -193,10 +192,10 @@ class DashboardPlanner(BaseModel):
 
 
 def _get_dashboard_plan(
-        query: str, 
-        model: Union[ChatOpenAI], 
-        df_metadata: Dict[str, Dict[str, str]],
-        ) -> DashboardPlanner:
+    query: str,
+    model: Union[ChatOpenAI],
+    df_metadata: Dict[str, Dict[str, str]],
+) -> DashboardPlanner:
     return _get_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
@@ -212,15 +211,16 @@ def _print_dashboard_plan(dashboard_plan):
 
 if __name__ == "__main__":
     from vizro_ai.chains._llm_models import _get_llm_model
+
     model_default = "gpt-3.5-turbo"
     # model_default = "gpt-4-turbo"
 
     llm_model = _get_llm_model(model=model_default)
     # Test the layout planner
-    layout1 = Layout(layout_description='grid=[[0,1]]')
+    layout1 = Layout(layout_description="grid=[[0,1]]")
     print(layout1.create(model=llm_model, df_metadata={}))
     # grid=[[0, 1]]
 
-    layout1 = Layout(layout_description='The card has text `This is a card`')
+    layout1 = Layout(layout_description="The card has text `This is a card`")
     print(layout1.create(model=llm_model, df_metadata={}))
     # None

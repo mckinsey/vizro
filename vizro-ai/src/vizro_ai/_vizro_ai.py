@@ -1,6 +1,6 @@
 import logging
 from dataclasses import asdict
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -179,11 +179,5 @@ class VizroAI:
         """
         runnable = _create_and_compile_graph()
 
-        message_res = runnable.invoke(
-            {
-                "dfs": dfs, 
-                "df_metadata": {},
-                "messages": [("user", user_input)]
-            }
-        )
+        message_res = runnable.invoke({"dfs": dfs, "df_metadata": {}, "messages": [("user", user_input)]})
         return message_res

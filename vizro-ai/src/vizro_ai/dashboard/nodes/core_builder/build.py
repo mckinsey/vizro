@@ -2,7 +2,6 @@
 
 import vizro.models as vm
 from tqdm.autonotebook import trange
-
 from vizro_ai.utils.helper import DebugFailure
 
 
@@ -28,7 +27,9 @@ class PageBuilder:
             len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
         ):
             try:
-                components.append(self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model))
+                components.append(
+                    self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
+                )
             except DebugFailure as e:
                 components.append(
                     vm.Card(
@@ -36,13 +37,13 @@ class PageBuilder:
                     )
                 )
         return components
-    
+
     @property
     def layout(self):
         if self._layout is None:
             self._layout = self._build_layout()
         return self._layout
-    
+
     def _build_layout(self):
         print(f"Building layout: {self._page_plan}")
         return self._page_plan.layout.create(model=self._model, df_metadata=self._df_metadata)
@@ -63,19 +64,20 @@ class PageBuilder:
             len(self._page_plan.controls.controls), desc=f"Building controls of page: {self._page_plan.title}"
         ):
             control = self._page_plan.controls.controls[i].create(
-                    model=self._model, available_components=self.available_components,
-                    df_metadata=self._df_metadata
-                )
+                model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
+            )
             if control:
                 controls.append(control)
-                
+
         return controls
 
     @property
     def page(self):
         if self._page is None:
             print(f"Building page: {self._page_plan.title}")
-            self._page = vm.Page(title=self._page_plan.title, components=self.components, controls=self.controls, layout=self.layout)
+            self._page = vm.Page(
+                title=self._page_plan.title, components=self.components, controls=self.controls, layout=self.layout
+            )
         return self._page
 
 

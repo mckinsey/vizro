@@ -1,7 +1,8 @@
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import pandas as pd
 from langchain_core.prompts import ChatPromptTemplate
+
 try:
     from pydantic.v1 import BaseModel, Field
 except ImportError:  # pragma: no cov
@@ -13,6 +14,7 @@ def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], str]:
     formatted_pairs = {col_name: str(dtype) for col_name, dtype in df.dtypes.items()}
     df_sample = df.sample(5).to_markdown()
     return formatted_pairs, df_sample
+
 
 df_sum_prompt = ChatPromptTemplate.from_messages(
     [
@@ -28,6 +30,7 @@ df_sum_prompt = ChatPromptTemplate.from_messages(
         ),
     ]
 )
+
 
 class DfInfo(BaseModel):
     """Data Info output"""

@@ -1,7 +1,7 @@
-from typing import List, Tuple
+from typing import List
 
-import pandas as pd
 from langchain_core.prompts import ChatPromptTemplate
+
 try:
     from pydantic.v1 import BaseModel, Field
 except ImportError:  # pragma: no cov
@@ -27,18 +27,21 @@ model_sum_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+
 class ModelName(BaseModel):
     """Vizro model name output"""
 
     model_required: str = Field(description="Name of the Vizro model required")
+
 
 class ModelSummary(BaseModel):
     """Vizro model summary output"""
 
     model_summary: List[ModelName]
 
+
 def _generate_import_statement(models):
-    import_statement = f"from vizro import Vizro\n"
+    import_statement = "from vizro import Vizro\n"
 
     required_models = ["Page", "Dashboard"]
     for model_name in models.model_summary:
@@ -49,12 +52,12 @@ def _generate_import_statement(models):
     import_statement += model_import_statement
 
     if "Graph" in final_required_models:
-        import_statement += f"import vizro.plotly.express as px\nfrom vizro.models.types import capture\nimport plotly.graph_objects as go\n"
+        import_statement += "import vizro.plotly.express as px\nfrom vizro.models.types import capture\nimport plotly.graph_objects as go\n"
 
     if "AgGrid" in final_required_models:
-        import_statement += f"from vizro.tables import dash_ag_grid\n"
+        import_statement += "from vizro.tables import dash_ag_grid\n"
 
     # to be removed
-    import_statement += f"import pandas as pd\n"
+    import_statement += "import pandas as pd\n"
 
     return import_statement

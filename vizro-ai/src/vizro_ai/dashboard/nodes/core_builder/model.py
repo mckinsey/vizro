@@ -1,11 +1,11 @@
-from typing import Union
-
 try:
-    from pydantic.v1 import BaseModel, ValidationError, Field
+    from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError, Field
-from typing import Dict, List
+    from pydantic import BaseModel, Field
+from typing import Dict
+
 from langchain_core.prompts import ChatPromptTemplate
+
 
 class ProxyVizroBaseModel(BaseModel):
     id: str = Field(
@@ -31,11 +31,11 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
 
 
 def _get_model(
-        query: str, 
-        model, 
-        result_model: BaseModel, 
-        df_metadata: Dict[str, Dict[str, str]],
-        ) -> BaseModel:
+    query: str,
+    model,
+    result_model: BaseModel,
+    df_metadata: Dict[str, Dict[str, str]],
+) -> BaseModel:
     vizro_model_chain = SINGLE_MODEL_PROMPT | model.with_structured_output(result_model)
 
     messages = [
