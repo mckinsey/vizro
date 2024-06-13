@@ -42,8 +42,9 @@ nav:
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Actions: pages/API-reference/actions.md
-      - Table functions: pages/API-reference/captured-callables.md
+      - Action functions: pages/API-reference/action-callables.md
+      - Table functions: pages/API-reference/table-callables.md
+      - Figure functions: pages/API-reference/figure-callables.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Contribute to Vizro: pages/explanation/contributing.md
