@@ -1,34 +1,27 @@
 """Dev app to try things out."""
 
-import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro.figures import kpi_card
 
-df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
+df_tips = px.data.tips
 
 page = vm.Page(
     title="KPI Indicators",
-    layout=vm.Layout(grid=[[0,1,-1]] + [[-1, -1, -1]]*4),
+    layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
     components=[
         vm.Figure(
             figure=kpi_card(
-                data_frame=df,
-                value_column="Actual",
+                data_frame=df_tips,
+                value_column="tip",
+                value_format="${value:.2f}",
                 icon="shopping_cart",
                 title="KPI Card I",
             )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI Card II",
-            )
-        ),
+        )
     ],
-    controls=[vm.Filter(column="Category", selector=vm.RadioItems())],
+    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
 )
 
 
