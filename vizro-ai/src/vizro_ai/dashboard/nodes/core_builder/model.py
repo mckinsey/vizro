@@ -9,6 +9,7 @@ from typing import Dict
 from langchain_core.prompts import ChatPromptTemplate
 
 
+
 class ProxyVizroBaseModel(BaseModel):
     """Proxy model for VizroBaseModel."""
 
