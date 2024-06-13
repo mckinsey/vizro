@@ -5,7 +5,7 @@ pages:
 
           ### Components
 
-          Main components of vizro include **charts**, **tables**, **cards**, **containers**, **buttons** and **tabs**.
+          Main components of vizro include **charts**, **tables**, **cards**, **figures**, **containers**, **buttons** and **tabs**.
         href: /graphs
         type: card
       - text: |
@@ -130,6 +130,30 @@ pages:
           This word will be _**bold and italic**_
         type: card
     title: Cards
+  - components:
+      - figure:
+          _target_: kpi_card
+          data_frame: tips
+          value_column: tip
+          value_format: ${value:.2f}
+          icon: shopping_cart
+          title: KPI Card I
+        type: figure
+    controls:
+      - column: day
+        type: filter
+        selector:
+          type: radio_items
+    layout:
+      grid:
+        [
+          [ 0, -1, -1, -1 ],
+          [ -1, -1, -1, -1 ],
+          [ -1, -1, -1, -1 ],
+          [ -1, -1, -1, -1 ],
+          [ -1, -1, -1, -1 ],
+        ]
+    title: Figure
   - components:
       - figure:
           _target_: scatter
@@ -481,6 +505,7 @@ navigation:
             - AG Grid
             - Table
             - Cards
+            - Figure
             - Button
             - Containers
             - Tabs

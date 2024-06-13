@@ -12,6 +12,7 @@ from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.figures import kpi_card
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -37,7 +38,7 @@ home = vm.Page(
 
                 ### Components
 
-                Main components of Vizro include **charts**, **tables**, **cards**, **containers**,
+                Main components of Vizro include **charts**, **tables**, **cards**, **figures**, **containers**,
                 **buttons** and **tabs**.
                 """,
             href="/graphs",
@@ -178,6 +179,23 @@ cards = vm.Page(
             """
         ),
     ],
+)
+
+figure = vm.Page(
+    title="Figure",
+    layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+    components=[
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="shopping_cart",
+                title="KPI Card I",
+            )
+        )
+    ],
+    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
 )
 
 button = vm.Page(
@@ -654,7 +672,7 @@ custom_actions = vm.Page(
 )
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, button, containers, tabs]
+components = [graphs, ag_grid, table, cards, figure, button, containers, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_components, custom_actions]
@@ -669,7 +687,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "AG Grid", "Table", "Cards", "Button", "Containers", "Tabs"],
+                        "Components": ["Graphs", "AG Grid", "Table", "Cards", "Figure", "Button", "Containers", "Tabs"],
                         "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": ["Custom Charts", "Custom Tables", "Custom Components", "Custom Actions"],
