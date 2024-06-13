@@ -5,7 +5,6 @@ import re
 from typing import Any, Dict, List
 
 import pandas as pd
-
 from langchain.globals import set_debug
 from langgraph.graph import END, StateGraph
 from vizro.models import Dashboard
