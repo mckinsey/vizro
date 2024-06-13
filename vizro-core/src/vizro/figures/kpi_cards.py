@@ -4,6 +4,7 @@ import warnings
 from typing import Optional
 
 import dash_bootstrap_components as dbc
+import numpy as np
 import pandas as pd
 from dash import html
 
@@ -14,13 +15,16 @@ FORMATTING_WARNING = (
     "only trusted user input is provided to prevent potential security risks."
 )
 
+VALUE_FORMAT_DEFAULT = "{value}"
+REFERENCE_FORMAT_DEFAULT = "{delta_relative:.1%} vs. reference ({reference})"
+
 
 @capture("figure")
 def kpi_card(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
     *,
-    value_format: str = "{value}",
+    value_format: str = VALUE_FORMAT_DEFAULT,
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
@@ -30,9 +34,12 @@ def kpi_card(  # noqa: PLR0913
     Args:
         data_frame: Data frame containing the data.
         value_column: Column name of the value to be shown.
-        value_format: Format string to be applied to the value. It must be a valid Python format string where
-            `value` can be used. Defaults to "{value}".
+        value_format: Format string to be applied to the value. It must be a valid Python format string where any of the
+            below placeholders can be used. Defaults to "{value}".
+            - value: `value_column` aggregated by `agg_func`.
+
             For more details see: https://docs.python.org/3/library/string.html#format-specification-mini-language
+
 
             Common examples include:
              - "{value}": Displays the raw value.
@@ -47,14 +54,14 @@ def kpi_card(  # noqa: PLR0913
             on the left side of the KPI title. If not provided, no icon is displayed.
 
     Raises:
-        UserWarning: If a custom `value_format` is provided, a warning is raised to make aware that only trusted user
+        UserWarning: If `value_format` is provided, a warning is raised to make aware that only trusted user
             input should be provided.
 
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
 
     """
-    if value_format != "{value}":
+    if value_format != VALUE_FORMAT_DEFAULT:
         warnings.warn(FORMATTING_WARNING, UserWarning)
 
     title = title or value_column.title()
@@ -65,7 +72,7 @@ def kpi_card(  # noqa: PLR0913
             dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title) if title else None,
+                    html.H2(title),
                 ],
             ),
             dbc.CardBody(value_format.format(value=value)),
@@ -80,7 +87,7 @@ def kpi_card_reference(  # noqa: PLR0913
     value_column: str,
     reference_column: str,
     *,
-    value_format: str = "{value}",
+    value_format: str = VALUE_FORMAT_DEFAULT,
     reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
     agg_func: str = "sum",
     title: Optional[str] = None,
@@ -92,8 +99,13 @@ def kpi_card_reference(  # noqa: PLR0913
         data_frame: Data frame containing the data.
         value_column: Column name of the value to be shown.
         reference_column: Column name of the reference value for comparison.
-        value_format: Format string to be applied to the value. It must be a valid Python format string where
-            `value`, `reference`, `delta`, and `delta_relative` can be used. Defaults to "{value}".
+        value_format: Format string to be applied to the value. It must be a valid Python format string where any of the
+            below placeholders can be used. Defaults to "{value}".
+            - value: `value_column` aggregated by `agg_func`.
+            - reference: `reference_column` aggregated by `agg_func`.
+            - delta: Difference between `value` and `reference`.
+            - delta_relative: Relative difference between `value` and `reference`.
+
             For more details see: https://docs.python.org/3/library/string.html#format-specification-mini-language
 
             Common examples include:
@@ -102,9 +114,8 @@ def kpi_card_reference(  # noqa: PLR0913
              - "{value:.0%}": Formats the value as a percentage without decimal places.
              - "{value:,}": Formats the value with comma as a thousands separator.
 
-        reference_format: Format string to be applied to the reference. It must be a valid Python format string where
-            `{value}`, `{reference}`, `{delta}`, and `{delta_relative}` can be used.
-            Defaults to "{delta_relative:.1%} vs. reference ({reference})".
+        reference_format: Format string to be applied to the reference. For more details on possible placeholders, see
+            docstring on `value_format`. Defaults to "{delta_relative:.1%} vs. reference ({reference})".
         agg_func: String function name to be used for aggregating the data. Common options include
             "sum", "min", "max", "mean" or "median". Default is "sum".
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
@@ -112,27 +123,27 @@ def kpi_card_reference(  # noqa: PLR0913
             on the left side of the KPI title. If not provided, no icon is displayed.
 
     Raises:
-        UserWarning: If a custom `value_format` or `reference_format` is provided, a warning is raised to make aware
+        UserWarning: If `value_format` or `reference_format` is provided, a warning is raised to make aware
             that only trusted user input should be provided.
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
 
     """
-    if value_format != "{value}" or reference_format != "{delta_relative:.1%} vs. reference ({reference})":
+    if value_format != VALUE_FORMAT_DEFAULT or reference_format != REFERENCE_FORMAT_DEFAULT:
         warnings.warn(FORMATTING_WARNING, UserWarning)
 
     title = title or value_column.title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
-    delta_relative = delta / reference
+    delta_relative = np.nan if reference == 0 else delta / reference
 
     return dbc.Card(
         [
             dbc.CardHeader(
                 [
                     html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title) if title else None,
+                    html.H2(title),
                 ],
             ),
             dbc.CardBody(
