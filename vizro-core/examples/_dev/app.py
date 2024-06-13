@@ -31,8 +31,12 @@ page_two = vm.Page(
     title="Page 2",
     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
-        vm.Table(id="P2_table", title="Data Table", figure=dash_data_table(id="P2_UL_table", data_frame=px.data.gapminder())),
-        vm.AgGrid(id="P2_aggrid", title="AG Grid", figure=dash_ag_grid(id="P2_UL_aggrid", data_frame=px.data.gapminder())),
+        vm.Table(
+            id="P2_table", title="Data Table", figure=dash_data_table(id="P2_UL_table", data_frame=px.data.gapminder())
+        ),
+        vm.AgGrid(
+            id="P2_aggrid", title="AG Grid", figure=dash_ag_grid(id="P2_UL_aggrid", data_frame=px.data.gapminder())
+        ),
         vm.Graph(id="P2_graph", figure=px.box(px.data.gapminder(), x="continent", y="lifeExp", title="Graph")),
     ],
     controls=[vm.Filter(column="continent")],

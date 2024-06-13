@@ -118,6 +118,7 @@ class Graph(VizroBaseModel):
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
+            # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
             output=[Output(self.id, "figure")],
             inputs=[Input("theme_selector", "checked"), State("vizro_themes", "data"), State(self.id, "id")],
             prevent_initial_call=True,
