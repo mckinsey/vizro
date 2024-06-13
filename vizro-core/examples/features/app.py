@@ -10,9 +10,9 @@ import vizro.plotly.express as px
 from dash import dash_table, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
-from vizro.figures import kpi_card
 
 iris = px.data.iris()
 tips = px.data.tips()
