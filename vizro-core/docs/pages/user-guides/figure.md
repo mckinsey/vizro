@@ -36,8 +36,9 @@ graph TD
 To add a `Figure` to your page, do the following:
 
 - add the `Figure` model to the components argument of the [Page][vizro.models.Page] model.
-- use an existing figure function from `vizro.figures` or create your own custom function, and pass it to the `figure` argument of the `Figure` model.
+- use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) or create your own custom function, and pass it to the `figure` argument of the `Figure` model.
 
+## Use existing figure function
 To see which figure functions are currently available, refer to [`vizro.figures`](../API-reference/figure-callables.md).
 
 !!! example "Use existing figure functions"
@@ -76,12 +77,30 @@ To see which figure functions are currently available, refer to [`vizro.figures`
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-          - figure:
-              _target_: dash_ag_grid
-              data_frame: gapminder
-            type: ag_grid
-          title: Default Dash AG Grid
+          - components:
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_tips
+                  value_column: tip
+                  value_format: ${value:.2f}
+                  icon: shopping_cart
+                  title: KPI Card I
+                type: figure
+            controls:
+              - column: day
+                type: filter
+                selector:
+                  type: radio_items
+            layout:
+              grid:
+                [
+                  [0, -1, -1, -1],
+                  [-1, -1, -1, -1],
+                  [-1, -1, -1, -1],
+                  [-1, -1, -1, -1],
+                  [-1, -1, -1, -1],
+                ]
+            title: KPI Indicators
         ```
     === "Result"
         [![Figure]][Figure]
