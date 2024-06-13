@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.figures import kpi_card
 
-df_tips = px.data.tips
+tips = px.data.tips
 
 page = vm.Page(
     title="KPI Indicators",
@@ -13,7 +13,7 @@ page = vm.Page(
     components=[
         vm.Figure(
             figure=kpi_card(
-                data_frame=df_tips,
+                data_frame=tips,
                 value_column="tip",
                 value_format="${value:.2f}",
                 icon="shopping_cart",

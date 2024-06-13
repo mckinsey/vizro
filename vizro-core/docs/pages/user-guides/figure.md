@@ -36,10 +36,7 @@ graph TD
 To add a `Figure` to your page, do the following:
 
 - add the `Figure` model to the components argument of the [Page][vizro.models.Page] model.
-- use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) or create your own custom function, and pass it to the `figure` argument of the `Figure` model.
-
-## Use existing figure function
-To see which figure functions are currently available, refer to [`vizro.figures`](../API-reference/figure-callables.md).
+- use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) and pass it to the `figure` argument of the `Figure` model.
 
 !!! example "Use existing figure functions"
 
@@ -50,7 +47,7 @@ To see which figure functions are currently available, refer to [`vizro.figures`
         from vizro import Vizro
         from vizro.figures import kpi_card
 
-        df_tips = px.data.tips
+        tips = px.data.tips
 
         page = vm.Page(
             title="KPI Indicators",
@@ -58,7 +55,7 @@ To see which figure functions are currently available, refer to [`vizro.figures`
             components=[
                 vm.Figure(
                     figure=kpi_card(
-                        data_frame=df_tips,
+                        data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="shopping_cart",
@@ -80,7 +77,7 @@ To see which figure functions are currently available, refer to [`vizro.figures`
           - components:
               - figure:
                   _target_: kpi_card
-                  data_frame: df_tips
+                  data_frame: tips
                   value_column: tip
                   value_format: ${value:.2f}
                   icon: shopping_cart

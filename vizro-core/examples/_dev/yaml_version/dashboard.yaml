@@ -4,7 +4,7 @@ pages:
   - components:
       - figure:
           _target_: kpi_card
-          data_frame: df_tips
+          data_frame: tips
           value_column: tip
           value_format: ${value:.2f}
           icon: shopping_cart

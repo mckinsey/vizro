@@ -12,7 +12,7 @@ from vizro.models import Dashboard
 data_manager["iris"] = px.data.iris()
 data_manager["gapminder"] = px.data.gapminder()
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
-data_manager["df_tips"] = px.data.tips()
+data_manager["tips"] = px.data.tips()
 
 df_stocks_long = pd.melt(
     px.data.stocks(datetimes=True),
