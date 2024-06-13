@@ -8,7 +8,17 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_asset_url, get_relative_path, html, dcc
+from dash import (
+    ClientsideFunction,
+    Input,
+    Output,
+    State,
+    clientside_callback,
+    dcc,
+    get_asset_url,
+    get_relative_path,
+    html,
+)
 
 try:
     from pydantic.v1 import Field, validator
