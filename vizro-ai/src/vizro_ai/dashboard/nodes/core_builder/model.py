@@ -1,13 +1,17 @@
-from typing import Union
+"""Contains the _get_model for the Vizro AI dashboard."""
 
 try:
-    from pydantic.v1 import BaseModel, ValidationError, Field
+    from pydantic.v1 import BaseModel, Field
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError, Field
-from typing import Dict, List
+    from pydantic import BaseModel, Field
+from typing import Dict
+
 from langchain_core.prompts import ChatPromptTemplate
 
+
 class ProxyVizroBaseModel(BaseModel):
+    """Proxy model for VizroBaseModel."""
+
     id: str = Field(
         "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
@@ -19,7 +23,7 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are a data assistant with expertise pydantic and a vizualization library named Vizro. \n
+            """You are a data assistant with expertise pydantic and a visualization library named Vizro. \n
             Summarize the user \n
             question and response with instructed format. \n
             This is the data you have access to: {df_metadata}\n
@@ -31,11 +35,11 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
 
 
 def _get_model(
-        query: str, 
-        model, 
-        result_model: BaseModel, 
-        df_metadata: Dict[str, Dict[str, str]],
-        ) -> BaseModel:
+    query: str,
+    model,
+    result_model: BaseModel,
+    df_metadata: Dict[str, Dict[str, str]],
+) -> BaseModel:
     vizro_model_chain = SINGLE_MODEL_PROMPT | model.with_structured_output(result_model)
 
     messages = [

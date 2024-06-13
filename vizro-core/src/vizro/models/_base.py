@@ -108,13 +108,13 @@ class VizroBaseModel(BaseModel):
 
     @classmethod
     @no_type_check
-    def _get_value(
+    def _get_value(  # noqa: PLR0913, PLR0911
         cls,
         v: Any,
         to_dict: bool,
         by_alias: bool,
-        include: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],
-        exclude: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],
+        include: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],  # noqa: F821
+        exclude: Optional[Union["AbstractSetIntStr", "MappingIntStrAny"]],  # noqa: F821
         exclude_unset: bool,
         exclude_defaults: bool,
         exclude_none: bool,
@@ -133,7 +133,7 @@ class VizroBaseModel(BaseModel):
                 )
                 if ROOT_KEY in v_dict:
                     return v_dict[ROOT_KEY]
-                # TODO!: Need to add ability to differentiate when to include the object name in the dict and when not to!!!
+                # TODO: Need to add ability to differentiate when to include the object name in the dict and when not to
                 v_dict[_add_key] = _add_val
                 return v_dict
             else:
@@ -200,7 +200,7 @@ class VizroBaseModel(BaseModel):
             return "[" + ", ".join(VizroBaseModel.transform_dict(item) for item in d) + "]"
         elif isinstance(d, CapturedCallable) and "dash_ag_grid" in repr(d._function):
             # placeholder for captured callable
-            args = ", ".join(f"{k}='{v}'" for k, v in d._CapturedCallable__bound_arguments.items())
+            args = ", ".join(f"{k}='{v}'" for k, v in d._CapturedCallable__bound_arguments.items())  # type: ignore
             return f"dash_ag_grid({args})"
         else:
             # Base case: if it's not a dictionary or list, return the item itself

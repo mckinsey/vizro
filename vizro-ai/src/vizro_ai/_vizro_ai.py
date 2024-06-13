@@ -1,6 +1,6 @@
 import logging
 from dataclasses import asdict
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -181,11 +181,11 @@ class VizroAI:
 
         message_res = runnable.invoke(
             {
-                "dfs": dfs, 
+                "dfs": dfs,
                 "df_metadata": {},
                 "dashboard_plan": None,
                 "dashboard": None,
-                "messages": [("user", user_input)]
+                "messages": [("user", user_input)],
             }
         )
         return message_res
