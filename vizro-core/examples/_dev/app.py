@@ -9,6 +9,7 @@ NUMBER_OF_COMPONENTS = 64
 
 
 def squared_layout(N):
+    """Util function."""
     import math
 
     size = math.ceil(math.sqrt(N))

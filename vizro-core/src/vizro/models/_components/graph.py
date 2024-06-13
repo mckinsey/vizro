@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, State, clientside_callback, ctx, dcc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -118,6 +118,7 @@ class Graph(VizroBaseModel):
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
+            output=[Output(self.id, "figure")],
             inputs=[Input("theme_selector", "checked"), State("vizro_themes", "data"), State(self.id, "id")],
             prevent_initial_call=True,
         )

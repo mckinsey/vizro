@@ -30,7 +30,7 @@ export function _update_graph_theme(checked, vizro_themes, graph_id) {
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 176 || window.innerHeight < 176) {
+    if (window.innerWidth < 576 || window.innerHeight < 576) {
       return [
         false,
         {
