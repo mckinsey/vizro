@@ -38,9 +38,6 @@ class PageBuilder:
                 components.append(
                     self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
                 )
-                components.append(
-                    self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
-                )
             except DebugFailure as e:
                 components.append(
                     vm.Card(

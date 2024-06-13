@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 
 import pandas as pd
 
-# from langchain.globals import set_debug
+from langchain.globals import set_debug
 from langgraph.graph import END, StateGraph
 from vizro.models import Dashboard
 from vizro_ai.chains._llm_models import _get_llm_model
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
-# set_debug(True)
+set_debug(True)
 
 
 class GraphState(BaseModel):
@@ -52,11 +52,9 @@ class GraphState(BaseModel):
         arbitrary_types_allowed = True
 
     @validator("dfs")
-    @validator("dfs")
     def check_dataframes(cls, v):
         """Check if the dataframes are valid."""
         if not isinstance(v, list):
-            raise ValueError("dfs must be a list")
             raise ValueError("dfs must be a list")
         for df in v:
             if not isinstance(df, pd.DataFrame):
@@ -78,7 +76,6 @@ def _store_df_info(state: GraphState):
     current_df_names = []
     for _, df in enumerate(dfs):
         df_schema, df_sample = _get_df_info(df)
-        data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(DfInfo)
         data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(DfInfo)
 
         df_name = data_sum_chain.invoke(
