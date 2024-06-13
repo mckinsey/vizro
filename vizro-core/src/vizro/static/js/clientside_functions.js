@@ -14,6 +14,7 @@ import {
   _update_date_picker_values,
   _update_date_picker_position,
 } from "./models/date_picker.js";
+import { _update_themed_components } from "./models/page.js";
 
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
   clientside: {
@@ -27,5 +28,6 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     update_ag_grid_theme: _update_ag_grid_theme,
     update_date_picker_values: _update_date_picker_values,
     update_date_picker_position: _update_date_picker_position,
+    update_themed_components: _update_themed_components,
   },
 });

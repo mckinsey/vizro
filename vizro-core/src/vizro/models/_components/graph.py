@@ -63,6 +63,7 @@ class Graph(VizroBaseModel):
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
         try:
+            # READ COMMENTS BELOW
             # At the moment theme_selector is always present so this if statement is redundant, but possibly in
             # future we'll have callbacks that do Graph.__call__() without theme_selector set.
             if "theme_selector" in ctx.args_grouping.get("external", {}):

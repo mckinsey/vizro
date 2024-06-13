@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from typing import List, TypedDict
 
-from dash import Input, Output, Patch, callback, dcc, html
+from dash import Input, Output, State, Patch, clientside_callback, dcc, html, ClientsideFunction, callback
 
 try:
     from pydantic.v1 import Field, root_validator, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, root_validator, validator
 
+from vizro import _themes as themes
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
@@ -108,7 +109,7 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self) -> _PageBuildType:
-        self._update_graph_theme()
+        themed_components_ids = self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
@@ -118,6 +119,7 @@ class Page(VizroBaseModel):
 
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.children.append(dcc.Store(id="themed_components_ids", data=themed_components_ids))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
 
@@ -125,7 +127,6 @@ class Page(VizroBaseModel):
         # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
         # not good.
         # Putting graphs as inputs here would be a nice way to trigger the theme change automatically so that we don't
-
         # need the call to _update_theme inside Graph.__call__ also, but this results in an extra callback and the graph
         # flickering.
         # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
@@ -141,11 +142,15 @@ class Page(VizroBaseModel):
             if hasattr(model_manager[model_id], "_update_theme")
         ]
         if themed_components:
-
-            @callback(
-                [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
-                Input("theme_selector", "checked"),
-                prevent_initial_call="initial_duplicate",
+            # TODO: Merge this one with the one in _dashboard.py (_update_dashboard_theme)
+            clientside_callback(
+                ClientsideFunction(namespace="clientside", function_name="update_themed_components"),
+                inputs=[
+                    Input("theme_selector", "checked"),
+                    State("themed_components_ids", "data"),
+                    State("vizro_themes", "data"),
+                ],
+                prevent_initial_call=True,
             )
-            def update_graph_theme(theme_selector: bool):
-                return [component._update_theme(Patch(), theme_selector) for component in themed_components]
+
+        return [component.id for component in themed_components]

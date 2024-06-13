@@ -203,6 +203,9 @@ def _get_modified_page_figures(
 ) -> Dict[str, Any]:
     targets = targets or []
 
+    from time import sleep
+    sleep(1)
+
     filtered_data, parameterized_config = _get_targets_data_and_config(
         ctds_filter=ctds_filter,
         ctds_filter_interaction=ctds_filter_interaction,

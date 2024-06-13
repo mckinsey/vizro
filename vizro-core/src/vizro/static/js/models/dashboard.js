@@ -15,7 +15,7 @@ export function _update_ag_grid_theme(checked) {
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 576 || window.innerHeight < 576) {
+    if (window.innerWidth < 176 || window.innerHeight < 176) {
       return [
         false,
         {
