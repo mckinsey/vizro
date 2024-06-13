@@ -183,6 +183,8 @@ class VizroAI:
             {
                 "dfs": dfs, 
                 "df_metadata": {},
+                "dashboard_plan": None,
+                "dashboard": None,
                 "messages": [("user", user_input)]
             }
         )

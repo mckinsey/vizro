@@ -20,6 +20,7 @@ model_sum_prompt = ChatPromptTemplate.from_messages(
             'Card',
             'Filter',
             'Graph',
+            'Layout',
             ]  \n ------- \n
             Here is the user question:""",
         ),

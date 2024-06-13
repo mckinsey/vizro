@@ -6,7 +6,9 @@ from langgraph.graph import END, StateGraph
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, df_sum_prompt, _get_df_info
 from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, model_sum_prompt, _generate_import_statement
-from vizro_ai.dashboard.nodes.core_builder.vizro_ai_db import VizroAIDashboard
+from vizro_ai.dashboard.nodes.core_builder.plan import _get_dashboard_plan, _print_dashboard_plan, DashboardPlanner
+from vizro_ai.dashboard.nodes.core_builder.build import DashboardBuilder
+from vizro.models import Dashboard
 
 from langchain.globals import set_debug
 
@@ -17,11 +19,8 @@ except ImportError:  # pragma: no cov
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
-set_debug(True)
+# set_debug(True)
 
-
-# def add(existing: Dict, new: Dict[str, Dict[str, str]]):
-#     return new
 
 class GraphState(BaseModel):
     """Represents the state of dashboard graph.
@@ -30,13 +29,16 @@ class GraphState(BaseModel):
         messages : With user question, error messages, reasoning
         dfs : Dataframes
         df_metadata : Cleaned dataframe names and their metadata
+        dashboard_plan : Plan for the dashboard
+        dashboard : Vizro dashboard
 
     """
 
     messages: List
     dfs: List[pd.DataFrame]
-    # df_metadata: Annotated[Dict[str, Dict[str, Any]], add]
     df_metadata: Dict[str, Dict[str, Any]]
+    dashboard_plan: DashboardPlanner = None
+    dashboard: Dashboard = None
 
     class Config:
         arbitrary_types_allowed = True
@@ -57,6 +59,7 @@ def _store_df_info(state: GraphState):
     Args:
         state (dict): The current graph state.
     """
+    print("*** _store_df_info ***")
     dfs = state.dfs
     messages = state.messages
     df_metadata = state.df_metadata
@@ -93,6 +96,7 @@ def _compose_imports_code(state: GraphState):
         state (dict): New key added to state, generation
 
     """
+    print("*** _compose_imports_code ***")
     messages = state.messages
     model_sum_chain = model_sum_prompt | _get_llm_model(model=model_default).with_structured_output(ModelSummary)
 
@@ -109,20 +113,56 @@ def _compose_imports_code(state: GraphState):
     return {"messages": messages}
 
 
+def _dashboard_plan(state: GraphState):
+    """Generate a dashboard plan.
+
+    Args:
+        state (dict): The current graph state
+    """
+    print("*** _dashboard_plan ***")
+    messages = state.messages
+    _, query = messages[0]
+    df_metadata = state.df_metadata
+    dashboard_plan = state.dashboard_plan
+
+    model = _get_llm_model(model=model_default)
+    dashboard_plan = _get_dashboard_plan(query=query, model=model, df_metadata=df_metadata)
+    _print_dashboard_plan(dashboard_plan)
+
+    return {"dashboard_plan": dashboard_plan}
+
+
+def _build_dashboard(state: GraphState):
+    """Build a dashboard.
+
+    Args:
+        state (dict): The current graph state
+    """
+    print("*** _build_dashboard ***")
+    df_metadata = state.df_metadata
+    dashboard_plan = state.dashboard_plan
+
+    model = _get_llm_model(model=model_default)
+    dashboard = DashboardBuilder(
+            model=model,
+            df_metadata=df_metadata,
+            dashboard_plan=dashboard_plan,
+        ).dashboard
+
+    return {"dashboard": dashboard}
+
+
 def _generate_dashboard_code(state: GraphState):
     """Generate a dashboard code snippet.
 
     Args:
         state (dict): The current graph state
     """
+    print("*** _generate_dashboard_code ***")
     messages = state.messages
     _, import_statement = messages[-1]
-    # dfs = state["dfs"]
-    df_metadata = state.df_metadata
+    dashboard = state.dashboard
 
-    model = _get_llm_model(model=model_default)
-    vizro_ai_dashboard = VizroAIDashboard(model)
-    dashboard = vizro_ai_dashboard._build_dashboard(messages[0][1], df_metadata)
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     print(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
@@ -141,10 +181,14 @@ def _create_and_compile_graph():
 
     graph.add_node("_store_df_info", _store_df_info)
     graph.add_node("_compose_imports_code", _compose_imports_code)
+    graph.add_node("_dashboard_plan", _dashboard_plan)
+    graph.add_node("_build_dashboard", _build_dashboard)
     graph.add_node("_generate_dashboard_code", _generate_dashboard_code)
 
     graph.add_edge("_store_df_info", "_compose_imports_code")
-    graph.add_edge("_compose_imports_code", "_generate_dashboard_code")
+    graph.add_edge("_compose_imports_code", "_dashboard_plan")
+    graph.add_edge("_dashboard_plan", "_build_dashboard")
+    graph.add_edge("_build_dashboard", "_generate_dashboard_code")
     graph.add_edge("_generate_dashboard_code", END)
 
     graph.set_entry_point("_store_df_info")
