@@ -49,14 +49,12 @@ class PageBuilder:
                 )
         return components
 
-
     @property
     def layout(self):
         """Property to get layout."""
         if self._layout is None:
             self._layout = self._build_layout()
         return self._layout
-
 
     def _build_layout(self):
         logger.info(f"Building layout: {self._page_plan}")
@@ -82,11 +80,8 @@ class PageBuilder:
             control = self._page_plan.controls.controls[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
-                model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
-            )
             if control:
                 controls.append(control)
-
 
         return controls
 
