@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, ctx, dcc
+from dash import ClientsideFunction, Input, State, clientside_callback, ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
