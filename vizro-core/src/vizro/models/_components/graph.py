@@ -118,11 +118,6 @@ class Graph(VizroBaseModel):
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
-            output=[
-                # TODO: Raise the Issue to Dash
-                # To avoid console warnings about the theme selector not being present in the layout.
-                Output(self.id, "figure"),
-            ],
             inputs=[Input("theme_selector", "checked"), State("vizro_themes", "data"), State(self.id, "id")],
             prevent_initial_call=True,
         )

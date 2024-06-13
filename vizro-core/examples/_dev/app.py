@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
 
-NUMBER_OF_COMPONENTS = 35
+NUMBER_OF_COMPONENTS = 64
 
 
 def squared_layout(N):
