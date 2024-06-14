@@ -60,7 +60,11 @@ def _debug_helper(
 
 
 def _exec_code_and_retrieve_fig(
-    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True, return_elements: bool = False
+    code: str,
+    local_args: Optional[Dict] = None,
+    show_fig: bool = False,
+    is_notebook_env: bool = True,
+    return_elements: bool = False,
 ) -> go.Figure:
     """Execute code in notebook with correct namespace and return fig object.
 

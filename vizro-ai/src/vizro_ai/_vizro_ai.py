@@ -58,7 +58,12 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False, return_elements: bool = False
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        max_debug_retry: int = 3,
+        explain: bool = False,
+        return_elements: bool = False,
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -86,7 +91,11 @@ class VizroAI:
             )
 
         fig_object = _exec_code_and_retrieve_fig(
-            code=code_string, local_args={"df": df}, show_fig=_is_jupyter(), is_notebook_env=_is_jupyter(), return_elements=return_elements
+            code=code_string,
+            local_args={"df": df},
+            show_fig=_is_jupyter(),
+            is_notebook_env=_is_jupyter(),
+            return_elements=return_elements,
         )
         if explain:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
@@ -137,7 +146,11 @@ class VizroAI:
 
         """
         vizro_plot = self._run_plot_tasks(
-            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry, return_elements=return_elements
+            df=df,
+            user_input=user_input,
+            explain=explain,
+            max_debug_retry=max_debug_retry,
+            return_elements=return_elements,
         )
 
         if not explain:
