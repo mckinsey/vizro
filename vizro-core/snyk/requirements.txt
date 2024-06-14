@@ -1,4 +1,4 @@
-dash>=2.17.0
+dash>=2.17.1
 dash_bootstrap_components
 dash-ag-grid>=31.0.0
 pandas

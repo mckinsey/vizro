@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Literal
 
-from dash import State, ctx, dcc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, ctx, dcc
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -116,6 +116,14 @@ class Graph(VizroBaseModel):
 
     @_log_call
     def build(self):
+        clientside_callback(
+            ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
+            # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
+            output=[Output(self.id, "figure")],
+            inputs=[Input("theme_selector", "checked"), State("vizro_themes", "data"), State(self.id, "id")],
+            prevent_initial_call=True,
+        )
+
         # The empty figure here is just a placeholder designed to be replaced by the actual figure when the filters
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
