@@ -103,12 +103,8 @@ Hence, as a result, when a dashboard user now clicks the button, all data on the
 
 !!! note
 
-    Note that exported data will not include any chart modifications, such as filtering, sorting, or disabling chart traces from the legend.
-    Only the original data_frame input, with any native filters and parameters applied, is exported.
-
-    When exporting data from a [custom chart](custom-charts.md), it is the contents of the data_frame input argument that is exported.
-    As a result, the exported data will include any native filters and parameters, but will not reflect any transformations applied to the data_frame within the chart function.
-
+    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#filter-data-by-clicking-on-chart) action.
+    Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
 ### Filter data by clicking on chart
 

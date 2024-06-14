@@ -29,6 +29,7 @@ page_one = vm.Page(
 # More about Vizro Custom Actions -> https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/
 @capture("action")
 def ag_grid_data_exporting():
+    """Custom Action."""
     return True
 
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, TypedDict
 
-from dash import Input, Output, Patch, callback, dcc, html
+from dash import dcc, html
 
 try:
     from pydantic.v1 import Field, root_validator, validator
@@ -108,7 +108,6 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self) -> _PageBuildType:
-        self._update_graph_theme()
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
@@ -120,32 +119,3 @@ class Page(VizroBaseModel):
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
-
-    def _update_graph_theme(self):
-        # The obvious way to do this would be to alter pio.templates.default, but this changes global state and so is
-        # not good.
-        # Putting graphs as inputs here would be a nice way to trigger the theme change automatically so that we don't
-
-        # need the call to _update_theme inside Graph.__call__ also, but this results in an extra callback and the graph
-        # flickering.
-        # The code is written to be generic and extensible so that it runs _update_theme on any component with such a
-        # method defined. But at the moment this just means Graphs.
-        # TODO: consider making this clientside callback and then possibly we can remove the call to _update_theme in
-        #  Graph.__call__ without any flickering.
-        # TODO: if we do this then we should *consider* defining the callback in Graph itself rather than at Page
-        #  level. This would mean multiple callbacks on one page but if it's clientside that probably doesn't matter.
-
-        themed_components = [
-            model_manager[model_id]
-            for model_id in model_manager._get_model_children(model_id=ModelID(str(self.id)))
-            if hasattr(model_manager[model_id], "_update_theme")
-        ]
-        if themed_components:
-
-            @callback(
-                [Output(component.id, "figure", allow_duplicate=True) for component in themed_components],
-                Input("theme_selector", "checked"),
-                prevent_initial_call="initial_duplicate",
-            )
-            def update_graph_theme(theme_selector: bool):
-                return [component._update_theme(Patch(), theme_selector) for component in themed_components]
