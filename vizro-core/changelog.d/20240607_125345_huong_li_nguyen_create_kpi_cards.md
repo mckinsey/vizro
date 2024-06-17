@@ -7,7 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Highlights ✨
 
 - Introduce `Figure` as a new `Page` component, enabling all dash components to be reactive in
-  `Vizro`. See the [user guide on figure](https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/) for more information. ([#493](https://github.com/mckinsey/vizro/pull/493), [#524](https://github.com/mckinsey/vizro/pull/524))
+  `Vizro`. See the [user guide on figure](XXX) for more information. ([#493](https://github.com/mckinsey/vizro/pull/493), [#524](https://github.com/mckinsey/vizro/pull/524))
 - Introduce styled KPI cards to be used inside `Figure`. See the [user guide on KPI cards](XXXX) for more information. ([#493](https://github.com/mckinsey/vizro/pull/493))
 
 <!--
