@@ -610,8 +610,8 @@ If you now click on the card area, you should automatically be redirected to the
 
 
 ### Create a KPI card
-To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). 
-Unlike the static text card `vm.Card`, a KPI card must be created using a figure function. 
+To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md).
+Unlike the static text card `vm.Card`, a KPI card must be created using a figure function.
 This allows the text content of the KPI card to dynamically update based on any changes in controls or actions.
 
 For detailed examples on how to create a KPI card, please refer to the [figure user guide on KPI cards](figure.md#create-kpi-cards).

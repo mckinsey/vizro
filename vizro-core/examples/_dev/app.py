@@ -14,9 +14,25 @@ page = vm.Page(
         # Style 1: `kpi_card`
         vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card I")),
         vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card II", agg_func="mean")),
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card III", agg_func="mean",
-                                  value_format="${value:.2f}", )),
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card IV", agg_func="mean", value_format="${value:.2f}", icon="shopping_cart")),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                title="KPI Card III",
+                agg_func="mean",
+                value_format="${value:.2f}",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                title="KPI Card IV",
+                agg_func="mean",
+                value_format="${value:.2f}",
+                icon="shopping_cart",
+            )
+        ),
         # Style 2: Value and reference value
         vm.Figure(
             figure=kpi_card_reference(
