@@ -396,6 +396,116 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
+### Add an icon
+If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+
+If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
+
+!!! example "Navigation Card with Icon"
+    === "app.py"
+        ```py hl_lines="12 23"
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="Homepage",
+            components=[
+                vm.Card(
+                    text="""
+                    ![](assets/images/icons/content/hypotheses.svg#icon-top)
+
+                    ### Filters and parameters
+
+                    Leads to the first page on click.
+                    """,
+                    href="/filters-and-parameters",
+                ),
+
+                vm.Card(
+                    text="""
+                    ![](assets/images/icons/content/features.svg#icon-top)
+
+                    ### Google - External Link
+
+                    Leads to an external link on click.
+                    """,
+                    href="https://google.com",
+                ),
+            ],
+        )
+
+        page_2 = vm.Page(
+            title="Filters and parameters",
+            components=[
+                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page_1, page_2])
+
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml hl_lines="5 13"
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+        - components:
+            - text: |
+                ![](assets/images/icons/content/hypotheses.svg#icon-top)
+
+                ### Filters and parameters
+
+                Leads to the first page on click
+              href: /filters-and-parameters
+              type: card
+            - text: |
+                ![](assets/images/icons/content/features.svg#icon-top)
+
+                ### Google - External Link
+
+                Leads to an external link on click.
+              href: https://google.com
+              type: card
+          title: Homepage
+        - components:
+            - figure:
+                _target_: scatter
+                color: sepal_width
+                data_frame: iris
+                x: sepal_length
+                y: petal_width
+              id: scatter
+              type: graph
+          title: Filters and parameters
+        ```
+    === "Result"
+           [![NavCardIcon]][NavCardIcon]
+
+       [NavCardIcon]: ../../assets/user_guides/components/nav_card_icon.png
+
+Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
+in the app with `path = filters-and-parameters` and the second one to an external link.
+
+**Make an icon responsive to theme switch**
+
+To make an icon responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
+It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
+Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+
+```css
+img[src*="#my-image"] {
+  filter: var(--inverse-color);
+}
+```
+
+??? example "Responsive icon"
+    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
+
 ### Create a navigation card
 
 !!! note
@@ -499,119 +609,12 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
 
-### Add an icon
-If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+### Create a KPI card
+To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). 
+Unlike the static text card `vm.Card`, a KPI card must be created using a figure function. 
+This allows the text content of the KPI card to dynamically update based on any changes in controls or actions.
 
-If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
-
-!!! example "Navigation Card with Icon"
-    === "app.py"
-        ```py hl_lines="12 23"
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        iris = px.data.iris()
-
-        page_1 = vm.Page(
-            title="Homepage",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](assets/images/icons/content/hypotheses.svg#icon-top)
-
-                    ### Filters and parameters
-
-                    Leads to the first page on click.
-                    """,
-                    href="/filters-and-parameters",
-                ),
-
-                vm.Card(
-                    text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
-
-                    ### Google - External Link
-
-                    Leads to an external link on click.
-                    """,
-                    href="https://google.com",
-                ),
-            ],
-        )
-
-        page_2 = vm.Page(
-            title="Filters and parameters",
-            components=[
-                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page_1, page_2])
-
-        Vizro().build(dashboard).run()
-        ```
-    === "app.yaml"
-        ```yaml hl_lines="5 13"
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
-        pages:
-        - components:
-            - text: |
-                ![](assets/images/icons/content/hypotheses.svg#icon-top)
-
-                ### Filters and parameters
-
-                Leads to the first page on click
-              href: /filters-and-parameters
-              type: card
-            - text: |
-                ![](assets/images/icons/content/features.svg#icon-top)
-
-                ### Google - External Link
-
-                Leads to an external link on click.
-              href: https://google.com
-              type: card
-          title: Homepage
-        - components:
-            - figure:
-                _target_: scatter
-                color: sepal_width
-                data_frame: iris
-                x: sepal_length
-                y: petal_width
-              id: scatter
-              type: graph
-          title: Filters and parameters
-        ```
-    === "Result"
-           [![NavCardIcon]][NavCardIcon]
-
-       [NavCardIcon]: ../../assets/user_guides/components/nav_card_icon.png
-
-Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
-in the app with `path = filters-and-parameters` and the second one to an external link.
-
-#### Add an icon responsive to theme switch
-
-To add an icon that is responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
-
-The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
-
-It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
-
-Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
-
-```css
-img[src*="#my-image"] {
-  filter: var(--inverse-color);
-}
-```
-
-??? example "Responsive icon"
-    ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
-
+For detailed examples on how to create a KPI card, please refer to the [figure user guide](figure.md).
 
 ## Buttons
 
