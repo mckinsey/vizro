@@ -55,9 +55,8 @@ class TestTableInstantiation:
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.Table(figure=standard_go_chart)
 
-    @pytest.mark.xfail(reason="This test is failing as we are not yet detecting different types of captured callables")
     def test_failed_table_with_wrong_captured_callable(self, standard_px_chart):
-        with pytest.raises(ValidationError, match="must provide a valid table function vm.Table"):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch. Expected table but got graph."):
             vm.Table(figure=standard_px_chart)
 
     def test_set_action_via_validator(self, standard_dash_table, identity_action_function):

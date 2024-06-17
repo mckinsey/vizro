@@ -55,9 +55,8 @@ class TestAgGridInstantiation:
         with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
             vm.AgGrid(figure=standard_go_chart)
 
-    @pytest.mark.xfail(reason="This test is failing as we are not yet detecting different types of captured callables")
     def test_failed_ag_grid_with_wrong_captured_callable(self, standard_px_chart):
-        with pytest.raises(ValidationError, match="must provide a valid ag_grid function vm.AgGrid"):
+        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch. Expected ag_grid but got graph."):
             vm.AgGrid(figure=standard_px_chart)
 
     def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
