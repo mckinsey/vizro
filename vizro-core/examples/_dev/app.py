@@ -40,7 +40,6 @@ def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> List[
 
 page = vm.Page(
     title="Page with variable number of cards",
-    # This is where you use the multiple_cards function you wrote:
     components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],
     controls=[
         vm.Parameter(

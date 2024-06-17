@@ -311,6 +311,11 @@ pages:
         type: card
     title: Custom Actions
   - components:
+      - text: |
+          ## Custom figures are currently only possible via python configuration
+        type: card
+    title: Custom Figures
+  - components:
       - components:
           - figure:
               _target_: scatter
@@ -521,4 +526,5 @@ navigation:
             - Custom Tables
             - Custom Components
             - Custom Actions
+            - Custom Figures
 title: Vizro Features
