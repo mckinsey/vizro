@@ -1,7 +1,11 @@
 # How to create custom Figures
 
-If the existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
-there is always the option to create a [custom Figure](custom-figures.md).
+This guide explains how to create custom figures, which is useful when you need a figure that reacts to controls and actions.
+
+There are two use cases where you might want to use custom figures:
+
+1. when you need a figure that isn't available in our pre-defined figure functions [`vizro.figures`](../API-reference/figure-callables.md) or
+2. when you need a figure that doesn't fit into our predefined components like [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid].
 
 For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), do the following:
 
@@ -13,9 +17,7 @@ For this, similar to how one would create a [custom chart](../user-guides/custom
 The example below shows how to create a custom figure — a list of cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
-```python
-
-??? example "Custom Figure - Dynamic number of cards"
+!!! example "Dynamic number of cards"
     === "app.py"
         ```py
         from typing import List, Optional
@@ -24,7 +26,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         import vizro.models as vm
         from vizro import Vizro
         from vizro.models.types import capture
-        
+
         df = pd.DataFrame(
             {
                 "text": [
@@ -38,28 +40,27 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
                 * 2
             }
         )
-        
-        
-        @capture("figure")
-        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> List[vm.Card]:
+
+
+        @capture("figure")  # (1)!
+        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> List[vm.Card]:  # (2)!
             """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
-        
+
             Args:
                 data_frame: Data frame containing the data.
                 n_rows: Number of rows to use from the data_frame. Defaults to 1.
-        
+
             Returns:
                 List of dbc.Card objects generated from the data.
-        
+
             """
             texts = data_frame.head(n_rows)["text"]
             return [vm.Card(text=f"### Card #{i+1}\n{text}").build() for i, text in enumerate(texts)]
-        
-        
+
+
         page = vm.Page(
             title="Page with variable number of cards",
-            # This is where you use the multiple_cards function you wrote:
-            components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],
+            components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],  # (3)!
             controls=[
                 vm.Parameter(
                     targets=["my-figure.n_rows"],
@@ -67,10 +68,15 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
+        2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
+        3. Our decorated figure function `multiple_cards` now needs to be passed on to the `vm.Figure`.
+
     === "css"
         ```css
         #my-figure {
@@ -78,12 +84,12 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
           flex-wrap: wrap;
           gap: 12px;
         }
-        
+
         .card {
           height: 210px;
           width: 240px;
         }
-        
+
         .figure-container {
           height: unset;
           width: unset;
