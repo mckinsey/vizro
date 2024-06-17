@@ -3,17 +3,10 @@
 pages:
   - components:
       - figure:
-          _target_: line
-          data_frame: df_stocks_long
-          x: date
-          y: value
-          color: stocks
-        type: graph
-    controls:
-      - column: stocks
-        type: filter
-      - column: value
-        type: filter
-      - column: date
-        type: filter
-    title: My first page
+          _target_: dash_ag_grid
+          data_frame: gapminder
+          dashGridOptions:
+            pagination: true
+        title: Dash AG Grid
+        type: ag_grid
+    title: Example of a Dash AG Grid

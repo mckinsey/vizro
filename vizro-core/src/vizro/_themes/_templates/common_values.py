@@ -31,7 +31,8 @@ def create_template_common():
         title_yanchor="top",
         title_pad_l=0,
         title_pad_r=0,
-        title_pad_t=6,
+        # Do not change title_pad_t without checking if graph and table title are still aligned when next to each other
+        title_pad_t=7,
         title_pad_b=0,
         showlegend=True,
         legend_font_family=primary_font,
