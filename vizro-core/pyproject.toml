@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
-  "dash>=2.17.0",  # 2.17.0 needed for new features on loading spinner
+  "dash>=2.17.1",  # 2.17.1 needed for no_output fix in clientside_callback
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas",
