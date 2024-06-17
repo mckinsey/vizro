@@ -1,5 +1,4 @@
 import logging
-from dataclasses import asdict
 from typing import Any, Optional, Union
 
 import pandas as pd
@@ -25,7 +24,6 @@ class VizroAI:
     """Vizro-AI main class."""
 
     pipeline_manager: PipelineManager = PipelineManager()
-    _return_all_text: bool = False  # TODO deleted after adding new integration test
 
     def __init__(self, model: Optional[Union[ChatOpenAI, str]] = None):
         """Initialization of VizroAI.
@@ -156,11 +154,5 @@ class VizroAI:
                 biz_insights=vizro_plot.business_insights,
                 code_explain=vizro_plot.code_explanation,
             )
-
-        # TODO Tentative for integration test, will be updated/removed for new tests
-        if self._return_all_text:
-            output_dict = asdict(vizro_plot)
-            output_dict["code_string"] = vizro_plot.code
-            return output_dict
 
         return vizro_plot if return_elements else vizro_plot.figure
