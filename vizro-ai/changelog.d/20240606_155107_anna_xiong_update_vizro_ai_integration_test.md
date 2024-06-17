@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
--  Private attribute `_return_all_text` is removed from `VizroAI` class ([#518](https://github.com/mckinsey/vizro/pull/518))
+- Private attribute `_return_all_text` is removed from `VizroAI` class ([#518](https://github.com/mckinsey/vizro/pull/518))
 
 <!--
 ### Added
