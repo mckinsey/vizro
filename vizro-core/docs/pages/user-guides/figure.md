@@ -3,12 +3,9 @@
 This guide shows you how to add any dash component to Vizro that needs to be reactive to controls or actions in your page.
 If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-A [`Figure`][vizro.models.Figure] is a versatile model that allows you to wrap any Dash component that doesn't fit into the more specialized
-reactive components like [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid].
-
-In essence, `Figure` is a higher-level abstraction, providing a flexible foundation for all types of reactive components in Vizro.
-The `Graph`, `Table` and `AgGrid` are specific implementations of the `Figure`. They serve as intuitive shortcuts,
-embedding behaviors and interactions specific to their purposes.
+In essence, `Figure` is a higher-level abstraction, providing a flexible foundation for all types of reactive Dash
+components in Vizro. The `Graph`, `Table` and `AgGrid` are specific implementations of the `Figure`.
+They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
@@ -103,3 +100,7 @@ To add a `Figure` to your page, do the following:
         [![Figure]][Figure]
 
     [Figure]: ../../assets/user_guides/figure/figure.png
+
+
+If the existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
+there is always the option to create a [custom Figure](custom-figures.md).
