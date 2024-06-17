@@ -85,7 +85,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
           gap: 12px;
         }
 
-        .card {
+        .figure-container .card {
           height: 210px;
           width: 240px;
         }
