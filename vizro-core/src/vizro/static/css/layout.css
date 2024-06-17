@@ -117,7 +117,8 @@
   width: 100%;
 }
 
-.loading-container {
+.loading-container,
+.figure-container {
   height: 100%;
   width: 100%;
 }
