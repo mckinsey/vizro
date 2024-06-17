@@ -17,6 +17,7 @@ dependencies = [
   "pandas",
   "tabulate",
   "openai>=1.0.0",
+  "tenacity<=8.3.0",  # TODO update when tenacity 8.4.0 is compatible with langchain
   "langchain>=0.1.0, <0.3.0",  # TODO update all LLMChain class and remove upper bound
   "langchain-openai",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
