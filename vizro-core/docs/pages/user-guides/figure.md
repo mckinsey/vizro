@@ -105,3 +105,10 @@ To add a `Figure` to your page, do the following:
 
 If the existing figure functions from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
 there is always the option to create a [custom Figure](custom-figures.md).
+
+
+### Create KPI Cards
+A KPI card is a dynamic card that can display a single value. Optionally, a title, icon and reference value can be added.
+It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
+- [`kpi_card`](../API-reference/figure-callables.md#kpi_card): A KPI card with a single value.
+- [`kpi_card_with_reference`](../API-reference/figure-callables.md#kpi_card_with_reference): A KPI card with a single value and a reference value.

@@ -1,53 +1,63 @@
 """Dev app to try things out."""
 
-from typing import List, Optional
-
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
-from vizro.models.types import capture
+from vizro.figures import kpi_card, kpi_card_reference
 
-df = pd.DataFrame(
-    {
-        "text": [
-            "Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.",
-            "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-            "Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.",
-            "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-            "Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.",
-            "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-        ]
-        * 2
-    }
-)
-
-
-@capture("figure")
-def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> List[vm.Card]:
-    """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
-
-    Args:
-        data_frame: Data frame containing the data.
-        n_rows: Number of rows to use from the data_frame. Defaults to 1.
-
-    Returns:
-        List of dbc.Card objects generated from the data.
-
-    """
-    texts = data_frame.head(n_rows)["text"]
-    return [vm.Card(text=f"### Card #{i+1}\n{text}").build() for i, text in enumerate(texts)]
-
+df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 
 page = vm.Page(
-    title="Page with variable number of cards",
-    components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],
-    controls=[
-        vm.Parameter(
-            targets=["my-figure.n_rows"],
-            selector=vm.Slider(min=2, max=12, step=2, value=8, title="Number of cards to display"),
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1]]),
+    components=[
+        # Style 1: `kpi_card`
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card I")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card II", agg_func="mean")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card III", agg_func="mean",
+                                  value_format="${value:.2f}", )),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card IV", agg_func="mean", value_format="${value:.2f}", icon="shopping_cart")),
+        # Style 2: Value and reference value
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Reference",
+                reference_column="Actual",
+                title="KPI Ref. Card I",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI Ref. Card I",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Reference",
+                reference_column="Actual",
+                title="KPI Ref. Card I",
+                value_format="{value:.2f}$",
+                reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                value_format="${value:.2f}",
+                reference_format="${delta:.2f} vs. reference (${reference:.2f})",
+                icon="shopping_cart",
+            ),
         ),
     ],
+    controls=[vm.Filter(column="Category")],
 )
+
 
 dashboard = vm.Dashboard(pages=[page])
 
