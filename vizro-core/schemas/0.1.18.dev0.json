@@ -172,6 +172,26 @@
       "required": ["text"],
       "additionalProperties": false
     },
+    "Figure": {
+      "title": "Figure",
+      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): See [`vizro.figures`][vizro.figures].",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "default": "",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "default": "figure",
+          "enum": ["figure"],
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "Graph": {
       "title": "Graph",
       "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
@@ -344,6 +364,7 @@
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "container": "#/definitions/Container",
+                "figure": "#/definitions/Figure",
                 "graph": "#/definitions/Graph",
                 "table": "#/definitions/Table",
                 "tabs": "#/definitions/Tabs"
@@ -361,6 +382,9 @@
               },
               {
                 "$ref": "#/definitions/Container"
+              },
+              {
+                "$ref": "#/definitions/Figure"
               },
               {
                 "$ref": "#/definitions/Graph"
@@ -1135,6 +1159,7 @@
                 "button": "#/definitions/Button",
                 "card": "#/definitions/Card",
                 "container": "#/definitions/Container",
+                "figure": "#/definitions/Figure",
                 "graph": "#/definitions/Graph",
                 "table": "#/definitions/Table",
                 "tabs": "#/definitions/Tabs"
@@ -1152,6 +1177,9 @@
               },
               {
                 "$ref": "#/definitions/Container"
+              },
+              {
+                "$ref": "#/definitions/Figure"
               },
               {
                 "$ref": "#/definitions/Graph"

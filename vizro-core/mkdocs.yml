@@ -15,6 +15,7 @@ nav:
           - Overview: pages/user-guides/components.md
           - Graphs: pages/user-guides/graph.md
           - Tables: pages/user-guides/table.md
+          - Figures: pages/user-guides/figure.md
           - Cards & buttons: pages/user-guides/card-button.md
           - Containers: pages/user-guides/container.md
           - Tabs: pages/user-guides/tabs.md
