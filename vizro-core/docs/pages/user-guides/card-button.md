@@ -397,7 +397,7 @@ and give an attribute selector to select images with that matching URL hash.
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
 ### Add an icon
-If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+If you want to add an icon to your card, add your image as described in the [earlier section](#place-an-image-on-a-card)
 
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 
