@@ -1,65 +1,100 @@
-"""Example to show dashboard configuration."""
+"""Dev app to try things out."""
 
+import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid
+from vizro.figures import kpi_card, kpi_card_reference
 
-df = px.data.gapminder()
+df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 
-# Vizro filter exporting Page --------------------------------------------
-# Solution based on https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#export-data
-
-page_one = vm.Page(
-    title="Vizro filters exporting",
-    layout=vm.Layout(grid=[[0]] * 5 + [[1]]),
+page = vm.Page(
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
-        vm.AgGrid(id="ag_grid_1", title="Equal Title One", figure=dash_ag_grid(data_frame=df)),
-        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
-    ],
-    controls=[vm.Filter(column="continent"), vm.Filter(column="year")],
-)
-
-# AgGrid filter exporting Page -------------------------------------------
-# Solution based on https://dash.plotly.com/dash-ag-grid/export-data-csv
-
-
-# More about Vizro Custom Actions -> https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/
-@capture("action")
-def ag_grid_data_exporting():
-    """Custom Action."""
-    return True
-
-
-page_two = vm.Page(
-    title="AgGrid filters exporting",
-    layout=vm.Layout(grid=[[0]] * 5 + [[1]]),  # grid = [[0], [0], [0], [0], [0], [1]]
-    components=[
-        vm.AgGrid(
-            id="ag_grid_2",
-            title="Equal Title One",
-            figure=dash_ag_grid(
-                # underlying_ag_grid_2 is the id of the AgGrid component on the client-side. It is used to reference
-                # it's `exportDataAsCsv` property with the custom action below
-                id="underlying_ag_grid_2",
+        # Style 1: Value Only
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value I", agg_func="sum")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value II", agg_func="mean")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="Value III", agg_func="median")),
+        # Style 2: Value and reference value
+        vm.Figure(
+            figure=kpi_card_reference(
                 data_frame=df,
-                csvExportParams={
-                    "fileName": "ag_grid_2.csv",
-                },
+                value_column="Reference",
+                reference_column="Actual",
+                title="Ref. Value II",
+                agg_func="sum",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value I",
+                agg_func="sum",
+            )
+        ),
+        vm.Figure(
+            id="kpi-card-reverse-coloring",
+            figure=kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value III",
+                agg_func="median",
+                icon="shopping_cart",
             ),
         ),
-        vm.Button(
-            id="button_2",
-            text="Export data",
-            actions=[vm.Action(function=ag_grid_data_exporting(), outputs=["underlying_ag_grid_2.exportDataAsCsv"])],
+        # Style 3: Value and icon
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                icon="shopping_cart",
+                title="Icon I",
+                agg_func="sum",
+                value_format="${value:.2f}",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                icon="payment",
+                title="Icon II",
+                agg_func="mean",
+                value_format="{value:.0f}€",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                icon="monitoring",
+                title="Icon III",
+                agg_func="median",
+            )
+        ),
+        # This should still work without a figure argument
+        vm.Card(
+            text="""
+                # Text Card
+                Hello, this is a text card.
+            """
+        ),
+        vm.Card(
+            text="""
+                # Nav Card
+                Hello, this is a nav card.
+            """,
+            href="https://www.google.com",
         ),
     ],
-    controls=[vm.Filter(column="continent"), vm.Filter(column="year")],
+    controls=[vm.Filter(column="Category")],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
+
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

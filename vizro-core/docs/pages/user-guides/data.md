@@ -46,7 +46,7 @@ A static data source is the simplest way to send data to your dashboard and shou
 
 ### Supply directly
 
-You can directly supply a pandas DataFrame into components such as [graphs](graph.md) and [tables](table.md).
+You can directly supply a pandas DataFrame into components such as [graphs](graph.md), [tables](table.md) and [figures](figure.md).
 
 The below example uses the Iris data saved to a file `iris.csv` in the same directory as `app.py`. This data can be generated using `px.data.iris()` or [downloaded](../../assets/user_guides/data/iris.csv).
 
