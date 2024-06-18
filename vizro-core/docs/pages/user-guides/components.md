@@ -34,7 +34,7 @@ listed below to fill your dashboard with visuals.
 
     ---
 
-    Use figure to visualize your make any dash component reactive.
+    Use figure to visualize your make any Dash component reactive.
 
     [:octicons-arrow-right-24: View user guide](figure.md)
 

@@ -1,20 +1,20 @@
 # How to use figures
 
-This guide shows you how to add any dash component to Vizro that needs to be reactive to controls or actions in your page.
+This guide shows you how to add any Dash component to Vizro that needs to be reactive to controls or actions in your page.
 If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
 In essence, `Figure` is a higher-level abstraction, providing a flexible foundation for all types of reactive Dash
 components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid]
-are specific implementations of the `Figure`. They serve as intuitive shortcuts, embedding behaviors and
+components are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and
 interactions specific to their purposes.
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
 ``` mermaid
 graph TD
-  first["`Does the dash component you want to add exist in our components library already?`"]
+  first["`Does the Dash component you want to add exist in Vizro's components library already?`"]
   extend-component([Use our existing components and enhance them if required])
-  second["`Does the new dash component need to be reactive to controls or actions?`"]
+  second["`Does the new Dash component need to be reactive to controls or actions?`"]
   second-static([Use custom components])
   second-reactive([Use Figure and provide a custom function])
 
@@ -31,10 +31,10 @@ graph TD
 ```
 
 
-To add a `Figure` to your page, do the following:
+To add a `Figure` to your page:
 
-- add the `Figure` model to the components argument of the [Page][vizro.models.Page] model.
-- use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) and pass it to the `figure` argument of the `Figure` model.
+1. Add the `Figure` model to the components argument of the [Page][vizro.models.Page] model.
+2. Use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) and pass it to the `figure` argument of the `Figure` model.
 
 !!! example "Use existing figure functions"
 

@@ -1,18 +1,18 @@
-# How to create custom Figures
+# How to create custom figures
 
 This guide explains how to create custom figures, which is useful when you need a figure that reacts to controls and actions.
 
 There are two use cases where you might want to use custom figures:
 
-1. when you need a figure that isn't available in our pre-defined figure functions [`vizro.figures`](../API-reference/figure-callables.md) or
-2. when you need a figure that doesn't fit into our predefined components like [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid].
+* You need a figure that isn't available in our pre-defined figure functions [`vizro.figures`](../API-reference/figure-callables.md).
+* You need a figure that doesn't fit into the existing predefined components ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 
-For this, similar to how one would create a [custom chart](../user-guides/custom-charts.md), do the following:
+Use the following approach, which is similar to creation of a [custom chart](../user-guides/custom-charts.md), do the following:
 
-- Define a function that returns a `Dash` component.
-- Decorate it with the `@capture("figure")` respectively.
-- The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
-- The figure should be derived from and require only one `pandas.DataFrame` (for example, any further dataframes added through other arguments will not react to dashboard components such as `Filter`).
+1. Define a function that returns a `Dash` component.
+2. Decorate it with the `@capture("figure")` respectively.
+3. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
+4. The figure should be derived from and require only one `pandas.DataFrame`. Additional dataframes from other arguments will not react to dashboard components such as `Filter`.
 
 The example below shows how to create a custom figure — a list of cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
