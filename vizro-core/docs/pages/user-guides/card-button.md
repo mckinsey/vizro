@@ -603,7 +603,7 @@ If you now click on the card area, you should automatically be redirected to the
 
 ???+ note
 
-    When using the [`Card`][vizro.models.Card], keep the following considerations in mind:
+    When using the [`Card`][vizro.models.Card], keep the following in mind:
 
     - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
