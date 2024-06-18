@@ -17,6 +17,7 @@ page_one = vm.Page(
     ],
 )
 
+
 dashboard = vm.Dashboard(pages=[page_one])
 
 if __name__ == "__main__":
