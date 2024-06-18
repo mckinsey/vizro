@@ -20,8 +20,7 @@ class Figure(VizroBaseModel):
 
     Args:
         type (Literal["figure"]): Defaults to `"figure"`.
-        figure (CapturedCallable): Figure like object to be displayed. Defaults to `None`. For more information see
-            available figure callables in `vizro.figures`.
+        figure (CapturedCallable): See [`vizro.figures`][vizro.figures].
 
     """
 
