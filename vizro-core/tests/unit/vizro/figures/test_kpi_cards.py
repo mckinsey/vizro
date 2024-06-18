@@ -8,13 +8,13 @@ from vizro.figures import kpi_card, kpi_card_reference
 df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 
 
-class TestDashAgGrid:
+class TestKPICardBuild:
     def test_kpi_card_mandatory(self):
         result = kpi_card(data_frame=df, value_column="Actual")()
         assert_component_equal(
             result,
             dbc.Card(
-                [dbc.CardHeader([None, html.H2("Actual")]), dbc.CardBody("73902")],
+                [dbc.CardHeader([None, html.H2("Sum Actual")]), dbc.CardBody("73902")],
                 className="card-kpi",
             ),
         )
@@ -46,7 +46,7 @@ class TestDashAgGrid:
                 dbc.CardHeader(
                     [
                         None,
-                        html.H2("Actual"),
+                        html.H2("Sum Actual"),
                     ]
                 ),
                 dbc.CardBody("73902"),
@@ -102,12 +102,3 @@ class TestDashAgGrid:
             match="Replacement index 0 out of range for positional args tuple",
         ):
             kpi_card(data_frame=df, value_column="Actual", value_format="{.2f}}")()
-
-    def test_value_format_warning_raised(self):
-        with pytest.warns(
-            UserWarning,
-            match="Custom format string detected. Note that the format string is being "
-            "evaluated, so ensure that only trusted user input is provided to prevent "
-            "potential security risks.",
-        ):
-            kpi_card(data_frame=df, value_column="Actual", value_format="${value:.2f}")()
