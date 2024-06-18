@@ -66,7 +66,8 @@ class Graph(VizroBaseModel):
             # At the moment theme_selector is always present so this if statement is redundant, but possibly in
             # future we'll have callbacks that do Graph.__call__() without theme_selector set.
             if "theme_selector" in ctx.args_grouping.get("external", {}):
-                fig = self._update_theme(fig, ctx.args_grouping["external"]["theme_selector"]["value"])
+                theme_selector_checked = ctx.args_grouping["external"]["theme_selector"]["value"]
+                fig["layout"]["template"] = themes.light if theme_selector_checked else themes.dark
         except MissingCallbackContextException:
             logger.info("fig.update_layout called outside of callback context.")
         return fig
@@ -120,7 +121,11 @@ class Graph(VizroBaseModel):
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
             # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
             output=[Output(self.id, "figure")],
-            inputs=[Input("theme_selector", "checked"), State("vizro_themes", "data"), State(self.id, "id")],
+            inputs=[
+                Input("theme_selector", "checked"),
+                State("vizro_themes", "data"),
+                State(self.id, "id"),
+            ],
             prevent_initial_call=True,
         )
 
@@ -146,10 +151,3 @@ class Graph(VizroBaseModel):
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-
-    @staticmethod
-    def _update_theme(fig: go.Figure, theme_selector: bool):
-        # Basically the same as doing fig.update_layout(template="vizro_light/dark") but works for both the call in
-        # self.__call__ and in the update_graph_theme callback.
-        fig["layout"]["template"] = themes.light if theme_selector else themes.dark
-        return fig
