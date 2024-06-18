@@ -492,7 +492,7 @@ in the app with `path = filters-and-parameters` and the second one to an externa
 
 **Make an icon responsive to theme switch**
 
-To make an icon responsive to the theme switch, you will need to override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+To make an icon responsive to the theme switch, override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
 The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
 It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
 Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
