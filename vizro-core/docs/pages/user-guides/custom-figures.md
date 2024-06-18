@@ -14,6 +14,7 @@ Use the following approach, which is similar to creation of a [custom chart](../
 3. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 4. The figure should be derived from and require only one `pandas.DataFrame`. Additional dataframes from other arguments will not react to dashboard components such as `Filter`.
 
+<!-- vale off -->
 The example below shows how to create a custom figure — a list of cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
@@ -103,3 +104,5 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         [![CustomFigure]][CustomFigure]
 
     [CustomFigure]: ../../assets/user_guides/figure/custom_figure.png
+
+<!-- vale on -->
