@@ -9,17 +9,15 @@ df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], colum
 
 page = vm.Page(
     title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1]]),
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
     components=[
-        # Style 1: `kpi_card`
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card I")),
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI Card II", agg_func="mean")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with value")),
+        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="mean")),
         vm.Figure(
             figure=kpi_card(
                 data_frame=df,
                 value_column="Actual",
-                title="KPI Card III",
-                agg_func="mean",
+                title="KPI with custom formatting",
                 value_format="${value:.2f}",
             )
         ),
@@ -27,19 +25,16 @@ page = vm.Page(
             figure=kpi_card(
                 data_frame=df,
                 value_column="Actual",
-                title="KPI Card IV",
-                agg_func="mean",
-                value_format="${value:.2f}",
+                title="KPI with icon",
                 icon="shopping_cart",
             )
         ),
-        # Style 2: Value and reference value
         vm.Figure(
             figure=kpi_card_reference(
                 data_frame=df,
                 value_column="Reference",
                 reference_column="Actual",
-                title="KPI Ref. Card I",
+                title="KPI with reference (neg)",
             )
         ),
         vm.Figure(
@@ -47,7 +42,7 @@ page = vm.Page(
                 data_frame=df,
                 value_column="Actual",
                 reference_column="Reference",
-                title="KPI Ref. Card I",
+                title="KPI with reference (pos)",
             )
         ),
         vm.Figure(
@@ -55,7 +50,7 @@ page = vm.Page(
                 data_frame=df,
                 value_column="Reference",
                 reference_column="Actual",
-                title="KPI Ref. Card I",
+                title="KPI with reference and custom formatting",
                 value_format="{value:.2f}$",
                 reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
             )
@@ -66,7 +61,7 @@ page = vm.Page(
                 value_column="Actual",
                 reference_column="Reference",
                 value_format="${value:.2f}",
-                reference_format="${delta:.2f} vs. reference (${reference:.2f})",
+                title="KPI with reference and icon",
                 icon="shopping_cart",
             ),
         ),
