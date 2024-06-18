@@ -20,7 +20,6 @@ def kpi_card_with_dataframe(gapminder):
         data_frame=gapminder,
         value_column="lifeExp",
         agg_func="mean",
-        title="Life Expectancy",
         value_format="{value:.3f}",
     )
 
@@ -31,7 +30,6 @@ def kpi_card_with_str_dataframe():
         data_frame="gapminder",
         value_column="lifeExp",
         agg_func="mean",
-        title="Life Expectancy",
         value_format="{value:.3f}",
     )
 
@@ -62,7 +60,6 @@ class TestDunderMethodsFigure:
         figure = vm.Figure(figure=kpi_card_with_dataframe)
         assert figure["value_column"] == "lifeExp"
         assert figure["agg_func"] == "mean"
-        assert figure["title"] == "Life Expectancy"
         assert figure["value_format"] == "{value:.3f}"
         assert figure["type"] == "figure"
 
@@ -93,10 +90,10 @@ class TestFigureBuild:
                     data_frame=gapminder,
                     value_column="lifeExp",
                     agg_func="mean",
-                    title="Life Expectancy",
+                    title="Mean Lifeexp",
                     value_format="{value:.3f}",
                 )(),
-                className="loading-container",
+                className="figure-container",
                 id="figure-id",
             ),
             color="grey",
