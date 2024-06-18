@@ -27,10 +27,6 @@ The below sections are guides on how to use pre-defined action functions.
 To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component.
 Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
-When data from a [custom chart](custom-charts.md) is exported it is the contents of the `data_frame` input argument that is exported.
-Therefore, the exported data will reflect any native filters and parameters, but no transformations to the `data_frame` done inside the chart function.
-
-
 !!! example "`export_data`"
 
     === "app.py"
@@ -103,6 +99,12 @@ Therefore, the exported data will reflect any native filters and parameters, but
         [![Graph]][Graph]
 
     [Graph]: ../../assets/user_guides/actions/actions_export.png
+
+
+!!! note
+
+    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#filter-data-by-clicking-on-chart) action.
+    Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
 ### Filter data by clicking on chart
 
