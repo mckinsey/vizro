@@ -5,7 +5,7 @@ import re
 from typing import Any, Dict, List
 
 import pandas as pd
-from langchain.globals import set_debug
+# from langchain.globals import set_debug
 from langgraph.graph import END, StateGraph
 from vizro.models import Dashboard
 from vizro_ai.chains._llm_models import _get_llm_model
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
-set_debug(True)
+# set_debug(True)
 
 
 class GraphState(BaseModel):

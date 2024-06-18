@@ -1,9 +1,9 @@
 """Contains the _get_model for the Vizro AI dashboard."""
 
 try:
-    from pydantic.v1 import BaseModel, Field
+    from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, Field, ValidationError
 from typing import Dict
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -26,7 +26,22 @@ SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
             """You are a data assistant with expertise pydantic and a visualization library named Vizro. \n
             Summarize the user \n
             question and response with instructed format. \n
-            This is the data you have access to: {df_metadata}\n
+            This is the data you have access to: \n{df_metadata}\n
+            Here is the user question:""",
+        ),
+        ("placeholder", "{message}"),
+    ]
+)
+
+MODEL_REPROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a data assistant with expertise pydantic and a visualization library named Vizro. \n
+            Summarize the user \n
+            question and response with instructed format. \n
+            This is the data you have access to: \n{df_metadata}\n
+            Pay special attention to the following error: \n{validation_error}\n
             Here is the user question:""",
         ),
         ("placeholder", "{message}"),
@@ -39,27 +54,23 @@ def _get_model(
     model,
     result_model: BaseModel,
     df_metadata: Dict[str, Dict[str, str]],
+    max_retry: int = 2,
 ) -> BaseModel:
-    vizro_model_chain = SINGLE_MODEL_PROMPT | model.with_structured_output(result_model)
+    for i in range(max_retry):
+        try:
+            prompt = SINGLE_MODEL_PROMPT if i == 0 else MODEL_REPROMPT
+            vizro_model_chain = prompt | model.with_structured_output(result_model)
 
-    messages = [
-        (
-            "user",
-            query,
-        )
-    ]
+            messages = [
+                (
+                    "user",
+                    query,
+                )
+            ]
 
-    res = vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata})
-
-    # try:
-    #     # This is most useful when the response is incomplete
-    #     # https://api.python.langchain.com/en/latest/runnables/langchain_core.runnables.retry.RunnableRetry.html#langchain_core.runnables.retry.RunnableRetry.with_retry
-    #     res = vizro_model_chain.with_retry(
-    #         stop_after_attempt=2,
-    #         retry_if_exception_type=(ValidationError,),
-    #     ).invoke({"message": messages, "df_metadata": df_metadata})
-    # except ValidationError:
-    #     pass
-    #     # res = ProxyVizroBaseModel(id="")
-
-    return res
+            res = vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata}) if i == 0 else vizro_model_chain.invoke(
+                {"message": messages, "df_metadata": df_metadata, "validation_error": str(validation_error)})
+            return res
+        except ValidationError as e:
+            validation_error = e
+    return validation_error

@@ -61,6 +61,25 @@ def _generate_import_statement(models):
     if "AgGrid" in final_required_models:
         import_statement += "from vizro.tables import dash_ag_grid\n"
 
-    import_statement += "import pandas as pd\n"
+    import_statement += """
+    \n
+    # # YOUR DATA INGESTION CODE GOES HERE
+    # # define the data loading functions and store them in the data_manager
+    # # example:
+    # import pandas as pd
+    # from vizro.managers import data_manager
+    #
+    # def load_data_a():
+    #     return pd.read_csv('data_a.csv')
+    #
+    # def load_data_b():
+    #     return pd.read_csv('data_b.csv')
+    #
+    # data_manager['data_a'] = load_data_a
+    # data_manager['data_b'] = load_data_b
+    #
+    # # "data_a" and "data_b" are the keys refered by the field `data_frame=` in below dashboard code
+    \n
+    """
 
     return import_statement

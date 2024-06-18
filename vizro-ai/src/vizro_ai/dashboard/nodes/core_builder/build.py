@@ -38,7 +38,7 @@ class PageBuilder:
                 components.append(
                     self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
                 )
-            except DebugFailure as e:
+            except DebugFailure as e: # TODO: check - does this ever get raised?
                 components.append(
                     vm.Card(
                         id=self._page_plan.components.components[i].component_id, text=f"Failed to build component: {e}"
