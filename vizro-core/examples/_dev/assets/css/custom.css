@@ -1,14 +1,4 @@
-#logo {
-  height: 40px;
-  margin-left: -8px;
-}
-
-/* Apply styling to parent */
-.card:has(#my-card) {
-  background-color: white;
-}
-
-/* Apply styling to children */
-#my-card p {
-  color: black;
+/* Apply reverse color logic via CSS */
+#kpi-card-reverse-coloring .card-kpi:has(.color-neg) {
+  border-left: 4px solid #1a85ff;
 }
