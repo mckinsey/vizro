@@ -11,6 +11,8 @@ build:
     python: "3.11"
   commands:
     - pip install hatch
-    - cd vizro-ai/ && hatch run docs:build && hatch run docs:link-check
+    - cd vizro-ai/ && hatch run docs:pip freeze
+    - cd vizro-ai/ && hatch run docs:build
+    - cd vizro-ai/ && hatch run docs:link-check
     - mkdir --parents $READTHEDOCS_OUTPUT
     - mv vizro-ai/site/ $READTHEDOCS_OUTPUT/html
