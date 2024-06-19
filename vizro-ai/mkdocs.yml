@@ -1,5 +1,5 @@
 site_name: Vizro-AI
-site_url: https://vizro-ai.readthedocs.io/en/latest/
+site_url: https://vizro.readthedocs.io/projects/vizro-ai
 nav:
   - Vizro-AI: index.md
   - Tutorials:
