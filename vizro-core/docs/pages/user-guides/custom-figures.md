@@ -23,12 +23,14 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
     === "app.py"
         ```py
         from typing import List, Optional
-
+        
+        import dash_bootstrap_components as dbc
         import pandas as pd
         import vizro.models as vm
+        from dash import dcc, html
         from vizro import Vizro
         from vizro.models.types import capture
-
+        
         df = pd.DataFrame(
             {
                 "text": [
@@ -42,24 +44,27 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
                 * 2
             }
         )
-
-
+        
+        
         @capture("figure")  # (1)!
-        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> List[vm.Card]:  # (2)!
+        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div[List[dbc.Card]]:  # (2)!
             """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
-
+        
             Args:
                 data_frame: Data frame containing the data.
                 n_rows: Number of rows to use from the data_frame. Defaults to 1.
-
+        
             Returns:
-                List of dbc.Card objects generated from the data.
-
+                html.Div with a list of dbc.Card objects generated from the data.
+        
             """
             texts = data_frame.head(n_rows)["text"]
-            return [vm.Card(text=f"### Card #{i+1}\n{text}").build() for i, text in enumerate(texts)]
-
-
+            return html.Div(
+                [dbc.Card(dcc.Markdown(f"### Card #{i+1}\n{text}")) for i, text in enumerate(texts)],
+                className="multiple-cards-container",
+            )
+        
+        
         page = vm.Page(
             title="Page with variable number of cards",
             components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],  # (3)!
@@ -70,7 +75,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
                 ),
             ],
         )
-
+        
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -81,7 +86,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
     === "css"
         ```css
-        #my-figure {
+        .multiple-cards-container {
           display: flex;
           flex-wrap: wrap;
           gap: 12px;
