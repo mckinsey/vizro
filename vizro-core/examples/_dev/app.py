@@ -5,66 +5,49 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 
+from typing import Optional
+
+import dash_bootstrap_components as dbc
+import numpy as np
+import pandas as pd
+from dash import html
+
+from vizro.models.types import capture
 df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
+
+
+@capture("figure")
+def kpi_card_custom(  # noqa: PLR0913
+    data_frame: pd.DataFrame,
+    value_column: str,
+    *,
+    value_format: str = "{value}",
+    agg_func: str = "sum",
+    title: Optional[str] = None,
+    icon: Optional[str] = None,
+) -> dbc.Card:
+    """Creates a styled KPI (Key Performance Indicator) card displaying a value."""
+    title = title or f"{agg_func} {value_column}".title()
+    value = data_frame[value_column].agg(agg_func)
+
+    return dbc.Card(
+        [
+            html.P(icon, className="material-symbols-outlined") if icon else None,
+            html.Div([html.H2(value_format.format(value=value), className="value"), html.H3(title, className="title")], className="value-and-title"),
+        ],
+        className="card-kpi-custom",
+    )
+
+
+
 
 page = vm.Page(
     title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]]*3),
     components=[
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with value")),
-        vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="mean")),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=df,
-                value_column="Actual",
-                title="KPI with custom formatting",
-                value_format="${value:.2f}",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=df,
-                value_column="Actual",
-                title="KPI with icon",
-                icon="shopping_cart",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="KPI with reference (neg)",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI with reference (pos)",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df,
-                value_column="Reference",
-                reference_column="Actual",
-                title="KPI with reference and custom formatting",
-                value_format="{value:.2f}$",
-                reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df,
-                value_column="Actual",
-                reference_column="Reference",
-                value_format="${value:.2f}",
-                title="KPI with reference and icon",
-                icon="shopping_cart",
-            ),
-        ),
+        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="sum", title="Revenue", icon="shopping_cart")),
+        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="mean", title="Sales", icon="payments")),
+        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="median", title="Profit", icon="shopping_bag")),
     ],
     controls=[vm.Filter(column="Category")],
 )

@@ -1,0 +1,27 @@
+.card-kpi-custom {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: unset;
+    height: unset;
+    padding: 14px;
+}
+
+.card-kpi-custom .material-symbols-outlined {
+    display: flex;
+    font-size: 8vh;
+}
+
+.card-kpi-custom .value {
+    align-items: center;
+  display: flex;
+  font-size: 4vh;
+  font-weight: 600;
+}
+
+
+.card-kpi-custom .value-and-title {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
