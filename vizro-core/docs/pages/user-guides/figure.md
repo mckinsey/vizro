@@ -1,12 +1,14 @@
 # How to use figures
 
-This guide shows you how to add any Dash component to Vizro that needs to be reactive to controls or actions in your page.
+This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [filter](filters.md) and [parameter](parameters.md) controls.
 If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-In essence, `Figure` is a higher-level abstraction, providing a flexible foundation for all types of reactive Dash
-components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid]
-components are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and
-interactions specific to their purposes.
+[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro.
+The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] components are
+specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific
+to their purposes. If these more specific models already achieve what you need then they should be used in preference to
+the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
+and [custom tables](custom-tables.md) to `Table`.
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
