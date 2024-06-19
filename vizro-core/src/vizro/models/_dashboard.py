@@ -246,7 +246,7 @@ class Dashboard(VizroBaseModel):
         page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
-    def _make_page_layout(self, page: Page):
+    def _make_page_layout(self, page: Page, **kwargs):
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
