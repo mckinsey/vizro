@@ -25,8 +25,8 @@ graph TD
   second -- No --> second-static
   second -- Yes --> second-reactive
 
-  click extend-component href "../custom-components/#extend-an-existing-component"
-  click second-static href "../custom-components/#create-a-new-component"
+  click specific-component href "../components/"
+  click second-static href "../custom-components/"
   click second-reactive href "#how-to-use-figures"
 
   classDef clickable color:#4051b5;
