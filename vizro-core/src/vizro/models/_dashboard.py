@@ -246,7 +246,7 @@ class Dashboard(VizroBaseModel):
         page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
-    def _make_page_layout(self, page: Page):
+    def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
         page_divs = self._get_page_divs(page=page)
