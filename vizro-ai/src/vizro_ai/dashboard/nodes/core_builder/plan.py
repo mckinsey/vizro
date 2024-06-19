@@ -85,6 +85,7 @@ def create_filter_proxy(df_cols, df_sample, available_components):
         """Validate the column."""
         if v not in df_cols:
             raise ValueError(f"column must be one of {df_cols}")
+        return v
 
     # TODO: properly check this - e.g. what is the best way to ideally dynamically include the available components
     # even in the schema
@@ -99,23 +100,10 @@ def create_filter_proxy(df_cols, df_sample, available_components):
         column=(str, Field(..., description="Column name of DataFrame to filter. ALWAYS REQUIRED.")),
         __validators__={
             "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
-            # "validator2": validator("column", allow_reuse=True)(validate_column), # this validator somehow causes column missing in the final output
+            "validator2": validator("column", allow_reuse=True)(validate_column),
         },
         __base__=vm.Filter,
     )
-
-
-# class FilterProxyModel(BaseModel):
-#     """Proxy model for Filter."""
-
-#     type: Literal["filter"] = "filter"
-#     column: str = Field(..., description="Column of DataFrame to filter.")
-#     targets: List[str] = Field(
-#         [],
-#         description="Target component to be affected by filter. "
-#         "If none are given then target all components on the page that use `column`.",
-#     )
-#     selector: Literal["Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"] = None
 
 
 class Control(BaseModel):
@@ -147,7 +135,6 @@ class Control(BaseModel):
         try:
             result_proxy = create_filter_proxy(df_cols=_df_cols, df_sample=_df_sample, available_components=available_components)
             proxy = _get_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)  # noqa: E501
-            # proxy = _get_model(query=filter_prompt, model=model, result_model=FilterProxyModel, df_metadata=df_metadata)
             logger.info(proxy.dict()) # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
             actual = vm.Filter.parse_obj(
                 proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
@@ -207,7 +194,7 @@ class Layout(BaseModel):
                 query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
-        except ValidationError:
+        except (ValidationError, AttributeError):
             logger.info("Validation failed, returning default values. Error details: {e}")
             actual = None
 
