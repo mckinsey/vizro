@@ -110,6 +110,7 @@ markdown_extensions:
 
 plugins:
   - search
+  - autorefs
   - mkdocstrings:
       handlers:
         python:
