@@ -14,19 +14,19 @@ The following flowchart shows what you need to consider when choosing which mode
 
 ``` mermaid
 graph TD
-  first["`Does the Dash component you want to add exist in Vizro's components library already?`"]
-  extend-component([Use an existing component and enhance it if required])
-  second["`Does the new Dash component need to be reactive to controls or actions?`"]
+  first["`Does a specific component exist in Vizro, e.g. Graph or AgGrid?`"]
+  specific-component([Use the specific component])
+  second["`Does your component need to be reactive to controls?`"]
   second-static([Use custom components])
-  second-reactive([Use Figure and provide a custom function])
+  second-reactive([Use Figure])
 
   first -- Yes --> extend-component
   first -- No --> second
   second -- No --> second-static
   second -- Yes --> second-reactive
 
-  click extend-component href "../custom-components/#extend-an-existing-component"
-  click second-static href "../custom-components/#create-a-new-component"
+  click specific-component href "../components/"
+  click second-static href "../custom-components/"
   click second-reactive href "#how-to-use-figures"
 
   classDef clickable color:#4051b5;
