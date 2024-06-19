@@ -65,7 +65,7 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         vizro_ai.plot(df, "describe the composition of gdp in continent")
         ```
 
-In addition to customizing the model beyond its name, passing an instantiated model to `VizroAI` lets you use models that are not included in the list of [supported models](#supported-models).
+Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).
 
 ## Azure OpenAI models
 To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
