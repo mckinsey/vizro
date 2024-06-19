@@ -64,7 +64,8 @@ update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}
 
 [envs.docs]
 dependencies = [
-  "mkdocs",
+  "mkdocs>=1.6.0",
+  "mkdocs-autorefs>=1.0.1",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
