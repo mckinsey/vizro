@@ -5,19 +5,19 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 
-df = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 example_cards = [
-    kpi_card(data_frame=df, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
     kpi_card(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         title="KPI with formatting",
         value_format="${value:.2f}",
     ),
     kpi_card(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         title="KPI with icon",
         icon="shopping_cart",
@@ -26,20 +26,20 @@ example_cards = [
 
 example_reference_cards = [
     kpi_card_reference(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
         title="KPI reference (pos)",
     ),
     kpi_card_reference(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
         agg_func="median",
         title="KPI reference (neg)",
     ),
     kpi_card_reference(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
         title="KPI reference with formatting",
@@ -47,10 +47,9 @@ example_reference_cards = [
         reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
     ),
     kpi_card_reference(
-        data_frame=df,
+        data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
-        value_format="${value:.2f}",
         title="KPI reference with icon",
         icon="shopping_cart",
     ),

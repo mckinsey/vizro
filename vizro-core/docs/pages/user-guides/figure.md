@@ -140,21 +140,21 @@ possible with the built-in functions then you can create a [custom figure](custo
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro
-        from vizro.figures import kpi_card, kpi_card_reference
+        from vizro.figures import kpi_card, kpi_card_reference  # (1)!  # (2)!
 
-        df = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+        df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
         example_cards = [
-            kpi_card(data_frame=df, value_column="Actual", title="KPI with value"),  # (1)!
-            kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+            kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+            kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
             kpi_card(
-                data_frame=df,
+                data_frame=df_kpi,
                 value_column="Actual",
                 title="KPI with formatting",
                 value_format="${value:.2f}",
             ),
             kpi_card(
-                data_frame=df,
+                data_frame=df_kpi,
                 value_column="Actual",
                 title="KPI with icon",
                 icon="shopping_cart",
@@ -162,21 +162,21 @@ possible with the built-in functions then you can create a [custom figure](custo
         ]
 
         example_reference_cards = [
-            kpi_card_reference(  # (2)!
-                data_frame=df,
+            kpi_card_reference(
+                data_frame=df_kpi,
                 value_column="Actual",
                 reference_column="Reference",
                 title="KPI reference (pos)",
             ),
             kpi_card_reference(
-                data_frame=df,
+                data_frame=df_kpi,
                 value_column="Actual",
                 reference_column="Reference",
                 agg_func="median",
                 title="KPI reference (neg)",
             ),
             kpi_card_reference(
-                data_frame=df,
+                data_frame=df_kpi,
                 value_column="Actual",
                 reference_column="Reference",
                 title="KPI reference with formatting",
@@ -184,10 +184,9 @@ possible with the built-in functions then you can create a [custom figure](custo
                 reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
             ),
             kpi_card_reference(
-                data_frame=df,
+                data_frame=df_kpi,
                 value_column="Actual",
                 reference_column="Reference",
-                value_format="${value:.2f}",
                 title="KPI reference with icon",
                 icon="shopping_cart",
             ),
@@ -216,26 +215,68 @@ possible with the built-in functions then you can create a [custom figure](custo
           - components:
               - figure:
                   _target_: kpi_card
-                  data_frame: tips
-                  value_column: tip
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with value
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with aggregation
+                  agg_func: median
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with formatting
                   value_format: ${value:.2f}
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with icon
                   icon: shopping_cart
-                  title: KPI Card I
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference (pos)
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  agg_func: median
+                  title: KPI reference (neg)
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference with formatting
+                  value_format: "{value:.2f}$"
+                  reference_format: "{delta:.2f}$ vs. last year ({reference:.2f}$)"
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference with icon
+                  icon: shopping_cart
                 type: figure
             controls:
-              - column: day
+              - column: Category
                 type: filter
-                selector:
-                  type: radio_items
             layout:
-              grid:
-                [
-                  [0, -1, -1, -1],
-                  [-1, -1, -1, -1],
-                  [-1, -1, -1, -1],
-                  [-1, -1, -1, -1],
-                  [-1, -1, -1, -1],
-                ]
+              grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
             title: KPI Indicators
         ```
     === "Result"
