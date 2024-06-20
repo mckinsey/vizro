@@ -39,6 +39,7 @@ nav:
           - Custom tables: pages/user-guides/custom-tables.md
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
+          - Custom figures: pages/user-guides/custom-figures.md
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md

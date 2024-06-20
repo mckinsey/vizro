@@ -1,30 +1,41 @@
 # How to use figures
 
-This guide shows you how to add any Dash component to Vizro that needs to be reactive to controls or actions in your page.
+This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [filter](filters.md) and [parameter](parameters.md) controls.
 If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-In essence, `Figure` is a higher-level abstraction, providing a flexible foundation for all types of reactive Dash
-components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid]
-components are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and
-interactions specific to their purposes.
+[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro.
+The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] components are
+specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific
+to their purposes.
+
+If these more specific models already achieve what you need then they should be used in preference to
+the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
+and [custom tables](custom-tables.md) to `Table`.
+
+There are already a few figure functions you can reuse.
+
+???+ info "Overview of available pre-defined figure functions"
+
+    - [`kpi_card`][vizro.figures.kpi_card]
+    - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
 ``` mermaid
 graph TD
-  first["`Does the Dash component you want to add exist in Vizro's components library already?`"]
-  extend-component([Use an existing component and enhance it if required])
-  second["`Does the new Dash component need to be reactive to controls or actions?`"]
+  first["`Does your desired component exist in Vizro, e.g. Graph, Table or AgGrid?`"]
+  specific-component([Use the specific component])
+  second["`Does your component need to be reactive to controls?`"]
   second-static([Use custom components])
-  second-reactive([Use Figure and provide a custom function])
+  second-reactive([Use Figure])
 
-  first -- Yes --> extend-component
+  first -- Yes --> specific-component
   first -- No --> second
   second -- No --> second-static
   second -- Yes --> second-reactive
 
-  click extend-component href "../custom-components/#extend-an-existing-component"
-  click second-static href "../custom-components/#create-a-new-component"
+  click specific-component href "../components/"
+  click second-static href "../custom-components/"
   click second-reactive href "#how-to-use-figures"
 
   classDef clickable color:#4051b5;
@@ -49,10 +60,10 @@ To add a `Figure` to your page:
 
         page = vm.Page(
             title="KPI Indicators",
-            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  # (1)!
             components=[
                 vm.Figure(
-                    figure=kpi_card(
+                    figure=kpi_card(  # (2)!
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
@@ -67,6 +78,10 @@ To add a `Figure` to your page:
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. This creates a [`layout`](layouts.md) with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
+        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#kpi_card).
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
