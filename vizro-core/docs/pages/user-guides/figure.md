@@ -123,8 +123,8 @@ It is a common visual component to display key metrics in a dashboard. Vizro sup
 - [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card with a single value.
 - [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference): A KPI card with a single value and a reference value.
 
-As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these 
-functions have several arguments to customise your KPI cards. If you require a level of customisation that is not 
+As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these
+functions have several arguments to customise your KPI cards. If you require a level of customisation that is not
 possible with the built-in functions then you can create a [custom figure](custom-figures.md).
 
 !!! example "KPI Card Variations"
