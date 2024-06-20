@@ -12,7 +12,8 @@ If these more specific models already achieve what you need then they should be 
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
 
-There are already a few figure functions you can reuse:
+There are already a few figure functions you can reuse, see the section on [KPI Cards](#kpi-key-performance-indicator-cards)
+for more details:
 
 - [`kpi_card`][vizro.figures.kpi_card]
 - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
