@@ -3,10 +3,25 @@
 pages:
   - components:
       - figure:
-          _target_: dash_ag_grid
-          data_frame: gapminder
-          dashGridOptions:
-            pagination: true
-        title: Dash AG Grid
-        type: ag_grid
-    title: Example of a Dash AG Grid
+          _target_: kpi_card
+          data_frame: tips
+          value_column: tip
+          value_format: ${value:.2f}
+          icon: shopping_cart
+          title: KPI Card I
+        type: figure
+    controls:
+      - column: day
+        type: filter
+        selector:
+          type: radio_items
+    layout:
+      grid:
+        [
+          [0, -1, -1, -1],
+          [-1, -1, -1, -1],
+          [-1, -1, -1, -1],
+          [-1, -1, -1, -1],
+          [-1, -1, -1, -1],
+        ]
+    title: KPI Indicators
