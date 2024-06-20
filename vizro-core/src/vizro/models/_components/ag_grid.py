@@ -58,7 +58,7 @@ class AgGrid(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __getitem__(self, arg_name: str):
-        # See table implementation for more details.
+        # See figure implementation for more details.
         if arg_name == "type":
             return self.type
         return self.figure[arg_name]

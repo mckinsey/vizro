@@ -22,6 +22,7 @@ If you have something you'd like us to include on the list, or spot something th
 
 ## Blog posts
 * [Introducing Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db).
+* [Creating Custom Dashboards with Vizro: A Comprehensive Guide](https://medium.com/@saffand03/creating-custom-dashboards-with-vizro-a-comprehensive-guide-73c69c6f851e).
 
 ## Examples on GitHub
 <!-- vale off -->
