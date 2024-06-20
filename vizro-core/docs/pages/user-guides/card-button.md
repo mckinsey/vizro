@@ -405,85 +405,49 @@ and give an attribute selector to select images with that matching URL hash.
 
 ??? example "Card with Icon"
     === "app.py"
-        ```py hl_lines="12 23"
+        ```py
         import vizro.models as vm
-        import vizro.plotly.express as px
         from vizro import Vizro
-
-        iris = px.data.iris()
-
-        page_1 = vm.Page(
-            title="Homepage",
+        
+        page = vm.Page(
+            title="Card with icon",
             components=[
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/content/hypotheses.svg#icon-top)
-
-                    ### Filters and parameters
-
-                    Leads to the first page on click.
-                    """,
-                ),
-
-                vm.Card(
-                    text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
-
-                    ### Google - External Link
-
-                    Leads to an external link on click.
+                    ![](assets/images/icons/hypotheses.svg#icon-top)
+        
+                    ### Card Title
+        
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
+                    Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
                     """,
                 ),
             ],
         )
-
-        page_2 = vm.Page(
-            title="Filters and parameters",
-            components=[
-                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page_1, page_2])
-
+        
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
-        ```yaml hl_lines="5 13"
+        ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
         - components:
             - text: |
-                ![](assets/images/icons/content/hypotheses.svg#icon-top)
-
-                ### Filters and parameters
-
-                Leads to the first page on click
+                ![](assets/images/icons/hypotheses.svg#icon-top)
+        
+                ### Card Title
+    
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
+                Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
               type: card
-            - text: |
-                ![](assets/images/icons/content/features.svg#icon-top)
-
-                ### Google - External Link
-
-                Leads to an external link on click.
-              type: card
-          title: Homepage
-        - components:
-            - figure:
-                _target_: scatter
-                color: sepal_width
-                data_frame: iris
-                x: sepal_length
-                y: petal_width
-              id: scatter
-              type: graph
-          title: Filters and parameters
+          title: Card with icon
         ```
     === "Result"
-           [![NavCardIcon]][NavCardIcon]
+           [![CardIcon]][CardIcon]
 
-       [NavCardIcon]: ../../assets/user_guides/components/nav_card_icon.png
+       [CardIcon]: ../../assets/user_guides/components/card_icon.png
 
 
 ### Make an icon responsive to theme switch
