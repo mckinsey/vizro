@@ -114,7 +114,7 @@ adjust the return statement of the function.
         2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         3. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
         4. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
-        5. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#kpi_card).
+        5. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         6. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"

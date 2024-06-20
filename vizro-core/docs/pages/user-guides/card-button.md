@@ -402,29 +402,28 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-
 ??? example "Card with Icon"
     === "app.py"
         ```py
         import vizro.models as vm
         from vizro import Vizro
-        
+
         page = vm.Page(
             title="Card with icon",
             components=[
                 vm.Card(
                     text="""
                     ![](assets/images/icons/hypotheses.svg#icon-top)
-        
+
                     ### Card Title
-        
+
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
                     Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
                     """,
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -436,9 +435,9 @@ and give an attribute selector to select images with that matching URL hash.
         - components:
             - text: |
                 ![](assets/images/icons/hypotheses.svg#icon-top)
-        
+
                 ### Card Title
-    
+
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
                 Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
               type: card

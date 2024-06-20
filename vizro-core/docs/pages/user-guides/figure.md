@@ -78,7 +78,7 @@ To add a `Figure` to your page:
         ```
 
         1. This creates a [`layout`](layouts.md) with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
-        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#kpi_card).
+        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
 
     === "app.yaml"
         ```yaml
@@ -120,11 +120,16 @@ To add a `Figure` to your page:
 A KPI card is a dynamic card that can display a single value. Optionally, a title, icon and reference value can be added.
 It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
 
-- [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card with a single value.
-- [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference): A KPI card with a single value and a reference value.
+- [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found
+by performing an aggregation function (by default, `sum`) over a specified column.
+Required arguments are `data_frame` and `value_column`.
+
+- [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference): A KPI card that shows a single value
+and a delta comparison to a reference value found by performing an aggregation function (by default, `sum`) over the specified columns.
+Required arguments are `data_frame`, `value_column` and `reference_column`.
 
 As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these
-functions have several arguments to customise your KPI cards. If you require a level of customisation that is not
+functions have several arguments to customize your KPI cards. If you require a level of customization that is not
 possible with the built-in functions then you can create a [custom figure](custom-figures.md).
 
 !!! example "KPI Card Variations"
@@ -136,74 +141,71 @@ possible with the built-in functions then you can create a [custom figure](custo
         from vizro import Vizro
         from vizro.figures import kpi_card, kpi_card_reference
 
-        df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
+        df = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+        example_cards = [
+            kpi_card(data_frame=df, value_column="Actual", title="KPI with value"),  # (1)!
+            kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+            kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                title="KPI with formatting",
+                value_format="${value:.2f}",
+            ),
+            kpi_card(
+                data_frame=df,
+                value_column="Actual",
+                title="KPI with icon",
+                icon="shopping_cart",
+            ),
+        ]
+
+        example_reference_cards = [
+            kpi_card_reference(  # (2)!
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (pos)",
+            ),
+            kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                agg_func="median",
+                title="KPI reference (neg)",
+            ),
+            kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with formatting",
+                value_format="{value:.2f}$",
+                reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+            ),
+            kpi_card_reference(
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                value_format="${value:.2f}",
+                title="KPI reference with icon",
+                icon="shopping_cart",
+            ),
+        ]
 
         page = vm.Page(
             title="KPI Indicators",
-            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-            components=[
-                vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with value")),
-                vm.Figure(figure=kpi_card(data_frame=df, value_column="Actual", title="KPI with aggregation", agg_func="mean")),
-                vm.Figure(
-                    figure=kpi_card(
-                        data_frame=df,
-                        value_column="Actual",
-                        title="KPI with custom formatting",
-                        value_format="${value:.2f}",
-                    )
-                ),
-                vm.Figure(
-                    figure=kpi_card(
-                        data_frame=df,
-                        value_column="Actual",
-                        title="KPI with icon",
-                        icon="shopping_cart",
-                    )
-                ),
-                vm.Figure(
-                    figure=kpi_card_reference(
-                        data_frame=df,
-                        value_column="Reference",
-                        reference_column="Actual",
-                        title="KPI with reference (neg)",
-                    )
-                ),
-                vm.Figure(
-                    figure=kpi_card_reference(
-                        data_frame=df,
-                        value_column="Actual",
-                        reference_column="Reference",
-                        title="KPI with reference (pos)",
-                    )
-                ),
-                vm.Figure(
-                    figure=kpi_card_reference(
-                        data_frame=df,
-                        value_column="Reference",
-                        reference_column="Actual",
-                        title="KPI with reference and custom formatting",
-                        value_format="{value:.2f}$",
-                        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
-                    )
-                ),
-                vm.Figure(
-                    figure=kpi_card_reference(
-                        data_frame=df,
-                        value_column="Actual",
-                        reference_column="Reference",
-                        value_format="${value:.2f}",
-                        title="KPI with reference and icon",
-                        icon="shopping_cart",
-                    ),
-                ),
-            ],
+            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  # (3)!
+            components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
         )
-
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+        1. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
+        2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference).
+        3. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
