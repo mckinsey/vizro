@@ -5,9 +5,7 @@ you can create a custom Dash AG Grid or Dash DataTable.
 
 One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
 
-### Requirements of a custom table function
-
-To create a custom table, follow these steps:
+### Steps to create a custom table
 
 1. Define a function that returns a `dash_ag_grid.AgGrid` or `dash_table.DataTable` object.
 2. Decorate it with `@capture("ag_grid")` or `@capture("table")`.

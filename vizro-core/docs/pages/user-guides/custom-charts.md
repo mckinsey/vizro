@@ -9,9 +9,7 @@ In general, the usage of the custom chart decorator `@capture("graph")` is requi
 - You want to use any of the post figure update calls by `plotly` such as `update_layout`, `update_xaxes`, `update_traces` (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
 - You want to use a custom-created [`plotly.graph_objects.Figure()`](https://plotly.com/python/graph-objects/) object (in short, `go.Figure()`) and add traces yourself via [`add_trace`](https://plotly.com/python/creating-and-updating-figures/#adding-traces)
 
-### Requirements of a custom chart function
-
-To create a custom chart, follow these steps:
+### Steps to create a custom chart
 
 1. Define a function that returns a `go.Figure()`.
 2. Decorate it with `@capture("graph")`.
@@ -23,6 +21,8 @@ The below minimal example can be used as a base to build more sophisticated char
 
 ```py title="Minimal example of a custom chart"
 from vizro.models.types import capture
+import pandas as pd
+import plotly.graph_objects as go
 
 @capture("graph")
 def minimal_example(data_frame:pd.DataFrame=None):

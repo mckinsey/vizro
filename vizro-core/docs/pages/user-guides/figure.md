@@ -6,21 +6,30 @@ If you want to add a static Dash component to your page, use [custom components]
 [`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro.
 The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] components are
 specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific
-to their purposes. If these more specific models already achieve what you need then they should be used in preference to
+to their purposes. 
+
+If these more specific models already achieve what you need then they should be used in preference to
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
+
+There are already a few figure functions you can reuse.
+
+???+ info "Overview of available pre-defined figure functions"
+
+    - [`kpi_card`][vizro.figures.kpi_card]
+    - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
 ``` mermaid
 graph TD
-  first["`Does a specific component exist in Vizro, e.g. Graph or AgGrid?`"]
+  first["`Does your desired component exist in Vizro, e.g. Graph, Table or AgGrid?`"]
   specific-component([Use the specific component])
   second["`Does your component need to be reactive to controls?`"]
   second-static([Use custom components])
   second-reactive([Use Figure])
 
-  first -- Yes --> extend-component
+  first -- Yes --> specific-component
   first -- No --> second
   second -- No --> second-static
   second -- Yes --> second-reactive

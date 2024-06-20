@@ -10,9 +10,7 @@ You should use custom figures if **both** of the following conditions are met:
 - You need a figure that isn't available in our pre-defined figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 
-### Requirements of a custom figure function
-
-To create a custom figure, follow these steps:
+### Steps to create a custom figure
 
 1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries).
 2. Decorate it with `@capture("figure")`.
@@ -22,7 +20,9 @@ will not react to dashboard controls such as [`Filter`](filters.md).
 
 The below examples can be used as a base to build more sophisticated figures.
 
-### Custom KPI card
+### Examples of custom figures
+
+#### Custom KPI card
 If you wish to change the design or content of our existing KPI (key performance indicator) cards from
 [`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
 
@@ -122,7 +122,7 @@ adjust the return statement of the function decorated with `@capture("figure")`.
 
 <!-- vale on -->
 
-### Dynamic number of cards
+#### Dynamic number of cards
 The example below shows how to create multiple cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
