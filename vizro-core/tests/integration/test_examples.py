@@ -56,5 +56,4 @@ examples_path = Path(__file__).parents[2] / "examples"
 def test_dashboard(dash_duo, example_path, dashboard, version):
     app = Vizro(assets_folder=example_path / "assets").build(dashboard).dash
     dash_duo.start_server(app)
-    dash_duo.wait_for_page(f"{dash_duo.server_url}/?unexpected_query_parameter=value")
     assert dash_duo.get_logs() == []

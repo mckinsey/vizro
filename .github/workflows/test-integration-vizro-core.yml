@@ -48,7 +48,7 @@ jobs:
       # If these are fixed then this whole step can be removed.
       - name: Install Chrome and chromedriver
         run: |
-          export chrome_version=119.0.6045.105
+          export chrome_version=126.0.6478.62
           sudo apt-get update || true
           sudo apt-get install libu2f-udev -y
           wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_$chrome_version-1_amd64.deb"
