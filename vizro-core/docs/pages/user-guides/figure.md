@@ -6,7 +6,7 @@ If you want to add a static Dash component to your page, use [custom components]
 [`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro.
 The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] components are
 specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific
-to their purposes. 
+to their purposes.
 
 If these more specific models already achieve what you need then they should be used in preference to
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`

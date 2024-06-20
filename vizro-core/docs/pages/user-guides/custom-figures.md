@@ -122,6 +122,57 @@ adjust the return statement of the function decorated with `@capture("figure")`.
 
 <!-- vale on -->
 
+#### Dynamic HTML header
+Generally, you can create a custom figure for any [Dash component](https://dash.plotly.com/#open-source-component-libraries).
+Below is an example of a custom figure that returns a `html.H2` component that dynamically updates based on the selected
+name from a filter.
+
+<!-- vale off -->
+!!! example "Dynamic HTML header"
+    === "app.py"
+        ```py
+        import pandas as pd
+        import vizro.models as vm
+        from dash import html
+        from vizro import Vizro
+        from vizro.models.types import capture
+
+        df = pd.DataFrame({"names": ["Emma", "Jack", "Sophia", "Ethan", "Mia"]})
+
+
+        @capture("figure")  # (1)!
+        def dynamic_html_header(data_frame: pd.DataFrame, column: str) -> html.H2:  # (2)!
+            """Creates a HTML header that dynamically updates based on controls."""
+            return html.H2(f"Good morning, {data_frame[column].iloc[0]}! ☕ ⛅")  # (3)!
+
+
+        page = vm.Page(
+            title="Dynamic HTML header",
+            components=[vm.Figure(figure=dynamic_html_header(data_frame=df, column="names"))],  # (4)!
+            controls=[vm.Filter(column="names", selector=vm.RadioItems(title="Select a name"))],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
+        2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
+        3. We return a `html.H2` component that dynamically updates based on the selected name from the filter.
+        4. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
+
+    === "app.yaml"
+        ```yaml
+        # Custom figures are currently only possible via python configuration
+        ```
+    === "Result"
+        [![CustomHTML]][CustomHTML]
+
+    [CustomHTML]: ../../assets/user_guides/figure/custom_html.png
+
+<!-- vale on -->
+
+
 #### Dynamic number of cards
 The example below shows how to create multiple cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
