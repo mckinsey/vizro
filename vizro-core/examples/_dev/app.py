@@ -79,8 +79,8 @@ if __name__ == "__main__":
         Input("parameter_points", "value")
     )
     def update_parameter_points_store(value):
-        # from time import sleep
-        # sleep(0.5)
+        from time import sleep
+        sleep(0.5)
         return value
 
-    app.run()
+    app.run(debug=False)

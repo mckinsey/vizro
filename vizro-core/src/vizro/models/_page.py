@@ -108,6 +108,8 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self, **kwargs) -> _PageBuildType:
+        from time import sleep
+        sleep(0.5)
         controls_content = [control.build(**kwargs) for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
