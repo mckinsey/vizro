@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
-set_debug(True)
+# set_debug(True)
 
 
 class GraphState(BaseModel):

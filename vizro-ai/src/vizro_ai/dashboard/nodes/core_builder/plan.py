@@ -17,6 +17,7 @@ from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard.nodes.core_builder.model import _get_model
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 component_type = Literal["AgGrid", "Card", "Graph"]
 control_type = Literal["Filter"]
@@ -135,14 +136,14 @@ class Control(BaseModel):
         try:
             result_proxy = create_filter_proxy(df_cols=_df_cols, df_sample=_df_sample, available_components=available_components)
             proxy = _get_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)  # noqa: E501
-            logger.info(proxy.dict()) # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
+            logger.info(f"`Control` proxy: {proxy.dict()}") # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
             actual = vm.Filter.parse_obj(
                 proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
             )
             # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
 
         except ValidationError:
-            logger.info("Validation failed, returning default values. Error details: {e}")
+            logger.info("Validation failed for `Control`, returning default values. Error details: {e}")
             actual = None
         return actual
 
@@ -194,8 +195,8 @@ class Layout(BaseModel):
                 query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
-        except (ValidationError, AttributeError):
-            logger.info("Validation failed, returning default values. Error details: {e}")
+        except (ValidationError, AttributeError) as e:
+            logger.info(f"Validation failed for `Layout`, returning default values. Error details: {e}")
             actual = None
 
         return actual

@@ -3,10 +3,10 @@
 import logging
 
 import vizro.models as vm
-from tqdm.autonotebook import trange
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class PageBuilder:
@@ -31,9 +31,10 @@ class PageBuilder:
 
     def _build_components(self):
         components = []
-        for i in trange(
-            len(self._page_plan.components.components), desc=f"Building components of page: {self._page_plan.title}"
-        ):
+        logger.info(f"Building components of page: {self._page_plan.title}")
+        for i in range(
+            len(self._page_plan.components.components)):
+            logger.info(f"Building component: {self._page_plan.components.components[i]}")
             try:
                 components.append(
                     self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
@@ -54,7 +55,7 @@ class PageBuilder:
         return self._layout
 
     def _build_layout(self):
-        logger.info(f"Building layout: {self._page_plan}")
+        logger.info(f"Building layout: {self._page_plan.layout}")
         return self._page_plan.layout.create(model=self._model, df_metadata=self._df_metadata)
 
     @property
@@ -71,9 +72,9 @@ class PageBuilder:
 
     def _build_controls(self):
         controls = []
-        for i in trange(
-            len(self._page_plan.controls.controls), desc=f"Building controls of page: {self._page_plan.title}"
-        ):
+        logger.info(f"Building controls of page: {self._page_plan.title}")
+        for i in range(len(self._page_plan.controls.controls)):
+            logger.info(f"Building control: {self._page_plan.controls.controls[i]}")
             control = self._page_plan.controls.controls[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
@@ -112,7 +113,8 @@ class DashboardBuilder:
 
     def _build_pages(self):
         pages = []
-        for i in trange(len(self._dashboard_plan.pages), desc="Building pages"):
+        logger.info("Building pages")
+        for i in range(len(self._dashboard_plan.pages)):
             pages.append(
                 PageBuilder(
                     model=self._model,
