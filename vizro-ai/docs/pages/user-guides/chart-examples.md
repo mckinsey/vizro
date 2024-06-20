@@ -25,11 +25,11 @@ It's suitable for quickly comparing multiple variables across different categori
         df = px.data.wind()
 
         vizro_ai = VizroAI(model="gpt-4-0613")
-        vizro_ai.plot(df,
+        fig = vizro_ai.plot(df,
                       """Describe wind frequency and direction using bar_polar chart.
                          Increase the width and height of the figure.
                          Improve layout by placing title to the left. Show legend""", explain=True)
-
+        fig.show()
         ```
 
     [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
@@ -56,12 +56,12 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
         df = px.data.wind()
 
         vizro_ai = VizroAI(model="gpt-4-0613")
-        vizro_ai.plot(df,
+        fig = vizro_ai.plot(df,
                       """Visualize life expectancy over the years using map chart. Use life expectancy as the color dimension.
                          Improve layout by using Arial font. Increase the width and height of the map area. Outline continents on the map.
                          Show countries on the map.
                          Increase the width and height of the figure.""", explain=True)
-
+        fig.show()
         ```
 
     [VizroAIChart2]: ../../assets/user_guides/map_chart.gif
@@ -88,8 +88,8 @@ Let's explore how to generate a 3-dimensional surface plot with VizroAI.
         df = px.data.gapminder()
 
         vizro_ai = VizroAI(model="gpt-4-0613")
-        vizro_ai.plot(df, "create a surface plot")
-
+        fig = vizro_ai.plot(df, "create a surface plot")
+        fig.show()
         ```
 
     [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
