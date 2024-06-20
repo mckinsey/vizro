@@ -5,51 +5,64 @@ from typing import Optional
 import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
-from dash import dcc, html
+import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 
-df = pd.DataFrame(
-    {
-        "text": [
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.",
-                    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-                    "Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.",
-                    "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.",
-                    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-                ]
-                * 2
-    }
-)
+tips = px.data.tips
 
 
-@capture("figure")  # (1)!
-def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:  # (2)!
-    """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
+@capture("figure")
+def custom_kpi_card(
+    data_frame: pd.DataFrame,
+    value_column: str,
+    *,
+    value_format: str = "{value}",
+    agg_func: str = "sum",
+    title: Optional[str] = None,
+    icon: Optional[str] = None,
+) -> dbc.Card:
+    """Creates a custom KPI Card."""
+    title = title or f"{agg_func} {value_column}".title()
+    value = data_frame[value_column].agg(agg_func)
 
-    Args:
-        data_frame: Data frame containing the data.
-        n_rows: Number of rows to use from the data_frame. Defaults to 1.
-
-    Returns:
-        html.Div with a list of dbc.Card objects generated from the data.
-
-    """
-    texts = data_frame.head(n_rows)["text"]
-    return html.Div(
-        [dbc.Card(dcc.Markdown(f"### Card #{i + 1}\n{text}")) for i, text in enumerate(texts)],
-        className="multiple-cards-container",
+    return dbc.Card(
+        [
+            dbc.CardHeader(
+                [
+                    html.H2(title),
+                    html.P(icon, className="material-symbols-outlined") if icon else None,
+                ],
+            ),
+            dbc.CardBody([value_format.format(value=value)]),
+        ],
+        className="card-kpi",
     )
 
 
 page = vm.Page(
-    title="Page with variable number of cards",
-    components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],  # (3)!
-    controls=[
-        vm.Parameter(
-            targets=["my-figure.n_rows"],  # (4)!
-            selector=vm.Slider(min=2, max=12, step=2, value=8, title="Number of cards to display"),
+    title="Create your own KPI Card",
+    layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),
+    components=[
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="shopping_cart",
+                title="Default KPI Card",
+            )
+        ),
+        vm.Figure(
+            figure=custom_kpi_card(
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="payment",
+                title="Custom KPI Card",
+            )
         ),
     ],
 )

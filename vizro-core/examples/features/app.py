@@ -3,17 +3,17 @@
 from time import sleep
 from typing import List, Literal, Optional
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, html, dcc
+from dash import dash_table, dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
-import dash_bootstrap_components as dbc
 
 iris = px.data.iris()
 tips = px.data.tips()
