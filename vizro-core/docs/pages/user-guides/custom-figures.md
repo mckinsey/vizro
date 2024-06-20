@@ -23,11 +23,11 @@ will not react to dashboard controls such as [`Filter`](filters.md).
 The below examples can be used as a base to build more sophisticated figures.
 
 ### Custom KPI card
-If you wish to change the design or content of our existing KPI cards from [`vizro.figures`](../API-reference/figure-callables.md),
-you can do so by following the steps described above.
+If you wish to change the design or content of our existing KPI (key performance indicator) cards from
+[`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
 
 For instance, if you prefer the icon to be positioned on the right side of the title instead of the left,
-simply adjust the return statement of the function decorated with `@capture("figure")`.
+adjust the return statement of the function decorated with `@capture("figure")`.
 
 <!-- vale off -->
 !!! example "Custom KPI card"
@@ -123,7 +123,7 @@ simply adjust the return statement of the function decorated with `@capture("fig
 <!-- vale on -->
 
 ### Dynamic number of cards
-The example below shows how to create a custom figure — a list of cards created from a `pandas.DataFrame` where the
+The example below shows how to create multiple cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
 <!-- vale off -->

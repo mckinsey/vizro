@@ -15,7 +15,7 @@ tips = px.data.tips
 
 
 @capture("figure")
-def custom_kpi_card(
+def custom_kpi_card(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
     *,
