@@ -402,7 +402,7 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-??? example "Card with Icon"
+??? example "Card with icon"
     === "app.py"
         ```py
         import vizro.models as vm

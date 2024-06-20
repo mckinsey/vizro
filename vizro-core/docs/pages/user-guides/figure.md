@@ -202,6 +202,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
         1. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference).
         3. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
