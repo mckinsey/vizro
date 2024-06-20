@@ -1,8 +1,7 @@
 <!-- vale off -->
 # Figure functions
 API reference for all pre-defined [`CapturedCallable`][vizro.models.types.CapturedCallable] figure functions to be used in the
-[`Figure`][vizro.models.Figure]. Visit the how-to guide on [figures](../user-guides/figure.md)
-for more information.
+[`Figure`][vizro.models.Figure]. The [how-to guide on figures](../user-guides/figure.md) contains more information.
 
 ::: vizro.figures
     options:
