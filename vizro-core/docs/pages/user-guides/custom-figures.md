@@ -16,13 +16,17 @@ Use the following approach, which is similar to creation of a [custom chart](../
 4. The figure should be derived from and require only one `pandas.DataFrame`. Additional dataframes from other arguments will not react to dashboard components such as `Filter`.
 
 <!-- vale off -->
+
+## Examples
+
+### Dynamic number of cards
 The example below shows how to create a custom figure — a list of cards created from a `pandas.DataFrame` where the
 number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
 !!! example "Dynamic number of cards"
     === "app.py"
         ```py
-        from typing import List, Optional
+        from typing import Optional
 
         import dash_bootstrap_components as dbc
         import pandas as pd
@@ -30,52 +34,52 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         from dash import dcc, html
         from vizro import Vizro
         from vizro.models.types import capture
-
+        
         df = pd.DataFrame(
             {
                 "text": [
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.",
-                    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-                    "Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.",
-                    "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.",
-                    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-                ]
-                * 2
+                            "Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.",
+                            "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+                            "Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.",
+                            "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                            "Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.",
+                            "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+                        ]
+                        * 2
             }
         )
-
-
+        
+        
         @capture("figure")  # (1)!
-        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div[List[dbc.Card]]:  # (2)!
+        def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:  # (2)!
             """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
-
+        
             Args:
                 data_frame: Data frame containing the data.
                 n_rows: Number of rows to use from the data_frame. Defaults to 1.
-
+        
             Returns:
                 html.Div with a list of dbc.Card objects generated from the data.
-
+        
             """
             texts = data_frame.head(n_rows)["text"]
             return html.Div(
-                [dbc.Card(dcc.Markdown(f"### Card #{i+1}\n{text}")) for i, text in enumerate(texts)],
+                [dbc.Card(dcc.Markdown(f"### Card #{i + 1}\n{text}")) for i, text in enumerate(texts)],
                 className="multiple-cards-container",
             )
-
-
+        
+        
         page = vm.Page(
             title="Page with variable number of cards",
             components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],  # (3)!
             controls=[
                 vm.Parameter(
-                    targets=["my-figure.n_rows"],
+                    targets=["my-figure.n_rows"],  # (4)!
                     selector=vm.Slider(min=2, max=12, step=2, value=8, title="Number of cards to display"),
                 ),
             ],
         )
-
+        
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -83,6 +87,9 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
         2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         3. Our decorated figure function `multiple_cards` now needs to be passed on to the `vm.Figure`.
+        4. We add a [`vm.Parameter`](parameters.md) to dynamically adjust the number of cards displayed.
+           The parameter targets the `n_rows` argument of the `multiple_cards` function, determining the number of rows
+           taken from the data.
 
     === "css"
         ```css
@@ -92,14 +99,14 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
           gap: 12px;
         }
 
-        .figure-container .card {
-          height: 210px;
-          width: 240px;
-        }
-
         .figure-container {
           height: unset;
           width: unset;
+        }
+
+        .figure-container .card {
+          height: 210px;
+          width: 240px;
         }
         ```
     === "app.yaml"

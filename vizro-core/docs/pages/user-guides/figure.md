@@ -51,10 +51,10 @@ To add a `Figure` to your page:
 
         page = vm.Page(
             title="KPI Indicators",
-            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  # (1)!
             components=[
                 vm.Figure(
-                    figure=kpi_card(
+                    figure=kpi_card(  # (2)!
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
@@ -69,6 +69,10 @@ To add a `Figure` to your page:
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. This creates a [`layout`](layouts.md) with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
+        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#kpi_card).
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
