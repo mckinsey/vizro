@@ -201,6 +201,8 @@ def _get_modified_page_figures(
     ctds_parameters: List[CallbackTriggerDict],
     targets: Optional[List[ModelID]] = None,
 ) -> Dict[str, Any]:
+    from time import sleep
+    sleep(0.5)
     targets = targets or []
 
     filtered_data, parameterized_config = _get_targets_data_and_config(
