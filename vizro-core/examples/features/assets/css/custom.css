@@ -2,18 +2,18 @@
   padding-left: 8px;
 }
 
-.multiple-cards-container {
+#my-figure .multiple-cards-container {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-.figure-container {
+#my-figure.figure-container {
   height: unset;
   width: unset;
 }
 
-.figure-container .card {
+#my-figure.figure-container .card {
   height: 210px;
   width: 240px;
 }
