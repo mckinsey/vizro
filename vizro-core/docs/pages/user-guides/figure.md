@@ -117,8 +117,8 @@ To add a `Figure` to your page:
     [Figure]: ../../assets/user_guides/figure/figure.png
 
 
-### KPI (Key Performance Indicator) cards
-A KPI card is a dynamic card that can display a single value. Optionally, a title, icon and reference value can be added.
+### Key Performance Indicator (KPI) cards
+A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value.
 It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
 
 - [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found

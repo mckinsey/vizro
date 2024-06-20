@@ -328,13 +328,13 @@ and give an attribute selector to select images with that matching URL hash.
 
     Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-    These URL hashes can be used to have the image float next to the text:
+    To float the image next to the text:
 
     - floating-left: `![](my_image.png#floating-left)`
     - floating-right: `![](my_image.png#floating-right)`
     - floating-center: `![](my_image.png#floating-center)`
 
-    This URL hash can be used to apply our default icon styling:
+    To apply the default icon styling:
 
     - icon-top: `![](my_image.png#icon-top)`
 
@@ -572,7 +572,8 @@ If you now click on the card area, you should automatically be redirected to the
 ### Create a KPI card
 To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md).
 Unlike the static text card `vm.Card`, a KPI card must be created using a figure function.
-This allows the text content of the KPI card to dynamically update based on any changes in controls or actions.
+Unlike the static text card `vm.Card`, a KPI card must be created using a figure function,
+which enables the text content of the KPI to change based on input from controls or actions.
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#create-kpi-cards).
 
