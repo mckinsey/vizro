@@ -37,8 +37,8 @@ class CapturedCallable:
     `functools.partial`.
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
-    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md) or [Actions](../user-guides/actions.md)
-    to see available choices.
+    Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md), [Actions](../user-guides/actions.md)
+    or [Actions](../user-guides/figure.md) to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
     custom charts](../user-guides/custom-charts.md),
@@ -222,8 +222,8 @@ class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     This is used to add the functionality required to make graphs and actions work in a dashboard.
-    Typically, it should be used as a function decorator. There are four possible modes: `"graph"`, `"table"`,
-    `"ag_grid"` and `"action"`.
+    Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
+    `"ag_grid"`, `"figure"` and `"action"`.
 
     Examples
         >>> @capture("graph")
@@ -235,6 +235,9 @@ class capture:
         >>> @capture("ag_grid")
         >>> def ag_grid_function():
         >>>     ...
+        >>> @capture("figure")
+        >>> def figure_function():
+        >>>     ...
         >>> @capture("action")
         >>> def action_function():
         >>>     ...
@@ -243,13 +246,15 @@ class capture:
     [custom graphs](../user-guides/custom-charts.md).
     For further help on the use of `@capture("table")` or `@capture("ag_grid")`, you can refer to the guide on
     [custom tables](../user-guides/custom-tables.md).
+    For further help on the use of `@capture("figure")`, you can refer to the guide on
+    [figures](../user-guides/figure.md).
     For further help on the use of `@capture("action")`, you can refer to the guide on
     [custom actions](../user-guides/custom-actions.md).
 
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid"]):
-        """Decorator to capture a function call. Valid modes are "graph", "table", "action" and "ag_grid"."""
+    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
+        """Decorator to capture a function call."""
         self._mode = mode
 
     def __call__(self, func, /):
@@ -304,7 +309,7 @@ class capture:
                 return captured_callable
 
             return wrapped
-        elif self._mode in ["table", "ag_grid"]:
+        elif self._mode in ["table", "ag_grid", "figure"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
@@ -366,7 +371,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"],
+    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",

@@ -1,20 +1,26 @@
-export function _update_dashboard_theme(checked) {
+export function _update_dashboard_theme(theme_selector_checked) {
   document.documentElement.setAttribute(
     "data-bs-theme",
-    checked ? "light" : "dark",
+    theme_selector_checked ? "light" : "dark",
   );
-  return checked ? "vizro_light" : "vizro_dark";
+  return theme_selector_checked ? "vizro_light" : "vizro_dark";
 }
 
-export function _update_ag_grid_theme(checked) {
-  return checked
+export function _update_ag_grid_theme(theme_selector_checked) {
+  return theme_selector_checked
     ? "ag-theme-quartz ag-theme-vizro"
     : "ag-theme-quartz-dark ag-theme-vizro";
 }
 
-export function _update_graph_theme(checked, vizro_themes, graph_id) {
-  // Determine the theme to be applied based on the checked value
-  const theme_to_apply = checked ? vizro_themes["light"] : vizro_themes["dark"];
+export function _update_graph_theme(
+  theme_selector_checked,
+  vizro_themes,
+  graph_id,
+) {
+  // Determine the theme to be applied based on the theme_selector checked value
+  const theme_to_apply = theme_selector_checked
+    ? vizro_themes["light"]
+    : vizro_themes["dark"];
 
   // Find the Plotly graph element in the HTML document
   const plotly_graph = document
