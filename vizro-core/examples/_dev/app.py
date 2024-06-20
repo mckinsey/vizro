@@ -1,18 +1,14 @@
 """Dev app to try things out."""
 
-import pandas as pd
-import vizro.models as vm
-from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
-
 from typing import Optional
 
 import dash_bootstrap_components as dbc
-import numpy as np
 import pandas as pd
+import vizro.models as vm
 from dash import html
-
+from vizro import Vizro
 from vizro.models.types import capture
+
 df = pd.DataFrame([[67434, 65553, "A"], [6434, 6553, "B"], [34, 53, "C"]], columns=["Actual", "Reference", "Category"])
 
 
@@ -33,21 +29,34 @@ def kpi_card_custom(  # noqa: PLR0913
     return dbc.Card(
         [
             html.P(icon, className="material-symbols-outlined") if icon else None,
-            html.Div([html.H2(value_format.format(value=value), className="value"), html.H3(title, className="title")], className="value-and-title"),
+            html.Div(
+                [html.H2(value_format.format(value=value), className="value"), html.H3(title, className="title")],
+                className="value-and-title",
+            ),
         ],
         className="card-kpi-custom",
     )
 
 
-
-
 page = vm.Page(
     title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]]*3),
+    layout=vm.Layout(grid=[[0, 1, 2]] + [[-1, -1, -1]] * 3),
     components=[
-        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="sum", title="Revenue", icon="shopping_cart")),
-        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="mean", title="Sales", icon="payments")),
-        vm.Figure(figure=kpi_card_custom(data_frame=df, value_column="Actual", agg_func="median", title="Profit", icon="shopping_bag")),
+        vm.Figure(
+            figure=kpi_card_custom(
+                data_frame=df, value_column="Actual", agg_func="sum", title="Revenue", icon="shopping_cart"
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_custom(
+                data_frame=df, value_column="Actual", agg_func="mean", title="Sales", icon="payments"
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_custom(
+                data_frame=df, value_column="Actual", agg_func="median", title="Profit", icon="shopping_bag"
+            )
+        ),
     ],
     controls=[vm.Filter(column="Category")],
 )
