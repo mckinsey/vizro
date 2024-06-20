@@ -32,7 +32,7 @@ If you wish to change the design or content of our existing KPI (key performance
 [`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
 
 For instance, to make a KPI card with the icon positioned on the right side of the title instead of the left,
-copy and paste the [source code of `kpi_card`](API-reference/figure-callables/#vizro.figures.kpi_card) and
+copy and paste the [source code of `kpi_card`](vizro.figures.kpi_card) and
 adjust the return statement of the function.
 
 <!-- vale off -->
