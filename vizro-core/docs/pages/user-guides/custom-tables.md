@@ -3,6 +3,9 @@
 In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are not sufficient,
 you can create a custom Dash AG Grid or Dash DataTable.
 
+The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] model accept the `figure` argument, where you can enter
+_any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
+
 One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
 
 ### Steps to create a custom table
@@ -12,6 +15,7 @@ One reason could be that you want to create a table/grid that requires computati
 3. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 4. The table should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments
 will not react to dashboard controls such as [`Filter`](filters.md).
+5. Pass your function to the `figure` argument of the [`Table`][vizro.models.Table] or  [`AgGrid`][vizro.models.AgGrid] model.
 
 The following examples show a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 

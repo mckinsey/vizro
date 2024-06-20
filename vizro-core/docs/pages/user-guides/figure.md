@@ -12,12 +12,10 @@ If these more specific models already achieve what you need then they should be 
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
 
-There are already a few figure functions you can reuse.
+There are already a few figure functions you can reuse:
 
-???+ info "Overview of available pre-defined figure functions"
-
-    - [`kpi_card`][vizro.figures.kpi_card]
-    - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
+- [`kpi_card`][vizro.figures.kpi_card]
+- [`kpi_card_reference`][vizro.figures.kpi_card_reference]
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
@@ -116,10 +114,6 @@ To add a `Figure` to your page:
         [![Figure]][Figure]
 
     [Figure]: ../../assets/user_guides/figure/figure.png
-
-
-If the existing figure functions from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
-there is always the option to create a [custom Figure](custom-figures.md).
 
 
 ### KPI Cards
@@ -355,3 +349,7 @@ It is a common visual component to display key metrics in a dashboard. Vizro sup
         [![KPICards]][KPICards]
 
     [KPICards]: ../../assets/user_guides/figure/kpi_cards.png
+
+
+If the pre-defined figure functions from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
+there is always the option to create a [custom figure](custom-figures.md).

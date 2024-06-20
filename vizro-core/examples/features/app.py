@@ -702,7 +702,7 @@ def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.
     """
     texts = data_frame.head(n_rows)["text"]
     return html.Div(
-        [dbc.Card(dcc.Markdown(f"### Card #{i + 1}\n{text}")) for i, text in enumerate(texts)],
+        [dbc.Card(dcc.Markdown(f"### Card #{i}\n{text}")) for i, text in enumerate(texts, 1)],
         className="multiple-cards-container",
     )
 
