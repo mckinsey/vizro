@@ -326,13 +326,19 @@ and give an attribute selector to select images with that matching URL hash.
 
 ???+ tip
 
-    Use the following pre-defined URL hashes in your image path to have the image float next to the text:
+    Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
+
+    These URL hashes can be used to have the image float next to the text:
 
     - floating-left: `![](my_image.png#floating-left)`
     - floating-right: `![](my_image.png#floating-right)`
     - floating-center: `![](my_image.png#floating-center)`
 
-!!! example "Card with floating image"
+    This URL hash can be used to apply our default icon styling:
+
+    - icon-top: `![](my_image.png#icon-top)`
+
+??? example "Card with floating image"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -396,12 +402,8 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-### Add an icon
-If you want to add an icon to your card, add your image as described in the [earlier section](#place-an-image-on-a-card)
 
-If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
-
-!!! example "Navigation Card with Icon"
+??? example "Card with Icon"
     === "app.py"
         ```py hl_lines="12 23"
         import vizro.models as vm
@@ -421,7 +423,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
                     Leads to the first page on click.
                     """,
-                    href="/filters-and-parameters",
                 ),
 
                 vm.Card(
@@ -432,7 +433,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
                     Leads to an external link on click.
                     """,
-                    href="https://google.com",
                 ),
             ],
         )
@@ -460,7 +460,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
                 ### Filters and parameters
 
                 Leads to the first page on click
-              href: /filters-and-parameters
               type: card
             - text: |
                 ![](assets/images/icons/content/features.svg#icon-top)
@@ -468,7 +467,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
                 ### Google - External Link
 
                 Leads to an external link on click.
-              href: https://google.com
               type: card
           title: Homepage
         - components:
@@ -487,8 +485,6 @@ If you use the image URL hash `icon-top`, the image will be styled according to 
 
        [NavCardIcon]: ../../assets/user_guides/components/nav_card_icon.png
 
-Note that in the above example the first [`Card`][vizro.models.Card] navigates to an existing [`Page`][vizro.models.Page]
-in the app with `path = filters-and-parameters` and the second one to an external link.
 
 ### Make an icon responsive to theme switch
 
