@@ -120,10 +120,10 @@ def _get_parameter_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
             for filter in model_manager._items_with_type(Filter):
                 filter = filter[1]
                 if target_id in filter.targets:
-                    figures_outputs[filter.selector.id] = Output(
-                        component_id=filter.selector.id,
+                    figures_outputs[filter.id] = Output(
+                        component_id=filter.id,
                         # TODO: Add _output_property for all models and reuse it here
-                        component_property="options",
+                        component_property="children",
                         allow_duplicate=True,
                     )
 

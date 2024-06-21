@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from dash import html
 from typing import List, Literal, Union
+
 
 import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
@@ -105,7 +107,10 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self.selector.build()
+        return html.Div(
+            id=self.id,
+            children=[self.selector.build()]
+        )
 
     def _set_targets(self):
         if not self.targets:
@@ -177,16 +182,13 @@ class Filter(VizroBaseModel):
     def _set_categorical_selectors_options(self, force_update=False, data_load_kwargs=None):
         # If the selector is a categorical selector, and the options are not set, then set them
         # N.B. All custom selectors inherit from categorical selector should also pass this check
-        if data_load_kwargs is None:
-            data_load_kwargs = {}
         if isinstance(self.selector, SELECTORS["categorical"]) and (not self.selector.options or force_update):
+            if data_load_kwargs is None:
+                data_load_kwargs = {}
             options = set()
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
-                if target_id == "scatter_chart":
-                    data_frame = data_manager[data_source_name].load(**data_load_kwargs)
-                else:
-                    data_frame = data_manager[data_source_name].load()
+                data_frame = data_manager[data_source_name].load(**data_load_kwargs.get(target_id, {}))
                 options |= set(data_frame[self.column])
 
             self.selector.options = sorted(options)

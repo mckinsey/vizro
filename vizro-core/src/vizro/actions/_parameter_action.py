@@ -42,8 +42,12 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
                 if target_id in filter.targets:
                     filter._set_categorical_selectors_options(
                         force_update=True,
-                        data_load_kwargs={"points": ctx.args_grouping["external"]["parameters"][0]["value"]}
+                        data_load_kwargs={
+                            target_id: {
+                                "points": ctx.args_grouping["external"]["parameters"][0]["value"]
+                            }
+                        }
                     )
-                    figures_outputs[filter.selector.id] = ["ALL"] + filter.selector.options
+                    figures_outputs[filter.id] = filter.build()
 
     return figures_outputs
