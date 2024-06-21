@@ -32,6 +32,7 @@ class PageBuilder:
     def _build_components(self):
         components = []
         logger.info(f"Building components of page: {self._page_plan.title}")
+        # Could potentially be parallelized or sent as a batch to the API
         for i in range(
             len(self._page_plan.components.components)):
             logger.info(f"Building component: {self._page_plan.components.components[i]}")
@@ -73,6 +74,7 @@ class PageBuilder:
     def _build_controls(self):
         controls = []
         logger.info(f"Building controls of page: {self._page_plan.title}")
+        # Could potentially be parallelized or sent as a batch to the API
         for i in range(len(self._page_plan.controls.controls)):
             logger.info(f"Building control: {self._page_plan.controls.controls[i]}")
             control = self._page_plan.controls.controls[i].create(

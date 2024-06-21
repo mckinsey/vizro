@@ -19,8 +19,15 @@ from vizro_ai.dashboard.nodes.core_builder.model import _get_model
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-component_type = Literal["AgGrid", "Card", "Graph"]
-control_type = Literal["Filter"]
+# For unsupported component and control types, how to handle them?
+# option 1. Ignore silently
+# option 2. Raise a warning and add the warning message into langgraph state. This gives the user transparency on why
+#    a certain component or control was not created.
+# option 3. Raise a warning and suggest additional reference material
+component_type = Literal["AgGrid", "Card", "Graph"] # Complete list: ["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"]
+control_type = Literal["Filter"] # Complete list: ["Filter", "Parameter"]
+
+# For other models, like ["Accordion", "NavBar"], how to handle them?
 
 
 class CardProxyModel(BaseModel):
@@ -134,6 +141,7 @@ class Control(BaseModel):
         try:
             _df_schema, _df_sample = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_sample"]
             _df_cols = list(_df_schema.keys())
+        # when wrong dataframe name is given
         except KeyError:
             logger.info(f"Dataframe {self.data_frame} not found in metadata, returning default values.")
             return None
