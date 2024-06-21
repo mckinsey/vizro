@@ -1,5 +1,5 @@
 site_name: Vizro-AI
-site_url: https://vizro-ai.readthedocs.io/en/latest/
+site_url: https://vizro.readthedocs.io/projects/vizro-ai
 nav:
   - Vizro-AI: index.md
   - Tutorials:
@@ -100,3 +100,11 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
+
+# Strictest settings possible, and will be elevated to ERROR when run with --strict.
+# See https://www.mkdocs.org/user-guide/configuration/#validation.
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn

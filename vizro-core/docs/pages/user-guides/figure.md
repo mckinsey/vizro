@@ -12,7 +12,7 @@ If these more specific models already achieve what you need then they should be 
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
 
-There are already a few figure functions you can reuse, see the section on [KPI Cards](#kpi-key-performance-indicator-cards)
+There are already a few figure functions you can reuse, see the section on [KPI Cards](#key-performance-indicator-kpi-cards)
 for more details:
 
 - [`kpi_card`][vizro.figures.kpi_card]
@@ -125,7 +125,7 @@ It is a common visual component to display key metrics in a dashboard. Vizro sup
 by performing an aggregation function (by default, `sum`) over a specified column.
 Required arguments are `data_frame` and `value_column`.
 
-- [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference): A KPI card that shows a single value
+- [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference): A KPI card that shows a single value
 and a delta comparison to a reference value found by performing an aggregation function (by default, `sum`) over the specified columns.
 Required arguments are `data_frame`, `value_column` and `reference_column`.
 
@@ -204,7 +204,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         ```
 
         1. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
-        2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference).
+        2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference).
         3. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
 
     === "app.yaml"
