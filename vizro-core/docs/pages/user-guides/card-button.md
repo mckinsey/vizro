@@ -500,7 +500,7 @@ If you now click on the card area, you should automatically be redirected to the
 
 
 ### Add an icon
-If you want to add an icon to your card, add your image as described in the [earlier section](#placing-images)
+If you want to add an icon to your card, add your image as described in the [earlier section](#place-an-image-on-a-card)
 
 If you use the image URL hash `icon-top`, the image will be styled according to our default icon styling.
 

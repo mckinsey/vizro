@@ -76,7 +76,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
 ## Include a subset of pages
 
-If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customizing-the-page-url), we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
+If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customize-the-page-url), we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
 !!! example "Navigation with only some pages"
     === "app.py"
@@ -184,7 +184,7 @@ Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.Na
 
 ### `NavLink` examples
 
-The same configuration for [grouping pages](#grouping-your-pages) applies inside a `NavLink`:
+The same configuration for [grouping pages](#group-pages) applies inside a `NavLink`:
 
 !!! example "Accordions inside a `Navlink`"
     === "app.py"
