@@ -166,23 +166,28 @@ def invalid_decorated_graph_function():
     return go.Figure()
 
 
-class Model(VizroBaseModel):
+class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__))
+    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="action")
+
+
+class ModelWithGraph(VizroBaseModel):
+    # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
+    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="graph")
 
 
 class TestModelFieldPython:
     def test_decorated_action_function(self):
-        model = Model(function=decorated_action_function(a=1, b=2))
+        model = ModelWithAction(function=decorated_action_function(a=1, b=2))
         assert model.function(c=3, d=4) == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        model = Model(function=decorated_graph_function(data_frame=None))
+        model = ModelWithGraph(function=decorated_graph_function(data_frame=None))
         assert model.function() == go.Figure()
 
     def test_undecorated_function(self):
         with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
-            Model(function=undecorated_function(1, 2, 3))
+            ModelWithGraph(function=undecorated_function(1, 2, 3))
 
 
 class TestCapture:
@@ -208,43 +213,43 @@ class TestCapture:
 class TestModelFieldJSONConfig:
     def test_no_arguments(self):
         config = {"_target_": "decorated_action_function"}
-        model = Model(function=config)
+        model = ModelWithAction(function=config)
         assert isinstance(model.function, CapturedCallable)
         assert model.function(a=1, b=2, c=3, d=4) == 1 + 2 + 3 + 4
 
     def test_some_arguments(self):
         config = {"_target_": "decorated_action_function", "a": 1, "b": 2}
-        model = Model(function=config)
+        model = ModelWithAction(function=config)
         assert isinstance(model.function, CapturedCallable)
         assert model.function(c=3) == 1 + 2 + 3 + 4
 
     def test_all_arguments(self):
         config = {"_target_": "decorated_action_function", "a": 1, "b": 2, "c": 3}
-        model = Model(function=config)
+        model = ModelWithAction(function=config)
         assert isinstance(model.function, CapturedCallable)
         assert model.function() == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
         config = {"_target_": "decorated_graph_function", "data_frame": None}
-        model = Model(function=config)
+        model = ModelWithGraph(function=config)
         assert model.function() == go.Figure()
 
     def test_no_target(self):
         config = {"a": 1, "b": 2}
         with pytest.raises(ValidationError, match="must contain the key '_target_'"):
-            Model(function=config)
+            ModelWithGraph(function=config)
 
     def test_invalid_import(self):
         config = {"_target_": "invalid_function"}
         with pytest.raises(ValidationError, match="_target_=invalid_function cannot be imported"):
-            Model(function=config)
+            ModelWithGraph(function=config)
 
     def test_invalid_arguments(self):
         config = {"_target_": "decorated_action_function", "e": 5}
         with pytest.raises(ValidationError, match="got an unexpected keyword argument"):
-            Model(function=config)
+            ModelWithGraph(function=config)
 
     def test_undecorated_function(self):
         config = {"_target_": "undecorated_function", "a": 1, "b": 2, "c": 3}
         with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
-            Model(function=config)
+            ModelWithGraph(function=config)

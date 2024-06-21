@@ -2,9 +2,9 @@
 
 import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
-import vizro.plotly.express as px
 
 df_kpi = pd.DataFrame(
     {"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Reference Zero": [0, 0, 0], "Category": ["A", "B", "C"]}

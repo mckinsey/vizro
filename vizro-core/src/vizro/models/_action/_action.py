@@ -32,7 +32,7 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., import_path=vizro.actions)
+    function: CapturedCallable = Field(..., import_path=vizro.actions, mode="action")
     inputs: List[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",

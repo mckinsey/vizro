@@ -161,17 +161,22 @@ class CapturedCallable:
     @classmethod
     def __get_validators__(cls):
         """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
+        # one or more validators may be yielded which will be called in the
+        # order to validate the input, each validator will receive as an input
+        # the value returned from the previous validator
         yield cls._parse_json
         yield cls._extract_from_attribute
         yield cls._check_correct_type
 
     @classmethod
     def _parse_json(
-        cls, callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]], field: ModelField
+        cls,
+        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]],
+        field: ModelField,
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
-        """Parses callable_config specification from JSON/YAML.
+        """Parses captured_callable_config specification from JSON/YAML.
 
-        If callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
+        If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
         untouched.
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
@@ -179,12 +184,12 @@ class CapturedCallable:
         which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
-        if not isinstance(callable_config, dict):
-            return callable_config
+        if not isinstance(captured_callable_config, dict):
+            return captured_callable_config
 
         # Try to import function given in _target_ from the import_path property of the pydantic field.
         try:
-            function_name = callable_config.pop("_target_")
+            function_name = captured_callable_config.pop("_target_")
         except KeyError as exc:
             raise ValueError(
                 "CapturedCallable object must contain the key '_target_' that gives the target function."
@@ -197,7 +202,7 @@ class CapturedCallable:
             raise ValueError(f"_target_={function_name} cannot be imported from {import_path.__name__}.") from exc
 
         # All the other items in figure are the keyword arguments to pass into function.
-        function_kwargs = callable_config
+        function_kwargs = captured_callable_config
 
         # It would seem natural to return cls(function, **function_kwargs) here, but the function is already decorated
         # with @capture, and so that would return a nested CapturedCallable.
@@ -216,15 +221,21 @@ class CapturedCallable:
         return captured_callable._captured_callable
 
     @classmethod
-    def _check_correct_type(cls, callable_config: CapturedCallable) -> CapturedCallable:
-        if not isinstance(callable_config, CapturedCallable):
+    def _check_correct_type(
+        cls, captured_callable: CapturedCallable, values: Dict[str, Any], field: ModelField
+    ) -> CapturedCallable:
+        if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
                 "You must provide a valid CapturedCallable object. If you are using a plotly express figure, ensure "
                 "that you are using `import vizro.plotly.express as px`. If you are using a table figure, make "
                 "sure you are using `from vizro.tables import dash_data_table`. If you are using a custom figure or "
                 "action, that your function uses the @capture decorator."
             )
-        return callable_config
+
+        if (mode := captured_callable._mode) != (expected_mode := field.field_info.extra["mode"]):
+            raise ValueError(f"CapturedCallable mode mismatch. Expected {expected_mode} but got {mode}.")
+
+        return captured_callable
 
     # mode check?
     # data_frame extraction?

@@ -15,7 +15,7 @@ from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_act
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -35,7 +35,9 @@ class AgGrid(VizroBaseModel):
     """
 
     type: Literal["ag_grid"] = "ag_grid"
-    figure: CapturedCallable = Field(..., import_path=vt, description="AgGrid to be visualized on dashboard")
+    figure: CapturedCallable = Field(
+        ..., import_path=vt, mode="ag_grid", description="AgGrid to be visualized on dashboard"
+    )
     title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
 
@@ -46,7 +48,6 @@ class AgGrid(VizroBaseModel):
 
     # Validators
     set_actions = _action_validator_factory("cellClicked")
-    _validate_callable_mode = _callable_mode_validator_factory("ag_grid")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
