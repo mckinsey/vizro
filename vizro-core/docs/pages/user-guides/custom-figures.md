@@ -125,7 +125,7 @@ adjust the return statement of the function.
 <!-- vale on -->
 
 ### Dynamic HTML header
-Generally, you can create a custom figure for any [Dash component](https://dash.plotly.com/#open-source-component-libraries).
+You can create a custom figure for any [Dash component](https://dash.plotly.com/#open-source-component-libraries).
 Below is an example of a custom figure that returns a `html.H2` component that dynamically updates based on the selected
 name from a filter.
 
