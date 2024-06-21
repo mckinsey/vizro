@@ -187,6 +187,7 @@ class VizroAI:
                 "pages": [],
                 "dashboard": None,
                 "messages": [("user", user_input)],
-            }, debug=False
+            },
+            debug=False,
         )
         return message_res

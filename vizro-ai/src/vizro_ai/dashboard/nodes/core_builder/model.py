@@ -68,8 +68,13 @@ def _get_model(
                 )
             ]
 
-            res = vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata}) if i == 0 else vizro_model_chain.invoke(
-                {"message": messages, "df_metadata": df_metadata, "validation_error": str(validation_error)})
+            res = (
+                vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata})
+                if i == 0
+                else vizro_model_chain.invoke(
+                    {"message": messages, "df_metadata": df_metadata, "validation_error": str(validation_error)}
+                )
+            )
             return res
         except ValidationError as e:
             validation_error = e
