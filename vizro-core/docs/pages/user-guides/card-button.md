@@ -575,7 +575,7 @@ Unlike the static text card `vm.Card`, a KPI card must be created using a figure
 Unlike the static text card `vm.Card`, a KPI card must be created using a figure function,
 which enables the text content of the KPI to change based on input from controls or actions.
 
-For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#create-kpi-cards).
+For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
 ## Buttons
 

@@ -190,17 +190,17 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 
 ## Add a dashboard logo
 
-Vizro will [automatically incorporate the dashboard logo](assets.md/#logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro will [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
 ## Browser title
 
-The [website icon](assets.md/#changing-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's
+The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's
 title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
 ## Meta tags for social media
 
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
-clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#meta-tags-image) and
+clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#include-a-meta-tags-image) and
 [Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing the [Vizro demo app](https://vizro.mckinsey.com/).

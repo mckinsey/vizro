@@ -14,27 +14,27 @@ Vizro-AI uses a large language model and Plotly to generate code for an interact
 
     ---
 
-    [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install/) </br>
-    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart/)
+    [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br>
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart.md)
 
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    [:octicons-arrow-right-24: Ways to run Vizro-AI](pages/user-guides/run-vizro-ai/)</br>
-    [:octicons-arrow-right-24: Customize models](pages/user-guides/customize-vizro-ai/)</br>
-    [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts/)</br>
-    [:octicons-arrow-right-24: Use different languages](pages/user-guides/use-different-languages/)</br>
-    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase/)
+    [:octicons-arrow-right-24: Ways to run Vizro-AI](pages/user-guides/run-vizro-ai.md)</br>
+    [:octicons-arrow-right-24: Customize models](pages/user-guides/customize-vizro-ai.md)</br>
+    [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
+    [:octicons-arrow-right-24: Use different languages](pages/user-guides/use-different-languages.md)</br>
+    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__
 
     ---
 
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq/) </br>
-    [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard/) </br>
-    [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai//)
+    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md) </br>
+    [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard.md) </br>
+    [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
 

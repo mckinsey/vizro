@@ -25,7 +25,7 @@ We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get star
 1. [Install `hatch`](https://hatch.pypa.io/latest/install/) by running `brew install hatch` or `pipx install hatch` (preferable to `pip install hatch`).
 2. Clone this repository.
 3. Run `hatch -v env create` from the `vizro-core` folder of your cloned repository. This creates Hatch's `default` environment with dependencies installed and the project installed in development mode (that is, using `pip install --editable`). It will take a few minutes to complete. All following commands should be executed from this folder as well.
-4. Run `hatch run example` to [open an example Vizro dashboard](#examples) with [Dash dev tools](https://dash.plotly.com/devtools) enabled.
+4. Run `hatch run example` to [open an example Vizro dashboard](../examples/examples.md) with [Dash dev tools](https://dash.plotly.com/devtools) enabled.
 5. Edit the code! Thanks to Dash dev tools' hot reloading, any changes to the example app or `vizro` source code should automatically show in your dashboard without needing refresh or restart any process.
 
 !!!note
