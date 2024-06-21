@@ -5,7 +5,9 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+df_kpi = pd.DataFrame(
+    {"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Reference Zero": [0, 0, 0], "Category": ["A", "B", "C"]}
+)
 
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
@@ -29,28 +31,28 @@ example_reference_cards = [
         data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
-        title="KPI reference (pos)",
+        title="Delta Positive",
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
         agg_func="median",
-        title="KPI reference (neg)",
+        title="Delta Negative",
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with formatting",
+        reference_column="Actual",
+        title="Delta Zero",
         value_format="{value:.2f}$",
         reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with icon",
+        reference_column="Reference Zero",
+        title="Reference Zero",
         icon="shopping_cart",
     ),
 ]
