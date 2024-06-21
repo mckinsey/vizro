@@ -163,10 +163,15 @@ class TestKPICardReference:
             IndexError,
             match="Replacement index 0 out of range for positional args tuple",
         ):
-            kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Reference", reference_format="{.2f}}")()
+            kpi_card_reference(
+                data_frame=df, value_column="Actual", reference_column="Reference", reference_format="{.2f}}"
+            )()
 
     def test_reference_format_non_existing_placeholder(self):
         with pytest.raises(KeyError, match="delta_absolute"):
             kpi_card_reference(
-                data_frame=df, value_column="Actual", reference_column="Reference", reference_format="{delta_absolute.2f}}"
+                data_frame=df,
+                value_column="Actual",
+                reference_column="Reference",
+                reference_format="{delta_absolute.2f}}",
             )()
