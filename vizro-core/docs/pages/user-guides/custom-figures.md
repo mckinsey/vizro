@@ -67,18 +67,14 @@ adjust the return statement of the function.
             title = title or f"{agg_func} {value_column}".title()
             value = data_frame[value_column].agg(agg_func)
 
-            return dbc.Card(
+            header = dbc.CardHeader(
                 [
-                    dbc.CardHeader(
-                        [
-                            html.H2(title),
-                            html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
-                        ],
-                    ),
-                    dbc.CardBody([value_format.format(value=value)]),
-                ],
-                className="card-kpi",
+                    html.H2(title),
+                    html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
+                ]
             )
+            body = dbc.CardBody([value_format.format(value=value)])
+            return dbc.Card([header, body], className="card-kpi")
 
 
         page = vm.Page(
