@@ -184,8 +184,9 @@ class VizroAI:
                 "dfs": dfs,
                 "df_metadata": {},
                 "dashboard_plan": None,
+                "pages": [],
                 "dashboard": None,
                 "messages": [("user", user_input)],
-            }
+            }, debug=False
         )
         return message_res

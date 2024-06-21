@@ -2,15 +2,17 @@
 
 import logging
 import re
-from typing import Any, Dict, List
+import operator
+from typing import Annotated, Any, Dict, List
 
 import pandas as pd
 from langchain.globals import set_debug
-from langgraph.graph import END, StateGraph
+from langgraph.graph import StateGraph
+from langgraph.constants import Send, END
 from vizro.models import Dashboard
 from vizro_ai.chains._llm_models import _get_llm_model
-from vizro_ai.dashboard.nodes.core_builder.build import DashboardBuilder
-from vizro_ai.dashboard.nodes.core_builder.plan import DashboardPlanner, _get_dashboard_plan, _print_dashboard_plan
+from vizro_ai.dashboard.nodes.core_builder.build import PageBuilder
+from vizro_ai.dashboard.nodes.core_builder.plan import DashboardPlanner, _get_dashboard_plan, _print_dashboard_plan, PagePlanner
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
 from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, _generate_import_statement, model_sum_prompt
 
@@ -21,6 +23,7 @@ except ImportError:  # pragma: no cov
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 model_default = "gpt-3.5-turbo"
 # model_default = "gpt-4-turbo"
@@ -43,6 +46,7 @@ class GraphState(BaseModel):
     dfs: List[pd.DataFrame]
     df_metadata: Dict[str, Dict[str, Any]]
     dashboard_plan: DashboardPlanner = None
+    pages: Annotated[List, operator.add]
     dashboard: Dashboard = None
 
     class Config:
@@ -59,15 +63,10 @@ class GraphState(BaseModel):
             if not isinstance(df, pd.DataFrame):
                 raise ValueError("Each element in dfs must be a Pandas DataFrame")
         return v
-
+    
 
 def _store_df_info(state: GraphState):
-    """Store information about the dataframes.
-
-    Args:
-        state (dict): The current graph state.
-
-    """
+    """Store information about the dataframes."""
     logger.info("*** _store_df_info ***")
     dfs = state.dfs
     messages = state.messages
@@ -93,15 +92,7 @@ def _store_df_info(state: GraphState):
 
 
 def _compose_imports_code(state: GraphState):
-    """Generate code snippet for imports.
-
-    Args:
-        state (dict): The current graph state
-
-    Returns:
-        state (dict): New key added to state, generation
-
-    """
+    """Generate code snippet for imports."""
     logger.info("*** _compose_imports_code ***")
     messages = state.messages
     model_sum_chain = model_sum_prompt | _get_llm_model(model=model_default).with_structured_output(ModelSummary)
@@ -120,17 +111,11 @@ def _compose_imports_code(state: GraphState):
 
 
 def _dashboard_plan(state: GraphState):
-    """Generate a dashboard plan.
-
-    Args:
-        state (dict): The current graph state
-
-    """
+    """Generate a dashboard plan."""
     logger.info("*** _dashboard_plan ***")
     messages = state.messages
     _, query = messages[0]
     df_metadata = state.df_metadata
-    dashboard_plan = state.dashboard_plan
 
     model = _get_llm_model(model=model_default)
     dashboard_plan = _get_dashboard_plan(query=query, model=model, df_metadata=df_metadata)
@@ -139,35 +124,8 @@ def _dashboard_plan(state: GraphState):
     return {"dashboard_plan": dashboard_plan}
 
 
-def _build_dashboard(state: GraphState):
-    """Build a dashboard.
-
-    Args:
-        state (dict): The current graph state
-
-    """
-    logger.info("*** _build_dashboard ***")
-    df_metadata = state.df_metadata
-    dashboard_plan = state.dashboard_plan
-
-    model = _get_llm_model(model=model_default)
-    dashboard = DashboardBuilder(
-        model=model,
-        df_metadata=df_metadata,
-        dashboard_plan=dashboard_plan,
-    ).dashboard
-
-    return {"dashboard": dashboard}
-
-
 def _generate_dashboard_code(state: GraphState):
-    """Generate a dashboard code snippet.
-
-    Args:
-        state (dict): The current graph state
-
-
-    """
+    """Generate a dashboard code snippet."""
     logger.info("*** _generate_dashboard_code ***")
     messages = state.messages
     _, import_statement = messages[-1]
@@ -186,19 +144,69 @@ def _generate_dashboard_code(state: GraphState):
     return {"messages": messages}
 
 
+class BuildPageState(BaseModel):
+    """Represents the state of building the page.
+
+    Attributes
+        df_metadata : Cleaned dataframe names and their metadata
+        page_plan : Plan for the dashboard
+
+    """
+
+    df_metadata: Dict[str, Dict[str, Any]]
+    page_plan: PagePlanner = None
+
+
+def build_page(state: BuildPageState):
+    """Build a page."""
+    logger.info("*** build_page ***")
+    df_metadata = state["df_metadata"]
+    page_plan = state["page_plan"]
+
+    model = _get_llm_model(model=model_default)
+    page = PageBuilder(
+        model=model,
+        df_metadata=df_metadata,
+        page_plan=page_plan,
+    ).page
+
+    return {"pages": [page]}
+
+
+def continue_to_pages(state: GraphState):
+    df_metadata = state.df_metadata
+    return [Send("build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
+
+def build_dashboard(state: GraphState):
+    """Build a dashboard."""
+    logger.info("*** build_dashboard ***")
+    dashboard_plan = state.dashboard_plan
+    pages = state.pages
+
+    dashboard = Dashboard(title=dashboard_plan.title, pages=pages)
+
+    return {"dashboard": dashboard}
+
+    
+
+
 def _create_and_compile_graph():
+    # main graph
     graph = StateGraph(GraphState)
 
     graph.add_node("_store_df_info", _store_df_info)
     graph.add_node("_compose_imports_code", _compose_imports_code)
     graph.add_node("_dashboard_plan", _dashboard_plan)
-    graph.add_node("_build_dashboard", _build_dashboard)
+    graph.add_node("build_page", build_page)
+    graph.add_node("build_dashboard", build_dashboard)
+    
     graph.add_node("_generate_dashboard_code", _generate_dashboard_code)
 
     graph.add_edge("_store_df_info", "_compose_imports_code")
     graph.add_edge("_compose_imports_code", "_dashboard_plan")
-    graph.add_edge("_dashboard_plan", "_build_dashboard")
-    graph.add_edge("_build_dashboard", "_generate_dashboard_code")
+    graph.add_conditional_edges("_dashboard_plan", continue_to_pages)
+    graph.add_edge("build_page", "build_dashboard")
+    graph.add_edge("build_dashboard", "_generate_dashboard_code")
     graph.add_edge("_generate_dashboard_code", END)
 
     graph.set_entry_point("_store_df_info")

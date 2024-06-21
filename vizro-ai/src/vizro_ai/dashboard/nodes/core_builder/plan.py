@@ -255,7 +255,6 @@ def _print_dashboard_plan(dashboard_plan):
         logger.info("--> " + repr(page.layout))
         for j in page.controls.controls:
             logger.info("--> " + repr(j))
-        logger.info("\n")
 
 
 if __name__ == "__main__":

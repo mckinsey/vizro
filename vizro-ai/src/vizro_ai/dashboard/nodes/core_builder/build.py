@@ -35,7 +35,7 @@ class PageBuilder:
         # Could potentially be parallelized or sent as a batch to the API
         for i in range(
             len(self._page_plan.components.components)):
-            logger.info(f"Building component: {self._page_plan.components.components[i]}")
+            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components.components[i]}")
             try:
                 components.append(
                     self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
@@ -56,7 +56,7 @@ class PageBuilder:
         return self._layout
 
     def _build_layout(self):
-        logger.info(f"Building layout: {self._page_plan.layout}")
+        logger.info(f"{self._page_plan.title} -> Building layout {self._page_plan.layout}")
         return self._page_plan.layout.create(model=self._model, df_metadata=self._df_metadata)
 
     @property
@@ -76,7 +76,7 @@ class PageBuilder:
         logger.info(f"Building controls of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
         for i in range(len(self._page_plan.controls.controls)):
-            logger.info(f"Building control: {self._page_plan.controls.controls[i]}")
+            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls.controls[i]}")
             control = self._page_plan.controls.controls[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
@@ -94,39 +94,3 @@ class PageBuilder:
                 title=self._page_plan.title, components=self.components, controls=self.controls, layout=self.layout
             )
         return self._page
-
-
-class DashboardBuilder:
-    """Class to build a dashboard."""
-
-    def __init__(self, model, df_metadata, dashboard_plan):
-        """Initialize DashboardBuilder."""
-        self._model = model
-        self._df_metadata = df_metadata
-        self._dashboard_plan = dashboard_plan
-        self._pages = None
-
-    @property
-    def pages(self):
-        """Property to get pages."""
-        if self._pages is None:
-            self._pages = self._build_pages()
-        return self._pages
-
-    def _build_pages(self):
-        pages = []
-        logger.info("Building pages")
-        for i in range(len(self._dashboard_plan.pages)):
-            pages.append(
-                PageBuilder(
-                    model=self._model,
-                    df_metadata=self._df_metadata,
-                    page_plan=self._dashboard_plan.pages[i],
-                ).page
-            )
-        return pages
-
-    @property
-    def dashboard(self):
-        """Property to get dashboard."""
-        return vm.Dashboard(title=self._dashboard_plan.title, pages=self.pages)
