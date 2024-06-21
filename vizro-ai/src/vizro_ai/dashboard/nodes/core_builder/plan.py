@@ -131,20 +131,26 @@ class Control(BaseModel):
             f"things that are optional and DO NOT configure actions, action triggers or action chains."
             f" If no options are specified, leave them out."
         )
-        _df_schema, _df_sample = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_sample"]
-        _df_cols = list(_df_schema.keys())
+        try:
+            _df_schema, _df_sample = df_metadata[self.data_frame]["df_schema"], df_metadata[self.data_frame]["df_sample"]
+            _df_cols = list(_df_schema.keys())
+        except KeyError:
+            logger.info(f"Dataframe {self.data_frame} not found in metadata, returning default values.")
+            return None
+
         try:
             result_proxy = create_filter_proxy(df_cols=_df_cols, df_sample=_df_sample, available_components=available_components)
             proxy = _get_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)  # noqa: E501
             logger.info(f"`Control` proxy: {proxy.dict()}") # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
             actual = vm.Filter.parse_obj(
-                proxy.dict(exclude={"selector": {"id": True, "actions": True}, "id": True, "type": True})
+                proxy.dict(exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True})
             )
             # del model_manager._ModelManager__models[proxy.id]  # TODO: This is very wrong and needs to change
 
-        except ValidationError:
-            logger.info("Validation failed for `Control`, returning default values. Error details: {e}")
-            actual = None
+        except ValidationError as e:
+            logger.info(f"Build failed for `Control`, returning default values. Error details: {e}")
+            return None
+        
         return actual
 
 
@@ -196,7 +202,7 @@ class Layout(BaseModel):
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
-            logger.info(f"Validation failed for `Layout`, returning default values. Error details: {e}")
+            logger.info(f"Build failed for `Layout`, returning default values. Error details: {e}")
             actual = None
 
         return actual
