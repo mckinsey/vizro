@@ -1,54 +1,67 @@
 """Dev app to try things out."""
 
-from typing import Optional
-
-import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
-from dash import dcc, html
 from vizro import Vizro
-from vizro.models.types import capture
+from vizro.figures import kpi_card, kpi_card_reference
 
-text = [
-    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.",
-    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-    "Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.",
-    "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-    "Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.",
-    "Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+df_kpi = pd.DataFrame(
+    {"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Reference Zero": [0, 0, 0], "Category": ["A", "B", "C"]}
+)
+
+example_cards = [
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with formatting",
+        value_format="${value:.2f}",
+    ),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with icon",
+        icon="shopping_cart",
+    ),
 ]
 
-df = pd.DataFrame({"text": text * 2})
-
-
-@capture("figure")  # (1)!
-def multiple_cards(data_frame: pd.DataFrame, n_rows: Optional[int] = 1) -> html.Div:  # (2)!
-    """Creates a list with a variable number of `vm.Card` components from the provided data_frame.
-
-    Args:
-        data_frame: Data frame containing the data.
-        n_rows: Number of rows to use from the data_frame. Defaults to 1.
-
-    Returns:
-        html.Div with a list of dbc.Card objects generated from the data.
-
-    """
-    texts = data_frame.head(n_rows)["text"]
-    return html.Div(
-        [dbc.Card(dcc.Markdown(f"### Card #{i}\n{text}")) for i, text in enumerate(texts, 1)],
-        className="multiple-cards-container",
-    )
-
+example_reference_cards = [
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="Delta Positive",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        agg_func="median",
+        title="Delta Negative",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Actual",
+        title="Delta Zero",
+        value_format="{value:.2f}$",
+        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference Zero",
+        title="Reference Zero",
+        icon="shopping_cart",
+    ),
+]
 
 page = vm.Page(
-    title="Page with variable number of cards",
-    components=[vm.Figure(id="my-figure", figure=multiple_cards(data_frame=df))],  # (3)!
-    controls=[
-        vm.Parameter(
-            targets=["my-figure.n_rows"],  # (4)!
-            selector=vm.Slider(min=2, max=12, step=2, value=8, title="Number of cards to display"),
-        ),
-    ],
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    controls=[vm.Filter(column="Category")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

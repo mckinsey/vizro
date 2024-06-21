@@ -60,18 +60,9 @@ def kpi_card(  # noqa: PLR0913
     title = title or f"{agg_func} {value_column}".title()
     value = data_frame[value_column].agg(agg_func)
 
-    return dbc.Card(
-        [
-            dbc.CardHeader(
-                [
-                    html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title),
-                ],
-            ),
-            dbc.CardBody(value_format.format(value=value)),
-        ],
-        className="card-kpi",
-    )
+    header = dbc.CardHeader([html.P(icon, className="material-symbols-outlined") if icon else None, html.H2(title)])
+    body = dbc.CardBody(value_format.format(value=value))
+    return dbc.Card([header, body], className="card-kpi")
 
 
 @capture("figure")
@@ -134,30 +125,20 @@ def kpi_card_reference(  # noqa: PLR0913
     delta = value - reference
     delta_relative = delta / reference if reference else np.nan
 
-    return dbc.Card(
+    header = dbc.CardHeader([html.P(icon, className="material-symbols-outlined") if icon else None, html.H2(title)])
+    body = dbc.CardBody(
+        value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
+    )
+    footer = dbc.CardFooter(
         [
-            dbc.CardHeader(
-                [
-                    html.P(icon, className="material-symbols-outlined") if icon else None,
-                    html.H2(title),
-                ],
+            html.Span(
+                "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "arrow_circle_right",
+                className="material-symbols-outlined",
             ),
-            dbc.CardBody(
-                value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
-            ),
-            dbc.CardFooter(
-                [
-                    html.Span(
-                        "arrow_circle_up" if delta > 0 else "arrow_circle_down", className="material-symbols-outlined"
-                    ),
-                    html.Span(
-                        reference_format.format(
-                            value=value, reference=reference, delta=delta, delta_relative=delta_relative
-                        )
-                    ),
-                ],
-                className="color-pos" if delta > 0 else "color-neg",
+            html.Span(
+                reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className="card-kpi",
+        className="color-pos" if delta > 0 else "color-neg" if delta < 0 else "",
     )
+    return dbc.Card([header, body, footer], className="card-kpi")

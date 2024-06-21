@@ -11,7 +11,7 @@ import vizro.plotly.express as px
 from dash import dash_table, dcc, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
-from vizro.figures import kpi_card
+from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
@@ -39,6 +39,63 @@ custom_fig_df = pd.DataFrame(
         ]
         * 2
     }
+)
+
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+example_cards = [
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with formatting",
+        value_format="${value:.2f}",
+    ),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with icon",
+        icon="shopping_cart",
+    ),
+]
+
+example_reference_cards = [
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference (pos)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        agg_func="median",
+        title="KPI reference (neg)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with formatting",
+        value_format="{value:.2f}$",
+        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with icon",
+        icon="shopping_cart",
+    ),
+]
+
+page = vm.Page(
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    controls=[vm.Filter(column="Category")],
 )
 
 
@@ -198,20 +255,11 @@ cards = vm.Page(
 
 figure = vm.Page(
     title="Figure",
-    layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
-    components=[
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=tips,
-                value_column="tip",
-                value_format="${value:.2f}",
-                icon="shopping_cart",
-                title="KPI Card I",
-            )
-        )
-    ],
-    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    controls=[vm.Filter(column="Category")],
 )
+
 
 button = vm.Page(
     title="Button",
