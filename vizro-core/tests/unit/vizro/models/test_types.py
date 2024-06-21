@@ -246,5 +246,5 @@ class TestModelFieldJSONConfig:
 
     def test_undecorated_function(self):
         config = {"_target_": "undecorated_function", "a": 1, "b": 2, "c": 3}
-        with pytest.raises(ValidationError, match="_target_=undecorated_function must be wrapped"):
+        with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
             Model(function=config)

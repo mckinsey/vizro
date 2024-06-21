@@ -4,12 +4,14 @@ import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
+import vizro.plotly.express as px
 
 df_kpi = pd.DataFrame(
     {"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Reference Zero": [0, 0, 0], "Category": ["A", "B", "C"]}
 )
 
 example_cards = [
+    vm.Graph(figure=px.bar(df_kpi, "Actual")),
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
     kpi_card(
