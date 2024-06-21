@@ -7,7 +7,7 @@ nonword: true
 action:
   name: replace
 swap:
-  '\b(?:eg|e\.g\.)[\s,]': for example
-  '\b(?:ie|i\.e\.)[\s,]': that is
+  '\b(?:eg|e\.g\.|e.g)[\s,]': for example
+  '\b(?:ie|i\.e\.|i.e)[\s,]': that is
   '\b(?:viz\.)[\s,]': namely
   '\b(?:ergo)[\s,]': therefore
