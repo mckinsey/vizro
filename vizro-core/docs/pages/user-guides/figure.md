@@ -12,7 +12,8 @@ If these more specific models already achieve what you need then they should be 
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
 
-There are already a few figure functions you can reuse:
+There are already a few figure functions you can reuse, see the section on [KPI Cards](#kpi-key-performance-indicator-cards)
+for more details:
 
 - [`kpi_card`][vizro.figures.kpi_card]
 - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
@@ -78,7 +79,7 @@ To add a `Figure` to your page:
         ```
 
         1. This creates a [`layout`](layouts.md) with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
-        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#kpi_card).
+        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
 
     === "app.yaml"
         ```yaml
@@ -116,5 +117,169 @@ To add a `Figure` to your page:
     [Figure]: ../../assets/user_guides/figure/figure.png
 
 
-If the pre-defined figure functions from [`vizro.figures`](../API-reference/figure-callables.md) do not serve your purpose,
-there is always the option to create a [custom figure](custom-figures.md).
+### Key Performance Indicator (KPI) cards
+A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value.
+It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
+
+- [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found
+by performing an aggregation function (by default, `sum`) over a specified column.
+Required arguments are `data_frame` and `value_column`.
+
+- [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference): A KPI card that shows a single value
+and a delta comparison to a reference value found by performing an aggregation function (by default, `sum`) over the specified columns.
+Required arguments are `data_frame`, `value_column` and `reference_column`.
+
+As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these
+functions have several arguments to customize your KPI cards. If you require a level of customization that is not
+possible with the built-in functions then you can create a [custom figure](custom-figures.md).
+
+!!! example "KPI Card Variations"
+
+    === "app.py"
+        ```py
+        import pandas as pd
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro.figures import kpi_card, kpi_card_reference  # (1)!  # (2)!
+
+        df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+        example_cards = [
+            kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+            kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+            kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with formatting",
+                value_format="${value:.2f}",
+            ),
+            kpi_card(
+                data_frame=df_kpi,
+                value_column="Actual",
+                title="KPI with icon",
+                icon="shopping_cart",
+            ),
+        ]
+
+        example_reference_cards = [
+            kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (pos)",
+            ),
+            kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                agg_func="median",
+                title="KPI reference (neg)",
+            ),
+            kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with formatting",
+                value_format="{value:.2f}$",
+                reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+            ),
+            kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="shopping_cart",
+            ),
+        ]
+
+        page = vm.Page(
+            title="KPI Indicators",
+            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  # (3)!
+            components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+            controls=[vm.Filter(column="Category")],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
+        2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_with_reference).
+        3. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+          - components:
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with value
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with aggregation
+                  agg_func: median
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with formatting
+                  value_format: ${value:.2f}
+                type: figure
+              - figure:
+                  _target_: kpi_card
+                  data_frame: df_kpi
+                  value_column: Actual
+                  title: KPI with icon
+                  icon: shopping_cart
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference (pos)
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  agg_func: median
+                  title: KPI reference (neg)
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference with formatting
+                  value_format: "{value:.2f}$"
+                  reference_format: "{delta:.2f}$ vs. last year ({reference:.2f}$)"
+                type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference with icon
+                  icon: shopping_cart
+                type: figure
+            controls:
+              - column: Category
+                type: filter
+            layout:
+              grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+            title: KPI Indicators
+        ```
+    === "Result"
+        [![KPICards]][KPICards]
+
+    [KPICards]: ../../assets/user_guides/figure/kpi_cards.png

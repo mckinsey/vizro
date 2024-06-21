@@ -22,6 +22,7 @@
 }
 
 .card-kpi .card-footer {
+  color: var(--text-secondary);
   display: flex;
   font-weight: 600;
   gap: 4px;
@@ -32,11 +33,11 @@
   line-height: 20px;
 }
 
-.color-pos {
+.color-pos.card-footer {
   color: #1a85ff;
 }
 
-.color-neg {
+.color-neg.card-footer {
   color: #d41159;
 }
 
