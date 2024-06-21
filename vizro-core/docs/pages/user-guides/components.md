@@ -6,7 +6,7 @@ listed below to fill your dashboard with visuals.
 
 <div class="grid cards" markdown>
 
-- :octicons-graph-16:{ .lg .middle } __Graph__
+- :octicons-graph-16:{ .lg .middle } __Graphs__
 
     ---
 
@@ -14,7 +14,7 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View user guide](graph.md)
 
-- :material-table-large:{ .lg .middle } __Table__
+- :material-table-large:{ .lg .middle } __Tables__
 
     ---
 
@@ -22,7 +22,15 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View user guide](table.md)
 
-- :material-cards-outline:{ .lg .middle } __Card & button__
+- :material-graph:{ .lg .middle } __Figures__
+
+    ---
+
+    Use figures to make any [Dash component](https://dash.plotly.com/#open-source-component-libraries) reactive.
+
+    [:octicons-arrow-right-24: View user guide](figure.md)
+
+- :material-cards-outline:{ .lg .middle } __Cards & buttons__
 
     ---
 
@@ -30,15 +38,8 @@ listed below to fill your dashboard with visuals.
 
     [:octicons-arrow-right-24: View user guide](card-button.md)
 
-- :material-graph:{ .lg .middle } __Figure__
 
-    ---
-
-    Use figure to visualize your make any dash component reactive.
-
-    [:octicons-arrow-right-24: View user guide](figure.md)
-
-- :octicons-table-16:{ .lg .middle } __Container__
+- :octicons-table-16:{ .lg .middle } __Containers__
 
     ---
 

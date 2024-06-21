@@ -26,6 +26,8 @@ Refer to the [OpenAI documentation for more about model capabilities](https://pl
 ## Customization at initialization
 To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated [`ChatOpenAI`](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html) model.
 
+When specifying a model as a string, you can select any option from the [supported models](#supported-models) listed above.
+
 The example below uses the OpenAI model name in a string form:
 
 !!! example "Customize with string"
@@ -57,11 +59,13 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         llm = ChatOpenAI(
             model_name="gpt-3.5-turbo-0125",
             temperature=0,
-            max_retries=3,
+            max_retries=5,
         )
         vizro_ai = VizroAI(model=llm)
         vizro_ai.plot(df, "describe the composition of gdp in continent")
         ```
+
+Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).
 
 ## Azure OpenAI models
 To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,

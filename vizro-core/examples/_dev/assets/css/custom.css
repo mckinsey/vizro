@@ -1,4 +1,5 @@
-/* Apply reverse color logic via CSS */
-#kpi-card-reverse-coloring .card-kpi:has(.color-neg) {
-  border-left: 4px solid #1a85ff;
+.multiple-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
