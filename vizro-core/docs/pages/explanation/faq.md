@@ -11,7 +11,7 @@ Here are some answers to frequently asked questions:
 
 * [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
 * [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
-* [Where can I find example dashboards?](#where-can-I-find-example-dashboards)
+* [Where can I find example dashboards?](#where-can-i-find-example-dashboards)
 * [Why should I use Vizro?](#why-should-i-use-vizro)
 * [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 * [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
