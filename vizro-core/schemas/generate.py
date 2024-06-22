@@ -12,7 +12,6 @@ parser = argparse.ArgumentParser(description="Generate JSON schema.")
 parser.add_argument("--check", help="check schema is up to date", action="store_true")
 args = parser.parse_args()
 
-# TODO: need to setup alias function to keep lowercase if wanted
 schema_json = Dashboard.schema_json(indent=4, by_alias=False)
 schema_path = Path(__file__).with_name(f"{__version__}.json")
 

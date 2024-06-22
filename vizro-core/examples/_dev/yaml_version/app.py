@@ -12,7 +12,7 @@ from vizro.models import Dashboard
 data_manager["iris"] = px.data.iris()
 data_manager["gapminder"] = px.data.gapminder()
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
-
+data_manager["tips"] = px.data.tips()
 
 df_stocks_long = pd.melt(
     px.data.stocks(datetimes=True),
@@ -22,6 +22,9 @@ df_stocks_long = pd.melt(
     value_name="value",
 )
 data_manager["df_stocks_long"] = df_stocks_long
+
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+data_manager["df_kpi"] = df_kpi
 
 dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
 dashboard = Dashboard(**dashboard)

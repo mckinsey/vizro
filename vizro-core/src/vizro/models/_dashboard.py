@@ -8,7 +8,17 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, get_asset_url, get_relative_path, html
+from dash import (
+    ClientsideFunction,
+    Input,
+    Output,
+    State,
+    clientside_callback,
+    dcc,
+    get_asset_url,
+    get_relative_path,
+    html,
+)
 
 try:
     from pydantic.v1 import Field, validator
@@ -18,6 +28,7 @@ except ImportError:  # pragma: no cov
 from dash.development.base_component import Component
 
 import vizro
+from vizro import _themes as themes
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
@@ -142,7 +153,8 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             id="dashboard-container",
             children=[
-                html.Div(vizro.__version__, id="vizro_version", hidden=True),
+                html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
+                dcc.Store(id="vizro_themes", data={"dark": themes.dark, "light": themes.light}),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
@@ -234,7 +246,9 @@ class Dashboard(VizroBaseModel):
         page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
-    def _make_page_layout(self, page: Page):
+    def _make_page_layout(self, page: Page, **kwargs):
+        # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
+        # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id

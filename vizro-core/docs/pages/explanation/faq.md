@@ -11,7 +11,7 @@ Here are some answers to frequently asked questions:
 
 * [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
 * [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
-* [Where can I find example dashboards?](#where-i-can-find-example-dashboards)
+* [Where can I find example dashboards?](#where-can-i-find-example-dashboards)
 * [Why should I use Vizro?](#why-should-i-use-vizro)
 * [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 * [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
@@ -19,7 +19,6 @@ Here are some answers to frequently asked questions:
 * [I want to contribute to Vizro, how can I find out more?](contributing.md)
 * [I still have a question. Where can I ask it?](contributing.md/#got-a-vizro-question)
 
-<!-- vale on -->
 
 ## Which browsers does Vizro support?
 Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/).
@@ -33,11 +32,10 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
 
-## Where I can find example dashboards?
+## Where can I find example dashboards?
 
 Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
 
-<!-- vale off -->
 ## Why should I use Vizro?
 
 Vizro is a high-level framework built on top of Dash and Pydantic,

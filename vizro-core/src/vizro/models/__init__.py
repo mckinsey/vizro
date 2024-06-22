@@ -1,7 +1,7 @@
 # Keep this import at the top to avoid circular imports since it's used in every model.
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
-from ._components import Card, Container, Graph, Table, Tabs
+from ._components import Card, Container, Graph, Table, Tabs, Figure
 from ._components import AgGrid
 from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
@@ -15,7 +15,7 @@ from ._page import Page
 
 Tabs.update_forward_refs(Container=Container)
 Container.update_forward_refs(
-    AgGrid=AgGrid, Button=Button, Card=Card, Graph=Graph, Layout=Layout, Table=Table, Tabs=Tabs
+    AgGrid=AgGrid, Button=Button, Card=Card, Figure=Figure, Graph=Graph, Layout=Layout, Table=Table, Tabs=Tabs
 )
 Page.update_forward_refs(
     Accordion=Accordion,
@@ -23,6 +23,7 @@ Page.update_forward_refs(
     Button=Button,
     Card=Card,
     Container=Container,
+    Figure=Figure,
     Filter=Filter,
     Graph=Graph,
     Parameter=Parameter,
@@ -45,6 +46,7 @@ __all__ = [
     "Dashboard",
     "DatePicker",
     "Dropdown",
+    "Figure",
     "Filter",
     "Graph",
     "Layout",
