@@ -78,7 +78,7 @@ def _generate_import_statement(models):
     # data_manager['data_a'] = load_data_a
     # data_manager['data_b'] = load_data_b
     #
-    # # "data_a" and "data_b" are the keys refered by the field `data_frame=` in below dashboard code
+    # # "data_a" and "data_b" are the keys referred by the field `data_frame=` in below dashboard code
     \n
     """
 

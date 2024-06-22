@@ -178,6 +178,7 @@ def build_page(state: BuildPageState):
 
 
 def continue_to_pages(state: GraphState):
+    """Continue to build pages."""
     df_metadata = state.df_metadata
     return [Send("build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go

@@ -72,7 +72,11 @@ def _get_model(
                 vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata})
                 if i == 0
                 else vizro_model_chain.invoke(
-                    {"message": messages, "df_metadata": df_metadata, "validation_error": str(validation_error)}
+                    {
+                        "message": messages,
+                        "df_metadata": df_metadata,
+                        "validation_error": str(validation_error),
+                    }  # noqa: F821
                 )
             )
             return res

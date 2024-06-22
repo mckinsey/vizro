@@ -53,7 +53,7 @@ class Component(BaseModel):
         ...,
         description="Description of the component. Include everything that relates to this component. "
         "Be as detailed as possible."
-        "Keep the original relavant description AS IS. Keep any links as original links.",
+        "Keep the original relevant description AS IS. Keep any links as original links.",
     )
     component_id: str = Field(
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component"
@@ -125,7 +125,7 @@ class Control(BaseModel):
     control_description: str = Field(
         ...,
         description="Description of the control. Include everything that seems to relate to this control."
-        "Be as detailed as possible. Keep the original relavant description AS IS. If this control is used"
+        "Be as detailed as possible. Keep the original relevant description AS IS. If this control is used"
         "to control a specific component, include the relevant component details.",
     )
     data_frame: str = Field(
@@ -296,7 +296,7 @@ if __name__ == "__main__":
     )
     model_manager["world_population_gdp_table"] = vm.AgGrid(figure=dash_ag_grid(data_frame="world_indicators"))
 
-    print(
+    print(  # noqa: T201
         control1.create(
             model=llm_model,
             available_components=["world_population_gdp_table", "stock_price_table"],
@@ -312,7 +312,18 @@ if __name__ == "__main__":
                         "iso_alpha": "object",
                         "iso_num": "int64",
                     },
-                    "df_sample": "|      | country   | continent   |   year |   lifeExp |       pop |   gdpPercap | iso_alpha   |   iso_num |\n|-----:|:----------|:------------|-------:|----------:|----------:|------------:|:------------|----------:|\n|  976 | Mauritius | Africa      |   1972 |    62.944 |    851334 |    2575.48  | MUS         |       480 |\n|  881 | Lesotho   | Africa      |   1977 |    52.208 |   1251524 |     745.37  | LSO         |       426 |\n|  701 | India     | Asia        |   1977 |    54.208 | 634000000 |     813.337 | IND         |       356 |\n| 1505 | Taiwan    | Asia        |   1977 |    70.59  |  16785196 |    5596.52  | TWN         |       158 |\n|  166 | Botswana  | Africa      |   2002 |    46.634 |   1630347 |   11003.6   | BWA         |        72 |",
+                    "df_sample": "|      | country   | continent   |   year |   lifeExp |"
+                    "       pop |   gdpPercap | iso_alpha   |   iso_num |\n|-----:|"
+                    ":----------|:------------|-------:|----------:|----------:|"
+                    "------------:|:------------|----------:|\n|  976 | Mauritius |"
+                    " Africa      |   1972 |    62.944 |    851334 |    2575.48  | MUS"
+                    "         |       480 |\n|  881 | Lesotho   | Africa      |   1977 |"
+                    "    52.208 |   1251524 |     745.37  | LSO         |       426 |\n|"
+                    "  701 | India     | Asia        |   1977 |    54.208 | 634000000 |"
+                    "     813.337 | IND         |       356 |\n| 1505 | Taiwan    | Asia"
+                    "        |   1977 |    70.59  |  16785196 |    5596.52  | TWN         |"
+                    "       158 |\n|  166 | Botswana  | Africa      |   2002 |    46.634 |"
+                    "   1630347 |   11003.6   | BWA         |        72 |",
                 }
             },
         )
