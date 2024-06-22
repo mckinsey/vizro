@@ -1,5 +1,6 @@
 """Contains the _get_model for the Vizro AI dashboard."""
 
+# ruff: noqa: F821
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov

@@ -7,11 +7,10 @@ import vizro.models as vm
 from langchain_openai import ChatOpenAI
 
 try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
+    from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
+    from pydantic import BaseModel, Field, ValidationError, create_model, validator
 import numpy as np
-from pydantic.v1 import Field, create_model, validator
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard.nodes.core_builder.model import _get_model
