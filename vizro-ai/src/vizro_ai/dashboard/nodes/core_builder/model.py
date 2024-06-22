@@ -76,7 +76,7 @@ def _get_model(
                         "message": messages,
                         "df_metadata": df_metadata,
                         "validation_error": str(validation_error),
-                    }  # noqa: F821
+                    }
                 )
             )
             return res
