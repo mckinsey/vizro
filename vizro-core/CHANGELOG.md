@@ -11,6 +11,35 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.18'></a>
+# 0.1.18 — 2024-06-24
+
+## Highlights ✨
+
+- Introduce `Figure` as a new `Page` component, enabling all Dash components to be reactive in
+  `Vizro`. See the [user guide on figure](https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/) for more information. ([#493](https://github.com/mckinsey/vizro/pull/493), [#524](https://github.com/mckinsey/vizro/pull/524))
+- Introduce KPI card functions to be used inside `Figure`. See the [user guide on KPI cards](https://vizro.readthedocs.io/en/stable/pages/user-guides/figure#key-performance-indicator-kpi-cards) for more information. ([#493](https://github.com/mckinsey/vizro/pull/493), [#529](https://github.com/mckinsey/vizro/pull/529))
+
+## Added
+
+- Add KPI dashboard to examples. ([#505](https://github.com/mckinsey/vizro/pull/505))
+
+## Changed
+
+- Turn off `pagination` by default in `dash_ag_grid`. ([#512](https://github.com/mckinsey/vizro/pull/512))
+
+- Move changing theme callback to the client-side. ([#523](https://github.com/mckinsey/vizro/pull/523))
+
+## Fixed
+
+- Fix disappearance of charts after theme switch on mobile. ([#511](https://github.com/mckinsey/vizro/pull/511))
+
+- Ignore unexpected query parameters rather than raising an exception ([#539](https://github.com/mckinsey/vizro/pull/539))
+
+## Security
+
+- Bump `braces` from 3.0.2 to 3.0.3 to fix high severity dependabot alert. ([#526](https://github.com/mckinsey/vizro/pull/526))
+
 <a id='changelog-0.1.17'></a>
 
 # 0.1.17 — 2024-05-30
