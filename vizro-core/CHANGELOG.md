@@ -36,7 +36,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Fix disappearance of charts after theme switch on mobile. ([#511](https://github.com/mckinsey/vizro/pull/511))
 
-- Ignore unexpected query parameters rather than raising an exception ([#539](https://github.com/mckinsey/vizro/pull/539))
+- Ignore unexpected query parameters rather than raising an exception. ([#539](https://github.com/mckinsey/vizro/pull/539))
 
 <a id='changelog-0.1.17'></a>
 
