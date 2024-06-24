@@ -39,11 +39,13 @@ nav:
           - Custom tables: pages/user-guides/custom-tables.md
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
+          - Custom figures: pages/user-guides/custom-figures.md
   - API Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
-      - Actions: pages/API-reference/actions.md
-      - Table functions: pages/API-reference/captured-callables.md
+      - Action functions: pages/API-reference/action-callables.md
+      - Table functions: pages/API-reference/table-callables.md
+      - Figure functions: pages/API-reference/figure-callables.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Contribute to Vizro: pages/explanation/contributing.md
@@ -132,3 +134,11 @@ plugins:
 
 extra_css:
   - stylesheets/extra.css
+
+# Strictest settings possible, and will be elevated to ERROR when run with --strict.
+# See https://www.mkdocs.org/user-guide/configuration/#validation.
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn

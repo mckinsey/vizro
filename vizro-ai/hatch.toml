@@ -16,7 +16,8 @@ dependencies = [
   "toml",
   "nbformat>=4.2.0",
   "pyhamcrest",
-  "jupyter"
+  "jupyter",
+  "langchain_community"
 ]
 
 [envs.default.env-vars]
@@ -45,11 +46,10 @@ update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}
 
 [envs.docs]
 dependencies = [
-  "mkdocs",
+  "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
-  "mkdocstrings-python<1.10.4",
   "linkchecker"
 ]
 detached = true
@@ -60,7 +60,7 @@ build = "mkdocs build --strict"
 # more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
 # throwing 403 errors, but these are not real errors.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
-serve = "mkdocs serve --strict"
+serve = "mkdocs serve --open"
 
 [envs.lint]
 dependencies = [

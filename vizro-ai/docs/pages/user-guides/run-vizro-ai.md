@@ -34,7 +34,7 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
 
 ??? note "Note: API key"
 
-    Make sure you have followed [LLM setup guide](../user-guides/install.md#large-language-model) and
+    Make sure you have followed [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and
     your API key is set up in the environment where your `.py` script is running with command as below:
 
     ```bash

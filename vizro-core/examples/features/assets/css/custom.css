@@ -1,3 +1,19 @@
 #page-header {
   padding-left: 8px;
 }
+
+#my-figure .multiple-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#my-figure.figure-container {
+  height: unset;
+  width: unset;
+}
+
+#my-figure.figure-container .card {
+  height: 210px;
+  width: 240px;
+}

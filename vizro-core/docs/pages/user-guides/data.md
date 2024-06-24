@@ -46,7 +46,7 @@ A static data source is the simplest way to send data to your dashboard and shou
 
 ### Supply directly
 
-You can directly supply a pandas DataFrame into components such as [graphs](graph.md), [tables](table.md) and [figures](figure.md).
+You can directly supply a pandas DataFrame into components such as [graphs](graph.md), [tables](table.md), and [figures](figure.md).
 
 The below example uses the Iris data saved to a file `iris.csv` in the same directory as `app.py`. This data can be generated using `px.data.iris()` or [downloaded](../../assets/user_guides/data/iris.csv).
 
@@ -331,7 +331,7 @@ Parametrized data loading is compatible with [caching](#configure-cache). The ca
 
     You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename), or you might enable arbitrary access to files on your server.
 
-It is not possible to pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target top-level arguments of the data loading function and not address nested keys in a dictionary.
+You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target the top-level arguments of the data loading function, not the nested keys in a dictionary.
 
 ### Filter update limitation
 

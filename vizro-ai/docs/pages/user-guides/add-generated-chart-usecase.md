@@ -108,9 +108,9 @@ This object must then be passed to the `figure` argument of the Vizro [Graph](ht
 
 ### Use Vizro-AI dynamically to return a `fig` object
 
-Alternatively, we can use Vizro-AI dynamically and assign the output of `plot()` directly to the fig variable, enabling its reuse in the `vm.Graph.figure` argument.
+We can also use Vizro-AI dynamically and assign the output of `plot()` directly to the fig variable, enabling its reuse in the `vm.Graph.figure` argument.
 This method offers streamlined efficiency, eliminating the need for code copying.
-However, it is important to note that each dashboard run triggers an API call to OpenAI, potentially escalating costs, although this can be avoided if the `fig` object is stored and retrieved as needed, instead of making repeated calls to `plot()`.
+However, it is important to note that each dashboard run triggers an API call to OpenAI, possibly escalating costs, although this can be avoided if the `fig` object is stored and retrieved as needed, instead of making repeated calls to `plot()`.
 
 Executing the code below yields the identical dashboard as the example above.
 
