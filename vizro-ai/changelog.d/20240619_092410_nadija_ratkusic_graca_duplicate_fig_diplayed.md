@@ -22,12 +22,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Disabled figure display upon variable assignment, to display outcome of `VizroAI.plot()` add `.show()`. Enable feature XXX ([#527](https://github.com/mckinsey/vizro/pull/527))
 
--->
 <!--
 ### Deprecated
 
