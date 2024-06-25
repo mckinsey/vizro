@@ -6,6 +6,7 @@ from asserts import assert_component_equal
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
+import re
 
 try:
     from pydantic.v1 import ValidationError
@@ -32,7 +33,7 @@ def standard_px_chart_with_str_dataframe():
     )
 
 
-class TestDunderMethodsGraph:
+class TestGraphInstantiation:
     def test_create_graph_mandatory_only(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart)
 
@@ -53,14 +54,28 @@ class TestDunderMethodsGraph:
         with pytest.raises(ValidationError, match="field required"):
             vm.Graph()
 
-    def test_wrong_captured_callable(self, standard_ag_grid):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
-            vm.Graph(figure=standard_ag_grid)
-
-    def test_failed_graph_with_wrong_figure(self, standard_go_chart):
-        with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
+    def test_captured_callable_invalid(self, standard_go_chart):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from vizro.plotly.express or "
+                "defined with decorator @capture('graph')."
+            ),
+        ):
             vm.Graph(figure=standard_go_chart)
 
+    def test_captured_callable_wrong_mode(self, standard_ag_grid):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('ag_grid') rather than @capture('graph') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            vm.Graph(figure=standard_ag_grid)
+
+
+class TestDunderMethodsGraph:
     def test_getitem_known_args(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart)
 

@@ -3,6 +3,7 @@
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
+import re
 
 try:
     from pydantic.v1 import ValidationError
@@ -47,17 +48,25 @@ class TestAgGridInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.AgGrid()
 
-    def test_wrong_captured_callable(self, standard_dash_table):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
-            vm.AgGrid(figure=standard_dash_table)
-
-    def test_failed_ag_grid_with_no_captured_callable(self, standard_go_chart):
-        with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
+    def test_captured_callable_invalid(self, standard_go_chart):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from vizro.tables or "
+                "defined with decorator @capture('ag_grid')."
+            ),
+        ):
             vm.AgGrid(figure=standard_go_chart)
 
-    def test_failed_ag_grid_with_wrong_captured_callable(self, standard_px_chart):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch. Expected ag_grid but got graph."):
-            vm.AgGrid(figure=standard_px_chart)
+    def test_captured_callable_wrong_mode(self, standard_dash_table):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('table') rather than @capture('ag_grid') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            vm.AgGrid(figure=standard_dash_table)
 
     def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
         ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])

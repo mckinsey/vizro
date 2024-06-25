@@ -161,12 +161,16 @@ class CapturedCallable:
     @classmethod
     def __get_validators__(cls):
         """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
+        # Each validator receives as an input the value returned from the previous validator.
+        # captured_callable could be _SupportsCapturedCallable, CapturedCallable, dictionary from JSON/YAML or
+        # invalid type at this point. Begin by parsing it from JSON/YAML if applicable:
         yield cls._parse_json
+        # At this point captured_callable is _SupportsCapturedCallable, CapturedCallable or invalid type. Next extract
+        # it from _SupportsCapturedCallable if applicable:
         yield cls._extract_from_attribute
-        yield cls._check_correct_type
+        # At this point captured_callable is CapturedCallable or invalid type. Check it is in fact CapturedCallable
+        # and do final checks:
+        yield cls._check_type
 
     @classmethod
     def _parse_json(
@@ -221,24 +225,26 @@ class CapturedCallable:
         return captured_callable._captured_callable
 
     @classmethod
-    def _check_correct_type(
-        cls, captured_callable: CapturedCallable, values: Dict[str, Any], field: ModelField
-    ) -> CapturedCallable:
+    def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
+        expected_mode = field.field_info.extra["mode"]
+        import_path_name = field.field_info.extra["import_path"].__name__
+
+        # HERE. think about px case:  plain function
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
-                "You must provide a valid CapturedCallable object. If you are using a plotly express figure, ensure "
-                "that you are using `import vizro.plotly.express as px`. If you are using a table figure, make "
-                "sure you are using `from vizro.tables import dash_data_table`. If you are using a custom figure or "
-                "action, that your function uses the @capture decorator."
+                f"Invalid CapturedCallable. Supply a function imported from {import_path_name} or defined with "
+                f"decorator @capture('{expected_mode}')."
             )
 
-        if (mode := captured_callable._mode) != (expected_mode := field.field_info.extra["mode"]):
-            raise ValueError(f"CapturedCallable mode mismatch. Expected {expected_mode} but got {mode}.")
+        if (mode := captured_callable._mode) != expected_mode:
+            raise ValueError(
+                f"CapturedCallable was defined with @capture('{mode}') rather than @capture('{expected_mode}') and so "
+                "is not compatible with the model."
+            )
 
         return captured_callable
 
-    # mode check?
-    # data_frame extraction?
+    # data_frame extraction? Not wanted in action case
 
 
 class capture:

@@ -45,7 +45,6 @@ class Graph(VizroBaseModel):
 
     # Validators
     _set_actions = _action_validator_factory("clickData")
-
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

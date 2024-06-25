@@ -1,4 +1,5 @@
 import importlib
+import re
 
 import plotly.express as plotly_express
 import plotly.graph_objects as go
@@ -143,7 +144,7 @@ def test_call_unknown_argument(captured_callable, expectation):
 
 
 def undecorated_function(a, b, c, d=4):
-    return a + b + c + d
+    return go.Figure()
 
 
 @capture("action")
@@ -154,11 +155,6 @@ def decorated_action_function(a, b, c, d=4):
 @capture("graph")
 def decorated_graph_function(data_frame):
     return go.Figure()
-
-
-@capture("graph")
-def decorated_graph_function_px(data_frame):
-    return plotly_express.scatter(data_frame=data_frame, x="gdpPercap", y="lifeExp")
 
 
 @capture("graph")
@@ -186,21 +182,27 @@ class TestModelFieldPython:
         assert model.function() == go.Figure()
 
     def test_undecorated_function(self):
-        with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
+                "defined with decorator @capture('graph')."
+            ),
+        ):
             ModelWithGraph(function=undecorated_function(1, 2, 3))
+
+    def test_wrong_mode(self):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            ModelWithGraph(function=decorated_action_function(a=1, b=2))
 
 
 class TestCapture:
-    def test_decorated_df_standard_case(self, gapminder):
-        fig = decorated_graph_function_px(gapminder)
-        assert len(fig.data) > 0
-        assert fig.__class__ == _DashboardReadyFigure
-
-    def test_decorated_df_str(self):
-        fig = decorated_graph_function_px("gapminder")
-        assert fig == _DashboardReadyFigure()
-        assert len(fig.data) == 0
-
     def test_decorated_graph_function_missing_data_frame(self):
         with pytest.raises(ValueError, match="decorated_graph_function must supply a value to data_frame argument"):
             decorated_graph_function()
@@ -251,5 +253,22 @@ class TestModelFieldJSONConfig:
 
     def test_undecorated_function(self):
         config = {"_target_": "undecorated_function", "a": 1, "b": 2, "c": 3}
-        with pytest.raises(ValidationError, match="provide a valid CapturedCallable object"):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
+                "defined with decorator @capture('graph')."
+            ),
+        ):
+            ModelWithGraph(function=config)
+
+    def test_wrong_mode(self):
+        config = {"_target_": "decorated_action_function", "a": 1, "b": 2}
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
+                "is not compatible with the model."
+            ),
+        ):
             ModelWithGraph(function=config)

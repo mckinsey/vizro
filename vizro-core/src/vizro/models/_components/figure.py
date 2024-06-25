@@ -35,7 +35,6 @@ class Figure(VizroBaseModel):
     _output_component_property: str = PrivateAttr("children")
 
     # Validators
-
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     def __call__(self, **kwargs):

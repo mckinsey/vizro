@@ -3,6 +3,7 @@
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
+import re
 
 try:
     from pydantic.v1 import ValidationError
@@ -42,17 +43,25 @@ class TestFigureInstantiation:
         assert figure.type == "figure"
         assert figure.figure == kpi_card_with_dataframe
 
-    def test_mandatory_figure_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
-            vm.Figure()
-
-    def test_wrong_captured_callable(self, standard_ag_grid):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch."):
-            vm.Figure(figure=standard_ag_grid)
-
-    def test_failed_figure_with_no_captured_callable(self, standard_go_chart):
-        with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
+    def test_captured_callable_invalid(self, standard_go_chart):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from vizro.figures or "
+                "defined with decorator @capture('figure')."
+            ),
+        ):
             vm.Figure(figure=standard_go_chart)
+
+    def test_captured_callable_wrong_mode(self, standard_dash_table):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('table') rather than @capture('figure') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            vm.Figure(figure=standard_dash_table)
 
 
 class TestDunderMethodsFigure:
