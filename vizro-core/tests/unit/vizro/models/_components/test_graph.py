@@ -1,12 +1,13 @@
 """Unit tests for vizro.models.Graph."""
 
+import re
+
 import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
 from dash import dcc
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
-import re
 
 try:
     from pydantic.v1 import ValidationError

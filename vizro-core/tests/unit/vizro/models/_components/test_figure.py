@@ -1,9 +1,10 @@
 """Unit tests for vizro.models.Figure."""
 
+import re
+
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
-import re
 
 try:
     from pydantic.v1 import ValidationError

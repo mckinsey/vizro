@@ -4,7 +4,7 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 
 df_kpi = pd.DataFrame(

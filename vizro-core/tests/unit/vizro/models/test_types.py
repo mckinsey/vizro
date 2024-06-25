@@ -1,7 +1,6 @@
 import importlib
 import re
 
-import plotly.express as plotly_express
 import plotly.graph_objects as go
 import pytest
 
@@ -10,7 +9,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, ValidationError
 
-from vizro.charts._charts_utils import _DashboardReadyFigure
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
 
