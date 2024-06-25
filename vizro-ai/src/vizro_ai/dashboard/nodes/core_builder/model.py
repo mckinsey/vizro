@@ -7,8 +7,8 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError
 from typing import Dict
 
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
 
 
 class ProxyVizroBaseModel(BaseModel):

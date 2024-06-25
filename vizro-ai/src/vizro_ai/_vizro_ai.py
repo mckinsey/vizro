@@ -3,8 +3,8 @@ from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
+from langchain_openai import ChatOpenAI
 
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
