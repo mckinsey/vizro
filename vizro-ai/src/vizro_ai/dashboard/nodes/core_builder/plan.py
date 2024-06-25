@@ -3,9 +3,9 @@
 import logging
 from typing import Dict, List, Literal, Union
 
+from langchain_openai import ChatOpenAI
 from vizro.models import AgGrid, Filter, Graph, Layout
 from vizro.models.types import ComponentType
-from langchain_openai import ChatOpenAI
 
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
