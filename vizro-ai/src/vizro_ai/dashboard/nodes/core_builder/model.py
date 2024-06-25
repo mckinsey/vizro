@@ -8,6 +8,7 @@ except ImportError:  # pragma: no cov
 from typing import Dict
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage
 
 
 class ProxyVizroBaseModel(BaseModel):
@@ -62,19 +63,14 @@ def _get_model(
             prompt = SINGLE_MODEL_PROMPT if i == 0 else MODEL_REPROMPT
             vizro_model_chain = prompt | model.with_structured_output(result_model)
 
-            messages = [
-                (
-                    "user",
-                    query,
-                )
-            ]
+            user_requirements = [HumanMessage(content=query)]
 
             res = (
-                vizro_model_chain.invoke({"message": messages, "df_metadata": df_metadata})
+                vizro_model_chain.invoke({"message": user_requirements, "df_metadata": df_metadata})
                 if i == 0
                 else vizro_model_chain.invoke(
                     {
-                        "message": messages,
+                        "message": user_requirements,
                         "df_metadata": df_metadata,
                         "validation_error": str(validation_error),
                     }

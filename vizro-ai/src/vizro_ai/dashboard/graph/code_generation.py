@@ -3,9 +3,11 @@
 import logging
 import operator
 import re
+import inspect
 from typing import Annotated, Any, Dict, List
 
 import pandas as pd
+from langchain_core.messages import BaseMessage, HumanMessage, FunctionMessage
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from vizro.models import Dashboard
@@ -30,7 +32,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 model_default = "gpt-3.5-turbo"
-# model_default = "gpt-4-turbo"
 # set_debug(True)
 
 
@@ -46,7 +47,7 @@ class GraphState(BaseModel):
 
     """
 
-    messages: List
+    messages: List[BaseMessage]
     dfs: List[pd.DataFrame]
     df_metadata: Dict[str, Dict[str, Any]]
     dashboard_plan: DashboardPlanner = None
@@ -73,7 +74,6 @@ def _store_df_info(state: GraphState):
     """Store information about the dataframes."""
     logger.info("*** _store_df_info ***")
     dfs = state.dfs
-    messages = state.messages
     df_metadata = state.df_metadata
     current_df_names = []
     for _, df in enumerate(dfs):
@@ -81,7 +81,7 @@ def _store_df_info(state: GraphState):
         data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(DfInfo)
 
         df_name = data_sum_chain.invoke(
-            {"df_schema": df_schema, "df_sample": df_sample, "messages": messages, "current_df_names": current_df_names}
+            {"df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
         )
 
         current_df_names.append(df_name)
@@ -105,20 +105,14 @@ def _compose_imports_code(state: GraphState):
 
     import_statement = _generate_import_statement(vizro_model_summary)
 
-    messages += [
-        (
-            "assistant",
-            import_statement,
-        )
-    ]
+    messages.append(FunctionMessage(content=import_statement, name=inspect.currentframe().f_code.co_name))
     return {"messages": messages}
 
 
 def _dashboard_plan(state: GraphState):
     """Generate a dashboard plan."""
     logger.info("*** _dashboard_plan ***")
-    messages = state.messages
-    _, query = messages[0]
+    query = state.messages[0].content
     df_metadata = state.df_metadata
 
     model = _get_llm_model(model=model_default)
@@ -131,20 +125,15 @@ def _dashboard_plan(state: GraphState):
 def _generate_dashboard_code(state: GraphState):
     """Generate a dashboard code snippet."""
     logger.info("*** _generate_dashboard_code ***")
-    messages = state.messages
-    _, import_statement = messages[-1]
+    messages = state.messages[-1].content
+    import_statement = messages
     dashboard = state.dashboard
 
     dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
     full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
     logger.info(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
 
-    messages += [
-        (
-            "assistant",
-            full_code_string,
-        )
-    ]
+    messages.append(FunctionMessage(content=full_code_string, name=inspect.currentframe().f_code.co_name))
     return {"messages": messages}
 
 
@@ -210,8 +199,12 @@ def _create_and_compile_graph():
     graph.add_edge("_compose_imports_code", "_dashboard_plan")
     graph.add_conditional_edges("_dashboard_plan", continue_to_pages)
     graph.add_edge("build_page", "build_dashboard")
-    graph.add_edge("build_dashboard", "_generate_dashboard_code")
-    graph.add_edge("_generate_dashboard_code", END)
+
+    # temprorarily removed the node _generate_dashboard_code, will add it back once
+    # the code to string is ready
+    # graph.add_edge("build_dashboard", "_generate_dashboard_code")
+    # graph.add_edge("_generate_dashboard_code", END)
+    graph.add_edge("build_dashboard", END)
 
     graph.set_entry_point("_store_df_info")
 
@@ -221,22 +214,22 @@ def _create_and_compile_graph():
 
 
 if __name__ == "__main__":
+    user_input = """
+                I need a page with a table showing the population per continent \n
+                I also want a page with two \ncards on it. One should be a card saying: 
+                `This was the jolly data dashboard, it was created in Vizro which is amazing` \n, 
+                and the second card should link to `https://vizro.readthedocs.io/`. The title of 
+                the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n
+                The layout of this page should use `grid=[[0,1]]`
+                """
+    previous_fn_res = """"
+                from vizro import Vizro\nfrom vizro.models import AgGrid, Card, Dashboard, Page\nfrom "
+                "vizro.tables import dash_ag_grid\nimport pandas as pd\n"
+                """
     test_state = {
         "messages": [
-            (
-                "user",
-                "\nI need a page with a table showing the population per continent \n"
-                "I also want a page with two \ncards on it. One should be a card saying: "
-                "`This was the jolly data dashboard, it was created in Vizro which is amazing` \n, "
-                "and the second card should link to `https://vizro.readthedocs.io/`. The title of "
-                "the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n"
-                "The layout of this page should use `grid=[[0,1]]`",
-            ),
-            (
-                "assistant",
-                "from vizro import Vizro\nfrom vizro.models import AgGrid, Card, Dashboard, Page\nfrom "
-                "vizro.tables import dash_ag_grid\nimport pandas as pd\n",
-            ),
+            HumanMessage(content=user_input),
+            FunctionMessage(content=previous_fn_res, name="_compose_imports_code"),
         ],
         "dfs": [
             pd.DataFrame(),

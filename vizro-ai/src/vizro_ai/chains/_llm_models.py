@@ -2,8 +2,6 @@ from typing import Dict, Optional, Union
 
 from langchain_openai import ChatOpenAI
 
-# from langchain_anthropic import ChatAnthropic
-
 # TODO add new wrappers in if new model support is added
 LLM_MODELS = Union[ChatOpenAI]
 
@@ -41,10 +39,6 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
-    # "claude-3-haiku-20240307": {
-    #     "max_tokens": 200000,
-    #     "wrapper": ChatAnthropic,
-    # },
 }
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
