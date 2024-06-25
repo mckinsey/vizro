@@ -118,8 +118,8 @@ class Vizro:
             if hasattr(model, "pre_build"):
                 model.pre_build()
 
-    def __call__(self):
-        return self.dash.server
+    def __call__(self, environ, start_response):
+        return self.dash.server(environ, start_response)
 
     @staticmethod
     def _reset():
