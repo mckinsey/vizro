@@ -16,7 +16,8 @@ dependencies = [
   "toml",
   "nbformat>=4.2.0",
   "pyhamcrest",
-  "jupyter"
+  "jupyter",
+  "langchain_community"
 ]
 
 [envs.default.env-vars]

@@ -26,7 +26,6 @@ dependencies = [
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
   "urllib3>=2.0.7",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-6002459
   "aiohttp>=3.9.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-AIOHTTP-6209407
-  "langchain-community>=0.0.27",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-LANGCHAINCOMMUNITY-6421036
   "langchain-core>=0.1.31"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-LANGCHAINCORE-6370598
 ]
 description = "Vizro-AI is a tool for generating data visualizations"

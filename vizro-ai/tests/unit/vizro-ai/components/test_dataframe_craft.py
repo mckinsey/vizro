@@ -2,7 +2,7 @@ import re
 
 import pandas as pd
 import pytest
-from langchain.llms.fake import FakeListLLM
+from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.components import GetDataFrameCraft
 
 
