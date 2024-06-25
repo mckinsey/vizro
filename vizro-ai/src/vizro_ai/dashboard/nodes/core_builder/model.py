@@ -8,8 +8,8 @@ except ImportError:  # pragma: no cov
 from typing import Dict
 from vizro.models import VizroBaseModel
 
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
 
 
 class ProxyVizroBaseModel(BaseModel):

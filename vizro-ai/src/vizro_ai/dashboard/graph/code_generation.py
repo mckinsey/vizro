@@ -1,5 +1,6 @@
 """Code generation graph for dashboard generation."""
 
+import inspect
 import logging
 import operator
 import re
@@ -225,9 +226,9 @@ def _create_and_compile_graph():
 if __name__ == "__main__":
     user_input = """
                 I need a page with a table showing the population per continent \n
-                I also want a page with two \ncards on it. One should be a card saying: 
-                `This was the jolly data dashboard, it was created in Vizro which is amazing` \n, 
-                and the second card should link to `https://vizro.readthedocs.io/`. The title of 
+                I also want a page with two \ncards on it. One should be a card saying:
+                `This was the jolly data dashboard, it was created in Vizro which is amazing` \n,
+                and the second card should link to `https://vizro.readthedocs.io/`. The title of
                 the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n
                 The layout of this page should use `grid=[[0,1]]`
                 """
