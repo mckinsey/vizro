@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage
 
 from vizro_ai.chains._llm_models import _get_llm_model
 from vizro_ai.components import GetCodeExplanation, GetDebugger
-from vizro_ai.dashboard.graph.code_generation import _create_and_compile_graph
+from vizro_ai.dashboard.graph.code_generation import _create_and_compile_graph, GraphState
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
@@ -159,19 +159,22 @@ class VizroAI:
         self,
         dfs: List[pd.DataFrame],
         user_input: str,
-    ) -> str:
+        debug: bool = False,
+    ) -> GraphState:
         """Create dashboard using vizro via english descriptions, english to dashboard translation.
 
         Args:
             dfs: The dataframes to be analyzed.
             user_input: User questions or descriptions of the desired visual.
+            debug: Flag to include debug information in response.
 
         Returns:
-            Dashboard code snippet.
+            The final graph state of the graph.
 
         """
         runnable = _create_and_compile_graph()
 
+        config = {"configurable": {"model": self.model}}
         message_res = runnable.invoke(
             {
                 "dfs": dfs,
@@ -181,6 +184,7 @@ class VizroAI:
                 "dashboard": None,
                 "messages": [HumanMessage(content=user_input)],
             },
-            debug=False,
+            config=config,
+            debug=debug,
         )
         return message_res

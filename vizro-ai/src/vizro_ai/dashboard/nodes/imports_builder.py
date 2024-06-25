@@ -43,7 +43,7 @@ class ModelSummary(BaseModel):
     model_summary: List[ModelName]
 
 
-def _generate_import_statement(models):
+def _generate_import_statement(models) -> str:
     import_statement = "from vizro import Vizro\n"
 
     required_models = ["Page", "Dashboard"]

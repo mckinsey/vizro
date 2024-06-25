@@ -6,6 +6,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError
 from typing import Dict
+from vizro.models import VizroBaseModel
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage

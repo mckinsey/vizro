@@ -3,7 +3,8 @@
 import logging
 from typing import Dict, List, Literal, Union
 
-import vizro.models as vm
+from vizro.models import AgGrid, Filter, Graph, Layout
+from vizro.models.types import ComponentType
 from langchain_openai import ChatOpenAI
 
 try:
@@ -63,12 +64,12 @@ class Component(BaseModel):
         "not used, please specify that.",
     )
 
-    def create(self, model, df_metadata):
+    def create(self, model, df_metadata) -> Union[ComponentType, None]:
         """Create the component."""
         if self.component_type == "Graph":
-            return vm.Graph()
+            return Graph()
         elif self.component_type == "AgGrid":
-            return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
+            return AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_model(
                 query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
@@ -81,7 +82,10 @@ class Components(BaseModel):
     components: List[Component]
 
 
-def create_filter_proxy(df_cols, df_sample, available_components):
+# TODO: This is a very basic implementation of the filter proxy model. It needs to be improved.
+# TODO: Try use `df_sample` to inform pydantic models like `OptionsType` about available choices.
+# Caution: If just use `df_sample` to inform the pydantic model, the choices might not be exhaustive.
+def create_filter_proxy(df_cols, df_sample, available_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
@@ -113,7 +117,7 @@ def create_filter_proxy(df_cols, df_sample, available_components):
             "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
             "validator2": validator("column", allow_reuse=True)(validate_column),
         },
-        __base__=vm.Filter,
+        __base__=Filter,
     )
 
 
@@ -160,7 +164,7 @@ class Control(BaseModel):
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
             )  # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
-            actual = vm.Filter.parse_obj(
+            actual = Filter.parse_obj(
                 proxy.dict(
                     exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True}
                 )
@@ -211,7 +215,7 @@ class Layout(BaseModel):
         " to this layout AS IS. If layout not provided, specify `NO layout`.",
     )
 
-    def create(self, model, df_metadata):
+    def create(self, model, df_metadata) -> Union[Layout, None]:
         """Create the layout."""
         if self.layout_description == "NO layout":
             return None
@@ -220,7 +224,7 @@ class Layout(BaseModel):
             proxy = _get_model(
                 query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
-            actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
+            actual = Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
             logger.info(f"Build failed for `Layout`, returning default values. Error details: {e}")
             actual = None
@@ -260,7 +264,7 @@ def _get_dashboard_plan(
     return _get_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
-def _print_dashboard_plan(dashboard_plan):
+def _print_dashboard_plan(dashboard_plan) -> None:
     for i, page in enumerate(dashboard_plan.pages):
         for j in page.components.components:
             logger.info("--> " + repr(j))
@@ -293,7 +297,7 @@ if __name__ == "__main__":
         " It applies only to the table displaying worldwide population and GDP data.",
         data_frame="world_indicators",
     )
-    model_manager["world_population_gdp_table"] = vm.AgGrid(figure=dash_ag_grid(data_frame="world_indicators"))
+    model_manager["world_population_gdp_table"] = AgGrid(figure=dash_ag_grid(data_frame="world_indicators"))
 
     print(  # noqa: T201
         control1.create(

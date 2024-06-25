@@ -4,14 +4,14 @@ import logging
 import operator
 import re
 import inspect
-from typing import Annotated, Any, Dict, List
+from typing import Annotated, Any, Dict, List, Union
 
 import pandas as pd
 from langchain_core.messages import BaseMessage, HumanMessage, FunctionMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
-from vizro.models import Dashboard
-from vizro_ai.chains._llm_models import _get_llm_model
+from vizro.models import Dashboard, Page
 from vizro_ai.dashboard.nodes.core_builder.build import PageBuilder
 from vizro_ai.dashboard.nodes.core_builder.plan import (
     DashboardPlanner,
@@ -31,8 +31,12 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-model_default = "gpt-3.5-turbo"
-# set_debug(True)
+
+DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], str]]]
+"Cleaned dataframe names and their metadata."
+
+Messages = List[BaseMessage]
+"List of messages."
 
 
 class GraphState(BaseModel):
@@ -43,13 +47,14 @@ class GraphState(BaseModel):
         dfs : Dataframes
         df_metadata : Cleaned dataframe names and their metadata
         dashboard_plan : Plan for the dashboard
+        pages : Vizro pages
         dashboard : Vizro dashboard
 
     """
 
     messages: List[BaseMessage]
     dfs: List[pd.DataFrame]
-    df_metadata: Dict[str, Dict[str, Any]]
+    df_metadata: DfMetadata
     dashboard_plan: DashboardPlanner = None
     pages: Annotated[List, operator.add]
     dashboard: Dashboard = None
@@ -70,7 +75,7 @@ class GraphState(BaseModel):
         return v
 
 
-def _store_df_info(state: GraphState):
+def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMetadata]:
     """Store information about the dataframes."""
     logger.info("*** _store_df_info ***")
     dfs = state.dfs
@@ -78,7 +83,9 @@ def _store_df_info(state: GraphState):
     current_df_names = []
     for _, df in enumerate(dfs):
         df_schema, df_sample = _get_df_info(df)
-        data_sum_chain = df_sum_prompt | _get_llm_model(model=model_default).with_structured_output(DfInfo)
+
+        llm = config["configurable"].get("model", None)
+        data_sum_chain = df_sum_prompt | llm.with_structured_output(DfInfo)
 
         df_name = data_sum_chain.invoke(
             {"df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
@@ -95,11 +102,13 @@ def _store_df_info(state: GraphState):
     return {"df_metadata": df_metadata}
 
 
-def _compose_imports_code(state: GraphState):
+def _compose_imports_code(state: GraphState, config: RunnableConfig) -> Dict[str, Messages]:
     """Generate code snippet for imports."""
     logger.info("*** _compose_imports_code ***")
     messages = state.messages
-    model_sum_chain = model_sum_prompt | _get_llm_model(model=model_default).with_structured_output(ModelSummary)
+
+    llm = config["configurable"].get("model", None)
+    model_sum_chain = model_sum_prompt | llm.with_structured_output(ModelSummary)
 
     vizro_model_summary = model_sum_chain.invoke({"messages": messages})
 
@@ -109,20 +118,20 @@ def _compose_imports_code(state: GraphState):
     return {"messages": messages}
 
 
-def _dashboard_plan(state: GraphState):
+def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlanner]:
     """Generate a dashboard plan."""
     logger.info("*** _dashboard_plan ***")
     query = state.messages[0].content
     df_metadata = state.df_metadata
 
-    model = _get_llm_model(model=model_default)
-    dashboard_plan = _get_dashboard_plan(query=query, model=model, df_metadata=df_metadata)
+    llm = config["configurable"].get("model", None)
+    dashboard_plan = _get_dashboard_plan(query=query, model=llm, df_metadata=df_metadata)
     _print_dashboard_plan(dashboard_plan)
 
     return {"dashboard_plan": dashboard_plan}
 
 
-def _generate_dashboard_code(state: GraphState):
+def _generate_dashboard_code(state: GraphState) -> Dict[str, Messages]:
     """Generate a dashboard code snippet."""
     logger.info("*** _generate_dashboard_code ***")
     messages = state.messages[-1].content
@@ -150,15 +159,15 @@ class BuildPageState(BaseModel):
     page_plan: PagePlanner = None
 
 
-def build_page(state: BuildPageState):
+def build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[Page]]:
     """Build a page."""
     logger.info("*** build_page ***")
     df_metadata = state["df_metadata"]
     page_plan = state["page_plan"]
 
-    model = _get_llm_model(model=model_default)
+    llm = config["configurable"].get("model", None)
     page = PageBuilder(
-        model=model,
+        model=llm,
         df_metadata=df_metadata,
         page_plan=page_plan,
     ).page
@@ -166,13 +175,13 @@ def build_page(state: BuildPageState):
     return {"pages": [page]}
 
 
-def continue_to_pages(state: GraphState):
+def continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
     df_metadata = state.df_metadata
     return [Send("build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
 
 
-def build_dashboard(state: GraphState):
+def build_dashboard(state: GraphState) -> Dict[str, Dashboard]:
     """Build a dashboard."""
     logger.info("*** build_dashboard ***")
     dashboard_plan = state.dashboard_plan
