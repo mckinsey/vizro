@@ -14,7 +14,7 @@ df_kpi = pd.DataFrame(
 
 @capture("graph")
 def f(data_frame):
-    """blah"""
+    """Blah"""
     return px.bar(data_frame, "Actual").update_layout(title="x")
 
 
