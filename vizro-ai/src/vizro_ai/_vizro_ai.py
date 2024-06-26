@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains._llm_models import _get_llm_model
+from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.dashboard.graph.code_generation import GraphState, _create_and_compile_graph
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
@@ -38,8 +38,9 @@ class VizroAI:
         self.components_instances = {}
 
         # TODO add pending URL link to docs
+        model_name = _get_model_name(self.model)
         logger.info(
-            f"You have selected {str(self.model)},"
+            f"You have selected {model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "

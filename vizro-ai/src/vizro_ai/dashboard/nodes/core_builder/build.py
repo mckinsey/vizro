@@ -41,9 +41,7 @@ class PageBuilder:
                 )
             except DebugFailure as e:  # TODO: check - does this ever get raised?
                 components.append(
-                    vm.Card(
-                        id=self._page_plan.components[i].component_id, text=f"Failed to build component: {e}"
-                    )
+                    vm.Card(id=self._page_plan.components[i].component_id, text=f"Failed to build component: {e}")
                 )
         return components
 

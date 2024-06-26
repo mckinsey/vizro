@@ -75,6 +75,7 @@ class Component(BaseModel):
                 query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
             )
 
+
 # TODO: This is a very basic implementation of the filter proxy model. It needs to be improved.
 # TODO: Try use `df_sample` to inform pydantic models like `OptionsType` about available choices.
 # Caution: If just use `df_sample` to inform the pydantic model, the choices might not be exhaustive.
@@ -169,6 +170,7 @@ class Control(BaseModel):
             return None
 
         return actual
+
 
 class LayoutProxyModel(BaseModel):
     """Proxy model for Layout."""

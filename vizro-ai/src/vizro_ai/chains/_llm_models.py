@@ -52,7 +52,7 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
     "claude-3-sonnet-20240229": {
         "max_tokens": 200000,
         "wrapper": ChatAnthropic,
-    }
+    },
 }
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
@@ -81,6 +81,21 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> LLM_MODELS
     raise ValueError(
         f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#which-llms-are-supported-by-vizro-ai"
     )
+
+
+def _get_model_name(model):
+    methods = [
+        lambda: model.model_name,  # OpenAI models
+        lambda: model.model,  # Anthropic models
+    ]
+
+    for method in methods:
+        try:
+            return method()
+        except AttributeError:
+            continue
+
+    return "Model name could not be retrieved"
 
 
 if __name__ == "__main__":
