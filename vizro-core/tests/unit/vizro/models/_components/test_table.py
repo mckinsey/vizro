@@ -117,13 +117,14 @@ class TestBuildTable:
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(dash_data_table(id="__input_text_table", data_frame=gapminder)(), id="text_table"),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(
+                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
@@ -132,18 +133,39 @@ class TestBuildTable:
         assert_component_equal(table, expected_table)
 
     def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
+        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
         table = table.build()
 
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(dash_data_table(id="underlying_table_id", data_frame=gapminder)(), id="text_table"),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(
+                    dash_data_table(id="underlying_table_id", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
+        assert_component_equal(table, expected_table)
+
+    def test_table_build_with_title(self, standard_dash_table, gapminder):
+        table = vm.Table(id="text_table", title="Table Title", figure=standard_dash_table)
+        table.pre_build()
+        table = table.build()
+        expected_table = dcc.Loading(
+            children=[
+                html.H3("Table Title"),
+                html.Div(
+                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

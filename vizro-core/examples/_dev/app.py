@@ -1,7 +1,7 @@
 """Dev app to try things out."""
 
-import vizro.plotly.express as px
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
 
@@ -26,7 +26,7 @@ Combinations to test:
 G, G
 G, G
 
-2. 
+2.
 G, A
 A, G
 
@@ -38,7 +38,7 @@ T, G
 G, Ap,
 Ap, G
 
-5. 
+5.
 G, Tp
 Tp, G
 """
@@ -55,7 +55,7 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 page_2 = vm.Page(
@@ -69,7 +69,7 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 page_3 = vm.Page(
@@ -83,7 +83,7 @@ page_3 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 page_4 = vm.Page(
@@ -97,7 +97,7 @@ page_4 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 
@@ -112,7 +112,7 @@ page_5 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5])
