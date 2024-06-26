@@ -72,7 +72,7 @@ def kpi_card_reference(  # noqa: PLR0913
     reference_column: str,
     *,
     value_format: str = "{value}",
-    reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
+    reference_format: str = "{delta_relative:+.1%} vs. reference ({reference})",
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
