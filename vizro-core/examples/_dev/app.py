@@ -46,7 +46,7 @@ example_reference_cards = [
         reference_column="Actual",
         title="Delta Zero",
         value_format="{value:.2f}$",
-        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+        reference_format="{delta:+.2f}$ vs. last year ({reference:.2f}$)",
     ),
     kpi_card_reference(
         data_frame=df_kpi,
