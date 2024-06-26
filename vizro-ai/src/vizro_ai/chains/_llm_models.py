@@ -9,7 +9,7 @@ except ImportError:
     pass
 
 # TODO add new wrappers in if new model support is added
-LLM_MODELS = Union[ChatOpenAI, ChatAnthropic]
+LLM_MODELS = Union[ChatOpenAI, Optional[ChatAnthropic]]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
 PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
