@@ -38,12 +38,13 @@ class CapturedCallable:
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
     Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md), [Actions](../user-guides/actions.md)
-    or [Actions](../user-guides/figure.md) to see available choices.
+    or [Figures](../user-guides/figure.md) to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
     custom charts](../user-guides/custom-charts.md),
-    [custom tables](../user-guides/custom-tables.md) or
-    [custom actions](../user-guides/custom-actions.md).
+    [custom tables](../user-guides/custom-tables.md),
+    [custom actions](../user-guides/custom-actions.md),
+    or [custom figures](../user-guides/custom-figures.md).
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -354,8 +355,8 @@ class capture:
 
             return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
-            "@capture('ag_grid')."
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table'), "
+            "@capture('ag_grid') and @capture('figure')."
         )
 
 

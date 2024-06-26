@@ -24,7 +24,7 @@ class Action(VizroBaseModel):
     """Action to be inserted into `actions` of relevant component.
 
     Args:
-        function (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
+        function (CapturedCallable): Action function. See [`vizro.actions`][vizro.actions].
         inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
             Defaults to `[]`.
         outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
@@ -32,7 +32,7 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., import_path=vizro.actions, mode="action")
+    function: CapturedCallable = Field(..., import_path=vizro.actions, mode="action", description="Action function.")
     inputs: List[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",

@@ -38,7 +38,7 @@
   "definitions": {
     "Action": {
       "title": "Action",
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.\n        Defaults to `[]`.\n    outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.\n        Defaults to `[]`.",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function. See [`vizro.actions`][vizro.actions].\n    inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.\n        Defaults to `[]`.\n    outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.\n        Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -74,7 +74,7 @@
     },
     "AgGrid": {
       "title": "AgGrid",
-      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): AgGrid like object to be displayed. For more information see:\n        [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -174,7 +174,7 @@
     },
     "Figure": {
       "title": "Figure",
-      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): See [`vizro.figures`][vizro.figures].",
+      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].",
       "type": "object",
       "properties": {
         "id": {
@@ -194,7 +194,7 @@
     },
     "Graph": {
       "title": "Graph",
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph. See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -222,7 +222,7 @@
     },
     "Table": {
       "title": "Table",
-      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Table like object to be displayed. For more information see:\n        [`dash_table.DataTable`](https://dash.plotly.com/datatable).\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {

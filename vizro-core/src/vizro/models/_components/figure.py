@@ -20,7 +20,7 @@ class Figure(VizroBaseModel):
 
     Args:
         type (Literal["figure"]): Defaults to `"figure"`.
-        figure (CapturedCallable): See [`vizro.figures`][vizro.figures].
+        figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].
 
     """
 
@@ -28,7 +28,7 @@ class Figure(VizroBaseModel):
     figure: CapturedCallable = Field(
         import_path=vf,
         mode="figure",
-        description="Function that returns a figure-like object to be visualized in the dashboard.",
+        description="Function that returns a figure-like object.",
     )
 
     # Component properties for actions and interactions

@@ -31,13 +31,13 @@ class Graph(VizroBaseModel):
 
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
-        figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
+        figure (CapturedCallable): Function that returns a graph. See [`CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(..., import_path=px, mode="graph")
+    figure: CapturedCallable = Field(..., import_path=px, mode="graph", description="Function that returns a graph.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions

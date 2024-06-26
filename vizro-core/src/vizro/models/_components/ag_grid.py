@@ -27,8 +27,7 @@ class AgGrid(VizroBaseModel):
 
     Args:
         type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
-        figure (CapturedCallable): AgGrid like object to be displayed. For more information see:
-            [`dash-ag-grid.AgGrid`](https://dash.plotly.com/dash-ag-grid).
+        figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
@@ -36,7 +35,7 @@ class AgGrid(VizroBaseModel):
 
     type: Literal["ag_grid"] = "ag_grid"
     figure: CapturedCallable = Field(
-        ..., import_path=vt, mode="ag_grid", description="AgGrid to be visualized on dashboard"
+        ..., import_path=vt, mode="ag_grid", description="Function that returns a Dash AgGrid."
     )
     title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []

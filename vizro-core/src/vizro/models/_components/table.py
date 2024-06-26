@@ -26,8 +26,7 @@ class Table(VizroBaseModel):
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Table like object to be displayed. For more information see:
-            [`dash_table.DataTable`](https://dash.plotly.com/datatable).
+        figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
@@ -35,7 +34,7 @@ class Table(VizroBaseModel):
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(
-        ..., import_path=vt, mode="table", description="Table to be visualized on dashboard"
+        ..., import_path=vt, mode="table", description="Function that returns a Dash DataTable."
     )
     title: str = Field("", description="Title of the table")
     actions: List[Action] = []
