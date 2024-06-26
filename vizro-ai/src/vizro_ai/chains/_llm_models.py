@@ -3,7 +3,7 @@ from typing import Dict, Optional, Union
 from langchain_openai import AzureOpenAI, ChatOpenAI
 
 # TODO add new wrappers in if new model support is added
-LLM_MODELS = Union[ChatOpenAI, AzureOpenAI]
+LLM_MODELS = type(Union[ChatOpenAI, AzureOpenAI])  # Need type here to pass py3.9 unit test?
 
 SUPPORTED_MODELS = {
     "OpenAI": [
