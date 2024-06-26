@@ -5,7 +5,7 @@ pages:
 
           ### Components
 
-          Main components of vizro include **charts**, **tables**, **cards**, **containers**, **buttons** and **tabs**.
+          Main components of vizro include **charts**, **tables**, **cards**, **figures**, **containers**, **buttons** and **tabs**.
         href: /graphs
         type: card
       - text: |
@@ -130,6 +130,72 @@ pages:
           This word will be _**bold and italic**_
         type: card
     title: Cards
+  - components:
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with value
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with aggregation
+          agg_func: median
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with formatting
+          value_format: ${value:.2f}
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with icon
+          icon: shopping_cart
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference (pos)
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          agg_func: median
+          title: KPI reference (neg)
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference with formatting
+          value_format: "{value:.2f}$"
+          reference_format: "{delta:.2f}$ vs. last year ({reference:.2f}$)"
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference with icon
+          icon: shopping_cart
+        type: figure
+    controls:
+      - column: Category
+        type: filter
+    layout:
+      grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+    title: Figure
   - components:
       - figure:
           _target_: scatter
@@ -286,6 +352,11 @@ pages:
           ## Custom actions are currently only possible via python configuration
         type: card
     title: Custom Actions
+  - components:
+      - text: |
+          ## Custom figures are currently only possible via python configuration
+        type: card
+    title: Custom Figures
   - components:
       - components:
           - figure:
@@ -481,6 +552,7 @@ navigation:
             - AG Grid
             - Table
             - Cards
+            - Figure
             - Button
             - Containers
             - Tabs
@@ -496,4 +568,5 @@ navigation:
             - Custom Tables
             - Custom Components
             - Custom Actions
+            - Custom Figures
 title: Vizro Features

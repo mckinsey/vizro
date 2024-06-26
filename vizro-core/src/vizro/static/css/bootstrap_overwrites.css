@@ -21,3 +21,12 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 .accordion-item .nav-link.active {
   border-left: 2px solid var(--border-enabled);
 }
+
+.card-header,
+.card-footer,
+.card-body {
+  background: inherit;
+  border: none;
+  margin: 0;
+  padding: 0;
+}

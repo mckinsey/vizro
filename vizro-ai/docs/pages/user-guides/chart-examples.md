@@ -5,7 +5,7 @@ Take a look at some more advanced charts that can be created with Vizro-AI using
 ### Polar bar chart
 
 A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
-It's suitable for quickly comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
+It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
 
 
 !!! example "Polar Bar Chart"

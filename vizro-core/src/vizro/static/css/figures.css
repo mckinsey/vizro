@@ -1,0 +1,50 @@
+.card-kpi {
+  border-left: 4px solid var(--text-secondary);
+}
+
+.card-kpi .card-header {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.card-kpi .card-header .material-symbols-outlined {
+  line-height: 30px;
+}
+
+.card-kpi .card-body {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-grow: 1;
+  font-size: 3.6vh;
+  font-weight: 600;
+}
+
+.card-kpi .card-footer {
+  color: var(--text-secondary);
+  display: flex;
+  font-weight: 600;
+  gap: 4px;
+}
+
+.card-kpi .card-footer .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.color-pos.card-footer {
+  color: #1a85ff;
+}
+
+.color-neg.card-footer {
+  color: #d41159;
+}
+
+.card-kpi:has(.color-pos) {
+  border-left: 4px solid #1a85ff;
+}
+
+.card-kpi:has(.color-neg) {
+  border-left: 4px solid #d41159;
+}

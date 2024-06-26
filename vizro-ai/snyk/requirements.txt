@@ -8,5 +8,4 @@ vizro>=0.1.4
 ipython>=8.10.0
 urllib3>=2.0.7
 aiohttp>=3.9.2
-langchain-community>=0.0.27
 langchain-core>=0.1.31
