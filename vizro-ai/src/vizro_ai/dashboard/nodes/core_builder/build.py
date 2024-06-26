@@ -33,16 +33,16 @@ class PageBuilder:
         components = []
         logger.info(f"Building components of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
-        for i in range(len(self._page_plan.components.components)):
-            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components.components[i]}")
+        for i in range(len(self._page_plan.components)):
+            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components[i]}")
             try:
                 components.append(
-                    self._page_plan.components.components[i].create(df_metadata=self._df_metadata, model=self._model)
+                    self._page_plan.components[i].create(df_metadata=self._df_metadata, model=self._model)
                 )
             except DebugFailure as e:  # TODO: check - does this ever get raised?
                 components.append(
                     vm.Card(
-                        id=self._page_plan.components.components[i].component_id, text=f"Failed to build component: {e}"
+                        id=self._page_plan.components[i].component_id, text=f"Failed to build component: {e}"
                     )
                 )
         return components
@@ -74,9 +74,9 @@ class PageBuilder:
         controls = []
         logger.info(f"Building controls of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
-        for i in range(len(self._page_plan.controls.controls)):
-            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls.controls[i]}")
-            control = self._page_plan.controls.controls[i].create(
+        for i in range(len(self._page_plan.controls)):
+            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls[i]}")
+            control = self._page_plan.controls[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
             if control:

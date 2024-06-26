@@ -75,13 +75,6 @@ class Component(BaseModel):
                 query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
             )
 
-
-class Components(BaseModel):
-    """Components plan model."""
-
-    components: List[Component]
-
-
 # TODO: This is a very basic implementation of the filter proxy model. It needs to be improved.
 # TODO: Try use `df_sample` to inform pydantic models like `OptionsType` about available choices.
 # Caution: If just use `df_sample` to inform the pydantic model, the choices might not be exhaustive.
@@ -177,13 +170,6 @@ class Control(BaseModel):
 
         return actual
 
-
-class Controls(BaseModel):
-    """Controls plan model."""
-
-    controls: List[Control]
-
-
 class LayoutProxyModel(BaseModel):
     """Proxy model for Layout."""
 
@@ -240,8 +226,8 @@ class PagePlanner(BaseModel):
         description="Title of the page. If no description is provided, "
         "make a short and concise title from the components.",
     )
-    components: Components
-    controls: Controls
+    components: List[Component]
+    controls: List[Control]
     layout: Layout
 
 
@@ -266,10 +252,10 @@ def _get_dashboard_plan(
 
 def _print_dashboard_plan(dashboard_plan) -> None:
     for i, page in enumerate(dashboard_plan.pages):
-        for j in page.components.components:
+        for j in page.components:
             logger.info("--> " + repr(j))
         logger.info("--> " + repr(page.layout))
-        for j in page.controls.controls:
+        for j in page.controls:
             logger.info("--> " + repr(j))
 
 

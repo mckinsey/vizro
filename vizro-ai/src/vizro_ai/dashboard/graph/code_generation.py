@@ -80,6 +80,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
     logger.info("*** _store_df_info ***")
     dfs = state.dfs
     df_metadata = state.df_metadata
+    messages = state.messages
     current_df_names = []
     for _, df in enumerate(dfs):
         df_schema, df_sample = _get_df_info(df)
@@ -88,7 +89,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
         data_sum_chain = df_sum_prompt | llm.with_structured_output(DfInfo)
 
         df_name = data_sum_chain.invoke(
-            {"df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
+            {"messages": messages, "df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
         )
 
         current_df_names.append(df_name)
@@ -159,7 +160,7 @@ class BuildPageState(BaseModel):
     page_plan: PagePlanner = None
 
 
-def build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[Page]]:
+def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[Page]]:
     """Build a page."""
     logger.info("*** build_page ***")
     df_metadata = state["df_metadata"]
@@ -178,10 +179,10 @@ def build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[
 def continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
     df_metadata = state.df_metadata
-    return [Send("build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
+    return [Send("_build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
 
 
-def build_dashboard(state: GraphState) -> Dict[str, Dashboard]:
+def _build_dashboard(state: GraphState) -> Dict[str, Dashboard]:
     """Build a dashboard."""
     logger.info("*** build_dashboard ***")
     dashboard_plan = state.dashboard_plan
@@ -199,21 +200,21 @@ def _create_and_compile_graph():
     graph.add_node("_store_df_info", _store_df_info)
     graph.add_node("_compose_imports_code", _compose_imports_code)
     graph.add_node("_dashboard_plan", _dashboard_plan)
-    graph.add_node("build_page", build_page)
-    graph.add_node("build_dashboard", build_dashboard)
+    graph.add_node("_build_page", _build_page)
+    graph.add_node("_build_dashboard", _build_dashboard)
 
     graph.add_node("_generate_dashboard_code", _generate_dashboard_code)
 
     graph.add_edge("_store_df_info", "_compose_imports_code")
     graph.add_edge("_compose_imports_code", "_dashboard_plan")
     graph.add_conditional_edges("_dashboard_plan", continue_to_pages)
-    graph.add_edge("build_page", "build_dashboard")
+    graph.add_edge("_build_page", "_build_dashboard")
 
     # temporarily removed the node _generate_dashboard_code, will add it back once
     # the code to string is ready
-    # graph.add_edge("build_dashboard", "_generate_dashboard_code")
+    # graph.add_edge("_build_dashboard", "_generate_dashboard_code")
     # graph.add_edge("_generate_dashboard_code", END)
-    graph.add_edge("build_dashboard", END)
+    graph.add_edge("_build_dashboard", END)
 
     graph.set_entry_point("_store_df_info")
 

@@ -34,6 +34,11 @@ name = "vizro_ai"
 readme = "README.md"
 requires-python = ">=3.9"
 
+[project.optional-dependencies]
+anthropic = [
+  "langchain-anthropic"
+]
+
 [tool.coverage.paths]
 vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
 

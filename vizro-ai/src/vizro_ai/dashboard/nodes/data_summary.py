@@ -30,6 +30,7 @@ df_sum_prompt = ChatPromptTemplate.from_messages(
             \n ------- \n
             """,
         ),
+        ("placeholder", "{messages}"),
     ]
 )
 

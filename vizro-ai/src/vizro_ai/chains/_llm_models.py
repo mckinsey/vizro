@@ -2,8 +2,14 @@ from typing import Dict, Optional, Union
 
 from langchain_openai import ChatOpenAI
 
+# TODO is there a better way to handle this import?
+try:
+    from langchain_anthropic import ChatAnthropic
+except ImportError:
+    pass
+
 # TODO add new wrappers in if new model support is added
-LLM_MODELS = Union[ChatOpenAI]
+LLM_MODELS = Union[ChatOpenAI, ChatAnthropic]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
 PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
@@ -39,6 +45,14 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
         "max_tokens": 128000,
         "wrapper": ChatOpenAI,
     },
+    "claude-3-haiku-20240307": {
+        "max_tokens": 200000,
+        "wrapper": ChatAnthropic,
+    },
+    "claude-3-sonnet-20240229": {
+        "max_tokens": 200000,
+        "wrapper": ChatAnthropic,
+    }
 }
 
 DEFAULT_MODEL = "gpt-3.5-turbo"

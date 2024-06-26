@@ -2,6 +2,7 @@ pandas
 tabulate
 openai>=1.0.0
 langchain>=0.1.0, <0.3.0
+langchain-anthropic
 langchain-openai
 langgraph
 python-dotenv>=1.0.0
