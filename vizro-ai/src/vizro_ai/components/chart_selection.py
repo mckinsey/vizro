@@ -9,8 +9,9 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.chains._llm_models import LLM_MODELS
 from vizro_ai.components import VizroAiComponentBase
 from vizro_ai.schema_manager import SchemaManager
 
@@ -48,7 +49,7 @@ class GetChartSelection(VizroAiComponentBase):
 
     prompt: str = chart_type_prompt
 
-    def __init__(self, llm: LLM_MODELS):
+    def __init__(self, llm: BaseChatModel):
         """Initialization of Chart Selection components.
 
         Args:
