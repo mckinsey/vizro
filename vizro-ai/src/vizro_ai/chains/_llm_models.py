@@ -1,18 +1,19 @@
 from typing import Dict, Optional, Union
 
 from langchain_openai import ChatOpenAI
+from langchain_core.language_models.chat_models import BaseChatModel
 
 # TODO is there a better way to handle this import?
 try:
     from langchain_anthropic import ChatAnthropic
 except ImportError:
-    pass
+    ChatAnthropic = None
 
-# TODO add new wrappers in if new model support is added
+# TODO to be removed, just use BaseChatModel should be enough
 LLM_MODELS = Union[ChatOpenAI]
 
 # TODO constant of model inventory, can be converted to yaml and link to docs
-PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
+PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, BaseChatModel]]] = {
     "gpt-3.5-turbo-0613": {
         "max_tokens": 4096,
         "wrapper": ChatOpenAI,
@@ -48,8 +49,7 @@ PREDEFINED_MODELS: Dict[str, Dict[str, Union[int, LLM_MODELS]]] = {
 }
 
 # TODO add new wrappers in if new model support is added
-if "ChatAnthropic" in globals():
-    LLM_MODELS = Union[ChatOpenAI, ChatAnthropic]
+if ChatAnthropic is not None:
     PREDEFINED_MODELS = {
         **PREDEFINED_MODELS,
         **{"claude-3-haiku-20240307": {"max_tokens": 200000, "wrapper": ChatAnthropic}},
@@ -61,7 +61,7 @@ DEFAULT_MODEL = "gpt-3.5-turbo"
 DEFAULT_TEMPERATURE = 0
 
 
-def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> LLM_MODELS:
+def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatModel:
     """Fetches and initializes an instance of the LLM.
 
     Args:

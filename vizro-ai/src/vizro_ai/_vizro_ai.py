@@ -9,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.dashboard.graph.code_generation import GraphState, _create_and_compile_graph
+from vizro_ai.dashboard.utils import DashboardOutputs
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
@@ -160,8 +161,9 @@ class VizroAI:
         self,
         dfs: List[pd.DataFrame],
         user_input: str,
-        debug: bool = False,
-    ) -> GraphState:
+        return_elements: bool = False,
+        verbose: bool = False,
+    ) -> DashboardOutputs:
         """Create dashboard using vizro via english descriptions, english to dashboard translation.
 
         Args:
@@ -186,6 +188,8 @@ class VizroAI:
                 "messages": [HumanMessage(content=user_input)],
             },
             config=config,
-            debug=debug,
+            debug=verbose,
         )
-        return message_res
+        dashboard_output = DashboardOutputs(dashboard=message_res["dashboard"], code="placeholder")
+
+        return dashboard_output if return_elements else dashboard_output.dashboard

@@ -4,7 +4,7 @@ import logging
 from typing import Dict, List, Literal, Union
 
 from langchain_openai import ChatOpenAI
-from vizro.models import AgGrid, Filter, Graph, Layout
+import vizro.models as vm
 from vizro.models.types import ComponentType
 
 try:
@@ -67,9 +67,9 @@ class Component(BaseModel):
     def create(self, model, df_metadata) -> Union[ComponentType, None]:
         """Create the component."""
         if self.component_type == "Graph":
-            return Graph()
+            return vm.Graph()
         elif self.component_type == "AgGrid":
-            return AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
+            return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_model(
                 query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
@@ -111,7 +111,7 @@ def create_filter_proxy(df_cols, df_sample, available_components) -> BaseModel:
             "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
             "validator2": validator("column", allow_reuse=True)(validate_column),
         },
-        __base__=Filter,
+        __base__=vm.Filter,
     )
 
 
@@ -158,7 +158,7 @@ class Control(BaseModel):
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
             )  # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
-            actual = Filter.parse_obj(
+            actual = vm.Filter.parse_obj(
                 proxy.dict(
                     exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True}
                 )
@@ -200,19 +200,19 @@ class Layout(BaseModel):
     layout_description: str = Field(
         ...,
         description="Description of the layout. Include everything that seems to relate"
-        " to this layout AS IS. If layout not provided, specify `NO layout`.",
+        " to this layout AS IS. If layout not specified, describe layout as `N/A`.",
     )
 
-    def create(self, model, df_metadata) -> Union[Layout, None]:
+    def create(self, model, df_metadata) -> Union[vm.Layout, None]:
         """Create the layout."""
-        if self.layout_description == "NO layout":
+        if self.layout_description == "N/A":
             return None
 
         try:
             proxy = _get_model(
                 query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
-            actual = Layout.parse_obj(proxy.dict(exclude={}))
+            actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
             logger.info(f"Build failed for `Layout`, returning default values. Error details: {e}")
             actual = None
@@ -229,8 +229,8 @@ class PagePlanner(BaseModel):
         "make a short and concise title from the components.",
     )
     components: List[Component]
-    controls: List[Control]
-    layout: Layout
+    controls: List[Control] = Field([], description="Controls of the page.")
+    layout: Layout = Field(None, description="Layout of the page.")
 
 
 class DashboardPlanner(BaseModel):
@@ -285,7 +285,7 @@ if __name__ == "__main__":
         " It applies only to the table displaying worldwide population and GDP data.",
         data_frame="world_indicators",
     )
-    model_manager["world_population_gdp_table"] = AgGrid(figure=dash_ag_grid(data_frame="world_indicators"))
+    model_manager["world_population_gdp_table"] = vm.AgGrid(figure=dash_ag_grid(data_frame="world_indicators"))
 
     print(  # noqa: T201
         control1.create(

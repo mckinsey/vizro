@@ -11,7 +11,7 @@ from langchain_core.messages import BaseMessage, FunctionMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
-from vizro.models import Dashboard, Page
+import vizro.models as vm
 from vizro_ai.dashboard.nodes.core_builder.build import PageBuilder
 from vizro_ai.dashboard.nodes.core_builder.plan import (
     DashboardPlanner,
@@ -57,7 +57,7 @@ class GraphState(BaseModel):
     df_metadata: DfMetadata
     dashboard_plan: DashboardPlanner = None
     pages: Annotated[List, operator.add]
-    dashboard: Dashboard = None
+    dashboard: vm.Dashboard = None
 
     class Config:
         """Pydantic configuration."""
@@ -160,7 +160,7 @@ class BuildPageState(BaseModel):
     page_plan: PagePlanner = None
 
 
-def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[Page]]:
+def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:
     """Build a page."""
     logger.info("*** build_page ***")
     df_metadata = state["df_metadata"]
@@ -182,13 +182,13 @@ def continue_to_pages(state: GraphState) -> List[Send]:
     return [Send("_build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
 
 
-def _build_dashboard(state: GraphState) -> Dict[str, Dashboard]:
+def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:
     """Build a dashboard."""
     logger.info("*** build_dashboard ***")
     dashboard_plan = state.dashboard_plan
     pages = state.pages
 
-    dashboard = Dashboard(title=dashboard_plan.title, pages=pages)
+    dashboard = vm.Dashboard(title=dashboard_plan.title, pages=pages)
 
     return {"dashboard": dashboard}
 
