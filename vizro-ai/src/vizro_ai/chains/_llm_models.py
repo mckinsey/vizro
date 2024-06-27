@@ -1,5 +1,5 @@
-from typing import Dict, Optional, Union
 from contextlib import suppress
+from typing import Dict, Optional, Union
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
