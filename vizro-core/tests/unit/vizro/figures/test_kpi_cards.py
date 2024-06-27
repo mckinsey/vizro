@@ -79,7 +79,7 @@ class TestKPICardReference:
                 dbc.CardFooter(
                     [
                         html.Span("arrow_circle_up", className="material-symbols-outlined"),
-                        html.Span("100.0% vs. reference (6)"),
+                        html.Span("+100.0% vs. reference (6)"),
                     ],
                     className="color-pos",
                 ),
@@ -97,7 +97,7 @@ class TestKPICardReference:
                 dbc.CardFooter(
                     [
                         html.Span("arrow_circle_right", className="material-symbols-outlined"),
-                        html.Span("0.0% vs. reference (6)"),
+                        html.Span("+0.0% vs. reference (6)"),
                     ],
                     className="",
                 ),
@@ -115,7 +115,7 @@ class TestKPICardReference:
                 dbc.CardFooter(
                     [
                         html.Span("arrow_circle_up", className="material-symbols-outlined"),
-                        html.Span("nan% vs. reference (0)"),
+                        html.Span("+nan% vs. reference (0)"),
                     ],
                     className="color-pos",
                 ),
