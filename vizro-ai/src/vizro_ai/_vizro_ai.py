@@ -169,7 +169,6 @@ class VizroAI:
         Args:
             dfs: The dataframes to be analyzed.
             user_input: User questions or descriptions of the desired visual.
-            debug: Flag to include debug information in response.
             return_elements: Flag to return DashboardOutputs dataclass that includes all possible elements generated.
             verbose: Flag to include debug information in response.
 
