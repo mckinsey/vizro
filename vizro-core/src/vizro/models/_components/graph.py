@@ -31,7 +31,8 @@ class Graph(VizroBaseModel):
 
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
-        figure (CapturedCallable): Function that returns a graph. See [`CapturedCallable`][vizro.models.types.CapturedCallable].
+        figure (CapturedCallable): Function that returns a graph.
+            See `CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
