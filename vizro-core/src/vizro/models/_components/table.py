@@ -104,16 +104,13 @@ class Table(VizroBaseModel):
 
     def build(self):
         return dcc.Loading(
-            children=html.Div(
-                children=[
-                    html.H3(self.title) if self.title else None,
-                    # Please see vm.AgGrid build method as to why we are returning the call with the full data here
-                    # Most of the comments may not apply to the data table, but in order to be consistent, we are
-                    # handling the build method in the exact same way here
-                    html.Div(self.__call__(), id=self.id),
-                ],
-                className="table-container",
-            ),
+            children=[
+                html.H3(self.title) if self.title else None,
+                # Please see vm.AgGrid build method as to why we are returning the call with the full data here
+                # Most of the comments may not apply to the data table, but in order to be consistent, we are
+                # handling the build method in the exact same way here
+                html.Div(self.__call__(), id=self.id, className="table-container"),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
