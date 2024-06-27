@@ -102,7 +102,12 @@ class Graph(VizroBaseModel):
         try:
             custom_data_columns = model_manager[source_graph_id]["custom_data"]
         except KeyError as exc:
-            raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
+            raise KeyError(
+                f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
+                "Ensure that 'custom_data' is passed from the vm.Graph figure to the @capture('graph') function, "
+                "and then assigned to the returned figure object. Example usage: "
+                "vm.Graph(figure=my_custom_chart(df, custom_data=['column_1'], actions=[...]))"
+            ) from exc
 
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 

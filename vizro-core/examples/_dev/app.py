@@ -1,16 +1,17 @@
 """Dev app to try things out."""
 
-import vizro.plotly.express as px
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.actions import filter_interaction
+from vizro.models.types import capture
 
 df = px.data.iris()
 
 
 @capture("graph")
 def my_graph(data_frame, custom_data=None):
+    """Custom graph function."""
     return px.scatter(
         data_frame,
         title="Title",
@@ -34,20 +35,14 @@ page = vm.Page(
                 # custom_data has to be propagated to the custom graph function to make the filter_interaction to work.
                 # custom_data=["species"],
             ),
-            actions=[
-                vm.Action(function=filter_interaction(targets=["graph_2"]))
-            ],
+            actions=[vm.Action(function=filter_interaction(targets=["graph_2"]))],
         ),
         vm.Graph(
-            id="graph_2",
-            figure=px.scatter(df, title="Title", x="sepal_width", y="sepal_length", color="species")
+            id="graph_2", figure=px.scatter(df, title="Title", x="sepal_width", y="sepal_length", color="species")
         ),
     ],
-    controls=[
-        vm.Filter(column="species")
-    ]
+    controls=[vm.Filter(column="species")],
 )
-
 
 
 dashboard = vm.Dashboard(pages=[page])
