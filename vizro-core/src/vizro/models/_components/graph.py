@@ -102,7 +102,13 @@ class Graph(VizroBaseModel):
         try:
             custom_data_columns = model_manager[source_graph_id]["custom_data"]
         except KeyError as exc:
-            raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
+            raise KeyError(
+                f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
+                "Ensure that `custom_data` is an argument of the custom chart function, and that the relevant entry is "
+                "then passed to the underlying plotly function. When configuring the custom chart in `vm.Graph`, "
+                "ensure that `custom_data` is passed. Example usage: "
+                "vm.Graph(figure=my_custom_chart(df, custom_data=['column_1'], actions=[...]))"
+            ) from exc
 
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
