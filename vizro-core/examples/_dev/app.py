@@ -1,70 +1,122 @@
 """Dev app to try things out."""
 
-import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro.tables import dash_ag_grid, dash_data_table
 
-df_kpi = pd.DataFrame(
-    {"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Reference Zero": [0, 0, 0], "Category": ["A", "B", "C"]}
+df = px.data.iris()
+
+"""
+Figures legend:
+
+G - vm.Graph
+
+A - vm.AgGrid
+Ap - vm.AgGrid with pagination=True
+
+T - vm.Table
+Tp - vm.Table with pagination=True
+
+================================================================
+
+Combinations to test:
+
+1.
+G, G
+G, G
+
+2.
+G, A
+A, G
+
+3.
+G, T
+T, G
+
+4.
+G, Ap,
+Ap, G
+
+5.
+G, Tp
+Tp, G
+"""
+
+
+page_1 = vm.Page(
+    title="Title misalignment: G, G / G, G",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Graph(figure=px.scatter(df, title="Title Graph 1", x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 2", x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 3", x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 4", x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
 )
 
-example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with formatting",
-        value_format="${value:.2f}",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with icon",
-        icon="shopping_cart",
-    ),
-]
-
-example_reference_cards = [
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="Delta Positive",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="Delta Negative",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Actual",
-        title="Delta Zero",
-        value_format="{value:.2f}$",
-        reference_format="{delta:+.2f}$ vs. last year ({reference:.2f}$)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference Zero",
-        title="Reference Zero",
-        icon="shopping_cart",
-    ),
-]
-
-page = vm.Page(
-    title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
-    controls=[vm.Filter(column="Category")],
+page_2 = vm.Page(
+    title="Title misalignment: G, A / A, G",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Graph(figure=px.scatter(df, title="Title Graph 1", x="sepal_width", y="sepal_length", color="species")),
+        vm.AgGrid(figure=dash_ag_grid(df), title="Title AgGrid 1"),
+        vm.AgGrid(figure=dash_ag_grid(df), title="Title AgGrid 2"),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 2", x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_3 = vm.Page(
+    title="Title misalignment: G, T / T, G",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Graph(figure=px.scatter(df, title="Title Graph 1", x="sepal_width", y="sepal_length", color="species")),
+        vm.Table(figure=dash_data_table(df), title="Title Table 1"),
+        vm.Table(figure=dash_data_table(df), title="Title Table 2"),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 2", x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
+
+page_4 = vm.Page(
+    title="Title misalignment: G, Ap / Ap, G",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Graph(figure=px.scatter(df, title="Title Graph 1", x="sepal_width", y="sepal_length", color="species")),
+        vm.AgGrid(figure=dash_ag_grid(df, dashGridOptions={"pagination": True}), title="Title AgGrid 1"),
+        vm.AgGrid(figure=dash_ag_grid(df, dashGridOptions={"pagination": True}), title="Title AgGrid 2"),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 2", x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
+
+
+page_5 = vm.Page(
+    title="Title misalignment: G, Tp / Tp, G",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Graph(figure=px.scatter(df, title="Title Graph 1", x="sepal_width", y="sepal_length", color="species")),
+        vm.Table(figure=dash_data_table(df, page_size=10), title="Title Table 1"),
+        vm.Table(figure=dash_data_table(df, page_size=10), title="Title Table 2"),
+        vm.Graph(figure=px.scatter(df, title="Title Graph 2", x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
