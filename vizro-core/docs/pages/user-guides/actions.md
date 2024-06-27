@@ -218,7 +218,7 @@ Here is an example of how to configure a chart interaction when the source is a 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
 
 
-!!! note "`filter_interaction with custom charts`"
+!!! note "`filter_interaction` with custom charts"
 
     If `filter_interaction` is assigned to the [custom chart](custom-charts.md), ensure that `custom_data` is passed from the `vm.Graph` figure to the `@capture('graph')` function, and then assigned to the returned figure object.
 
