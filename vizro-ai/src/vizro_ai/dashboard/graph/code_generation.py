@@ -82,7 +82,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
     df_metadata = state.df_metadata
     messages = state.messages
     current_df_names = []
-    for _, df in enumerate(dfs):
+    for df in dfs:
         df_schema, df_sample = _get_df_info(df)
 
         llm = config["configurable"].get("model", None)

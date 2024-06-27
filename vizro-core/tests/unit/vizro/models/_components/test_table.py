@@ -1,5 +1,7 @@
 """Unit tests for vizro.models.Table."""
 
+import re
+
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -47,17 +49,25 @@ class TestTableInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.Table()
 
-    def test_wrong_captured_callable(self, standard_ag_grid):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
-            vm.Table(figure=standard_ag_grid)
-
-    def test_failed_table_with_no_captured_callable(self, standard_go_chart):
-        with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
+    def test_captured_callable_invalid(self, standard_go_chart):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from vizro.tables or "
+                "defined with decorator @capture('table')."
+            ),
+        ):
             vm.Table(figure=standard_go_chart)
 
-    def test_failed_table_with_wrong_captured_callable(self, standard_px_chart):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch. Expected table but got graph."):
-            vm.Table(figure=standard_px_chart)
+    def test_captured_callable_wrong_mode(self, standard_ag_grid):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('ag_grid') rather than @capture('table') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            vm.Table(figure=standard_ag_grid)
 
     def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
         table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
@@ -117,13 +127,14 @@ class TestBuildTable:
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(dash_data_table(id="__input_text_table", data_frame=gapminder)(), id="text_table"),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(
+                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
@@ -132,18 +143,39 @@ class TestBuildTable:
         assert_component_equal(table, expected_table)
 
     def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
+        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
         table = table.build()
 
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(dash_data_table(id="underlying_table_id", data_frame=gapminder)(), id="text_table"),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(
+                    dash_data_table(id="underlying_table_id", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
+        assert_component_equal(table, expected_table)
+
+    def test_table_build_with_title(self, standard_dash_table, gapminder):
+        table = vm.Table(id="text_table", title="Table Title", figure=standard_dash_table)
+        table.pre_build()
+        table = table.build()
+        expected_table = dcc.Loading(
+            children=[
+                html.H3("Table Title"),
+                html.Div(
+                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
+                    id="text_table",
+                    className="table-container",
+                ),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

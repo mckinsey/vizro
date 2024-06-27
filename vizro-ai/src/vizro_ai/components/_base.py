@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple, Union
 
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from vizro_ai.chains import FunctionCallChain
-from vizro_ai.chains._llm_models import LLM_MODELS
 
 
 class VizroAiComponentBase(ABC):
@@ -22,7 +23,7 @@ class VizroAiComponentBase(ABC):
 
     prompt: str = "default prompt place holder"
 
-    def __init__(self, llm: LLM_MODELS):
+    def __init__(self, llm: BaseChatModel):
         """Initialize Vizro-AI base component.
 
         Args:

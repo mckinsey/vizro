@@ -1,4 +1,5 @@
 from typing import Dict, Optional, Union
+from contextlib import suppress
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
@@ -92,12 +93,10 @@ def _get_model_name(model):
     ]
 
     for method in methods:
-        try:
+        with suppress(AttributeError):
             return method()
-        except AttributeError:
-            continue
 
-    return "Model name could not be retrieved"
+    raise ValueError("Model name could not be retrieved")
 
 
 if __name__ == "__main__":
