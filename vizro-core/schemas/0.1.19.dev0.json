@@ -194,7 +194,7 @@
     },
     "Graph": {
       "title": "Graph",
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph. See [`CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
