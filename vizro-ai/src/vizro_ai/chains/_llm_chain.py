@@ -8,8 +8,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.schema import ChatGeneration, Generation
 from langchain.schema.messages import AIMessage
-
-from vizro_ai.chains._llm_models import LLM_MODELS
+from langchain_core.language_models.chat_models import BaseChatModel
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ class FunctionCallChain(VizroBaseChain, ABC):
 
     def __init__(  # noqa: PLR0913
         self,
-        llm: LLM_MODELS,
+        llm: BaseChatModel,
         raw_prompt: str,
         partial_vars_map: Optional[Dict[Any, Any]] = None,
         llm_kwargs: Optional[Dict[str, Any]] = None,

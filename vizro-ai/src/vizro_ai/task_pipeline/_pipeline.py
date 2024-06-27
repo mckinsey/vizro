@@ -2,13 +2,13 @@
 
 from typing import Any, Dict, List, Optional
 
-from vizro_ai.chains._llm_models import LLM_MODELS
+from langchain_core.language_models.chat_models import BaseChatModel
 
 
 class Pipeline:
     """A pipeline to manage the flow of tasks in a sequence."""
 
-    def __init__(self, llm: LLM_MODELS):
+    def __init__(self, llm: BaseChatModel):
         """Initialize the Pipeline.
 
         Args:
