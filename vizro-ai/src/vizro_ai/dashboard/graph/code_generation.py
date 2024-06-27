@@ -7,11 +7,11 @@ import re
 from typing import Annotated, Any, Dict, List, Union
 
 import pandas as pd
+import vizro.models as vm
 from langchain_core.messages import BaseMessage, FunctionMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
-import vizro.models as vm
 from vizro_ai.dashboard.nodes.core_builder.build import PageBuilder
 from vizro_ai.dashboard.nodes.core_builder.plan import (
     DashboardPlanner,

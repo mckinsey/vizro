@@ -3,8 +3,8 @@
 import logging
 from typing import Dict, List, Literal, Union
 
-from langchain_openai import ChatOpenAI
 import vizro.models as vm
+from langchain_openai import ChatOpenAI
 from vizro.models.types import ComponentType
 
 try:
