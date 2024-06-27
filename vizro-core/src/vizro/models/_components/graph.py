@@ -104,8 +104,9 @@ class Graph(VizroBaseModel):
         except KeyError as exc:
             raise KeyError(
                 f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
-                "Ensure that 'custom_data' is passed from the vm.Graph figure to the @capture('graph') function, "
-                "and then assigned to the returned figure object. Example usage: "
+                "Ensure that `custom_data` is an argument of the custom chart function, and that the relevant entry is "
+                "then passed to the underlying plotly function. When configuring the custom chart in `vm.Graph`, "
+                "ensure that `custom_data` is passed. Example usage: "
                 "vm.Graph(figure=my_custom_chart(df, custom_data=['column_1'], actions=[...]))"
             ) from exc
 
