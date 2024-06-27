@@ -1,27 +1,9 @@
 import logging
 import uuid
-from functools import partial
 
 from vizro.managers import data_manager
-from vizro.models.types import CapturedCallable
-
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
 
 logger = logging.getLogger(__name__)
-
-
-def _check_callable_mode(figure: CapturedCallable, mode: str) -> CapturedCallable:
-    if mode != figure._mode:
-        raise ValueError(f"CapturedCallable mode mismatch. Expected {mode} but got {figure._mode}.")
-    return figure
-
-
-def _callable_mode_validator_factory(mode: str):
-    check_callable_mode = partial(_check_callable_mode, mode=mode)
-    return validator("figure", allow_reuse=True)(check_callable_mode)
 
 
 def _process_callable_data_frame(captured_callable):
