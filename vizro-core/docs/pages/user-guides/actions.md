@@ -221,7 +221,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 !!! note "`filter_interaction` with custom charts"
 
     If `filter_interaction` is assigned to a [custom chart](custom-charts.md), ensure that `custom_data` is an argument of the custom chart function, and that this argument is then passed to the underlying plotly function.
-    When configuring the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
+    When then adding the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
 
     ```py
     @capture("graph")
