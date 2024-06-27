@@ -1,5 +1,7 @@
 """Unit tests for vizro.models.Table."""
 
+import re
+
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -47,17 +49,25 @@ class TestTableInstantiation:
         with pytest.raises(ValidationError, match="field required"):
             vm.Table()
 
-    def test_wrong_captured_callable(self, standard_ag_grid):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch"):
-            vm.Table(figure=standard_ag_grid)
-
-    def test_failed_table_with_no_captured_callable(self, standard_go_chart):
-        with pytest.raises(ValidationError, match="must provide a valid CapturedCallable object"):
+    def test_captured_callable_invalid(self, standard_go_chart):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from vizro.tables or "
+                "defined with decorator @capture('table')."
+            ),
+        ):
             vm.Table(figure=standard_go_chart)
 
-    def test_failed_table_with_wrong_captured_callable(self, standard_px_chart):
-        with pytest.raises(ValidationError, match="CapturedCallable mode mismatch. Expected table but got graph."):
-            vm.Table(figure=standard_px_chart)
+    def test_captured_callable_wrong_mode(self, standard_ag_grid):
+        with pytest.raises(
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('ag_grid') rather than @capture('table') and so "
+                "is not compatible with the model."
+            ),
+        ):
+            vm.Table(figure=standard_ag_grid)
 
     def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
         table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])

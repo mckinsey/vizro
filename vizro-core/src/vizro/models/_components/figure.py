@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
 import vizro.figures as vf
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
-from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -20,20 +20,21 @@ class Figure(VizroBaseModel):
 
     Args:
         type (Literal["figure"]): Defaults to `"figure"`.
-        figure (CapturedCallable): See [`vizro.figures`][vizro.figures].
+        figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].
 
     """
 
     type: Literal["figure"] = "figure"
     figure: CapturedCallable = Field(
-        import_path=vf, description="Function that returns a figure-like object to be visualized in the dashboard."
+        import_path=vf,
+        mode="figure",
+        description="Function that returns a figure-like object.",
     )
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
     # Validators
-    _validate_callable_mode = _callable_mode_validator_factory("figure")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     def __call__(self, **kwargs):
