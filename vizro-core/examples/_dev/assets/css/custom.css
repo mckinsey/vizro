@@ -1,3 +1,27 @@
 #page-header {
   padding-left: 8px;
 }
+
+.code-clipboard {
+  font-size: 20px;
+  position: absolute;
+  right: 14px;
+  top: 12px;
+}
+
+.hljs {
+  background: unset;
+  color: unset;
+}
+
+code.language-python.hljs {
+  padding: 0;
+}
+
+.hljs-string {
+  color: #1a85ff;
+}
+
+.hljs-keyword {
+  color: #d41159;
+}
