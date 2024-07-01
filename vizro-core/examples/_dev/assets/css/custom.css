@@ -3,23 +3,25 @@
 }
 
 .code-clipboard {
-  position: absolute;
-  top: 12px;
-  right: 14px;
   font-size: 20px;
+  position: absolute;
+  right: 14px;
+  top: 12px;
 }
-
 
 .hljs {
   background: unset;
   color: unset;
 }
 
-.hljs-string {
-    color: #1a85ff;
+code.language-python.hljs {
+  padding: 0;
 }
 
+.hljs-string {
+  color: #1a85ff;
+}
 
 .hljs-keyword {
-    color: #d41159;
+  color: #d41159;
 }

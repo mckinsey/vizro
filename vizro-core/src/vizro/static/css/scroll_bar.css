@@ -16,7 +16,9 @@
   border-color: var(--surfaces-bg-02);
 }
 
-.card::-webkit-scrollbar-thumb, .card-nav::-webkit-scrollbar-thumb, .hljs::-webkit-scrollbar-thumb {
+.card::-webkit-scrollbar-thumb,
+.card-nav::-webkit-scrollbar-thumb,
+.hljs::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-card);
 }
 

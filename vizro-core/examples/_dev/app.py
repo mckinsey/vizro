@@ -1,12 +1,13 @@
 """Example to show dashboard configuration specified as pydantic models."""
 
+from typing import Literal
+
+import dash_bootstrap_components as dbc
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import dcc, html
 from vizro import Vizro
-from vizro.models.types import capture
-from dash import html, dcc
-from typing import Literal, Optional
-import dash_bootstrap_components as dbc
+
 
 class CodeClipboard(vm.VizroBaseModel):
     type: Literal["code_clipboard"] = "code_clipboard"
@@ -15,17 +16,20 @@ class CodeClipboard(vm.VizroBaseModel):
 
     def build(self):
         return dbc.Accordion(
-        [
-            dbc.AccordionItem(
-                dbc.Card([
-            html.H3(self.title),
-            dcc.Markdown(self.text, id=self.id, className="code-block"),
-            dcc.Clipboard(target_id=self.id, className="code-clipboard")]), title="SHOW CODE"
-            )
-        ],
-        start_collapsed=True,
-    )
-
+            [
+                dbc.AccordionItem(
+                    dbc.Card(
+                        [
+                            html.H3(self.title),
+                            dcc.Markdown(self.text, id=self.id, className="code-block"),
+                            dcc.Clipboard(target_id=self.id, className="code-clipboard"),
+                        ]
+                    ),
+                    title="SHOW CODE",
+                )
+            ],
+            start_collapsed=True,
+        )
 
 
 gapminder = px.data.gapminder()
@@ -34,9 +38,11 @@ vm.Page.add_type("components", CodeClipboard)
 
 
 bar = vm.Page(
-    title="Bar",
-    layout=vm.Layout(grid=[[0, 0, 2, 2, 2],
-                            [1, 1,2,2, 2]], col_gap="80px"),
+    title="Bar Chart",
+    layout=vm.Layout(
+        grid=[[0, 0, 1, 1, 1]]*3 + [[2, 2, 1, 1, 1]]*4,
+        col_gap="80px",
+    ),
     components=[
         vm.Card(
             text="""
@@ -56,36 +62,32 @@ bar = vm.Page(
             arrange your bars in any order to fit the message you wish to emphasise. Be mindful of labelling
             clearly when you have a large number of bars. You may need to include a legend,
             or use abbreviations in the chart with fuller descriptions below of the terms used.
-            
+
         """
         ),
-        CodeClipboard(text="""                
-                ```python
-                import vizro.models as vm
-                import vizro.plotly.express as px
-                from vizro import Vizro
-                
-                df = px.data.iris()
-                
-                page = vm.Page(
-                    title="My first page",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter_matrix(
-                                df, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"], color="species"
-                            ),
-                        ),
-                    ],
-                    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
-                )
-                
-                dashboard = vm.Dashboard(pages=[page])
-                
-                Vizro().build(dashboard).run()
-                ```
-                
-                """),
         vm.Graph(figure=px.bar(data_frame=gapminder.query("country == 'Germany'"), x="year", y="pop")),
+        CodeClipboard(
+            text="""
+               ```python
+               import vizro.models as vm
+               import vizro.plotly.express as px
+               from vizro import Vizro
+
+               gapminder = px.data.gapminder()
+
+               page = vm.Page(
+                   title="Bar Chart",
+                   components=[
+                      vm.Graph(figure=px.bar(data_frame=gapminder.query("country == 'Germany'"), x="year", y="pop"))
+                   ]
+               )
+
+               dashboard = vm.Dashboard(pages=[page])
+               Vizro().build(dashboard).run()
+               ```
+
+               """
+        ),
     ],
 )
 
