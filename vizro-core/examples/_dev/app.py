@@ -1,65 +1,66 @@
 """Dev app to try things out."""
 
+from typing import Optional
+
+import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro.figures import kpi_card
+from vizro.models.types import capture
 
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+tips = px.data.tips
 
-example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with formatting",
-        value_format="${value:.2f}",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI with icon",
-        icon="shopping_cart",
-    ),
-]
 
-example_reference_cards = [
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference (pos)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="KPI reference (neg)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with formatting",
-        value_format="{value:.2f}$",
-        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI reference with icon",
-        icon="shopping_cart",
-    ),
-]
+@capture("figure")  # (1)!
+def custom_kpi_card(
+    data_frame: pd.DataFrame,
+    value_column: str,
+    *,
+    value_format: str = "{value}",
+    agg_func: str = "sum",
+    title: Optional[str] = None,
+    icon: Optional[str] = None,
+) -> dbc.Card:  # (2)!
+    """Creates a custom KPI card."""
+    title = title or f"{agg_func} {value_column}".title()
+    value = data_frame[value_column].agg(agg_func)
+
+    header = dbc.CardHeader(
+        [
+            html.H2(title),
+            html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
+        ]
+    )
+    body = dbc.CardBody([value_format.format(value=value)])
+    return dbc.Card([header, body], className="card-kpi")
+
 
 page = vm.Page(
-    title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
-    controls=[vm.Filter(column="Category")],
+    title="Create your own KPI card",
+    layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
+    components=[
+        vm.Figure(
+            figure=kpi_card(  # (5)!
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="shopping_cart",
+                title="Default KPI card",
+            )
+        ),
+        vm.Figure(
+            figure=custom_kpi_card(  # (6)!
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="payment",
+                title="Custom KPI card",
+            )
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
