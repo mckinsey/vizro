@@ -133,7 +133,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 functions have several arguments to customize your KPI cards. If you require a level of customization that is not
 possible with the built-in functions then you can create a [custom figure](custom-figures.md).
 
-!!! example "KPI card Variations"
+!!! example "KPI card variations"
 
     === "app.py"
         ```py
