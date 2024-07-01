@@ -118,6 +118,9 @@ class Vizro:
             if hasattr(model, "pre_build"):
                 model.pre_build()
 
+    def __call__(self, environ, start_response):
+        return self.dash.server(environ, start_response)
+
     @staticmethod
     def _reset():
         """Private method that clears all state in the `Vizro` app.
