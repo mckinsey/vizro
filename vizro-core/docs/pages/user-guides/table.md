@@ -126,7 +126,7 @@ One of the most common tasks when working with tables is to format the columns s
 To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters)
 or the Vizro pre-defined [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
 
-The available custom cell types for Vizro are `dollar`, `euro`, `percentage` and `numeric`.
+The available custom cell types for Vizro are `dollar`, `euro`, `percent` and `numeric`.
 
 To use these, define your desired `<COLUMN>` alongside the chosen `cellDataType` in
 the `columnDefs` argument of your `dash_ag_grid` function:
