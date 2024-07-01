@@ -1,3 +1,16 @@
 #page-header {
   padding-left: 8px;
 }
+
+.code-clipboard {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 20px;
+}
+
+
+.hljs {
+  background: unset;
+  color: unset;
+}
