@@ -14,3 +14,12 @@
   background: unset;
   color: unset;
 }
+
+.hljs-string {
+    color: #1a85ff;
+}
+
+
+.hljs-keyword {
+    color: #d41159;
+}
