@@ -11,9 +11,40 @@ vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", HtmlIntro)
 vm.Container.add_type("components", FlexContainer)
 # HOMEPAGE -------------------------------------------------------------
-home_all = vm.Container(title="All", components=[vm.Card(text="""Placeholder""")])
+home_all = vm.Container(
+    title="All",
+    components=[
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        )
+    ],
+)
 home_deviation = vm.Container(
     title="Deviation",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -21,12 +52,39 @@ home_deviation = vm.Container(
             Often this reference point is zero, but you might also show a target or a long-term average.
             You can also use deviation to express a positive, neutral or negative sentiment.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_correlation = vm.Container(
     title="Correlation",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -34,12 +92,39 @@ home_correlation = vm.Container(
             make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the
             other.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_ranking = vm.Container(
     title="Ranking",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -47,12 +132,39 @@ home_ranking = vm.Container(
             position of an item rather than its absolute or relative value. You might want to emphasise the most
             interesting points with highlighting or labels to ensure the reader understands what matters most.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_distribution = vm.Container(
     title="Distribution",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -135,6 +247,7 @@ home_magnitude = vm.Container(
 
 home_time = vm.Container(
     title="Time",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -142,24 +255,78 @@ home_time = vm.Container(
             select could be as short as seconds or as long as centuries. What matters most is selecting the correct
             period of time to best show your audience the message they need to take away.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_part = vm.Container(
     title="Part-to-whole",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
             Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
             size of the parts to be most important, a magnitude chart may be more appropriate.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_flow = vm.Container(
     title="Flow",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -167,17 +334,70 @@ home_flow = vm.Container(
             state or condition. The flow might be steps in a logical sequence or movement between different geographical
             locations.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 
 home_spatial = vm.Container(
     title="Spatial",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
             Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
