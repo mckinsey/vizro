@@ -27,13 +27,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Tests trigger
-        uses: convictional/trigger-workflow-and-wait@v1.6.5
-        with:
-          owner: ${{ secrets.ORG }}
-          repo: ${{ secrets.QA_REPO }}
-          workflow_file_name: ${{ secrets.NOTEBOOKS_TEST_FILE }}
-          github_token: ${{ secrets.VIZRO_SVC_PAT }}
-          ref: circleci_to_github
+        run: |
+          export INPUT_OWNER=${{ secrets.ORG }}
+          export INPUT_REPO=${{ secrets.QA_REPO }}
+          export INPUT_WORKFLOW_FILE_NAME=${{ secrets.NOTEBOOKS_TEST_FILE }}
+          export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
+          export INPUT_REF=circleci_to_github
 #      - name: Start Vizro qa pipeline
 #        run: |
 #          create_circleci_pipeline() {
