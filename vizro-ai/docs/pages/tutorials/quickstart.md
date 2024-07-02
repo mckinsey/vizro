@@ -92,7 +92,8 @@ And that's it! By passing the prepared data and written visualization request, V
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
+        fig = vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
+        fig.show()
         ```
     === "Result"
         [![LineGraph]][LineGraph]
@@ -128,7 +129,8 @@ Let's create another example to illustrate the code and insights returned when p
 
     === "Code for the cell"
         ```py
-        vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
+        fig = vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
+        fig.show()
         ```
     === "Result"
         [![GeoDistribution]][GeoDistribution]
