@@ -37,3 +37,14 @@ class HtmlIntro(vm.VizroBaseModel):
 
     def build(self):
         return html.H4(self.text, className="html-intro")
+
+
+class FlexContainer(vm.Container):
+    """Custom flex `Container`."""
+
+    type: Literal["flex_container"] = "flex_container"
+
+    def build(self):
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className="flex-container"
+        )

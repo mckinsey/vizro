@@ -1,11 +1,15 @@
 """Contains custom components and charts used inside the dashboard."""
 
 import vizro.models as vm
+import vizro.plotly.express as px
 
-from ._charts import HtmlIntro
+from ._charts import CodeClipboard, FlexContainer, HtmlIntro
 
+gapminder = px.data.gapminder()
+vm.Page.add_type("components", CodeClipboard)
+vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", HtmlIntro)
-
+vm.Container.add_type("components", FlexContainer)
 # HOMEPAGE -------------------------------------------------------------
 home_all = vm.Container(title="All", components=[vm.Card(text="""Placeholder""")])
 home_deviation = vm.Container(
@@ -58,12 +62,39 @@ home_distribution = vm.Container(
             (or ‘skew’) of a distribution can be a powerful way for you to highlight either the existence or lack of
             uniformity or equality in the data.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+               ![](assets/images/charts/bar.png#chart-icon)
+
+               #### Bar
+               """
+                ),
+                vm.Card(
+                    text="""
+               ![](assets/images/charts/bar.png#chart-icon)
+
+               #### Bar
+               """
+                ),
+                vm.Card(
+                    text="""
+               ![](assets/images/charts/bar.png#chart-icon)
+
+               #### Bar
+               """
+                ),
+            ],
+        ),
     ],
 )
 
 home_magnitude = vm.Container(
     title="Magnitude",
+    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
     components=[
         HtmlIntro(
             text="""
@@ -72,7 +103,33 @@ home_magnitude = vm.Container(
             are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
             percentages.
             """
-        )
+        ),
+        FlexContainer(
+            title="",
+            components=[
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+                vm.Card(
+                    text="""
+                ![](assets/images/charts/bar.png#chart-icon)
+
+                #### Bar
+                """
+                ),
+            ],
+        ),
     ],
 )
 

@@ -2,6 +2,10 @@
   padding-left: 8px;
 }
 
+img[src*="#chart-icon"] {
+  width: 100%;
+}
+
 .code-clipboard {
   font-size: 20px;
   position: absolute;
@@ -28,5 +32,24 @@ code.language-python.hljs {
 
 .html-intro {
   border-left: 4px solid var(--text-secondary);
-  padding: 8px;
+  color: var(--text-secondary);
+  padding: 12px;
+}
+
+.flex-container .card {
+  height: 200px;
+  width: 176px;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.flex-container h4 {
+  color: var(--text-secondary);
+  margin-bottom: 0;
+  margin-top: 8px;
+  text-align: center;
 }
