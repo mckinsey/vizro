@@ -28,14 +28,14 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar],
+    pages=[homepage, bar, column],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
                 vm.NavLink(
                     label="Magnitude",
-                    pages=["Bar Chart"],
+                    pages={"Magnitude": ["Bar", "Column"]},
                     icon="Bar Chart",
                 ),
             ]

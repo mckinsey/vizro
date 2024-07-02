@@ -10,6 +10,101 @@ vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", HtmlIntro)
 vm.Container.add_type("components", FlexContainer)
+
+
+DEVIATION_CHARTS = ["line", "scatter", "slope", "lollipop", "diverging-bar"]
+CORRELATION_CHARTS = ["scatter"]
+RANKING_CHARTS = [
+    "column",
+    "stacked-column",
+    "ordered-bubble",
+    "column-line",
+    "bar",
+    "donut",
+    "arc",
+    "lollipop",
+    "waterfall",
+    "diverging-bar",
+    "boxplot",
+]
+DISTRIBUTION_CHARTS = [
+    "histogram",
+    "butterfly",
+    "pie",
+    "donut",
+    "arc",
+    "violin",
+    "lollipop",
+    "cumulative-curve",
+    "waterfall",
+    "treemap",
+    "venn",
+    "barcode",
+]
+MAGNITUDE_CHARTS = [
+    "column",
+    "marimekko",
+    "stacked-column",
+    "ordered-bubble",
+    "column-line",
+    "surplus",
+    "butterfly",
+    "bubble-timeline",
+    "bar",
+    "pie",
+    "donut",
+    "arc",
+    "violin",
+    "slope",
+    "lollipop",
+    "cumulative-curve",
+    "waterfall",
+    "treemap",
+    "venn",
+    "diverging-bar",
+    "bullet",
+    "dot-plot",
+]
+TIME_CHARTS = [
+    "column",
+    "gantt",
+    "column-line",
+    "bubble-timeline",
+    "bar",
+    "line",
+    "scatter",
+    "lollipop",
+    "diverging-bar",
+    "stepped-line",
+    "sparkline",
+]
+PART_TO_WHOLE_CHARTS = [
+    "marimekko",
+    "stacked-column",
+    "column-line",
+    "pie",
+    "donut",
+    "arc",
+    "waterfall",
+    "treemap",
+    "venn",
+]
+FLOW_CHARTS = ["gantt", "line", "slope", "stepped-line"]
+SPATIAL_CHARTS = ["choropleth", "dot-density", "flow-map"]
+
+ALL_CHARTS = (
+    DEVIATION_CHARTS
+    + CORRELATION_CHARTS
+    + RANKING_CHARTS
+    + DISTRIBUTION_CHARTS
+    + MAGNITUDE_CHARTS
+    + TIME_CHARTS
+    + PART_TO_WHOLE_CHARTS
+    + FLOW_CHARTS
+    + SPATIAL_CHARTS
+)
+
+
 # HOMEPAGE -------------------------------------------------------------
 home_all = vm.Container(
     title="All",
@@ -18,33 +113,21 @@ home_all = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in set(ALL_CHARTS)
             ],
         )
     ],
 )
+
 home_deviation = vm.Container(
     title="Deviation",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -57,26 +140,13 @@ home_deviation = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in DEVIATION_CHARTS
             ],
         ),
     ],
@@ -84,7 +154,7 @@ home_deviation = vm.Container(
 
 home_correlation = vm.Container(
     title="Correlation",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -97,26 +167,13 @@ home_correlation = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in CORRELATION_CHARTS
             ],
         ),
     ],
@@ -124,7 +181,7 @@ home_correlation = vm.Container(
 
 home_ranking = vm.Container(
     title="Ranking",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -137,26 +194,13 @@ home_ranking = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in RANKING_CHARTS
             ],
         ),
     ],
@@ -164,7 +208,7 @@ home_ranking = vm.Container(
 
 home_distribution = vm.Container(
     title="Distribution",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -179,26 +223,13 @@ home_distribution = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-               ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-               #### Bar
-               """
-                ),
-                vm.Card(
-                    text="""
-               ![](assets/images/charts/bar.png#chart-icon)
-
-               #### Bar
-               """
-                ),
-                vm.Card(
-                    text="""
-               ![](assets/images/charts/bar.png#chart-icon)
-
-               #### Bar
-               """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in DISTRIBUTION_CHARTS
             ],
         ),
     ],
@@ -206,7 +237,7 @@ home_distribution = vm.Container(
 
 home_magnitude = vm.Container(
     title="Magnitude",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -220,26 +251,14 @@ home_magnitude = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """,
+                    href=f"/{chart}",
+                )
+                for chart in MAGNITUDE_CHARTS
             ],
         ),
     ],
@@ -247,7 +266,7 @@ home_magnitude = vm.Container(
 
 home_time = vm.Container(
     title="Time",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -260,26 +279,13 @@ home_time = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in TIME_CHARTS
             ],
         ),
     ],
@@ -287,7 +293,7 @@ home_time = vm.Container(
 
 home_part = vm.Container(
     title="Part-to-whole",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -299,26 +305,13 @@ home_part = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in PART_TO_WHOLE_CHARTS
             ],
         ),
     ],
@@ -326,7 +319,7 @@ home_part = vm.Container(
 
 home_flow = vm.Container(
     title="Flow",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -339,26 +332,13 @@ home_flow = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in FLOW_CHARTS
             ],
         ),
     ],
@@ -366,7 +346,7 @@ home_flow = vm.Container(
 
 home_spatial = vm.Container(
     title="Spatial",
-    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+    layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
         HtmlIntro(
             text="""
@@ -377,26 +357,13 @@ home_spatial = vm.Container(
             title="",
             components=[
                 vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
+                    text=f"""
+                            ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
-                vm.Card(
-                    text="""
-                ![](assets/images/charts/bar.png#chart-icon)
-
-                #### Bar
-                """
-                ),
+                            #### {chart.replace("-", " ").title()}
+                            """
+                )
+                for chart in SPATIAL_CHARTS
             ],
         ),
     ],
