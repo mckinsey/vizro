@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.components import GetChartSelection
+from vizro_ai.vizro_ai_charts.components import GetChartSelection
 
 
 @pytest.fixture

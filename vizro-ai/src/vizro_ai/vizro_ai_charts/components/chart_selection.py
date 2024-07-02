@@ -12,8 +12,8 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.components import VizroAiComponentBase
-from vizro_ai.schema_manager import SchemaManager
+from vizro_ai.vizro_ai_charts.components import VizroAiComponentBase
+from vizro_ai.vizro_ai_charts.schema_manager import SchemaManager
 
 # initialization of schema manager, and register schema needed
 # preprocess: llm kwargs for function description schema + partial vars

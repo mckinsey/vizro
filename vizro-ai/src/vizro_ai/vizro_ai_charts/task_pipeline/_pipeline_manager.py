@@ -1,8 +1,8 @@
 """Pipeline Manager."""
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from vizro_ai.components import GetChartSelection, GetCustomChart, GetDataFrameCraft, GetVisualCode
-from vizro_ai.task_pipeline._pipeline import Pipeline
+from vizro_ai.vizro_ai_charts.components import GetChartSelection, GetCustomChart, GetDataFrameCraft, GetVisualCode
+from vizro_ai.vizro_ai_charts.task_pipeline._pipeline import Pipeline
 
 
 class PipelineManager:
