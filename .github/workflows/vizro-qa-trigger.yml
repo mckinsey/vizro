@@ -33,7 +33,7 @@ jobs:
           export INPUT_WORKFLOW_FILE_NAME=${{ secrets.NOTEBOOKS_TEST_FILE }}
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
           export INPUT_REF=circleci_to_github
-          ./tools/trigger-workflow-and-wait.sh
+          /tools/trigger-workflow-and-wait.sh
 #      - name: Start Vizro qa pipeline
 #        run: |
 #          create_circleci_pipeline() {
