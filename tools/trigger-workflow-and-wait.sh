@@ -152,8 +152,8 @@ get_workflow_runs() {
 }
 
 trigger_workflow() {
-  START_TIME=$(gdate +%s)
-  SINCE=$(gdate -u -Iseconds -d "@$((START_TIME - 120))") # Two minutes ago, to overcome clock skew
+  START_TIME=$(date +%s)
+  SINCE=$(date -u -Iseconds -d "@$((START_TIME - 120))") # Two minutes ago, to overcome clock skew
 
   OLD_RUNS=$(get_workflow_runs "$SINCE")
 
