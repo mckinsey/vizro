@@ -7,7 +7,6 @@ LLM_MODELS = type(Union[ChatOpenAI, AzureOpenAI])  # Need type here to pass py3.
 
 SUPPORTED_MODELS = {
     "OpenAI": [
-        "gpt-3.5-turbo-0613",
         "gpt-4-0613",
         "gpt-3.5-turbo-1106",
         "gpt-4-1106-preview",
