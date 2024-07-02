@@ -1,12 +1,15 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
+from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains._llm_models import _get_llm_model
+from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
+from vizro_ai.dashboard.graph.code_generation import _create_and_compile_graph
+from vizro_ai.dashboard.utils import DashboardOutputs
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
@@ -36,8 +39,9 @@ class VizroAI:
         self.components_instances = {}
 
         # TODO add pending URL link to docs
+        model_name = _get_model_name(self.model)
         logger.info(
-            f"You have selected {self.model.model_name},"
+            f"You have selected {model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
@@ -152,3 +156,41 @@ class VizroAI:
             )
 
         return vizro_plot if return_elements else vizro_plot.figure
+
+    def dashboard(
+        self,
+        dfs: List[pd.DataFrame],
+        user_input: str,
+        return_elements: bool = False,
+        verbose: bool = False,
+    ) -> DashboardOutputs:
+        """Create dashboard using vizro via english descriptions, english to dashboard translation.
+
+        Args:
+            dfs: The dataframes to be analyzed.
+            user_input: User questions or descriptions of the desired visual.
+            return_elements: Flag to return DashboardOutputs dataclass that includes all possible elements generated.
+            verbose: Flag to include debug information in response.
+
+        Returns:
+            The final graph state of the graph.
+
+        """
+        runnable = _create_and_compile_graph()
+
+        config = {"configurable": {"model": self.model}}
+        message_res = runnable.invoke(
+            {
+                "dfs": dfs,
+                "df_metadata": {},
+                "dashboard_plan": None,
+                "pages": [],
+                "dashboard": None,
+                "messages": [HumanMessage(content=user_input)],
+            },
+            config=config,
+            debug=verbose,
+        )
+        dashboard_output = DashboardOutputs(dashboard=message_res["dashboard"], code="placeholder")
+
+        return dashboard_output if return_elements else dashboard_output.dashboard
