@@ -7,34 +7,22 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from dash import dcc, html
 from vizro import Vizro
-
-
-class CodeClipboard(vm.VizroBaseModel):
-    type: Literal["code_clipboard"] = "code_clipboard"
-    title: str = "Code"
-    text: str
-
-    def build(self):
-        return dbc.Accordion(
-            [
-                dbc.AccordionItem(
-                    dbc.Card(
-                        [
-                            html.H3(self.title),
-                            dcc.Markdown(self.text, id=self.id, className="code-block"),
-                            dcc.Clipboard(target_id=self.id, className="code-clipboard"),
-                        ]
-                    ),
-                    title="SHOW CODE",
-                )
-            ],
-            start_collapsed=True,
-        )
-
+from utils._charts import CodeClipboard, HtmlIntro
+from utils._subpages import home_all, home_flow, home_part, home_time, home_spatial, home_ranking, home_distribution, home_correlation, home_deviation, home_magnitude
 
 gapminder = px.data.gapminder()
-
 vm.Page.add_type("components", CodeClipboard)
+
+
+# HOME PAGE -----
+homepage = vm.Page(
+    title="Overview",
+    components=[
+        vm.Tabs(
+            tabs=[home_all, home_deviation, home_correlation, home_ranking, home_distribution, home_magnitude, home_time, home_part, home_flow, home_spatial]
+        ),
+    ],
+)
 
 
 bar = vm.Page(
@@ -92,7 +80,7 @@ bar = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[bar])
+dashboard = vm.Dashboard(pages=[homepage, bar])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

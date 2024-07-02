@@ -25,3 +25,9 @@ code.language-python.hljs {
 .hljs-keyword {
   color: #d41159;
 }
+
+
+.html-intro {
+  border-left: 4px solid var(--text-secondary);
+  padding: 8px;
+}
