@@ -1,14 +1,8 @@
 """Contains custom components and charts used inside the dashboard."""
 
-from typing import List, Literal, Optional
-
-import dash_bootstrap_components as dbc
-import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
-from dash import html
-from vizro.models.types import capture
-from ._charts import CodeClipboard, HtmlIntro
+
+from ._charts import HtmlIntro
 
 vm.Container.add_type("components", HtmlIntro)
 
@@ -19,8 +13,8 @@ home_deviation = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Deviation enables you to draw attention to variations (+/-) from a fixed reference point. 
-            Often this reference point is zero, but you might also show a target or a long-term average. 
+            Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
+            Often this reference point is zero, but you might also show a target or a long-term average.
             You can also use deviation to express a positive, neutral or negative sentiment.
             """
         )
@@ -32,8 +26,8 @@ home_correlation = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Correlation helps you show the relationship between two or more variables. It is important that you 
-            make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the 
+            Correlation helps you show the relationship between two or more variables. It is important that you
+            make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the
             other.
             """
         )
@@ -45,8 +39,8 @@ home_ranking = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Ranking enables you to present items in an ordered list. You will use this when you want to highlight the 
-            position of an item rather than its absolute or relative value. You might want to emphasise the most 
+            Ranking enables you to present items in an ordered list. You will use this when you want to highlight the
+            position of an item rather than its absolute or relative value. You might want to emphasise the most
             interesting points with highlighting or labels to ensure the reader understands what matters most.
             """
         )
@@ -58,10 +52,10 @@ home_distribution = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Distribution helps you to present all the possible values (or intervals) of your data and how often they 
-            occur. You can organise the data to show the number or percentage of items in a specified group, what shape 
-            the group takes, where the centre lies, and how much variability there is in the data. This shape 
-            (or ‘skew’) of a distribution can be a powerful way for you to highlight either the existence or lack of 
+            Distribution helps you to present all the possible values (or intervals) of your data and how often they
+            occur. You can organise the data to show the number or percentage of items in a specified group, what shape
+            the group takes, where the centre lies, and how much variability there is in the data. This shape
+            (or ‘skew’) of a distribution can be a powerful way for you to highlight either the existence or lack of
             uniformity or equality in the data.
             """
         )
@@ -73,9 +67,9 @@ home_magnitude = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Magnitude allows you to emphasise size comparisons of ‘counted’ items in your data set. You can show 
-            relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances 
-            are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or 
+            Magnitude allows you to emphasise size comparisons of ‘counted’ items in your data set. You can show
+            relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances
+            are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
             percentages.
             """
         )
@@ -87,8 +81,8 @@ home_time = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Time helps you draw attention to important trends emerging over a specified period. The time period you 
-            select could be as short as seconds or as long as centuries. What matters most is selecting the correct 
+            Time helps you draw attention to important trends emerging over a specified period. The time period you
+            select could be as short as seconds or as long as centuries. What matters most is selecting the correct
             period of time to best show your audience the message they need to take away.
             """
         )
@@ -100,7 +94,7 @@ home_part = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the 
+            Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
             size of the parts to be most important, a magnitude chart may be more appropriate.
             """
         )
@@ -112,7 +106,7 @@ home_flow = vm.Container(
     components=[
         HtmlIntro(
             text="""
-            With flow charts, you can highlight the quantity or the intensity of the movement between more than one 
+            With flow charts, you can highlight the quantity or the intensity of the movement between more than one
             state or condition. The flow might be steps in a logical sequence or movement between different geographical
             locations.
             """

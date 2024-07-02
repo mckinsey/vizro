@@ -1,14 +1,10 @@
 """Example to show dashboard configuration specified as pydantic models."""
 
-from typing import Literal
-
-import dash_bootstrap_components as dbc
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dcc, html
+from utils._charts import CodeClipboard
+from utils._subpages import *
 from vizro import Vizro
-from utils._charts import CodeClipboard, HtmlIntro
-from utils._subpages import home_all, home_flow, home_part, home_time, home_spatial, home_ranking, home_distribution, home_correlation, home_deviation, home_magnitude
 
 gapminder = px.data.gapminder()
 vm.Page.add_type("components", CodeClipboard)
@@ -19,7 +15,18 @@ homepage = vm.Page(
     title="Overview",
     components=[
         vm.Tabs(
-            tabs=[home_all, home_deviation, home_correlation, home_ranking, home_distribution, home_magnitude, home_time, home_part, home_flow, home_spatial]
+            tabs=[
+                home_all,
+                home_deviation,
+                home_correlation,
+                home_ranking,
+                home_distribution,
+                home_magnitude,
+                home_time,
+                home_part,
+                home_flow,
+                home_spatial,
+            ]
         ),
     ],
 )
@@ -80,7 +87,21 @@ bar = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[homepage, bar])
+dashboard = vm.Dashboard(
+    pages=[homepage, bar],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
+                vm.NavLink(
+                    label="Magnitude",
+                    pages=["Bar Chart"],
+                    icon="Bar Chart",
+                ),
+            ]
+        )
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

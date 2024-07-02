@@ -1,14 +1,11 @@
 """Contains custom components and charts used inside the dashboard."""
 
-from typing import List, Literal, Optional
+from typing import Literal
 
 import dash_bootstrap_components as dbc
-import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
-from dash import html
-from vizro.models.types import capture
-from dash import html, dcc
+from dash import dcc, html
+
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
 class CodeClipboard(vm.VizroBaseModel):
@@ -32,6 +29,7 @@ class CodeClipboard(vm.VizroBaseModel):
             ],
             start_collapsed=True,
         )
+
 
 class HtmlIntro(vm.VizroBaseModel):
     type: Literal["html_intro"] = "html_intro"
