@@ -6,12 +6,9 @@ body:
   - type: markdown
     attributes:
       value: >-
-        Hi there! Thank you so much for taking the time to fill in this bug form. It will be
-        a valuable contribution to Vizro.
-
-        We'd appreciate it if you could search on Vizro's existing issues prior to filing
-        a bug report to avoid any duplicate tickets, as we have limited maintainer capacity to triage
-        them. Thanks!
+        Hi there! Thank you so much for taking the time to fill in this bug report. 
+        As we have limited triage capacity, we'd appreciate it if you could search on Vizro's 
+        existing issues prior to submission to avoid any duplicates. Thanks!
 
   - type: textarea
     attributes:
@@ -25,7 +22,7 @@ body:
     attributes:
       label: Expected behavior
       description: >-
-        A clear and concise description of what you expected to happen.
+        A clear and concise description of what you expected to happen. 
   - type: dropdown
     attributes:
       label: Which package?
