@@ -16,6 +16,13 @@ def target_scatter_parameter_y(request, gapminder_2007, scatter_params):
 
 
 @pytest.fixture
+def target_scatter_matrix_parameter_dimensions(request, iris, scatter_matrix_params):
+    dimensions = request.param
+    scatter_matrix_params["dimensions"] = dimensions
+    return px.scatter_matrix(iris, **scatter_matrix_params).update_layout(margin_t=24)
+
+
+@pytest.fixture
 def target_scatter_parameter_hover_data(request, gapminder_2007, scatter_params):
     hover_data = request.param
     scatter_params["hover_data"] = hover_data
@@ -78,6 +85,38 @@ def ctx_parameter_y(request):
                         property="value",
                         value=y,
                         str_id="y_parameter",
+                        triggered=False,
+                    )
+                ],
+                "theme_selector": CallbackTriggerDict(
+                    id="theme_selector",
+                    property="checked",
+                    value=False,
+                    str_id="theme_selector",
+                    triggered=False,
+                ),
+            }
+        }
+    }
+    context_value.set(AttributeDict(**mock_ctx))
+    return context_value
+
+
+@pytest.fixture
+def ctx_parameter_dimensions(request):
+    """Mock dash.ctx that represents `dimensions` Parameter value selection."""
+    y = request.param
+    mock_ctx = {
+        "args_grouping": {
+            "external": {
+                "filter_interaction": [],
+                "filters": [],
+                "parameters": [
+                    CallbackTriggerDict(
+                        id="dimensions_parameter",
+                        property="value",
+                        value=y,
+                        str_id="dimensions_parameter",
                         triggered=False,
                     )
                 ],
@@ -495,5 +534,38 @@ class TestParameter:
             "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
             "box_chart": target_box_parameter_data_frame_first_n_last_n,
         }
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_one_graph_with_dict_param_input")
+    @pytest.mark.parametrize(
+        "ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions",
+        [("ALL", ["sepal_length", "sepal_width", "petal_length", "petal_width"]), (["sepal_width"], ["sepal_width"])],
+        indirect=True,
+    )
+    def test_one_parameter_with_dict_input_as_options(
+        self, ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions
+    ):
+        # If the options are provided as a list of dictionaries, the value should be correctly passed to the
+        # target as a list. So when "ALL" is selected, a list of all possible values should be returned.
+        dimensions_parameter = vm.Parameter(
+            id="test_parameter_dimensions",
+            targets=["scatter_matrix_chart.dimensions"],
+            selector=vm.RadioItems(
+                id="dimensions_parameter",
+                options=[
+                    {"label": "sepal_length", "value": "sepal_length"},
+                    {"label": "sepal_width", "value": "sepal_width"},
+                    {"label": "petal_length", "value": "petal_length"},
+                    {"label": "petal_width", "value": "petal_width"},
+                ],
+            ),
+        )
+        model_manager["test_page"].controls = [dimensions_parameter]
+        dimensions_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_dimensions"].function()
+        expected = {"scatter_matrix_chart": target_scatter_matrix_parameter_dimensions}
 
         assert result == expected
