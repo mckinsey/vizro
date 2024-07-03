@@ -26,7 +26,6 @@ code.language-python.hljs {
 .hljs-string {
   color: var(--text-code-string);
   font-family: unset;
-
 }
 
 .hljs-keyword {
@@ -59,9 +58,8 @@ code.language-python.hljs {
 }
 
 .intro-text {
-  padding: 12px;
   border-left: 4px solid var(--text-secondary);
-
+  padding: 12px;
 }
 
 .intro-text p {

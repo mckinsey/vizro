@@ -1,9 +1,9 @@
 """Example to show dashboard configuration specified as pydantic models."""
 
 import vizro.models as vm
+from utils._deviation import *
 from utils._home import *
 from utils._magnitude import *
-from utils._deviation import *
 from vizro import Vizro
 
 # HOME PAGE -----

@@ -135,7 +135,7 @@ home_deviation = vm.Container(
             Often this reference point is zero, but you might also show a target or a long-term average.
             You can also use deviation to express a positive, neutral or negative sentiment.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -163,7 +163,7 @@ home_correlation = vm.Container(
             make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the
             other.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -191,7 +191,7 @@ home_ranking = vm.Container(
             position of an item rather than its absolute or relative value. You might want to emphasise the most
             interesting points with highlighting or labels to ensure the reader understands what matters most.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -221,7 +221,7 @@ home_distribution = vm.Container(
             (or ‘skew’) of a distribution can be a powerful way for you to highlight either the existence or lack of
             uniformity or equality in the data.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -250,7 +250,7 @@ home_magnitude = vm.Container(
             are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
             percentages.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -279,7 +279,7 @@ home_time = vm.Container(
             select could be as short as seconds or as long as centuries. What matters most is selecting the correct
             period of time to best show your audience the message they need to take away.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -306,7 +306,7 @@ home_part = vm.Container(
             Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
             size of the parts to be most important, a magnitude chart may be more appropriate.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -334,7 +334,7 @@ home_flow = vm.Container(
             state or condition. The flow might be steps in a logical sequence or movement between different geographical
             locations.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
@@ -360,7 +360,7 @@ home_spatial = vm.Container(
             text="""
             Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
             """,
-            classname="intro-text"
+            classname="intro-text",
         ),
         FlexContainer(
             title="",
