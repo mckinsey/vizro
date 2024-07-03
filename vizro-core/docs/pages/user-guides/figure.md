@@ -12,7 +12,7 @@ If these more specific models already achieve what you need then they should be 
 the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph`
 and [custom tables](custom-tables.md) to `Table`.
 
-There are already a few figure functions you can reuse, see the section on [KPI Cards](#key-performance-indicator-kpi-cards)
+There are already a few figure functions you can reuse, see the section on [KPI cards](#key-performance-indicator-kpi-cards)
 for more details:
 
 - [`kpi_card`][vizro.figures.kpi_card]
@@ -58,7 +58,7 @@ To add a `Figure` to your page:
         tips = px.data.tips
 
         page = vm.Page(
-            title="KPI Indicators",
+            title="KPI card",
             layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  # (1)!
             components=[
                 vm.Figure(
@@ -67,7 +67,7 @@ To add a `Figure` to your page:
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="shopping_cart",
-                        title="KPI Card I",
+                        title="KPI card I",
                     )
                 )
             ],
@@ -93,7 +93,7 @@ To add a `Figure` to your page:
                   value_column: tip
                   value_format: ${value:.2f}
                   icon: shopping_cart
-                  title: KPI Card I
+                  title: KPI card I
                 type: figure
             controls:
               - column: day
@@ -109,7 +109,7 @@ To add a `Figure` to your page:
                   [-1, -1, -1, -1],
                   [-1, -1, -1, -1],
                 ]
-            title: KPI Indicators
+            title: KPI card
         ```
     === "Result"
         [![Figure]][Figure]
@@ -133,7 +133,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 functions have several arguments to customize your KPI cards. If you require a level of customization that is not
 possible with the built-in functions then you can create a [custom figure](custom-figures.md).
 
-!!! example "KPI Card Variations"
+!!! example "KPI card variations"
 
     === "app.py"
         ```py
@@ -180,8 +180,8 @@ possible with the built-in functions then you can create a [custom figure](custo
                 value_column="Actual",
                 reference_column="Reference",
                 title="KPI reference with formatting",
-                value_format="{value:.2f}$",
-                reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+                value_format="{value:.2f}€",
+                reference_format="{delta:+.2f}€ vs. last year ({reference:.2f}€)",
             ),
             kpi_card_reference(
                 data_frame=df_kpi,
@@ -193,7 +193,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         ]
 
         page = vm.Page(
-            title="KPI Indicators",
+            title="KPI cards",
             layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  # (3)!
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
@@ -261,8 +261,8 @@ possible with the built-in functions then you can create a [custom figure](custo
                   value_column: Actual
                   reference_column: Reference
                   title: KPI reference with formatting
-                  value_format: "{value:.2f}$"
-                  reference_format: "{delta:.2f}$ vs. last year ({reference:.2f}$)"
+                  value_format: "{value:.2f}€"
+                  reference_format: "{delta:+.2f}€ vs. last year ({reference:.2f}€)"
                 type: figure
               - figure:
                   _target_: kpi_card_reference
@@ -277,7 +277,7 @@ possible with the built-in functions then you can create a [custom figure](custo
                 type: filter
             layout:
               grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
-            title: KPI Indicators
+            title: KPI cards
         ```
     === "Result"
         [![KPICards]][KPICards]

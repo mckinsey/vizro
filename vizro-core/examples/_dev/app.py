@@ -1,49 +1,67 @@
 """Dev app to try things out."""
 
+from typing import Optional
+
+import dash_bootstrap_components as dbc
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
-from vizro.actions import filter_interaction
+from vizro.figures import kpi_card
 from vizro.models.types import capture
 
-df = px.data.iris()
+tips = px.data.tips
 
 
-@capture("graph")
-def my_graph(data_frame, custom_data=None):
-    """Custom graph function."""
-    return px.scatter(
-        data_frame,
-        title="Title",
-        x="sepal_width",
-        y="sepal_length",
-        color="species",
-        # This does not work
-        custom_data=["species"],
-        # This works
-        # custom_data=custom_data
+@capture("figure")  # (1)!
+def custom_kpi_card(  # noqa: PLR0913
+    data_frame: pd.DataFrame,
+    value_column: str,
+    *,
+    value_format: str = "{value}",
+    agg_func: str = "sum",
+    title: Optional[str] = None,
+    icon: Optional[str] = None,
+) -> dbc.Card:  # (2)!
+    """Creates a custom KPI card."""
+    title = title or f"{agg_func} {value_column}".title()
+    value = data_frame[value_column].agg(agg_func)
+
+    header = dbc.CardHeader(
+        [
+            html.H2(title),
+            html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
+        ]
     )
+    body = dbc.CardBody([value_format.format(value=value)])
+    return dbc.Card([header, body], className="card-kpi")
 
 
 page = vm.Page(
-    title="",
+    title="Create your own KPI card",
+    layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
     components=[
-        vm.Graph(
-            id="graph_1",
-            figure=my_graph(
-                data_frame=df,
-                # custom_data has to be propagated to the custom graph function to make the filter_interaction to work.
-                # custom_data=["species"],
-            ),
-            actions=[vm.Action(function=filter_interaction(targets=["graph_2"]))],
+        vm.Figure(
+            figure=kpi_card(  # (5)!
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="shopping_cart",
+                title="Default KPI card",
+            )
         ),
-        vm.Graph(
-            id="graph_2", figure=px.scatter(df, title="Title", x="sepal_width", y="sepal_length", color="species")
+        vm.Figure(
+            figure=custom_kpi_card(  # (6)!
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="payment",
+                title="Custom KPI card",
+            )
         ),
     ],
-    controls=[vm.Filter(column="species")],
 )
-
 
 dashboard = vm.Dashboard(pages=[page])
 
