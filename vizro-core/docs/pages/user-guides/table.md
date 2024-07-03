@@ -137,7 +137,7 @@ columnDefs = [{"field": "<COLUMN>", "cellDataType": "euro"}]
 
 In the example below we select and format some columns of the gapminder data.
 
-??? example "AG Grid with formatted columns"
+!!! example "AG Grid with formatted columns"
 
     === "app.py"
         ```py
@@ -213,7 +213,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
 There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](./assets.md#overwrite-css-properties-in-selective-components).
 
-??? example "Styled and modified Dash AG Grid"
+!!! example "Styled and modified Dash AG Grid"
 
     === "app.py"
         ```py
@@ -401,7 +401,7 @@ setting some defaults for some arguments to help with styling.
 As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find
 an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
 
-??? example "Styled Dash DataTable"
+!!! example "Styled Dash DataTable"
 
     === "app.py"
         ```py

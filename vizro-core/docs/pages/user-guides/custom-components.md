@@ -29,13 +29,13 @@ or if you would like to use extra `args` or `kwargs` of those components, then t
 
 
 ## Extend an existing component
-??? info "When to choose this strategy"
 
-    You may want to use this strategy to:
 
-    - extend an existing component (for example, to add a button to [`Card`][vizro.models.Card])
-    - change configurations we have set by default (for example, to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
-    - change any fields of any models (for example, to change the title field from `Optional` to have a default)
+You may want to use this strategy to:
+
+- extend an existing component (for example, to add a button to [`Card`][vizro.models.Card])
+- change configurations we have set by default (for example, to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider])
+- change any fields of any models (for example, to change the title field from `Optional` to have a default)
 
 
 You can extend an existing component by sub-classing the component you want to alter. Remember that when sub-classing a component
@@ -149,30 +149,28 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
 ## Create a new component
 
-??? info "When to choose this strategy"
+You may want to use this strategy to:
 
-    You may want to use this strategy to:
-
-    - create a new component that does not exist in our library yet
-    - make extensive changes to an existing component
+- create a new component that does not exist in our library yet
+- make extensive changes to an existing component
 
 You can create an entirely new component by sub-classing our [VizroBaseModel][vizro.models.VizroBaseModel]. Note that
 using `VizroBaseModel` is mandatory if you want the new component to work in the Vizro framework.
 
 The aim of the example is to create a [`Jumbotron`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/jumbotron/), a component that currently does not exist in Vizro's existing component range. It is a lightweight container to call attention to featured content or information.
 
-???note "Note on `build` and `pre_build` methods"
-    Note that when creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
+### The `build` and `pre_build` methods
 
-    - `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems].
-    - `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card].
+When creating new components, you will need to define a `build` method like in the below example if it is a visual component that is rendered on the page. Examples of components with a `build` method are:
 
-    For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
+- `selector` type: [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems].
+- `component` type: [`Graph`][vizro.models.Graph], [`Card`][vizro.models.Card].
 
-    If you would like to have access to other components, you may want to define a `pre_build` method. This method is automatically run for all models and makes them internally consistent. Notable existing models
-    with `pre_build` methods are [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
+For components that only create other components, you do not need to define a `build` method, for example, for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
-In this case, the general steps translate for this example into:
+If you would like to have access to other components, you may want to define a `pre_build` method. This method is automatically run for all models and makes them internally consistent. Notable existing models with `pre_build` methods are [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
+
+### General steps
 
 1. Create new component, by sub-classing [VizroBaseModel][vizro.models.VizroBaseModel]:
 ```py
@@ -485,11 +483,10 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
     [CustomComponent4]: ../../assets/user_guides/custom_components/customcomponent_4.gif
 
-???+ warning
+### Security warning
 
-    Please note that users of this package are responsible for the content of any custom-created component,
-    function or integration they write - especially with regard to leaking any sensitive information or exposing to
-    any security threat during implementation.
+Note that users of this package are responsible for the content of any custom-created component, function or integration they write. You should be cautious about leaking any sensitive information and potential security threats.
 
-    By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
-    Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.
+By default, all Dash components in Vizro that persist client-side data set [`persistence_type="session"` to use `window.SessionStorage`](https://dash.plotly.com/persistence), which is cleared upon closing the browser.
+
+Be careful when using any custom components that persist data beyond this scope: it is your responsibility to ensure compliance with any legal requirements affecting jurisdictions in which your app operates.

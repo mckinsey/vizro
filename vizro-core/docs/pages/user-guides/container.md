@@ -8,9 +8,9 @@ A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro
 While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container),
 enhancing the ability to manage related components.
 
-??? note "Displaying multiple containers inside Tabs"
+!!! note "Displaying multiple containers inside Tabs"
 
-    An alternative way for displaying multiple containers on one page is to place them inside [Tabs](tabs.md).
+    An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
     [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
     They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
