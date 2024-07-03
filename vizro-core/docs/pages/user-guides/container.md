@@ -154,9 +154,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     [Container]: ../../assets/user_guides/components/containers.png
 
-!!! note
-
-    Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
+Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
 
 ## Nested containers
 Containers can be nested, providing a hierarchical structure for organizing components.
