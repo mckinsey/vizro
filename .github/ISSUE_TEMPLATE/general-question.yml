@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: >-
-        Hi there! Thank you so much for taking the time to fill in this general question. 
-        As we have limited triage capacity, we'd appreciate it if you could search on Vizro's 
+        Hi there! Thank you so much for taking the time to fill in this general question.
+        As we have limited triage capacity, we'd appreciate it if you could search on Vizro's
         existing issues prior to submission to avoid any duplicates. Thanks!
 
   - type: textarea
