@@ -13,21 +13,25 @@ img[src*="#chart-icon"] {
   top: 12px;
 }
 
-.hljs {
-  background: unset;
-  color: unset;
-}
-
 code.language-python.hljs {
   padding: 0;
 }
 
+.hljs {
+  background: unset;
+  color: unset;
+  font-family: unset;
+}
+
 .hljs-string {
-  color: #1a85ff;
+  color: var(--text-code-string);
+  font-family: unset;
+
 }
 
 .hljs-keyword {
-  color: #d41159;
+  color: var(--text-code-keyword);
+  font-family: unset;
 }
 
 .html-intro {
