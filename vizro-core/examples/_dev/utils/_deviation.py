@@ -1,0 +1,65 @@
+"""Contains custom components and charts used inside the dashboard."""
+
+import vizro.models as vm
+import vizro.plotly.express as px
+
+from ._charts import CodeClipboard, FlexContainer, CustomTextCard
+
+gapminder = px.data.gapminder()
+vm.Page.add_type("components", CodeClipboard)
+vm.Page.add_type("components", FlexContainer)
+vm.Container.add_type("components", CustomTextCard)
+
+# CHART PAGES -------------------------------------------------------------
+line = vm.Page(
+    title="Line",
+    layout=vm.Layout(
+        grid=[[0, 0, 1, 1, 1]] * 3 + [[2, 2, 1, 1, 1]] * 4,
+        col_gap="80px",
+    ),
+    components=[
+        vm.Card(
+            text="""
+
+            ### What is a Line?
+            
+            A Line chart presents a series of data points over a continuous interval or time period, joined together with straight lines.
+
+            &nbsp;
+
+            ### When to use it?
+
+            You should select a Line chart when you want to show trends and invite analysis of how the data has changed 
+            over time. Usually, your y-axis will show a quantitative value and your x-axis will be marked as a timescale
+            or a sequence of intervals. You can also display negative values below the x-axis. If you wish to group 
+            several lines (different data series) in the same chart, try to limit yourself to 3-4 to avoid cluttering 
+            up your chart and making it harder for the audience to read.
+        """
+        ),
+        vm.Graph(
+            figure=px.line(data_frame=gapminder.query("country == 'India'"), x="year", y="pop")
+        ),
+        CodeClipboard(
+            text="""
+               ```python
+               import vizro.models as vm
+               import vizro.plotly.express as px
+               from vizro import Vizro
+
+               gapminder = px.data.gapminder()
+
+               page = vm.Page(
+                   title="Line",
+                   components=[
+                      vm.Graph(figure=px.line(data_frame=gapminder.query("country == 'India'"), x="year", y="pop"))
+                   ]
+               )
+
+               dashboard = vm.Dashboard(pages=[page])
+               Vizro().build(dashboard).run()
+               ```
+
+               """
+        ),
+    ],
+)

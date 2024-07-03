@@ -3,6 +3,7 @@
 import vizro.models as vm
 from utils._home import *
 from utils._magnitude import *
+from utils._deviation import *
 from vizro import Vizro
 
 # HOME PAGE -----
@@ -28,11 +29,16 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar, column],
+    pages=[homepage, bar, column, line],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
+                vm.NavLink(
+                    label="Deviation",
+                    pages={"Deviation": ["Line"]},
+                    icon="Stacked Line Chart",
+                ),
                 vm.NavLink(
                     label="Magnitude",
                     pages={"Magnitude": ["Bar", "Column"]},
