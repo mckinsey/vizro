@@ -6,6 +6,11 @@ import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, html
 
+try:
+    from pydantic.v1 import Field
+except ImportError:  # pragma: no cov
+    from pydantic import Field
+
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
 class CodeClipboard(vm.VizroBaseModel):
@@ -31,13 +36,15 @@ class CodeClipboard(vm.VizroBaseModel):
         )
 
 
-class CustomTextCard(vm.Card):
-    type: Literal["custom_text_card"] = "custom_text_card"
+class Markdown(vm.VizroBaseModel):
+    type: Literal["markdown"] = "markdown"
+    text: str = Field(
+        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
+    )
+    classname: str = ""
 
     def build(self):
-        text_card = super().build()
-        text_card[self.id].className = "custom-text-card"
-        return text_card
+        return dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname)
 
 
 class FlexContainer(vm.Container):
