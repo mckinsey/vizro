@@ -26,7 +26,6 @@ code.language-python.hljs {
 .hljs-string {
   color: var(--text-code-string);
   font-family: unset;
-
 }
 
 .hljs-keyword {
@@ -58,8 +57,7 @@ code.language-python.hljs {
   text-align: center;
 }
 
-
 .card:has(.custom-text-card) {
-  padding: 0;
   background: none;
+  padding: 0;
 }

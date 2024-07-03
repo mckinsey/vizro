@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from ._charts import CodeClipboard, FlexContainer, CustomTextCard
+from ._charts import CodeClipboard, CustomTextCard, FlexContainer
 
 gapminder = px.data.gapminder()
 vm.Page.add_type("components", CodeClipboard)
