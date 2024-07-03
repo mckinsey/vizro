@@ -3,12 +3,12 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from ._charts import CodeClipboard, FlexContainer, HtmlIntro
+from ._charts import CodeClipboard, FlexContainer, CustomTextCard
 
 gapminder = px.data.gapminder()
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
-vm.Container.add_type("components", HtmlIntro)
+vm.Container.add_type("components", CustomTextCard)
 vm.Container.add_type("components", FlexContainer)
 
 
@@ -129,7 +129,7 @@ home_deviation = vm.Container(
     title="Deviation",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
             Often this reference point is zero, but you might also show a target or a long-term average.
@@ -156,7 +156,7 @@ home_correlation = vm.Container(
     title="Correlation",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Correlation helps you show the relationship between two or more variables. It is important that you
             make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the
@@ -183,7 +183,7 @@ home_ranking = vm.Container(
     title="Ranking",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Ranking enables you to present items in an ordered list. You will use this when you want to highlight the
             position of an item rather than its absolute or relative value. You might want to emphasise the most
@@ -210,7 +210,7 @@ home_distribution = vm.Container(
     title="Distribution",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Distribution helps you to present all the possible values (or intervals) of your data and how often they
             occur. You can organise the data to show the number or percentage of items in a specified group, what shape
@@ -239,7 +239,7 @@ home_magnitude = vm.Container(
     title="Magnitude",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Magnitude allows you to emphasise size comparisons of ‘counted’ items in your data set. You can show
             relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances
@@ -268,7 +268,7 @@ home_time = vm.Container(
     title="Time",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Time helps you draw attention to important trends emerging over a specified period. The time period you
             select could be as short as seconds or as long as centuries. What matters most is selecting the correct
@@ -295,7 +295,7 @@ home_part = vm.Container(
     title="Part-to-whole",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
             size of the parts to be most important, a magnitude chart may be more appropriate.
@@ -321,7 +321,7 @@ home_flow = vm.Container(
     title="Flow",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             With flow charts, you can highlight the quantity or the intensity of the movement between more than one
             state or condition. The flow might be steps in a logical sequence or movement between different geographical
@@ -348,7 +348,7 @@ home_spatial = vm.Container(
     title="Spatial",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
-        HtmlIntro(
+        CustomTextCard(
             text="""
             Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
             """

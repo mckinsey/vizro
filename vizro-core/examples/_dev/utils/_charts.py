@@ -31,12 +31,13 @@ class CodeClipboard(vm.VizroBaseModel):
         )
 
 
-class HtmlIntro(vm.VizroBaseModel):
-    type: Literal["html_intro"] = "html_intro"
-    text: str
+class CustomTextCard(vm.Card):
+    type: Literal["custom_text_card"] = "custom_text_card"
 
     def build(self):
-        return html.H4(self.text, className="html-intro")
+        text_card = super().build()
+        text_card[self.id].className = "custom-text-card"
+        return text_card
 
 
 class FlexContainer(vm.Container):

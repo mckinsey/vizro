@@ -3,12 +3,12 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from ._charts import CodeClipboard, FlexContainer, HtmlIntro
+from ._charts import CodeClipboard, FlexContainer, CustomTextCard
 
 gapminder = px.data.gapminder()
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
-vm.Container.add_type("components", HtmlIntro)
+vm.Container.add_type("components", CustomTextCard)
 
 # CHART PAGES -------------------------------------------------------------
 bar = vm.Page(

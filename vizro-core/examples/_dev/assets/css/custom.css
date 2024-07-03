@@ -53,3 +53,9 @@ code.language-python.hljs {
   padding-top: 12px;
   text-align: center;
 }
+
+
+.card:has(.custom-text-card) {
+  padding: 0;
+  background: none;
+}

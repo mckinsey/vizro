@@ -89,6 +89,8 @@
   --status-success: var(--status-dark-mode-success);
   --tags-text-color: var(--tags-dark-mode-text-color);
   --status-warning: var(--status-dark-mode-warning);
+  --text-code-string: #95c2e7;
+  --text-code-keyword: #f4766e;
 }
 
 .vizro_light {
@@ -154,4 +156,6 @@
   --tags-text-color: var(--tags-light-mode-text-color);
   --status-warning: var(--status-light-mode-warning);
   --inverse-color: invert(100%);
+  --text-code-string: #0a3069;
+  --text-code-keyword: #d12d39;
 }
