@@ -1,9 +1,8 @@
 from typing import Dict, Optional, Union
 
-from langchain_openai import AzureOpenAI, ChatOpenAI
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_openai import ChatOpenAI
 
-# TODO add new wrappers in if new model support is added
-LLM_MODELS = type(Union[ChatOpenAI, AzureOpenAI])  # Need type here to pass py3.9 unit test?
 
 SUPPORTED_MODELS = {
     "OpenAI": [
@@ -13,17 +12,18 @@ SUPPORTED_MODELS = {
         "gpt-3.5-turbo-0125",
         "gpt-3.5-turbo",
         "gpt-4-turbo",
+        "gpt-4o",
     ]
 }
 
-DEFAULT_WRAPPER_MAP: Dict[str, LLM_MODELS] = {"OpenAI": ChatOpenAI}
+DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI}
 DEFAULT_MODEL = "gpt-3.5-turbo"
 DEFAULT_TEMPERATURE = 0
 
 model_to_vendor = {model: key for key, models in SUPPORTED_MODELS.items() for model in models}
 
 
-def _get_llm_model(model: Optional[Union[LLM_MODELS, str]] = None) -> LLM_MODELS:
+def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatModel:
     """Fetches and initializes an instance of the LLM.
 
     Args:
@@ -39,12 +39,12 @@ def _get_llm_model(model: Optional[Union[LLM_MODELS, str]] = None) -> LLM_MODELS
     if not model:
         return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
 
-    if isinstance(model, LLM_MODELS):
+    if isinstance(model, BaseChatModel):
         return model
 
     if isinstance(model, str):
         if any(model in model_list for model_list in SUPPORTED_MODELS.values()):
-            vendor = model_to_vendor(model)
+            vendor = model_to_vendor[model]
             return DEFAULT_WRAPPER_MAP.get(vendor)(model_name=model, temperature=DEFAULT_TEMPERATURE)
 
     raise ValueError(
@@ -53,4 +53,6 @@ def _get_llm_model(model: Optional[Union[LLM_MODELS, str]] = None) -> LLM_MODELS
 
 
 if __name__ == "__main__":
-    llm_chat_openai = _get_llm_model()
+    llm_chat_openai = _get_llm_model(model="gpt-3.5-turbo")
+    print(repr(llm_chat_openai))
+    print(llm_chat_openai.model_name)

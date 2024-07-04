@@ -38,12 +38,13 @@ class CapturedCallable:
 
     Ready-to-use `CapturedCallable` instances are provided by Vizro. In this case refer to the [user guide on
     Charts/Graph](../user-guides/graph.md), [Table](../user-guides/table.md), [Actions](../user-guides/actions.md)
-    or [Actions](../user-guides/figure.md) to see available choices.
+    or [Figures](../user-guides/figure.md) to see available choices.
 
     (Advanced) In case you would like to create your own `CapturedCallable`, please refer to the [user guide on
     custom charts](../user-guides/custom-charts.md),
-    [custom tables](../user-guides/custom-tables.md) or
-    [custom actions](../user-guides/custom-actions.md).
+    [custom tables](../user-guides/custom-tables.md),
+    [custom actions](../user-guides/custom-actions.md),
+    or [custom figures](../user-guides/custom-figures.md).
     """
 
     def __init__(self, function, /, *args, **kwargs):
@@ -154,43 +155,46 @@ class CapturedCallable:
         return self.__function
 
     @classmethod
-    def __get_validators__(cls):
-        """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
-        yield cls._parse_json
-
-    @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any], field: ModelField):
         """Generates schema for field of this type."""
         raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
 
     @classmethod
+    def __get_validators__(cls):
+        """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
+        # Each validator receives as an input the value returned from the previous validator.
+        # captured_callable could be _SupportsCapturedCallable, CapturedCallable, dictionary from JSON/YAML or
+        # invalid type at this point. Begin by parsing it from JSON/YAML if applicable:
+        yield cls._parse_json
+        # At this point captured_callable is _SupportsCapturedCallable, CapturedCallable or invalid type. Next extract
+        # it from _SupportsCapturedCallable if applicable:
+        yield cls._extract_from_attribute
+        # At this point captured_callable is CapturedCallable or invalid type. Check it is in fact CapturedCallable
+        # and do final checks:
+        yield cls._check_type
+
+    @classmethod
     def _parse_json(
-        cls, callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]], field: ModelField
-    ) -> CapturedCallable:
-        """Parses callable_config specification from JSON/YAML to a CapturedCallable.
+        cls,
+        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]],
+        field: ModelField,
+    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+        """Parses captured_callable_config specification from JSON/YAML.
+
+        If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
+        untouched.
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
         which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
-        if isinstance(callable_config, CapturedCallable):
-            # e.g. an action function that is already CapturedCallable
-            return callable_config
-        elif isinstance(callable_config, _SupportsCapturedCallable):
-            # e.g. a _DashboardReadyFigure that has CapturedCallable in a property ._captured_callable
-            return callable_config._captured_callable
-        elif not isinstance(callable_config, dict):
-            raise ValueError(
-                "You must provide a valid CapturedCallable object. If you are using a plotly express figure, ensure "
-                "that you are using `import vizro.plotly.express as px`. If you are using a table figure, make "
-                "sure you are using `from vizro.tables import dash_data_table`. If you are using a custom figure or "
-                "action, that your function uses the @capture decorator."
-            )
+        if not isinstance(captured_callable_config, dict):
+            return captured_callable_config
 
         # Try to import function given in _target_ from the import_path property of the pydantic field.
         try:
-            function_name = callable_config.pop("_target_")
+            function_name = captured_callable_config.pop("_target_")
         except KeyError as exc:
             raise ValueError(
                 "CapturedCallable object must contain the key '_target_' that gives the target function."
@@ -203,19 +207,43 @@ class CapturedCallable:
             raise ValueError(f"_target_={function_name} cannot be imported from {import_path.__name__}.") from exc
 
         # All the other items in figure are the keyword arguments to pass into function.
-        function_kwargs = callable_config
+        function_kwargs = captured_callable_config
 
         # It would seem natural to return cls(function, **function_kwargs) here, but the function is already decorated
         # with @capture, and so that would return a nested CapturedCallable.
-        captured_callable = function(**function_kwargs)
-        if isinstance(captured_callable, CapturedCallable):
-            # e.g. an action function that is already CapturedCallable
+        return function(**function_kwargs)
+
+    @classmethod
+    def _extract_from_attribute(
+        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
+    ) -> CapturedCallable:
+        """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
+
+        If captured_callable is already CapturedCallable then it just passes through untouched.
+        """
+        if not isinstance(captured_callable, _SupportsCapturedCallable):
             return captured_callable
-        elif isinstance(captured_callable, _SupportsCapturedCallable):
-            # e.g. a _DashboardReadyFigure that has CapturedCallable in a property ._captured_callable
-            return captured_callable._captured_callable
-        else:
-            raise ValueError(f"_target_={function_name} must be wrapped in the @capture decorator.")
+        return captured_callable._captured_callable
+
+    @classmethod
+    def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
+        """Checks captured_callable is right type and mode."""
+        expected_mode = field.field_info.extra["mode"]
+        import_path_name = field.field_info.extra["import_path"].__name__
+
+        if not isinstance(captured_callable, CapturedCallable):
+            raise ValueError(
+                f"Invalid CapturedCallable. Supply a function imported from {import_path_name} or defined with "
+                f"decorator @capture('{expected_mode}')."
+            )
+
+        if (mode := captured_callable._mode) != expected_mode:
+            raise ValueError(
+                f"CapturedCallable was defined with @capture('{mode}') rather than @capture('{expected_mode}') and so "
+                "is not compatible with the model."
+            )
+
+        return captured_callable
 
 
 class capture:
@@ -327,8 +355,8 @@ class capture:
 
             return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table') or "
-            "@capture('ag_grid')."
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table'), "
+            "@capture('ag_grid') and @capture('figure')."
         )
 
 
