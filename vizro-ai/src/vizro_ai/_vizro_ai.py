@@ -162,7 +162,6 @@ class VizroAI:
         dfs: List[pd.DataFrame],
         user_input: str,
         return_elements: bool = False,
-        verbose: bool = False,
     ) -> DashboardOutputs:
         """Create dashboard using vizro via english descriptions, english to dashboard translation.
 
@@ -170,7 +169,6 @@ class VizroAI:
             dfs: The dataframes to be analyzed.
             user_input: User questions or descriptions of the desired visual.
             return_elements: Flag to return DashboardOutputs dataclass that includes all possible elements generated.
-            verbose: Flag to include debug information in response.
 
         Returns:
             The final graph state of the graph.
@@ -189,8 +187,7 @@ class VizroAI:
                 "messages": [HumanMessage(content=user_input)],
             },
             config=config,
-            debug=verbose,
         )
-        dashboard_output = DashboardOutputs(dashboard=message_res["dashboard"], code="placeholder")
+        dashboard_output = DashboardOutputs(dashboard=message_res["dashboard"], code=message_res["messages"][-1].content)
 
         return dashboard_output if return_elements else dashboard_output.dashboard

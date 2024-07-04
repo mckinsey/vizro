@@ -12,8 +12,8 @@ from langchain_core.messages import BaseMessage, FunctionMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
-from vizro_ai.dashboard.nodes.core_builder.build import PageBuilder
-from vizro_ai.dashboard.nodes.core_builder.plan import (
+from vizro_ai.dashboard.nodes.build import PageBuilder
+from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
     _get_dashboard_plan,
@@ -30,6 +30,14 @@ except ImportError:  # pragma: no cov
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+DASHBOARD_CODE_TEMPLATE = """
+                {import_statement}
+                dashboard={dashboard_code_str}
+
+                Vizro().build(dashboard).run()
+                """
 
 
 DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], str]]]
@@ -135,15 +143,18 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 def _generate_dashboard_code(state: GraphState) -> Dict[str, Messages]:
     """Generate a dashboard code snippet."""
     logger.info("*** _generate_dashboard_code ***")
-    messages = state.messages[-1].content
-    import_statement = messages
+    messages = state.messages
+    import_statement = messages[-1].content
     dashboard = state.dashboard
 
-    dashboard_code_string = dashboard.dict_obj(exclude_unset=True)
-    full_code_string = f"\n{import_statement}\ndashboard={dashboard_code_string}\n\nVizro().build(dashboard).run()\n"
-    logger.info(f"full_code_string: \n ------- \n{full_code_string}\n ------- \n")
+    # TODO: the code to string should come from vizro_core
+    # Currently, the output code string is a string representation of the dashboard object
+    dashboard_code_str = repr(dashboard)
 
-    messages.append(FunctionMessage(content=full_code_string, name=inspect.currentframe().f_code.co_name))
+    messages.append(FunctionMessage(
+        content=DASHBOARD_CODE_TEMPLATE.format(import_statement=import_statement, dashboard_code_str=dashboard_code_str), 
+        name=inspect.currentframe().f_code.co_name
+        ))
     return {"messages": messages}
 
 
@@ -194,7 +205,6 @@ def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:
 
 
 def _create_and_compile_graph():
-    # main graph
     graph = StateGraph(GraphState)
 
     graph.add_node("_store_df_info", _store_df_info)
@@ -210,11 +220,8 @@ def _create_and_compile_graph():
     graph.add_conditional_edges("_dashboard_plan", continue_to_pages)
     graph.add_edge("_build_page", "_build_dashboard")
 
-    # temporarily removed the node _generate_dashboard_code, will add it back once
-    # the code to string is ready
-    # graph.add_edge("_build_dashboard", "_generate_dashboard_code")
-    # graph.add_edge("_generate_dashboard_code", END)
-    graph.add_edge("_build_dashboard", END)
+    graph.add_edge("_build_dashboard", "_generate_dashboard_code")
+    graph.add_edge("_generate_dashboard_code", END)
 
     graph.set_entry_point("_store_df_info")
 

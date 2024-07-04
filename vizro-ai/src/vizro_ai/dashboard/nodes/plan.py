@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
 import numpy as np
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro.tables import dash_ag_grid
-from vizro_ai.dashboard.nodes.core_builder.model import _get_model
+from vizro_ai.dashboard.nodes._model import _get_proxy_model
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -71,7 +71,7 @@ class Component(BaseModel):
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
-            return _get_model(
+            return _get_proxy_model(
                 query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
             )
 
@@ -154,7 +154,7 @@ class Control(BaseModel):
             result_proxy = create_filter_proxy(
                 df_cols=_df_cols, df_sample=_df_sample, available_components=available_components
             )
-            proxy = _get_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)
+            proxy = _get_proxy_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
             )  # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
@@ -209,7 +209,7 @@ class Layout(BaseModel):
             return None
 
         try:
-            proxy = _get_model(
+            proxy = _get_proxy_model(
                 query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
@@ -249,7 +249,7 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: Dict[str, Dict[str, str]],
 ) -> DashboardPlanner:
-    return _get_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
+    return _get_proxy_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
 def _print_dashboard_plan(dashboard_plan) -> None:

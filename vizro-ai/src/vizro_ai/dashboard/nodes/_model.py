@@ -1,24 +1,14 @@
-"""Contains the _get_model for the Vizro AI dashboard."""
+"""Contains the _get_proxy_model for the Vizro AI dashboard."""
 
 # ruff: noqa: F821
 try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
+    from pydantic.v1 import BaseModel, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
+    from pydantic import BaseModel, ValidationError
 from typing import Dict
 
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
-
-
-class ProxyVizroBaseModel(BaseModel):
-    """Proxy model for VizroBaseModel."""
-
-    id: str = Field(
-        "",
-        description="ID to identify model. Must be unique throughout the whole dashboard."
-        "When no ID is chosen, ID will be automatically generated.",
-    )
 
 
 SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
@@ -51,7 +41,7 @@ MODEL_REPROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def _get_model(
+def _get_proxy_model(
     query: str,
     model,
     result_model: BaseModel,
