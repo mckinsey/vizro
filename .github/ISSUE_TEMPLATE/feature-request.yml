@@ -20,7 +20,7 @@ body:
       label: What's the problem this feature will solve?
       description: >-
         What are you trying to do, that you are unable to achieve with Vizro as it
-        currently stands?
+        currently stands? Have you tried to work around the problem using Vizro or other tools? 
     validations:
       required: true
 

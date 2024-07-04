@@ -14,7 +14,7 @@ body:
     attributes:
       label: Question
       description: >-
-        Please post your question here.
+        Please post your question here. 
     validations:
       required: true
 
@@ -22,11 +22,11 @@ body:
     attributes:
       label: Code/Examples
       description: >-
-        Please post any supporting code around your question here.
+        Please post any supporting code around your question here. Don't forget to include the Python version and package version, if it's relevant.
 
   - type: dropdown
     attributes:
-      label: Which package?
+      label: Which package? 
       options:
         - vizro
         - vizro-ai
