@@ -14,7 +14,7 @@ body:
     attributes:
       label: Question
       description: >-
-        Please post your question here. 
+        Please post your question here.
     validations:
       required: true
 
@@ -26,7 +26,7 @@ body:
 
   - type: dropdown
     attributes:
-      label: Which package? 
+      label: Which package?
       options:
         - vizro
         - vizro-ai
