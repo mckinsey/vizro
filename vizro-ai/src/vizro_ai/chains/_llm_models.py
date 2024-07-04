@@ -3,7 +3,6 @@ from typing import Dict, Optional, Union
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
-
 SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4-0613",
@@ -54,5 +53,5 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatMo
 
 if __name__ == "__main__":
     llm_chat_openai = _get_llm_model(model="gpt-3.5-turbo")
-    print(repr(llm_chat_openai))
-    print(llm_chat_openai.model_name)
+    print(repr(llm_chat_openai))  # noqa: T201
+    print(llm_chat_openai.model_name)  # noqa: T201
