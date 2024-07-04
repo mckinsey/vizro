@@ -32,19 +32,6 @@ control_type = Literal["Filter"]  # Complete list: ["Filter", "Parameter"]
 # For other models, like ["Accordion", "NavBar"], how to handle them?
 
 
-class CardProxyModel(BaseModel):
-    """Proxy model for Card."""
-
-    type: Literal["card"] = "card"
-    text: str = Field(
-        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
-    )
-    href: str = Field(
-        "",
-        description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
-    )
-
-
 class Component(BaseModel):
     """Component plan model."""
 
@@ -67,12 +54,12 @@ class Component(BaseModel):
     def create(self, model, df_metadata) -> Union[ComponentType, None]:
         """Create the component."""
         if self.component_type == "Graph":
-            return vm.Graph()
+            return None  # TODO: Implement this
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_proxy_model(
-                query=self.component_description, model=model, result_model=CardProxyModel, df_metadata=df_metadata
+                query=self.component_description, model=model, result_model=vm.Card, df_metadata=df_metadata
             )
 
 

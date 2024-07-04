@@ -7,6 +7,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, ValidationError
 from typing import Dict
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -42,7 +43,7 @@ MODEL_REPROMPT = ChatPromptTemplate.from_messages(
 
 def _get_proxy_model(
     query: str,
-    model,
+    llm_model: BaseChatModel,
     result_model: BaseModel,
     df_metadata: Dict[str, Dict[str, str]],
     max_retry: int = 2,
@@ -50,7 +51,7 @@ def _get_proxy_model(
     for i in range(max_retry):
         try:
             prompt = SINGLE_MODEL_PROMPT if i == 0 else MODEL_REPROMPT
-            vizro_model_chain = prompt | model.with_structured_output(result_model)
+            vizro_model_chain = prompt | llm_model.with_structured_output(result_model)
 
             user_requirements = [HumanMessage(content=query)]
 
