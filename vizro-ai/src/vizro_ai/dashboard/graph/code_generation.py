@@ -13,14 +13,14 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from vizro_ai.dashboard.nodes.build import PageBuilder
+from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
+from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, _generate_import_statement, model_sum_prompt
 from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
     _get_dashboard_plan,
     _print_dashboard_plan,
 )
-from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
-from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, _generate_import_statement, model_sum_prompt
 
 try:
     from pydantic.v1 import BaseModel, validator
@@ -151,10 +151,14 @@ def _generate_dashboard_code(state: GraphState) -> Dict[str, Messages]:
     # Currently, the output code string is a string representation of the dashboard object
     dashboard_code_str = repr(dashboard)
 
-    messages.append(FunctionMessage(
-        content=DASHBOARD_CODE_TEMPLATE.format(import_statement=import_statement, dashboard_code_str=dashboard_code_str), 
-        name=inspect.currentframe().f_code.co_name
-        ))
+    messages.append(
+        FunctionMessage(
+            content=DASHBOARD_CODE_TEMPLATE.format(
+                import_statement=import_statement, dashboard_code_str=dashboard_code_str
+            ),
+            name=inspect.currentframe().f_code.co_name,
+        )
+    )
     return {"messages": messages}
 
 

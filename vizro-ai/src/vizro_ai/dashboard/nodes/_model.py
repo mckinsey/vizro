@@ -10,7 +10,6 @@ from typing import Dict
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 
-
 SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
     [
         (

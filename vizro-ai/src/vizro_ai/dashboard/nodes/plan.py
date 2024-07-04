@@ -154,7 +154,9 @@ class Control(BaseModel):
             result_proxy = create_filter_proxy(
                 df_cols=_df_cols, df_sample=_df_sample, available_components=available_components
             )
-            proxy = _get_proxy_model(query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata)
+            proxy = _get_proxy_model(
+                query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata
+            )
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
             )  # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``

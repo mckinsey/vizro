@@ -188,6 +188,8 @@ class VizroAI:
             },
             config=config,
         )
-        dashboard_output = DashboardOutputs(dashboard=message_res["dashboard"], code=message_res["messages"][-1].content)
+        dashboard_output = DashboardOutputs(
+            dashboard=message_res["dashboard"], code=message_res["messages"][-1].content
+        )
 
         return dashboard_output if return_elements else dashboard_output.dashboard
