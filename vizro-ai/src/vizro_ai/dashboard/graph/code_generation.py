@@ -33,10 +33,10 @@ logger.setLevel(logging.INFO)
 
 
 DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], str]]]
-"Cleaned dataframe names and their metadata."
+"""Cleaned dataframe names and their metadata."""
 
 Messages = List[BaseMessage]
-"List of messages."
+"""List of messages."""
 
 
 class GraphState(BaseModel):
