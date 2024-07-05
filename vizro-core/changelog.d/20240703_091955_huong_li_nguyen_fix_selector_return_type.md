@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Ensure that selectors always return a list of values. ([#562](https://github.com/mckinsey/vizro/pull/562))
+- Ensure that categorical selectors always return a list of values. ([#562](https://github.com/mckinsey/vizro/pull/562))
 
 <!--
 ### Security

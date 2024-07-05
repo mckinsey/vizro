@@ -146,8 +146,8 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: List[CallbackTrigg
 
             # Even if options are provided as List[Dict], the Dash component only returns a List of values.
             # So we need to ensure that we always return a List only as well to provide consistent types.
-            if all(isinstance(i, dict) for i in selector.options):
-                selector_value = [value["value"] for value in selector.options]
+            if all(isinstance(option, dict) for option in selector.options):
+                selector_value = [option["value"] for option in selector.options]
             else:
                 selector_value = selector.options
 
