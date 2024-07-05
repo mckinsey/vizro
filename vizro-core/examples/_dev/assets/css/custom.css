@@ -70,3 +70,8 @@ code.language-python.hljs {
 #left-main {
   width: 288px;
 }
+
+.card {
+  width: unset;
+  height: unset;
+}
