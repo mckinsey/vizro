@@ -301,3 +301,61 @@ pie = vm.Page(
         ),
     ],
 )
+
+
+donut = vm.Page(
+    title="Donut",
+    layout=vm.Layout(
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
+    ),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a donut chart?
+
+            A Donut chart looks like a Pie chart, but has a blank space in the centre which may contain additional information.
+
+            &nbsp;
+
+            #### When to use the chart?
+
+            A Donut chart can be used in place of a Pie chart, particularly when you are short of space or have extra information you would like to share about the data. It may also be more effective if you wish your audience to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
+
+        """
+        ),
+        vm.Graph(
+            figure=px.pie(
+                data_frame=tips,
+                values='tip', names='day', hole=0.4,
+            )
+        ),
+        CodeClipboard(
+            text="""
+               ```python
+               import vizro.models as vm
+               import vizro.plotly.express as px
+               from vizro import Vizro
+
+               tips = px.data.tips()
+
+               page = vm.Page(
+                   title="Pie",
+                   components=[
+                      vm.Graph(
+                          figure=px.pie(
+                            data_frame=tips,
+                            values='tip', names='day', hole=0.4
+                          )
+                      )
+                   ]
+               )
+
+               dashboard = vm.Dashboard(pages=[page])
+               Vizro().build(dashboard).run()
+               ```
+
+               """
+        ),
+    ],
+)
