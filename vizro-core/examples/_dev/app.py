@@ -1,9 +1,8 @@
 """Example to show dashboard configuration specified as pydantic models."""
 
 import vizro.models as vm
-from utils._deviation import *
-from utils._home import *
-from utils._magnitude import *
+from utils._tabs_home import *
+from utils._pages_charts import *
 from vizro import Vizro
 
 # HOME PAGE -----
@@ -29,7 +28,7 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar, column, line, scatter],
+    pages=[homepage, bar, column, line, scatter, pie],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -42,6 +41,11 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Magnitude",
                     pages={"Magnitude": ["Bar", "Column"]},
+                    icon="Bar Chart",
+                ),
+                vm.NavLink(
+                    label="Distribution",
+                    pages={"Distribution": ["Pie"]},
                     icon="Bar Chart",
                 ),
             ]
