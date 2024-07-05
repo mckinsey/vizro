@@ -50,10 +50,11 @@ The code below shows the steps necessary to add a box plot to the page:
         dashboard = vm.Dashboard(pages=[first_page])
         Vizro().build(dashboard).run()
         ```
-    === "Result"
-        [![FirstPage1]][FirstPage1]
-
-    [FirstPage1]: ../../assets/tutorials/dashboard/dashboard21.png
+    === "Screenshot"
+        ![Dashboard](https://py.cafe/preview/maxi.schulz/vizro-tutorial-explore-vizro-1)
+    
+    === "Live App"
+        <iframe src="https://py.cafe/embed/maxi.schulz/vizro-tutorial-explore-vizro-1" width="100%" height="800px" border="0"></iframe>
 
 !!! tip "To see the dashboard in action"
 
