@@ -41,9 +41,7 @@ bar = vm.Page(
         ),
         vm.Graph(
             figure=px.bar(
-                data_frame=tips.groupby("day")
-                .agg({"total_bill": "sum"})
-                .reset_index(),
+                data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
                 x="total_bill",
                 y="day",
                 orientation="h",

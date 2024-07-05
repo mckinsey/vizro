@@ -86,11 +86,7 @@ scatter = vm.Page(
             Use Scatter Plots when you want to show the relationship between two variables. Scatter plots are sometimes called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when you have paired numerical data and you want to see if one variable impacts the other. However, do remember that correlation is not causation, and another unnoticed variable may be influencing results. Make sure your audience does not draw the wrong conclusions.
         """
         ),
-        vm.Graph(
-            figure=px.scatter(
-                iris, x="sepal_width", y="sepal_length", color="species"
-            )
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
         CodeClipboard(
             text="""
                ```python
