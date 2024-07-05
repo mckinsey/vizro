@@ -52,7 +52,7 @@ The code below shows the steps necessary to add a box plot to the page:
         ```
     === "Screenshot"
         ![Dashboard](https://py.cafe/preview/maxi.schulz/vizro-tutorial-explore-vizro-1)
-    
+
     === "Live App"
         <iframe src="https://py.cafe/embed/maxi.schulz/vizro-tutorial-explore-vizro-1" width="100%" height="800px" border="0"></iframe>
 
