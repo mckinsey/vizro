@@ -28,7 +28,7 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar, column, line, scatter, pie, donut],
+    pages=[homepage, bar, column, line, scatter, pie, donut,boxplot, violin],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -45,8 +45,13 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Distribution",
-                    pages={"Distribution": ["Pie", "Donut"]},
+                    pages={"Distribution": ["Pie", "Donut", "Violin"]},
                     icon="Pie Chart",
+                ),
+                vm.NavLink(
+                    label="Ranking",
+                    pages={"Ranking": ["Boxplot"]},
+                    icon="Trail Length Short",
                 ),
             ]
         )

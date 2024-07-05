@@ -134,7 +134,7 @@ bar = vm.Page(
 
             &nbsp;
 
-            #### When to use the bar chart?
+            #### When to use it?
 
             Select a Bar chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can
@@ -196,7 +196,7 @@ column = vm.Page(
 
             &nbsp;
 
-            #### When to use the column chart?
+            #### When to use it?
 
             Select a Column chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents `how many?` in each category. You can
@@ -258,7 +258,7 @@ pie = vm.Page(
             
             &nbsp;
 
-            #### When to use the chart?
+            #### When to use it?
 
             Use the Pie chart when you need to show your audience a quick view of how data is distributed proportionately, with percentages highlighted. The different values you present must add up to a total and equal 100%.
 
@@ -318,7 +318,7 @@ donut = vm.Page(
 
             &nbsp;
 
-            #### When to use the chart?
+            #### When to use it?
 
             A Donut chart can be used in place of a Pie chart, particularly when you are short of space or have extra information you would like to share about the data. It may also be more effective if you wish your audience to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
 
@@ -348,6 +348,124 @@ donut = vm.Page(
                             values='tip', names='day', hole=0.4
                           )
                       )
+                   ]
+               )
+
+               dashboard = vm.Dashboard(pages=[page])
+               Vizro().build(dashboard).run()
+               ```
+
+               """
+        ),
+    ],
+)
+
+
+
+boxplot = vm.Page(
+    title="Boxplot",
+    layout=vm.Layout(
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
+    ),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a boxplot?
+
+            A Box Plot (also known as a Box and Whisker Plot) provides a visual display of multiple datasets, indicating the median (centre) and the range of the data for each.
+
+            &nbsp;
+
+            #### When to use it?
+
+            Choose a Box Plot when you need to summarise distributions between many groups or datasets. It takes up less space than many other charts.
+
+            Create boxes to display the median, and the upper and lower quartiles. Add ‘whiskers’ to highlight variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with the whiskers.
+
+        """
+        ),
+        vm.Graph(
+            figure=px.box(
+                data_frame=tips,
+                y='total_bill', x='day', color='day',
+            )
+        ),
+        CodeClipboard(
+            text="""
+               ```python
+               import vizro.models as vm
+               import vizro.plotly.express as px
+               from vizro import Vizro
+
+               tips = px.data.tips()
+
+               page = vm.Page(
+                   title="Boxplot",
+                   components=[
+                       vm.Graph(
+                            figure=px.boxplot(
+                                data_frame=tips,
+                                y='total_bill', x='day', color='day',
+                            )
+                        ),
+                   ]
+               )
+
+               dashboard = vm.Dashboard(pages=[page])
+               Vizro().build(dashboard).run()
+               ```
+
+               """
+        ),
+    ],
+)
+
+
+violin = vm.Page(
+    title="Violin",
+    layout=vm.Layout(
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
+    ),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a violin?
+
+            A Violin Plot is similar to a Box Plot, but works better for visualising more complex distributions and their probability density at different values.
+            
+            &nbsp;
+
+            #### When to use it?
+
+            Use this chart to go beyond the simple Box Plot and show the distribution shape of the data, the inter-quartile range, the confidence intervals and the median.
+        """
+        ),
+        vm.Graph(
+            figure=px.violin(
+                data_frame=tips,
+                y='total_bill', x='day', color='day',
+            )
+        ),
+        CodeClipboard(
+            text="""
+               ```python
+               import vizro.models as vm
+               import vizro.plotly.express as px
+               from vizro import Vizro
+
+               tips = px.data.tips()
+
+               page = vm.Page(
+                   title="Violin",
+                   components=[
+                       vm.Graph(
+                            figure=px.violin(
+                                data_frame=tips,
+                                y='total_bill', x='day', color='day',
+                            )
+                        ),
                    ]
                )
 
