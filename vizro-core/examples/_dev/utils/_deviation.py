@@ -7,6 +7,7 @@ from ._charts import CodeClipboard, FlexContainer, Markdown
 
 gapminder = px.data.gapminder()
 iris = px.data.iris()
+stocks = px.data.stocks()
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
@@ -15,20 +16,19 @@ vm.Container.add_type("components", Markdown)
 line = vm.Page(
     title="Line",
     layout=vm.Layout(
-        grid=[[0, 0, 1, 1, 1]] * 3 + [[2, 2, 1, 1, 1]] * 4,
-        col_gap="80px",
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
     ),
     components=[
         vm.Card(
             text="""
 
-            ### What is a Line?
+            #### What is a Line?
 
             A Line chart presents a series of data points over a continuous interval or time period, joined together with straight lines.
 
             &nbsp;
 
-            ### When to use it?
+            #### When to use it?
 
             You should select a Line chart when you want to show trends and invite analysis of how the data has changed
             over time. Usually, your y-axis will show a quantitative value and your x-axis will be marked as a timescale
@@ -37,9 +37,7 @@ line = vm.Page(
             up your chart and making it harder for the audience to read.
         """
         ),
-        vm.Graph(
-            figure=px.line(gapminder, x="year", y="lifeExp", color="continent")
-        ),
+        vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
         CodeClipboard(
             text="""
                ```python
@@ -50,10 +48,10 @@ line = vm.Page(
                gapminder = px.data.gapminder()
 
                page = vm.Page(
-                   title="Scatter",
+                   title="Line",
                    components=[
                        vm.Graph(
-                            figure=px.line(gapminder, x="year", y="lifeExp", color="continent")
+                            figure=px.line(stocks, x="date", y="GOOG")
                         )
                     ],
                )
@@ -71,21 +69,19 @@ line = vm.Page(
 scatter = vm.Page(
     title="Scatter",
     layout=vm.Layout(
-        grid=[[0, 0, 1, 1, 1]] * 3 + [[2, 2, 1, 1, 1]] * 4,
-        col_gap="80px",
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
     ),
     components=[
         vm.Card(
             text="""
 
-            ### What is a scatter?
-
+            #### What is a scatter?
 
             A scatter plot is a two-dimensional data visualisation using dots to represent the values obtained for two different variables - one plotted along the x-axis and the other plotted along the y-axis.
 
             &nbsp;
 
-            ### When to use it?
+            #### When to use it?
 
             Use Scatter Plots when you want to show the relationship between two variables. Scatter plots are sometimes called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when you have paired numerical data and you want to see if one variable impacts the other. However, do remember that correlation is not causation, and another unnoticed variable may be influencing results. Make sure your audience does not draw the wrong conclusions.
         """

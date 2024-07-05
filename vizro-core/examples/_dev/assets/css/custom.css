@@ -66,3 +66,7 @@ code.language-python.hljs {
   font-size: 16px;
   line-height: 20px;
 }
+
+#left-main {
+  width: 288px;
+}

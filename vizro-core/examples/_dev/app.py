@@ -29,14 +29,14 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar, column, line],
+    pages=[homepage, bar, column, line, scatter],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
                 vm.NavLink(
                     label="Deviation",
-                    pages={"Deviation": ["Line"]},
+                    pages={"Deviation": ["Line", "Scatter"]},
                     icon="Stacked Line Chart",
                 ),
                 vm.NavLink(

@@ -6,6 +6,7 @@ import vizro.plotly.express as px
 from ._charts import CodeClipboard, FlexContainer, Markdown
 
 gapminder = px.data.gapminder()
+tips = px.data.tips()
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
@@ -14,14 +15,13 @@ vm.Container.add_type("components", Markdown)
 bar = vm.Page(
     title="Bar",
     layout=vm.Layout(
-        grid=[[0, 0, 1, 1, 1]] * 3 + [[2, 2, 1, 1, 1]] * 4,
-        col_gap="80px",
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
     ),
     components=[
         vm.Card(
             text="""
 
-            ### What is a bar chart?
+            #### What is a bar chart?
 
             A Bar chart displays bars in lengths proportional to the values they represent. One axis of
             the chart shows the categories to compare and the other axis provides a value scale,
@@ -29,7 +29,7 @@ bar = vm.Page(
 
             &nbsp;
 
-            ### When to use the bar chart?
+            #### When to use the bar chart?
 
             Select a Bar chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can
@@ -40,7 +40,14 @@ bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(data_frame=gapminder.query("country == 'China'"), y="year", x="lifeExp", orientation="h")
+            figure=px.bar(
+                data_frame=tips.groupby("day")
+                .agg({"total_bill": "sum"})
+                .reset_index(),
+                x="total_bill",
+                y="day",
+                orientation="h",
+            )
         ),
         CodeClipboard(
             text="""
@@ -49,12 +56,14 @@ bar = vm.Page(
                import vizro.plotly.express as px
                from vizro import Vizro
 
-               gapminder = px.data.gapminder()
+               tips = px.data.tips()
 
                page = vm.Page(
                    title="Bar",
                    components=[
-                      vm.Graph(figure=px.bar(data_frame=gapminder.query("country == 'Germany'"), x="year", y="pop"))
+                     vm.Graph(
+            figure=px.bar(data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(), x="total_bill", y="day",orientation="h")
+        )
                    ]
                )
 
@@ -71,21 +80,20 @@ bar = vm.Page(
 column = vm.Page(
     title="Column",
     layout=vm.Layout(
-        grid=[[0, 0, 1, 1, 1]] * 3 + [[2, 2, 1, 1, 1]] * 4,
-        col_gap="80px",
+        grid=[[0, 0, 0, 0, 0]] * 1 + [[1, 1, 1, 2, 2]] * 2,
     ),
     components=[
         vm.Card(
             text="""
 
-            ### What is a column chart?
+            #### What is a column chart?
 
             A Column chart is a vertical Bar chart, with column lengths varying according to the
             categorical value they represent. The scale is presented on the y-axis, starting with zero.
 
             &nbsp;
 
-            ### When to use the column chart?
+            #### When to use the column chart?
 
             Select a Column chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents `how many?` in each category. You can
@@ -95,7 +103,13 @@ column = vm.Page(
 
         """
         ),
-        vm.Graph(figure=px.bar(data_frame=gapminder.query("country == 'China'"), x="year", y="lifeExp")),
+        vm.Graph(
+            figure=px.bar(
+                data_frame=gapminder.query("country == 'China'"),
+                x="year",
+                y="gdpPercap",
+            )
+        ),
         CodeClipboard(
             text="""
                ```python
@@ -108,7 +122,11 @@ column = vm.Page(
                page = vm.Page(
                    title="Column",
                    components=[
-                      vm.Graph(figure=px.bar(data_frame=gapminder.query("country == 'China'"), x="year", y="pop"))
+                      vm.Graph(
+                          figure=px.bar(
+                              data_frame=gapminder.query("country == 'China'"), x="year", y="gdpPercap"
+                          )
+                      )
                    ]
                )
 
