@@ -56,7 +56,7 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatMo
         if any(model in model_list for model_list in SUPPORTED_MODELS.values()):
             vendor = model_to_vendor[model]
             if DEFAULT_WRAPPER_MAP.get(vendor) is None:
-                raise ValueError(f"Addtitional library to support {vendor} models is not installed.")
+                raise ValueError(f"Additional library to support {vendor} models is not installed.")
             return DEFAULT_WRAPPER_MAP.get(vendor)(model_name=model, temperature=DEFAULT_TEMPERATURE)
 
     raise ValueError(
