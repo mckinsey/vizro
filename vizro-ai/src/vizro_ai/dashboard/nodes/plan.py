@@ -59,7 +59,7 @@ class Component(BaseModel):
             return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_proxy_model(
-                query=self.component_description, model=model, result_model=vm.Card, df_metadata=df_metadata
+                query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata=df_metadata
             )
 
 
@@ -142,7 +142,7 @@ class Control(BaseModel):
                 df_cols=_df_cols, df_sample=_df_sample, available_components=available_components
             )
             proxy = _get_proxy_model(
-                query=filter_prompt, model=model, result_model=result_proxy, df_metadata=df_metadata
+                query=filter_prompt, llm_model=model, result_model=result_proxy, df_metadata=df_metadata
             )
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
@@ -199,7 +199,7 @@ class Layout(BaseModel):
 
         try:
             proxy = _get_proxy_model(
-                query=self.layout_description, model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
+                query=self.layout_description, llm_model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
@@ -238,7 +238,7 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: Dict[str, Dict[str, str]],
 ) -> DashboardPlanner:
-    return _get_proxy_model(query=query, model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
+    return _get_proxy_model(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
 def _print_dashboard_plan(dashboard_plan) -> None:
