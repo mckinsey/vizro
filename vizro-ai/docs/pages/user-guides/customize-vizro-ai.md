@@ -29,7 +29,7 @@ Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/mod
 
 These models offer different levels of performance and cost to Vizro-AI users:
 
-* The **gpt-3.5** model series have lower price points and fast speeds for providing answers, but do not offer sophisticated charting.
+* The **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
 
 * Consider upgrading to the **gpt-4** and **gpt-4o** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
 
