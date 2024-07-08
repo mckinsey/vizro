@@ -53,7 +53,6 @@ class NavBar(VizroBaseModel):
             icon_default = "filter_9+" if position > 9 else f"filter_{position}"
             item.icon = item.icon or icon_default
 
-
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
         # here.
         for item in self.items:

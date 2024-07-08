@@ -14,95 +14,107 @@ vm.Container.add_type("components", FlexContainer)
 
 DEVIATION_CHARTS = sorted(["line", "scatter", "slope", "lollipop", "diverging-bar"])
 CORRELATION_CHARTS = ["scatter"]
-RANKING_CHARTS = sorted([
-    "column",
-    "stacked-column",
-    "ordered-bubble",
-    "column-line",
-    "bar",
-    "donut",
-    "arc",
-    "lollipop",
-    "waterfall",
-    "diverging-bar",
-    "boxplot",
-])
-DISTRIBUTION_CHARTS = sorted([
-    "histogram",
-    "butterfly",
-    "pie",
-    "donut",
-    "arc",
-    "violin",
-    "lollipop",
-    "cumulative-curve",
-    "waterfall",
-    "treemap",
-    "venn",
-    "barcode",
-])
-MAGNITUDE_CHARTS = sorted([
-    "column",
-    "marimekko",
-    "stacked-column",
-    "ordered-bubble",
-    "column-line",
-    "surplus",
-    "butterfly",
-    "bubble-timeline",
-    "bar",
-    "pie",
-    "donut",
-    "arc",
-    "violin",
-    "slope",
-    "lollipop",
-    "cumulative-curve",
-    "waterfall",
-    "treemap",
-    "venn",
-    "diverging-bar",
-    "bullet",
-    "dot-plot",
-])
-TIME_CHARTS = sorted([
-    "column",
-    "gantt",
-    "column-line",
-    "bubble-timeline",
-    "bar",
-    "line",
-    "scatter",
-    "lollipop",
-    "diverging-bar",
-    "stepped-line",
-    "sparkline",
-])
-PART_TO_WHOLE_CHARTS = sorted([
-    "marimekko",
-    "stacked-column",
-    "column-line",
-    "pie",
-    "donut",
-    "arc",
-    "waterfall",
-    "treemap",
-    "venn",
-])
+RANKING_CHARTS = sorted(
+    [
+        "column",
+        "stacked-column",
+        "ordered-bubble",
+        "column-line",
+        "bar",
+        "donut",
+        "arc",
+        "lollipop",
+        "waterfall",
+        "diverging-bar",
+        "boxplot",
+    ]
+)
+DISTRIBUTION_CHARTS = sorted(
+    [
+        "histogram",
+        "butterfly",
+        "pie",
+        "donut",
+        "arc",
+        "violin",
+        "lollipop",
+        "cumulative-curve",
+        "waterfall",
+        "treemap",
+        "venn",
+        "barcode",
+    ]
+)
+MAGNITUDE_CHARTS = sorted(
+    [
+        "column",
+        "marimekko",
+        "stacked-column",
+        "ordered-bubble",
+        "column-line",
+        "surplus",
+        "butterfly",
+        "bubble-timeline",
+        "bar",
+        "pie",
+        "donut",
+        "arc",
+        "violin",
+        "slope",
+        "lollipop",
+        "cumulative-curve",
+        "waterfall",
+        "treemap",
+        "venn",
+        "diverging-bar",
+        "bullet",
+        "dot-plot",
+    ]
+)
+TIME_CHARTS = sorted(
+    [
+        "column",
+        "gantt",
+        "column-line",
+        "bubble-timeline",
+        "bar",
+        "line",
+        "scatter",
+        "lollipop",
+        "diverging-bar",
+        "stepped-line",
+        "sparkline",
+    ]
+)
+PART_TO_WHOLE_CHARTS = sorted(
+    [
+        "marimekko",
+        "stacked-column",
+        "column-line",
+        "pie",
+        "donut",
+        "arc",
+        "waterfall",
+        "treemap",
+        "venn",
+    ]
+)
 FLOW_CHARTS = sorted(["gantt", "line", "slope", "stepped-line"])
 SPATIAL_CHARTS = sorted(["choropleth", "dot-density", "flow-map"])
 
-ALL_CHARTS = sorted(set(
-    DEVIATION_CHARTS
-    + CORRELATION_CHARTS
-    + RANKING_CHARTS
-    + DISTRIBUTION_CHARTS
-    + MAGNITUDE_CHARTS
-    + TIME_CHARTS
-    + PART_TO_WHOLE_CHARTS
-    + FLOW_CHARTS
-    + SPATIAL_CHARTS
-))
+ALL_CHARTS = sorted(
+    set(
+        DEVIATION_CHARTS
+        + CORRELATION_CHARTS
+        + RANKING_CHARTS
+        + DISTRIBUTION_CHARTS
+        + MAGNITUDE_CHARTS
+        + TIME_CHARTS
+        + PART_TO_WHOLE_CHARTS
+        + FLOW_CHARTS
+        + SPATIAL_CHARTS
+    )
+)
 
 
 # HOMEPAGE -------------------------------------------------------------
