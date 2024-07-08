@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from ._charts import CodeClipboard, FlexContainer, Markdown
+from ._components import CodeClipboard, FlexContainer, Markdown
 
 PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
 
@@ -26,7 +26,8 @@ line = vm.Page(
 
             #### What is a Line?
 
-            A Line chart presents a series of data points over a continuous interval or time period, joined together with straight lines.
+            A Line chart presents a series of data points over a continuous interval or time period, joined together
+            with straight lines.
 
             &nbsp;
 
@@ -77,7 +78,7 @@ scatter = vm.Page(
 
             #### What is a scatter?
 
-            A scatter plot is a two-dimensional data visualisation using dots to represent the values obtained for two
+            A scatter plot is a two-dimensional data visualization using dots to represent the values obtained for two
             different variables - one plotted along the x-axis and the other plotted along the y-axis.
 
             &nbsp;
@@ -138,7 +139,7 @@ bar = vm.Page(
 
             Select a Bar chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can
-            arrange your bars in any order to fit the message you wish to emphasise. Be mindful of labelling
+            arrange your bars in any order to fit the message you wish to emphasize. Be mindful of labeling
             clearly when you have a large number of bars. You may need to include a legend,
             or use abbreviations in the chart with fuller descriptions below of the terms used.
 
@@ -198,8 +199,8 @@ column = vm.Page(
 
             Select a Column chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents `how many?` in each category. You can
-            arrange your columns in any order to fit the message you wish to emphasise. Be mindful of
-            labelling clearly when you have a large number of columns. You may need to include a legend,
+            arrange your columns in any order to fit the message you wish to emphasize. Be mindful of
+            labeling clearly when you have a large number of columns. You may need to include a legend,
             or use abbreviations in the chart with fuller descriptions below of the terms used.
 
         """
@@ -250,7 +251,8 @@ pie = vm.Page(
 
             #### What is a pie chart?
 
-            A Pie chart is a circular chart divided into segments to show proportions and percentages between categories. The circle represents the whole.
+            A Pie chart is a circular chart divided into segments to show proportions and percentages between
+            categories. The circle represents the whole.
 
             &nbsp;
 
@@ -260,8 +262,8 @@ pie = vm.Page(
             proportionately, with percentages highlighted. The different values you present must add up to a total and
             equal 100%.
 
-            The downsides are that Pie charts tend to occupy more space than other charts, they don’t
-            work well with more than a few values because labelling small segments is challenging, and it can be
+            The downsides are that Pie charts tend to occupy more space than other charts, they don`t
+            work well with more than a few values because labeling small segments is challenging, and it can be
             difficult to accurately compare the sizes of the segments.
 
         """
@@ -313,13 +315,16 @@ donut = vm.Page(
 
             #### What is a donut chart?
 
-            A Donut chart looks like a Pie chart, but has a blank space in the centre which may contain additional information.
+            A Donut chart looks like a Pie chart, but has a blank space in the center which may contain additional
+            information.
 
             &nbsp;
 
             #### When to use it?
 
-            A Donut chart can be used in place of a Pie chart, particularly when you are short of space or have extra information you would like to share about the data. It may also be more effective if you wish your audience to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
+            A Donut chart can be used in place of a Pie chart, particularly when you are short of space or have extra
+            information you would like to share about the data. It may also be more effective if you wish your audience
+            to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
 
         """
         ),
@@ -371,15 +376,19 @@ boxplot = vm.Page(
 
             #### What is a boxplot?
 
-            A Box Plot (also known as a Box and Whisker Plot) provides a visual display of multiple datasets, indicating the median (centre) and the range of the data for each.
+            A Box Plot (also known as a Box and Whisker Plot) provides a visual display of multiple datasets,
+            indicating the median (center) and the range of the data for each.
 
             &nbsp;
 
             #### When to use it?
 
-            Choose a Box Plot when you need to summarise distributions between many groups or datasets. It takes up less space than many other charts.
+            Choose a Box Plot when you need to summarize distributions between many groups or datasets. It takes up
+            less space than many other charts.
 
-            Create boxes to display the median, and the upper and lower quartiles. Add ‘whiskers’ to highlight variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with the whiskers.
+            Create boxes to display the median, and the upper and lower quartiles. Add `whiskers` to highlight
+            variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with
+            the whiskers.
 
         """
         ),
@@ -431,13 +440,15 @@ violin = vm.Page(
 
             #### What is a violin?
 
-            A Violin Plot is similar to a Box Plot, but works better for visualising more complex distributions and their probability density at different values.
+            A Violin Plot is similar to a Box Plot, but works better for visualising more complex distributions and
+            their probability density at different values.
 
             &nbsp;
 
             #### When to use it?
 
-            Use this chart to go beyond the simple Box Plot and show the distribution shape of the data, the inter-quartile range, the confidence intervals and the median.
+            Use this chart to go beyond the simple Box Plot and show the distribution shape of the data, the
+            inter-quartile range, the confidence intervals and the median.
         """
         ),
         vm.Graph(

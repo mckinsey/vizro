@@ -12,7 +12,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field
 
 
-# CUSTOM COMPONENTS -------------------------------------------------------------
 class CodeClipboard(vm.VizroBaseModel):
     type: Literal["code_clipboard"] = "code_clipboard"
     title: str = "Code"

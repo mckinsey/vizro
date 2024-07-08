@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from ._charts import CodeClipboard, FlexContainer, Markdown
+from ._components import CodeClipboard, FlexContainer, Markdown
 
 gapminder = px.data.gapminder()
 vm.Page.add_type("components", CodeClipboard)
@@ -203,7 +203,7 @@ home_ranking = vm.Container(
         Markdown(
             text="""
             Ranking enables you to present items in an ordered list. You will use this when you want to highlight the
-            position of an item rather than its absolute or relative value. You might want to emphasise the most
+            position of an item rather than its absolute or relative value. You might want to emphasize the most
             interesting points with highlighting or labels to ensure the reader understands what matters most.
             """,
             classname="intro-text",
@@ -232,9 +232,9 @@ home_distribution = vm.Container(
         Markdown(
             text="""
             Distribution helps you to present all the possible values (or intervals) of your data and how often they
-            occur. You can organise the data to show the number or percentage of items in a specified group, what shape
-            the group takes, where the centre lies, and how much variability there is in the data. This shape
-            (or ‘skew’) of a distribution can be a powerful way for you to highlight either the existence or lack of
+            occur. You can organize the data to show the number or percentage of items in a specified group, what shape
+            the group takes, where the center lies, and how much variability there is in the data. This shape
+            (or `skew`) of a distribution can be a powerful way for you to highlight either the existence or lack of
             uniformity or equality in the data.
             """,
             classname="intro-text",
@@ -262,7 +262,7 @@ home_magnitude = vm.Container(
     components=[
         Markdown(
             text="""
-            Magnitude allows you to emphasise size comparisons of ‘counted’ items in your data set. You can show
+            Magnitude allows you to emphasize size comparisons of `counted` items in your data set. You can show
             relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances
             are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
             percentages.
