@@ -77,16 +77,16 @@ scatter = vm.Page(
 
             #### What is a scatter?
 
-            A scatter plot is a two-dimensional data visualisation using dots to represent the values obtained for two 
+            A scatter plot is a two-dimensional data visualisation using dots to represent the values obtained for two
             different variables - one plotted along the x-axis and the other plotted along the y-axis.
 
             &nbsp;
 
             #### When to use it?
 
-            Use Scatter Plots when you want to show the relationship between two variables. Scatter plots are sometimes 
-            called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when 
-            you have paired numerical data and you want to see if one variable impacts the other. However, do remember 
+            Use Scatter Plots when you want to show the relationship between two variables. Scatter plots are sometimes
+            called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when
+            you have paired numerical data and you want to see if one variable impacts the other. However, do remember
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """
         ),
@@ -257,11 +257,11 @@ pie = vm.Page(
             #### When to use it?
 
             Use the Pie chart when you need to show your audience a quick view of how data is distributed
-            proportionately, with percentages highlighted. The different values you present must add up to a total and 
-            equal 100%. 
-            
-            The downsides are that Pie charts tend to occupy more space than other charts, they don’t 
-            work well with more than a few values because labelling small segments is challenging, and it can be 
+            proportionately, with percentages highlighted. The different values you present must add up to a total and
+            equal 100%.
+
+            The downsides are that Pie charts tend to occupy more space than other charts, they don’t
+            work well with more than a few values because labelling small segments is challenging, and it can be
             difficult to accurately compare the sizes of the segments.
 
         """
