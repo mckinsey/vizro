@@ -2,6 +2,10 @@
   padding-left: 8px;
 }
 
+#left-main {
+  width: 288px;
+}
+
 img[src*="#chart-icon"] {
   width: 100%;
 }
@@ -11,32 +15,6 @@ img[src*="#chart-icon"] {
   position: absolute;
   right: 14px;
   top: 12px;
-}
-
-code.language-python.hljs {
-  padding: 0;
-}
-
-.hljs {
-  background: unset;
-  color: unset;
-  font-family: unset;
-}
-
-.hljs-string {
-  color: var(--text-code-string);
-  font-family: unset;
-}
-
-.hljs-keyword {
-  color: var(--text-code-keyword);
-  font-family: unset;
-}
-
-.html-intro {
-  border-left: 4px solid var(--text-secondary);
-  color: var(--text-secondary);
-  padding: 12px;
 }
 
 .flex-container .card {
@@ -65,8 +43,4 @@ code.language-python.hljs {
 .intro-text p {
   font-size: 16px;
   line-height: 20px;
-}
-
-#left-main {
-  width: 288px;
 }

@@ -1,0 +1,19 @@
+code.language-python.hljs {
+  padding: 0;
+}
+
+.hljs {
+  background: unset;
+  color: unset;
+  font-family: unset;
+}
+
+.hljs-string {
+  color: var(--text-code-string);
+  font-family: unset;
+}
+
+.hljs-keyword {
+  color: var(--text-code-keyword);
+  font-family: unset;
+}
