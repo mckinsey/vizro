@@ -173,6 +173,7 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],
+                    optionHeight=32,
                     value="A",
                     multi=False,
                     persistence=True,

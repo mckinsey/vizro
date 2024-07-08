@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update `optionHeight` of `vm.Dropdown` dynamically based on character length. ([#573](https://github.com/mckinsey/vizro/pull/573))
+- Update `optionHeight` of `vm.Dropdown` dynamically based on character length. ([#574](https://github.com/mckinsey/vizro/pull/574))
 
 <!--
 ### Deprecated
