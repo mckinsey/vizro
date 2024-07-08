@@ -41,7 +41,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Correlation",
                     pages={"Deviation": ["Scatter"]},
-                    icon="Stacked Line Chart",
+                    icon="Bubble Chart",
                 ),
                 vm.NavLink(
                     label="Ranking",
@@ -51,12 +51,32 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Distribution",
                     pages={"Distribution": ["Pie", "Donut", "Violin"]},
-                    icon="Pie Chart",
+                    icon="Waterfall Chart",
                 ),
                 vm.NavLink(
                     label="Magnitude",
                     pages={"Magnitude": ["Bar", "Column"]},
                     icon="Bar Chart",
+                ),
+                vm.NavLink(
+                    label="Time",
+                    pages={"Time": ["Bar", "Column", "Scatter", "Line"]},
+                    icon="Timeline",
+                ),
+                vm.NavLink(
+                    label="Part-to-whole",
+                    pages={"Part-to-whole": ["Donut", "Pie"]},
+                    icon="Donut Small",
+                ),
+                vm.NavLink(
+                    label="Flow",
+                    pages={"Flow": ["Line"]},
+                    icon="Stacked Line Chart",
+                ),
+                vm.NavLink(
+                    label="Spatial",
+                    pages={"Spatial": ["Line"]},
+                    icon="Map",
                 ),
             ]
         )
