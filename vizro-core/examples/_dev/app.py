@@ -1,69 +1,38 @@
 """Dev app to try things out."""
 
-from typing import Optional
-
-import dash_bootstrap_components as dbc
-import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
-from dash import html
 from vizro import Vizro
-from vizro.figures import kpi_card
-from vizro.models.types import capture
 
-tips = px.data.tips
+page_1 = vm.Page(title="Page 1", components=[vm.Card(text="Placeholder")])
+page_2 = vm.Page(title="Page 2", components=[vm.Card(text="Placeholder")])
+page_3 = vm.Page(title="Page 3", components=[vm.Card(text="Placeholder")])
+page_4 = vm.Page(title="Page 4", components=[vm.Card(text="Placeholder")])
+page_5 = vm.Page(title="Page 5", components=[vm.Card(text="Placeholder")])
+page_6 = vm.Page(title="Page 6", components=[vm.Card(text="Placeholder")])
+page_7 = vm.Page(title="Page 7", components=[vm.Card(text="Placeholder")])
+page_8 = vm.Page(title="Page 8", components=[vm.Card(text="Placeholder")])
+page_9 = vm.Page(title="Page 9", components=[vm.Card(text="Placeholder")])
+page_10 = vm.Page(title="Page 10", components=[vm.Card(text="Placeholder")])
 
-
-@capture("figure")  # (1)!
-def custom_kpi_card(  # noqa: PLR0913
-    data_frame: pd.DataFrame,
-    value_column: str,
-    *,
-    value_format: str = "{value}",
-    agg_func: str = "sum",
-    title: Optional[str] = None,
-    icon: Optional[str] = None,
-) -> dbc.Card:  # (2)!
-    """Creates a custom KPI card."""
-    title = title or f"{agg_func} {value_column}".title()
-    value = data_frame[value_column].agg(agg_func)
-
-    header = dbc.CardHeader(
-        [
-            html.H2(title),
-            html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
-        ]
-    )
-    body = dbc.CardBody([value_format.format(value=value)])
-    return dbc.Card([header, body], className="card-kpi")
-
-
-page = vm.Page(
-    title="Create your own KPI card",
-    layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
-    components=[
-        vm.Figure(
-            figure=kpi_card(  # (5)!
-                data_frame=tips,
-                value_column="tip",
-                value_format="${value:.2f}",
-                icon="shopping_cart",
-                title="Default KPI card",
-            )
-        ),
-        vm.Figure(
-            figure=custom_kpi_card(  # (6)!
-                data_frame=tips,
-                value_column="tip",
-                value_format="${value:.2f}",
-                icon="payment",
-                title="Custom KPI card",
-            )
-        ),
-    ],
+dashboard = vm.Dashboard(
+    pages=[page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Page 1", pages=["Page 1"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 2"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 3"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 4"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 5"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 6"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 7"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 8"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 9"], icon="Home"),
+                vm.NavLink(label="Page 1", pages=["Page 10"], icon="Home"),
+            ]
+        )
+    ),
 )
-
-dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
