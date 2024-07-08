@@ -255,7 +255,7 @@ pie = vm.Page(
             #### What is a pie chart?
 
             A Pie chart is a circular chart divided into segments to show proportions and percentages between categories. The circle represents the whole.
-            
+
             &nbsp;
 
             #### When to use it?
@@ -269,7 +269,8 @@ pie = vm.Page(
         vm.Graph(
             figure=px.pie(
                 data_frame=tips,
-                values='tip', names='day',
+                values="tip",
+                names="day",
             )
         ),
         CodeClipboard(
@@ -327,7 +328,9 @@ donut = vm.Page(
         vm.Graph(
             figure=px.pie(
                 data_frame=tips,
-                values='tip', names='day', hole=0.4,
+                values="tip",
+                names="day",
+                hole=0.4,
             )
         ),
         CodeClipboard(
@@ -361,7 +364,6 @@ donut = vm.Page(
 )
 
 
-
 boxplot = vm.Page(
     title="Boxplot",
     layout=vm.Layout(
@@ -388,7 +390,9 @@ boxplot = vm.Page(
         vm.Graph(
             figure=px.box(
                 data_frame=tips,
-                y='total_bill', x='day', color='day',
+                y="total_bill",
+                x="day",
+                color="day",
             )
         ),
         CodeClipboard(
@@ -434,7 +438,7 @@ violin = vm.Page(
             #### What is a violin?
 
             A Violin Plot is similar to a Box Plot, but works better for visualising more complex distributions and their probability density at different values.
-            
+
             &nbsp;
 
             #### When to use it?
@@ -445,7 +449,9 @@ violin = vm.Page(
         vm.Graph(
             figure=px.violin(
                 data_frame=tips,
-                y='total_bill', x='day', color='day',
+                y="total_bill",
+                x="day",
+                color="day",
             )
         ),
         CodeClipboard(
