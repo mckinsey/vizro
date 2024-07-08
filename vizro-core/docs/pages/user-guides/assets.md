@@ -268,8 +268,8 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 CSS properties will be applied with the last served file taking precedence. The order of serving is:
 
-    1. Dash built-in stylesheets
-    2. Vizro built-in stylesheets
-    3. User assets folder stylesheets
+1. Dash built-in stylesheets
+2. Vizro built-in stylesheets
+3. User assets folder stylesheets
 
 Within each of these categories, individual files are served in alphanumeric order.
