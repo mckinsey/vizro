@@ -15,7 +15,9 @@ There are already a few action functions you can reuse:
 To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
-Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
+??? note "Note on `Trigger`"
+    
+    Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
 The below sections are guides on how to use pre-defined action functions.
 
