@@ -117,7 +117,8 @@ home_all = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in ALL_CHARTS
             ],
@@ -145,7 +146,8 @@ home_deviation = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in DEVIATION_CHARTS
             ],
@@ -173,7 +175,8 @@ home_correlation = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in CORRELATION_CHARTS
             ],
@@ -201,7 +204,8 @@ home_ranking = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in RANKING_CHARTS
             ],
@@ -231,7 +235,8 @@ home_distribution = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in DISTRIBUTION_CHARTS
             ],
@@ -289,7 +294,8 @@ home_time = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in TIME_CHARTS
             ],
@@ -316,7 +322,8 @@ home_part = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in PART_TO_WHOLE_CHARTS
             ],
@@ -344,7 +351,8 @@ home_flow = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in FLOW_CHARTS
             ],
@@ -370,7 +378,8 @@ home_spatial = vm.Container(
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
                             #### {chart.replace("-", " ").title()}
-                            """
+                            """,
+                    href=f"/{chart}",
                 )
                 for chart in SPATIAL_CHARTS
             ],
