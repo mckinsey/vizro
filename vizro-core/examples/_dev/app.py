@@ -36,12 +36,17 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Deviation",
                     pages={"Deviation": ["Line", "Scatter"]},
+                    icon="Planner Review",
+                ),
+                vm.NavLink(
+                    label="Correlation",
+                    pages={"Deviation": ["Scatter"]},
                     icon="Stacked Line Chart",
                 ),
                 vm.NavLink(
-                    label="Magnitude",
-                    pages={"Magnitude": ["Bar", "Column"]},
-                    icon="Bar Chart",
+                    label="Ranking",
+                    pages={"Ranking": ["Boxplot"]},
+                    icon="Stacked Bar Chart",
                 ),
                 vm.NavLink(
                     label="Distribution",
@@ -49,9 +54,9 @@ dashboard = vm.Dashboard(
                     icon="Pie Chart",
                 ),
                 vm.NavLink(
-                    label="Ranking",
-                    pages={"Ranking": ["Boxplot"]},
-                    icon="Trail Length Short",
+                    label="Magnitude",
+                    pages={"Magnitude": ["Bar", "Column"]},
+                    icon="Bar Chart",
                 ),
             ]
         )
