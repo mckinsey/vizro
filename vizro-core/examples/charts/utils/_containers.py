@@ -117,8 +117,7 @@ ALL_CHARTS = sorted(
 )
 
 
-# HOMEPAGE -------------------------------------------------------------
-home_all = vm.Container(
+container_all = vm.Container(
     title="All",
     components=[
         FlexContainer(
@@ -138,7 +137,7 @@ home_all = vm.Container(
     ],
 )
 
-home_deviation = vm.Container(
+container_deviation = vm.Container(
     title="Deviation",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -167,7 +166,7 @@ home_deviation = vm.Container(
     ],
 )
 
-home_correlation = vm.Container(
+container_correlation = vm.Container(
     title="Correlation",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -196,7 +195,7 @@ home_correlation = vm.Container(
     ],
 )
 
-home_ranking = vm.Container(
+container_ranking = vm.Container(
     title="Ranking",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -225,7 +224,7 @@ home_ranking = vm.Container(
     ],
 )
 
-home_distribution = vm.Container(
+container_distribution = vm.Container(
     title="Distribution",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -256,7 +255,7 @@ home_distribution = vm.Container(
     ],
 )
 
-home_magnitude = vm.Container(
+container_magnitude = vm.Container(
     title="Magnitude",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -286,7 +285,7 @@ home_magnitude = vm.Container(
     ],
 )
 
-home_time = vm.Container(
+container_time = vm.Container(
     title="Time",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -315,7 +314,7 @@ home_time = vm.Container(
     ],
 )
 
-home_part = vm.Container(
+container_part = vm.Container(
     title="Part-to-whole",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -343,7 +342,7 @@ home_part = vm.Container(
     ],
 )
 
-home_flow = vm.Container(
+container_flow = vm.Container(
     title="Flow",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[
@@ -372,7 +371,7 @@ home_flow = vm.Container(
     ],
 )
 
-home_spatial = vm.Container(
+container_spatial = vm.Container(
     title="Spatial",
     layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
     components=[

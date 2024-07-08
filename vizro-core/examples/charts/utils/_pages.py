@@ -440,7 +440,7 @@ violin = vm.Page(
 
             #### What is a violin?
 
-            A Violin Plot is similar to a Box Plot, but works better for visualising more complex distributions and
+            A Violin Plot is similar to a Box Plot, but works better for visualizing more complex distributions and
             their probability density at different values.
 
             &nbsp;

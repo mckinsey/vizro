@@ -1,26 +1,36 @@
 """Example to show dashboard configuration specified as pydantic models."""
 
 import vizro.models as vm
-from utils._containers import *
-from utils._pages import *
+from utils._containers import (
+    container_all,
+    container_correlation,
+    container_deviation,
+    container_distribution,
+    container_flow,
+    container_magnitude,
+    container_part,
+    container_ranking,
+    container_spatial,
+    container_time,
+)
+from utils._pages import bar, boxplot, column, donut, line, pie, scatter, violin
 from vizro import Vizro
 
-# HOME PAGE -----
 homepage = vm.Page(
     title="Overview",
     components=[
         vm.Tabs(
             tabs=[
-                home_all,
-                home_deviation,
-                home_correlation,
-                home_ranking,
-                home_distribution,
-                home_magnitude,
-                home_time,
-                home_part,
-                home_flow,
-                home_spatial,
+                container_all,
+                container_deviation,
+                container_correlation,
+                container_ranking,
+                container_distribution,
+                container_magnitude,
+                container_time,
+                container_part,
+                container_flow,
+                container_spatial,
             ]
         ),
     ],
