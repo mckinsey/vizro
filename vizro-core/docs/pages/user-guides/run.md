@@ -77,9 +77,9 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
-### Reloading and debugging
+??? note "Reloading and debugging"
 
-Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
+    Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
 
 ## Gunicorn
 
