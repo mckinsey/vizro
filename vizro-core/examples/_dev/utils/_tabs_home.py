@@ -12,9 +12,9 @@ vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", FlexContainer)
 
 
-DEVIATION_CHARTS = ["line", "scatter", "slope", "lollipop", "diverging-bar"]
+DEVIATION_CHARTS = sorted(["line", "scatter", "slope", "lollipop", "diverging-bar"])
 CORRELATION_CHARTS = ["scatter"]
-RANKING_CHARTS = [
+RANKING_CHARTS = sorted([
     "column",
     "stacked-column",
     "ordered-bubble",
@@ -26,8 +26,8 @@ RANKING_CHARTS = [
     "waterfall",
     "diverging-bar",
     "boxplot",
-]
-DISTRIBUTION_CHARTS = [
+])
+DISTRIBUTION_CHARTS = sorted([
     "histogram",
     "butterfly",
     "pie",
@@ -40,8 +40,8 @@ DISTRIBUTION_CHARTS = [
     "treemap",
     "venn",
     "barcode",
-]
-MAGNITUDE_CHARTS = [
+])
+MAGNITUDE_CHARTS = sorted([
     "column",
     "marimekko",
     "stacked-column",
@@ -64,8 +64,8 @@ MAGNITUDE_CHARTS = [
     "diverging-bar",
     "bullet",
     "dot-plot",
-]
-TIME_CHARTS = [
+])
+TIME_CHARTS = sorted([
     "column",
     "gantt",
     "column-line",
@@ -77,8 +77,8 @@ TIME_CHARTS = [
     "diverging-bar",
     "stepped-line",
     "sparkline",
-]
-PART_TO_WHOLE_CHARTS = [
+])
+PART_TO_WHOLE_CHARTS = sorted([
     "marimekko",
     "stacked-column",
     "column-line",
@@ -88,11 +88,11 @@ PART_TO_WHOLE_CHARTS = [
     "waterfall",
     "treemap",
     "venn",
-]
-FLOW_CHARTS = ["gantt", "line", "slope", "stepped-line"]
-SPATIAL_CHARTS = ["choropleth", "dot-density", "flow-map"]
+])
+FLOW_CHARTS = sorted(["gantt", "line", "slope", "stepped-line"])
+SPATIAL_CHARTS = sorted(["choropleth", "dot-density", "flow-map"])
 
-ALL_CHARTS = (
+ALL_CHARTS = sorted(set(
     DEVIATION_CHARTS
     + CORRELATION_CHARTS
     + RANKING_CHARTS
@@ -102,7 +102,7 @@ ALL_CHARTS = (
     + PART_TO_WHOLE_CHARTS
     + FLOW_CHARTS
     + SPATIAL_CHARTS
-)
+))
 
 
 # HOMEPAGE -------------------------------------------------------------
@@ -119,7 +119,7 @@ home_all = vm.Container(
                             #### {chart.replace("-", " ").title()}
                             """
                 )
-                for chart in set(ALL_CHARTS)
+                for chart in ALL_CHARTS
             ],
         )
     ],
