@@ -17,8 +17,6 @@ from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
 
-MAX_NUMBER_DEFAULT_ICONS = 9
-
 
 class NavBar(VizroBaseModel):
     """Navigation bar to be used as a nav_selector for `Navigation`.
@@ -50,9 +48,9 @@ class NavBar(VizroBaseModel):
         ]
 
         for position, item in enumerate(self.items, 1):
-            # The default icons  (if none are specified) are named filter_1, filter_2, etc. up to filter_9.
+            # The default icons are named filter_1, filter_2, etc. up to filter_9.
             # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
-            icon_default = "filter_9+" if position > MAX_NUMBER_DEFAULT_ICONS else f"filter_{position}"
+            icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
             item.icon = item.icon or icon_default
 
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
