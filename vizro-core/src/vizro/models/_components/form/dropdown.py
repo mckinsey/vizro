@@ -71,6 +71,7 @@ class Dropdown(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
+                    optionHeight=32 if all(len(option) <= 37 for option in full_options) else 60,  # noqa: PLR2004
                     persistence_type="session",
                 ),
             ]
