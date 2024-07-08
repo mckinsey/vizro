@@ -1,87 +1,54 @@
-"""Example to show dashboard configuration specified as pydantic models."""
+"""Dev app to try things out."""
 
+import pandas as pd
 import vizro.models as vm
-from utils._pages_charts import *
-from utils._tabs_home import *
+import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.models.types import capture
 
-# HOME PAGE -----
-homepage = vm.Page(
-    title="Overview",
+df_stocks = px.data.stocks(datetimes=True)
+df_stocks_long = pd.melt(
+    df_stocks,
+    id_vars="date",
+    value_vars=["GOOG", "AAPL", "AMZN", "FB", "NFLX", "MSFT"],
+    var_name="stocks",
+    value_name="value",
+)
+
+
+@capture("graph")
+def vizro_plot(data_frame, stocks_selected, **kwargs):
+    """Custom chart function."""
+    return px.line(data_frame[data_frame["stocks"].isin(stocks_selected)], **kwargs)
+
+
+df_stocks_long["value"] = df_stocks_long["value"].round(3)
+
+page = vm.Page(
+    title="My first page",
     components=[
-        vm.Tabs(
-            tabs=[
-                home_all,
-                home_deviation,
-                home_correlation,
-                home_ranking,
-                home_distribution,
-                home_magnitude,
-                home_time,
-                home_part,
-                home_flow,
-                home_spatial,
-            ]
+        vm.Graph(
+            id="my_graph",
+            figure=vizro_plot(
+                data_frame=df_stocks_long,
+                stocks_selected=list(df_stocks_long["stocks"].unique()),
+                x="date",
+                y="value",
+                color="stocks",
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["my_graph.stocks_selected"],
+            selector=vm.Dropdown(
+                options=[{"label": s, "value": s} for s in df_stocks_long["stocks"].unique()],
+            ),
         ),
     ],
 )
 
-
-dashboard = vm.Dashboard(
-    pages=[homepage, bar, column, line, scatter, pie, donut, boxplot, violin],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
-                vm.NavLink(
-                    label="Deviation",
-                    pages={"Deviation": ["Line", "Scatter"]},
-                    icon="Planner Review",
-                ),
-                vm.NavLink(
-                    label="Correlation",
-                    pages={"Deviation": ["Scatter"]},
-                    icon="Bubble Chart",
-                ),
-                vm.NavLink(
-                    label="Ranking",
-                    pages={"Ranking": ["Boxplot"]},
-                    icon="Stacked Bar Chart",
-                ),
-                vm.NavLink(
-                    label="Distribution",
-                    pages={"Distribution": ["Pie", "Donut", "Violin"]},
-                    icon="Waterfall Chart",
-                ),
-                vm.NavLink(
-                    label="Magnitude",
-                    pages={"Magnitude": ["Bar", "Column"]},
-                    icon="Bar Chart",
-                ),
-                vm.NavLink(
-                    label="Time",
-                    pages={"Time": ["Bar", "Column", "Scatter", "Line"]},
-                    icon="Timeline",
-                ),
-                vm.NavLink(
-                    label="Part-to-whole",
-                    pages={"Part-to-whole": ["Donut", "Pie"]},
-                    icon="Donut Small",
-                ),
-                vm.NavLink(
-                    label="Flow",
-                    pages={"Flow": ["Line"]},
-                    icon="Stacked Line Chart",
-                ),
-                vm.NavLink(
-                    label="Spatial",
-                    pages={"Spatial": ["Line"]},
-                    icon="Map",
-                ),
-            ]
-        )
-    ),
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
