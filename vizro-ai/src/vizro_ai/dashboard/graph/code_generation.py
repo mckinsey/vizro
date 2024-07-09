@@ -5,7 +5,6 @@ import logging
 import operator
 import re
 from typing import Annotated, Any, Dict, List, Union
-from tqdm.notebook import tqdm
 
 import pandas as pd
 import vizro.models as vm
@@ -20,7 +19,6 @@ from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
     _get_dashboard_plan,
-    # _print_dashboard_plan,
 )
 
 try:
@@ -195,7 +193,9 @@ def continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
     logger.info("*** build_page ***")
     df_metadata = state.df_metadata
-    return [Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
+    return [
+        Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages
+    ]
 
 
 def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:

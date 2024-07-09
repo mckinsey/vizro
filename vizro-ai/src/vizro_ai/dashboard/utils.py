@@ -12,6 +12,7 @@ class DashboardOutputs:
     code: str
     dashboard: vm.Dashboard
 
+
 def _execute_step(pbar, description, value):
     pbar.set_description_str(description)
     pbar.update(1)
