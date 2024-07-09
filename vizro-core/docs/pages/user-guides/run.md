@@ -79,7 +79,10 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
 
 !!! note "Reloading and debugging"
 
-    Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, you must restart the entire Jupyter kernel to reload the dashboard and reflect changes in the dashboard configuration.
+    Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, there are two methods to reload the dashboard:
+	
+	* Restart the Jupyter kernel and re-run your notebook.
+	* Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-rerun it. There is no need to restart the Jupyter kernel.
 
 ## Gunicorn
 
