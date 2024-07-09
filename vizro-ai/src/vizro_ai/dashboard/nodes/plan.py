@@ -17,7 +17,6 @@ from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard.nodes._model import _get_proxy_model
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 # For unsupported component and control types, how to handle them?
 # option 1. Ignore silently
@@ -56,7 +55,7 @@ class Component(BaseModel):
         if self.component_type == "Graph":
             return None  # TODO: Implement this
         elif self.component_type == "AgGrid":
-            return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.data_frame))
+            return vm.AgGrid(figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_proxy_model(
                 query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata=df_metadata

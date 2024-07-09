@@ -5,6 +5,7 @@ import logging
 import operator
 import re
 from typing import Annotated, Any, Dict, List, Union
+from tqdm.notebook import tqdm
 
 import pandas as pd
 import vizro.models as vm
@@ -19,7 +20,7 @@ from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
     _get_dashboard_plan,
-    _print_dashboard_plan,
+    # _print_dashboard_plan,
 )
 
 try:
@@ -135,7 +136,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 
     llm = config["configurable"].get("model", None)
     dashboard_plan = _get_dashboard_plan(query=query, model=llm, df_metadata=df_metadata)
-    _print_dashboard_plan(dashboard_plan)
+    # _print_dashboard_plan(dashboard_plan)
 
     return {"dashboard_plan": dashboard_plan}
 
@@ -177,7 +178,6 @@ class BuildPageState(BaseModel):
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:
     """Build a page."""
-    logger.info("*** build_page ***")
     df_metadata = state["df_metadata"]
     page_plan = state["page_plan"]
 
@@ -193,8 +193,9 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
 
 def continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
+    logger.info("*** build_page ***")
     df_metadata = state.df_metadata
-    return [Send("_build_page", {"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
+    return [Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages]
 
 
 def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:

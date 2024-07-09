@@ -1,12 +1,15 @@
 """Module that contains the builder functionality."""
 
 import logging
+# from tqdm import trange, tqdm
+from tqdm.notebook import trange, tqdm
+from time import sleep
 
 import vizro.models as vm
 from vizro_ai.utils.helper import DebugFailure
+from vizro_ai.dashboard.utils import _execute_step
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 class PageBuilder:
@@ -33,7 +36,11 @@ class PageBuilder:
         components = []
         logger.info(f"Building components of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
-        for i in range(len(self._page_plan.components)):
+        for i in trange(
+            len(self._page_plan.components),
+            desc=f"Building components of page: {self._page_plan.title}", 
+            leave=False
+            ):
             logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components[i]}")
             try:
                 components.append(
@@ -74,7 +81,11 @@ class PageBuilder:
         controls = []
         logger.info(f"Building controls of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
-        for i in range(len(self._page_plan.controls)):
+        for i in trange(
+            len(self._page_plan.controls), 
+            desc=f"Building controls of page: {self._page_plan.title}", 
+            leave=False
+            ):
             logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls[i]}")
             control = self._page_plan.controls[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
@@ -88,8 +99,18 @@ class PageBuilder:
     def page(self):
         """Property to get page."""
         if self._page is None:
-            logger.info(f"Building page: {self._page_plan.title}")
+            page_desc = f"Building page: {self._page_plan.title}"
+            logger.info(page_desc)
+            pbar = tqdm(total=5, desc=page_desc)
+
+            title = _execute_step(pbar, page_desc+" --> add title", self._page_plan.title)
+            components = _execute_step(pbar, page_desc+" --> add components", self.components)
+            controls = _execute_step(pbar, page_desc+" --> add controls", self.controls)
+            layout = _execute_step(pbar, page_desc+" --> add layout", self.layout)
+            
             self._page = vm.Page(
-                title=self._page_plan.title, components=self.components, controls=self.controls, layout=self.layout
+                title=title, components=components, controls=controls, layout=layout
             )
+            _execute_step(pbar, page_desc+" --> done", None)
+            pbar.close()
         return self._page
