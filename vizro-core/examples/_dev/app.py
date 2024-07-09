@@ -6,11 +6,15 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 df = px.data.iris()
-
-df["species_long"] = df["species"] + " is one common species you can select in the iris dataset."
 df["species_one_long"] = np.where(
     df["species"] == "setosa", "setosa is one common species you can select in the iris dataset.", df["species"]
 )
+df["species_long"] = df["species"] + " is one common species you can select in the iris dataset."
+df["species_very_long"] = (
+    df["species"]
+    + " is one common species you can select in the iris dataset is one common species you can select in the iris data."
+)
+
 page = vm.Page(
     title="",
     components=[
@@ -23,6 +27,7 @@ page = vm.Page(
         vm.Filter(column="species"),
         vm.Filter(column="species_long"),
         vm.Filter(column="species_one_long"),
+        vm.Filter(column="species_very_long"),
     ],
 )
 
