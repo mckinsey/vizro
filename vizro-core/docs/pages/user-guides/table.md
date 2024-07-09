@@ -37,7 +37,7 @@ To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data.
 As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
 Note that some defaults are set for some arguments (for example, for `columnDefs`) to help with styling and usability.
-Sometimes a parameter may not work because it requires a callback to function. In that case you can try [creating a custom AG Grid callable](custom-tables.md) or reach out to the [Vizro team](mailto:vizro@mckinsey.com) for help.
+Sometimes a parameter may not work because it requires a callback to function. In that case you can try [creating a custom AG Grid callable](custom-tables.md).
 
 
 !!! example "Basic Dash AG Grid"
