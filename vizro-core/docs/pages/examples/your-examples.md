@@ -4,8 +4,7 @@ This page lists videos, blog posts, and examples of Vizro usage in repositories 
 
 If you have something you'd like us to include on the list, or spot something that we should include, let us know:
 
-* by emailing [vizro@mckinsey.com](mailto: vizro@mckinsey.com),
-* or you can [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository,
+* you can [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository,
 * better still, you can [make a PR to contribute](../explanation/contributing.md) to this page.
 
 
