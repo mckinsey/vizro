@@ -39,9 +39,7 @@ Use of Vizro-AI requires the use of a large language model. At present, we only 
 
 To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
 
-!!! note
-
-    We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
+We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
 
 There are two common ways to set up the API key in a development environment.
 
@@ -125,12 +123,10 @@ You should see a return output of the form `x.y.z`.
 
 ## Upgrade
 
+Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
+
 To change the version of Vizro-AI installed:
 
 ```bash
 pip install -U vizro_ai
 ```
-
-!!! tip Check the Vizro-AI release notes
-
-    To upgrade safely, check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
