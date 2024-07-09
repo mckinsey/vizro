@@ -73,7 +73,7 @@ class Dropdown(VizroBaseModel):
                     multi=self.multi,
                     persistence=True,
                     # 37 is the cut-off character length where the text inside the dropdown starts to wrap
-                    optionHeight=32 + 24 * math.floor(max(len(option) for option in full_options) / 37),
+                    optionHeight=32 + 24 * math.floor(max(len(str(option)) for option in full_options) / 37),
                     persistence_type="session",
                 ),
             ]
