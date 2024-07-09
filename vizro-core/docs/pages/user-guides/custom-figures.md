@@ -63,7 +63,7 @@ adjust the return statement of the function.
             title: Optional[str] = None,
             icon: Optional[str] = None,
         ) -> dbc.Card:  # (2)!
-            """Creates a custom KPI Card."""
+            """Creates a custom KPI card."""
             title = title or f"{agg_func} {value_column}".title()
             value = data_frame[value_column].agg(agg_func)
 
@@ -78,7 +78,7 @@ adjust the return statement of the function.
 
 
         page = vm.Page(
-            title="Create your own KPI Card",
+            title="Create your own KPI card",
             layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
             components=[
                 vm.Figure(
@@ -87,7 +87,7 @@ adjust the return statement of the function.
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="shopping_cart",
-                        title="Default KPI Card",
+                        title="Default KPI card",
                     )
                 ),
                 vm.Figure(
@@ -96,7 +96,7 @@ adjust the return statement of the function.
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="payment",
-                        title="Custom KPI Card",
+                        title="Custom KPI card",
                     )
                 ),
             ],
