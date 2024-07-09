@@ -22,23 +22,23 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Update `optionHeight` of `vm.Dropdown` dynamically based on character length. ([#574](https://github.com/mckinsey/vizro/pull/574))
 
--->
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Fixed
 
-- Remove default icon provision for `vm.NavLink` when the icon count exceeds 9 and a user icon is provided.([#572](https://github.com/mckinsey/vizro/pull/572))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 
