@@ -1,4 +1,4 @@
-name: Vizro qa tests trigger
+name: Vizro qa notebooks tests trigger
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
 jobs:
   vizro-qa-trigger-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
-    name: Vizro qa tests trigger
+    name: Vizro qa notebooks tests trigger
     runs-on: ubuntu-latest
     steps:
       - name: Passed fork step
@@ -22,7 +22,7 @@ jobs:
 
   vizro-qa-trigger:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
-    name: Vizro qa tests trigger
+    name: Vizro qa notebooks tests trigger
     environment: vizro_secrets
     runs-on: ubuntu-latest
     steps:
