@@ -1,36 +1,66 @@
 """Dev app to try things out."""
 
-import numpy as np
+import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.figures import kpi_card, kpi_card_reference
 
-df = px.data.iris()
-df["species_one_long"] = np.where(
-    df["species"] == "setosa", "setosa is one common species you can select in the iris dataset.", df["species"]
-)
-df["species_long"] = df["species"] + " is one common species you can select in the iris dataset."
-df["species_very_long"] = (
-    df["species"]
-    + " is one common species you can select in the iris dataset is one common species you can select in the iris data."
-)
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+example_cards = [
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with formatting",
+        value_format="${value:.2f}",
+    ),
+    kpi_card(
+        data_frame=df_kpi,
+        value_column="Actual",
+        title="KPI with icon",
+        icon="shopping_cart",
+    ),
+]
+
+example_reference_cards = [
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference (pos)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        agg_func="median",
+        title="KPI reference (neg)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with formatting",
+        value_format="{value:.2f}$",
+        reference_format="{delta:.2f}$ vs. last year ({reference:.2f}$)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI reference with icon",
+        icon="shopping_cart",
+    ),
+]
 
 page = vm.Page(
-    title="",
-    components=[
-        vm.Graph(
-            id="graph_1",
-            figure=px.scatter(df, title="Title", x="sepal_width", y="sepal_length", color="species"),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="species_long"),
-        vm.Filter(column="species_one_long"),
-        vm.Filter(column="species_very_long"),
-    ],
+    title="KPI Indicators",
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
+    controls=[vm.Filter(column="Category")],
 )
-
 
 dashboard = vm.Dashboard(pages=[page])
 
