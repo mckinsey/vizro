@@ -1,6 +1,5 @@
 """Dev app to try things out."""
 
-import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Dash, html
 from vizro.figures.undecorated import kpi_card, kpi_card_reference
