@@ -5,6 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
+import vizro.models as vm
 
 from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
@@ -162,7 +163,7 @@ class VizroAI:
         dfs: List[pd.DataFrame],
         user_input: str,
         return_elements: bool = False,
-    ) -> DashboardOutputs:
+    ) -> Union[DashboardOutputs, vm.Dashboard]:
         """Create dashboard using vizro via english descriptions, english to dashboard translation.
 
         Args:
@@ -171,7 +172,7 @@ class VizroAI:
             return_elements: Flag to return DashboardOutputs dataclass that includes all possible elements generated.
 
         Returns:
-            The final graph state of the graph.
+            vm.Dashboard or DashboardOutputs dataclass.
 
         """
         runnable = _create_and_compile_graph()

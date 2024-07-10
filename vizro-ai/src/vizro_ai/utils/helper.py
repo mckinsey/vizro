@@ -77,7 +77,8 @@ def _exec_code_and_retrieve_fig(
     from IPython import get_ipython
 
     if show_fig and "\nfig.show()" not in code:
-        code += "\nfig.show()"
+        # code += "\nfig.show()"
+        code = code # to be reverted once the bug is fixed
     elif not show_fig:
         code = code.replace("fig.show()", "")
 

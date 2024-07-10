@@ -39,7 +39,7 @@ DASHBOARD_CODE_TEMPLATE = """
                 """
 
 
-DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], str]]]
+DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], pd.DataFrame]]]
 """Cleaned dataframe names and their metadata."""
 
 Messages = List[BaseMessage]
@@ -105,7 +105,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
         cleaned_df_name = re.sub(r"\W+", "_", cleaned_df_name)
         df_id = cleaned_df_name.strip("_")
         logger.info(f"df_name: {df_name} --> df_id: {df_id}")
-        df_metadata[df_id] = {"df_schema": df_schema, "df_sample": df_sample}
+        df_metadata[df_id] = {"df_schema": df_schema, "df": df}
 
     return {"df_metadata": df_metadata}
 
@@ -268,16 +268,18 @@ if __name__ == "__main__":
                     "iso_alpha": "object",
                     "iso_num": "int64",
                 },
-                "df_sample": "|      | country   | continent   |   year |   lifeExp |      pop |   "
-                "gdpPercap | iso_alpha   |   iso_num |\n|-----:|:----------|:------------|-------:"
-                "|----------:|---------:|------------:|:------------|----------:|\n|  215 | "
-                "Burundi   | Africa      |   2007 |    49.58  |  8390505 |     430.071 | BDI"
-                "         |       108 |\n| 1545 | Togo      | Africa      |   1997 |    58.39  |"
-                "  4320890 |     982.287 | TGO         |       768 |\n|  772 | Italy     | Europe"
-                "      |   1972 |    72.19  | 54365564 |   12269.3   | ITA         |       380 |\n|"
-                " 1322 | Senegal   | Africa      |   1962 |    41.454 |  3430243 |    1654.99  | SEN"
-                "         |       686 |\n|  732 | Iraq      | Asia        |   1952 |    45.32  |  5441766"
-                " |    4129.77  | IRQ         |       368 |",
+                "df": pd.DataFrame(
+                    {
+                        "country": ["Afghanistan", "Afghanistan", "Afghanistan"],
+                        "continent": ["Asia", "Asia", "Asia"],
+                        "year": [1952, 1957, 1962],
+                        "lifeExp": [28.801, 30.332, 31.997],
+                        "pop": [8425333, 9240934, 10267083],
+                        "gdpPercap": [779.4453145, 820.8530296, 853.10071],
+                        "iso_alpha": ["AFG", "AFG", "AFG"],
+                        "iso_num": [4, 4, 4],
+                    }
+                ),
             },
         },
     }

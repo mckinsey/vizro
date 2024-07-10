@@ -49,11 +49,15 @@ class Component(BaseModel):
         description="The name of the dataframe that this component will use. If the dataframe is "
         "not used, please specify that.",
     )
+    
 
     def create(self, model, df_metadata) -> Union[ComponentType, None]:
         """Create the component."""
+        from vizro_ai import VizroAI
+        vizro_ai = VizroAI(model=model)
+
         if self.component_type == "Graph":
-            return None  # TODO: Implement this
+            return vm.Graph(figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description))
         elif self.component_type == "AgGrid":
             return vm.AgGrid(figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
@@ -65,7 +69,7 @@ class Component(BaseModel):
 # TODO: This is a very basic implementation of the filter proxy model. It needs to be improved.
 # TODO: Try use `df_sample` to inform pydantic models like `OptionsType` about available choices.
 # Caution: If just use `df_sample` to inform the pydantic model, the choices might not be exhaustive.
-def create_filter_proxy(df_cols, df_sample, available_components) -> BaseModel:
+def create_filter_proxy(df_cols, df, available_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
@@ -126,9 +130,9 @@ class Control(BaseModel):
             f" If no options are specified, leave them out."
         )
         try:
-            _df_schema, _df_sample = (
+            _df_schema, _df = (
                 df_metadata[self.data_frame]["df_schema"],
-                df_metadata[self.data_frame]["df_sample"],
+                df_metadata[self.data_frame]["df"],
             )
             _df_cols = list(_df_schema.keys())
         # when wrong dataframe name is given
@@ -138,7 +142,7 @@ class Control(BaseModel):
 
         try:
             result_proxy = create_filter_proxy(
-                df_cols=_df_cols, df_sample=_df_sample, available_components=available_components
+                df_cols=_df_cols, df=_df, available_components=available_components
             )
             proxy = _get_proxy_model(
                 query=filter_prompt, llm_model=model, result_model=result_proxy, df_metadata=df_metadata
@@ -252,9 +256,9 @@ def _print_dashboard_plan(dashboard_plan) -> None:
 if __name__ == "__main__":
     from vizro.managers import model_manager
     from vizro_ai.chains._llm_models import _get_llm_model
+    import pandas as pd
 
     model_default = "gpt-3.5-turbo"
-    # model_default = "gpt-4-turbo"
 
     llm_model = _get_llm_model(model=model_default)
     # # Test the layout planner
@@ -291,18 +295,18 @@ if __name__ == "__main__":
                         "iso_alpha": "object",
                         "iso_num": "int64",
                     },
-                    "df_sample": "|      | country   | continent   |   year |   lifeExp |"
-                    "       pop |   gdpPercap | iso_alpha   |   iso_num |\n|-----:|"
-                    ":----------|:------------|-------:|----------:|----------:|"
-                    "------------:|:------------|----------:|\n|  976 | Mauritius |"
-                    " Africa      |   1972 |    62.944 |    851334 |    2575.48  | MUS"
-                    "         |       480 |\n|  881 | Lesotho   | Africa      |   1977 |"
-                    "    52.208 |   1251524 |     745.37  | LSO         |       426 |\n|"
-                    "  701 | India     | Asia        |   1977 |    54.208 | 634000000 |"
-                    "     813.337 | IND         |       356 |\n| 1505 | Taiwan    | Asia"
-                    "        |   1977 |    70.59  |  16785196 |    5596.52  | TWN         |"
-                    "       158 |\n|  166 | Botswana  | Africa      |   2002 |    46.634 |"
-                    "   1630347 |   11003.6   | BWA         |        72 |",
+                    "df": pd.DataFrame(
+                        {
+                            "country": ["Afghanistan", "Albania", "Algeria", "Angola", "Argentina"],
+                            "continent": ["Asia", "Europe", "Africa", "Africa", "Americas"],
+                            "year": [1952, 1957, 1962, 1967, 1972],
+                            "lifeExp": [28.801, 76.423, 43.077, 30.015, 62.485],
+                            "pop": [8425333, 1282697, 9279525, 4232095, 2227000],
+                            "gdpPercap": [779.445314, 1601.056136, 2449.008185, 3520.610273, 8955.553783],
+                            "iso_alpha": ["AFG", "ALB", "DZA", "AGO", "ARG"],
+                            "iso_num": [4, 8, 12, 24, 32],
+                        }
+                    ),
                 }
             },
         )
