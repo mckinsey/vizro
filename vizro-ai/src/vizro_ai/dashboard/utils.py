@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 from typing import Any
-import tqdm.std
 
+import tqdm.std
 import vizro.models as vm
 
 

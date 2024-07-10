@@ -3,7 +3,6 @@
 import logging
 
 import vizro.models as vm
-
 from vizro_ai.dashboard.utils import _execute_step, _get_tqdm
 from vizro_ai.utils.helper import DebugFailure
 

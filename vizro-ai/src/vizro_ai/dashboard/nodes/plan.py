@@ -49,15 +49,17 @@ class Component(BaseModel):
         description="The name of the dataframe that this component will use. If the dataframe is "
         "not used, please specify that.",
     )
-    
 
     def create(self, model, df_metadata) -> Union[ComponentType, None]:
         """Create the component."""
         from vizro_ai import VizroAI
+
         vizro_ai = VizroAI(model=model)
 
         if self.component_type == "Graph":
-            return vm.Graph(figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description))
+            return vm.Graph(
+                figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description)
+            )
         elif self.component_type == "AgGrid":
             return vm.AgGrid(figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
@@ -141,9 +143,7 @@ class Control(BaseModel):
             return None
 
         try:
-            result_proxy = create_filter_proxy(
-                df_cols=_df_cols, df=_df, available_components=available_components
-            )
+            result_proxy = create_filter_proxy(df_cols=_df_cols, df=_df, available_components=available_components)
             proxy = _get_proxy_model(
                 query=filter_prompt, llm_model=model, result_model=result_proxy, df_metadata=df_metadata
             )
@@ -254,9 +254,9 @@ def _print_dashboard_plan(dashboard_plan) -> None:
 
 
 if __name__ == "__main__":
+    import pandas as pd
     from vizro.managers import model_manager
     from vizro_ai.chains._llm_models import _get_llm_model
-    import pandas as pd
 
     model_default = "gpt-3.5-turbo"
 

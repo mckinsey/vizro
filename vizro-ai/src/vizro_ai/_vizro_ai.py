@@ -3,9 +3,9 @@ from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
+import vizro.models as vm
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
-import vizro.models as vm
 
 from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
