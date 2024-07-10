@@ -190,7 +190,10 @@ class VizroAI:
             config=config,
         )
         dashboard = message_res["dashboard"]
-        code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
-        dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
 
-        return dashboard_output if return_elements else dashboard_output.dashboard
+        if return_elements:
+            code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
+            dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
+            return dashboard_output
+        else:
+            return dashboard

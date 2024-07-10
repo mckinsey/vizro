@@ -244,15 +244,6 @@ def _get_dashboard_plan(
     return _get_proxy_model(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
-def _print_dashboard_plan(dashboard_plan) -> None:
-    for i, page in enumerate(dashboard_plan.pages):
-        for j in page.components:
-            logger.info("--> " + repr(j))
-        logger.info("--> " + repr(page.layout))
-        for j in page.controls:
-            logger.info("--> " + repr(j))
-
-
 if __name__ == "__main__":
     import pandas as pd
     from vizro.managers import model_manager
