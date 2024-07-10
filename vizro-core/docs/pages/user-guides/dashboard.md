@@ -143,7 +143,7 @@ To create a dashboard:
 
     [Dashboard]: ../../assets/user_guides/dashboard/dashboard.png
 
-???+ note "Extra `.py` files for `yaml` and `json` required"
+!!! note "Extra `.py` files for `yaml` and `json` required"
 
     Note that in the `yaml` and `json` example an extra `.py` is required to register the data and parse the yaml/json configuration.
 
