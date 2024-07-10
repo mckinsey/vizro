@@ -1,10 +1,20 @@
 """Helper Functions For Vizro AI dashboard."""
 
 from dataclasses import dataclass
+
+# import black
 from typing import Any
 
 import tqdm.std
 import vizro.models as vm
+
+IMPORT_STATEMENTS = (
+    "import vizro.plotly.express as px\n"
+    "from vizro.models.types import capture\n"
+    "import plotly.graph_objects as go\n"
+    "from vizro.tables import dash_ag_grid\n"
+    "import vizro.models as vm\n"
+)
 
 
 @dataclass
@@ -46,3 +56,12 @@ def _get_tqdm():
     else:
         from tqdm import tqdm, trange
     return tqdm, trange
+
+
+def _dashboard_code(dashboard: vm.Dashboard) -> str:
+    """Generate dashboard code from dashboard object."""
+    dashboard_code_str = IMPORT_STATEMENTS + repr(dashboard)
+
+    # TODO: use black or ruff to format the code
+    # formatted_code = black.format_str(dashboard_code_str, mode=black.Mode())
+    return dashboard_code_str

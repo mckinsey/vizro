@@ -1,6 +1,5 @@
 """Code generation graph for dashboard generation."""
 
-import inspect
 import logging
 import operator
 import re
@@ -8,13 +7,12 @@ from typing import Annotated, Any, Dict, List, Union
 
 import pandas as pd
 import vizro.models as vm
-from langchain_core.messages import BaseMessage, FunctionMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from vizro_ai.dashboard.nodes.build import PageBuilder
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
-from vizro_ai.dashboard.nodes.imports_builder import ModelSummary, _generate_import_statement, model_sum_prompt
 from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
@@ -29,14 +27,6 @@ except ImportError:  # pragma: no cov
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-DASHBOARD_CODE_TEMPLATE = """
-                {import_statement}
-                dashboard={dashboard_code_str}
-
-                Vizro().build(dashboard).run()
-                """
 
 
 DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], pd.DataFrame]]]
@@ -110,22 +100,6 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
     return {"df_metadata": df_metadata}
 
 
-def _compose_imports_code(state: GraphState, config: RunnableConfig) -> Dict[str, Messages]:
-    """Generate code snippet for imports."""
-    logger.info("*** _compose_imports_code ***")
-    messages = state.messages
-
-    llm = config["configurable"].get("model", None)
-    model_sum_chain = model_sum_prompt | llm.with_structured_output(ModelSummary)
-
-    vizro_model_summary = model_sum_chain.invoke({"messages": messages})
-
-    import_statement = _generate_import_statement(vizro_model_summary)
-
-    messages.append(FunctionMessage(content=import_statement, name=inspect.currentframe().f_code.co_name))
-    return {"messages": messages}
-
-
 def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlanner]:
     """Generate a dashboard plan."""
     logger.info("*** _dashboard_plan ***")
@@ -137,28 +111,6 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
     # _print_dashboard_plan(dashboard_plan)
 
     return {"dashboard_plan": dashboard_plan}
-
-
-def _generate_dashboard_code(state: GraphState) -> Dict[str, Messages]:
-    """Generate a dashboard code snippet."""
-    logger.info("*** _generate_dashboard_code ***")
-    messages = state.messages
-    import_statement = messages[-1].content
-    dashboard = state.dashboard
-
-    # TODO: the code to string should come from vizro_core
-    # Currently, the output code string is a string representation of the dashboard object
-    dashboard_code_str = repr(dashboard)
-
-    messages.append(
-        FunctionMessage(
-            content=DASHBOARD_CODE_TEMPLATE.format(
-                import_statement=import_statement, dashboard_code_str=dashboard_code_str
-            ),
-            name=inspect.currentframe().f_code.co_name,
-        )
-    )
-    return {"messages": messages}
 
 
 class BuildPageState(BaseModel):
@@ -189,7 +141,7 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     return {"pages": [page]}
 
 
-def continue_to_pages(state: GraphState) -> List[Send]:
+def _continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
     logger.info("*** build_page ***")
     df_metadata = state.df_metadata
@@ -213,20 +165,15 @@ def _create_and_compile_graph():
     graph = StateGraph(GraphState)
 
     graph.add_node("_store_df_info", _store_df_info)
-    graph.add_node("_compose_imports_code", _compose_imports_code)
     graph.add_node("_dashboard_plan", _dashboard_plan)
     graph.add_node("_build_page", _build_page)
     graph.add_node("_build_dashboard", _build_dashboard)
 
-    graph.add_node("_generate_dashboard_code", _generate_dashboard_code)
-
-    graph.add_edge("_store_df_info", "_compose_imports_code")
-    graph.add_edge("_compose_imports_code", "_dashboard_plan")
-    graph.add_conditional_edges("_dashboard_plan", continue_to_pages)
+    graph.add_edge("_store_df_info", "_dashboard_plan")
+    graph.add_conditional_edges("_dashboard_plan", _continue_to_pages)
     graph.add_edge("_build_page", "_build_dashboard")
 
-    graph.add_edge("_build_dashboard", "_generate_dashboard_code")
-    graph.add_edge("_generate_dashboard_code", END)
+    graph.add_edge("_build_dashboard", END)
 
     graph.set_entry_point("_store_df_info")
 
@@ -244,14 +191,9 @@ if __name__ == "__main__":
                 the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n
                 The layout of this page should use `grid=[[0,1]]`
                 """
-    previous_fn_res = """"
-                from vizro import Vizro\nfrom vizro.models import AgGrid, Card, Dashboard, Page\nfrom "
-                "vizro.tables import dash_ag_grid\nimport pandas as pd\n"
-                """
     test_state = {
         "messages": [
             HumanMessage(content=user_input),
-            FunctionMessage(content=previous_fn_res, name="_compose_imports_code"),
         ],
         "dfs": [
             pd.DataFrame(),
@@ -284,5 +226,5 @@ if __name__ == "__main__":
         },
     }
     sample_state = GraphState(**test_state)
-    message = _generate_dashboard_code(sample_state)
+    message = _dashboard_plan(sample_state)
     print(message)  # noqa: T201
