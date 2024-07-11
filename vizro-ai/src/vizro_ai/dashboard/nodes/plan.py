@@ -42,7 +42,11 @@ class Component(BaseModel):
         "Keep the original relevant description AS IS. Keep any links as original links.",
     )
     component_id: str = Field(
-        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component"
+        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
+    )
+    page_id: str = Field(
+        ...,
+        description="The page id where this component will be placed."
     )
     data_frame: str = Field(
         ...,
@@ -58,10 +62,13 @@ class Component(BaseModel):
 
         if self.component_type == "Graph":
             return vm.Graph(
+                id=self.component_id+"_"+self.page_id,
                 figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description)
             )
         elif self.component_type == "AgGrid":
-            return vm.AgGrid(figure=dash_ag_grid(data_frame=self.data_frame))
+            return vm.AgGrid(
+                id=self.component_id+"_"+self.page_id,
+                figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_proxy_model(
                 query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata=df_metadata
@@ -93,9 +100,9 @@ def create_filter_proxy(df_cols, df, available_components) -> BaseModel:
         targets=(
             List[str],
             Field(
-                [],
-                description="Target component to be affected by filter. If none are given "
-                "then target all components on the page that use `column`.",
+                ...,
+                description="Target component to be affected by filter. "
+                f"Must be one of {available_components}. ALWAYS REQUIRED.",
             ),
         ),
         column=(str, Field(..., description="Column name of DataFrame to filter. ALWAYS REQUIRED.")),
