@@ -1,7 +1,7 @@
 import re
 
 import pytest
-from vizro_ai.vizro_ai_charts.utils.safeguard import _safeguard_check
+from vizro_ai.vizro_ai_charts.chart_utils.safeguard import _safeguard_check
 
 
 class TestMaliciousImports:

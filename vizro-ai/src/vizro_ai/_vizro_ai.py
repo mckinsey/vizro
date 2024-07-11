@@ -5,10 +5,10 @@ import pandas as pd
 import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains._llm_models import _get_llm_model
+from vizro_ai._llm_models import _get_llm_model
 from vizro_ai.vizro_ai_charts.components import GetCodeExplanation, GetDebugger
 from vizro_ai.vizro_ai_charts.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.vizro_ai_charts.utils.helper import (
+from vizro_ai.utils.helper import (
     DebugFailure,
     PlotOutputs,
     _debug_helper,
