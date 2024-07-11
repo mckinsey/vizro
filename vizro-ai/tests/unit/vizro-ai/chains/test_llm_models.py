@@ -1,5 +1,5 @@
 import pytest
-from vizro_ai.chains._llm_models import _get_llm_model
+from vizro_ai._llm_models import _get_llm_model
 
 
 @pytest.mark.parametrize(
