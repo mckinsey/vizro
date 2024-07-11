@@ -6,6 +6,7 @@ from typing import Dict, List, Literal, Union
 import vizro.models as vm
 from langchain_openai import ChatOpenAI
 from vizro.models.types import ComponentType
+from vizro_ai.dashboard.utils import DfMetadata
 
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
@@ -63,7 +64,7 @@ class Component(BaseModel):
         if self.component_type == "Graph":
             return vm.Graph(
                 id=self.component_id+"_"+self.page_id,
-                figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description)
+                figure=vizro_ai.plot(df=df_metadata.metadata[self.data_frame].df, user_input=self.component_description)
             )
         elif self.component_type == "AgGrid":
             return vm.AgGrid(
@@ -140,8 +141,8 @@ class Control(BaseModel):
         )
         try:
             _df_schema, _df = (
-                df_metadata[self.data_frame]["df_schema"],
-                df_metadata[self.data_frame]["df"],
+                df_metadata.metadata[self.data_frame].df_schema,
+                df_metadata.metadata[self.data_frame].df,
             )
             _df_cols = list(_df_schema.keys())
         # when wrong dataframe name is given
@@ -246,7 +247,7 @@ class DashboardPlanner(BaseModel):
 def _get_dashboard_plan(
     query: str,
     model: Union[ChatOpenAI],
-    df_metadata: Dict[str, Dict[str, str]],
+    df_metadata: DfMetadata,
 ) -> DashboardPlanner:
     return _get_proxy_model(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 

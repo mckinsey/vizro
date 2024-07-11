@@ -18,6 +18,7 @@ from vizro_ai.dashboard.nodes.plan import (
     PagePlanner,
     _get_dashboard_plan,
 )
+from vizro_ai.dashboard.utils import DataFrameMetadata, DfMetadata
 
 try:
     from pydantic.v1 import BaseModel, validator
@@ -29,8 +30,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-DfMetadata = Dict[str, Dict[str, Union[Dict[str, str], pd.DataFrame]]]
-"""Cleaned dataframe names and their metadata."""
 
 Messages = List[BaseMessage]
 """List of messages."""
@@ -87,15 +86,12 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
 
         df_name = data_sum_chain.invoke(
             {"messages": messages, "df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
-        )
+        ).dataset_name
 
         current_df_names.append(df_name)
 
-        cleaned_df_name = df_name.dataset_name.lower()
-        cleaned_df_name = re.sub(r"\W+", "_", cleaned_df_name)
-        df_id = cleaned_df_name.strip("_")
-        logger.info(f"df_name: {df_name} --> df_id: {df_id}")
-        df_metadata[df_id] = {"df_schema": df_schema, "df": df} # TODO: shall be a dataclass
+        logger.info(f"df_name: {df_name}")
+        df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df)
 
     return {"df_metadata": df_metadata}
 
@@ -121,7 +117,7 @@ class BuildPageState(BaseModel):
 
     """
 
-    df_metadata: Dict[str, Dict[str, Any]]
+    df_metadata: DfMetadata
     page_plan: PagePlanner = None
 
 

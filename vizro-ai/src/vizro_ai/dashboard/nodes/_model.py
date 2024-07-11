@@ -10,6 +10,7 @@ from typing import Dict
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+from vizro_ai.dashboard.utils import DfMetadata
 
 SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
     [
@@ -45,7 +46,7 @@ def _get_proxy_model(
     query: str,
     llm_model: BaseChatModel,
     result_model: BaseModel,
-    df_metadata: Dict[str, Dict[str, str]],
+    df_metadata: DfMetadata,
     max_retry: int = 2,
 ) -> BaseModel:
     for i in range(max_retry):
