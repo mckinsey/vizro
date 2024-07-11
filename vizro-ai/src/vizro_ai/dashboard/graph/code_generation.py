@@ -95,7 +95,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
         cleaned_df_name = re.sub(r"\W+", "_", cleaned_df_name)
         df_id = cleaned_df_name.strip("_")
         logger.info(f"df_name: {df_name} --> df_id: {df_id}")
-        df_metadata[df_id] = {"df_schema": df_schema, "df": df} # TODO: shall be a dataclass
+        df_metadata[df_id] = {"df_schema": df_schema, "df": df}  # TODO: shall be a dataclass
 
     return {"df_metadata": df_metadata}
 

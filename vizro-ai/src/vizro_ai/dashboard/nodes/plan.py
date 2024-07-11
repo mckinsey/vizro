@@ -44,10 +44,7 @@ class Component(BaseModel):
     component_id: str = Field(
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
     )
-    page_id: str = Field(
-        ...,
-        description="The page id where this component will be placed."
-    )
+    page_id: str = Field(..., description="The page id where this component will be placed.")
     data_frame: str = Field(
         ...,
         description="The name of the dataframe that this component will use. If the dataframe is "
@@ -62,13 +59,11 @@ class Component(BaseModel):
 
         if self.component_type == "Graph":
             return vm.Graph(
-                id=self.component_id+"_"+self.page_id,
-                figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description)
+                id=self.component_id + "_" + self.page_id,
+                figure=vizro_ai.plot(df=df_metadata[self.data_frame]["df"], user_input=self.component_description),
             )
         elif self.component_type == "AgGrid":
-            return vm.AgGrid(
-                id=self.component_id+"_"+self.page_id,
-                figure=dash_ag_grid(data_frame=self.data_frame))
+            return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.data_frame))
         elif self.component_type == "Card":
             return _get_proxy_model(
                 query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata=df_metadata

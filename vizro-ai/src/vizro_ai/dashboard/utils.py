@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 # import black
 from typing import Any
+
 import tqdm.std
 import vizro.models as vm
 
