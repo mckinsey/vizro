@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
 import warnings
 from pathlib import Path
-from typing import List
+from typing import List, TYPE_CHECKING, Iterable
 
 import dash
 import flask
@@ -12,6 +14,11 @@ from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    # These are built into wsgiref.types for Python 3.11 onwards.
+    from _typeshed.wsgi import StartResponse
+    from _typeshed.wsgi import WSGIEnvironment
 
 
 class Vizro:
@@ -118,7 +125,10 @@ class Vizro:
             if hasattr(model, "pre_build"):
                 model.pre_build()
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
+        """Implements WSGI application interface.
+
+        This means you can do e.g. gunicorn app:app without needing to manually define server = app.dash.server."""
         return self.dash.server(environ, start_response)
 
     @staticmethod
