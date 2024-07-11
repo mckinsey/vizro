@@ -1,6 +1,6 @@
 """Pipeline Manager."""
 
-from vizro_ai.chains._llm_models import LLM_MODELS
+from langchain_core.language_models.chat_models import BaseChatModel
 from vizro_ai.components import GetChartSelection, GetCustomChart, GetDataFrameCraft, GetVisualCode
 from vizro_ai.task_pipeline._pipeline import Pipeline
 
@@ -8,7 +8,7 @@ from vizro_ai.task_pipeline._pipeline import Pipeline
 class PipelineManager:
     """Task pipeline manager."""
 
-    def __init__(self, llm: LLM_MODELS = None):
+    def __init__(self, llm: BaseChatModel = None):
         """Initialize the Pipeline Manager.
 
         Args:

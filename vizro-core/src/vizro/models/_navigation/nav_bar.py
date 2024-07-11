@@ -48,9 +48,10 @@ class NavBar(VizroBaseModel):
         ]
 
         for position, item in enumerate(self.items, 1):
-            # The filter icons are named filter_1, filter_2, etc. up to filter_9. If there are more than 9 items, then
-            # the 10th and all subsequent items are named filter_9+.
-            item.icon = item.icon or f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
+            # The default icons are named filter_1, filter_2, etc. up to filter_9.
+            # If there are more than 9 items, then the 10th and all subsequent items are named filter_9+.
+            icon_default = f"filter_{position}" if position <= 9 else "filter_9+"  # noqa: PLR2004
+            item.icon = item.icon or icon_default
 
         # Since models instantiated in pre_build do not themselves have pre_build called on them, we call it manually
         # here.

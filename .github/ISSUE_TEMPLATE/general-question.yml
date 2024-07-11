@@ -6,12 +6,9 @@ body:
   - type: markdown
     attributes:
       value: >-
-        Hi there! Thank you so much for taking the time to fill in this question form. It will be
-        a valuable contribution to Vizro.
-
-        We'd appreciate it if you could search on Vizro's existing issues prior to filing
-        a general question to avoid any duplicate tickets, as we have limited maintainer capacity to triage
-        them. Thanks!
+        Hi there! Thank you so much for taking the time to fill in this general question.
+        As we have limited triage capacity, we'd appreciate it if you could search on Vizro's
+        existing issues prior to submission to avoid any duplicates. Thanks!
 
   - type: textarea
     attributes:
@@ -25,13 +22,8 @@ body:
     attributes:
       label: Code/Examples
       description: >-
-        Please post any supporting code around your question here.
-
-  - type: textarea
-    attributes:
-      label: Other information
-      description: >-
-        Please provide any attempts on answering the question, or any related information you already found here.
+        Post any supporting code around your question here or as a [py.cafe link](https://py.cafe/snippet/vizro/v1).
+        Don't forget to include the package version, if it's relevant.
 
   - type: dropdown
     attributes:
@@ -39,15 +31,6 @@ body:
       options:
         - vizro
         - vizro-ai
-  - type: input
-    attributes:
-      label: Package version
-  - type: input
-    attributes:
-      label: Python version
-  - type: input
-    attributes:
-      label: OS
 
   - type: checkboxes
     attributes:
