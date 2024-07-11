@@ -34,9 +34,8 @@ Building on the above, there are several routes one can take. The following exam
 
 To alter the data in the `data_frame` argument, consider using a [Filter](filters.md) or [parametrized data loading](data.md/#parametrize-data-loading) and [dynamic data](data.md/#dynamic-data). The `data_frame` argument input to a custom chart contains the data **after** filters and parameters have been applied.
 
-!!! tip
-
-    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any additional configuration. We will showcase both possibilities in the following examples. In particular the `Parameters` in combination with custom charts can be highly versatile in achieving custom functionality.
+!!! note
+    Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any extra configuration. We will showcase both possibilities in the following examples.
 
 ## Enhanced `plotly.express` chart with reference line
 

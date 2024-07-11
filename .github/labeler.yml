@@ -1,0 +1,3 @@
+"Package: Vizro-AI :robot:":
+  - changed-files:
+      - any-glob-to-any-file: ["vizro-ai/**/*"]
