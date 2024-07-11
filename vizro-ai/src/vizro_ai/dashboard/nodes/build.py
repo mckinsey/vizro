@@ -3,11 +3,11 @@
 import logging
 
 import vizro.models as vm
+from tqdm.auto import tqdm, trange
 from vizro_ai.dashboard.utils import _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
-from tqdm.auto import tqdm, trange
 
 
 class PageBuilder:

@@ -1,12 +1,11 @@
 """Helper Functions For Vizro AI dashboard."""
 
-from typing import Any, Dict
 from dataclasses import dataclass, field
 
-import pandas as pd
-
 # import black
-from typing import Any
+from typing import Any, Dict
+
+import pandas as pd
 import tqdm.std
 import vizro.models as vm
 
@@ -18,6 +17,7 @@ IMPORT_STATEMENTS = (
     "import vizro.models as vm\n"
 )
 
+
 @dataclass
 class DataFrameMetadata:
     """Dataclass containing metadata for a dataframe."""
@@ -25,11 +25,13 @@ class DataFrameMetadata:
     df_schema: Dict[str, str]
     df: pd.DataFrame
 
+
 @dataclass
 class DfMetadata:
     """Dataclass containing metadata for all dataframes."""
 
     metadata: Dict[str, DataFrameMetadata] = field(default_factory=dict)
+
 
 @dataclass
 class DashboardOutputs:

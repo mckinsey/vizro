@@ -38,6 +38,4 @@ df_sum_prompt = ChatPromptTemplate.from_messages(
 class DfInfo(BaseModel):
     """Data Info output."""
 
-    dataset_name: str = Field(
-        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case name of the dataset."
-    )
+    dataset_name: str = Field(pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case name of the dataset.")

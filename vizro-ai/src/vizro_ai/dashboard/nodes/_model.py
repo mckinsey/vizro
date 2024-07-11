@@ -5,7 +5,6 @@ try:
     from pydantic.v1 import BaseModel, ValidationError
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, ValidationError
-from typing import Dict
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage

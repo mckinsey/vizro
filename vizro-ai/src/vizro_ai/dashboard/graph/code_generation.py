@@ -2,8 +2,7 @@
 
 import logging
 import operator
-import re
-from typing import Annotated, Any, Dict, List, Union
+from typing import Annotated, Dict, List
 
 import pandas as pd
 import vizro.models as vm
@@ -28,7 +27,6 @@ except ImportError:  # pragma: no cov
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
 
 
 Messages = List[BaseMessage]
