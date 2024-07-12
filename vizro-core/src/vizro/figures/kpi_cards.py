@@ -72,7 +72,7 @@ def kpi_card_reference(  # noqa: PLR0913
     reference_column: str,
     *,
     value_format: str = "{value}",
-    reference_format: str = "{delta_relative:.1%} vs. reference ({reference})",
+    reference_format: str = "{delta_relative:+.1%} vs. reference ({reference})",
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
@@ -104,7 +104,7 @@ def kpi_card_reference(  # noqa: PLR0913
              - "{value:,}": Formats the value with comma as a thousands separator.
 
         reference_format: Format string to be applied to the reference. For more details on possible placeholders, see
-            docstring on `value_format`. Defaults to "{delta_relative:.1%} vs. reference ({reference})".
+            docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
         agg_func: String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". For more information on possible functions, see
             https://stackoverflow.com/questions/65877567/passing-function-names-as-strings-to-pandas-groupby-aggregrate.

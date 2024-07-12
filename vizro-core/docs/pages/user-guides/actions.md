@@ -5,12 +5,10 @@ Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`
 
 By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
 
-There are already a few action functions you can reuse.
+There are already a few action functions you can reuse:
 
-???+ info "Overview of currently available pre-defined action functions"
-
-    - [`export_data`][vizro.actions.export_data]
-    - [`filter_interaction`][vizro.actions.filter_interaction]
+- [`export_data`][vizro.actions.export_data]
+- [`filter_interaction`][vizro.actions.filter_interaction]
 
 ## Pre-defined actions
 
@@ -18,6 +16,7 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
+
     Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
 The below sections are guides on how to use pre-defined action functions.
@@ -128,7 +127,7 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
 
 Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
-!!! tip
+!!! note
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
@@ -216,6 +215,24 @@ Here is an example of how to configure a chart interaction when the source is a 
         [![Graph2]][Graph2]
 
     [Graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
+
+
+!!! note "`filter_interaction` with custom charts"
+
+    If `filter_interaction` is assigned to a [custom chart](custom-charts.md), ensure that `custom_data` is an argument of the custom chart function, and that this argument is then passed to the underlying plotly function.
+    When then adding the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
+
+    ```py
+    @capture("graph")
+    def my_custom_chart(data_frame, custom_data, **kwargs):
+        return px.scatter(data_grame, custom_data=custom_data, **kwargs)
+
+    ...
+
+    vm.Graph(figure=my_custom_chart(df, custom_data=['continent'], actions=[...]))
+
+    ```
+
 
 Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 

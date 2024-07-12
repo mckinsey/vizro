@@ -11,6 +11,11 @@ def gapminder_2007(gapminder):
 
 
 @pytest.fixture
+def iris():
+    return px.data.iris()
+
+
+@pytest.fixture
 def gapminder_dynamic_first_n_last_n_function(gapminder):
     return lambda first_n=None, last_n=None: (
         pd.concat([gapminder[:first_n], gapminder[-last_n:]])
@@ -42,6 +47,16 @@ def scatter_params():
 @pytest.fixture
 def scatter_chart(gapminder_2007, scatter_params):
     return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
+
+
+@pytest.fixture
+def scatter_matrix_params():
+    return {"dimensions": ["sepal_width", "sepal_length", "petal_width", "petal_length"]}
+
+
+@pytest.fixture
+def scatter_matrix_chart(iris, scatter_matrix_params):
+    return px.scatter_matrix(iris, **scatter_matrix_params).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -107,6 +122,19 @@ def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
             vm.Table(id="vizro_table", figure=dash_data_table_with_id),
             vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
             vm.Button(id="button"),
+        ],
+    )
+    Vizro._pre_build()
+
+
+@pytest.fixture
+def managers_one_page_one_graph_with_dict_param_input(scatter_matrix_chart):
+    """Instantiates a model_manager and data_manager with a page and a graph that requires a list input."""
+    vm.Page(
+        id="test_page",
+        title="My first dashboard",
+        components=[
+            vm.Graph(id="scatter_matrix_chart", figure=scatter_matrix_chart),
         ],
     )
     Vizro._pre_build()

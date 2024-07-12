@@ -72,9 +72,7 @@ indicating that [pandas.api.types.is_numeric_dtype()](https://pandas.pydata.org/
 To use temporal [`Filter`][vizro.models.Filter] selectors, the filtered column must be of `datetime` format,
 indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) must return `True` for the filtered column.
 
-!!! tip
-
-    `pd.DataFrame` column types can be changed to `datetime` using [pandas.to_datetime()](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) or
+`pd.DataFrame` column types can be changed to `datetime` using [pandas.to_datetime()](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) or
 
 
 ### Example of default Filter selectors

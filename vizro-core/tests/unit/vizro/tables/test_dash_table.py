@@ -80,13 +80,14 @@ class TestCustomDashDataTable:
         expected_table_object.id = "__input_" + id
 
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(expected_table_object, id=id),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(
+                    expected_table_object,
+                    id=id,
+                    className="table-container",
+                ),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
@@ -124,13 +125,10 @@ class TestCustomDashDataTable:
         expected_table_object.id = "__input_" + id
 
         expected_table = dcc.Loading(
-            html.Div(
-                [
-                    None,
-                    html.Div(expected_table_object, id=id),
-                ],
-                className="table-container",
-            ),
+            children=[
+                None,
+                html.Div(expected_table_object, id=id, className="table-container"),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

@@ -14,7 +14,7 @@ from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_act
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -26,15 +26,16 @@ class Table(VizroBaseModel):
 
     Args:
         type (Literal["table"]): Defaults to `"table"`.
-        figure (CapturedCallable): Table like object to be displayed. For more information see:
-            [`dash_table.DataTable`](https://dash.plotly.com/datatable).
+        figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
         title (str): Title of the table. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(..., import_path=vt, description="Table to be visualized on dashboard")
+    figure: CapturedCallable = Field(
+        ..., import_path=vt, mode="table", description="Function that returns a Dash DataTable."
+    )
     title: str = Field("", description="Title of the table")
     actions: List[Action] = []
 
@@ -45,7 +46,6 @@ class Table(VizroBaseModel):
 
     # Validators
     set_actions = _action_validator_factory("active_cell")
-    _validate_callable_mode = _callable_mode_validator_factory("table")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
@@ -104,16 +104,13 @@ class Table(VizroBaseModel):
 
     def build(self):
         return dcc.Loading(
-            children=html.Div(
-                children=[
-                    html.H3(self.title) if self.title else None,
-                    # Please see vm.AgGrid build method as to why we are returning the call with the full data here
-                    # Most of the comments may not apply to the data table, but in order to be consistent, we are
-                    # handling the build method in the exact same way here
-                    html.Div(self.__call__(), id=self.id),
-                ],
-                className="table-container",
-            ),
+            children=[
+                html.H3(self.title) if self.title else None,
+                # Please see vm.AgGrid build method as to why we are returning the call with the full data here
+                # Most of the comments may not apply to the data table, but in order to be consistent, we are
+                # handling the build method in the exact same way here
+                html.Div(self.__call__(), id=self.id, className="table-container"),
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

@@ -19,7 +19,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components._components_utils import _callable_mode_validator_factory, _process_callable_data_frame
+from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable
 
@@ -31,13 +31,14 @@ class Graph(VizroBaseModel):
 
     Args:
         type (Literal["graph"]): Defaults to `"graph"`.
-        figure (CapturedCallable): See [`CapturedCallable`][vizro.models.types.CapturedCallable].
+        figure (CapturedCallable): Function that returns a graph.
+            See `CapturedCallable`][vizro.models.types.CapturedCallable].
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(..., import_path=px)
+    figure: CapturedCallable = Field(..., import_path=px, mode="graph", description="Function that returns a graph.")
     actions: List[Action] = []
 
     # Component properties for actions and interactions
@@ -45,7 +46,6 @@ class Graph(VizroBaseModel):
 
     # Validators
     _set_actions = _action_validator_factory("clickData")
-    _validate_callable_mode = _callable_mode_validator_factory("graph")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
@@ -102,7 +102,13 @@ class Graph(VizroBaseModel):
         try:
             custom_data_columns = model_manager[source_graph_id]["custom_data"]
         except KeyError as exc:
-            raise KeyError(f"No `custom_data` argument found for source graph with id {source_graph_id}.") from exc
+            raise KeyError(
+                f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
+                "Ensure that `custom_data` is an argument of the custom chart function, and that the relevant entry is "
+                "then passed to the underlying plotly function. When configuring the custom chart in `vm.Graph`, "
+                "ensure that `custom_data` is passed. Example usage: "
+                "vm.Graph(figure=my_custom_chart(df, custom_data=['column_1'], actions=[...]))"
+            ) from exc
 
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
