@@ -1,0 +1,69 @@
+# Still requires a .py to register data connector in Data Manager and parse yaml configuration
+# See yaml_version example
+pages:
+  - components:
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with value
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with aggregation
+          agg_func: median
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with formatting
+          value_format: ${value:.2f}
+        type: figure
+      - figure:
+          _target_: kpi_card
+          data_frame: df_kpi
+          value_column: Actual
+          title: KPI with icon
+          icon: shopping_cart
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference (pos)
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          agg_func: median
+          title: KPI reference (neg)
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference with formatting
+          value_format: "{value:.2f}$"
+          reference_format: "{delta:.2f}$ vs. last year ({reference:.2f}$)"
+        type: figure
+      - figure:
+          _target_: kpi_card_reference
+          data_frame: df_kpi
+          value_column: Actual
+          reference_column: Reference
+          title: KPI reference with icon
+          icon: shopping_cart
+        type: figure
+    controls:
+      - column: Category
+        type: filter
+    layout:
+      grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+    title: KPI Indicators
