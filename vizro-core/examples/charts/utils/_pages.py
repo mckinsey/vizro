@@ -254,14 +254,14 @@ def column_factory(id: str, title: str):
 
 
 # PAGES -------------------------------------------------------------
-line = line_factory("line", "Line")
+line = line_factory("Line", "Line")
 time_line = line_factory("Time-Line", "Line")
 time_column = column_factory("Time-Column", "Column")
-scatter = scatter_factory("scatter", "Scatter")
-bar = bar_factory("bar", "Bar")
-ordered_bar = bar_factory("ordered-bar", "Ordered Bar")
-column = column_factory("column", "Column")
-ordered_column = column_factory("ordered-column", "Ordered Column")
+scatter = scatter_factory("Scatter", "Scatter")
+bar = bar_factory("Bar", "Bar")
+ordered_bar = bar_factory("Ordered Bar", "Ordered Bar")
+column = column_factory("Column", "Column")
+ordered_column = column_factory("Ordered Column", "Ordered Column")
 
 
 pie = vm.Page(
