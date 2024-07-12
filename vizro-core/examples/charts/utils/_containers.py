@@ -1,5 +1,7 @@
 """Contains custom components and charts used inside the dashboard."""
 
+import re
+
 import vizro.models as vm
 import vizro.plotly.express as px
 
@@ -10,6 +12,13 @@ vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", FlexContainer)
+
+
+def tidy_chart_title(chart: str) -> str:
+    prefixes_to_remove = ["time-", "magnitude-", "deviation-"]
+    pattern = "^(" + "|".join(prefixes_to_remove) + ")"
+    chart_without_prefix = re.sub(pattern, "", chart)
+    return chart_without_prefix.replace("-", " ").title()
 
 
 DEVIATION_CHARTS = sorted(["line", "scatter", "slope", "lollipop", "diverging-bar"])
@@ -73,12 +82,11 @@ MAGNITUDE_CHARTS = sorted(
 )
 TIME_CHARTS = sorted(
     [
-        "column",
+        "time-line",
+        "time-column",
         "gantt",
         "column-line",
         "bubble-timeline",
-        "bar",
-        "line",
         "scatter",
         "lollipop",
         "diverging-bar",
@@ -127,7 +135,7 @@ container_all = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -156,7 +164,7 @@ container_deviation = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -185,7 +193,7 @@ container_correlation = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -214,7 +222,7 @@ container_ranking = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -245,7 +253,7 @@ container_distribution = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -275,7 +283,7 @@ container_magnitude = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -304,7 +312,7 @@ container_time = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -332,7 +340,7 @@ container_part = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -361,7 +369,7 @@ container_flow = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
@@ -388,7 +396,7 @@ container_spatial = vm.Container(
                     text=f"""
                             ![](assets/images/charts/{chart}.svg#chart-icon)
 
-                            #### {chart.replace("-", " ").title()}
+                            #### {tidy_chart_title(chart)}
                             """,
                     href=f"/{chart}",
                 )
