@@ -16,11 +16,11 @@ DEVIATION_CHARTS = sorted(["line", "scatter", "slope", "lollipop", "diverging-ba
 CORRELATION_CHARTS = ["scatter"]
 RANKING_CHARTS = sorted(
     [
-        "column",
+        "ordered-bar",
+        "ordered-column",
         "stacked-column",
         "ordered-bubble",
         "column-line",
-        "bar",
         "donut",
         "arc",
         "lollipop",

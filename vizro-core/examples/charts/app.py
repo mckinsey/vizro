@@ -13,7 +13,20 @@ from utils._containers import (
     container_spatial,
     container_time,
 )
-from utils._pages import bar, boxplot, column, donut, line, pie, scatter, violin
+from utils._pages import (
+    bar,
+    boxplot,
+    column,
+    donut,
+    line,
+    ordered_bar,
+    ordered_column,
+    pie,
+    scatter,
+    time_column,
+    time_line,
+    violin,
+)
 from vizro import Vizro
 
 homepage = vm.Page(
@@ -38,29 +51,43 @@ homepage = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[homepage, bar, column, line, scatter, pie, donut, boxplot, violin],
+    pages=[
+        homepage,
+        bar,
+        column,
+        line,
+        scatter,
+        pie,
+        donut,
+        boxplot,
+        violin,
+        ordered_bar,
+        ordered_column,
+        time_line,
+        time_column,
+    ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
                 vm.NavLink(
                     label="Deviation",
-                    pages={"Deviation": ["Line", "Scatter"]},
+                    pages={"Deviation": ["Line", "Scatter"]},  # Replace with diverging bar
                     icon="Planner Review",
                 ),
                 vm.NavLink(
                     label="Correlation",
-                    pages={"Deviation": ["Scatter"]},
+                    pages={"Correlation": ["Scatter"]},
                     icon="Bubble Chart",
                 ),
                 vm.NavLink(
                     label="Ranking",
-                    pages={"Ranking": ["Boxplot"]},
+                    pages={"Ranking": ["Ordered Bar", "Ordered Column"]},
                     icon="Stacked Bar Chart",
                 ),
                 vm.NavLink(
                     label="Distribution",
-                    pages={"Distribution": ["Pie", "Donut", "Violin"]},
+                    pages={"Distribution": ["Boxplot", "Violin"]},
                     icon="Waterfall Chart",
                 ),
                 vm.NavLink(
@@ -70,7 +97,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Time",
-                    pages={"Time": ["Bar", "Column", "Scatter", "Line"]},
+                    pages={"Time": ["Time-Line", "Time-Column"]},
                     icon="Timeline",
                 ),
                 vm.NavLink(
@@ -80,12 +107,12 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Flow",
-                    pages={"Flow": ["Line"]},
+                    pages={"Flow": ["Line"]},  # TODO: Replace with Sankey
                     icon="Stacked Line Chart",
                 ),
                 vm.NavLink(
                     label="Spatial",
-                    pages={"Spatial": ["Line"]},
+                    pages={"Spatial": ["Line"]},  # TODO: Replace with map
                     icon="Map",
                 ),
             ]

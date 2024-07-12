@@ -16,13 +16,16 @@ vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 
-# CHART PAGES -------------------------------------------------------------
-line = vm.Page(
-    title="Line",
-    layout=vm.Layout(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
+
+# REUSED -------------------------------------------------------------
+def line_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
 
             #### What is a Line?
 
@@ -39,10 +42,10 @@ line = vm.Page(
             several lines (different data series) in the same chart, try to limit yourself to 3-4 to avoid cluttering
             up your chart and making it harder for the audience to read.
         """
-        ),
-        vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
-        CodeClipboard(
-            text="""
+            ),
+            vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
+            CodeClipboard(
+                text="""
                ```python
                import vizro.models as vm
                import vizro.plotly.express as px
@@ -64,17 +67,19 @@ line = vm.Page(
                ```
 
                """
-        ),
-    ],
-)
+            ),
+        ],
+    )
 
 
-scatter = vm.Page(
-    title="Scatter",
-    layout=vm.Layout(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
+def scatter_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
 
             #### What is a scatter?
 
@@ -90,10 +95,10 @@ scatter = vm.Page(
             you have paired numerical data and you want to see if one variable impacts the other. However, do remember
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """
-        ),
-        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-        CodeClipboard(
-            text="""
+            ),
+            vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            CodeClipboard(
+                text="""
                ```python
                import vizro.models as vm
                import vizro.plotly.express as px
@@ -116,16 +121,19 @@ scatter = vm.Page(
                Vizro().build(dashboard).run()
                ```
                """
-        ),
-    ],
-)
+            ),
+        ],
+    )
 
-bar = vm.Page(
-    title="Bar",
-    layout=vm.Layout(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
+
+def bar_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
 
             #### What is a bar chart?
 
@@ -144,17 +152,17 @@ bar = vm.Page(
             or use abbreviations in the chart with fuller descriptions below of the terms used.
 
         """
-        ),
-        vm.Graph(
-            figure=px.bar(
-                data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
-                x="total_bill",
-                y="day",
-                orientation="h",
-            )
-        ),
-        CodeClipboard(
-            text="""
+            ),
+            vm.Graph(
+                figure=px.bar(
+                    data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
+                    x="total_bill",
+                    y="day",
+                    orientation="h",
+                )
+            ),
+            CodeClipboard(
+                text="""
                ```python
                import vizro.models as vm
                import vizro.plotly.express as px
@@ -166,7 +174,8 @@ bar = vm.Page(
                    title="Bar",
                    components=[
                      vm.Graph(
-            figure=px.bar(data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(), x="total_bill", y="day",orientation="h")
+            figure=px.bar(data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
+             x="total_bill", y="day",orientation="h")
         )
                    ]
                )
@@ -176,17 +185,19 @@ bar = vm.Page(
                ```
 
                """
-        ),
-    ],
-)
+            ),
+        ],
+    )
 
 
-column = vm.Page(
-    title="Column",
-    layout=vm.Layout(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
+def column_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
 
             #### What is a column chart?
 
@@ -204,16 +215,16 @@ column = vm.Page(
             or use abbreviations in the chart with fuller descriptions below of the terms used.
 
         """
-        ),
-        vm.Graph(
-            figure=px.bar(
-                data_frame=gapminder.query("country == 'China'"),
-                x="year",
-                y="gdpPercap",
-            )
-        ),
-        CodeClipboard(
-            text="""
+            ),
+            vm.Graph(
+                figure=px.bar(
+                    data_frame=gapminder.query("country == 'China'"),
+                    x="year",
+                    y="gdpPercap",
+                )
+            ),
+            CodeClipboard(
+                text="""
                ```python
                import vizro.models as vm
                import vizro.plotly.express as px
@@ -237,9 +248,20 @@ column = vm.Page(
                ```
 
                """
-        ),
-    ],
-)
+            ),
+        ],
+    )
+
+
+# PAGES -------------------------------------------------------------
+line = line_factory("line", "Line")
+time_line = line_factory("Time-Line", "Line")
+time_column = column_factory("Time-Column", "Column")
+scatter = scatter_factory("scatter", "Scatter")
+bar = bar_factory("bar", "Bar")
+ordered_bar = bar_factory("ordered-bar", "Ordered Bar")
+column = column_factory("column", "Column")
+ordered_column = column_factory("ordered-column", "Ordered Column")
 
 
 pie = vm.Page(
