@@ -6,11 +6,16 @@ from langchain_openai import ChatOpenAI
 SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4-0613",
-        "gpt-3.5-turbo-1106",
+        "gpt-4",
         "gpt-4-1106-preview",
+        "gpt-4-turbo",
+        "gpt-4-turbo-2024-04-09",
+        "gpt-4-turbo-preview",
+        "gpt-4-0125-preview",
+        "gpt-3.5-turbo-1106",
         "gpt-3.5-turbo-0125",
         "gpt-3.5-turbo",
-        "gpt-4-turbo",
+        "gpt-4o-2024-05-13",
         "gpt-4o",
     ]
 }
@@ -47,7 +52,7 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatMo
             return DEFAULT_WRAPPER_MAP.get(vendor)(model_name=model, temperature=DEFAULT_TEMPERATURE)
 
     raise ValueError(
-        f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/#which-llms-are-supported-by-vizro-ai"
+        f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/customize-vizro-ai/#supported-models"
     )
 
 

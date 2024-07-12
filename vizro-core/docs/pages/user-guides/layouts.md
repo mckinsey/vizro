@@ -135,9 +135,7 @@ This defines a single row that occupies the entire width and height, divided int
 
 ## Grid - advanced example
 
-!!! tip "When to use Containers"
-
-    If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
+If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
 
 The `Layout` provides full control over the arrangement of top-level components within a page,
 allowing arbitrarily granular control of the grid by creating larger grids.

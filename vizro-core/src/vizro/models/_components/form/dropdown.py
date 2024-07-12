@@ -1,3 +1,4 @@
+import math
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
@@ -71,6 +72,8 @@ class Dropdown(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
+                    # 37 is the cut-off character length where the text inside the dropdown starts to wrap
+                    optionHeight=32 + 24 * math.floor(max(len(str(option)) for option in full_options) / 37),
                     persistence_type="session",
                 ),
             ]
