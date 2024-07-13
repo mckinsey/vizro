@@ -59,7 +59,7 @@ class PageBuilder:
         if self._page_plan.layout is None:
             return None
         logger.info(f"{self._page_plan.title} -> Building layout {self._page_plan.layout}")
-        return self._page_plan.layout.create(model=self._model, df_metadata=self._df_metadata)
+        return self._page_plan.layout.create(model=self._model)
 
     @property
     def controls(self):

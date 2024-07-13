@@ -62,14 +62,14 @@ class Component(BaseModel):
             return vm.Graph(
                 id=self.component_id + "_" + self.page_id,
                 figure=vizro_ai.plot(
-                    df=df_metadata.metadata[self.df_name].df, user_input=self.component_description
+                    df=df_metadata.get_df(self.df_name), user_input=self.component_description
                 ),
             )
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
         elif self.component_type == "Card":
             return _get_structured_output(
-                query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata={}
+                query=self.component_description, llm_model=model, result_model=vm.Card, df_info=None
             )
 
 
@@ -137,12 +137,7 @@ class Control(BaseModel):
             f" If no options are specified, leave them out."
         )
         try:
-            # _df_schema, _df = (
-            #     df_metadata.metadata[self.df_name].df_schema,
-            #     df_metadata.metadata[self.df_name].df,
-            # )
-            _df_schema = df_metadata.metadata[self.df_name].df_schema
-            print(_df_schema)
+            _df_schema = df_metadata.get_df_schema(self.df_name)
             _df_cols = list(_df_schema.keys())
         # when wrong dataframe name is given
         except KeyError:
@@ -152,7 +147,7 @@ class Control(BaseModel):
         try:
             result_proxy = create_filter_proxy(df_cols=_df_cols, available_components=available_components)
             proxy = _get_structured_output(
-                query=filter_prompt, llm_model=model, result_model=result_proxy, df_metadata=df_metadata
+                query=filter_prompt, llm_model=model, result_model=result_proxy, df_info=_df_schema
             )
             logger.info(
                 f"`Control` proxy: {proxy.dict()}"
@@ -202,14 +197,14 @@ class Layout(BaseModel):
         " to this layout AS IS. If layout not specified, describe layout as `N/A`.",
     )
 
-    def create(self, model, df_metadata) -> Union[vm.Layout, None]:
+    def create(self, model) -> Union[vm.Layout, None]:
         """Create the layout."""
         if self.layout_description == "N/A":
             return None
 
         try:
             proxy = _get_structured_output(
-                query=self.layout_description, llm_model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
+                query=self.layout_description, llm_model=model, result_model=LayoutProxyModel, df_info=None
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
@@ -248,7 +243,7 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: DfMetadata,
 ) -> DashboardPlanner:
-    return _get_structured_output(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
+    return _get_structured_output(query=query, llm_model=model, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples())
 
 
 if __name__ == "__main__":
@@ -261,11 +256,11 @@ if __name__ == "__main__":
     llm_model = _get_llm_model(model=model_default)
     # # Test the layout planner
     # layout1 = Layout(layout_description="grid=[[0,1]]")
-    # print(layout1.create(model=llm_model, df_metadata={}))
+    # print(layout1.create(model=llm_model))
     # # grid=[[0, 1]]
 
     # layout1 = Layout(layout_description="The card has text `This is a card`")
-    # print(layout1.create(model=llm_model, df_metadata={}))
+    # print(layout1.create(model=llm_model))
     # # None
 
     # Test the control planner
@@ -293,18 +288,10 @@ if __name__ == "__main__":
                         "iso_alpha": "object",
                         "iso_num": "int64",
                     },
-                    "df": pd.DataFrame(
-                        {
-                            "country": ["Afghanistan", "Albania", "Algeria", "Angola", "Argentina"],
-                            "continent": ["Asia", "Europe", "Africa", "Africa", "Americas"],
-                            "year": [1952, 1957, 1962, 1967, 1972],
-                            "lifeExp": [28.801, 76.423, 43.077, 30.015, 62.485],
-                            "pop": [8425333, 1282697, 9279525, 4232095, 2227000],
-                            "gdpPercap": [779.445314, 1601.056136, 2449.008185, 3520.610273, 8955.553783],
-                            "iso_alpha": ["AFG", "ALB", "DZA", "AGO", "ARG"],
-                            "iso_num": [4, 8, 12, 24, 32],
-                        }
-                    ),
+                    "df_sample": "country, continent, year, lifeExp, pop, gdpPercap, iso_alpha, iso_num\n"
+                    "Afghanistan, Asia, 1952, 28.801, 8425333, 779.4453145, AFG, 4\n"
+                    "Afghanistan, Asia, 1957, 30.332, 9240934, 820.8530296, AFG, 4\n"
+                    "Afghanistan, Asia, 1962, 31.997, 10267083, 853.10071, AFG, 4\n",
                 }
             },
         )
