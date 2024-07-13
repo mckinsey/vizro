@@ -24,6 +24,7 @@ class DataFrameMetadata:
 
     df_schema: Dict[str, str]
     df: pd.DataFrame
+    df_sample: str
 
 
 @dataclass

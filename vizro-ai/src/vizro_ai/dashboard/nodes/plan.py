@@ -15,7 +15,7 @@ except ImportError:  # pragma: no cov
 import numpy as np
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro.tables import dash_ag_grid
-from vizro_ai.dashboard.nodes._model import _get_proxy_model
+from vizro_ai.dashboard.nodes._model import _get_structured_output
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +46,10 @@ class Component(BaseModel):
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
     )
     page_id: str = Field(..., description="The page id where this component will be placed.")
-    data_frame: str = Field(
+    df_name: str = Field(
         ...,
-        description="The name of the dataframe that this component will use. If the dataframe is "
-        "not used, please specify that.",
+        description="The name of the dataframe that this component will use. If no dataframe is "
+        "used, please specify that as N/A.",
     )
 
     def create(self, model, df_metadata) -> Union[ComponentType, None]:
@@ -62,21 +62,21 @@ class Component(BaseModel):
             return vm.Graph(
                 id=self.component_id + "_" + self.page_id,
                 figure=vizro_ai.plot(
-                    df=df_metadata.metadata[self.data_frame].df, user_input=self.component_description
+                    df=df_metadata.metadata[self.df_name].df, user_input=self.component_description
                 ),
             )
         elif self.component_type == "AgGrid":
-            return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.data_frame))
+            return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
         elif self.component_type == "Card":
-            return _get_proxy_model(
-                query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata=df_metadata
+            return _get_structured_output(
+                query=self.component_description, llm_model=model, result_model=vm.Card, df_metadata={}
             )
 
 
 # TODO: This is a very basic implementation of the filter proxy model. It needs to be improved.
 # TODO: Try use `df_sample` to inform pydantic models like `OptionsType` about available choices.
 # Caution: If just use `df_sample` to inform the pydantic model, the choices might not be exhaustive.
-def create_filter_proxy(df_cols, df, available_components) -> BaseModel:
+def create_filter_proxy(df_cols, available_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
@@ -122,7 +122,7 @@ class Control(BaseModel):
         "Be as detailed as possible. Keep the original relevant description AS IS. If this control is used"
         "to control a specific component, include the relevant component details.",
     )
-    data_frame: str = Field(
+    df_name: str = Field(
         ...,
         description="The name of the dataframe that this component will use. "
         "If the dataframe is not used, please specify that.",
@@ -137,19 +137,21 @@ class Control(BaseModel):
             f" If no options are specified, leave them out."
         )
         try:
-            _df_schema, _df = (
-                df_metadata.metadata[self.data_frame].df_schema,
-                df_metadata.metadata[self.data_frame].df,
-            )
+            # _df_schema, _df = (
+            #     df_metadata.metadata[self.df_name].df_schema,
+            #     df_metadata.metadata[self.df_name].df,
+            # )
+            _df_schema = df_metadata.metadata[self.df_name].df_schema
+            print(_df_schema)
             _df_cols = list(_df_schema.keys())
         # when wrong dataframe name is given
         except KeyError:
-            logger.info(f"Dataframe {self.data_frame} not found in metadata, returning default values.")
+            logger.info(f"Dataframe {self.df_name} not found in metadata, returning default values.")
             return None
 
         try:
-            result_proxy = create_filter_proxy(df_cols=_df_cols, df=_df, available_components=available_components)
-            proxy = _get_proxy_model(
+            result_proxy = create_filter_proxy(df_cols=_df_cols, available_components=available_components)
+            proxy = _get_structured_output(
                 query=filter_prompt, llm_model=model, result_model=result_proxy, df_metadata=df_metadata
             )
             logger.info(
@@ -206,7 +208,7 @@ class Layout(BaseModel):
             return None
 
         try:
-            proxy = _get_proxy_model(
+            proxy = _get_structured_output(
                 query=self.layout_description, llm_model=model, result_model=LayoutProxyModel, df_metadata=df_metadata
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
@@ -246,7 +248,7 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: DfMetadata,
 ) -> DashboardPlanner:
-    return _get_proxy_model(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
+    return _get_structured_output(query=query, llm_model=model, result_model=DashboardPlanner, df_metadata=df_metadata)
 
 
 if __name__ == "__main__":

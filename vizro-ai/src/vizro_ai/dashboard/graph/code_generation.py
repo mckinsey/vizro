@@ -89,7 +89,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
         current_df_names.append(df_name)
 
         logger.info(f"df_name: {df_name}")
-        df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df)
+        df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df, df_sample=df_sample)
 
     return {"df_metadata": df_metadata}
 

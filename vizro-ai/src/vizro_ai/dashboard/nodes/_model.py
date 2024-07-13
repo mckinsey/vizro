@@ -1,4 +1,4 @@
-"""Contains the _get_proxy_model for the Vizro AI dashboard."""
+"""Contains the _get_structured_output for the Vizro AI dashboard."""
 
 # ruff: noqa: F821
 try:
@@ -41,11 +41,11 @@ MODEL_REPROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def _get_proxy_model(
+def _get_structured_output(
     query: str,
     llm_model: BaseChatModel,
     result_model: BaseModel,
-    df_metadata: DfMetadata,
+    df_metadata: DfMetadata = {},
     max_retry: int = 2,
 ) -> BaseModel:
     for i in range(max_retry):
