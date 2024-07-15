@@ -1,36 +1,8 @@
-"""Example to show dashboard configuration specified as pydantic models."""
+"""App configuration for chart gallery dashboard."""
 
 import vizro.models as vm
-from utils._containers import (
-    container_all,
-    container_correlation,
-    container_deviation,
-    container_distribution,
-    container_flow,
-    container_magnitude,
-    container_part,
-    container_ranking,
-    container_spatial,
-    container_time,
-)
-from utils._pages import (
-    bar,
-    boxplot,
-    butterfly_page,
-    column,
-    distribution_butterfly,
-    donut,
-    line,
-    magnitude_treemap,
-    ordered_bar,
-    ordered_column,
-    pie,
-    scatter,
-    time_column,
-    time_line,
-    treemap,
-    violin,
-)
+from utils._containers import *
+from utils._pages import *
 from vizro import Vizro
 
 homepage = vm.Page(
@@ -73,6 +45,7 @@ dashboard = vm.Dashboard(
         magnitude_treemap,
         butterfly_page,
         distribution_butterfly,
+        choropleth,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -120,7 +93,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Spatial",
-                    pages={"Spatial": ["Line"]},  # TODO: Replace with map
+                    pages={"Spatial": ["Choropleth"]},
                     icon="Map",
                 ),
             ]

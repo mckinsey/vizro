@@ -1,5 +1,8 @@
 """Contains custom components and charts used inside the dashboard."""
 
+import json
+from urllib.request import urlopen
+
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
@@ -7,6 +10,10 @@ import vizro.plotly.express as px
 from vizro.models.types import capture
 
 from ._components import CodeClipboard, FlexContainer, Markdown
+
+with urlopen("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json") as response:
+    counties = json.load(response)
+
 
 PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
 
@@ -23,6 +30,11 @@ ages = pd.DataFrame(
         "Female": [1000, 3000, 3500, 3800, 3600, 700],
     }
 )
+fips_unemp = pd.read_csv(
+    "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
+    dtype={"fips": str},
+)
+
 
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
@@ -318,17 +330,18 @@ def treemap_factory(id: str, title: str):
 
                 #### What is a treemap?
 
-                A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles sized proportionately
-                to the quantity they represent, combining together to form larger **parent** category rectangles.
+                A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles sized
+                proportionately to the quantity they represent, combining together to form larger **parent**
+                category rectangles.
 
                 &nbsp;
 
                 #### When to use it?
 
-                It’s helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
-                compare groups and single elements nested within them. Consider using them instead of Pie charts when you
-                have a higher number of categories. Treemaps are very compact and allow audiences to get a quick overview
-                of the data.
+                It's helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
+                compare groups and single elements nested within them. Consider using them instead of Pie charts when
+                you have a higher number of categories. Treemaps are very compact and allow audiences to get a quick
+                overview of the data.
             """
             ),
             vm.Graph(
@@ -390,7 +403,7 @@ def butterfly_factory(id: str, title: str):
 
                 #### When to use it?
 
-                Use a butterfly chart when you wish to emphasise the comparison between two data sets sharing the same
+                Use a butterfly chart when you wish to emphasize the comparison between two data sets sharing the same
                 parameters. Sharing this chart with your audience will help them see at a glance how two groups differ
                 within the same parameters. You can also **stack** two bars on each side if you wish to divide your
                 categories.
@@ -699,6 +712,86 @@ violin = vm.Page(
                                 y="total_bill",
                                 x="day",
                                 color="day",
+                            )
+                        ),
+                    ],
+                )
+
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
+        ),
+    ],
+)
+
+choropleth = vm.Page(
+    title="Choropleth",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a choropleth map?
+
+            A choropleth map is a map in which geographical areas are colored, shaded or patterned in relation to a
+            specific data variable.
+
+            &nbsp;
+
+            #### When to use it?
+
+            Use a chloropleth map when you wish to show how a measurement varies across a geographic area, or to show
+            variability or patterns within a region. Typically, you will blend one color into another, take a color
+            shade from light to dark, or introduce patterns to depict the variation in the data.
+
+            Be aware that it may be difficult for your audience to accurately read or compare values on the map
+            depicted by color.
+
+        """
+        ),
+        vm.Graph(
+            figure=px.choropleth(
+                fips_unemp,
+                geojson=counties,
+                locations="fips",
+                color="unemp",
+                range_color=(0, 12),
+                scope="usa",
+            )
+        ),
+        CodeClipboard(
+            text="""
+                ```python
+                import json
+                from urllib.request import urlopen
+                
+                import pandas as pd
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
+                
+                with urlopen(
+                    "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+                ) as response:
+                    counties = json.load(response)
+                
+                fips_unemp = pd.read_csv(
+                    "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
+                    dtype={"fips": str},
+                )
+                
+                
+                page = vm.Page(
+                    title="Choropleth",
+                    components=[
+                        vm.Graph(
+                            figure=px.choropleth(
+                                fips_unemp,
+                                geojson=counties,
+                                locations="fips",
+                                color="unemp",
+                                range_color=(0, 12),
+                                scope="usa",
                             )
                         ),
                     ],

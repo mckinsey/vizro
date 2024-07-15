@@ -1,36 +1,39 @@
 """Dev app to try things out."""
 
-import numpy as np
+import json
+from urllib.request import urlopen
+
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-df = px.data.iris()
-df["species_one_long"] = np.where(
-    df["species"] == "setosa", "setosa is one common species you can select in the iris dataset.", df["species"]
+with urlopen(
+    "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+) as response:
+    counties = json.load(response)
+
+fips_unemp = pd.read_csv(
+    "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
+    dtype={"fips": str},
 )
-df["species_long"] = df["species"] + " is one common species you can select in the iris dataset."
-df["species_very_long"] = (
-    df["species"]
-    + " is one common species you can select in the iris dataset is one common species you can select in the iris data."
-)
+
 
 page = vm.Page(
-    title="",
+    title="Choropleth",
     components=[
         vm.Graph(
-            id="graph_1",
-            figure=px.scatter(df, title="Title", x="sepal_width", y="sepal_length", color="species"),
+            figure=px.choropleth(
+                fips_unemp,
+                geojson=counties,
+                locations="fips",
+                color="unemp",
+                range_color=(0, 12),
+                scope="usa",
+            )
         ),
     ],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="species_long"),
-        vm.Filter(column="species_one_long"),
-        vm.Filter(column="species_very_long"),
-    ],
 )
-
 
 dashboard = vm.Dashboard(pages=[page])
 
