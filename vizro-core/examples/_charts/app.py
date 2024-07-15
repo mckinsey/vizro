@@ -26,6 +26,8 @@ from utils._pages import (
     time_column,
     time_line,
     violin,
+treemap,
+magnitude_treemap
 )
 from vizro import Vizro
 
@@ -65,6 +67,8 @@ dashboard = vm.Dashboard(
         ordered_column,
         time_line,
         time_column,
+        treemap,
+        magnitude_treemap
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -92,7 +96,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Magnitude",
-                    pages={"Magnitude": ["Bar", "Column"]},
+                    pages={"Magnitude": ["Bar", "Column", "Magnitude-Treemap"]},
                     icon="Bar Chart",
                 ),
                 vm.NavLink(
@@ -102,7 +106,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Part-to-whole",
-                    pages={"Part-to-whole": ["Donut", "Pie"]},
+                    pages={"Part-to-whole": ["Donut", "Pie", "Treemap"]},
                     icon="Donut Small",
                 ),
                 vm.NavLink(

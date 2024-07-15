@@ -8,6 +8,7 @@ from ._components import CodeClipboard, FlexContainer, Markdown
 PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
 
 gapminder = px.data.gapminder()
+gapminder_2007 = gapminder.query("year == 2007")
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
@@ -273,6 +274,71 @@ def column_factory(id: str, title: str):
     )
 
 
+def treemap_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a treemap?
+
+                A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles sized proportionately
+                to the quantity they represent, combining together to form larger **parent** category rectangles.
+
+                &nbsp;
+
+                #### When to use it?
+
+                It’s helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
+                compare groups and single elements nested within them. Consider using them instead of Pie charts when you
+                have a higher number of categories. Treemaps are very compact and allow audiences to get a quick overview
+                of the data.
+            """
+            ),
+            vm.Graph(
+                figure=px.treemap(
+                    gapminder_2007,
+                    path=[px.Constant("world"), "continent", "country"],
+                    values="pop",
+                    color="lifeExp",
+                )
+            ),
+            CodeClipboard(
+                text="""
+                    ```python
+                    import vizro.models as vm
+                    import vizro.plotly.express as px
+                    from vizro import Vizro
+
+                    gapminder = px.data.gapminder()
+                    gapminder_2007 = gapminder.query("year == 2007")
+
+                    page = vm.Page(
+                        title="Treemap",
+                        components=[
+                            vm.Graph(
+                                figure=px.treemap(
+                                    gapminder_2007,
+                                    path=[px.Constant("world"), "continent", "country"],
+                                    values="pop",
+                                    color="lifeExp",
+                                )
+                            ),
+                        ],
+                    )
+
+                    dashboard = vm.Dashboard(pages=[page])
+                    Vizro().build(dashboard).run()
+                    ```
+                    """
+            ),
+        ],
+    )
+
+
 # PAGES -------------------------------------------------------------
 line = line_factory("Line", "Line")
 time_line = line_factory("Time-Line", "Line")
@@ -282,6 +348,8 @@ bar = bar_factory("Bar", "Bar")
 ordered_bar = bar_factory("Ordered Bar", "Ordered Bar")
 column = column_factory("Column", "Column")
 ordered_column = column_factory("Ordered Column", "Ordered Column")
+treemap = treemap_factory("Treemap", "Treemap")
+magnitude_treemap = treemap_factory("Magnitude-Treemap", "Treemap")
 
 
 pie = vm.Page(

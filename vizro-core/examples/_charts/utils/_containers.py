@@ -49,7 +49,6 @@ DISTRIBUTION_CHARTS = sorted(
         "lollipop",
         "cumulative-curve",
         "waterfall",
-        "treemap",
         "venn",
         "barcode",
     ]
@@ -73,11 +72,11 @@ MAGNITUDE_CHARTS = sorted(
         "lollipop",
         "cumulative-curve",
         "waterfall",
-        "treemap",
         "venn",
         "diverging-bar",
         "bullet",
         "dot-plot",
+        "magnitude-treemap"
     ]
 )
 TIME_CHARTS = sorted(
