@@ -46,7 +46,7 @@ dashboard = vm.Dashboard(
         butterfly_page,
         distribution_butterfly,
         choropleth,
-        sankey,
+        sankey_page,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(

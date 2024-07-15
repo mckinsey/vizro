@@ -1,6 +1,7 @@
 """Contains custom components and charts used inside the dashboard."""
 
 import json
+from typing import List
 from urllib.request import urlopen
 
 import pandas as pd
@@ -73,20 +74,20 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
 
 
 @capture("graph")
-def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str):
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]):
     fig = go.Figure(
         data=[
             go.Sankey(
                 node=dict(
                     pad=16,
                     thickness=16,
-                    #     label=labels,
+                    label=labels,
                 ),
                 link=dict(
                     source=data_frame[source],
                     target=data_frame[target],
                     value=data_frame[value],
-                    #    label=labels,
+                    abel=labels,
                     color="rgba(205, 209, 228, 0.4)",
                 ),
             )
@@ -838,7 +839,7 @@ choropleth = vm.Page(
 )
 
 
-sankey = vm.Page(
+sankey_page = vm.Page(
     title="Sankey",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
