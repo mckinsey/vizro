@@ -87,7 +87,7 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
                     source=data_frame[source],
                     target=data_frame[target],
                     value=data_frame[value],
-                    abel=labels,
+                    label=labels,
                     color="rgba(205, 209, 228, 0.4)",
                 ),
             )
