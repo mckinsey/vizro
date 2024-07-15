@@ -17,6 +17,7 @@ vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 
+
 # All functions ending with `_factory` are there to re-use the existing content of a page. Given the restriction that
 # one page can only be mapped to one navigation group, we have to create a new page with a new ID.
 def line_factory(id: str, title: str):
@@ -37,9 +38,9 @@ def line_factory(id: str, title: str):
 
             #### When to use it?
 
-            You should select a line chart when you want to show trends over time. Usually, your y-axis will show a 
-            quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also 
-            display negative values below the x-axis. If you wish to group several lines (different data series) in the 
+            You should select a line chart when you want to show trends over time. Usually, your y-axis will show a
+            quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also
+            display negative values below the x-axis. If you wish to group several lines (different data series) in the
             same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
             ),
@@ -50,9 +51,9 @@ def line_factory(id: str, title: str):
                 import vizro.models as vm
                 import vizro.plotly.express as px
                 from vizro import Vizro
-                
+
                 stocks = px.data.stocks()
-                
+
                 page = vm.Page(
                     title="Line",
                     components=[
@@ -63,7 +64,7 @@ def line_factory(id: str, title: str):
                         )
                     ],
                 )
-                
+
                 dashboard = vm.Dashboard(pages=[page])
                 Vizro().build(dashboard).run()
                 ```
@@ -104,9 +105,9 @@ def scatter_factory(id: str, title: str):
                import vizro.models as vm
                import vizro.plotly.express as px
                from vizro import Vizro
-                
+
                iris = px.data.iris()
-                
+
                page = vm.Page(
                    title="Scatter",
                    components=[
@@ -120,7 +121,7 @@ def scatter_factory(id: str, title: str):
                        )
                    ],
                )
-            
+
                dashboard = vm.Dashboard(pages=[page])
                Vizro().build(dashboard).run()
                ```
@@ -171,7 +172,7 @@ def bar_factory(id: str, title: str):
                 import vizro.models as vm
                 import vizro.plotly.express as px
                 from vizro import Vizro
-                
+
                 tips = px.data.tips()
                 tips_agg = (
                     tips.groupby("day")
@@ -179,7 +180,7 @@ def bar_factory(id: str, title: str):
                     .sort_values("total_bill")
                     .reset_index()
                 )
-                
+
                 page = vm.Page(
                     title="Bar",
                     components=[
@@ -193,7 +194,7 @@ def bar_factory(id: str, title: str):
                         )
                     ],
                 )
-                
+
                 dashboard = vm.Dashboard(pages=[page])
                 Vizro().build(dashboard).run()
                 ```
@@ -230,10 +231,10 @@ def column_factory(id: str, title: str):
             ),
             vm.Graph(
                 figure=px.bar(
-                                data_frame=tips_agg,
-                                y="total_bill",
-                                x="day",
-                            )
+                    data_frame=tips_agg,
+                    y="total_bill",
+                    x="day",
+                )
             ),
             CodeClipboard(
                 text="""
@@ -241,7 +242,7 @@ def column_factory(id: str, title: str):
                 import vizro.models as vm
                 import vizro.plotly.express as px
                 from vizro import Vizro
-                
+
                 tips = px.data.tips()
                 tips_agg = (
                     tips.groupby("day")
@@ -249,7 +250,7 @@ def column_factory(id: str, title: str):
                     .sort_values("total_bill")
                     .reset_index()
                 )
-                
+
                 page = vm.Page(
                     title="Column",
                     components=[
@@ -262,7 +263,7 @@ def column_factory(id: str, title: str):
                         )
                     ],
                 )
-                
+
                 dashboard = vm.Dashboard(pages=[page])
                 Vizro().build(dashboard).run()
                 ```
@@ -292,21 +293,20 @@ pie = vm.Page(
 
             #### What is a pie chart?
 
-            A Pie chart is a circular chart divided into segments to show proportions and percentages between
+            A pie chart is a circular chart divided into segments to show proportions and percentages between
             categories. The circle represents the whole.
 
             &nbsp;
 
             #### When to use it?
 
-            Use the Pie chart when you need to show your audience a quick view of how data is distributed
+            Use the pie chart when you need to show your audience a quick view of how data is distributed
             proportionately, with percentages highlighted. The different values you present must add up to a total and
             equal 100%.
 
-            The downsides are that Pie charts tend to occupy more space than other charts, they don`t
+            The downsides are that pie charts tend to occupy more space than other charts, they don`t
             work well with more than a few values because labeling small segments is challenging, and it can be
             difficult to accurately compare the sizes of the segments.
-
         """
         ),
         vm.Graph(
@@ -318,30 +318,30 @@ pie = vm.Page(
         ),
         CodeClipboard(
             text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
 
-               tips = px.data.tips()
+                tips = px.data.tips()
 
-               page = vm.Page(
-                   title="Pie",
-                   components=[
-                      vm.Graph(
-                          figure=px.pie(
-                            data_frame=tips,
-                            values='tip', names='day',
-                          )
-                      )
-                   ]
-               )
+                page = vm.Page(
+                    title="Pie",
+                    components=[
+                        vm.Graph(
+                            figure=px.pie(
+                                data_frame=tips,
+                                values="tip",
+                                names="day",
+                            )
+                        )
+                    ],
+                )
 
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
         ),
     ],
 )
@@ -356,17 +356,16 @@ donut = vm.Page(
 
             #### What is a donut chart?
 
-            A Donut chart looks like a Pie chart, but has a blank space in the center which may contain additional
+            A donut chart looks like a pie chart, but has a blank space in the center which may contain additional
             information.
 
             &nbsp;
 
             #### When to use it?
 
-            A Donut chart can be used in place of a Pie chart, particularly when you are short of space or have extra
+            A donut chart can be used in place of a pie chart, particularly when you are short of space or have extra
             information you would like to share about the data. It may also be more effective if you wish your audience
             to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
-
         """
         ),
         vm.Graph(
@@ -379,30 +378,31 @@ donut = vm.Page(
         ),
         CodeClipboard(
             text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
 
-               tips = px.data.tips()
+                tips = px.data.tips()
 
-               page = vm.Page(
-                   title="Pie",
-                   components=[
-                      vm.Graph(
-                          figure=px.pie(
-                            data_frame=tips,
-                            values='tip', names='day', hole=0.4
-                          )
-                      )
-                   ]
-               )
+                page = vm.Page(
+                    title="Donut",
+                    components=[
+                        vm.Graph(
+                            figure=px.pie(
+                                data_frame=tips,
+                                values="tip",
+                                names="day",
+                                hole=0.4,
+                            )
+                        )
+                    ],
+                )
 
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
         ),
     ],
 )
