@@ -35,6 +35,14 @@ fips_unemp = pd.read_csv(
     dtype={"fips": str},
 )
 
+sankey_data = pd.DataFrame(
+    {
+        "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
+        "Destination": [1, 2, 3, 4, 5, 5, 6],  # indices inside labels
+        "Value": [10, 4, 8, 6, 4, 8, 8],
+    }
+)
+
 
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
@@ -59,6 +67,30 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
             orientation="h",
             name=x2,
         )
+    )
+    fig.update_layout(barmode="relative")
+    return fig
+
+
+@capture("graph")
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str):
+    fig = go.Figure(
+        data=[
+            go.Sankey(
+                node=dict(
+                    pad=16,
+                    thickness=16,
+                    #     label=labels,
+                ),
+                link=dict(
+                    source=data_frame[source],
+                    target=data_frame[target],
+                    value=data_frame[value],
+                    #    label=labels,
+                    color="rgba(205, 209, 228, 0.4)",
+                ),
+            )
+        ]
     )
     fig.update_layout(barmode="relative")
     return fig
@@ -764,23 +796,23 @@ choropleth = vm.Page(
                 ```python
                 import json
                 from urllib.request import urlopen
-                
+
                 import pandas as pd
                 import vizro.models as vm
                 import vizro.plotly.express as px
                 from vizro import Vizro
-                
+
                 with urlopen(
                     "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
                 ) as response:
                     counties = json.load(response)
-                
+
                 fips_unemp = pd.read_csv(
                     "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
                     dtype={"fips": str},
                 )
-                
-                
+
+
                 page = vm.Page(
                     title="Choropleth",
                     components=[
@@ -793,6 +825,109 @@ choropleth = vm.Page(
                                 range_color=(0, 12),
                                 scope="usa",
                             )
+                        ),
+                    ],
+                )
+
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
+        ),
+    ],
+)
+
+
+sankey = vm.Page(
+    title="Sankey",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a sankey chart?
+
+            A Sankey chart is a type of flow diagram that illustrates how resources or values move between different
+            stages or entities. The width of the arrows in the chart is proportional to the quantity of the flow,
+            making it easy to see where the largest movements occur.
+
+            &nbsp;
+
+            #### When to use it?
+
+            Use a Sankey chart when you want to visualize the flow of resources, energy, money, or other values from
+            one point to another. It is particularly useful for showing distributions and transfers within a system,
+            such as energy usage, cost breakdowns, or material flows.
+
+            Be mindful that Sankey charts can become cluttered if there are too many nodes or flows.
+            To maintain clarity, focus on highlighting the most significant flows and keep the chart as simple as
+            possible.
+        """
+        ),
+        vm.Graph(
+            figure=sankey(
+                data_frame=sankey_data,
+                labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
+                source="Origin",
+                target="Destination",
+                value="Value",
+            ),
+        ),
+        CodeClipboard(
+            text="""
+                ```python
+                import pandas as pd
+                import plotly.graph_objects as go
+                import vizro.models as vm
+                from vizro import Vizro
+                from vizro.models.types import capture
+                from typing import List
+
+                sankey_data = pd.DataFrame(
+                    {
+                        "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
+                        "Destination": [1, 2, 3, 4, 5, 5, 6],  # indices inside labels
+                        "Value": [10, 4, 8, 6, 4, 8, 8],
+                    }
+                )
+
+
+                @capture("graph")
+                def sankey(
+                    data_frame: pd.DataFrame,
+                    source: str,
+                    target: str,
+                    value: str,
+                    labels: List[str],
+                ):
+                    fig = go.Figure(
+                        data=[
+                            go.Sankey(
+                                node=dict(pad=16, thickness=16, label=labels,),
+                                link=dict(
+                                    source=data_frame[source],
+                                    target=data_frame[target],
+                                    value=data_frame[value],
+                                    label=labels,
+                                    color="rgba(205, 209, 228, 0.4)",
+                                ),
+                            )
+                        ]
+                    )
+                    fig.update_layout(barmode="relative")
+                    return fig
+
+
+                page = vm.Page(
+                    title="Sankey",
+                    components=[
+                        vm.Graph(
+                            figure=sankey(
+                                data_frame=sankey_data,
+                                labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
+                                source="Origin",
+                                target="Destination",
+                                value="Value",
+                            ),
                         ),
                     ],
                 )

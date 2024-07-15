@@ -46,6 +46,7 @@ dashboard = vm.Dashboard(
         butterfly_page,
         distribution_butterfly,
         choropleth,
+        sankey,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -88,7 +89,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Flow",
-                    pages={"Flow": ["Line"]},  # TODO: Replace with Sankey
+                    pages={"Flow": ["Sankey"]},
                     icon="Stacked Line Chart",
                 ),
                 vm.NavLink(
