@@ -49,7 +49,7 @@ examples_path = Path(__file__).parents[2] / "examples"
         (examples_path / "features", ""),
         (examples_path / "demo", ""),
         (examples_path / "kpi", ""),
-        (examples_path / "_charts", ""),
+        (examples_path / "chart-gallery", ""),
         (examples_path / "_dev", "yaml_version"),
         (examples_path / "features", "yaml_version"),
     ],
