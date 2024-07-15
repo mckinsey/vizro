@@ -13,7 +13,7 @@ The dashboard launches with a home page that offers four other pages:
 * Continent summary: Summarizes the main findings for each continent.
 
 
-You can find the code for each of the charts, for each page of the dashboard on our [Hugging Face gapminder demo space](https://huggingface.co/spaces/vizro/gapminder). The code is available as a [`.py` file](https://huggingface.co/spaces/vizro/gapminder/blob/main/app.py).
+You can find the code for each of the charts, for each page of the dashboard on our [Hugging Face gapminder demo space](https://huggingface.co/spaces/vizro/demo-gapminder). The code is available as a [`.py` file](https://huggingface.co/spaces/vizro/demo-gapminder/blob/main/app.py).
 
 !!! note
 
