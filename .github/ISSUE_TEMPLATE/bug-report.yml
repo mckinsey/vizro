@@ -1,6 +1,6 @@
 name: Bug report
 description: Something is not working correctly
-labels: "Status: Needs triage :mag:, Issue: Bug Report :bug:"
+labels: "Needs triage :mag:, Bug Report :bug:"
 
 body:
   - type: markdown
