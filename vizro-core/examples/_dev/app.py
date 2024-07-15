@@ -7,7 +7,9 @@ from vizro.figures.undecorated import kpi_card, kpi_card_reference
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 # Add single CSS file figures.css or
-vizro_bootstrap = "https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+vizro_bootstrap = (
+    "https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+)
 vizro_css = "https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-core/src/vizro/static/css/figures.css"
 
 # Add entire assets folder from Vizro
@@ -39,7 +41,7 @@ app.layout = [
                 title="KPI Card II",
             ),
         ],
-        className="vizro_light"
+        className="vizro_light",
     ),
 ]
 

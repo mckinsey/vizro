@@ -10,7 +10,6 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-
 }
 
 .card-kpi .card-header .material-symbols-outlined {
@@ -54,8 +53,9 @@
   border-left: 4px solid #d41159;
 }
 
-
-.card-kpi .card-header, .card-kpi .card-body, .card-kpi .card-footer {
+.card-kpi .card-header,
+.card-kpi .card-body,
+.card-kpi .card-footer {
   background: inherit;
   border: none;
   margin: 0;
