@@ -19,15 +19,15 @@ from utils._pages import (
     column,
     donut,
     line,
+    magnitude_treemap,
     ordered_bar,
     ordered_column,
     pie,
     scatter,
     time_column,
     time_line,
+    treemap,
     violin,
-treemap,
-magnitude_treemap
 )
 from vizro import Vizro
 
@@ -68,7 +68,7 @@ dashboard = vm.Dashboard(
         time_line,
         time_column,
         treemap,
-        magnitude_treemap
+        magnitude_treemap,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(

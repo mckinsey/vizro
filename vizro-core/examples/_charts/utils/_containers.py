@@ -76,7 +76,7 @@ MAGNITUDE_CHARTS = sorted(
         "diverging-bar",
         "bullet",
         "dot-plot",
-        "magnitude-treemap"
+        "magnitude-treemap",
     ]
 )
 TIME_CHARTS = sorted(
@@ -240,7 +240,7 @@ container_distribution = vm.Container(
             Distribution helps you to present all the possible values (or intervals) of your data and how often they
             occur. You can organize the data to show the number or percentage of items in a specified group, what shape
             the group takes, where the center lies, and how much variability there is in the data. This shape
-            (or `skew`) of a distribution can be a powerful way for you to highlight either the existence or lack of
+            (or **skew**) of a distribution can be a powerful way for you to highlight either the existence or lack of
             uniformity or equality in the data.
             """,
             classname="intro-text",
@@ -268,7 +268,7 @@ container_magnitude = vm.Container(
     components=[
         Markdown(
             text="""
-            Magnitude allows you to emphasize size comparisons of `counted` items in your data set. You can show
+            Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show
             relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances
             are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
             percentages.
