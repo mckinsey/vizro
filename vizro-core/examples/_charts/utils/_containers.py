@@ -21,7 +21,7 @@ def tidy_chart_title(chart: str) -> str:
     return chart_without_prefix.replace("-", " ").title()
 
 
-DEVIATION_CHARTS = sorted(["line", "scatter", "slope", "lollipop", "diverging-bar"])
+DEVIATION_CHARTS = sorted(["diverging-bar", "butterfly", "slope", "lollipop"])
 CORRELATION_CHARTS = ["scatter"]
 RANKING_CHARTS = sorted(
     [
@@ -41,7 +41,7 @@ RANKING_CHARTS = sorted(
 DISTRIBUTION_CHARTS = sorted(
     [
         "histogram",
-        "butterfly",
+        "distribution-butterfly",
         "pie",
         "donut",
         "arc",
@@ -61,7 +61,6 @@ MAGNITUDE_CHARTS = sorted(
         "ordered-bubble",
         "column-line",
         "surplus",
-        "butterfly",
         "bubble-timeline",
         "bar",
         "pie",

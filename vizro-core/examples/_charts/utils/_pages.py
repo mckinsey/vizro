@@ -1,7 +1,10 @@
 """Contains custom components and charts used inside the dashboard."""
 
+import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro.models.types import capture
 
 from ._components import CodeClipboard, FlexContainer, Markdown
 
@@ -13,10 +16,40 @@ iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
 tips_agg = tips.groupby("day").agg({"total_bill": "sum"}).sort_values("total_bill").reset_index()
+ages = pd.DataFrame(
+    {
+        "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
+        "Male": [800, 2000, 4200, 5000, 2100, 800],
+        "Female": [1000, 3000, 3500, 3800, 3600, 700],
+    }
+)
 
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
+
+
+@capture("graph")
+def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=-data_frame[x1].values,
+            y=data_frame[y],
+            orientation="h",
+            name=x1,
+        )
+    )
+    fig.add_trace(
+        go.Bar(
+            x=data_frame[x2],
+            y=data_frame[y],
+            orientation="h",
+            name=x2,
+        )
+    )
+    fig.update_layout(barmode="relative")
+    return fig
 
 
 # All functions ending with `_factory` are there to reuse the existing content of a page. Given the restriction that
@@ -339,6 +372,84 @@ def treemap_factory(id: str, title: str):
     )
 
 
+def butterfly_factory(id: str, title: str):
+    return vm.Page(
+        id=id,
+        title=title,
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a butterfly chart?
+
+                A butterfly chart (also called a tornado chart) is a bar chart for displaying two sets of data series
+                side by side.
+
+                &nbsp;
+
+                #### When to use it?
+
+                Use a butterfly chart when you wish to emphasise the comparison between two data sets sharing the same
+                parameters. Sharing this chart with your audience will help them see at a glance how two groups differ
+                within the same parameters. You can also **stack** two bars on each side if you wish to divide your
+                categories.
+            """
+            ),
+            vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
+            CodeClipboard(
+                text="""
+                    ```python
+                    import vizro.models as vm
+                    from vizro import Vizro
+                    import pandas as pd
+                    from vizro.models.types import capture
+                    import plotly.graph_objects as go
+
+                    ages = pd.DataFrame(
+                        {
+                            "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
+                            "Male": [800, 2000, 4200, 5000, 2100, 800],
+                            "Female": [1000, 3000, 3500, 3800, 3600, 700],
+                        }
+                    )
+
+
+                    @capture("graph")
+                    def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
+                        fig = go.Figure()
+                        fig.add_trace(
+                            go.Bar(
+                                x=-data_frame[x1].values, y=data_frame[y], orientation="h", name=x1,
+                            )
+                        )
+                        fig.add_trace(
+                            go.Bar(x=data_frame[x2], y=data_frame[y], orientation="h", name=x2,)
+                        )
+                        fig.update_layout(barmode="relative")
+                        return fig
+
+
+                    dashboard = vm.Dashboard(
+                        pages=[
+                            vm.Page(
+                                title="Butterfly",
+                                components=[
+                                    vm.Graph(
+                                        figure=butterfly(ages, x1="Male", x2="Female", y="Age")
+                                    )
+                                ],
+                            )
+                        ]
+                    )
+                    Vizro().build(dashboard).run()
+                    ```
+                    """
+            ),
+        ],
+    )
+
+
 # PAGES -------------------------------------------------------------
 line = line_factory("Line", "Line")
 time_line = line_factory("Time-Line", "Line")
@@ -350,6 +461,8 @@ column = column_factory("Column", "Column")
 ordered_column = column_factory("Ordered Column", "Ordered Column")
 treemap = treemap_factory("Treemap", "Treemap")
 magnitude_treemap = treemap_factory("Magnitude-Treemap", "Treemap")
+butterfly_page = butterfly_factory("Butterfly", "Butterfly")
+distribution_butterfly = butterfly_factory("Distribution-Butterfly", "Butterfly")
 
 
 pie = vm.Page(

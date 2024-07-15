@@ -16,7 +16,9 @@ from utils._containers import (
 from utils._pages import (
     bar,
     boxplot,
+    butterfly_page,
     column,
+    distribution_butterfly,
     donut,
     line,
     magnitude_treemap,
@@ -69,6 +71,8 @@ dashboard = vm.Dashboard(
         time_column,
         treemap,
         magnitude_treemap,
+        butterfly_page,
+        distribution_butterfly,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -76,7 +80,7 @@ dashboard = vm.Dashboard(
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
                 vm.NavLink(
                     label="Deviation",
-                    pages={"Deviation": ["Line", "Scatter"]},  # Replace with diverging bar
+                    pages={"Deviation": ["Butterfly"]},
                     icon="Planner Review",
                 ),
                 vm.NavLink(
@@ -91,7 +95,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Distribution",
-                    pages={"Distribution": ["Boxplot", "Violin"]},
+                    pages={"Distribution": ["Boxplot", "Violin", "Distribution-Butterfly"]},
                     icon="Waterfall Chart",
                 ),
                 vm.NavLink(
