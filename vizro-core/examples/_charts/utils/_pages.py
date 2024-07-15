@@ -11,13 +11,14 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
+tips_agg = tips.groupby("day").agg({"total_bill": "sum"}).sort_values("total_bill").reset_index()
 
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 
-
-# REUSED -------------------------------------------------------------
+# All functions ending with `_factory` are there to re-use the existing content of a page. Given the restriction that
+# one page can only be mapped to one navigation group, we have to create a new page with a new ID.
 def line_factory(id: str, title: str):
     return vm.Page(
         id=id,
@@ -27,46 +28,46 @@ def line_factory(id: str, title: str):
             vm.Card(
                 text="""
 
-            #### What is a Line?
+            #### What is a line chart?
 
-            A Line chart presents a series of data points over a continuous interval or time period, joined together
+            A line chart presents a series of data points over a continuous interval or time period, joined together
             with straight lines.
 
             &nbsp;
 
             #### When to use it?
 
-            You should select a Line chart when you want to show trends and invite analysis of how the data has changed
-            over time. Usually, your y-axis will show a quantitative value and your x-axis will be marked as a timescale
-            or a sequence of intervals. You can also display negative values below the x-axis. If you wish to group
-            several lines (different data series) in the same chart, try to limit yourself to 3-4 to avoid cluttering
-            up your chart and making it harder for the audience to read.
+            You should select a line chart when you want to show trends over time. Usually, your y-axis will show a 
+            quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also 
+            display negative values below the x-axis. If you wish to group several lines (different data series) in the 
+            same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
             ),
             vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
             CodeClipboard(
                 text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
-
-               gapminder = px.data.gapminder()
-
-               page = vm.Page(
-                   title="Line",
-                   components=[
-                       vm.Graph(
-                            figure=px.line(stocks, x="date", y="GOOG")
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
+                
+                stocks = px.data.stocks()
+                
+                page = vm.Page(
+                    title="Line",
+                    components=[
+                        vm.Graph(
+                            figure=px.line(
+                                stocks, x="date", y="GOOG"
+                            )
                         )
                     ],
-               )
-
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                )
+                
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
             ),
         ],
     )
@@ -81,7 +82,7 @@ def scatter_factory(id: str, title: str):
             vm.Card(
                 text="""
 
-            #### What is a scatter?
+            #### What is a scatter chart?
 
             A scatter plot is a two-dimensional data visualization using dots to represent the values obtained for two
             different variables - one plotted along the x-axis and the other plotted along the y-axis.
@@ -90,7 +91,7 @@ def scatter_factory(id: str, title: str):
 
             #### When to use it?
 
-            Use Scatter Plots when you want to show the relationship between two variables. Scatter plots are sometimes
+            Use scatter plots when you want to show the relationship between two variables. Scatter plots are sometimes
             called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when
             you have paired numerical data and you want to see if one variable impacts the other. However, do remember
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
@@ -103,20 +104,23 @@ def scatter_factory(id: str, title: str):
                import vizro.models as vm
                import vizro.plotly.express as px
                from vizro import Vizro
-
+                
                iris = px.data.iris()
-
+                
                page = vm.Page(
                    title="Scatter",
                    components=[
                        vm.Graph(
                            figure=px.scatter(
-                               iris, x="sepal_width", y="sepal_length", color="species"
+                               iris,
+                               x="sepal_width",
+                               y="sepal_length",
+                               color="species",
                            )
                        )
                    ],
                )
-
+            
                dashboard = vm.Dashboard(pages=[page])
                Vizro().build(dashboard).run()
                ```
@@ -137,7 +141,7 @@ def bar_factory(id: str, title: str):
 
             #### What is a bar chart?
 
-            A Bar chart displays bars in lengths proportional to the values they represent. One axis of
+            A bar chart displays bars in lengths proportional to the values they represent. One axis of
             the chart shows the categories to compare and the other axis provides a value scale,
             starting with zero.
 
@@ -145,7 +149,7 @@ def bar_factory(id: str, title: str):
 
             #### When to use it?
 
-            Select a Bar chart when you want to help your audience draw size comparisons and identify
+            Select a bar chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can
             arrange your bars in any order to fit the message you wish to emphasize. Be mindful of labeling
             clearly when you have a large number of bars. You may need to include a legend,
@@ -155,7 +159,7 @@ def bar_factory(id: str, title: str):
             ),
             vm.Graph(
                 figure=px.bar(
-                    data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
+                    data_frame=tips_agg,
                     x="total_bill",
                     y="day",
                     orientation="h",
@@ -163,28 +167,37 @@ def bar_factory(id: str, title: str):
             ),
             CodeClipboard(
                 text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
-
-               tips = px.data.tips()
-
-               page = vm.Page(
-                   title="Bar",
-                   components=[
-                     vm.Graph(
-            figure=px.bar(data_frame=tips.groupby("day").agg({"total_bill": "sum"}).reset_index(),
-             x="total_bill", y="day",orientation="h")
-        )
-                   ]
-               )
-
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
+                
+                tips = px.data.tips()
+                tips_agg = (
+                    tips.groupby("day")
+                    .agg({"total_bill": "sum"})
+                    .sort_values("total_bill")
+                    .reset_index()
+                )
+                
+                page = vm.Page(
+                    title="Bar",
+                    components=[
+                        vm.Graph(
+                            figure=px.bar(
+                                data_frame=tips_agg,
+                                x="total_bill",
+                                y="day",
+                                orientation="h",
+                            )
+                        )
+                    ],
+                )
+                
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
             ),
         ],
     )
@@ -201,53 +214,59 @@ def column_factory(id: str, title: str):
 
             #### What is a column chart?
 
-            A Column chart is a vertical Bar chart, with column lengths varying according to the
+            A column chart is a vertical bar chart, with column lengths varying according to the
             categorical value they represent. The scale is presented on the y-axis, starting with zero.
 
             &nbsp;
 
             #### When to use it?
 
-            Select a Column chart when you want to help your audience draw size comparisons and identify
-            patterns between categorical data, i.e., data that presents `how many?` in each category. You can
+            Select a column chart when you want to help your audience draw size comparisons and identify
+            patterns between categorical data, i.e., data that presents **how many?** in each category. You can
             arrange your columns in any order to fit the message you wish to emphasize. Be mindful of
             labeling clearly when you have a large number of columns. You may need to include a legend,
             or use abbreviations in the chart with fuller descriptions below of the terms used.
-
         """
             ),
             vm.Graph(
                 figure=px.bar(
-                    data_frame=gapminder.query("country == 'China'"),
-                    x="year",
-                    y="gdpPercap",
-                )
+                                data_frame=tips_agg,
+                                y="total_bill",
+                                x="day",
+                            )
             ),
             CodeClipboard(
                 text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
-
-               gapminder = px.data.gapminder()
-
-               page = vm.Page(
-                   title="Column",
-                   components=[
-                      vm.Graph(
-                          figure=px.bar(
-                              data_frame=gapminder.query("country == 'China'"), x="year", y="gdpPercap"
-                          )
-                      )
-                   ]
-               )
-
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
+                
+                tips = px.data.tips()
+                tips_agg = (
+                    tips.groupby("day")
+                    .agg({"total_bill": "sum"})
+                    .sort_values("total_bill")
+                    .reset_index()
+                )
+                
+                page = vm.Page(
+                    title="Column",
+                    components=[
+                        vm.Graph(
+                            figure=px.bar(
+                                data_frame=tips_agg,
+                                y="total_bill",
+                                x="day",
+                            )
+                        )
+                    ],
+                )
+                
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
             ),
         ],
     )
