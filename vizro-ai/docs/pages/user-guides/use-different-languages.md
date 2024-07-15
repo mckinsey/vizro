@@ -11,7 +11,8 @@ Vizro-AI is versatile, supporting prompts and chart visualizations in languages 
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "请画一个世界年均GDP的趋势图")
+        fig = vizro_ai.plot(df, "请画一个世界年均GDP的趋势图")
+        fig.show()
         ```
     === "Result"
         [![ChineseChart]][ChineseChart]
@@ -30,7 +31,8 @@ Subsequently, we'll switch to German and prompt the visualization of life expect
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "Visualiere den Trend von der Lebenserwartung in USA über die Jahre im Vergleich zur Veränderung der weltweiten Lebenserwartung über die Jahre und kreiere eine deutsche Visualisierung", explain=True)
+        fig = vizro_ai.plot(df, "Visualiere den Trend von der Lebenserwartung in USA über die Jahre im Vergleich zur Veränderung der weltweiten Lebenserwartung über die Jahre und kreiere eine deutsche Visualisierung", explain=True)
+        fig.show()
         ```
     === "Result"
         [![GermanChart]][GermanChart]

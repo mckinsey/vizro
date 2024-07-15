@@ -13,7 +13,8 @@ We'll create an animated bar chart illustrating the population development of ea
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years.")
+        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years.")
+        fig.show()
         ```
     === "Result"
         [![AnimatedChart1]][AnimatedChart1]
@@ -32,7 +33,8 @@ Having unveiled our animated bar chart showcasing population development per cou
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Please improve layout.")
+        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Please improve layout.")
+        fig.show()
         ```
     === "Result"
         [![AnimatedChart2]][AnimatedChart2]
@@ -54,7 +56,8 @@ Upon closer inspection, two challenges emerge: the legend overlaps the x-axis an
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Make sure that y axis range fits entire data. Please improve layout and optimize layout of legend.")
+        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Make sure that y axis range fits entire data. Please improve layout and optimize layout of legend.")
+        fig.show()
         ```
     === "Result"
         [![AnimatedChart3]][AnimatedChart3]
