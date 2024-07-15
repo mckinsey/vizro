@@ -13,14 +13,14 @@ The dashboard launches with a home page that offers four other pages:
 * Continent summary: Summarizes the main findings for each continent.
 
 
-You can find the code for each of the charts, for each page of the dashboard, in the `examples` folder of the `vizro-core` package, within [Vizro's GitHub repository](https://github.com/mckinsey/vizro). The code is available as a [`.py` file](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/demo/app.py) or as a [Jupyter Notebook](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/demo/jupyter_version).
+You can find the code for the dashboard on our [Hugging Face gapminder demo space](https://huggingface.co/spaces/vizro/demo-gapminder). The code is available as a [`.py` file](https://huggingface.co/spaces/vizro/demo-gapminder/blob/main/app.py).
 
 !!! note
 
     If you have any problems running the example code, please [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository.
 
 ## Vizro features
-The [`examples/features` folder](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/features) of the `vizro-core` package within [Vizro's GitHub repository](https://github.com/mckinsey/vizro) contains an example that illustrates Vizro's features. The code is available as a Python script, plus there is an alternative `yaml_version` that offers the same example as the pydantic model but via YAML configuration.
+The [`examples/dev` folder](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/dev) of the `vizro-core` package within [Vizro's GitHub repository](https://github.com/mckinsey/vizro) contains an example that illustrates Vizro's features. The code is available as a Python script, plus there is an alternative `yaml_version` that offers the same example as the pydantic model but via YAML configuration.
 
 The pydantic model should be your preferred method of dashboard configuration, but you can also [define a dashboard with YAML, JSON, or as a Python dictionary](../user-guides/dashboard.md).
 
