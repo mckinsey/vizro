@@ -7,10 +7,10 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, ValidationError
 
 from typing import Any
+
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
-from vizro_ai.dashboard.utils import DfMetadata
 
 SINGLE_MODEL_PROMPT = ChatPromptTemplate.from_messages(
     [

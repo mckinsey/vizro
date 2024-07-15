@@ -61,9 +61,7 @@ class Component(BaseModel):
         if self.component_type == "Graph":
             return vm.Graph(
                 id=self.component_id + "_" + self.page_id,
-                figure=vizro_ai.plot(
-                    df=df_metadata.get_df(self.df_name), user_input=self.component_description
-                ),
+                figure=vizro_ai.plot(df=df_metadata.get_df(self.df_name), user_input=self.component_description),
             )
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
@@ -166,6 +164,7 @@ class Control(BaseModel):
         return actual
 
 
+# TODO: try switch to inherit from Layout directly, like FilterProxy
 class LayoutProxyModel(BaseModel):
     """Proxy model for Layout."""
 
@@ -189,22 +188,35 @@ class LayoutProxyModel(BaseModel):
 
 
 class Layout(BaseModel):
-    """Layout plan model."""
+    """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
     layout_description: str = Field(
         ...,
-        description="Description of the layout. Include everything that seems to relate"
+        description="Description of the layout of Vizro Components(Graph, AgGrid, Card). "
+        "Include everything that seems to relate"
         " to this layout AS IS. If layout not specified, describe layout as `N/A`.",
+    )
+    layout_grid_template_areas: List[str] = Field(
+        [],
+        description="Grid template areas for the layout, which adhere to the grid-template-areas CSS property syntax."
+        "Each unique string should be used to represent a unique component. If no grid template areas are provided, "
+        "leave this as an empty list.",
     )
 
     def create(self, model) -> Union[vm.Layout, None]:
         """Create the layout."""
+        layout_prompt = (
+            f"Create a layout from the following instructions: {self.layout_description}. Do not make up "
+            f"a layout if not requested. If a layout_grid_template_areas is provided, translate it into "
+            f"a matrix of integers where each integer represents a component (starting from 0). replace "
+            f"'.' with -1 to represent empty spaces. Here is the grid template areas: {self.layout_grid_template_areas}"
+        )
         if self.layout_description == "N/A":
             return None
 
         try:
             proxy = _get_structured_output(
-                query=self.layout_description, llm_model=model, result_model=LayoutProxyModel, df_info=None
+                query=layout_prompt, llm_model=model, result_model=LayoutProxyModel, df_info=None
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
@@ -243,11 +255,12 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: DfMetadata,
 ) -> DashboardPlanner:
-    return _get_structured_output(query=query, llm_model=model, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples())
+    return _get_structured_output(
+        query=query, llm_model=model, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
+    )
 
 
 if __name__ == "__main__":
-    import pandas as pd
     from vizro.managers import model_manager
     from vizro_ai.chains._llm_models import _get_llm_model
 

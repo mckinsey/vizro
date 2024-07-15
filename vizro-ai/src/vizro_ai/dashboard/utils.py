@@ -35,12 +35,15 @@ class DfMetadata:
 
     def get_schemas_and_samples(self) -> Dict[str, Dict[str, str]]:
         """Retrieve only the df_schema and df_sample for all datasets."""
-        return {name: {"df_schema": metadata.df_schema, "df_sample": metadata.df_sample} for name, metadata in self.metadata.items()}
-    
+        return {
+            name: {"df_schema": metadata.df_schema, "df_sample": metadata.df_sample}
+            for name, metadata in self.metadata.items()
+        }
+
     def get_df(self, name: str) -> pd.DataFrame:
         """Retrieve the dataframe by name."""
         return self.metadata[name].df
-    
+
     def get_df_schema(self, name: str) -> Dict[str, str]:
         """Retrieve the schema of the dataframe by name."""
         return self.metadata[name].df_schema
