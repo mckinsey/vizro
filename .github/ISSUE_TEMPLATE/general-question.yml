@@ -1,6 +1,6 @@
 name: General question
 description: General questions around Vizro
-labels: "Status: Needs triage :mag:, Issue: General Question :question:"
+labels: "Needs triage :mag:, General Question :question:"
 
 body:
   - type: markdown
