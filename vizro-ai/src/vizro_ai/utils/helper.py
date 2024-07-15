@@ -60,14 +60,13 @@ def _debug_helper(
 
 
 def _exec_code_and_retrieve_fig(
-    code: str, local_args: Optional[Dict] = None, show_fig: bool = False, is_notebook_env: bool = True
+    code: str, local_args: Optional[Dict] = None, is_notebook_env: bool = True
 ) -> go.Figure:
     """Execute code in notebook with correct namespace and return fig object.
 
     Args:
         code: code string to be executed
         local_args: additional local arguments
-        show_fig: boolean flag indicating if fig will be rendered automatically
         is_notebook_env: boolean flag indicating if code is run in Jupyter notebook
 
     Returns:
@@ -75,11 +74,6 @@ def _exec_code_and_retrieve_fig(
 
     """
     from IPython import get_ipython
-
-    if show_fig and "\nfig.show()" not in code:
-        code += "\nfig.show()"
-    elif not show_fig:
-        code = code.replace("fig.show()", "")
 
     namespace = get_ipython().user_ns if is_notebook_env else globals()
 
