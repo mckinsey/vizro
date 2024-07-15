@@ -244,7 +244,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                             icon="Bar Chart",
                             pages=["My first page", "My second page"],
                         ),
-                        vm.NavLink(label="Section 2", icon="pie_chart", pages=["My third page"]),
+                        vm.NavLink(label="Section 2", icon="Pie Chart", pages=["My third page"]),
                     ]
                 )
             ),
@@ -266,7 +266,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                   - My first page
                   - My second page
               - label: Section 1
-                icon: pie_chart
+                icon: Pie Chart
                 pages:
                   - My third page
         ```
