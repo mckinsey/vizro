@@ -18,7 +18,7 @@ vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 
 
-# All functions ending with `_factory` are there to re-use the existing content of a page. Given the restriction that
+# All functions ending with `_factory` are there to reuse the existing content of a page. Given the restriction that
 # one page can only be mapped to one navigation group, we have to create a new page with a new ID.
 def line_factory(id: str, title: str):
     return vm.Page(
@@ -417,20 +417,19 @@ boxplot = vm.Page(
 
             #### What is a boxplot?
 
-            A Box Plot (also known as a Box and Whisker Plot) provides a visual display of multiple datasets,
+            A box plot (also known as whisker plot) provides a visual display of multiple datasets,
             indicating the median (center) and the range of the data for each.
 
             &nbsp;
 
             #### When to use it?
 
-            Choose a Box Plot when you need to summarize distributions between many groups or datasets. It takes up
+            Choose a box plot when you need to summarize distributions between many groups or datasets. It takes up
             less space than many other charts.
 
             Create boxes to display the median, and the upper and lower quartiles. Add `whiskers` to highlight
             variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with
             the whiskers.
-
         """
         ),
         vm.Graph(
@@ -443,30 +442,31 @@ boxplot = vm.Page(
         ),
         CodeClipboard(
             text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
 
-               tips = px.data.tips()
+                tips = px.data.tips()
 
-               page = vm.Page(
-                   title="Boxplot",
-                   components=[
-                       vm.Graph(
+                page = vm.Page(
+                    title="Boxplot",
+                    components=[
+                        vm.Graph(
                             figure=px.boxplot(
                                 data_frame=tips,
-                                y='total_bill', x='day', color='day',
+                                y="total_bill",
+                                x="day",
+                                color="day",
                             )
                         ),
-                   ]
-               )
+                    ],
+                )
 
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
         ),
     ],
 )
@@ -479,16 +479,16 @@ violin = vm.Page(
         vm.Card(
             text="""
 
-            #### What is a violin?
+            #### What is a violin chart?
 
-            A Violin Plot is similar to a Box Plot, but works better for visualizing more complex distributions and
+            A violin chart is similar to a box plot, but works better for visualizing more complex distributions and
             their probability density at different values.
 
             &nbsp;
 
             #### When to use it?
 
-            Use this chart to go beyond the simple Box Plot and show the distribution shape of the data, the
+            Use this chart to go beyond the simple box plot and show the distribution shape of the data, the
             inter-quartile range, the confidence intervals and the median.
         """
         ),
@@ -502,30 +502,31 @@ violin = vm.Page(
         ),
         CodeClipboard(
             text="""
-               ```python
-               import vizro.models as vm
-               import vizro.plotly.express as px
-               from vizro import Vizro
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
 
-               tips = px.data.tips()
+                tips = px.data.tips()
 
-               page = vm.Page(
-                   title="Violin",
-                   components=[
-                       vm.Graph(
+                page = vm.Page(
+                    title="Violin",
+                    components=[
+                        vm.Graph(
                             figure=px.violin(
                                 data_frame=tips,
-                                y='total_bill', x='day', color='day',
+                                y="total_bill",
+                                x="day",
+                                color="day",
                             )
                         ),
-                   ]
-               )
+                    ],
+                )
 
-               dashboard = vm.Dashboard(pages=[page])
-               Vizro().build(dashboard).run()
-               ```
-
-               """
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
         ),
     ],
 )
