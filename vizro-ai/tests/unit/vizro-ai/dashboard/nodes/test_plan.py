@@ -27,9 +27,9 @@ class TestDashboardPlanner:
     def page_plan(self, component_card):
         return PagePlanner(
             title="Test Page",
-            components=[component_card],
-            controls=[],
-            layout=None,
+            components_plan=[component_card],
+            controls_plan=[],
+            layout_plan=None,
         )
 
     def test_dashboard_planner(self, page_plan):
@@ -38,11 +38,11 @@ class TestDashboardPlanner:
             pages=[page_plan],
         )
         assert dashboard_plan.pages[0].title == "Test Page"
-        assert dashboard_plan.pages[0].components[0].component_id == "card_1"
-        assert dashboard_plan.pages[0].components[0].component_type == "Card"
-        assert dashboard_plan.pages[0].components[0].component_description == "This is a card"
-        assert dashboard_plan.pages[0].components[0].page_id == "page_1"
-        assert dashboard_plan.pages[0].components[0].df_name == "N/A"
+        assert dashboard_plan.pages[0].components_plan[0].component_id == "card_1"
+        assert dashboard_plan.pages[0].components_plan[0].component_type == "Card"
+        assert dashboard_plan.pages[0].components_plan[0].component_description == "This is a card"
+        assert dashboard_plan.pages[0].components_plan[0].page_id == "page_1"
+        assert dashboard_plan.pages[0].components_plan[0].df_name == "N/A"
 
 
 class TestControlCreate:
