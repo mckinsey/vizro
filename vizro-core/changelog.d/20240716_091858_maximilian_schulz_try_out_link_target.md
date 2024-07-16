@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- External `href` links in `vm.Card` now open in a new browser tab. ([#585](https://github.com/mckinsey/vizro/pull/585))
+- External `href` links in `vm.Card` now open in the full body of the window as opposed to in the same frame as they were clicked. ([#585](https://github.com/mckinsey/vizro/pull/585))
 
 <!--
 ### Security
