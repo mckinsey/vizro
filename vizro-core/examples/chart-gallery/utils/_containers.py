@@ -15,67 +15,68 @@ vm.Container.add_type("components", FlexContainer)
 
 
 def tidy_chart_title(chart: str) -> str:
-    prefixes_to_remove = ["time-", "magnitude-", "deviation-"]
+    """Tidy up the chart title by removing prefixes and unwanted characters.
+    The pre-fixes are previously given to uniquely create a page ID.
+    """
+    prefixes_to_remove = ["time-", "magnitude-", "deviation-", "distribution-"]
     pattern = "^(" + "|".join(prefixes_to_remove) + ")"
     chart_without_prefix = re.sub(pattern, "", chart)
     return chart_without_prefix.replace("-", " ").title()
 
 
-DEVIATION_CHARTS = sorted(["diverging-bar", "butterfly", "slope", "lollipop"])
-CORRELATION_CHARTS = ["scatter"]
+DEVIATION_CHARTS = sorted(
+    [
+        "diverging-bar",
+        #   "diverging-stacked-bar",
+        "butterfly",
+        "surplus",
+    ]
+)
+CORRELATION_CHARTS = [
+    "scatter",
+    "scatter-matrix",
+    "column-line",
+    #  "connected-scatter",
+    "heatmap-matrix",
+    "bubble",
+]
 RANKING_CHARTS = sorted(
     [
         "ordered-bar",
         "ordered-column",
-        "stacked-column",
         "ordered-bubble",
-        "column-line",
-        "donut",
-        "arc",
+        "slope",
         "lollipop",
-        "waterfall",
-        "diverging-bar",
-        "boxplot",
+        "stepped-line",
     ]
 )
 DISTRIBUTION_CHARTS = sorted(
     [
         "histogram",
-        "distribution-butterfly",
-        "pie",
-        "donut",
-        "arc",
-        "violin",
-        "lollipop",
-        "cumulative-curve",
-        "waterfall",
-        "venn",
+        "dot-plot",
         "barcode",
+        "boxplot",
+        "violin",
+        "distribution-butterfly",
+        "cumulative-curve",
+        #    "beeswarm",
     ]
 )
+
 MAGNITUDE_CHARTS = sorted(
     [
         "column",
-        "marimekko",
-        "stacked-column",
-        "ordered-bubble",
-        "column-line",
-        "surplus",
-        "bubble-timeline",
         "bar",
-        "pie",
-        "donut",
-        "arc",
-        "violin",
-        "slope",
+        #    "paired-column",
+        #    "paired-bar",
+        "marimekko",
+        "bubble",
         "lollipop",
-        "cumulative-curve",
-        "waterfall",
-        "venn",
-        "diverging-bar",
+        "radar",
+        "parallel",
+        "pictogram",
         "bullet",
-        "dot-plot",
-        "magnitude-treemap",
+        "radial",
     ]
 )
 TIME_CHARTS = sorted(
@@ -84,29 +85,31 @@ TIME_CHARTS = sorted(
         "time-column",
         "gantt",
         "column-line",
+        "slope",
+        "fan",
+        #  "area",
+        #  "connected-scatter",
+        "heatmap",
         "bubble-timeline",
-        "scatter",
-        "lollipop",
-        "diverging-bar",
-        "stepped-line",
         "sparkline",
     ]
 )
 PART_TO_WHOLE_CHARTS = sorted(
     [
-        "marimekko",
+        #   "stacked-bar",
         "stacked-column",
-        "column-line",
+        "marimekko",
+        "funnel",
         "pie",
         "donut",
-        "arc",
-        "waterfall",
         "treemap",
+        "arc",
         "venn",
+        "waterfall",
     ]
 )
-FLOW_CHARTS = sorted(["gantt", "line", "slope", "stepped-line"])
-SPATIAL_CHARTS = sorted(["choropleth", "dot-density", "flow-map"])
+FLOW_CHARTS = sorted(["sankey", "waterfall", "chord", "network"])
+SPATIAL_CHARTS = sorted(["choropleth", "dot-density", "flow-map", "proportional-symbol"])
 
 ALL_CHARTS = sorted(
     set(
