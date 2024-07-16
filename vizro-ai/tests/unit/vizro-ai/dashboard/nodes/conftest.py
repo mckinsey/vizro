@@ -3,7 +3,7 @@ from typing import Any, List
 import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.dashboard.nodes.plan import Component
+from vizro_ai.dashboard.nodes.plan import ComponentPlan
 
 
 class FakeListLLM(FakeListLLM):
@@ -24,7 +24,7 @@ def fake_llm():
 
 @pytest.fixture
 def component_card():
-    return Component(
+    return ComponentPlan(
         component_type="Card",
         component_description="This is a card",
         component_id="card_1",

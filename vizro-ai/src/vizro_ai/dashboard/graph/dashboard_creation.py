@@ -176,7 +176,6 @@ def _create_and_compile_graph():
     graph.add_edge("_store_df_info", "_dashboard_plan")
     graph.add_conditional_edges("_dashboard_plan", _continue_to_pages)
     graph.add_edge("_build_page", "_build_dashboard")
-
     graph.add_edge("_build_dashboard", END)
 
     graph.set_entry_point("_store_df_info")
