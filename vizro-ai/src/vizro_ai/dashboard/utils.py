@@ -8,14 +8,7 @@ from typing import Any, Dict
 import pandas as pd
 import tqdm.std
 import vizro.models as vm
-
-IMPORT_STATEMENTS = (
-    "import vizro.plotly.express as px\n"
-    "from vizro.models.types import capture\n"
-    "import plotly.graph_objects as go\n"
-    "from vizro.tables import dash_ag_grid\n"
-    "import vizro.models as vm\n"
-)
+from vizro_ai.dashboard.constants import IMPORT_STATEMENTS
 
 
 @dataclass

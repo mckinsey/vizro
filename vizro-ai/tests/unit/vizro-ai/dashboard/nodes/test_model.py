@@ -1,5 +1,5 @@
 import vizro.models as vm
-from vizro_ai.dashboard.nodes._pydantic_output import _get_pydantic_output
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 
 
 def test_get_pydantic_output(component_description, fake_llm):

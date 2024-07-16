@@ -1,5 +1,7 @@
 import pytest
-from vizro_ai.dashboard.nodes.plan import DashboardPlanner, PagePlanner, create_filter_proxy
+from vizro_ai.dashboard.plan.controls import create_filter_proxy
+from vizro_ai.dashboard.plan.dashboard import DashboardPlanner
+from vizro_ai.dashboard.plan.page import PagePlanner
 
 try:
     from pydantic.v1 import ValidationError

@@ -11,13 +11,11 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
-from vizro_ai.dashboard.nodes._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.nodes.build import PageBuilder
-from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
-from vizro_ai.dashboard.nodes.plan import (
-    DashboardPlanner,
-    PagePlanner,
-)
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
+from vizro_ai.dashboard.build.page import PageBuilder
+from vizro_ai.dashboard.data_preprocess.df_info import DfInfo, _get_df_info, df_sum_prompt
+from vizro_ai.dashboard.plan.dashboard import DashboardPlanner
+from vizro_ai.dashboard.plan.page import PagePlanner
 from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
 
 try:
