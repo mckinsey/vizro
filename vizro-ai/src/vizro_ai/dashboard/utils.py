@@ -58,8 +58,8 @@ class DashboardOutputs:
 
 
 def _execute_step(pbar: tqdm.std.tqdm, description: str, value: Any) -> Any:
-    pbar.set_description_str(description)
     pbar.update(1)
+    pbar.set_description_str(description)
     return value
 
 

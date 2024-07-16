@@ -26,7 +26,7 @@ df_sum_prompt = ChatPromptTemplate.from_messages(
             Inspect the provided data and give a short unique name to the dataset. \n
             Here is the dataframe sample:  \n ------- \n  {df_sample} \n ------- \n
             Here is the schema:  \n ------- \n  {df_schema} \n ------- \n
-            Avoid the following names currently in use: \n ------- \n {current_df_names} \n ------- \n
+            AVOID the following names: \n ------- \n {current_df_names} \n ------- \n
             \n ------- \n
             """,
         ),

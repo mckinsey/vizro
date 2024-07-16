@@ -10,6 +10,7 @@ from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
+from tqdm.auto import tqdm
 from vizro_ai.dashboard.nodes.build import PageBuilder
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
 from vizro_ai.dashboard.nodes.plan import (
@@ -17,7 +18,7 @@ from vizro_ai.dashboard.nodes.plan import (
     PagePlanner,
     _get_dashboard_plan,
 )
-from vizro_ai.dashboard.utils import DataFrameMetadata, DfMetadata
+from vizro_ai.dashboard.utils import DataFrameMetadata, DfMetadata, _execute_step
 
 try:
     from pydantic.v1 import BaseModel, validator
@@ -26,7 +27,6 @@ except ImportError:  # pragma: no cov
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 Messages = List[BaseMessage]
@@ -71,37 +71,48 @@ class GraphState(BaseModel):
 
 def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMetadata]:
     """Store information about the dataframes."""
-    logger.info("*** _store_df_info ***")
     dfs = state.dfs
     df_metadata = state.df_metadata
     messages = state.messages
     current_df_names = []
-    for df in dfs:
-        df_schema, df_sample = _get_df_info(df)
+    with tqdm(total=len(dfs), desc="Store df info") as pbar:
+        for df in dfs:
+            df_schema, df_sample = _get_df_info(df)
 
-        llm = config["configurable"].get("model", None)
-        data_sum_chain = df_sum_prompt | llm.with_structured_output(DfInfo)
+            llm = config["configurable"].get("model", None)
+            data_sum_chain = df_sum_prompt | llm.with_structured_output(DfInfo)
 
-        df_name = data_sum_chain.invoke(
-            {"messages": messages, "df_schema": df_schema, "df_sample": df_sample, "current_df_names": current_df_names}
-        ).dataset_name
+            df_name = data_sum_chain.invoke(
+                {
+                    "messages": messages,
+                    "df_schema": df_schema,
+                    "df_sample": df_sample,
+                    "current_df_names": current_df_names,
+                }
+            ).dataset_name
 
-        current_df_names.append(df_name)
+            current_df_names.append(df_name)
 
-        logger.info(f"df_name: {df_name}")
-        df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df, df_sample=df_sample)
+            pbar.write(f"df_name: {df_name}")
+            pbar.update(1)
+            df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df, df_sample=df_sample)
 
     return {"df_metadata": df_metadata}
 
 
 def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlanner]:
     """Generate a dashboard plan."""
-    logger.info("*** _dashboard_plan ***")
+    node_desc = "Generate dashboard plan"
+    pbar = tqdm(total=2, desc=node_desc)
     query = state.messages[0].content
     df_metadata = state.df_metadata
 
     llm = config["configurable"].get("model", None)
+
+    _execute_step(pbar, node_desc + " --> in progress", None)
     dashboard_plan = _get_dashboard_plan(query=query, model=llm, df_metadata=df_metadata)
+    _execute_step(pbar, node_desc + " --> done", None)
+    pbar.close()
 
     return {"dashboard_plan": dashboard_plan}
 
@@ -136,7 +147,6 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
 
 def _continue_to_pages(state: GraphState) -> List[Send]:
     """Continue to build pages."""
-    logger.info("*** build_page ***")
     df_metadata = state.df_metadata
     return [
         Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages
@@ -145,7 +155,6 @@ def _continue_to_pages(state: GraphState) -> List[Send]:
 
 def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:
     """Build a dashboard."""
-    logger.info("*** build_dashboard ***")
     dashboard_plan = state.dashboard_plan
     pages = state.pages
 
