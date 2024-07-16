@@ -12,7 +12,7 @@ from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.build.page import PageBuilder
+from vizro_ai.dashboard.page_build.page import PageBuilder
 from vizro_ai.dashboard.data_preprocess.df_info import DfInfo, _get_df_info, df_sum_prompt
 from vizro_ai.dashboard.plan.dashboard import DashboardPlanner
 from vizro_ai.dashboard.plan.page import PagePlanner
