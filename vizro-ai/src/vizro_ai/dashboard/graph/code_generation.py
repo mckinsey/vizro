@@ -6,7 +6,7 @@ from typing import Annotated, Dict, List
 
 import pandas as pd
 import vizro.models as vm
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
@@ -173,51 +173,3 @@ def _create_and_compile_graph():
     runnable = graph.compile()
 
     return runnable
-
-
-if __name__ == "__main__":
-    user_input = """
-                I need a page with a table showing the population per continent \n
-                I also want a page with two \ncards on it. One should be a card saying:
-                `This was the jolly data dashboard, it was created in Vizro which is amazing` \n,
-                and the second card should link to `https://vizro.readthedocs.io/`. The title of
-                the dashboard should be: `My wonderful \njolly dashboard showing a lot of info`.\n
-                The layout of this page should use `grid=[[0,1]]`
-                """
-    test_state = {
-        "messages": [
-            HumanMessage(content=user_input),
-        ],
-        "dfs": [
-            pd.DataFrame(),
-        ],
-        "df_metadata": {
-            "globaldemographics": {
-                "df_schema": {
-                    "country": "object",
-                    "continent": "object",
-                    "year": "int64",
-                    "lifeExp": "float64",
-                    "pop": "int64",
-                    "gdpPercap": "float64",
-                    "iso_alpha": "object",
-                    "iso_num": "int64",
-                },
-                "df": pd.DataFrame(
-                    {
-                        "country": ["Afghanistan", "Afghanistan", "Afghanistan"],
-                        "continent": ["Asia", "Asia", "Asia"],
-                        "year": [1952, 1957, 1962],
-                        "lifeExp": [28.801, 30.332, 31.997],
-                        "pop": [8425333, 9240934, 10267083],
-                        "gdpPercap": [779.4453145, 820.8530296, 853.10071],
-                        "iso_alpha": ["AFG", "AFG", "AFG"],
-                        "iso_num": [4, 4, 4],
-                    }
-                ),
-            },
-        },
-    }
-    sample_state = GraphState(**test_state)
-    message = _dashboard_plan(sample_state)
-    print(message)  # noqa: T201
