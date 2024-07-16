@@ -1,4 +1,5 @@
 """Module that contains the builder functionality."""
+
 import logging
 
 import vizro.models as vm
