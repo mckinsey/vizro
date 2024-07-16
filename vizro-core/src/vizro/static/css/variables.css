@@ -160,6 +160,6 @@
   --inverse-color: invert(100%);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
-    --text-code-meta: #6f42c1;
-    --text-code-type: #f69d50;
+  --text-code-meta: #6f42c1;
+  --text-code-type: #f69d50;
 }
