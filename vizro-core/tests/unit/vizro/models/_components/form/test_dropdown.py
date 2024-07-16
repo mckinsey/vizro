@@ -190,9 +190,10 @@ class TestDropdownBuild:
         [
             (["A", "B", "C"], 32),
             ([10, 20, 30], 32),
-            (["A text with a length of 36..........", "B", "C"], 32),
-            (["A text with a length of 37...........", "B", "C"], 56),
-            (["A text with a length of 37..........." + "A text with a length of 37...........", "B", "C"], 80),
+            (["A" * 30, "B", "C"], 32),
+            (["A" * 31, "B", "C"], 56),
+            (["A" * 60, "B", "C"], 56),
+            (["A" * 61, "B", "C"], 80),
         ],
     )
     def test_dropdown_dynamic_option_height(self, options, option_height):
