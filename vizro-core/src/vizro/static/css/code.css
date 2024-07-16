@@ -8,7 +8,9 @@ code.language-python.hljs {
   font-family: unset;
 }
 
-.hljs-string, .hljs-params .hljs-string, .hljs-number {
+.hljs-string,
+.hljs-params .hljs-string,
+.hljs-number {
   color: var(--text-code-string);
   font-family: unset;
 }
@@ -18,7 +20,10 @@ code.language-python.hljs {
   font-family: unset;
 }
 
-.hljs-title.function_, .hljs-meta, .hljs-built_in, .hljs-type {
+.hljs-title.function_,
+.hljs-meta,
+.hljs-built_in,
+.hljs-type {
   color: var(--text-code-meta);
   font-family: unset;
 }

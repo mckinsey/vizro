@@ -50,7 +50,7 @@ examples_path = Path(__file__).parents[2] / "examples"
         (examples_path / "dev", ""),
         (examples_path / "dev", "yaml_version"),
         (examples_path / "kpi", ""),
-        (examples_path / "chart-gallery", ""),
+        (examples_path / "_chart-gallery", ""),
     ],
 )
 def test_dashboard(dash_duo, example_path, dashboard, version):
