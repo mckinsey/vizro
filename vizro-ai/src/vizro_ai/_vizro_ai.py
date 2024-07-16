@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
-from vizro_ai.dashboard.graph.code_generation import _create_and_compile_graph
+from vizro_ai.dashboard.graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard.utils import DashboardOutputs, _dashboard_code
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
@@ -166,7 +166,7 @@ class VizroAI:
         user_input: str,
         return_elements: bool = False,
     ) -> Union[DashboardOutputs, vm.Dashboard]:
-        """Create dashboard using vizro via english descriptions, english to dashboard translation.
+        """Create a Vizro dashboard using english descriptions.
 
         Args:
             dfs: The dataframes to be analyzed.

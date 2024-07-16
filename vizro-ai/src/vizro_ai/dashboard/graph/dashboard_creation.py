@@ -2,7 +2,7 @@
 
 import logging
 import operator
-from typing import Annotated, Dict, List
+from typing import Annotated, Dict, List, Optional
 
 import pandas as pd
 import vizro.models as vm
@@ -11,14 +11,14 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
+from vizro_ai.dashboard.nodes._pydantic_output import _get_pydantic_output
 from vizro_ai.dashboard.nodes.build import PageBuilder
 from vizro_ai.dashboard.nodes.data_summary import DfInfo, _get_df_info, df_sum_prompt
 from vizro_ai.dashboard.nodes.plan import (
     DashboardPlanner,
     PagePlanner,
-    _get_dashboard_plan,
 )
-from vizro_ai.dashboard.utils import DataFrameMetadata, DfMetadata, _execute_step
+from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
 
 try:
     from pydantic.v1 import BaseModel, validator
@@ -49,9 +49,9 @@ class GraphState(BaseModel):
     messages: List[BaseMessage]
     dfs: List[pd.DataFrame]
     df_metadata: DfMetadata
-    dashboard_plan: DashboardPlanner = None
+    dashboard_plan: Optional[DashboardPlanner] = None
     pages: Annotated[List, operator.add]
-    dashboard: vm.Dashboard = None
+    dashboard: Optional[vm.Dashboard] = None
 
     class Config:
         """Pydantic configuration."""
@@ -95,7 +95,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
 
             pbar.write(f"df_name: {df_name}")
             pbar.update(1)
-            df_metadata.metadata[df_name] = DataFrameMetadata(df_schema=df_schema, df=df, df_sample=df_sample)
+            df_metadata.metadata[df_name] = MetadataContent(df_schema=df_schema, df=df, df_sample=df_sample)
 
     return {"df_metadata": df_metadata}
 
@@ -110,7 +110,9 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
     llm = config["configurable"].get("model", None)
 
     _execute_step(pbar, node_desc + " --> in progress", None)
-    dashboard_plan = _get_dashboard_plan(query=query, model=llm, df_metadata=df_metadata)
+    dashboard_plan = _get_pydantic_output(
+        query=query, llm_model=llm, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
+    )
     _execute_step(pbar, node_desc + " --> done", None)
     pbar.close()
 
@@ -146,7 +148,7 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:
-    """Continue to build pages."""
+    """Map-reduce logic to build pages in parallel."""
     df_metadata = state.df_metadata
     return [
         Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages

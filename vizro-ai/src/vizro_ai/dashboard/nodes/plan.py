@@ -15,7 +15,7 @@ except ImportError:  # pragma: no cov
 import numpy as np
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro.tables import dash_ag_grid
-from vizro_ai.dashboard.nodes._model import _get_structured_output
+from vizro_ai.dashboard.nodes._pydantic_output import _get_pydantic_output
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ control_type = Literal["Filter"]  # Complete list: ["Filter", "Parameter"]
 # For other models, like ["Accordion", "NavBar"], how to handle them?
 
 
-class Component(BaseModel):
+class ComponentPlan(BaseModel):
     """Component plan model."""
 
     component_type: component_type
@@ -66,7 +66,7 @@ class Component(BaseModel):
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
         elif self.component_type == "Card":
-            return _get_structured_output(
+            return _get_pydantic_output(
                 query=self.component_description, llm_model=model, result_model=vm.Card, df_info=None
             )
 
@@ -110,7 +110,7 @@ def create_filter_proxy(df_cols, available_components) -> BaseModel:
     )
 
 
-class Control(BaseModel):
+class ControlPlan(BaseModel):
     """Control plan model."""
 
     control_type: control_type
@@ -144,7 +144,7 @@ class Control(BaseModel):
 
         try:
             result_proxy = create_filter_proxy(df_cols=_df_cols, available_components=available_components)
-            proxy = _get_structured_output(
+            proxy = _get_pydantic_output(
                 query=filter_prompt, llm_model=model, result_model=result_proxy, df_info=_df_schema
             )
             logger.info(
@@ -187,7 +187,7 @@ class LayoutProxyModel(BaseModel):
         return grid
 
 
-class Layout(BaseModel):
+class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
     layout_description: str = Field(
@@ -215,7 +215,7 @@ class Layout(BaseModel):
             return None
 
         try:
-            proxy = _get_structured_output(
+            proxy = _get_pydantic_output(
                 query=layout_prompt, llm_model=model, result_model=LayoutProxyModel, df_info=None
             )
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
@@ -234,9 +234,9 @@ class PagePlanner(BaseModel):
         description="Title of the page. If no description is provided, "
         "make a short and concise title from the components.",
     )
-    components: List[Component]
-    controls: List[Control] = Field([], description="Controls of the page.")
-    layout: Layout = Field(None, description="Layout of the page.")
+    components_plan: List[ComponentPlan]
+    controls_plan: List[ControlPlan] = Field([], description="Controls of the page.")
+    layout_plan: LayoutPlan = Field(None, description="Layout of the page.")
 
 
 class DashboardPlanner(BaseModel):
@@ -255,6 +255,6 @@ def _get_dashboard_plan(
     model: Union[ChatOpenAI],
     df_metadata: DfMetadata,
 ) -> DashboardPlanner:
-    return _get_structured_output(
+    return _get_pydantic_output(
         query=query, llm_model=model, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
     )

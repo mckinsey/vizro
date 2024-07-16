@@ -33,18 +33,19 @@ class PageBuilder:
     def _build_components(self):
         components = []
         logger.info(f"Building components of page: {self._page_plan.title}")
-        # Could potentially be parallelized or sent as a batch to the API
         for i in trange(
-            len(self._page_plan.components), desc=f"Building components of page: {self._page_plan.title}", leave=False
+            len(self._page_plan.components_plan),
+            desc=f"Building components of page: {self._page_plan.title}",
+            leave=False,
         ):
-            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components[i]}")
+            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components_plan[i]}")
             try:
                 components.append(
-                    self._page_plan.components[i].create(df_metadata=self._df_metadata, model=self._model)
+                    self._page_plan.components_plan[i].create(df_metadata=self._df_metadata, model=self._model)
                 )
-            except DebugFailure as e:  # TODO: check - does this ever get raised?
+            except DebugFailure as e:
                 components.append(
-                    vm.Card(id=self._page_plan.components[i].component_id, text=f"Failed to build component: {e}")
+                    vm.Card(id=self._page_plan.components_plan[i].component_id, text=f"Failed to build component: {e}")
                 )
         return components
 
@@ -56,10 +57,10 @@ class PageBuilder:
         return self._layout
 
     def _build_layout(self):
-        if self._page_plan.layout is None:
+        if self._page_plan.layout_plan is None:
             return None
-        logger.info(f"{self._page_plan.title} -> Building layout {self._page_plan.layout}")
-        return self._page_plan.layout.create(model=self._model)
+        logger.info(f"{self._page_plan.title} -> Building layout {self._page_plan.layout_plan}")
+        return self._page_plan.layout_plan.create(model=self._model)
 
     @property
     def controls(self):
@@ -78,10 +79,10 @@ class PageBuilder:
         logger.info(f"Building controls of page: {self._page_plan.title}")
         # Could potentially be parallelized or sent as a batch to the API
         for i in trange(
-            len(self._page_plan.controls), desc=f"Building controls of page: {self._page_plan.title}", leave=False
+            len(self._page_plan.controls_plan), desc=f"Building controls of page: {self._page_plan.title}", leave=False
         ):
-            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls[i]}")
-            control = self._page_plan.controls[i].create(
+            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls_plan[i]}")
+            control = self._page_plan.controls_plan[i].create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
             if control:

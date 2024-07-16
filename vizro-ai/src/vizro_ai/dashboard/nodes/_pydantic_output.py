@@ -1,4 +1,4 @@
-"""Contains the _get_structured_output for the Vizro AI dashboard."""
+"""Contains the _get_pydantic_output for the Vizro AI dashboard."""
 
 # ruff: noqa: F821
 try:
@@ -40,7 +40,7 @@ MODEL_REPROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def _get_structured_output(
+def _get_pydantic_output(
     query: str,
     llm_model: BaseChatModel,
     result_model: BaseModel,

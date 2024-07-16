@@ -19,8 +19,8 @@ IMPORT_STATEMENTS = (
 
 
 @dataclass
-class DataFrameMetadata:
-    """Dataclass containing metadata for a dataframe."""
+class MetadataContent:
+    """Dataclass containing metadata content for a dataframe."""
 
     df_schema: Dict[str, str]
     df: pd.DataFrame
@@ -31,7 +31,7 @@ class DataFrameMetadata:
 class DfMetadata:
     """Dataclass containing metadata for all dataframes."""
 
-    metadata: Dict[str, DataFrameMetadata] = field(default_factory=dict)
+    metadata: Dict[str, MetadataContent] = field(default_factory=dict)
 
     def get_schemas_and_samples(self) -> Dict[str, Dict[str, str]]:
         """Retrieve only the df_schema and df_sample for all datasets."""
