@@ -109,7 +109,7 @@ PART_TO_WHOLE_CHARTS = sorted(
     ]
 )
 FLOW_CHARTS = sorted(["sankey", "waterfall", "chord", "network"])
-SPATIAL_CHARTS = sorted(["choropleth", "dot-density", "flow-map", "proportional-symbol"])
+SPATIAL_CHARTS = sorted(["choropleth", "dot-map", "flow-map", "bubble-map"])
 
 ALL_CHARTS = sorted(
     set(

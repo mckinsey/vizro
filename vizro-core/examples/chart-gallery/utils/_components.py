@@ -13,6 +13,8 @@ except ImportError:  # pragma: no cov
 
 
 class CodeClipboard(vm.VizroBaseModel):
+    """Contains code snippet with a copy to clipboard button."""
+
     type: Literal["code_clipboard"] = "code_clipboard"
     title: str = "Code"
     text: str
@@ -36,6 +38,8 @@ class CodeClipboard(vm.VizroBaseModel):
 
 
 class Markdown(vm.VizroBaseModel):
+    """Markdown component."""
+
     type: Literal["markdown"] = "markdown"
     text: str = Field(
         ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
