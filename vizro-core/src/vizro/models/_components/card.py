@@ -39,6 +39,7 @@ class Card(VizroBaseModel):
             dbc.NavLink(
                 children=text,
                 href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+                target="_top",
             )
             if self.href
             else text

@@ -11,6 +11,38 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.19'></a>
+
+# 0.1.19 — 2024-07-16
+
+## Removed
+
+- Remove `demo` dashboard folder from repository. ([#581](https://github.com/mckinsey/vizro/pull/581))
+
+## Added
+
+- Improve validation error messages for `CapturedCallable`. ([#547](https://github.com/mckinsey/vizro/pull/547))
+
+- Vizro app itself implements WSGI interface as a shortcut to `app.dash.server`. ([#580](https://github.com/mckinsey/vizro/pull/580))
+
+## Changed
+
+- Include sign in default `reference_format` of `kpi_card_reference`. ([#549](https://github.com/mckinsey/vizro/pull/549))
+
+- Update `optionHeight` of `vm.Dropdown` dynamically based on character length. ([#574](https://github.com/mckinsey/vizro/pull/574))
+
+- Rename `features` demo dashboard folder to `dev`. ([#581](https://github.com/mckinsey/vizro/pull/581))
+
+## Fixed
+
+- Fix title disappearance when scrolling `dash_data_table`. ([#548](https://github.com/mckinsey/vizro/pull/548))
+
+- Ensure that categorical selectors always return a list of values. ([#562](https://github.com/mckinsey/vizro/pull/562))
+
+- Remove default icon provision for `vm.NavLink` when the icon count exceeds 9 and a user icon is provided.([#572](https://github.com/mckinsey/vizro/pull/572))
+
+- External `href` links in `vm.Card` now open in the full body of the window as opposed to in the same frame as they were clicked. ([#585](https://github.com/mckinsey/vizro/pull/585))
+
 <a id='changelog-0.1.18'></a>
 
 # 0.1.18 — 2024-06-24
