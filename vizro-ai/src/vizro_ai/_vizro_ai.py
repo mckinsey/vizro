@@ -61,7 +61,11 @@ class VizroAI:
         return self.components_instances[component_class]
 
     def _run_plot_tasks(
-        self, df: pd.DataFrame, user_input: str, max_debug_retry: int = 3, explain: bool = False
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        max_debug_retry: int = 3,
+        explain: bool = False,
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -88,9 +92,7 @@ class VizroAI:
                 "or try to select a different model. Fallout response is provided: \n\n" + code_string
             )
 
-        fig_object = _exec_code_and_retrieve_fig(
-            code=code_string, local_args={"df": df}, show_fig=_is_jupyter(), is_notebook_env=_is_jupyter()
-        )
+        fig_object = _exec_code_and_retrieve_fig(code=code_string, local_args={"df": df}, is_notebook_env=_is_jupyter())
         if explain:
             business_insights, code_explanation = self._lazy_get_component(GetCodeExplanation).run(
                 chain_input=user_input, code_snippet=code_string
