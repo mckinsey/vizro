@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Internal and external links for `href` in `vm.Card` now behave correctly on py.cafe ([#585](https://github.com/mckinsey/vizro/pull/585))
+- External `href` links in `vm.Card` now open in a new browser tab. ([#585](https://github.com/mckinsey/vizro/pull/585))
 
 <!--
 ### Security
