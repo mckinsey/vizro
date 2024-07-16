@@ -35,7 +35,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fix title disappearance when scrolling dash_data_table. ([#548](https://github.com/mckinsey/vizro/pull/548))
+- Fix title disappearance when scrolling `dash_data_table`. ([#548](https://github.com/mckinsey/vizro/pull/548))
 
 - Ensure that categorical selectors always return a list of values. ([#562](https://github.com/mckinsey/vizro/pull/562))
 
