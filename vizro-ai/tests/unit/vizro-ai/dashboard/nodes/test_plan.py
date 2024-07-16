@@ -48,9 +48,6 @@ class TestDashboardPlanner:
 class TestControlCreate:
     """Tests control creation."""
 
-    def test_filter_create(self, control_filter, fake_llm):
-        pass
-
     def test_create_filter_proxy(self, df_cols, available_components):
         actual = create_filter_proxy(df_cols, available_components)
         with pytest.raises(ValidationError):
