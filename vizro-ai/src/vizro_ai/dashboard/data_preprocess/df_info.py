@@ -11,10 +11,10 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
 
-def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], str]:
+def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
     """Get the dataframe schema and head info as strings."""
     formatted_pairs = {col_name: str(dtype) for col_name, dtype in df.dtypes.items()}
-    df_sample = df.sample(5).to_markdown()
+    df_sample = df.sample(5)
     return formatted_pairs, df_sample
 
 

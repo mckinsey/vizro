@@ -3,7 +3,7 @@
 import logging
 
 import vizro.models as vm
-from tqdm.auto import tqdm, trange
+from tqdm.auto import tqdm
 from vizro_ai.dashboard.utils import _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
@@ -32,21 +32,22 @@ class PageBuilder:
 
     def _build_components(self):
         components = []
-        logger.info(f"Building components of page: {self._page_plan.title}")
-        for i in trange(
-            len(self._page_plan.components_plan),
-            desc=f"Building components of page: {self._page_plan.title}",
+        component_log = tqdm(total=0, bar_format="{desc}", leave=False)
+        with tqdm(
+            total=len(self._page_plan.components_plan),
+            desc=f"Currently Building ... [Page] <{self._page_plan.title}> components",
             leave=False,
-        ):
-            logger.info(f"{self._page_plan.title} -> Building component {self._page_plan.components_plan[i]}")
-            try:
-                components.append(
-                    self._page_plan.components_plan[i].create(df_metadata=self._df_metadata, model=self._model)
+        ) as pbar:
+            for component_plan in self._page_plan.components_plan:
+                component_log.set_description_str(
+                    f"[Page] <{self._page_plan.title}>: [Component] {component_plan.component_id}"
                 )
-            except DebugFailure as e:
-                components.append(
-                    vm.Card(id=self._page_plan.components_plan[i].component_id, text=f"Failed to build component: {e}")
-                )
+                pbar.update(1)
+                try:
+                    components.append(component_plan.create(df_metadata=self._df_metadata, model=self._model))
+                except DebugFailure as e:
+                    components.append(vm.Card(id=component_plan.component_id, text=f"Failed to build component: {e}"))
+        component_log.close()
         return components
 
     @property
@@ -59,7 +60,6 @@ class PageBuilder:
     def _build_layout(self):
         if self._page_plan.layout_plan is None:
             return None
-        logger.info(f"{self._page_plan.title} -> Building layout {self._page_plan.layout_plan}")
         return self._page_plan.layout_plan.create(model=self._model)
 
     @property
@@ -76,12 +76,14 @@ class PageBuilder:
 
     def _build_controls(self):
         controls = []
-        logger.info(f"Building controls of page: {self._page_plan.title}")
-        for i in trange(
-            len(self._page_plan.controls_plan), desc=f"Building controls of page: {self._page_plan.title}", leave=False
-        ):
-            logger.info(f"{self._page_plan.title} -> Building control {self._page_plan.controls_plan[i]}")
-            control = self._page_plan.controls_plan[i].create(
+        with tqdm(
+            total=len(self._page_plan.controls_plan),
+            desc=f"Currently Building ... [Page] <{self._page_plan.title}> controls",
+            leave=False,
+        ) as pbar:
+            for control_plan in self._page_plan.controls_plan:
+                pbar.update(1)
+            control = control_plan.create(
                 model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
             )
             if control:

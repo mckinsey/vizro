@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict
 
 import pandas as pd
-import tqdm.std
+import tqdm.std as tsd
 import vizro.models as vm
 from vizro_ai.dashboard.constants import IMPORT_STATEMENTS
 
@@ -17,7 +17,7 @@ class MetadataContent:
 
     df_schema: Dict[str, str]
     df: pd.DataFrame
-    df_sample: str
+    df_sample: pd.DataFrame
 
 
 @dataclass
@@ -50,7 +50,7 @@ class DashboardOutputs:
     dashboard: vm.Dashboard
 
 
-def _execute_step(pbar: tqdm.std.tqdm, description: str, value: Any) -> Any:
+def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
     pbar.update(1)
     pbar.set_description_str(description)
     return value
