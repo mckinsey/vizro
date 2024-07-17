@@ -1,10 +1,10 @@
-"""Contains custom components and charts used inside the dashboard."""
+"""Contains code for the containers used inside the tabs (homepage)."""
 
 import re
 
 import vizro.models as vm
 
-from .custom_charts_comp import FlexContainer, Markdown
+from .custom_extensions import FlexContainer, Markdown
 
 vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", FlexContainer)

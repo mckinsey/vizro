@@ -1,6 +1,6 @@
 """Contains custom components and charts used inside the dashboard."""
 
-from typing import Literal, List
+from typing import List, Literal
 
 import dash_bootstrap_components as dbc
 import pandas as pd

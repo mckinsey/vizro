@@ -1,4 +1,4 @@
-"""Contains re-usable constants, data sets and custom charts."""
+"""Contains re-usable data sets and constants."""
 
 import json
 from urllib.request import urlopen
@@ -36,5 +36,15 @@ sankey_data = pd.DataFrame(
     }
 )
 
-# CONSTANTS ---------------------------------------------------------
+DATA_DICT = {
+    "gapminder": gapminder,
+    "gapminder_2007": gapminder_2007,
+    "iris": iris,
+    "stocks": stocks,
+    "tips": tips,
+    "tips_agg": tips_agg,
+    "ages": ages,
+    "fips_unemp": fips_unemp,
+    "sankey_data": sankey_data,
+}
 PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5

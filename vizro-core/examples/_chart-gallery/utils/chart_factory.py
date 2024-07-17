@@ -1,14 +1,14 @@
-"""Contains re-usable page functions.
+"""Contains re-usable page functions to create identical content with a different `id`.
 
-Note: Given the restriction that one page can only be mapped to one navigation group,
-we have to create a new page with a new ID for each chart type being re-used per navigation group.
+Note: Since each page can only belong to one navigation group, we need a new page with a unique ID for
+each chart type used in different groups.
 """
 
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from .custom_charts_comp import CodeClipboard, butterfly
-from .helper import PAGE_GRID, ages, gapminder_2007, iris, stocks, tips_agg
+from ._page_utils import DATA_DICT, PAGE_GRID
+from .custom_extensions import CodeClipboard, butterfly
 
 
 def line_factory(id: str, title: str):
@@ -35,7 +35,7 @@ def line_factory(id: str, title: str):
             same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
             ),
-            vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
+            vm.Graph(figure=px.line(DATA_DICT["stocks"], x="date", y="GOOG")),
             CodeClipboard(
                 text="""
                 ```python
@@ -89,7 +89,7 @@ def scatter_factory(id: str, title: str):
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """
             ),
-            vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            vm.Graph(figure=px.scatter(DATA_DICT["iris"], x="sepal_width", y="sepal_length", color="species")),
             CodeClipboard(
                 text="""
                ```python
@@ -151,7 +151,7 @@ def bar_factory(id: str, title: str):
             ),
             vm.Graph(
                 figure=px.bar(
-                    data_frame=tips_agg,
+                    data_frame=DATA_DICT["tips_agg"],
                     x="total_bill",
                     y="day",
                     orientation="h",
@@ -222,7 +222,7 @@ def column_factory(id: str, title: str):
             ),
             vm.Graph(
                 figure=px.bar(
-                    data_frame=tips_agg,
+                    data_frame=DATA_DICT["tips_agg"],
                     y="total_bill",
                     x="day",
                 )
@@ -291,7 +291,7 @@ def treemap_factory(id: str, title: str):
             ),
             vm.Graph(
                 figure=px.treemap(
-                    gapminder_2007,
+                    DATA_DICT["gapminder_2007"],
                     path=[px.Constant("world"), "continent", "country"],
                     values="pop",
                     color="lifeExp",

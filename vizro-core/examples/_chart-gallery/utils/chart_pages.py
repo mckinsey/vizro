@@ -1,8 +1,9 @@
-"""Contains custom components and charts used inside the dashboard."""
+"""Contains variables that store each chart page."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
 
+from ._page_utils import DATA_DICT, PAGE_GRID
 from .chart_factory import (
     bar_factory,
     butterfly_factory,
@@ -11,8 +12,7 @@ from .chart_factory import (
     scatter_factory,
     treemap_factory,
 )
-from .custom_charts_comp import CodeClipboard, FlexContainer, Markdown, sankey
-from .helper import PAGE_GRID, counties, fips_unemp, sankey_data, tips
+from .custom_extensions import CodeClipboard, FlexContainer, Markdown, sankey
 
 # COMPONENTS --------------------------------------------------------
 vm.Page.add_type("components", CodeClipboard)
@@ -62,7 +62,7 @@ pie = vm.Page(
         ),
         vm.Graph(
             figure=px.pie(
-                data_frame=tips,
+                data_frame=DATA_DICT["tips"],
                 values="tip",
                 names="day",
             )
@@ -121,7 +121,7 @@ donut = vm.Page(
         ),
         vm.Graph(
             figure=px.pie(
-                data_frame=tips,
+                data_frame=DATA_DICT["tips"],
                 values="tip",
                 names="day",
                 hole=0.4,
@@ -185,7 +185,7 @@ boxplot = vm.Page(
         ),
         vm.Graph(
             figure=px.box(
-                data_frame=tips,
+                data_frame=DATA_DICT["tips"],
                 y="total_bill",
                 x="day",
                 color="day",
@@ -245,7 +245,7 @@ violin = vm.Page(
         ),
         vm.Graph(
             figure=px.violin(
-                data_frame=tips,
+                data_frame=DATA_DICT["tips"],
                 y="total_bill",
                 x="day",
                 color="day",
@@ -308,8 +308,8 @@ choropleth = vm.Page(
         ),
         vm.Graph(
             figure=px.choropleth(
-                fips_unemp,
-                geojson=counties,
+                DATA_DICT["fips_unemp"],
+                geojson=DATA_DICT["counties"],
                 locations="fips",
                 color="unemp",
                 range_color=(0, 12),
@@ -390,7 +390,7 @@ sankey_page = vm.Page(
         ),
         vm.Graph(
             figure=sankey(
-                data_frame=sankey_data,
+                data_frame=DATA_DICT["sankey_data"],
                 labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
                 source="Origin",
                 target="Destination",
