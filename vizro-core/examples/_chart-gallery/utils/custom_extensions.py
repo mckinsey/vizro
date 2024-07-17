@@ -23,6 +23,7 @@ class CodeClipboard(vm.VizroBaseModel):
     text: str
 
     def build(self):
+        """Returns the code clipboard component inside an accordion."""
         return dbc.Accordion(
             [
                 dbc.AccordionItem(
@@ -50,6 +51,7 @@ class Markdown(vm.VizroBaseModel):
     classname: str = ""
 
     def build(self):
+        """Returns a markdown component with an optional classname."""
         return dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname)
 
 
@@ -59,13 +61,15 @@ class FlexContainer(vm.Container):
     type: Literal["flex_container"] = "flex_container"
 
     def build(self):
+        """Returns a flex container."""
         return html.Div(
             id=self.id, children=[component.build() for component in self.components], className="flex-container"
         )
 
 
 @capture("graph")
-def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
+def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
+    """Creates a custom butterfly chart based on a go.Figure."""
     fig = go.Figure()
     fig.add_trace(
         go.Bar(
@@ -88,16 +92,17 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str):
 
 
 @capture("graph")
-def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]):
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
+    """Creates a custom sankey chart based on a go.Figure."""
     fig = go.Figure(
         data=[
             go.Sankey(
-                node=dict(
+                node=dict(  # noqa: C408
                     pad=16,
                     thickness=16,
                     label=labels,
                 ),
-                link=dict(
+                link=dict(  # noqa: C408
                     source=data_frame[source],
                     target=data_frame[target],
                     value=data_frame[value],

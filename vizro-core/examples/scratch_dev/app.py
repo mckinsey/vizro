@@ -24,16 +24,17 @@ def sankey(
     target: str,
     value: str,
     labels: List[str],
-):
+) -> go.Figure:
+    """Creates a sankey diagram based on a go.Figure."""
     fig = go.Figure(
         data=[
             go.Sankey(
-                node=dict(
+                node=dict(  # noqa: C408
                     pad=16,
                     thickness=16,
                     label=labels,
                 ),
-                link=dict(
+                link=dict(  # noqa: C408
                     source=data_frame[source],
                     target=data_frame[target],
                     value=data_frame[value],

@@ -1,4 +1,4 @@
-"""Contains re-usable page functions to create identical content with a different `id`.
+"""Contains reusable page functions to create identical content with a different `id`.
 
 Note: Since each page can only belong to one navigation group, we need a new page with a unique ID for
 each chart type used in different groups.
@@ -12,6 +12,7 @@ from .custom_extensions import CodeClipboard, butterfly
 
 
 def line_factory(id: str, title: str):
+    """Reusable function to create the page content for the line chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -66,6 +67,7 @@ def line_factory(id: str, title: str):
 
 
 def scatter_factory(id: str, title: str):
+    """Reusable function to create the page content for the scatter chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -123,6 +125,7 @@ def scatter_factory(id: str, title: str):
 
 
 def bar_factory(id: str, title: str):
+    """Reusable function to create the page content for the bar chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -196,6 +199,7 @@ def bar_factory(id: str, title: str):
 
 
 def column_factory(id: str, title: str):
+    """Reusable function to create the page content for the column chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -265,6 +269,7 @@ def column_factory(id: str, title: str):
 
 
 def treemap_factory(id: str, title: str):
+    """Reusable function to create the page content for the treemap chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -331,6 +336,7 @@ def treemap_factory(id: str, title: str):
 
 
 def butterfly_factory(id: str, title: str):
+    """Reusable function to create the page content for the butterfly chart with a unique ID."""
     return vm.Page(
         id=id,
         title=title,
@@ -354,7 +360,7 @@ def butterfly_factory(id: str, title: str):
                 categories.
             """
             ),
-            vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
+            vm.Graph(figure=butterfly(DATA_DICT["ages"], x1="Male", x2="Female", y="Age")),
             CodeClipboard(
                 text="""
                     ```python

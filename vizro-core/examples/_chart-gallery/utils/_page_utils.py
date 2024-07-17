@@ -1,15 +1,12 @@
-"""Contains re-usable data sets and constants."""
+"""Contains reusable data sets and constants."""
 
 import json
-from urllib.request import urlopen
 
 import pandas as pd
 import vizro.plotly.express as px
 
 # DATA --------------------------------------------------------------
-with urlopen("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json") as response:
-    counties = json.load(response)
-
+counties = json.load("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json")
 gapminder = px.data.gapminder()
 gapminder_2007 = gapminder.query("year == 2007")
 iris = px.data.iris()
