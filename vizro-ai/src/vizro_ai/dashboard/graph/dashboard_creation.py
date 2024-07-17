@@ -100,7 +100,11 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 
     llm = config["configurable"].get("model", None)
 
-    _execute_step(pbar, node_desc + " --> in progress", None)
+    _execute_step(
+        pbar,
+        node_desc + " --> in progress \n(this step could take longer " "when more complex requirements are given)",
+        None,
+    )
     dashboard_plan = _get_pydantic_output(
         query=query, llm_model=llm, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
     )

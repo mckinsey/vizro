@@ -2,6 +2,7 @@
 
 from typing import Literal
 
+# TODO: these are types rather than constants. Rename to types and move to types.py
 # For unsupported component and control types, how to handle them?
 # option 1. Ignore silently
 # option 2. Raise a warning and add the warning message into langgraph state. This gives the user transparency on why

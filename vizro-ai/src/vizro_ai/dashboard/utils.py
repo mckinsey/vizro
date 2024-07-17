@@ -8,7 +8,7 @@ from typing import Any, Dict
 import pandas as pd
 import tqdm.std as tsd
 import vizro.models as vm
-from vizro_ai.dashboard.constants import IMPORT_STATEMENTS
+from vizro_ai.dashboard._constants import IMPORT_STATEMENTS
 
 
 @dataclass

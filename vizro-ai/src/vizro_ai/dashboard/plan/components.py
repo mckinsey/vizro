@@ -11,8 +11,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 from vizro.tables import dash_ag_grid
+from vizro_ai.dashboard._constants import component_type
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.constants import component_type
 
 logger = logging.getLogger(__name__)
 

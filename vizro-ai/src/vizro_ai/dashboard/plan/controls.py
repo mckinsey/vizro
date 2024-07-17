@@ -9,8 +9,8 @@ try:
     from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, validator
+from vizro_ai.dashboard._constants import control_type
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.constants import control_type
 
 logger = logging.getLogger(__name__)
 
