@@ -3,22 +3,29 @@
 import re
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
-from ._components import CodeClipboard, FlexContainer, Markdown
+from .custom_charts_comp import FlexContainer, Markdown
 
-gapminder = px.data.gapminder()
-vm.Page.add_type("components", CodeClipboard)
-vm.Page.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", FlexContainer)
 
 
 def tidy_chart_title(chart: str) -> str:
     """Tidy up the chart title by removing prefixes and unwanted characters.
-    The pre-fixes are previously given to uniquely create a page ID.
+
+    Note: The pre-fixes are previously given to uniquely create a page ID.
     """
-    prefixes_to_remove = ["time-", "magnitude-", "deviation-", "distribution-"]
+    prefixes_to_remove = [
+        "time-",
+        "magnitude-",
+        "deviation-",
+        "distribution-",
+        "correlation-",
+        "ranking-",
+        "flow-",
+        "spatial-",
+        "part-",
+    ]
     pattern = "^(" + "|".join(prefixes_to_remove) + ")"
     chart_without_prefix = re.sub(pattern, "", chart)
     return chart_without_prefix.replace("-", " ").title()
@@ -27,7 +34,7 @@ def tidy_chart_title(chart: str) -> str:
 DEVIATION_CHARTS = sorted(
     [
         "diverging-bar",
-        #   "diverging-stacked-bar",
+        # "diverging-stacked-bar",
         "butterfly",
         "surplus",
     ]
@@ -36,7 +43,7 @@ CORRELATION_CHARTS = [
     "scatter",
     "scatter-matrix",
     "column-line",
-    #  "connected-scatter",
+    # "connected-scatter",
     "heatmap-matrix",
     "bubble",
 ]
@@ -59,16 +66,15 @@ DISTRIBUTION_CHARTS = sorted(
         "violin",
         "distribution-butterfly",
         "cumulative-curve",
-        #    "beeswarm",
+        # "beeswarm",
     ]
 )
-
 MAGNITUDE_CHARTS = sorted(
     [
         "column",
         "bar",
-        #    "paired-column",
-        #    "paired-bar",
+        # "paired-column",
+        # "paired-bar",
         "marimekko",
         "bubble",
         "lollipop",
@@ -87,8 +93,8 @@ TIME_CHARTS = sorted(
         "column-line",
         "slope",
         "fan",
-        #  "area",
-        #  "connected-scatter",
+        # "area",
+        # "connected-scatter",
         "heatmap",
         "bubble-timeline",
         "sparkline",
@@ -96,7 +102,7 @@ TIME_CHARTS = sorted(
 )
 PART_TO_WHOLE_CHARTS = sorted(
     [
-        #   "stacked-bar",
+        "stacked-bar",
         "stacked-column",
         "marimekko",
         "funnel",

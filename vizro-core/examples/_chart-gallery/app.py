@@ -1,8 +1,38 @@
 """App configuration for chart gallery dashboard."""
 
 import vizro.models as vm
-from utils._containers import *
-from utils._pages import *
+from utils.chart_pages import (
+    bar,
+    boxplot,
+    butterfly_page,
+    choropleth,
+    column,
+    distribution_butterfly,
+    donut,
+    line,
+    magnitude_treemap,
+    ordered_bar,
+    ordered_column,
+    pie,
+    sankey_page,
+    scatter,
+    time_column,
+    time_line,
+    treemap,
+    violin,
+)
+from utils.tab_containers import (
+    container_all,
+    container_correlation,
+    container_deviation,
+    container_distribution,
+    container_flow,
+    container_magnitude,
+    container_part,
+    container_ranking,
+    container_spatial,
+    container_time,
+)
 from vizro import Vizro
 
 homepage = vm.Page(
