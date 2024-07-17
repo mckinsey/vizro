@@ -7,9 +7,9 @@ try:
     from pydantic.v1 import BaseModel, Field, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, validator
-from vizro_ai.dashboard.plan.components import ComponentPlan
-from vizro_ai.dashboard.plan.controls import ControlPlan
-from vizro_ai.dashboard.plan.layout import LayoutPlan
+from vizro_ai.dashboard.response_models.components import ComponentPlan
+from vizro_ai.dashboard.response_models.controls import ControlPlan
+from vizro_ai.dashboard.response_models.layout import LayoutPlan
 
 logger = logging.getLogger(__name__)
 
@@ -34,5 +34,5 @@ class PagePlanner(BaseModel):
             raise ValueError("A page must contain at least one component.")
         return v
 
-    # def create():
-    #     pass
+    def create():
+        pass

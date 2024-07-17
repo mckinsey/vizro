@@ -12,10 +12,10 @@ from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.data_preprocess.df_info import _get_df_info, _get_df_sum_output
-from vizro_ai.dashboard.page_build.page import PageBuilder
-from vizro_ai.dashboard.plan.dashboard import DashboardPlanner
-from vizro_ai.dashboard.plan.page import PagePlanner
+from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
+from vizro_ai.dashboard.response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
+from vizro_ai.dashboard.response_models.page import PagePlanner
+from vizro_ai.dashboard.response_models.page_build import PageBuilder
 from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
 
 try:
@@ -76,10 +76,16 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
     with tqdm(total=len(dfs), desc="Store df info") as pbar:
         for df in dfs:
             df_schema, df_sample = _get_df_info(df)
+            df_info = _create_df_info_content(
+                df_schema=df_schema, df_sample=df_sample, current_df_names=current_df_names
+            )
 
             llm = config["configurable"].get("model", None)
-            df_name = _get_df_sum_output(
-                df_schema=df_schema, df_sample=df_sample, current_df_names=current_df_names, query=query, llm_model=llm
+            df_name = _get_pydantic_output(
+                query=query,
+                llm_model=llm,
+                result_model=DfInfo,
+                df_info=df_info,
             ).dataset_name
 
             current_df_names.append(df_name)

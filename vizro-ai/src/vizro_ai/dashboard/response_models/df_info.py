@@ -1,6 +1,6 @@
 """Data Summary Node."""
 
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 import pandas as pd
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -38,15 +38,3 @@ def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
 def _create_df_info_content(df_schema: Any, df_sample: Any, current_df_names: list) -> dict:
     """Create the message content for the dataframe summarization."""
     return DF_SUM_PROMPT.format(df_sample=df_sample, df_schema=df_schema, current_df_names=current_df_names)
-
-
-def _get_df_sum_output(
-    df_schema: Any, df_sample: Any, current_df_names: list, llm_model: BaseChatModel, query: str
-) -> BaseModel:
-    """Get the dataframe summary output from the LLM model with retry logic."""
-    return _get_pydantic_output(
-        query=query,
-        llm_model=llm_model,
-        result_model=DfInfo,
-        df_info=_create_df_info_content(df_schema=df_schema, df_sample=df_sample, current_df_names=current_df_names),
-    )

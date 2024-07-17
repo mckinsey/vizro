@@ -3,7 +3,7 @@ from typing import Any, List
 import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.dashboard.plan.components import ComponentPlan
+from vizro_ai.dashboard.response_models.components import ComponentPlan
 
 
 class FakeListLLM(FakeListLLM):
