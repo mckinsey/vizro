@@ -60,16 +60,14 @@ class LayoutPlan(BaseModel):
         layout_prompt = (
             f"Create a layout from the following instructions: {self.layout_description}. Do not make up "
             f"a layout if not requested. If a layout_grid_template_areas is provided, translate it into "
-            f"a matrix of integers where each integer represents a component (starting from 0). replace "
+            f"a matrix of integers where each integer represents a unique component (starting from 0). replace "
             f"'.' with -1 to represent empty spaces. Here is the grid template areas: {self.layout_grid_template_areas}"
         )
         if self.layout_description == "N/A":
             return None
 
         try:
-            proxy = _get_pydantic_output(
-                query=layout_prompt, llm_model=model, result_model=LayoutProxyModel, df_info=None
-            )
+            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, result_model=LayoutProxyModel)
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except (ValidationError, AttributeError) as e:
             logger.info(f"Build failed for `Layout`, returning default values. Error details: {e}")

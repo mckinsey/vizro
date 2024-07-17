@@ -83,11 +83,11 @@ class PageBuilder:
         ) as pbar:
             for control_plan in self._page_plan.controls_plan:
                 pbar.update(1)
-            control = control_plan.create(
-                model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
-            )
-            if control:
-                controls.append(control)
+                control = control_plan.create(
+                    model=self._model, available_components=self.available_components, df_metadata=self._df_metadata
+                )
+                if control:
+                    controls.append(control)
 
         return controls
 

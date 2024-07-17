@@ -51,6 +51,4 @@ class ComponentPlan(BaseModel):
         elif self.component_type == "AgGrid":
             return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
         elif self.component_type == "Card":
-            return _get_pydantic_output(
-                query=self.component_description, llm_model=model, result_model=vm.Card, df_info=None
-            )
+            return _get_pydantic_output(query=self.component_description, llm_model=model, result_model=vm.Card)
