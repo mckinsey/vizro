@@ -1,12 +1,10 @@
 """Contains reusable data sets and constants."""
 
-import json
 
 import pandas as pd
 import vizro.plotly.express as px
 
 # DATA --------------------------------------------------------------
-counties = json.load("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json")
 gapminder = px.data.gapminder()
 gapminder_2007 = gapminder.query("year == 2007")
 iris = px.data.iris()
@@ -19,10 +17,6 @@ ages = pd.DataFrame(
         "Male": [800, 2000, 4200, 5000, 2100, 800],
         "Female": [1000, 3000, 3500, 3800, 3600, 700],
     }
-)
-fips_unemp = pd.read_csv(
-    "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
-    dtype={"fips": str},
 )
 
 sankey_data = pd.DataFrame(
@@ -41,7 +35,6 @@ DATA_DICT = {
     "tips": tips,
     "tips_agg": tips_agg,
     "ages": ages,
-    "fips_unemp": fips_unemp,
     "sankey_data": sankey_data,
 }
 PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5

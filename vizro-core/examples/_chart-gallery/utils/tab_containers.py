@@ -1,6 +1,7 @@
 """Contains code for the containers used inside the tabs (homepage)."""
 
 import re
+from itertools import chain
 
 import vizro.models as vm
 
@@ -10,11 +11,12 @@ vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", FlexContainer)
 
 
-def tidy_chart_title(chart: str) -> str:
-    """Tidy up the chart title by removing prefixes and unwanted characters.
-
-    Note: The pre-fixes are previously given to uniquely create a page ID.
-    """
+def remove_prefix(chart_title: str) -> str:
+    """Remove prefix from chart-title."""
+    # Note: Prefixes are added to chart names that appear in multiple categories to ensure each chart has a
+    # unique page ID and path in the gallery. For example, the "butterfly" chart appears in both the deviation and
+    # distribution categories, so it is listed as "butterfly" and "distribution-butterfly".
+    # In this step, we remove these prefixes because we do not want them displayed in the chart titles.
     prefixes_to_remove = [
         "time-",
         "magnitude-",
@@ -22,15 +24,40 @@ def tidy_chart_title(chart: str) -> str:
         "distribution-",
         "correlation-",
         "ranking-",
-        "flow-",
         "spatial-",
         "part-",
     ]
     pattern = "^(" + "|".join(prefixes_to_remove) + ")"
-    chart_without_prefix = re.sub(pattern, "", chart)
-    return chart_without_prefix.replace("-", " ").title()
+    chart_without_prefix = re.sub(pattern, "", chart_title)
+    return chart_without_prefix
 
 
+def tidy_chart_title(chart: str) -> str:
+    """Tidy up the chart title by removing prefixes and unwanted characters."""
+    return remove_prefix(chart).replace("-", " ").title()
+
+
+# TODO: Once a chart type is completed, include it here to enable navigation from the homepage to the chart.
+COMPLETED_CHARTS = [
+    "bar",
+    "ordered-bar",
+    "column",
+    "ordered-column",
+    "pie",
+    "donut",
+    "line",
+    "violin",
+    "scatter",
+    "sankey",
+    "butterfly",
+    "boxplot",
+    "choropleth",
+    "treemap",
+]
+
+
+# TODO: Charts that are commented out below do not have an svg made yet. Uncomment them once they are ready.
+# The names correspond to the svg names.
 DEVIATION_CHARTS = sorted(
     [
         "diverging-bar",
@@ -79,7 +106,7 @@ MAGNITUDE_CHARTS = sorted(
         "bubble",
         "lollipop",
         "radar",
-        "parallel",
+        "parallel-coordinates",
         "pictogram",
         "bullet",
         "radial",
@@ -87,7 +114,7 @@ MAGNITUDE_CHARTS = sorted(
 )
 TIME_CHARTS = sorted(
     [
-        "time-line",
+        "line",
         "time-column",
         "gantt",
         "column-line",
@@ -117,17 +144,24 @@ PART_TO_WHOLE_CHARTS = sorted(
 FLOW_CHARTS = sorted(["sankey", "waterfall", "chord", "network"])
 SPATIAL_CHARTS = sorted(["choropleth", "dot-map", "flow-map", "bubble-map"])
 
+
+# Create a sorted list of unique, tidied chart titles
 ALL_CHARTS = sorted(
     set(
-        DEVIATION_CHARTS
-        + CORRELATION_CHARTS
-        + RANKING_CHARTS
-        + DISTRIBUTION_CHARTS
-        + MAGNITUDE_CHARTS
-        + TIME_CHARTS
-        + PART_TO_WHOLE_CHARTS
-        + FLOW_CHARTS
-        + SPATIAL_CHARTS
+        map(
+            remove_prefix,
+            chain(
+                DEVIATION_CHARTS,
+                CORRELATION_CHARTS,
+                RANKING_CHARTS,
+                DISTRIBUTION_CHARTS,
+                MAGNITUDE_CHARTS,
+                TIME_CHARTS,
+                PART_TO_WHOLE_CHARTS,
+                FLOW_CHARTS,
+                SPATIAL_CHARTS,
+            ),
+        )
     )
 )
 
@@ -144,7 +178,7 @@ container_all = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in ALL_CHARTS
             ],
@@ -173,7 +207,7 @@ container_deviation = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in DEVIATION_CHARTS
             ],
@@ -202,7 +236,7 @@ container_correlation = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in CORRELATION_CHARTS
             ],
@@ -231,7 +265,7 @@ container_ranking = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in RANKING_CHARTS
             ],
@@ -262,7 +296,7 @@ container_distribution = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in DISTRIBUTION_CHARTS
             ],
@@ -292,7 +326,7 @@ container_magnitude = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in MAGNITUDE_CHARTS
             ],
@@ -321,7 +355,7 @@ container_time = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in TIME_CHARTS
             ],
@@ -349,7 +383,7 @@ container_part = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in PART_TO_WHOLE_CHARTS
             ],
@@ -378,7 +412,7 @@ container_flow = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in FLOW_CHARTS
             ],
@@ -405,7 +439,7 @@ container_spatial = vm.Container(
 
                             #### {tidy_chart_title(chart)}
                             """,
-                    href=f"/{chart}",
+                    href=f"/{chart}" if chart in COMPLETED_CHARTS else "",
                 )
                 for chart in SPATIAL_CHARTS
             ],

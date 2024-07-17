@@ -356,49 +356,35 @@ choropleth = vm.Page(
         ),
         vm.Graph(
             figure=px.choropleth(
-                DATA_DICT["fips_unemp"],
-                geojson=DATA_DICT["counties"],
-                locations="fips",
-                color="unemp",
-                range_color=(0, 12),
-                scope="usa",
+                DATA_DICT["gapminder_2007"],
+                locations="iso_alpha",
+                color="lifeExp",
+                hover_name="country",
             )
         ),
         CodeClipboard(
             text="""
                 ```python
                 import json
-                from urllib.request import urlopen
 
                 import pandas as pd
                 import vizro.models as vm
                 import vizro.plotly.express as px
                 from vizro import Vizro
 
-                with urlopen(
-                    "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-                ) as response:
-                    counties = json.load(response)
-
-                fips_unemp = pd.read_csv(
-                    "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
-                    dtype={"fips": str},
-                )
-
+                gapminder_2007 = px.data.gapminder().query("year == 2007")
 
                 page = vm.Page(
                     title="Choropleth",
                     components=[
                         vm.Graph(
                             figure=px.choropleth(
-                                fips_unemp,
-                                geojson=counties,
-                                locations="fips",
-                                color="unemp",
-                                range_color=(0, 12),
-                                scope="usa",
+                                gapminder_2007,
+                                locations="iso_alpha",
+                                color="lifeExp",
+                                hover_name="country",
                             )
-                        ),
+                        )
                     ],
                 )
 
