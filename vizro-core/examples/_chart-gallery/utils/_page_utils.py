@@ -1,6 +1,5 @@
 """Contains reusable data sets and constants."""
 
-
 import pandas as pd
 import vizro.plotly.express as px
 

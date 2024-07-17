@@ -143,9 +143,6 @@ PART_TO_WHOLE_CHARTS = sorted(
 )
 FLOW_CHARTS = sorted(["sankey", "waterfall", "chord", "network"])
 SPATIAL_CHARTS = sorted(["choropleth", "dot-map", "flow-map", "bubble-map"])
-
-
-# Create a sorted list of unique, tidied chart titles
 ALL_CHARTS = sorted(
     set(
         map(
