@@ -8,7 +8,6 @@ from .chart_factory import (
     bar_factory,
     butterfly_factory,
     column_factory,
-    line_factory,
     scatter_factory,
     treemap_factory,
 )
@@ -21,8 +20,6 @@ vm.Container.add_type("components", Markdown)
 
 
 # PAGES -------------------------------------------------------------
-line = line_factory("Line", "Line")
-time_line = line_factory("Time-Line", "Line")
 time_column = column_factory("Time-Column", "Column")
 scatter = scatter_factory("Scatter", "Scatter")
 bar = bar_factory("Bar", "Bar")
@@ -34,6 +31,57 @@ magnitude_treemap = treemap_factory("Magnitude-Treemap", "Treemap")
 butterfly_page = butterfly_factory("Butterfly", "Butterfly")
 distribution_butterfly = butterfly_factory("Distribution-Butterfly", "Butterfly")
 
+
+line = vm.Page(
+    title="Line",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a line chart?
+
+            A line chart presents a series of data points over a continuous interval or time period, joined together
+            with straight lines.
+
+            &nbsp;
+
+            #### When to use it?
+
+            You should select a line chart when you want to show trends over time. Usually, your y-axis will show a
+            quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also
+            display negative values below the x-axis. If you wish to group several lines (different data series) in the
+            same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
+        """
+        ),
+        vm.Graph(figure=px.line(DATA_DICT["stocks"], x="date", y="GOOG")),
+        CodeClipboard(
+            text="""
+                ```python
+                import vizro.models as vm
+                import vizro.plotly.express as px
+                from vizro import Vizro
+
+                stocks = px.data.stocks()
+
+                page = vm.Page(
+                    title="Line",
+                    components=[
+                        vm.Graph(
+                            figure=px.line(
+                                stocks, x="date", y="GOOG"
+                            )
+                        )
+                    ],
+                )
+
+                dashboard = vm.Dashboard(pages=[page])
+                Vizro().build(dashboard).run()
+                ```
+                """
+        ),
+    ],
+)
 
 pie = vm.Page(
     title="Pie",

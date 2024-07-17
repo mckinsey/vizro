@@ -17,7 +17,6 @@ from utils.chart_pages import (
     sankey_page,
     scatter,
     time_column,
-    time_line,
     treemap,
     violin,
 )
@@ -69,7 +68,6 @@ dashboard = vm.Dashboard(
         violin,
         ordered_bar,
         ordered_column,
-        time_line,
         time_column,
         treemap,
         magnitude_treemap,
@@ -109,7 +107,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Time",
-                    pages={"Time": ["Time-Line", "Time-Column"]},
+                    pages={"Time": ["Line", "Time-Column"]},
                     icon="Timeline",
                 ),
                 vm.NavLink(
