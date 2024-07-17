@@ -104,6 +104,8 @@ class PageBuilder:
             controls = _execute_step(pbar, page_desc + " --> add controls", self.controls)
             layout = _execute_step(pbar, page_desc + " --> add layout", self.layout)
 
+            # TODO: handle error `ValidationError: 1 validation error for Page`
+            # Number of page and grid components need to be the same.
             self._page = vm.Page(title=title, components=components, controls=controls, layout=layout)
             _execute_step(pbar, page_desc + " --> done", None)
             pbar.close()

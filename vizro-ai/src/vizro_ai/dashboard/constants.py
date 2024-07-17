@@ -6,13 +6,13 @@ from typing import Literal
 # option 1. Ignore silently
 # option 2. Raise a warning and add the warning message into langgraph state. This gives the user transparency on why
 #    a certain component or control was not created.
-# option 3. Raise a warning and suggest additional reference material
+# option 3. Raise a warning and suggest additional reference material <=
 component_type = Literal[
     "AgGrid", "Card", "Graph"
 ]  # Complete list: ["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"]
 control_type = Literal["Filter"]  # Complete list: ["Filter", "Parameter"]
 
-# For other models, like ["Accordion", "NavBar"], how to handle them?
+# For other models, like ["Accordion", "NavBar"], how to handle them? <=
 
 
 IMPORT_STATEMENTS = (
