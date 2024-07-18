@@ -8,7 +8,7 @@ import vizro.models as vm
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError, validator
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError, validator
+    from pydantic import BaseModel, Field, validator
 import numpy as np
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
@@ -71,9 +71,11 @@ class LayoutPlan(BaseModel):
             proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, result_model=LayoutProxyModel)
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except DebugFailure as e:
-            logger.warning(f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
-                           f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
-                           f"Relevant prompt: `{self.layout_description}`")
+            logger.warning(
+                f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
+                f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
+                f"Relevant prompt: `{self.layout_description}`"
+            )
             actual = None
 
         return actual
