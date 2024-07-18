@@ -30,6 +30,11 @@ class PagePlanner(BaseModel):
     )
     controls_plan: List[ControlPlan] = Field([], description="Controls of the page.")
     layout_plan: LayoutPlan = Field(None, description="Layout of the page.")
+    unsupported_specs: List[str] = Field(
+        [],
+        description="List of unsupported specs. If there are any unsupported specs, "
+        "please list them here. If there are no unsupported specs, leave this as an empty list.",
+    )
 
     _components: List[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
     _controls: List[vm.Filter] = PrivateAttr()
@@ -40,6 +45,13 @@ class PagePlanner(BaseModel):
         if len(v) == 0:
             raise ValueError("A page must contain at least one component.")
         return v
+
+    @validator("unsupported_specs")
+    def _check_unsupported_specs(cls, v, values):
+        title = values.get("title", "Unknown Title")
+        if len(v) > 0:
+            logger.warning(f"\n ------- \n Unsupported specs on page <{title}>: \n {v}")
+            return []
 
     def __init__(self, **data):
         """Initialize the page plan."""
