@@ -9,7 +9,15 @@ from vizro.tables._utils import _set_defaults_nested
 
 @capture("table")
 def dash_data_table(data_frame: pd.DataFrame, **kwargs) -> dash_table.DataTable:
-    """Standard `dash_table.DataTable` with sensible defaults to be used in [`Table`][vizro.models.Table]."""
+    """Standard `dash_table.DataTable` with sensible defaults to be used in [`Table`][vizro.models.Table].
+
+    Examples
+        Wrap inside `vm.Table` to use as a component inside `vm.Page` or `vm.Container`.
+        >>> import vizro.models as vm
+        >>> from vizro.table import dash_data_table
+        >>> vm.Page(title="Page", components=[vm.Table(figure=dash_data_table(...))])
+
+    """
     defaults = {
         "columns": [{"name": col, "id": col} for col in data_frame.columns],
         "style_as_list_view": True,
