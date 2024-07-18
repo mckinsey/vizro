@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Improve validation error message if `CapturedCallable` is directly provided. ([#587](https://github.com/mckinsey/vizro/pull/587))
+- Improve validation error message if `CapturedCallable` is directly provided. ([#590](https://github.com/mckinsey/vizro/pull/590))
 
 <!--
 ### Security
