@@ -16,10 +16,9 @@ df_kpi = pd.DataFrame(
 
 
 home = vm.Page(
-    title="value_error.discriminated_union.missing_discriminator",
+    title="Page Title",
     components=[
-        # vm.Card(text="I am a Card"),
-        kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+        vm.Figure(figure=kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value")),
     ],
 )
 

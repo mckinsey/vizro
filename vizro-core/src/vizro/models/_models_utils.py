@@ -17,21 +17,19 @@ def _log_call(method):
     return _wrapper
 
 
-
 # Validators for reuse
-def _validate_min_length(cls, field):
+def validate_min_length(cls, field):
     if not field:
         raise ValueError("Ensure this value has at least 1 item.")
+    return field
 
-def validate_components(cls, field):
-    _validate_min_length(cls, field)
 
-    # Validate CapturedCallable has been directly provided.
+def validate_components_type(cls, field):
     mode_to_error = {
         "figure": "A callable of mode `figure` has been provided. Please wrap it inside the `vm.Figure(figure=...)`.",
         "table": "A callable of mode `table` has been provided. Please wrap it inside the `vm.Table(figure=...)`.",
         "ag_grid": "A callable of mode `ag_grid` has been provided. Please wrap it inside the `vm.AgGrid(figure=...)`.",
-        "graph": "A callable of mode `graph` has been provided. Please wrap it inside the `vm.AgGrid(figure=...)`.",
+        "graph": "A callable of mode `graph` has been provided. Please wrap it inside the `vm.Graph(figure=...)`.",
     }
 
     for component in field:

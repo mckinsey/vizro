@@ -11,9 +11,16 @@ import vizro.models as vm
 
 
 class TestSharedValidators:
-    def test_set_components_validator(self, model_with_layout):
+    def test_validate_min_length(self, model_with_layout):
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
             model_with_layout(title="Title", components=[])
+
+    def test_validate_components_type(self, model_with_layout, standard_px_chart):
+        with pytest.raises(
+            ValidationError,
+            match="A callable of mode `graph` has been provided. " "Please wrap it inside the `vm.Graph(figure=...)`.",
+        ):
+            model_with_layout(title="Title", components=[standard_px_chart])
 
     def test_check_for_valid_component_types(self, model_with_layout):
         with pytest.raises(
