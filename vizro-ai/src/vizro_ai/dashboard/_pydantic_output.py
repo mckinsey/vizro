@@ -78,4 +78,4 @@ def _get_pydantic_output(
             return res
         except ValidationError as validation_error:
             last_validation_error = validation_error
-    return last_validation_error
+    raise last_validation_error

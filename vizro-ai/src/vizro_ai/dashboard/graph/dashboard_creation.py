@@ -15,8 +15,8 @@ from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
 from vizro_ai.dashboard.response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
 from vizro_ai.dashboard.response_models.page import PagePlanner
-from vizro_ai.dashboard.response_models.page_build import PageBuilder
 from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
+from vizro_ai.utils.helper import DebugFailure
 
 try:
     from pydantic.v1 import BaseModel, validator
@@ -81,12 +81,16 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
             )
 
             llm = config["configurable"].get("model", None)
-            df_name = _get_pydantic_output(
-                query=query,
-                llm_model=llm,
-                result_model=DfInfo,
-                df_info=df_info,
-            ).dataset_name
+            try:
+                df_name = _get_pydantic_output(
+                    query=query,
+                    llm_model=llm,
+                    result_model=DfInfo,
+                    df_info=df_info,
+                ).dataset_name
+            except DebugFailure as e:
+                logger.warning(f"Failed in name generation {e}")
+                df_name = f"df_{len(current_df_names)}"
 
             current_df_names.append(df_name)
 
@@ -111,9 +115,13 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
         node_desc + " --> in progress \n(this step could take longer " "when more complex requirements are given)",
         None,
     )
-    dashboard_plan = _get_pydantic_output(
-        query=query, llm_model=llm, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
-    )
+    try:
+        dashboard_plan = _get_pydantic_output(
+            query=query, llm_model=llm, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
+        )
+    except DebugFailure as e:
+        logger.error(f"Error in dashboard plan generation: {e}", exc_info=True)
+        raise
     _execute_step(pbar, node_desc + " --> done", None)
     pbar.close()
 
@@ -139,11 +147,7 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     page_plan = state["page_plan"]
 
     llm = config["configurable"].get("model", None)
-    page = PageBuilder(
-        model=llm,
-        df_metadata=df_metadata,
-        page_plan=page_plan,
-    ).page
+    page = page_plan.create(model=llm, df_metadata=df_metadata)
 
     return {"pages": [page]}
 

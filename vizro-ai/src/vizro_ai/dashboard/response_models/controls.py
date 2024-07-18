@@ -98,7 +98,9 @@ class ControlPlan(BaseModel):
             )
 
         except ValidationError as e:
-            logger.info(f"Build failed for `Control`, returning default values. Error details: {e}")
+            logger.warning(f"Build failed for `Control`, returning default values. Try rephrase the prompt or "
+                           f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
+                           f"Relevant prompt: `{self.control_description}`")
             return None
 
         return actual

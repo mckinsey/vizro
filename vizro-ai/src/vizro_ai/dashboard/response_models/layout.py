@@ -12,6 +12,7 @@ except ImportError:  # pragma: no cov
 import numpy as np
 from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
+from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +70,10 @@ class LayoutPlan(BaseModel):
         try:
             proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, result_model=LayoutProxyModel)
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
-        except (ValidationError, AttributeError) as e:
-            logger.info(f"Build failed for `Layout`, returning default values. Error details: {e}")
+        except DebugFailure as e:
+            logger.warning(f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
+                           f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
+                           f"Relevant prompt: `{self.layout_description}`")
             actual = None
 
         return actual

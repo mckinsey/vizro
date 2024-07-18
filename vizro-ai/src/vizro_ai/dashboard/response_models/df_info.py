@@ -10,7 +10,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 
 DF_SUM_PROMPT = """
 Inspect the provided data and give a short unique name to the dataset. \n
