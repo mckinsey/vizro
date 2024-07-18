@@ -1,7 +1,7 @@
 import logging
 from functools import wraps
 
-from vizro.models.types import CapturedCallable, _DashboardReadyFigure
+from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,7 @@ def _log_call(method):
 
 
 # Validators for reuse
+# TODO: change field to value
 def validate_min_length(cls, field):
     if not field:
         raise ValueError("Ensure this value has at least 1 item.")
@@ -25,20 +26,13 @@ def validate_min_length(cls, field):
 
 
 def check_captured_callable(cls, field):
-    mode_to_error = {
-        "figure": "A callable of mode `figure` has been provided. Please wrap it inside the `vm.Figure(figure=...)`.",
-        "table": "A callable of mode `table` has been provided. Please wrap it inside the `vm.Table(figure=...)`.",
-        "ag_grid": "A callable of mode `ag_grid` has been provided. Please wrap it inside the `vm.AgGrid(figure=...)`.",
-        "graph": "A callable of mode `graph` has been provided. Please wrap it inside the `vm.Graph(figure=...)`.",
-    }
+    if not isinstance(field, (CapturedCallable, _SupportsCapturedCallable)):
+        return field
 
-    for component in field:
-        if isinstance(component, (_DashboardReadyFigure, CapturedCallable)):
-            mode = (
-                component._captured_callable._mode if isinstance(component, _DashboardReadyFigure) else component._mode
-            )
-            error_message = mode_to_error.get(mode)
-            if error_message:
-                raise ValueError(error_message)
+    if isinstance(field, _SupportsCapturedCallable):
+        field = field._captured_callable
 
-    return field
+    mode = field._mode
+    model = field._model
+
+    raise ValueError(f"A callable of mode `{mode}` has been provided. Please wrap it inside the `{model}(figure=...)`.")

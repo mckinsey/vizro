@@ -52,7 +52,9 @@ class Page(VizroBaseModel):
     actions: List[ActionsChain] = []
 
     # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, always=True, pre=True)(check_captured_callable)
+    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
+        check_captured_callable
+    )
     _validate_components_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
