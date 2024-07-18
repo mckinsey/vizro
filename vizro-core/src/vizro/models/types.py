@@ -96,8 +96,9 @@ class CapturedCallable:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
 
-        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        # Used in later validations of the captured callable.
         self._mode = None
+        self._model_example = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -283,7 +284,7 @@ class capture:
 
     def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
         """Decorator to capture a function call."""
-        # mode and model are used in later validations of the captured callable.
+        # mode and model_example are used in later validations of the captured callable.
         self._mode = mode
         model_examples = {
             "graph": "vm.Graph(figure=...)",
