@@ -18,21 +18,21 @@ def _log_call(method):
 
 
 # Validators for reuse
-# TODO: change field to value
-def validate_min_length(cls, field):
-    if not field:
+def validate_min_length(cls, value):
+    if not value:
         raise ValueError("Ensure this value has at least 1 item.")
-    return field
+    return value
 
 
-def check_captured_callable(cls, field):
-    if not isinstance(field, (CapturedCallable, _SupportsCapturedCallable)):
-        return field
+def check_captured_callable(cls, value):
+    if isinstance(value, CapturedCallable):
+        captured_callable = value
+    elif isinstance(value, _SupportsCapturedCallable):
+        captured_callable = value._captured_callable
+    else:
+        return value
 
-    if isinstance(field, _SupportsCapturedCallable):
-        field = field._captured_callable
-
-    mode = field._mode
-    model = field._model
-
-    raise ValueError(f"A callable of mode `{mode}` has been provided. Please wrap it inside the `{model}(figure=...)`.")
+    raise ValueError(
+        f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside the "
+        f"`{captured_callable._model}(figure=...)`."
+    )
