@@ -15,7 +15,7 @@ class TestSharedValidators:
         with pytest.raises(ValidationError, match="Ensure this value has at least 1 item."):
             model_with_layout(title="Title", components=[])
 
-    def test_validate_components_type(self, model_with_layout, standard_px_chart):
+    def test_check_captured_callable(self, model_with_layout, standard_px_chart):
         with pytest.raises(
             ValidationError,
             match="A callable of mode `graph` has been provided. " "Please wrap it inside the `vm.Graph(figure=...)`.",

@@ -24,7 +24,7 @@ def validate_min_length(cls, field):
     return field
 
 
-def validate_components_type(cls, field):
+def check_captured_callable(cls, field):
     mode_to_error = {
         "figure": "A callable of mode `figure` has been provided. Please wrap it inside the `vm.Figure(figure=...)`.",
         "table": "A callable of mode `table` has been provided. Please wrap it inside the `vm.Table(figure=...)`.",

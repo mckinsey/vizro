@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, validate_components_type, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class Container(VizroBaseModel):
     layout: Layout = None  # type: ignore[assignment]
 
     # Re-used validators
-    _validate_components_type = validator("components", allow_reuse=True, always=True, pre=True)(validate_components_type)
+    _check_captured_callable = validator("components", allow_reuse=True, always=True, pre=True)(check_captured_callable)
     _validate_components_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
