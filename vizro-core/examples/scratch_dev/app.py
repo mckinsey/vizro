@@ -2,8 +2,11 @@
 
 import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.figures import kpi_card
+
+gapminder = px.data.gapminder()
 
 # data from the demo app
 df_kpi = pd.DataFrame(

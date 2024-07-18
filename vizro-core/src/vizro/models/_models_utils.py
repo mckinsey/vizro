@@ -1,7 +1,7 @@
 import logging
 from functools import wraps
 
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, _DashboardReadyFigure
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +33,12 @@ def check_captured_callable(cls, field):
     }
 
     for component in field:
-        if isinstance(component, CapturedCallable):
-            error_message = mode_to_error.get(f"{component._mode}", None)
+        if isinstance(component, (_DashboardReadyFigure, CapturedCallable)):
+            mode = (
+                component._captured_callable._mode if isinstance(component, _DashboardReadyFigure) else component._mode
+            )
+            error_message = mode_to_error.get(mode)
             if error_message:
                 raise ValueError(error_message)
+
     return field

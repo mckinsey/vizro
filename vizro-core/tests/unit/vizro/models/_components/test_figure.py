@@ -27,12 +27,12 @@ def kpi_card_with_str_dataframe():
 
 
 class TestFigureInstantiation:
-    def test_create_figure_mandatory_only(self, kpi_card_with_dataframe):
-        figure = vm.Figure(figure=kpi_card_with_dataframe)
+    def test_create_figure_mandatory_only(self, standard_kpi_card):
+        figure = vm.Figure(figure=standard_kpi_card)
 
         assert hasattr(figure, "id")
         assert figure.type == "figure"
-        assert figure.figure == kpi_card_with_dataframe
+        assert figure.figure == standard_kpi_card
 
     def test_captured_callable_invalid(self, standard_go_chart):
         with pytest.raises(
@@ -56,15 +56,15 @@ class TestFigureInstantiation:
 
 
 class TestDunderMethodsFigure:
-    def test_getitem_known_args(self, kpi_card_with_dataframe):
-        figure = vm.Figure(figure=kpi_card_with_dataframe)
+    def test_getitem_known_args(self, standard_kpi_card):
+        figure = vm.Figure(figure=standard_kpi_card)
         assert figure["value_column"] == "lifeExp"
         assert figure["agg_func"] == "mean"
         assert figure["value_format"] == "{value:.3f}"
         assert figure["type"] == "figure"
 
-    def test_getitem_unknown_args(self, kpi_card_with_dataframe):
-        figure = vm.Figure(figure=kpi_card_with_dataframe)
+    def test_getitem_unknown_args(self, standard_kpi_card):
+        figure = vm.Figure(figure=standard_kpi_card)
         with pytest.raises(KeyError):
             figure["unknown_args"]
 
@@ -75,14 +75,14 @@ class TestProcessFigureDataFrame:
         figure = vm.Figure(figure=kpi_card_with_str_dataframe)
         assert data_manager[figure["data_frame"]].load().equals(gapminder)
 
-    def test_process_figure_data_frame_df(self, kpi_card_with_dataframe, gapminder):
-        figure = vm.Figure(figure=kpi_card_with_dataframe)
+    def test_process_figure_data_frame_df(self, standard_kpi_card, gapminder):
+        figure = vm.Figure(figure=standard_kpi_card)
         assert data_manager[figure["data_frame"]].load().equals(gapminder)
 
 
 class TestFigureBuild:
-    def test_figure_build(self, kpi_card_with_dataframe, gapminder):
-        figure = vm.Figure(id="figure-id", figure=kpi_card_with_dataframe).build()
+    def test_figure_build(self, standard_kpi_card, gapminder):
+        figure = vm.Figure(id="figure-id", figure=standard_kpi_card).build()
 
         expected_figure = dcc.Loading(
             html.Div(
