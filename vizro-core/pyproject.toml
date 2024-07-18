@@ -25,7 +25,8 @@ dependencies = [
   "wrapt>=1",
   "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
   "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
-  "werkzeug>=3.0.1"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
+  "werkzeug>=3.0.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
+  "black",
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]

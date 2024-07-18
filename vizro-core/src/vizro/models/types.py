@@ -244,7 +244,11 @@ class CapturedCallable:
             )
 
         return captured_callable
-
+    
+    def __repr__(self):
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        x = f"{self._function.__module__}.{self._function.__name__}({args})"
+        return x
 
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
@@ -417,3 +421,20 @@ NavSelectorType = Annotated[
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
+
+
+if __name__ == "__main__":
+    from dash_ag_grid import AgGrid
+    import vizro.plotly.express as px
+    import inspect
+    import vizro.plotly.express as px
+
+
+    @capture("ag_grid")
+    def my_custom_aggrid(data_frame,chosen_columns: List[str]):
+        """Custom ag_grid."""
+        return AgGrid(
+            columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records")
+        )
+    
+    fig = px.bar("iris", x="sepal_width", y="sepal_length")
