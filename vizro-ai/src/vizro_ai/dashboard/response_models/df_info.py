@@ -1,9 +1,8 @@
 """Data Summary Node."""
 
-from typing import Any, Dict, Tuple, List
+from typing import Any, Dict, Tuple
 
 import pandas as pd
-from langchain_core.language_models.chat_models import BaseChatModel
 
 try:
     from pydantic.v1 import BaseModel, Field

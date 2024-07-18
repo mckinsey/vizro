@@ -1,7 +1,6 @@
 """Component plan model."""
 
 import logging
-from typing import Union
 
 import vizro.models as vm
 from vizro.models.types import ComponentType
@@ -51,11 +50,14 @@ class ComponentPlan(BaseModel):
                     figure=vizro_ai.plot(df=df_metadata.get_df(self.df_name), user_input=self.component_description),
                 )
             elif self.component_type == "AgGrid":
-                return vm.AgGrid(id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name))
+                return vm.AgGrid(
+                    id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name)
+                )
             elif self.component_type == "Card":
                 return _get_pydantic_output(query=self.component_description, llm_model=model, result_model=vm.Card)
         except DebugFailure as e:
             logger.warning(
                 f"Failed to build component: {self.component_id}.\n ------- \n "
-                f"Reason: {e} \n ------- \n Relevant prompt: `{self.component_description}`")
+                f"Reason: {e} \n ------- \n Relevant prompt: `{self.component_description}`"
+            )
             return vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
