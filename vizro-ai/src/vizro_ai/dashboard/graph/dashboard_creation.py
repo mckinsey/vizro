@@ -85,7 +85,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
                 df_name = _get_pydantic_output(
                     query=query,
                     llm_model=llm,
-                    result_model=DfInfo,
+                    response_model=DfInfo,
                     df_info=df_info,
                 ).dataset_name
             except DebugFailure as e:
@@ -117,7 +117,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
     )
     try:
         dashboard_plan = _get_pydantic_output(
-            query=query, llm_model=llm, result_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
+            query=query, llm_model=llm, response_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
         )
     except DebugFailure as e:
         logger.error(f"Error in dashboard plan generation: {e}", exc_info=True)

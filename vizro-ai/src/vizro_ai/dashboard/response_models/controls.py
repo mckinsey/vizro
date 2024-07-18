@@ -9,13 +9,14 @@ try:
     from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, validator
-from vizro_ai.dashboard._constants import control_type
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
+
+from .types import control_type
 
 logger = logging.getLogger(__name__)
 
 
-def create_filter_proxy(df_cols, available_components) -> BaseModel:
+def _create_filter_proxy(df_cols, available_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
@@ -48,6 +49,14 @@ def create_filter_proxy(df_cols, available_components) -> BaseModel:
             "validator2": validator("column", allow_reuse=True)(validate_column),
         },
         __base__=vm.Filter,
+    )
+
+
+def _create_filter(filter_prompt, model, df_cols, df_schema, available_components):
+    result_proxy = _create_filter_proxy(df_cols=df_cols, available_components=available_components)
+    proxy = _get_pydantic_output(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
+    return vm.Filter.parse_obj(
+        proxy.dict(exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True})
     )
 
 
@@ -84,18 +93,17 @@ class ControlPlan(BaseModel):
             return None
 
         try:
-            result_proxy = create_filter_proxy(df_cols=_df_cols, available_components=available_components)
-            proxy = _get_pydantic_output(
-                query=filter_prompt, llm_model=model, result_model=result_proxy, df_info=_df_schema
-            )
-            logger.info(
-                f"`Control` proxy: {proxy.dict()}"
-            )  # when wrong column name is given, `AttributeError: 'ValidationError' object has no attribute 'dict'``
-            actual = vm.Filter.parse_obj(
-                proxy.dict(
-                    exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True}
+            if self.control_type == "Filter":
+                return _create_filter(
+                    filter_prompt=filter_prompt,
+                    model=model,
+                    df_cols=_df_cols,
+                    df_schema=_df_schema,
+                    available_components=available_components,
                 )
-            )
+            else:
+                logger.warning(f"Control type {self.control_type} not recognized.")
+                return None
 
         except ValidationError as e:
             logger.warning(
@@ -104,8 +112,6 @@ class ControlPlan(BaseModel):
                 f"Relevant prompt: `{self.control_description}`"
             )
             return None
-
-        return actual
 
 
 if __name__ == "__main__":

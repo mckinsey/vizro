@@ -52,18 +52,10 @@ def _create_message_content(
     return message_content
 
 
-def _invoke_model(
-    prompt: ChatPromptTemplate, message_content: dict, llm_model: BaseChatModel, result_pydantic_model: BaseModel
-) -> BaseModel:
-    """Invoke the LLM model with the provided prompt and message content."""
-    pydantic_llm = prompt | llm_model.with_structured_output(result_pydantic_model)
-    return pydantic_llm.invoke(message_content)
-
-
 def _get_pydantic_output(
     query: str,
     llm_model: BaseChatModel,
-    result_model: BaseModel,
+    response_model: BaseModel,
     df_info: Optional[Any] = None,
     max_retry: int = 2,
 ) -> BaseModel:
@@ -74,7 +66,8 @@ def _get_pydantic_output(
             message_content = _create_message_content(
                 query, df_info, str(last_validation_error) if attempt > 0 else None, retry=(attempt > 0)
             )
-            res = _invoke_model(prompt, message_content, llm_model, result_model)
+            pydantic_llm = prompt | llm_model.with_structured_output(response_model)
+            res = pydantic_llm.invoke(message_content)
             return res
         except ValidationError as validation_error:
             last_validation_error = validation_error
@@ -87,5 +80,5 @@ if __name__ == "__main__":
 
     model = _get_llm_model()
     component_description = "Create a card with the following content: 'Hello, world!'"
-    res = _get_pydantic_output(query=component_description, llm_model=model, result_model=vm.Card)
+    res = _get_pydantic_output(query=component_description, llm_model=model, response_model=vm.Card)
     print(res)  # noqa: T201

@@ -68,7 +68,7 @@ class LayoutPlan(BaseModel):
             return None
 
         try:
-            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, result_model=LayoutProxyModel)
+            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, response_model=LayoutProxyModel)
             actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
         except DebugFailure as e:
             logger.warning(
