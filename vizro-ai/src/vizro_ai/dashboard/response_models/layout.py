@@ -79,3 +79,16 @@ class LayoutPlan(BaseModel):
             actual = None
 
         return actual
+
+
+if __name__ == "__main__":
+    from vizro_ai.chains._llm_models import _get_llm_model
+
+    model = _get_llm_model()
+    layout_plan = LayoutPlan(
+        layout_description="Create a layout with a graph on the left and a card on the right.",
+        layout_grid_template_areas=["graph card"],
+    )
+    layout = layout_plan.create(model)
+    print(layout)  # noqa: T201
+    print(layout.dict())  # noqa: T201

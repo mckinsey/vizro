@@ -61,3 +61,21 @@ class ComponentPlan(BaseModel):
                 f"Reason: {e} \n ------- \n Relevant prompt: `{self.component_description}`"
             )
             return vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
+
+
+if __name__ == "__main__":
+    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai.dashboard.utils import DfMetadata
+
+    model = _get_llm_model()
+
+    df_metadata = DfMetadata({})
+    component_plan = ComponentPlan(
+        component_type="Card",
+        component_description="Create a card says 'this is worldwide GDP'.",
+        component_id="gdp_card",
+        page_id="1",
+        df_name="N/A",
+    )
+    component = component_plan.create(model, df_metadata)
+    print(component)  # noqa: T201

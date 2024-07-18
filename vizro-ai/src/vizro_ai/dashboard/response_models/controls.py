@@ -80,7 +80,7 @@ class ControlPlan(BaseModel):
             _df_cols = list(_df_schema.keys())
         # when wrong dataframe name is given
         except KeyError:
-            logger.info(f"Dataframe {self.df_name} not found in metadata, returning default values.")
+            logger.warning(f"Dataframe {self.df_name} not found in metadata, returning default values.")
             return None
 
         try:
@@ -106,3 +106,24 @@ class ControlPlan(BaseModel):
             return None
 
         return actual
+
+
+if __name__ == "__main__":
+    import pandas as pd
+    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
+
+    model = _get_llm_model()
+
+    df_metadata = DfMetadata({})
+    df_metadata.metadata["gdp_chart"] = MetadataContent(
+        df_schema={"a": "int64", "b": "int64"},
+        df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+        df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+    )
+    control_plan = ControlPlan(
+        control_type="Filter",
+        control_description="Create a filter that filters the data based on the column 'a'.",
+        df_name="gdp_chart",
+    )
+    control = control_plan.create(model, ["gdp_chart"], df_metadata)

@@ -79,3 +79,13 @@ def _get_pydantic_output(
         except ValidationError as validation_error:
             last_validation_error = validation_error
     raise last_validation_error
+
+
+if __name__ == "__main__":
+    import vizro.models as vm
+    from vizro_ai.chains._llm_models import _get_llm_model
+
+    model = _get_llm_model()
+    component_description = "Create a card with the following content: 'Hello, world!'"
+    res = _get_pydantic_output(query=component_description, llm_model=model, result_model=vm.Card)
+    print(res)  # noqa: T201
