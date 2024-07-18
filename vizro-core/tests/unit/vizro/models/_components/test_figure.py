@@ -17,16 +17,6 @@ from vizro.managers import data_manager
 
 
 @pytest.fixture
-def kpi_card_with_dataframe(gapminder):
-    return kpi_card(
-        data_frame=gapminder,
-        value_column="lifeExp",
-        agg_func="mean",
-        value_format="{value:.3f}",
-    )
-
-
-@pytest.fixture
 def kpi_card_with_str_dataframe():
     return kpi_card(
         data_frame="gapminder",
