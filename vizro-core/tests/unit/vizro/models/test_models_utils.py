@@ -20,19 +20,19 @@ class TestSharedValidators:
         [
             (
                 "standard_px_chart",
-                "A callable of mode `graph` has been provided. Please wrap it inside the `vm.Graph(figure=...)`",
+                "A callable of mode `graph` has been provided. Please wrap it inside `vm.Graph(figure=...)`",
             ),
             (
                 "standard_ag_grid",
-                "A callable of mode `ag_grid` has been provided. Please wrap it inside the `vm.AgGrid(figure=...)`",
+                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.AgGrid(figure=...)`",
             ),
             (
                 "standard_dash_table",
-                "A callable of mode `table` has been provided. Please wrap it inside the `vm.Table(figure=...)`",
+                "A callable of mode `table` has been provided. Please wrap it inside `vm.Table(figure=...)`",
             ),
             (
                 "standard_kpi_card",
-                "A callable of mode `figure` has been provided. Please wrap it inside the `vm.Figure(figure=...)`",
+                "A callable of mode `figure` has been provided. Please wrap it inside `vm.Figure(figure=...)`",
             ),
         ],
     )

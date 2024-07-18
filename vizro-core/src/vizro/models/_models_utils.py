@@ -33,6 +33,6 @@ def check_captured_callable(cls, value):
         return value
 
     raise ValueError(
-        f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside the "
+        f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside "
         f"`{captured_callable._model_example}`."
     )
