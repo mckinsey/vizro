@@ -21,6 +21,9 @@ from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
+from dataclasses import dataclass
+from typing import Callable
+
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
 # _DashboardReadyFigure explicitly.
@@ -249,6 +252,38 @@ class CapturedCallable:
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         x = f"{self._function.__module__}.{self._function.__name__}({args})"
         return x
+    
+    def _repr_clean(self):
+        """Alternative __repr__ method with cleaned module paths."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        module_path = f"{self._function.__module__}"
+        modified_module_path = check_module_string(module_path)
+        x = f"{modified_module_path}{self._function.__name__}({args})"
+        return x
+
+
+@dataclass
+class PathReplacement:
+    detect_path: str
+    replace_path: str
+    from_import: Union[Callable, str] = lambda x, y: f"from {x} import {y}"
+
+
+REPLACEMENT_STRINGS = [
+    PathReplacement("plotly.express", "px.", "import vizro.plotly.express as px"),
+    PathReplacement("vizro.tables", ""),
+    PathReplacement("vizro.figures", ""),
+    PathReplacement("vizro.actions", ""),
+    PathReplacement("vizro.charts", ""),
+]
+
+
+def check_module_string(module_string):
+    for replacement in REPLACEMENT_STRINGS:
+        if replacement.detect_path in module_string:
+            return replacement.replace_path
+    return ""
+
 
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
@@ -424,17 +459,15 @@ NavSelectorType = Annotated[
 
 
 if __name__ == "__main__":
-    from dash_ag_grid import AgGrid
-    import vizro.plotly.express as px
     import inspect
-    import vizro.plotly.express as px
 
+    from dash_ag_grid import AgGrid
+
+    import vizro.plotly.express as px
 
     @capture("ag_grid")
-    def my_custom_aggrid(data_frame,chosen_columns: List[str]):
+    def my_custom_aggrid(data_frame, chosen_columns: List[str]):
         """Custom ag_grid."""
-        return AgGrid(
-            columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records")
-        )
-    
+        return AgGrid(columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"))
+
     fig = px.bar("iris", x="sepal_width", y="sepal_length")

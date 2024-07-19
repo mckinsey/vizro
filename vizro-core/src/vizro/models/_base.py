@@ -1,50 +1,21 @@
-from typing import Any, List, Type, Union, Dict, Mapping
-from collections import defaultdict
+from typing import Any, List, Type, Union
 
 try:
-    from pydantic.v1 import BaseModel, Field, validator, root_validator
+    from pydantic.v1 import BaseModel, Field, root_validator, validator
     from pydantic.v1.fields import SHAPE_LIST, ModelField
     from pydantic.v1.typing import get_args
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator, root_validator
+    from pydantic import BaseModel, Field, root_validator, validator
     from pydantic.fields import SHAPE_LIST, ModelField
     from pydantic.typing import get_args
+
 
 from black import FileMode, format_str
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-
-def _update_selective(supplied: Any, defaults: Any, select_key: str) -> Any:
-    if isinstance(supplied, Mapping) and isinstance(defaults, Mapping):
-        supplied = defaultdict(dict, supplied)
-        for default_key, default_value in defaults.items():
-            if isinstance(default_value, Mapping):
-                supplied[default_key] = _update_selective(supplied.get(default_key, {}), default_value,select_key)
-            elif isinstance(default_value, list):
-                if default_key not in supplied or not isinstance(supplied[default_key], list):
-                    supplied[default_key] = default_value
-                else:
-                    for i, item in enumerate(default_value):
-                        if i < len(supplied[default_key]) and isinstance(item, Mapping):
-                            supplied[default_key][i] = _update_selective(supplied[default_key][i], item,select_key)
-                        elif i >= len(supplied[default_key]):
-                            supplied[default_key].append(item)
-            elif default_key == select_key:
-                supplied.setdefault(default_key, default_value)
-            else:
-                pass
-        return dict(supplied)
-    elif isinstance(supplied, list) and isinstance(defaults, list):
-        for i, item in enumerate(defaults):
-            if i < len(supplied) and isinstance(item, Mapping):
-                supplied[i] = _update_selective(supplied[i], item,select_key)
-            elif i >= len(supplied):
-                supplied.append(item)
-        return supplied
-    else:
-        return supplied
+from vizro.models._utils import transform_dict
 
 
 class VizroBaseModel(BaseModel):
@@ -64,21 +35,14 @@ class VizroBaseModel(BaseModel):
     model_name: str = Field("", description="Name of the model.")
     _private_attr: str = ""
 
-    # @root_validator(pre=True)
-    # def set_model_name(cls, values):
-    #     if "title" not in values:
-    #         return values
-
-    #     values.setdefault("model_name", cls.__name__)
-    #     return values
+    @root_validator(pre=True)
+    def set_model_name(cls, values):
+        values.setdefault("model_name", cls.__name__)
+        return values
 
     @validator("id", always=True)
     def set_id(cls, id) -> str:
         return id or model_manager._generate_id()
-
-    @validator("model_name",always=True)
-    def set_model_name(cls, v) -> str:
-        return cls.__name__
 
     @_log_call
     def __init__(self, **data: Any):
@@ -147,30 +111,11 @@ class VizroBaseModel(BaseModel):
         cls.update_forward_refs(**vm.__dict__.copy())
         new_type.update_forward_refs(**vm.__dict__.copy())
 
-    @staticmethod
-    def transform_dict(d):
-        if isinstance(d, dict):
-            if "model_name" in d:
-                # Prepare the string format by extracting '_add_key' and other content
-                model_name = d.pop("model_name")
-                other_content = ", ".join(f"{key}={VizroBaseModel.transform_dict(value)}" for key, value in d.items())
-                return f"{model_name}({other_content})"
-            else:
-                # Recurse through the dictionary
-                return ", ".join(f"{key}={VizroBaseModel.transform_dict(value)}" for key, value in d.items())
-        elif isinstance(d, list):
-            # Recurse through the list, ensure it's formatted as a list but without quotes on strings
-            return "[" + ", ".join(VizroBaseModel.transform_dict(item) for item in d) + "]"
-        else:
-            # Base case: if it's not a dictionary or list, return the item itself
-            return repr(d)  # Use repr to ensure proper representation of strings and other data types
-
     def to_python(self):
-        d = self.dict(exclude_defaults=True)
-        d2 = self.dict(exclude_unset=True)
-        d3 = _update_selective(d2,d,"model_name")
-        # print(d3)
-        return format_str(VizroBaseModel.transform_dict(d3), mode=FileMode(line_length=88))
+        d = self.dict(exclude_unset=True)
+        captured_info = []
+        d1 = transform_dict(d, captured_info)
+        return format_str(d1, mode=FileMode(line_length=88)), captured_info
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -180,67 +125,25 @@ class VizroBaseModel(BaseModel):
 
 
 if __name__ == "__main__":
+    from typing import Any
+
     import vizro.plotly.express as px
-    from vizro.managers import data_manager
     from vizro.models import *
-
-
-    from collections import defaultdict
-    from typing import Any, Dict, Mapping
+    from vizro.tables import dash_ag_grid
     # For the plot prints - needs to transfer somewhere
 
     # data_manager["iris"] = px.data.iris()
 
     page = Page(
         title="Page 1",
-        components=[Card(text="Foo"), Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length"))],
+        components=[
+            Card(text="Foo"),
+            Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            AgGrid(figure=dash_ag_grid(data_frame="iris")),
+        ],
         controls=[Filter(column="species")],
     )
 
     dashboard = Dashboard(title="Bar", pages=[page])
 
-
-    print(dashboard.to_python())
-    # @capture("ag_grid")
-    # def my_custom_aggrid(data_frame,chosen_columns: List[str]):
-    #     """Custom ag_grid."""
-    #     return AgGrid(
-    #         columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records")
-    #     )
-
-
-
-    # d00 = {
-    #         "str0": "1",
-    #         "str0_2": "2",
-    #         }
-    # d0 = {
-    #         "str0": "1",
-    #         "str0_2": "2",
-    #         "model_name":"000",
-    #         "nonesense":"42"
-    #         }
-
-    # d1 = {
-    #     "str1": "foo",
-    #     "str1_1": "bar",
-    #     "dict1": {
-    #         "str2": "baz",
-    #         "str2_2": "boz"
-    #         },
-    #     "list1" : [d00]
-    #     }
-
-    # d2 = {
-    #     "str1": "foo",
-    #     "str1_1": "bar",
-    #     "model_name":"XXX",
-    #     "nonesense":"YYY",
-    #     "dict1": {
-    #         "str2": "baz",
-    #         "str2_2": "boz",
-    #         "model_name":"ZZZ",
-    #         "nonesense":"ZZZ"
-    #         },
-    #     "list1":[d0]
-    #     }
+    string, info = dashboard.to_python()
