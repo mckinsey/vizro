@@ -1,0 +1,34 @@
+name: Worflows check
+
+defaults:
+  run:
+    working-directory: vizro
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  lint-vizro-all:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Workflows check
+        run: |
+          cd .github/workflows
+          python ../../tools/yaml_check.py
