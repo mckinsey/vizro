@@ -6,8 +6,15 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid,dash_data_table
+
+from charts.charts import page2
+
+from vizro.managers import data_manager
 
 df = px.data.iris()
+
+data_manager["iris"] = px.data.iris()
 
 page = vm.Page(
     title="Vizro on PyCafe",
@@ -47,8 +54,8 @@ page = vm.Page(
             """,
             href="/page2",
         ),
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+        vm.Graph(id="scatter_chart", figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(id="hist_chart", figure=px.histogram("iris", x="sepal_width", color="species")),
     ],
     controls=[
         vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
@@ -57,11 +64,19 @@ page = vm.Page(
     ],
 )
 
-page2 = vm.Page(
-    title="Page2", components=[vm.Graph(id="hist_chart2", figure=px.histogram(df, x="sepal_width", color="species"))]
-)
-
 dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    # Vizro().build(dashboard).run()
+    # print(dash_data_table(data_frame=df))
+    
+    string, info = dashboard.to_python()
+    for i in info:
+        print(i.name)
+        print(i.import_path)
+        if "plotly" not in i.import_path:
+            print(i.code)
+        print("===")
+    
+    print("========")
+    print(string)
