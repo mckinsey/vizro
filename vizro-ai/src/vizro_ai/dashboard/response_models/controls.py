@@ -94,13 +94,21 @@ class ControlPlan(BaseModel):
 
         try:
             if self.control_type == "Filter":
-                return _create_filter(
+                res = _create_filter(
                     filter_prompt=filter_prompt,
                     model=model,
                     df_cols=_df_cols,
                     df_schema=_df_schema,
                     available_components=available_components,
                 )
+                if res.targets == []:
+                    logger.warning(
+                        f"Filter control failed to create, "
+                        f"related user input: `{self.control_description}`."
+                        f"This might be due to the filter target is not found in the available components. "
+                        "returning default values."
+                    )
+                    return None
             else:
                 logger.warning(f"Control type {self.control_type} not recognized.")
                 return None

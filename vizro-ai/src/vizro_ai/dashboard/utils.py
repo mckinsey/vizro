@@ -14,7 +14,10 @@ IMPORT_STATEMENTS = (
     "from vizro.models.types import capture\n"
     "import plotly.graph_objects as go\n"
     "from vizro.tables import dash_ag_grid\n"
-    "import vizro.models as vm\n"
+    "from vizro.models import AgGrid, Card, Dashboard, Filter, Layout, Page, Graph\n"
+    "from vizro.managers import data_manager\n"
+    "from vizro import Vizro\n"
+    "import pandas as pd\n"
 )
 
 
@@ -55,6 +58,7 @@ class DashboardOutputs:
 
     code: str
     dashboard: vm.Dashboard
+    metadata: DfMetadata
 
 
 def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
@@ -70,3 +74,14 @@ def _dashboard_code(dashboard: vm.Dashboard) -> str:
     # TODO: use black or ruff to format the code
     # formatted_code = black.format_str(dashboard_code_str, mode=black.Mode())
     return dashboard_code_str
+
+
+def _run_dashboard(dashboard: vm.Dashboard, df_metadata: DfMetadata) -> None:
+    """Run the dashboard."""
+    from vizro import Vizro
+    from vizro.managers import data_manager
+
+    for name, metadata in df_metadata.metadata.items():
+        data_manager[name] = metadata.df
+
+    Vizro().build(dashboard).run()
