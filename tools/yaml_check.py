@@ -1,6 +1,7 @@
-import yaml
-import os
 import json
+import os
+
+import yaml
 
 
 def yaml_reader(filepath):
