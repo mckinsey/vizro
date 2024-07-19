@@ -102,13 +102,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 }
               ]
