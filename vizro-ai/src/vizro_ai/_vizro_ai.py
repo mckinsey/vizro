@@ -10,7 +10,7 @@ from langchain_openai import ChatOpenAI
 from vizro_ai.chains._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.components import GetCodeExplanation, GetDebugger
 from vizro_ai.dashboard.graph.dashboard_creation import _create_and_compile_graph
-from vizro_ai.dashboard.utils import DashboardOutputs, _dashboard_code
+from vizro_ai.dashboard.utils import DashboardOutputs, DfMetadata, _dashboard_code, _run_dashboard
 from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
@@ -160,6 +160,11 @@ class VizroAI:
 
         return vizro_plot if return_elements else vizro_plot.figure
 
+    @staticmethod
+    def run_dashboard(dashboard: vm.Dashboard, df_metadata: DfMetadata) -> None:
+        """Run the dashboard."""
+        _run_dashboard(dashboard=dashboard, df_metadata=df_metadata)
+
     def dashboard(
         self,
         dfs: List[pd.DataFrame],
@@ -192,10 +197,11 @@ class VizroAI:
             config=config,
         )
         dashboard = message_res["dashboard"]
+        metadata = message_res["df_metadata"]
 
         if return_elements:
             code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
-            dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
+            dashboard_output = DashboardOutputs(dashboard=dashboard, code=code, metadata=metadata)
             return dashboard_output
         else:
             return dashboard
