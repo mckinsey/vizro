@@ -52,10 +52,10 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.parametrize(
     "example_path, version",
     [
-        # (examples_path / "scratch_dev", ""),
-        # (examples_path / "scratch_dev", "yaml_version"),
-        # (examples_path / "dev", ""),
-        # (examples_path / "dev", "yaml_version"),
+        (examples_path / "scratch_dev", ""),
+        (examples_path / "scratch_dev", "yaml_version"),
+        (examples_path / "dev", ""),
+        (examples_path / "dev", "yaml_version"),
         (examples_path / "_chart-gallery", ""),
         (examples_path / "kpi", ""),
     ],
