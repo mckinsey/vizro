@@ -12,7 +12,7 @@ except ImportError:  # pragma: no cov
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, _validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -34,7 +34,10 @@ class Form(VizroBaseModel):
     layout: Layout = None  # type: ignore[assignment]
 
     # Re-used validators
-    _validate_components = validator("components", allow_reuse=True, always=True)(_validate_min_length)
+    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
+        check_captured_callable
+    )
+    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call
