@@ -17,12 +17,11 @@ except ImportError:  # pragma: no cov
     from pydantic.fields import ModelField
     from pydantic.schema import SkipField
 
+
 from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
-
-from dataclasses import dataclass
-from typing import Callable
+from vizro.models._utils import _clean_module_string
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -247,42 +246,20 @@ class CapturedCallable:
             )
 
         return captured_callable
-    
+
     def __repr__(self):
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         x = f"{self._function.__module__}.{self._function.__name__}({args})"
         return x
-    
+
     def _repr_clean(self):
         """Alternative __repr__ method with cleaned module paths."""
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         module_path = f"{self._function.__module__}"
-        modified_module_path = check_module_string(module_path)
+        modified_module_path = _clean_module_string(module_path)
         x = f"{modified_module_path}{self._function.__name__}({args})"
         return x
 
-
-@dataclass
-class PathReplacement:
-    detect_path: str
-    replace_path: str
-    from_import: Union[Callable, str] = lambda x, y: f"from {x} import {y}"
-
-
-REPLACEMENT_STRINGS = [
-    PathReplacement("plotly.express", "px.", "import vizro.plotly.express as px"),
-    PathReplacement("vizro.tables", ""),
-    PathReplacement("vizro.figures", ""),
-    PathReplacement("vizro.actions", ""),
-    PathReplacement("vizro.charts", ""),
-]
-
-
-def check_module_string(module_string):
-    for replacement in REPLACEMENT_STRINGS:
-        if replacement.detect_path in module_string:
-            return replacement.replace_path
-    return ""
 
 
 class capture:

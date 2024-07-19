@@ -71,12 +71,12 @@ if __name__ == "__main__":
     # print(dash_data_table(data_frame=df))
     
     string, info = dashboard.to_python()
-    for i in info:
-        print(i.name)
-        print(i.import_path)
-        if "plotly" not in i.import_path:
-            print(i.code)
-        print("===")
+    # for i in info:
+    #     print(i.name)
+    #     print(i.import_path)
+    #     if "plotly" not in i.import_path:
+    #         print(i.code)
+    #     print("===")
     
-    print("========")
+    # print("========")
     print(string)

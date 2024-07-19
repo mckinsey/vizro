@@ -15,7 +15,7 @@ from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models._utils import transform_dict
+from vizro.models._utils import STANDARD_IMPORT_PATHS, _determine_import_paths, _get_code_strings, transform_dict
 
 
 class VizroBaseModel(BaseModel):
@@ -114,8 +114,23 @@ class VizroBaseModel(BaseModel):
     def to_python(self):
         d = self.dict(exclude_unset=True)
         captured_info = []
-        d1 = transform_dict(d, captured_info)
-        return format_str(d1, mode=FileMode(line_length=88)), captured_info
+        object_code = transform_dict(d, captured_info)
+        import_paths = STANDARD_IMPORT_PATHS | _determine_import_paths(captured_info)
+        callable_definitions = _get_code_strings(captured_info)
+
+        # Concatenate the objects into one string
+        # concatenated_code = "\n\n".join([callable_definitions, "##### Imports #####", object_code, "\n".join(import_paths)])
+        concatenated_code = "\n\n".join(
+            [
+                "###### Imports ######\n" + "\n".join((import_paths)),
+                "###### Callable definitions ######\n" + ("\n".join(callable_definitions)),
+                "###### Object code ######\n" + object_code,
+            ]
+        )
+
+        # return concatenated_code, captured_info
+
+        return format_str(concatenated_code, mode=FileMode(line_length=88)), captured_info
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -147,3 +162,4 @@ if __name__ == "__main__":
     dashboard = Dashboard(title="Bar", pages=[page])
 
     string, info = dashboard.to_python()
+    print(string)
