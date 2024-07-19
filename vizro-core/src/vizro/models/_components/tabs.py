@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import validator
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, _validate_min_length
+from vizro.models._models_utils import _log_call, validate_min_length
 
 if TYPE_CHECKING:
     from vizro.models._components import Container
@@ -29,7 +29,7 @@ class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
     tabs: List[Container]
 
-    _validate_tabs = validator("tabs", allow_reuse=True, always=True)(_validate_min_length)
+    _validate_tabs = validator("tabs", allow_reuse=True, always=True)(validate_min_length)
 
     @_log_call
     def build(self):
