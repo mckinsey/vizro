@@ -1,10 +1,7 @@
 # ruff: noqa: F403, F405
-import importlib
 import os
-import random
 import runpy
 import sys
-from copy import copy, deepcopy
 from pathlib import Path
 
 import chromedriver_autoinstaller
