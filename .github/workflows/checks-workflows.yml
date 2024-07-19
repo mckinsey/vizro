@@ -1,9 +1,5 @@
 name: Worflows check
 
-defaults:
-  run:
-    working-directory: vizro
-
 on:
   push:
     branches: [main]
