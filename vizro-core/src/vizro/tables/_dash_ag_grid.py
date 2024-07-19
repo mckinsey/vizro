@@ -48,7 +48,15 @@ _DATA_TYPE_DEFINITIONS = {
 
 @capture("ag_grid")
 def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
-    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid]."""
+    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
+
+    Examples
+        Wrap inside `vm.AgGrid` to use as a component inside `vm.Page` or `vm.Container`.
+        >>> import vizro.models as vm
+        >>> from vizro.tables import dash_ag_grid
+        >>> vm.Page(title="Page", components=[vm.AgGrid(figure=dash_ag_grid(...))])
+
+    """
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
