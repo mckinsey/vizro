@@ -26,5 +26,6 @@ jobs:
 
       - name: Workflows check
         run: |
+          pip install yaml
           cd .github/workflows
           python ../../tools/yaml_check.py
