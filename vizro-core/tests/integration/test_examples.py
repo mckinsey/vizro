@@ -26,7 +26,9 @@ def setup_integration_test_environment(monkeypatch_session):
 
 @pytest.fixture
 def dashboard(request, monkeypatch):
-    monkeypatch.chdir(request.getfixturevalue("example_path") / request.getfixturevalue("version"))
+    example_directory = request.getfixturevalue("example_path") / request.getfixturevalue("version")
+    monkeypatch.chdir(example_directory)
+    monkeypatch.syspath_prepend(example_directory)
     app = runpy.run_path("app.py")
     return app["dashboard"]
 
@@ -52,6 +54,7 @@ examples_path = Path(__file__).parents[2] / "examples"
         (examples_path / "kpi", ""),
         (examples_path / "_chart-gallery", ""),
     ],
+    ids=str,
 )
 def test_dashboard(dash_duo, example_path, dashboard, version):
     app = Vizro(assets_folder=example_path / "assets").build(dashboard).dash
