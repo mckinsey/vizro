@@ -4,40 +4,44 @@ import logging
 from typing import List, Union
 
 import vizro.models as vm
+from langchain_core.language_models.chat_models import BaseChatModel
 
 try:
-    from pydantic.v1 import BaseModel, Field, validator
+    from pydantic.v1 import BaseModel, Field, create_model
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator
-import numpy as np
-from vizro.models._layout import _get_grid_lines, _get_unique_grid_component_ids, _validate_grid_areas
+    from pydantic import BaseModel, Field, create_model
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
 
 
-# TODO: try switch to inherit from Layout directly, like FilterProxy
-class LayoutProxyModel(BaseModel):
-    """Proxy model for Layout."""
+def _convert_layout_to_grid(layout_grid_template_areas):
+    # TODO: Programmatically convert layout_grid_template_areas to grid
+    pass
 
-    grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")
 
-    @validator("grid")
-    def validate_grid(cls, grid):
+def _create_layout_proxy(component_ids, layout_grid_template_areas) -> BaseModel:
+    """Create a layout proxy model."""
+
+    def validate_grid(v):
         """Validate the grid."""
-        if len({len(row) for row in grid}) > 1:
-            raise ValueError("All rows must be of same length.")
+        expected_grid = _convert_layout_to_grid(layout_grid_template_areas)
+        if v != expected_grid:
+            logger.warning(f"Calculated grid: {expected_grid}, got: {v}")
+            return v
 
-        # Validate grid type and values
-        unique_grid_idx = _get_unique_grid_component_ids(grid)
-        if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange((unique_grid_idx.max() + 1))):
-            raise ValueError("Grid must contain consecutive integers starting from 0.")
-
-        # Validates grid areas spanned by components and spaces
-        component_grid_lines, space_grid_lines = _get_grid_lines(grid)
-        _validate_grid_areas(component_grid_lines + space_grid_lines)
-        return grid
+    return create_model(
+        "LayoutProxyModel",
+        grid=(
+            List[List[int]],
+            Field(None, description="Grid specification to arrange components on screen."),
+        ),
+        __validators__={
+            # "validator1": validator("grid", pre=True, allow_reuse=True)(validate_grid),
+        },
+        __base__=vm.Layout,
+    )
 
 
 class LayoutPlan(BaseModel):
@@ -52,24 +56,30 @@ class LayoutPlan(BaseModel):
     layout_grid_template_areas: List[str] = Field(
         [],
         description="Grid template areas for the layout, which adhere to the grid-template-areas CSS property syntax."
-        "Each unique string should be used to represent a unique component. If no grid template areas are provided, "
-        "leave this as an empty list.",
+        "Each unique string ('component_id' and 'page_id' concated by '_') should be used to "
+        "represent a unique component. If no grid template areas are provided, leave this as an empty list.",
     )
 
-    def create(self, model) -> Union[vm.Layout, None]:
+    def create(self, model: BaseChatModel, component_ids: List[str]) -> Union[vm.Layout, None]:
         """Create the layout."""
         layout_prompt = (
             f"Create a layout from the following instructions: {self.layout_description}. Do not make up "
             f"a layout if not requested. If a layout_grid_template_areas is provided, translate it into "
-            f"a matrix of integers where each integer represents a unique component (starting from 0). replace "
-            f"'.' with -1 to represent empty spaces. Here is the grid template areas: {self.layout_grid_template_areas}"
+            f"a matrix of integers where each integer represents a unique component (starting from 0). "
+            f"When translating, match the layout_grid_template_areas element string to the same name in "
+            f"{component_ids} and use the index of {component_ids} to replace the element string. "
+            f"replace '.' with -1 to represent empty spaces. Here is the grid template areas: \n ------- \n"
+            f" {self.layout_grid_template_areas}\n ------- \n"
         )
         if self.layout_description == "N/A":
             return None
 
         try:
-            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, response_model=LayoutProxyModel)
-            actual = vm.Layout.parse_obj(proxy.dict(exclude={}))
+            result_proxy = _create_layout_proxy(
+                component_ids=component_ids, layout_grid_template_areas=self.layout_grid_template_areas
+            )
+            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, response_model=result_proxy)
+            actual = vm.Layout.parse_obj(proxy.dict(exclude={"id": True}))
         except DebugFailure as e:
             logger.warning(
                 f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
@@ -87,8 +97,7 @@ if __name__ == "__main__":
     model = _get_llm_model()
     layout_plan = LayoutPlan(
         layout_description="Create a layout with a graph on the left and a card on the right.",
-        layout_grid_template_areas=["graph card"],
+        layout_grid_template_areas=["graph1 card2 card2", "graph1 . card1"],
     )
-    layout = layout_plan.create(model)
+    layout = layout_plan.create(model, component_ids=["graph1", "card1", "card2"])
     print(layout)  # noqa: T201
-    print(layout.dict())  # noqa: T201

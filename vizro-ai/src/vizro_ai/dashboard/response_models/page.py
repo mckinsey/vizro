@@ -29,7 +29,7 @@ class PagePlanner(BaseModel):
         ..., description="List of components. Must contain at least one component."
     )
     controls_plan: List[ControlPlan] = Field([], description="Controls of the page.")
-    layout_plan: LayoutPlan = Field(None, description="Layout of the page.")
+    layout_plan: LayoutPlan = Field(None, description="Layout of components on the page.")
     unsupported_specs: List[str] = Field(
         [],
         description="List of unsupported specs. If there are any unsupported specs, "
@@ -80,15 +80,18 @@ class PagePlanner(BaseModel):
         component_log.close()
         return components
 
-    def _get_layout(self, model):
+    def _get_layout(self, model, df_metadata):
         if self._layout is None:
-            self._layout = self._build_layout(model)
+            self._layout = self._build_layout(model, df_metadata)
         return self._layout
 
-    def _build_layout(self, model):
+    def _build_layout(self, model, df_metadata):
         if self.layout_plan is None:
             return None
-        return self.layout_plan.create(model)
+        return self.layout_plan.create(
+            model=model,
+            component_ids=self._get_component_ids(model=model, df_metadata=df_metadata),
+        )
 
     def _get_controls(self, model, df_metadata):
         if self._controls is None:
@@ -101,6 +104,9 @@ class PagePlanner(BaseModel):
             for comp in self._get_components(model=model, df_metadata=df_metadata)
             if isinstance(comp, (vm.Graph, vm.AgGrid))
         ]
+
+    def _get_component_ids(self, model, df_metadata):
+        return [comp.id for comp in self._get_components(model=model, df_metadata=df_metadata)]
 
     def _build_controls(self, model, df_metadata):
         controls = []
@@ -134,9 +140,19 @@ class PagePlanner(BaseModel):
         controls = _execute_step(
             pbar, page_desc + " --> add controls", self._get_controls(model=model, df_metadata=df_metadata)
         )
-        layout = _execute_step(pbar, page_desc + " --> add layout", self._get_layout(model))
+        layout = _execute_step(
+            pbar, page_desc + " --> add layout", self._get_layout(model=model, df_metadata=df_metadata)
+        )
 
-        page = vm.Page(title=title, components=components, controls=controls, layout=layout)
+        try:
+            page = vm.Page(title=title, components=components, controls=controls, layout=layout)
+        except Exception as e:
+            if any("Number of page and grid components need to be the same" in error["msg"] for error in e.errors()):
+                logger.warning(
+                    "Number of page and grid components need to be the same. "
+                    "Please check the layout and the components."
+                )
+                page = vm.Page(title=title, components=components, controls=controls, layout=None)
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()
         return page

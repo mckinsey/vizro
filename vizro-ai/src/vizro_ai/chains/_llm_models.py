@@ -70,7 +70,7 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatMo
     )
 
 
-def _get_model_name(model):
+def _get_model_name(model: BaseChatModel) -> str:
     methods = [
         lambda: model.model_name,  # OpenAI models
         lambda: model.model,  # Anthropic models

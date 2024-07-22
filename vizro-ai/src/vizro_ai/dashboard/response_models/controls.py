@@ -10,8 +10,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, validator
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-
-from .types import control_type
+from vizro_ai.dashboard.response_models.types import control_type
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +108,7 @@ class ControlPlan(BaseModel):
                         "returning default values."
                     )
                     return None
+                return res
             else:
                 logger.warning(f"Control type {self.control_type} not recognized.")
                 return None
@@ -137,7 +137,9 @@ if __name__ == "__main__":
     )
     control_plan = ControlPlan(
         control_type="Filter",
-        control_description="Create a filter that filters the data based on the column 'a'.",
+        control_description="Create a filter that filters the data by column 'a'.",
         df_name="gdp_chart",
     )
-    control = control_plan.create(model, ["gdp_chart"], df_metadata)
+    control = control_plan.create(
+        model, ["gdp_chart"], df_metadata
+    )  # error: Target gdp_chart not found in model_manager.
