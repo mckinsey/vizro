@@ -9,7 +9,8 @@ logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 
 __all__ = ["Vizro"]
 
-__version__ = "0.1.20.dev0"
+# __version__ = "0.1.20.dev0"
+__version__ = "tidy/create-module-pure-functions"
 
 
 # For the below _css_dist to be used by Dash, it must be retrieved by dash.resources.Css.get_all_css(). This means it
