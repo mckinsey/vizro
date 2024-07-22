@@ -33,16 +33,20 @@ jobs:
       matrix:
         include:
           - label: integration tests
-            file: "${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}"
+            file: "VIZRO_QA_INTEGRATION_TESTS_WORKFLOW"
           - label: notebooks test
-            file: "${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}"
+            file: "VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW"
     steps:
       - uses: actions/checkout@v4
       - name: Tests trigger
         run: |
           export INPUT_OWNER=${{ secrets.VIZRO_QA_ORG }}
           export INPUT_REPO=${{ secrets.VIZRO_QA_REPO }}
-          export INPUT_WORKFLOW_FILE_NAME=${{ matrix.label }}
+          if [ "${{ matrix.file }}" == "VIZRO_QA_INTEGRATION_TESTS_WORKFLOW" ]; then
+            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
+          elif [ "${{ matrix.file }}" == "VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW" ]; then
+            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
+          fi
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
           export INPUT_REF=${{ github.head_ref }}
           tools/trigger-workflow-and-wait.sh
