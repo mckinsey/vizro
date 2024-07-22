@@ -1,4 +1,4 @@
-"""Check for security issues in workflows files"""
+"""Check for security issues in workflows files."""
 
 import sys
 from pathlib import Path
@@ -9,7 +9,7 @@ risky_text = "pull_request_target"
 
 
 def find_risky_files(path: str):
-    """Searching for risky text in yml files for given path"""
+    """Searching for risky text in yml files for given path."""
     return {str(file) for file in Path(path).rglob("*.yml") if f"{risky_text}" in file.read_text()}
 
 
