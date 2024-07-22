@@ -26,4 +26,4 @@ jobs:
 
       - name: Checks for GitHub workflows
         run: |
-          python tools/scan_yaml_for_risky_text.py.py .github/workflows 
+          python tools/scan_yaml_for_risky_text.py.py .github/workflows

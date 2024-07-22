@@ -10,7 +10,7 @@ def find_risky_files(path: str):
     return {str(file) for file in Path(path).rglob("*.yml") if f"{risky_text}" in file.read_text()}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     risky_files = find_risky_files(sys.argv[1])
     if risky_files:
         sys.exit(f"{risky_text} found in files {risky_files}.")
