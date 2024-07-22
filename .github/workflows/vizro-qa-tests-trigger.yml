@@ -1,4 +1,4 @@
-name: Vizro qa tests trigger
+name: Vizro QA tests trigger
 
 on:
   push:
@@ -12,25 +12,35 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  vizro-qa-trigger-fork:
+  vizro-qa-test-trigger-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
-    name: Vizro qa tests trigger
+    name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
+    matrix:
+      include:
+        - label: integration tests
+        - label: notebooks tests
     steps:
       - name: Passed fork step
         run: echo "Success!"
 
-  vizro-qa-trigger:
+  vizro-qa-tests-trigger:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
-    name: Vizro qa tests trigger
+    name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
+    matrix:
+      include:
+        - label: integration tests
+          file: ${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
+        - label: notebooks test
+          file: ${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
     steps:
       - uses: actions/checkout@v4
       - name: Tests trigger
         run: |
           export INPUT_OWNER=${{ secrets.VIZRO_QA_ORG }}
           export INPUT_REPO=${{ secrets.VIZRO_QA_REPO }}
-          export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
+          export INPUT_WORKFLOW_FILE_NAME=${{ matrix.label }}
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
           export INPUT_REF=${{ github.head_ref }}
           tools/trigger-workflow-and-wait.sh

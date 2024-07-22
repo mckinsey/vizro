@@ -1,4 +1,4 @@
-name: Worflows check
+name: Checks for GitHub workflows
 
 on:
   push:
@@ -13,7 +13,7 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  lint-vizro-all:
+  checks-workflows:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +24,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Workflows check
+      - name: Checks for GitHub workflows
         run: |
-          pip install pyyaml
-          cd .github/workflows
-          python ../../tools/yaml_check.py
+          python tools/scan_yaml_for_risky_text.py.py .github/workflows 
