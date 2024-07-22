@@ -1,5 +1,6 @@
 import logging
 import os
+
 from dash.development.base_component import ComponentRegistry
 
 from ._vizro import Vizro
@@ -10,7 +11,6 @@ _css_dist = [
     {
         "relative_package_path": "static/css/figures.css",
         "namespace": "vizro",
-
     },
 ]
 
