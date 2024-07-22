@@ -15,7 +15,7 @@ vizro_css = base + "figures.min.css"
 # Add entire assets folder from Vizro
 app = Dash(
     external_stylesheets=[
-        dbc.themes.BOOTSTRAP,
+        dbc.themes.CYBORG,
         "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
         #     vizro_bootstrap,
         #     vizro_css,
@@ -29,6 +29,10 @@ app.layout = dbc.Container(
             children=[
                 dbc.Row(
                     [
+                        dbc.Col(dbc.Card(
+                                children=[dbc.CardHeader([html.P("payment", className="material-symbols-outlined"), html.H2("Helllo")]),
+                                          dbc.CardBody("44545")]
+                            )),
                         dbc.Col(
                             kpi_card(
                                 data_frame=df_kpi,

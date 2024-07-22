@@ -10,6 +10,8 @@ _css_dist = [
     },
 ]
 
+_js_dist = []
+
 __all__ = ["Vizro"]
 
 __version__ = "0.1.20.dev0"
