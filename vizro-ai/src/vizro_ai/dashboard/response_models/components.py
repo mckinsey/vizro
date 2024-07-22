@@ -11,9 +11,8 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
+from vizro_ai.dashboard.response_models.types import component_type
 from vizro_ai.utils.helper import DebugFailure
-
-from .types import component_type
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,13 @@ class ComponentPlan(BaseModel):
                     id=self.component_id + "_" + self.page_id, figure=dash_ag_grid(data_frame=self.df_name)
                 )
             elif self.component_type == "Card":
-                return _get_pydantic_output(query=self.component_description, llm_model=model, response_model=vm.Card)
+                result_proxy = _get_pydantic_output(
+                    query=self.component_description, llm_model=model, response_model=vm.Card
+                )
+                proxy_dict = result_proxy.dict()
+                proxy_dict["id"] = self.component_id + "_" + self.page_id  # id to be used by layout
+                return vm.Card.parse_obj(proxy_dict)
+
         except DebugFailure as e:
             logger.warning(
                 f"Failed to build component: {self.component_id}.\n ------- \n "
@@ -75,7 +80,7 @@ if __name__ == "__main__":
         component_type="Card",
         component_description="Create a card says 'this is worldwide GDP'.",
         component_id="gdp_card",
-        page_id="1",
+        page_id="page1",
         df_name="N/A",
     )
     component = component_plan.create(model, df_metadata)
