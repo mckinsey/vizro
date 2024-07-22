@@ -24,7 +24,7 @@ class _Dummy(Component):
 
 
 _library_css = ["static/css/figures"]
-_base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{__version__}vizro-core/src/vizro/"
+_base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{__version__}/vizro-core/src/vizro/"
 
 _css_dist = [
     {
