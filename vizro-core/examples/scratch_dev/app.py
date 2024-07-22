@@ -15,16 +15,16 @@ vizro_css = base + "figures.min.css"
 # Add entire assets folder from Vizro
 app = Dash(
     external_stylesheets=[
-dbc.themes.BOOTSTRAP,
+        dbc.themes.BOOTSTRAP,
         "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-    #       vizro_bootstrap,
-        vizro_css,
+   #     vizro_bootstrap,
+   #     vizro_css,
     ],
 )
 
 app.layout = dbc.Container(
     [
-        html.H1(children="Title of Dash App", style={"textAlign": "center"}),
+        html.H1(children="Title of Dash App"),
         html.Div(
             children=[
                 dbc.Row(
@@ -60,7 +60,7 @@ app.layout = dbc.Container(
                 )
             ],
             # Note: They need to add vizro_light here
-            className="vizro_light",
+          #  className="vizro_light",
         ),
     ]
 )
