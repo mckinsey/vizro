@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 MODEL_NAME = "model_name"
+ACTIONS_CHAIN = "ActionsChain"
+ACTION = "actions"
 
 
 @dataclass
@@ -32,6 +34,7 @@ STANDARD_IMPORT_PATHS = {
     "import vizro.models as vm",
     "from vizro import Vizro",
     "from vizro.managers import data_manager",
+    "from vizro.models.types import capture", #TODO: could make conditional based on content
 }
 
 
@@ -87,10 +90,17 @@ def _dict_to_python(model_data: Any, captured_info: Optional[List[CapturedCallab
     if isinstance(model_data, Dict):
         if MODEL_NAME in model_data:
             model_name = model_data.pop(MODEL_NAME)
-            other_content = ", ".join(
-                f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items()
-            )
-            return f"vm.{model_name}({other_content})"
+            if model_name == ACTIONS_CHAIN:
+                action_data = model_data[ACTION]
+                if isinstance(action_data, List):
+                    return ", ".join(_dict_to_python(item, captured_info) for item in action_data)
+                else:
+                    return _dict_to_python(action_data, captured_info)
+            else:
+                other_content = ", ".join(
+                    f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items()
+                )
+                return f"vm.{model_name}({other_content})"
         else:
             return ", ".join(f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items())
     elif isinstance(model_data, List):

@@ -67,16 +67,7 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
-    # Vizro().build(dashboard).run()
-    # print(dash_data_table(data_frame=df))
-    
+    # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
     string, info = dashboard.to_python()
-    # for i in info:
-    #     print(i.name)
-    #     print(i.import_path)
-    #     if "plotly" not in i.import_path:
-    #         print(i.code)
-    #     print("===")
-    
-    # print("========")
+
     print(string)
