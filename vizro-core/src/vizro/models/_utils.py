@@ -1,6 +1,6 @@
 import inspect
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 MODEL_NAME = "model_name"
 
@@ -16,7 +16,7 @@ class PathReplacement:
 class CapturedCallableInfo:
     name: str
     module: str
-    args: List
+    args: List[Tuple[str, Any]]
     code: Optional[str] = None
 
 
@@ -28,10 +28,14 @@ REPLACEMENT_STRINGS = [
     PathReplacement("vizro.charts", "", lambda x, y: f"from {x} import {y}"),
 ]
 
-STANDARD_IMPORT_PATHS = {"import vizro.models as vm", "from vizro import Vizro"}
+STANDARD_IMPORT_PATHS = {
+    "import vizro.models as vm",
+    "from vizro import Vizro",
+    "from vizro.managers import data_manager",
+}
 
 
-def _determine_import_paths(captured_info: List[CapturedCallableInfo]) -> Set[str]:
+def _get_import_statements(captured_info: List[CapturedCallableInfo]) -> Set[str]:
     import_paths = set()
     for info in captured_info:
         for replacement in REPLACEMENT_STRINGS:
@@ -39,12 +43,23 @@ def _determine_import_paths(captured_info: List[CapturedCallableInfo]) -> Set[st
                 import_paths.add(replacement.from_import(replacement.detect_path, info.name))
     return import_paths
 
-def _get_code_strings(captured_info: List[CapturedCallableInfo]) -> Set[str]:
+
+def _get_callable_code_strings(captured_info: List[CapturedCallableInfo]) -> Set[str]:
     code_strings = set()
     for info in captured_info:
         if info.code is not None:
             code_strings.add(info.code)
     return code_strings
+
+
+def _get_data_manager_code_strings(captured_info: List[CapturedCallableInfo]) -> Set[str]:
+    return {
+        f'# data_manager["{arg[1]}"] = ===> Fill in here <==='
+        for info in captured_info
+        for arg in info.args
+        if arg[0] == "data_frame"
+    }
+
 
 def _clean_module_string(module_string: str) -> str:
     return next(
@@ -62,32 +77,36 @@ def _repr_clean(info: CapturedCallableInfo) -> str:
     return x
 
 
-def transform_dict(d, captured_info=None):
-    from vizro.models.types import CapturedCallable
-    # Initialize the storage for CapturedCallable information if not already passed
+def _dict_to_python(model_data: Any, captured_info: Optional[List[CapturedCallableInfo]] = None) -> str:
+    """Function to generate python string from pydantic model dict."""
+    from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
+
     if captured_info is None:
         captured_info = []
 
-    if isinstance(d, Dict):
-        if MODEL_NAME in d:
-            model_name = d.pop(MODEL_NAME)
-            other_content = ", ".join(f"{key}={transform_dict(value, captured_info)}" for key, value in d.items())
-            return f"{model_name}({other_content})"
+    if isinstance(model_data, Dict):
+        if MODEL_NAME in model_data:
+            model_name = model_data.pop(MODEL_NAME)
+            other_content = ", ".join(
+                f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items()
+            )
+            return f"vm.{model_name}({other_content})"
         else:
-            return ", ".join(f"{key}={transform_dict(value, captured_info)}" for key, value in d.items())
-    elif isinstance(d, List):
-        return "[" + ", ".join(transform_dict(item, captured_info) for item in d) + "]"
-    elif isinstance(d, CapturedCallable):  # could also be dashboard ready figure?
-        # Store the module of the _function attribute instead of printing it
+            return ", ".join(f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items())
+    elif isinstance(model_data, List):
+        return "[" + ", ".join(_dict_to_python(item, captured_info) for item in model_data) + "]"
+    elif isinstance(model_data, CapturedCallable):
         info = CapturedCallableInfo(
-            name=d._function.__name__,
-            module=d._function.__module__,
-            args=list(d._arguments.items()),
-            code=inspect.getsource(d._function)
-            if all(replacement.detect_path not in d._function.__module__ for replacement in REPLACEMENT_STRINGS)
+            name=model_data._function.__name__,
+            module=model_data._function.__module__,
+            args=list(model_data._arguments.items()),
+            code=inspect.getsource(model_data._function)
+            if all(
+                replacement.detect_path not in model_data._function.__module__ for replacement in REPLACEMENT_STRINGS
+            )
             else None,
         )
         captured_info.append(info)
         return _repr_clean(info=info)
 
-    return repr(d)  # Base case
+    return repr(model_data)
