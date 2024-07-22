@@ -837,8 +837,6 @@ p {
 abbr[title] {
   cursor: help;
   text-decoration: underline dotted;
-  text-decoration: underline dotted;
-  text-decoration-skip-ink: none;
   text-decoration-skip-ink: none;
 }
 
@@ -2963,8 +2961,6 @@ progress {
 
 .form-control {
   appearance: none;
-  appearance: none;
-  appearance: none;
   background-clip: padding-box;
   background-color: var(--bs-body-bg);
   border: var(--bs-border-width) solid var(--bs-border-color);
@@ -3126,8 +3122,6 @@ textarea.form-control-lg {
   --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
   appearance: none;
-  appearance: none;
-  appearance: none;
   background-color: var(--bs-body-bg);
   background-image: var(--bs-form-select-bg-img),
     var(--bs-form-select-bg-icon, none);
@@ -3211,8 +3205,6 @@ textarea.form-control-lg {
 .form-check-input {
   --bs-form-check-bg: var(--bs-body-bg);
 
-  appearance: none;
-  appearance: none;
   appearance: none;
   background-color: var(--bs-form-check-bg);
   background-image: var(--bs-form-check-bg-image);
@@ -3335,8 +3327,6 @@ textarea.form-control-lg {
 
 .form-range {
   appearance: none;
-  appearance: none;
-  appearance: none;
   background-color: transparent;
   height: 1.5rem;
   padding: 0;
@@ -3365,7 +3355,6 @@ textarea.form-control-lg {
 
 .form-range::-webkit-slider-thumb {
   appearance: none;
-  appearance: none;
   background-color: #3949ab;
   border: 0;
   height: 1rem;
@@ -3387,7 +3376,6 @@ textarea.form-control-lg {
 }
 
 .form-range::-moz-range-thumb {
-  appearance: none;
   appearance: none;
   background-color: #3949ab;
   border: 0;
@@ -3454,7 +3442,7 @@ textarea.form-control-lg {
 }
 
 .form-floating > .form-control::placeholder,
-.form-floating > .form-control-plaintext::-moz-placeholder {
+.form-floating > .formplaintext::-moz-placeholder {
   color: transparent;
 }
 
@@ -3464,7 +3452,7 @@ textarea.form-control-lg {
 }
 
 .form-floating > .form-control:not(:placeholder-shown),
-.form-floating > .form-control-plaintext:not(:-moz-placeholder-shown) {
+.form-floating > .formplaintext:not(:-moz-placeholder-shown) {
   padding-bottom: 0.625rem;
   padding-top: 1.625rem;
 }
@@ -3874,8 +3862,6 @@ textarea.form-control.is-invalid {
   padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
   text-align: center;
   text-decoration: none;
-  user-select: none;
-  user-select: none;
   user-select: none;
   vertical-align: middle;
 }
@@ -6256,8 +6242,6 @@ fieldset:disabled .btn {
   opacity: var(--bs-btn-close-disabled-opacity);
   pointer-events: none;
   user-select: none;
-  user-select: none;
-  user-select: none;
 }
 
 .btn-close-white {
@@ -6310,7 +6294,6 @@ fieldset:disabled .btn {
   max-width: 100%;
   pointer-events: none;
   position: absolute;
-  width: max-content;
   width: max-content;
   z-index: var(--bs-toast-zindex);
 }
@@ -7834,19 +7817,11 @@ fieldset:disabled .btn {
     rgba(0, 0, 0, 0.8) 75%,
     #000000 95%
   );
-  mask-image: linear-gradient(
-    130deg,
-    #000000 55%,
-    rgba(0, 0, 0, 0.8) 75%,
-    #000000 95%
-  );
-  mask-size: 200% 100%;
   mask-size: 200% 100%;
 }
 
 @keyframes placeholder-wave {
   100% {
-    mask-position: -200% 0%;
     mask-position: -200% 0%;
   }
 }
@@ -8292,8 +8267,8 @@ fieldset:disabled .btn {
 }
 
 .stretched-link::after {
-  inset: 0;
   content: "";
+  inset: 0;
   position: absolute;
   z-index: 1;
 }
@@ -8351,26 +8326,21 @@ fieldset:disabled .btn {
 
 .object-fit-contain {
   object-fit: contain !important;
-  object-fit: contain !important;
 }
 
 .object-fit-cover {
-  object-fit: cover !important;
   object-fit: cover !important;
 }
 
 .object-fit-fill {
   object-fit: fill !important;
-  object-fit: fill !important;
 }
 
 .object-fit-scale {
   object-fit: scale-down !important;
-  object-fit: scale-down !important;
 }
 
 .object-fit-none {
-  object-fit: none !important;
   object-fit: none !important;
 }
 
@@ -9496,31 +9466,25 @@ fieldset:disabled .btn {
 
 .column-gap-0 {
   column-gap: 0 !important;
-  column-gap: 0 !important;
 }
 
 .column-gap-1 {
-  column-gap: 0.25rem !important;
   column-gap: 0.25rem !important;
 }
 
 .column-gap-2 {
   column-gap: 0.5rem !important;
-  column-gap: 0.5rem !important;
 }
 
 .column-gap-3 {
-  column-gap: 1rem !important;
   column-gap: 1rem !important;
 }
 
 .column-gap-4 {
   column-gap: 1.5rem !important;
-  column-gap: 1.5rem !important;
 }
 
 .column-gap-5 {
-  column-gap: 3rem !important;
   column-gap: 3rem !important;
 }
 
@@ -10167,19 +10131,13 @@ fieldset:disabled .btn {
 
 .user-select-all {
   user-select: all !important;
-  user-select: all !important;
-  user-select: all !important;
 }
 
 .user-select-auto {
   user-select: auto !important;
-  user-select: auto !important;
-  user-select: auto !important;
 }
 
 .user-select-none {
-  user-select: none !important;
-  user-select: none !important;
   user-select: none !important;
 }
 
@@ -10450,26 +10408,21 @@ fieldset:disabled .btn {
 
   .object-fit-sm-contain {
     object-fit: contain !important;
-    object-fit: contain !important;
   }
 
   .object-fit-sm-cover {
-    object-fit: cover !important;
     object-fit: cover !important;
   }
 
   .object-fit-sm-fill {
     object-fit: fill !important;
-    object-fit: fill !important;
   }
 
   .object-fit-sm-scale {
     object-fit: scale-down !important;
-    object-fit: scale-down !important;
   }
 
   .object-fit-sm-none {
-    object-fit: none !important;
     object-fit: none !important;
   }
 
@@ -11129,31 +11082,25 @@ fieldset:disabled .btn {
 
   .column-gap-sm-0 {
     column-gap: 0 !important;
-    column-gap: 0 !important;
   }
 
   .column-gap-sm-1 {
-    column-gap: 0.25rem !important;
     column-gap: 0.25rem !important;
   }
 
   .column-gap-sm-2 {
     column-gap: 0.5rem !important;
-    column-gap: 0.5rem !important;
   }
 
   .column-gap-sm-3 {
-    column-gap: 1rem !important;
     column-gap: 1rem !important;
   }
 
   .column-gap-sm-4 {
     column-gap: 1.5rem !important;
-    column-gap: 1.5rem !important;
   }
 
   .column-gap-sm-5 {
-    column-gap: 3rem !important;
     column-gap: 3rem !important;
   }
 
@@ -11185,26 +11132,21 @@ fieldset:disabled .btn {
 
   .object-fit-md-contain {
     object-fit: contain !important;
-    object-fit: contain !important;
   }
 
   .object-fit-md-cover {
-    object-fit: cover !important;
     object-fit: cover !important;
   }
 
   .object-fit-md-fill {
     object-fit: fill !important;
-    object-fit: fill !important;
   }
 
   .object-fit-md-scale {
     object-fit: scale-down !important;
-    object-fit: scale-down !important;
   }
 
   .object-fit-md-none {
-    object-fit: none !important;
     object-fit: none !important;
   }
 
@@ -11864,31 +11806,25 @@ fieldset:disabled .btn {
 
   .column-gap-md-0 {
     column-gap: 0 !important;
-    column-gap: 0 !important;
   }
 
   .column-gap-md-1 {
-    column-gap: 0.25rem !important;
     column-gap: 0.25rem !important;
   }
 
   .column-gap-md-2 {
     column-gap: 0.5rem !important;
-    column-gap: 0.5rem !important;
   }
 
   .column-gap-md-3 {
-    column-gap: 1rem !important;
     column-gap: 1rem !important;
   }
 
   .column-gap-md-4 {
     column-gap: 1.5rem !important;
-    column-gap: 1.5rem !important;
   }
 
   .column-gap-md-5 {
-    column-gap: 3rem !important;
     column-gap: 3rem !important;
   }
 
@@ -11920,26 +11856,21 @@ fieldset:disabled .btn {
 
   .object-fit-lg-contain {
     object-fit: contain !important;
-    object-fit: contain !important;
   }
 
   .object-fit-lg-cover {
-    object-fit: cover !important;
     object-fit: cover !important;
   }
 
   .object-fit-lg-fill {
     object-fit: fill !important;
-    object-fit: fill !important;
   }
 
   .object-fit-lg-scale {
     object-fit: scale-down !important;
-    object-fit: scale-down !important;
   }
 
   .object-fit-lg-none {
-    object-fit: none !important;
     object-fit: none !important;
   }
 
@@ -12599,31 +12530,25 @@ fieldset:disabled .btn {
 
   .column-gap-lg-0 {
     column-gap: 0 !important;
-    column-gap: 0 !important;
   }
 
   .column-gap-lg-1 {
-    column-gap: 0.25rem !important;
     column-gap: 0.25rem !important;
   }
 
   .column-gap-lg-2 {
     column-gap: 0.5rem !important;
-    column-gap: 0.5rem !important;
   }
 
   .column-gap-lg-3 {
-    column-gap: 1rem !important;
     column-gap: 1rem !important;
   }
 
   .column-gap-lg-4 {
     column-gap: 1.5rem !important;
-    column-gap: 1.5rem !important;
   }
 
   .column-gap-lg-5 {
-    column-gap: 3rem !important;
     column-gap: 3rem !important;
   }
 
@@ -12655,26 +12580,21 @@ fieldset:disabled .btn {
 
   .object-fit-xl-contain {
     object-fit: contain !important;
-    object-fit: contain !important;
   }
 
   .object-fit-xl-cover {
-    object-fit: cover !important;
     object-fit: cover !important;
   }
 
   .object-fit-xl-fill {
     object-fit: fill !important;
-    object-fit: fill !important;
   }
 
   .object-fit-xl-scale {
     object-fit: scale-down !important;
-    object-fit: scale-down !important;
   }
 
   .object-fit-xl-none {
-    object-fit: none !important;
     object-fit: none !important;
   }
 
@@ -13334,31 +13254,25 @@ fieldset:disabled .btn {
 
   .column-gap-xl-0 {
     column-gap: 0 !important;
-    column-gap: 0 !important;
   }
 
   .column-gap-xl-1 {
-    column-gap: 0.25rem !important;
     column-gap: 0.25rem !important;
   }
 
   .column-gap-xl-2 {
     column-gap: 0.5rem !important;
-    column-gap: 0.5rem !important;
   }
 
   .column-gap-xl-3 {
-    column-gap: 1rem !important;
     column-gap: 1rem !important;
   }
 
   .column-gap-xl-4 {
     column-gap: 1.5rem !important;
-    column-gap: 1.5rem !important;
   }
 
   .column-gap-xl-5 {
-    column-gap: 3rem !important;
     column-gap: 3rem !important;
   }
 
@@ -13390,26 +13304,21 @@ fieldset:disabled .btn {
 
   .object-fit-xxl-contain {
     object-fit: contain !important;
-    object-fit: contain !important;
   }
 
   .object-fit-xxl-cover {
-    object-fit: cover !important;
     object-fit: cover !important;
   }
 
   .object-fit-xxl-fill {
     object-fit: fill !important;
-    object-fit: fill !important;
   }
 
   .object-fit-xxl-scale {
     object-fit: scale-down !important;
-    object-fit: scale-down !important;
   }
 
   .object-fit-xxl-none {
-    object-fit: none !important;
     object-fit: none !important;
   }
 
@@ -14069,31 +13978,25 @@ fieldset:disabled .btn {
 
   .column-gap-xxl-0 {
     column-gap: 0 !important;
-    column-gap: 0 !important;
   }
 
   .column-gap-xxl-1 {
-    column-gap: 0.25rem !important;
     column-gap: 0.25rem !important;
   }
 
   .column-gap-xxl-2 {
     column-gap: 0.5rem !important;
-    column-gap: 0.5rem !important;
   }
 
   .column-gap-xxl-3 {
-    column-gap: 1rem !important;
     column-gap: 1rem !important;
   }
 
   .column-gap-xxl-4 {
     column-gap: 1.5rem !important;
-    column-gap: 1.5rem !important;
   }
 
   .column-gap-xxl-5 {
-    column-gap: 3rem !important;
     column-gap: 3rem !important;
   }
 
@@ -14358,7 +14261,6 @@ li {
 /* Thinking about moving all of these into a typography.scss file at some point */
 .btn {
   height: 32px;
-  width: fit-content;
   width: fit-content;
 }
 
@@ -15113,7 +15015,7 @@ if the parent has a dark mode but the child is rendering a light mode
 }
 
 .form-control::placeholder,
-.input-group-text::-moz-placeholder {
+.inputtext::-moz-placeholder {
   color: var(--text-placeholder);
 }
 
