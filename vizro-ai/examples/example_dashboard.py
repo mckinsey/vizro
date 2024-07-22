@@ -1,4 +1,5 @@
 """Example of creating a dashboard using VizroAI."""
+
 import vizro.plotly.express as px
 from vizro_ai import VizroAI
 
