@@ -13,14 +13,7 @@ vizro_bootstrap = base + "vizro-bootstrap.min.css"
 vizro_css = base + "figures.min.css"
 
 # Add entire assets folder from Vizro
-app = Dash(
-    external_stylesheets=[
-        dbc.themes.CYBORG,
-        "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-        #     vizro_bootstrap,
-        #     vizro_css,
-    ],
-)
+app = Dash(external_stylesheets=[dbc.themes.CYBORG])
 
 app.layout = dbc.Container(
     [

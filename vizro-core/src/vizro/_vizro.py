@@ -32,12 +32,7 @@ class Vizro:
 
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
-        self.dash.config.external_stylesheets.extend(
-            [
-                "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-            ]
-        )
-
+        
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
         vizro_assets_folder = Path(__file__).with_name("static")

@@ -58,3 +58,27 @@
   margin: 0;
   padding: 0;
 }
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v199/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejbd5zrDAt.woff2")
+    format("woff2");
+}
+
+.material-symbols-outlined {
+  direction: ltr;
+  display: inline-block;
+  font-family: "Material Symbols Outlined";
+  font-feature-settings: "liga";
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
