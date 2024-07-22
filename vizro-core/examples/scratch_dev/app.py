@@ -17,8 +17,8 @@ app = Dash(
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
         "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-   #     vizro_bootstrap,
-   #     vizro_css,
+        #     vizro_bootstrap,
+        #     vizro_css,
     ],
 )
 
@@ -60,7 +60,7 @@ app.layout = dbc.Container(
                 )
             ],
             # Note: They need to add vizro_light here
-          #  className="vizro_light",
+            #  className="vizro_light",
         ),
     ]
 )
