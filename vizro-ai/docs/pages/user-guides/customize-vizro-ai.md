@@ -77,7 +77,8 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
             max_retries=5,
         )
         vizro_ai = VizroAI(model=llm)
-        vizro_ai.plot(df, "describe the composition of gdp in continent")
+        fig = vizro_ai.plot(df, "describe the composition of gdp in continent")
+        fig.show()
         ```
 
 Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).

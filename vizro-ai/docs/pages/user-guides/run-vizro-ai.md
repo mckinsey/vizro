@@ -19,7 +19,8 @@ To run Vizro-AI code in a Jupyter Notebook, create a new cell and execute the co
         vizro_ai = VizroAI()
 
         df = px.data.gapminder()
-        vizro_ai.plot(df, "visualize the life expectancy per continent and color each continent")
+        fig = vizro_ai.plot(df, "visualize the life expectancy per continent and color each continent")
+        fig.show()
         ```
     === "Result"
         [![BarChart]][BarChart]
