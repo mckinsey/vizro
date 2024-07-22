@@ -9,15 +9,12 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, wh
 
 A [`Page`][vizro.models.Page] is split up into four main containers:
 
-1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information)
+1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information). Note that the navigation container needs to be configured via the Dashboard.
 2. The **control container**  where you can add your `controls` (see [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
 3. The **page header** that contains the page title and the theme toggle switch button
 4. The **component container** where you can add your [components](components.md) to visualize your data
 
 ![Page Container](../../assets/user_guides/pages/page_containers.png)
-
-!!! note
-    Note that the navigation container needs to be configured via the Dashboard.
 
 To create and add a page to your dashboard, do the following steps:
 
@@ -88,14 +85,9 @@ To create and add a page to your dashboard, do the following steps:
 
     [Page]: ../../assets/user_guides/pages/page_sunburst.png
 
-!!! note
+An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
 
-    Note that an accordion page selector is automatically added to your dashboard in the top-left of the control container.
-    This accordion allows navigating through the different pages.
-
-    The accordion page selector will not be added if your dashboard consists of only one page.
-
-    You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
+You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 
 ## Customize the page URL

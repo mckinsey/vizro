@@ -34,7 +34,7 @@ DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
-example = "cd examples/{args:_dev}; python app.py"
+example = "cd examples/{args:scratch_dev}; python app.py"
 lint = "hatch run lint:lint {args:--all-files}"
 prep-release = [
   "hatch version release",

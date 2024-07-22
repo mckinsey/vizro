@@ -1,3 +1,4 @@
+import math
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
@@ -62,6 +63,14 @@ class Dropdown(VizroBaseModel):
     @_log_call
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
+        # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
+        # "A" is representative of a slightly wider than average character:
+        # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
+        # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
+        # and needs 24px for each line + 8px padding.
+        number_of_lines = math.ceil(max(len(str(option)) for option in full_options) / 30)
+        option_height = 8 + 24 * number_of_lines
+
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
@@ -71,6 +80,7 @@ class Dropdown(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     persistence=True,
+                    optionHeight=option_height,
                     persistence_type="session",
                 ),
             ]

@@ -5,12 +5,10 @@ Many components of a dashboard (for example, [`Graph`][vizro.models.Graph] or [`
 
 By combining the [`Action`][vizro.models.Action] model with an action function, you can create complex dashboard interactions triggered by various events.
 
-There are already a few action functions you can reuse.
+There are already a few action functions you can reuse:
 
-???+ info "Overview of currently available pre-defined action functions"
-
-    - [`export_data`][vizro.actions.export_data]
-    - [`filter_interaction`][vizro.actions.filter_interaction]
+- [`export_data`][vizro.actions.export_data]
+- [`filter_interaction`][vizro.actions.filter_interaction]
 
 ## Pre-defined actions
 
@@ -18,6 +16,7 @@ To attach an action to a component, you must enter the [`Action`][vizro.models.A
 add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
+
     Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
 The below sections are guides on how to use pre-defined action functions.
@@ -128,7 +127,7 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
 
 Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
-!!! tip
+!!! note
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 

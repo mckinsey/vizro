@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Include sign in default `reference_format` of `kpi_card_reference`. ([#549](https://github.com/mckinsey/vizro/pull/549))
+- Disabled figure display upon variable assignment, to display outcome of `VizroAI.plot()` add `.show()`. Enable feature XXX ([#527](https://github.com/mckinsey/vizro/pull/527))
 
 <!--
 ### Deprecated

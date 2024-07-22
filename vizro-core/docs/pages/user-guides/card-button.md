@@ -324,21 +324,19 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageStyled]: ../../assets/user_guides/components/card_image_styled.png
 
-???+ tip
+Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-    Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
-
-    To float the image next to the text:
+* To float the image next to the text:
 
     - floating-left: `![](my_image.png#floating-left)`
     - floating-right: `![](my_image.png#floating-right)`
     - floating-center: `![](my_image.png#floating-center)`
 
-    To apply the default icon styling:
+* To apply the default icon styling:
 
     - icon-top: `![](my_image.png#icon-top)`
 
-??? example "Card with floating image"
+!!! example "Card with floating image"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -402,7 +400,7 @@ and give an attribute selector to select images with that matching URL hash.
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
 
-??? example "Card with icon"
+!!! example "Card with icon"
     === "app.py"
         ```py
         import vizro.models as vm
@@ -462,17 +460,12 @@ img[src*="#my-image"] {
 }
 ```
 
-??? example "Responsive icon"
+!!! example "Responsive icon"
     ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
 
 ### Create a navigation card
 
-!!! note
-
-    This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation
-    card. To configure the navigation panel on the left hand side of the screen, refer to the
-    [guide on navigation](navigation.md).
-
+This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card. To configure the navigation panel on the left hand side of the screen, refer to the [guide on navigation](navigation.md).
 
 A navigation card enables you to navigate to a different page via a click on the card area.
 
@@ -561,7 +554,7 @@ To create a navigation card:
 
 If you now click on the card area, you should automatically be redirected to the relevant `href`.
 
-???+ note
+!!! note
 
     When using the [`Card`][vizro.models.Card], keep the following in mind:
 
@@ -571,7 +564,6 @@ If you now click on the card area, you should automatically be redirected to the
 
 ### Create a KPI card
 To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md).
-Unlike the static text card `vm.Card`, a KPI card must be created using a figure function.
 Unlike the static text card `vm.Card`, a KPI card must be created using a figure function,
 which enables the text content of the KPI to change based on input from controls or actions.
 

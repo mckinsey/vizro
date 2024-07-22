@@ -155,6 +155,7 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["ALL", "A", "B", "C"],
+                    optionHeight=32,
                     value="ALL",
                     multi=True,
                     persistence=True,
@@ -173,8 +174,39 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],
+                    optionHeight=32,
                     value="A",
                     multi=False,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ]
+        )
+
+        assert_component_equal(dropdown, expected_dropdown)
+
+    @pytest.mark.parametrize(
+        "options, option_height",
+        [
+            (["A", "B", "C"], 32),
+            ([10, 20, 30], 32),
+            (["A" * 30, "B", "C"], 32),
+            (["A" * 31, "B", "C"], 56),
+            (["A" * 60, "B", "C"], 56),
+            (["A" * 61, "B", "C"], 80),
+        ],
+    )
+    def test_dropdown_dynamic_option_height(self, options, option_height):
+        dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
+        expected_dropdown = html.Div(
+            [
+                None,
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=options,
+                    optionHeight=option_height,
+                    multi=False,
+                    value=options[0],
                     persistence=True,
                     persistence_type="session",
                 ),

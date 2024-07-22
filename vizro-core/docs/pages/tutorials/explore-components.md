@@ -56,7 +56,7 @@ The code below shows the steps necessary to add a box plot to the page:
     === "Live App"
         <iframe src="https://py.cafe/embed/maxi.schulz/vizro-tutorial-explore-vizro-1" width="100%" height="800px" border="0"></iframe>
 
-!!! tip "To see the dashboard in action"
+!!! note "To see the dashboard in action"
 
     Paste the above code into a Notebook cell, run the Notebook, and evaluate it.
 
@@ -156,7 +156,7 @@ The code below adds two components to the page:
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
 
-!!! tip "An introduction to Vizro-AI"
+!!! note "An introduction to Vizro-AI"
 
     In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/en/latest/pages/tutorials/first-dashboard/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
 
