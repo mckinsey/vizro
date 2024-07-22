@@ -35,7 +35,7 @@
 }
 
 .color-pos.card-footer {
-  color: var(--bs-cyan);
+  color: var(--bs-blue);
 }
 
 .color-neg.card-footer {
@@ -43,7 +43,7 @@
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid var(--bs-cyan);
+  border-left: 4px solid var(--bs-blue);
 }
 
 .card-kpi:has(.color-neg) {
