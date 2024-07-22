@@ -1,10 +1,9 @@
-import pytest
 from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
 
 try:
     from pydantic.v1 import ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+    pass
 
 
 class TestDashboardPlanner:
