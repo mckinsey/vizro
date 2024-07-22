@@ -33,9 +33,9 @@ jobs:
       matrix:
         include:
           - label: integration tests
-            file: ${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
+            file: "${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}"
           - label: notebooks test
-            file: ${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
+            file: "${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}"
     steps:
       - uses: actions/checkout@v4
       - name: Tests trigger
