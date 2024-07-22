@@ -29,10 +29,16 @@ app.layout = dbc.Container(
             children=[
                 dbc.Row(
                     [
-                        dbc.Col(dbc.Card(
-                                children=[dbc.CardHeader([html.P("payment", className="material-symbols-outlined"), html.H2("Helllo")]),
-                                          dbc.CardBody("44545")]
-                            )),
+                        dbc.Col(
+                            dbc.Card(
+                                children=[
+                                    dbc.CardHeader(
+                                        [html.P("payment", className="material-symbols-outlined"), html.H2("Helllo")]
+                                    ),
+                                    dbc.CardBody("44545"),
+                                ]
+                            )
+                        ),
                         dbc.Col(
                             kpi_card(
                                 data_frame=df_kpi,
