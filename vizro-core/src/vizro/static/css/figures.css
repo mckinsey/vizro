@@ -1,5 +1,6 @@
 .card-kpi {
-  border-left: 4px solid var(--text-secondary);
+  border-left: 4px solid var(--bs-secondary);
+  padding: 1rem;
 }
 
 .card-kpi .card-header {
@@ -14,7 +15,7 @@
 
 .card-kpi .card-body {
   align-items: center;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
   font-size: 3.6vh;
@@ -22,7 +23,7 @@
 }
 
 .card-kpi .card-footer {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   display: flex;
   font-weight: 600;
   gap: 4px;
@@ -34,17 +35,26 @@
 }
 
 .color-pos.card-footer {
-  color: #1a85ff;
+  color: var(--bs-cyan);
 }
 
 .color-neg.card-footer {
-  color: #d41159;
+  color: var(--bs-pink);
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid #1a85ff;
+  border-left: 4px solid var(--bs-cyan);
 }
 
 .card-kpi:has(.color-neg) {
-  border-left: 4px solid #d41159;
+  border-left: 4px solid var(--bs-pink);
+}
+
+.card-kpi .card-header,
+.card-kpi .card-footer,
+.card-kpi .card-body {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
