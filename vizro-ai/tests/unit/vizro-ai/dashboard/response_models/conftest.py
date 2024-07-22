@@ -4,10 +4,10 @@ import pandas as pd
 import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
 from vizro_ai.dashboard.response_models.components import ComponentPlan
-from vizro_ai.dashboard.response_models.page import PagePlanner
 from vizro_ai.dashboard.response_models.layout import LayoutPlan
+from vizro_ai.dashboard.response_models.page import PagePlanner
+from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
 
 
 class FakeListLLM(FakeListLLM):
@@ -75,7 +75,6 @@ def filter_prompt():
         If no options are specified, leave them out."""
 
 
-
 @pytest.fixture
 def fake_llm_filter():
     response = ['{"column": "a", "targets": ["gdp_chart"]}']
@@ -102,6 +101,7 @@ def component_card():
         page_id="page_1",
         df_name="N/A",
     )
+
 
 @pytest.fixture
 def component_card_2():
@@ -133,5 +133,5 @@ def page_plan_2_components(component_card, component_card_2):
         layout_plan=LayoutPlan(
             layout_description="Create a layout with a card on the left and a card on the right.",
             layout_grid_template_areas=["card_1", "card_2"],
-        )
+        ),
     )
