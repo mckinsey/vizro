@@ -1,4 +1,5 @@
 """Contains unwrapped KPI card functions (suitable to use in pure Dash app)."""
+
 from vizro.figures import kpi_card, kpi_card_reference
 
 kpi_card = kpi_card.__wrapped__

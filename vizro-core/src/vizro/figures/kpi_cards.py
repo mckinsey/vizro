@@ -1,4 +1,4 @@
-""""Contains default KPI card functions."""
+"""Contains default KPI card functions."""
 
 from typing import Optional
 
