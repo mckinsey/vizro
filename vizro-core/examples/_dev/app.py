@@ -2,7 +2,7 @@
 
 import pandas as pd
 from dash import Dash, html
-from vizro.figures.undecorated import kpi_card, kpi_card_reference
+from vizro.figures.unwrapped import kpi_card, kpi_card_reference
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
