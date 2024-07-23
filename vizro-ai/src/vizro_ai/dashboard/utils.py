@@ -9,17 +9,6 @@ import pandas as pd
 import tqdm.std as tsd
 import vizro.models as vm
 
-IMPORT_STATEMENTS = (
-    "import vizro.plotly.express as px\n"
-    "from vizro.models.types import capture\n"
-    "import plotly.graph_objects as go\n"
-    "from vizro.tables import dash_ag_grid\n"
-    "from vizro.models import AgGrid, Card, Dashboard, Filter, Layout, Page, Graph\n"
-    "from vizro.managers import data_manager\n"
-    "from vizro import Vizro\n"
-    "import pandas as pd\n"
-)
-
 
 @dataclass
 class MetadataContent:
@@ -69,11 +58,8 @@ def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
 
 def _dashboard_code(dashboard: vm.Dashboard) -> str:
     """Generate dashboard code from dashboard object."""
-    dashboard_code_str = IMPORT_STATEMENTS + repr(dashboard)
-
-    # TODO: use black or ruff to format the code
-    # formatted_code = black.format_str(dashboard_code_str, mode=black.Mode())
-    return dashboard_code_str
+    # return dashboard.to_python()
+    return
 
 
 def _run_dashboard(dashboard: vm.Dashboard, df_metadata: DfMetadata) -> None:
