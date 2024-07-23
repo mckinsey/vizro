@@ -509,13 +509,13 @@
   --bs-blue: #3949ab;
   --bs-indigo: #6610f2;
   --bs-purple: #976fd1;
-  --bs-pink: #f781bf;
+  --bs-pink: #d41159;
   --bs-red: #ff5267;
   --bs-orange: #ff9222;
   --bs-yellow: #fdc935;
   --bs-green: #689f38;
   --bs-teal: #08bdba;
-  --bs-cyan: #00b4ff;
+  --bs-cyan: #1a85ff;
   --bs-black: #000;
   --bs-white: #fff;
   --bs-gray: #6c757d;
@@ -532,7 +532,7 @@
   --bs-primary: #3949ab;
   --bs-secondary: #6c757d;
   --bs-success: #689f38;
-  --bs-info: #00b4ff;
+  --bs-info: #1a85ff;
   --bs-warning: #fdc935;
   --bs-danger: #ff5267;
   --bs-light: #f8f9fa;
@@ -540,7 +540,7 @@
   --bs-primary-rgb: 57, 73, 171;
   --bs-secondary-rgb: 108, 117, 125;
   --bs-success-rgb: 104, 159, 56;
-  --bs-info-rgb: 0, 180, 255;
+  --bs-info-rgb: 26, 133, 255;
   --bs-warning-rgb: 253, 201, 53;
   --bs-danger-rgb: 255, 82, 103;
   --bs-light-rgb: 248, 249, 250;
@@ -548,7 +548,7 @@
   --bs-primary-text-emphasis: #171d44;
   --bs-secondary-text-emphasis: #2b2f32;
   --bs-success-text-emphasis: #2a4016;
-  --bs-info-text-emphasis: #004866;
+  --bs-info-text-emphasis: #0a3566;
   --bs-warning-text-emphasis: #655015;
   --bs-danger-text-emphasis: #662129;
   --bs-light-text-emphasis: #495057;
@@ -556,7 +556,7 @@
   --bs-primary-bg-subtle: #d7dbee;
   --bs-secondary-bg-subtle: #e2e3e5;
   --bs-success-bg-subtle: #e1ecd7;
-  --bs-info-bg-subtle: #ccf0ff;
+  --bs-info-bg-subtle: #d1e7ff;
   --bs-warning-bg-subtle: #fff4d7;
   --bs-danger-bg-subtle: #ffdce1;
   --bs-light-bg-subtle: #fcfcfd;
@@ -564,7 +564,7 @@
   --bs-primary-border-subtle: #b0b6dd;
   --bs-secondary-border-subtle: #c4c8cb;
   --bs-success-border-subtle: #c3d9af;
-  --bs-info-border-subtle: #99e1ff;
+  --bs-info-border-subtle: #a3ceff;
   --bs-warning-border-subtle: #fee9ae;
   --bs-danger-border-subtle: #ffbac2;
   --bs-light-border-subtle: #e9ecef;
@@ -598,7 +598,7 @@
   --bs-link-decoration: underline;
   --bs-link-hover-color: #2e3a89;
   --bs-link-hover-color-rgb: 46, 58, 137;
-  --bs-code-color: #f781bf;
+  --bs-code-color: #d41159;
   --bs-highlight-color: #212529;
   --bs-highlight-bg: #fff4d7;
   --bs-border-width: 1px;
@@ -644,7 +644,7 @@
   --bs-primary-text-emphasis: #8892cd;
   --bs-secondary-text-emphasis: #a7acb1;
   --bs-success-text-emphasis: #a4c588;
-  --bs-info-text-emphasis: #66d2ff;
+  --bs-info-text-emphasis: #76b6ff;
   --bs-warning-text-emphasis: #fedf86;
   --bs-danger-text-emphasis: #ff97a4;
   --bs-light-text-emphasis: #f8f9fa;
@@ -652,7 +652,7 @@
   --bs-primary-bg-subtle: #0b0f22;
   --bs-secondary-bg-subtle: #161719;
   --bs-success-bg-subtle: #15200b;
-  --bs-info-bg-subtle: #002433;
+  --bs-info-bg-subtle: #051b33;
   --bs-warning-bg-subtle: #33280b;
   --bs-danger-bg-subtle: #331015;
   --bs-light-bg-subtle: #343a40;
@@ -660,7 +660,7 @@
   --bs-primary-border-subtle: #222c67;
   --bs-secondary-border-subtle: #41464b;
   --bs-success-border-subtle: #3e5f22;
-  --bs-info-border-subtle: #006c99;
+  --bs-info-border-subtle: #105099;
   --bs-warning-border-subtle: #987920;
   --bs-danger-border-subtle: #99313e;
   --bs-light-border-subtle: #495057;
@@ -670,7 +670,7 @@
   --bs-link-hover-color: #a0a8d7;
   --bs-link-color-rgb: 136, 146, 205;
   --bs-link-hover-color-rgb: 160, 168, 215;
-  --bs-code-color: #fab3d9;
+  --bs-code-color: #e5709b;
   --bs-highlight-color: #dee2e6;
   --bs-highlight-bg: #655015;
   --bs-border-color: #495057;
@@ -2472,13 +2472,13 @@ progress {
 
 .table-info {
   --bs-table-color: #000;
-  --bs-table-bg: #ccf0ff;
-  --bs-table-border-color: #a3c0cc;
-  --bs-table-striped-bg: #c2e4f2;
+  --bs-table-bg: #d1e7ff;
+  --bs-table-border-color: #a7b9cc;
+  --bs-table-striped-bg: #c7dbf2;
   --bs-table-striped-color: #000;
-  --bs-table-active-bg: #b8d8e6;
+  --bs-table-active-bg: #bcd0e6;
   --bs-table-active-color: #000;
-  --bs-table-hover-bg: #bddeec;
+  --bs-table-hover-bg: #c1d6ec;
   --bs-table-hover-color: #000;
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
@@ -3465,19 +3465,19 @@ textarea.form-control-lg {
 
 .btn-info {
   --bs-btn-color: #000;
-  --bs-btn-bg: #00b4ff;
-  --bs-btn-border-color: #00b4ff;
+  --bs-btn-bg: #1a85ff;
+  --bs-btn-border-color: #1a85ff;
   --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #26bfff;
-  --bs-btn-hover-border-color: #1abcff;
-  --bs-btn-focus-shadow-rgb: 0, 153, 217;
+  --bs-btn-hover-bg: #3c97ff;
+  --bs-btn-hover-border-color: #3191ff;
+  --bs-btn-focus-shadow-rgb: 22, 113, 217;
   --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #33c3ff;
-  --bs-btn-active-border-color: #1abcff;
+  --bs-btn-active-bg: #489dff;
+  --bs-btn-active-border-color: #3191ff;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #00b4ff;
-  --bs-btn-disabled-border-color: #00b4ff;
+  --bs-btn-disabled-bg: #1a85ff;
+  --bs-btn-disabled-border-color: #1a85ff;
 }
 
 .btn-warning {
@@ -3600,19 +3600,19 @@ textarea.form-control-lg {
 }
 
 .btn-outline-info {
-  --bs-btn-color: #00b4ff;
-  --bs-btn-border-color: #00b4ff;
+  --bs-btn-color: #1a85ff;
+  --bs-btn-border-color: #1a85ff;
   --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #00b4ff;
-  --bs-btn-hover-border-color: #00b4ff;
-  --bs-btn-focus-shadow-rgb: 0, 180, 255;
+  --bs-btn-hover-bg: #1a85ff;
+  --bs-btn-hover-border-color: #1a85ff;
+  --bs-btn-focus-shadow-rgb: 26, 133, 255;
   --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #00b4ff;
-  --bs-btn-active-border-color: #00b4ff;
+  --bs-btn-active-bg: #1a85ff;
+  --bs-btn-active-border-color: #1a85ff;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #00b4ff;
+  --bs-btn-disabled-color: #1a85ff;
   --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #00b4ff;
+  --bs-btn-disabled-border-color: #1a85ff;
   --bs-gradient: none;
 }
 
@@ -6883,8 +6883,8 @@ textarea.form-control-lg {
   text-decoration-color: RGBA(var(--bs-info-rgb), var(--bs-link-underline-opacity, 1)) !important;
 }
 .link-info:hover, .link-info:focus {
-  color: RGBA(51, 195, 255, var(--bs-link-opacity, 1)) !important;
-  text-decoration-color: RGBA(51, 195, 255, var(--bs-link-underline-opacity, 1)) !important;
+  color: RGBA(72, 157, 255, var(--bs-link-opacity, 1)) !important;
+  text-decoration-color: RGBA(72, 157, 255, var(--bs-link-underline-opacity, 1)) !important;
 }
 
 .link-warning {
@@ -12016,7 +12016,7 @@ textarea.form-control-lg {
 h1, .h1 {
   font-size: 32px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12028,7 +12028,7 @@ h1, .h1 {
 h2, .h2 {
   font-size: 24px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12040,7 +12040,7 @@ h2, .h2 {
 h3, .h3, legend {
   font-size: 20px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12052,7 +12052,7 @@ h3, .h3, legend {
 h4, .h4 {
   font-size: 16px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12064,7 +12064,7 @@ h4, .h4 {
 h5, .h5 {
   font-size: 16px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12077,7 +12077,7 @@ h5, .h5 {
 h6, .h6 {
   font-size: 16px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12090,7 +12090,7 @@ h6, .h6 {
 p, label, ul, li, blockquote {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12102,7 +12102,7 @@ p, label, ul, li, blockquote {
 a {
   font-size: 16px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12154,7 +12154,7 @@ li {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12173,7 +12173,7 @@ li {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12181,7 +12181,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12195,7 +12195,7 @@ li {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12203,7 +12203,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12217,7 +12217,7 @@ li {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12225,7 +12225,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12240,7 +12240,7 @@ li {
   color: var(--text-disabled-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12254,7 +12254,7 @@ li {
   color: var(--text-primary-inverted);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12262,7 +12262,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12276,7 +12276,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12295,7 +12295,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12303,7 +12303,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12317,7 +12317,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12325,7 +12325,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12339,7 +12339,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12347,7 +12347,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12362,7 +12362,7 @@ li {
   color: var(--text-disabled);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12376,7 +12376,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12384,7 +12384,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12398,7 +12398,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12417,7 +12417,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12425,7 +12425,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12439,7 +12439,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12447,7 +12447,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12461,7 +12461,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12469,7 +12469,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12484,7 +12484,7 @@ li {
   color: var(--text-disabled);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12498,7 +12498,7 @@ li {
   color: var(--text-primary);
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12506,7 +12506,7 @@ li {
   line-height: 16px;
   font-size: 14px;
   text-decoration: underline;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -12558,7 +12558,7 @@ li {
 .accordion-button {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12619,7 +12619,7 @@ li {
 .card-text {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12714,7 +12714,7 @@ li {
 .form-check-label {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12781,7 +12781,7 @@ if the parent has a dark mode but the child is rendering a light mode
 .input-group-text {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
@@ -12870,7 +12870,7 @@ if the parent has a dark mode but the child is rendering a light mode
 .form-label {
   font-size: 14px;
   text-decoration: none;
-  font-family: Inter;
+  font-family: Inter, sans-serif, Arial, serif;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
