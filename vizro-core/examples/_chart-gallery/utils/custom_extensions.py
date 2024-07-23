@@ -70,7 +70,20 @@ class FlexContainer(vm.Container):
 
 @capture("graph")
 def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
-    """Creates a custom butterfly chart based on a go.Figure."""
+    """Creates a custom butterfly chart using Plotly's go.Figure.
+
+    A butterfly chart is a type of bar chart where two sets of bars are displayed back-to-back, often used to compare
+    two sets of data.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x1 (str): The name of the column in the data frame for the first set of bars (negative values).
+        x2 (str): The name of the column in the data frame for the second set of bars (positive values).
+        y (str): The name of the column in the data frame for the y-axis (categories).
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the butterfly chart.
+    """
     fig = go.Figure()
     fig.add_trace(
         go.Bar(
@@ -94,7 +107,25 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
 
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
-    """Creates a custom sankey chart based on a go.Figure."""
+    """Creates a custom sankey chart using Plotly's `go.Sankey`.
+
+    A Sankey chart is a type of flow diagram where the width of the arrows is proportional to the flow rate.
+    It is used to visualize the flow of resources or data between different stages or categories.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        source (str): The name of the column in the data frame for the source nodes.
+        target (str): The name of the column in the data frame for the target nodes.
+        value (str): The name of the column in the data frame for the values representing the flow between nodes.
+        labels (List[str]): A list of labels for the nodes.
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the Sankey chart.
+
+    For detailed information on additional parameters and customization, refer to the Plotly documentation:
+    https://plotly.com/python/reference/sankey/
+
+    """
     fig = go.Figure(
         data=[
             go.Sankey(
