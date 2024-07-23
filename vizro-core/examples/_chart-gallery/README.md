@@ -64,15 +64,15 @@ The dashboard is still in development. Below is an overview of the chart types f
 
 To contribute a chart, follow the steps below:
 
-1. Ensure there is a `svg` in the `assets` folder with the same name as the chart type.
-2. Add a new page for the chart type inside `chart_pages.py`. Take a look at the existing pages for guidance.
-3. Add any new data set to the `DATA_DICT` inside `_page_utils.py`.
-4. Add the new chart type to the `COMPLETED_CHARTS` list in `tab_containers.py` to enable navigation.
-5. Add the new chart page to the navigation inside the `app.py`
-6. Update this `README.md` with the new chart type.
+1. Place an `svg` file named after the chart type in the `assets` folder if not already available.
+2. Create a new page for the chart type in `chart_pages.py`. Refer to existing pages for guidance.
+3. Add any new datasets to the `DATA_DICT` in `_page_utils.py`.
+4. Uncomment the completed chart in the `COMPLETED_CHARTS` list in `tab_containers.py` to enable navigation.
+5. Add the new chart page to the appropriate category in the navigation within `app.py`.
+6. Update the `README.md` with the new chart type.
 
 ## How to run the example locally
 
-1. If you have `hatch` set up, run the example with the command `hatch run example charts`.
-   Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
+1. If you have `hatch` set up, run the example with the command `hatch run example _chart-gallery`.
+   Otherwise, run `python app.py` with your Python environment activated where `vizro` is installed.
 2. You should now be able to access the app locally via http://127.0.0.1:8050/.

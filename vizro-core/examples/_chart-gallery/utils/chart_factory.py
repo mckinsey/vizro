@@ -225,9 +225,9 @@ def treemap_factory(id: str, title: str):
 
                 #### What is a treemap?
 
-                A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles sized
-                proportionately to the quantity they represent, combining together to form larger **parent**
-                category rectangles.
+                A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles are sized
+                proportionately to the quantity they represent, combined together to form larger parent category
+                rectangles.
 
                 &nbsp;
 
