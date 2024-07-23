@@ -138,7 +138,7 @@ class VizroBaseModel(BaseModel):
         # check for formatting: https://mckinsey-hub.slack.com/archives/D03N7KXFXV3/p1721401376669179?thread_ts=1721400781.371419&cid=D03N7KXFXV3
         #TODO: potentially use ruff over just black
 
-        return format_str(concatenated_code, mode=FileMode(line_length=88)), captured_info
+        return format_str(concatenated_code, mode=FileMode(line_length=88))
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -148,26 +148,30 @@ class VizroBaseModel(BaseModel):
 
 
 if __name__ == "__main__":
-    from typing import Any
+    # from typing import Any
 
     import vizro.plotly.express as px
-    from vizro.models import *
-    from vizro.tables import dash_ag_grid
-    # For the plot prints - needs to transfer somewhere
+    import vizro.models as vm
+    # from vizro.tables import dash_ag_grid
+    # # For the plot prints - needs to transfer somewhere
 
-    # data_manager["iris"] = px.data.iris()
+    # # data_manager["iris"] = px.data.iris()
 
-    page = Page(
-        title="Page 1",
-        components=[
-            Card(text="Foo"),
-            Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-            AgGrid(figure=dash_ag_grid(data_frame="iris")),
-        ],
-        controls=[Filter(column="species")],
-    )
+    # page = Page(
+    #     title="Page 1",
+    #     components=[
+    #         Card(text="Foo"),
+    #         Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+    #         AgGrid(figure=dash_ag_grid(data_frame="iris")),
+    #     ],
+    #     controls=[Filter(column="species")],
+    # )
 
-    dashboard = Dashboard(title="Bar", pages=[page])
+    # dashboard = Dashboard(title="Bar", pages=[page])
 
-    string, info = dashboard.to_python()
+    df = px.data.iris()
+    card = vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length"))
+
+
+    string = card.to_python()
     print(string)
