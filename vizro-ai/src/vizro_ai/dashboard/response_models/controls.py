@@ -24,6 +24,15 @@ def _create_filter_proxy(df_cols, available_components) -> BaseModel:
             raise ValueError(f"targets must be one of {available_components}")
         return v
 
+    def validate_targets_not_empty(v):
+        """Validate the targets not empty."""
+        if available_components == []:
+            raise ValueError(
+                "This might be due to the filter target is not found in the available components. "
+                "returning default values."
+            )
+        return v
+
     def validate_column(v):
         """Validate the column."""
         if v not in df_cols:
@@ -46,6 +55,7 @@ def _create_filter_proxy(df_cols, available_components) -> BaseModel:
         __validators__={
             "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
             "validator2": validator("column", allow_reuse=True)(validate_column),
+            "validator3": validator("targets", pre=True, allow_reuse=True)(validate_targets_not_empty),
         },
         __base__=vm.Filter,
     )
@@ -100,14 +110,6 @@ class ControlPlan(BaseModel):
                     df_schema=_df_schema,
                     available_components=available_components,
                 )
-                if res.targets == []:
-                    logger.warning(
-                        f"Filter control failed to create, "
-                        f"related user input: `{self.control_description}`."
-                        f"This might be due to the filter target is not found in the available components. "
-                        "returning default values."
-                    )
-                    return None
                 return res
             else:
                 logger.warning(f"Control type {self.control_type} not recognized.")

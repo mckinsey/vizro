@@ -7,41 +7,31 @@ import vizro.models as vm
 from langchain_core.language_models.chat_models import BaseChatModel
 
 try:
-    from pydantic.v1 import BaseModel, Field, create_model
+    from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, create_model
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.utils.helper import DebugFailure
+    from pydantic import BaseModel, Field, ValidationError
 
 logger = logging.getLogger(__name__)
 
 
-def _convert_layout_to_grid(layout_grid_template_areas):
-    # TODO: Programmatically convert layout_grid_template_areas to grid
-    pass
+def _convert_to_grid(layout_grid_template_areas, component_ids):
+    component_map = {component: index for index, component in enumerate(component_ids)}
+    grid = []
 
+    for row in layout_grid_template_areas:
+        grid_row = []
+        for cell in row.split():
+            if cell == ".":
+                grid_row.append(-1)
+            else:
+                try:
+                    grid_row.append(component_map[cell])
+                except KeyError:
+                    logger.warning(f"Component {cell} not found in component_ids: {component_ids}")
+                    grid_row.append(-1)
+        grid.append(grid_row)
 
-def _create_layout_proxy(component_ids, layout_grid_template_areas) -> BaseModel:
-    """Create a layout proxy model."""
-
-    def validate_grid(v):
-        """Validate the grid."""
-        expected_grid = _convert_layout_to_grid(layout_grid_template_areas)
-        if v != expected_grid:
-            logger.warning(f"Calculated grid: {expected_grid}, got: {v}")
-            return v
-
-    return create_model(
-        "LayoutProxyModel",
-        grid=(
-            List[List[int]],
-            Field(None, description="Grid specification to arrange components on screen."),
-        ),
-        __validators__={
-            # "validator1": validator("grid", pre=True, allow_reuse=True)(validate_grid),
-        },
-        __base__=vm.Layout,
-    )
+    return grid
 
 
 class LayoutPlan(BaseModel):
@@ -62,30 +52,23 @@ class LayoutPlan(BaseModel):
 
     def create(self, model: BaseChatModel, component_ids: List[str]) -> Union[vm.Layout, None]:
         """Create the layout."""
-        layout_prompt = (
-            f"Create a layout from the following instructions: {self.layout_description}. Do not make up "
-            f"a layout if not requested. If a layout_grid_template_areas is provided, translate it into "
-            f"a matrix of integers where each integer represents a unique component (starting from 0). "
-            f"When translating, match the layout_grid_template_areas element string to the same name in "
-            f"{component_ids} and use the index of {component_ids} to replace the element string. "
-            f"replace '.' with -1 to represent empty spaces. Here is the grid template areas: \n ------- \n"
-            f" {self.layout_grid_template_areas}\n ------- \n"
-        )
         if self.layout_description == "N/A":
             return None
 
         try:
-            result_proxy = _create_layout_proxy(
-                component_ids=component_ids, layout_grid_template_areas=self.layout_grid_template_areas
+            grid = _convert_to_grid(
+                layout_grid_template_areas=self.layout_grid_template_areas, component_ids=component_ids
             )
-            proxy = _get_pydantic_output(query=layout_prompt, llm_model=model, response_model=result_proxy)
-            actual = vm.Layout.parse_obj(proxy.dict(exclude={"id": True}))
-        except DebugFailure as e:
+            actual = vm.Layout(grid=grid)
+        except ValidationError as e:
             logger.warning(
                 f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
                 f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
-                f"Relevant prompt: `{self.layout_description}`"
+                f"Relevant prompt: `{self.layout_description}`, which was parsed as layout_grid_template_areas:"
+                f" {self.layout_grid_template_areas}"
             )
+            if grid:
+                logger.warning(f"Calculated grid which caused the error: {grid}")
             actual = None
 
         return actual
