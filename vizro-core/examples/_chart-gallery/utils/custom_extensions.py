@@ -83,6 +83,7 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
 
     Returns:
         go.Figure: A Plotly Figure object representing the butterfly chart.
+
     """
     fig = go.Figure()
     fig.add_trace(
