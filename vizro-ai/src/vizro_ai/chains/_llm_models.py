@@ -4,12 +4,6 @@ from typing import Dict, Optional, Union
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
-try:
-    from langchain_anthropic import ChatAnthropic
-except ImportError:
-    ChatAnthropic = None
-
-
 SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4-0613",
@@ -25,14 +19,9 @@ SUPPORTED_MODELS = {
         "gpt-4o-2024-05-13",
         "gpt-4o",
     ],
-    "Anthropic": [
-        "claude-3-haiku-20240307",
-        "claude-3-sonnet-20240229",
-        "claude-3-opus-20240229",
-    ],
 }
 
-DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic}
+DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI}
 DEFAULT_MODEL = "gpt-3.5-turbo"
 DEFAULT_TEMPERATURE = 0
 

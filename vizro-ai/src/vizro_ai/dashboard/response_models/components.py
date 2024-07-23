@@ -53,9 +53,11 @@ class ComponentPlan(BaseModel):
             elif self.component_type == "AgGrid":
                 return vm.AgGrid(id=component_id_unique, figure=dash_ag_grid(data_frame=self.df_name))
             elif self.component_type == "Card":
-                result_proxy = _get_pydantic_output(
-                    query=self.component_description, llm_model=model, response_model=vm.Card
+                card_prompt = (
+                    "The Card uses the dcc.Markdown component from Dash as its underlying text component. "
+                    f"Create a card based on the card description: {self.component_description}."
                 )
+                result_proxy = _get_pydantic_output(query=card_prompt, llm_model=model, response_model=vm.Card)
                 proxy_dict = result_proxy.dict()
                 proxy_dict["id"] = component_id_unique
                 return vm.Card.parse_obj(proxy_dict)
