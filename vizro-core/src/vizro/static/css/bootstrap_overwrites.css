@@ -9,13 +9,6 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin-bottom: 0;
 }
 
-.navbar .nav-link:active,
-.navbar .nav-link.active {
-  border-right: 1px solid var(--border-enabled);
-  color: var(--text-primary);
-  width: 64px;
-}
-
 /* TO DO: Check if this should live in vizro-bootstrap */
 .card p:last-of-type {
   margin-bottom: 0;
@@ -36,4 +29,10 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   border: none;
   margin: 0;
   padding: 0;
+}
+
+.navbar .nav-link.active {
+  border-right: 1px solid var(--border-enabled);
+  color: var(--text-primary);
+  width: 64px;
 }

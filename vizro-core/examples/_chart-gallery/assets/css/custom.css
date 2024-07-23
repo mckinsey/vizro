@@ -35,6 +35,7 @@ img[src*="#chart-icon"] {
 
 .flex-container .card {
   height: 208px;
+  opacity: 0.5;
   width: 176px;
 }
 
@@ -59,10 +60,6 @@ img[src*="#chart-icon"] {
 .intro-text p {
   font-size: 16px;
   line-height: 20px;
-}
-
-.flex-container .card {
-  opacity: 0.5;
 }
 
 .flex-container .card-nav {
