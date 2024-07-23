@@ -1,131 +1,111 @@
 """App configuration for chart gallery dashboard."""
+import itertools
 
 import vizro.models as vm
-from utils.chart_pages import (
-    bar,
-    boxplot,
-    butterfly_page,
-    choropleth,
-    column,
-    distribution_butterfly,
-    donut,
-    line,
-    magnitude_treemap,
-    ordered_bar,
-    ordered_column,
-    pie,
-    sankey_page,
-    scatter,
-    time_column,
-    treemap,
-    violin,
-)
-from utils.tab_containers import (
-    container_all,
-    container_correlation,
-    container_deviation,
-    container_distribution,
-    container_flow,
-    container_magnitude,
-    container_part,
-    container_ranking,
-    container_spatial,
-    container_time,
-)
+from chart_groups import ChartGroup, CHART_GROUPS, ALL_CHART_GROUP
+from utils.custom_extensions import Markdown, FlexContainer
+
 from vizro import Vizro
+
+
+def make_chart_card(page: vm.Page, complete: bool):
+    svg_name = page.title.lower().replace(" ", "-")
+    return vm.Card(
+        text=f"""
+           ![](assets/images/pages/{svg_name}.svg#page-icon)
+
+           #### {page.title}
+           """,
+        href=f"/{page.path}" if complete else "",
+    )
+
+
+def make_homepage_container(chart_group: ChartGroup):
+    return vm.Container(
+        title=chart_group.name,
+        layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
+        components=[
+            Markdown(text=chart_group.intro_text, classname="intro-text"),
+            FlexContainer(
+                title="",
+                components=[
+                    make_chart_card(page, page in chart_group.pages)
+                    for page in sorted(chart_group.pages | chart_group.incomplete_pages)
+                ],
+            ),
+        ],
+    )
+
+
+def make_navlink(chart_group: ChartGroup):
+    return vm.NavLink(
+        label=chart_group.name,
+        pages={chart_group.name: sorted(page.id for page in chart_group.pages)},
+        icon=chart_group.icon,
+    )
+
+
+vm.Container.add_type("components", Markdown)
+vm.Container.add_type("components", FlexContainer)
+
 
 homepage = vm.Page(
     title="Overview",
     components=[
-        vm.Tabs(
-            tabs=[
-                container_all,
-                container_deviation,
-                container_correlation,
-                container_ranking,
-                container_distribution,
-                container_magnitude,
-                container_time,
-                container_part,
-                container_flow,
-                container_spatial,
-            ]
-        ),
+        vm.Tabs(tabs=[make_homepage_container(chart_group) for chart_group in [ALL_CHART_GROUP, *CHART_GROUPS]]),
     ],
 )
 
 
+# CHeck against: pages:
+# homepage,
+# bar,
+# column,
+# line,
+# scatter,
+# pie,
+# donut,
+# boxplot,
+# violin,
+# ordered_bar,
+# ordered_column,
+# time_column,
+# treemap,
+# magnitude_treemap,
+# butterfly_page,
+# distribution_butterfly,
+# choropleth,
+# sankey_page,
+# for navigation:
+# COMPLETED_CHARTS = [
+#     "bar",
+#     "ordered-bar",
+#     "column",
+#     "ordered-column",
+#     "pie",
+#     "donut",
+#     "line",
+#     "violin",
+#     "scatter",
+#     "sankey",
+#     "butterfly",
+#     "boxplot",
+#     "choropleth",
+#     "treemap",
+# ]
+#
+#
+
+# TODO: maybe nice to have an overall dashboard title? "Vizro chart gallery" or similar.
 dashboard = vm.Dashboard(
-    pages=[
-        homepage,
-        bar,
-        column,
-        line,
-        scatter,
-        pie,
-        donut,
-        boxplot,
-        violin,
-        ordered_bar,
-        ordered_column,
-        time_column,
-        treemap,
-        magnitude_treemap,
-        butterfly_page,
-        distribution_butterfly,
-        choropleth,
-        sankey_page,
-    ],
+    # note has duplicates
+    pages=itertools.chain(*chart_group.pages for chart_group in CHART_GROUPS),
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
-                vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
-                vm.NavLink(
-                    label="Deviation",
-                    pages={"Deviation": sorted(["Butterfly"])},
-                    icon="Planner Review",
-                ),
-                vm.NavLink(
-                    label="Correlation",
-                    pages={"Correlation": sorted(["Scatter"])},
-                    icon="Bubble Chart",
-                ),
-                vm.NavLink(
-                    label="Ranking",
-                    pages={"Ranking": sorted(["Ordered Bar", "Ordered Column"])},
-                    icon="Stacked Bar Chart",
-                ),
-                vm.NavLink(
-                    label="Distribution",
-                    pages={"Distribution": sorted(["Boxplot", "Violin", "Distribution-Butterfly"])},
-                    icon="Waterfall Chart",
-                ),
-                vm.NavLink(
-                    label="Magnitude",
-                    pages={"Magnitude": sorted(["Bar", "Column", "Magnitude-Treemap"])},
-                    icon="Bar Chart",
-                ),
-                vm.NavLink(
-                    label="Time",
-                    pages={"Time": sorted(["Line", "Time-Column"])},
-                    icon="Timeline",
-                ),
-                vm.NavLink(
-                    label="Part-to-whole",
-                    pages={"Part-to-whole": sorted(["Donut", "Pie", "Treemap"])},
-                    icon="Donut Small",
-                ),
-                vm.NavLink(
-                    label="Flow",
-                    pages={"Flow": ["Sankey"]},
-                    icon="Stacked Line Chart",
-                ),
-                vm.NavLink(
-                    label="Spatial",
-                    pages={"Spatial": sorted(["Choropleth"])},
-                    icon="Map",
-                ),
+                vm.NavLink(label="Overview", pages=[homepage.id], icon="Home"),
             ]
+            + [make_navlink(chart_group) for chart_group in CHART_GROUPS]
         )
     ),
 )
