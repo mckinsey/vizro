@@ -6,6 +6,10 @@
   width: 288px;
 }
 
+#page-components {
+  overflow: unset;
+}
+
 img[src*="#chart-icon"] {
   width: 100%;
 }
@@ -15,6 +19,18 @@ img[src*="#chart-icon"] {
   position: absolute;
   right: 14px;
   top: 12px;
+}
+
+.code-clipboard-container {
+  padding: 1rem;
+  background: var(--surfaces-bg-card);
+  max-height: 500px;
+  overflow: auto;
+  position: relative;
+}
+
+.code-clipboard-container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
 }
 
 .flex-container .card {

@@ -27,17 +27,18 @@ class CodeClipboard(vm.VizroBaseModel):
         return dbc.Accordion(
             [
                 dbc.AccordionItem(
-                    dbc.Card(
+                    html.Div(
                         [
                             html.H3(self.title),
-                            dcc.Markdown(self.text, id=self.id, className="code-block"),
+                            dcc.Markdown(self.text, id=self.id),
                             dcc.Clipboard(target_id=self.id, className="code-clipboard"),
-                        ]
+                        ],
+                        className="code-clipboard-container"
                     ),
                     title="SHOW CODE",
                 )
             ],
-            start_collapsed=True,
+            start_collapsed=False,
         )
 
 
