@@ -82,37 +82,37 @@ dashboard = vm.Dashboard(
                 vm.NavLink(label="Overview", pages=["Overview"], icon="Home"),
                 vm.NavLink(
                     label="Deviation",
-                    pages={"Deviation": ["Butterfly"]},
+                    pages={"Deviation": sorted(["Butterfly"])},
                     icon="Planner Review",
                 ),
                 vm.NavLink(
                     label="Correlation",
-                    pages={"Correlation": ["Scatter"]},
+                    pages={"Correlation": sorted(["Scatter"])},
                     icon="Bubble Chart",
                 ),
                 vm.NavLink(
                     label="Ranking",
-                    pages={"Ranking": ["Ordered Bar", "Ordered Column"]},
+                    pages={"Ranking": sorted(["Ordered Bar", "Ordered Column"])},
                     icon="Stacked Bar Chart",
                 ),
                 vm.NavLink(
                     label="Distribution",
-                    pages={"Distribution": ["Boxplot", "Violin", "Distribution-Butterfly"]},
+                    pages={"Distribution": sorted(["Boxplot", "Violin", "Distribution-Butterfly"])},
                     icon="Waterfall Chart",
                 ),
                 vm.NavLink(
                     label="Magnitude",
-                    pages={"Magnitude": ["Bar", "Column", "Magnitude-Treemap"]},
+                    pages={"Magnitude": sorted(["Bar", "Column", "Magnitude-Treemap"])},
                     icon="Bar Chart",
                 ),
                 vm.NavLink(
                     label="Time",
-                    pages={"Time": ["Line", "Time-Column"]},
+                    pages={"Time": sorted(["Line", "Time-Column"])},
                     icon="Timeline",
                 ),
                 vm.NavLink(
                     label="Part-to-whole",
-                    pages={"Part-to-whole": ["Donut", "Pie", "Treemap"]},
+                    pages={"Part-to-whole": sorted(["Donut", "Pie", "Treemap"])},
                     icon="Donut Small",
                 ),
                 vm.NavLink(
@@ -122,7 +122,7 @@ dashboard = vm.Dashboard(
                 ),
                 vm.NavLink(
                     label="Spatial",
-                    pages={"Spatial": ["Choropleth"]},
+                    pages={"Spatial": sorted(["Choropleth"])},
                     icon="Map",
                 ),
             ]

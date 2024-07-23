@@ -60,3 +60,11 @@ img[src*="#chart-icon"] {
   font-size: 16px;
   line-height: 20px;
 }
+
+.flex-container .card {
+  opacity: 0.5;
+}
+
+.flex-container .card-nav {
+  opacity: 1;
+}
