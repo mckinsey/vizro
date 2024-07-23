@@ -22,10 +22,10 @@ img[src*="#chart-icon"] {
 }
 
 .code-clipboard-container {
-  padding: 1rem;
   background: var(--surfaces-bg-card);
   max-height: 500px;
   overflow: auto;
+  padding: 1rem;
   position: relative;
 }
 

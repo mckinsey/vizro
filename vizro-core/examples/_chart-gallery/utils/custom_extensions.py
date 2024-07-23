@@ -33,7 +33,7 @@ class CodeClipboard(vm.VizroBaseModel):
                             dcc.Markdown(self.text, id=self.id),
                             dcc.Clipboard(target_id=self.id, className="code-clipboard"),
                         ],
-                        className="code-clipboard-container"
+                        className="code-clipboard-container",
                     ),
                     title="SHOW CODE",
                 )
