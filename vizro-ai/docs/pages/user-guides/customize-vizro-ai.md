@@ -1,9 +1,11 @@
 # How to customize model usage
 
 ## Supported models
-Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows, although we are working on supporting more vendors:
+Vizro-AI currently supports the following [OpenAI models](https://platform.openai.com/docs/models). We are working on supporting more vendors:
 
 === "OpenAI"
+
+    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice.
 
     - gpt-3.5-turbo `default`
     - gpt-4-turbo
