@@ -1,10 +1,10 @@
 # Vizro-AI
 
-Vizro-AI extends [Vizro](https://vizro.readthedocs.io) to enable a user to use English or other languages to effortlessly create interactive charts with [Plotly](https://plotly.com/python/).
+Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts and dashboards.
 
-If you're new to coding, Vizro-AI simplifies the process of creating charts that offer detailed insights about your data. Even if you're an experienced data practitioner, Vizro-AI optimizes how you create visually appealing charts.
+By using Vizro's themes, you can incorporate design best practices by default. If you're new to coding, Vizro-AI simplifies the both the creation of charts with [Plotly](https://plotly.com/python/) and their layout upon an interactive and easily-distributed dashboard.
 
-Vizro-AI uses a large language model and Plotly to generate code for an interactive chart that you can add into a [Vizro dashboard application](https://vizro.readthedocs.io). By using Vizro's themes, you can incorporate design best practices by default.
+Even if you are an experienced data practitioner, Vizro-AI optimizes how you create visually appealing layouts to present detailed insights about your data.
 
 <img src=".//assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 

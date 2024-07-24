@@ -1,5 +1,5 @@
 # How to create advanced charts
-Now, let's explore more advanced visualizations and use Vizro-AI for enhanced formatting.
+This page explains how to use Vizro-AI to create charts with advanced visualizations and enhanced formatting.
 
 We'll create an animated bar chart illustrating the population development of each continent over time. Run the code below and look at the result.
 

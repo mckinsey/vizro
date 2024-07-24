@@ -2,13 +2,10 @@
 
 In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, and how to install it. You'll also find out how to verify the Vizro-AI installation succeeded, find the version of Vizro-AI, and learn how to update it.
 
-## Prerequisites
-
-### Python
 Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.9 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
 
 
-### Set up a virtual environment
+## Set up a virtual environment
 You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
 ??? information "How to create a virtual environment for your Vizro-AI project"
@@ -33,10 +30,12 @@ You should create a virtual environment for each Vizro-AI project you work on to
     conda activate vizroai-environment
     ```
 
-### Set up access to a large language model
+## Set up access to a large language model
 
 Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
 
+
+### Set up access to OpenAI
 To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
 
 We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.

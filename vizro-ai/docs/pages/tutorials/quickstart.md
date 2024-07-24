@@ -1,5 +1,5 @@
-# Get started with Vizro-AI
-This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
+# Chart creation
+This tutorial introduces you to AI-generated chart creation using Vizro-AI. It explains the basics to creating a plotly chart that can be included in a Vizro dashboard, giving you the knowledge to explore the Vizro and Vizro-AI packages further.
 
 <!-- vale off -->
 ### 1. Install Vizro and its dependencies
@@ -40,7 +40,7 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 <!-- vale off -->
-### 3. Create your first chart using Vizro-AI
+### 3. Create your first plotly chart using Vizro-AI
 <!-- vale on -->
 
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
@@ -143,5 +143,7 @@ Let's create another example to illustrate the code and insights returned when p
 
 
 Now, you have created your first charts with Vizro-AI you are ready to explore further.
+
+<!-- NEEDS MORE WORK -->
 
 A good place to start would be to review the different how-to guides, such as [how to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create visualizations using different languages](../user-guides/use-different-languages.md), and [how to create advanced charts](../user-guides/create-advanced-charts.md).

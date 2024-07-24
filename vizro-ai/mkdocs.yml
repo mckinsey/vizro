@@ -3,7 +3,7 @@ site_url: https://vizro.readthedocs.io/projects/vizro-ai
 nav:
   - Vizro-AI: index.md
   - Tutorials:
-      - A first example: pages/tutorials/quickstart.md
+      - Chart creation: pages/tutorials/quickstart.md
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md

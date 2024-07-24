@@ -35,10 +35,11 @@ These models offer different levels of performance and cost to Vizro-AI users:
 
 Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
 
-## Default initialization
+## OpenAI initialization
+
 `VizroAI` can be initialized without any arguments, in which case it uses `"gpt-3.5-turbo"` by default, with a temperature setting of 0. `"gpt-3.5-turbo"` offers enhanced speed and accuracy, and generates responses in requested formats while maintaining cost-effective performance.
 
-## Customization at initialization
+### Customization at initialization
 To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated [`ChatOpenAI`](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html) model.
 
 When specifying a model as a string, you can select any option from the [supported models](#supported-models) listed above.
@@ -83,7 +84,7 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
 
 Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).
 
-## Azure OpenAI models
+### Azure OpenAI models
 To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
 such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
 Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
