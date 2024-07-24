@@ -1,5 +1,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
+from pages._factories import butterfly_factory
 from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
 
 violin = vm.Page(
@@ -70,6 +71,6 @@ boxplot = vm.Page(
     ],
 )
 
-pages = [violin, boxplot]
+butterfly = butterfly_factory("distribution")
 
-# # "Butterfly"],
+pages = [violin, boxplot, butterfly]

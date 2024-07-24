@@ -58,46 +58,6 @@ homepage = vm.Page(
     ],
 )
 
-
-# CHeck against: pages:
-# homepage,
-# bar,
-# column,
-# line,
-# scatter,
-# pie,
-# donut,
-# boxplot,
-# violin,
-# ordered_bar,
-# ordered_column,
-# time_column,
-# treemap,
-# magnitude_treemap,
-# butterfly_page,
-# distribution_butterfly,
-# choropleth,
-# sankey_page,
-# for navigation:
-# COMPLETED_CHARTS = [
-#     "bar",
-#     "ordered-bar",
-#     "column",
-#     "ordered-column",
-#     "pie",
-#     "donut",
-#     "line",
-#     "violin",
-#     "scatter",
-#     "sankey",
-#     "butterfly",
-#     "boxplot",
-#     "choropleth",
-#     "treemap",
-# ]
-#
-#
-
 # TODO: maybe nice to have an overall dashboard title? "Vizro chart gallery" or similar.
 dashboard = vm.Dashboard(
     # note has duplicates

@@ -1,5 +1,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
+from pages._factories import column_factory
 from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
 
 line = vm.Page(
@@ -29,5 +30,6 @@ line = vm.Page(
     ],
 )
 
-pages = [line]
-# column
+column = column_factory("time")
+
+pages = [line, column]

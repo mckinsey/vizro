@@ -1,5 +1,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
+from pages._factories import treemap_factory
 from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
 
 pie = vm.Page(
@@ -71,5 +72,6 @@ donut = vm.Page(
     ],
 )
 
-pages = [donut, pie]
-# treemap
+treemap = treemap_factory("part-to-whole")
+
+pages = [donut, pie, treemap]

@@ -54,7 +54,7 @@ other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
-    pages=pages.correlation.scatter,
+    pages=pages.correlation.pages,
     incomplete_pages=[
         IncompletePage("Scatter matrix"),
         IncompletePage("Column line"),
@@ -157,11 +157,11 @@ time_chart_group = ChartGroup(
 
 
 part_to_whole_intro_text = """
-Part to whole helps you show how one whole item breaks down into its component parts. If you consider the
+Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
 size of the parts to be most important, a magnitude chart may be more appropriate.
 """
 part_to_whole_chart_group = ChartGroup(
-    name="Part to whole",
+    name="Part-to-whole",
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
         IncompletePage("Stacked bar"),
@@ -202,11 +202,11 @@ spatial_chart_group = ChartGroup(
 
 
 CHART_GROUPS = [
-    # deviation_chart_group,
-    # correlation_chart_group,
-    # ranking_chart_group,
+    deviation_chart_group,
+    correlation_chart_group,
+    ranking_chart_group,
     distribution_chart_group,
-    # magnitude_chart_group,
+    magnitude_chart_group,
     time_chart_group,
     part_to_whole_chart_group,
     flow_chart_group,
@@ -219,7 +219,8 @@ TODO: write this.
 
 
 def remove_duplicated_titles(pages):
-    return list({page.title: page for page in pages}.values())
+    # comment on reversed
+    return list({page.title: page for page in reversed(list(pages))}.values())
 
 
 # TODO: COMMENT, maybe refactor into remove_duplicated_titles
