@@ -1,7 +1,7 @@
 """Controls plan model."""
 
 import logging
-from typing import List
+from typing import List, Union
 
 import vizro.models as vm
 
@@ -10,25 +10,25 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, validator
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.types import control_type
+from vizro_ai.dashboard.response_models.types import CtrlType
 
 logger = logging.getLogger(__name__)
 
 
-def _create_filter_proxy(df_cols, available_components) -> BaseModel:
+def _create_filter_proxy(df_cols, controllable_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
         """Validate the targets."""
-        if v not in available_components:
-            raise ValueError(f"targets must be one of {available_components}")
+        if v not in controllable_components:
+            raise ValueError(f"targets must be one of {controllable_components}")
         return v
 
     def validate_targets_not_empty(v):
         """Validate the targets not empty."""
-        if available_components == []:
+        if controllable_components == []:
             raise ValueError(
-                "This might be due to the filter target is not found in the available components. "
+                "This might be due to the filter target is not found in the controllable components. "
                 "returning default values."
             )
         return v
@@ -39,8 +39,6 @@ def _create_filter_proxy(df_cols, available_components) -> BaseModel:
             raise ValueError(f"column must be one of {df_cols}")
         return v
 
-    # TODO: properly check this - e.g. what is the best way to ideally dynamically include the available components
-    # even in the schema
     return create_model(
         "FilterProxy",
         targets=(
@@ -48,7 +46,7 @@ def _create_filter_proxy(df_cols, available_components) -> BaseModel:
             Field(
                 ...,
                 description="Target component to be affected by filter. "
-                f"Must be one of {available_components}. ALWAYS REQUIRED.",
+                f"Must be one of {controllable_components}. ALWAYS REQUIRED.",
             ),
         ),
         column=(str, Field(..., description="Column name of DataFrame to filter. ALWAYS REQUIRED.")),
@@ -61,8 +59,8 @@ def _create_filter_proxy(df_cols, available_components) -> BaseModel:
     )
 
 
-def _create_filter(filter_prompt, model, df_cols, df_schema, available_components):
-    result_proxy = _create_filter_proxy(df_cols=df_cols, available_components=available_components)
+def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_components) -> vm.Filter:
+    result_proxy = _create_filter_proxy(df_cols=df_cols, controllable_components=controllable_components)
     proxy = _get_pydantic_output(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
     return vm.Filter.parse_obj(
         proxy.dict(exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True})
@@ -72,7 +70,7 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, available_component
 class ControlPlan(BaseModel):
     """Control plan model."""
 
-    control_type: control_type
+    control_type: CtrlType
     control_description: str = Field(
         ...,
         description="Description of the control. Include everything that seems to relate to this control."
@@ -85,8 +83,7 @@ class ControlPlan(BaseModel):
         "If the dataframe is not used, please specify that.",
     )
 
-    # TODO: there is definitely room for dynamic model creation, e.g. with literals for targets
-    def create(self, model, available_components, df_metadata):
+    def create(self, model, controllable_components, df_metadata) -> Union[vm.Filter, None]:
         """Create the control."""
         filter_prompt = (
             f"Create a filter from the following instructions: {self.control_description}. Do not make up "
@@ -96,7 +93,6 @@ class ControlPlan(BaseModel):
         try:
             _df_schema = df_metadata.get_df_schema(self.df_name)
             _df_cols = list(_df_schema.keys())
-        # when wrong dataframe name is given
         except KeyError:
             logger.warning(f"Dataframe {self.df_name} not found in metadata, returning default values.")
             return None
@@ -108,12 +104,9 @@ class ControlPlan(BaseModel):
                     model=model,
                     df_cols=_df_cols,
                     df_schema=_df_schema,
-                    available_components=available_components,
+                    controllable_components=controllable_components,
                 )
                 return res
-            else:
-                logger.warning(f"Control type {self.control_type} not recognized.")
-                return None
 
         except ValidationError as e:
             logger.warning(

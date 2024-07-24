@@ -1,8 +1,6 @@
 """Helper Functions For Vizro AI dashboard."""
 
 from dataclasses import dataclass, field
-
-# import black
 from typing import Any, Dict
 
 import pandas as pd
@@ -34,7 +32,10 @@ class DfMetadata:
 
     def get_df(self, name: str) -> pd.DataFrame:
         """Retrieve the dataframe by name."""
-        return self.metadata[name].df
+        try:
+            return self.metadata[name].df
+        except KeyError:
+            raise KeyError("Dataframe not found in metadata. Please ensure that the correct dataframe is provided.")
 
     def get_df_schema(self, name: str) -> Dict[str, str]:
         """Retrieve the schema of the dataframe by name."""
