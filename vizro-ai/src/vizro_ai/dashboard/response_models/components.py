@@ -1,9 +1,9 @@
 """Component plan model."""
 
 import logging
+from typing import Union
 
 import vizro.models as vm
-from vizro.models.types import ComponentType
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.types import component_type
+from vizro_ai.dashboard.response_models.types import CompType
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class ComponentPlan(BaseModel):
     """Component plan model."""
 
-    component_type: component_type
+    component_type: CompType
     component_description: str = Field(
         ...,
         description="Description of the component. Include everything that relates to this component. "
@@ -37,7 +37,7 @@ class ComponentPlan(BaseModel):
         "used, please specify that as N/A.",
     )
 
-    def create(self, model, df_metadata) -> ComponentType:
+    def create(self, model, df_metadata) -> Union[vm.Card, vm.AgGrid, vm.Figure]:
         """Create the component."""
         from vizro_ai import VizroAI
 

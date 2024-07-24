@@ -89,7 +89,6 @@ class PagePlanner(BaseModel):
         if self.layout_plan is None:
             return None
         return self.layout_plan.create(
-            model=model,
             component_ids=self._get_component_ids(model=model, df_metadata=df_metadata),
         )
 
@@ -98,7 +97,7 @@ class PagePlanner(BaseModel):
             self._controls = self._build_controls(model=model, df_metadata=df_metadata)
         return self._controls
 
-    def _available_components(self, model, df_metadata):
+    def _controllable_components(self, model, df_metadata):
         return [
             comp.id
             for comp in self._get_components(model=model, df_metadata=df_metadata)
@@ -119,7 +118,7 @@ class PagePlanner(BaseModel):
                 pbar.update(1)
                 control = control_plan.create(
                     model=model,
-                    available_components=self._available_components(model=model, df_metadata=df_metadata),
+                    controllable_components=self._controllable_components(model=model, df_metadata=df_metadata),
                     df_metadata=df_metadata,
                 )
                 if control:
@@ -127,7 +126,7 @@ class PagePlanner(BaseModel):
 
         return controls
 
-    def create(self, model, df_metadata):
+    def create(self, model, df_metadata) -> vm.Page:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)
@@ -156,3 +155,47 @@ class PagePlanner(BaseModel):
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()
         return page
+
+
+if __name__ == "__main__":
+    import pandas as pd
+    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai.dashboard.utils import DfMetadata
+
+    model = _get_llm_model()
+
+    df_metadata = DfMetadata(
+        {
+            "gdp_chart": {
+                "df_schema": {"a": "int64", "b": "int64"},
+                "df": pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+                "df_sample": pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+            }
+        }
+    )
+    page_plan = PagePlanner(
+        title="Worldwide GDP",
+        components_plan=[
+            ComponentPlan(
+                component_type="Card",
+                component_description="Create a card says 'this is worldwide GDP'.",
+                component_id="gdp_card",
+                page_id="page1",
+                df_name="N/A",
+            )
+        ],
+        controls_plan=[
+            ControlPlan(
+                control_type="Filter",
+                control_description="Create a filter that filters the data by column 'a'.",
+                df_name="gdp_chart",
+            )
+        ],
+        layout_plan=LayoutPlan(
+            layout_description="N/A",
+            layout_grid_template_areas=[],
+        ),
+        unsupported_specs=[],
+    )
+    page = page_plan.create(model, df_metadata)
+    print(page)  # noqa: T201

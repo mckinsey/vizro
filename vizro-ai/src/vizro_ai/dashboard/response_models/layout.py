@@ -1,10 +1,9 @@
 """Layout plan model."""
 
 import logging
-from typing import List, Union
+from typing import List
 
 import vizro.models as vm
-from langchain_core.language_models.chat_models import BaseChatModel
 
 try:
     from pydantic.v1 import BaseModel, Field, ValidationError
@@ -14,7 +13,7 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 
 
-def _convert_to_grid(layout_grid_template_areas, component_ids):
+def _convert_to_grid(layout_grid_template_areas, component_ids) -> List[List[int]]:
     component_map = {component: index for index, component in enumerate(component_ids)}
     grid = []
 
@@ -40,17 +39,19 @@ class LayoutPlan(BaseModel):
     layout_description: str = Field(
         ...,
         description="Description of the layout of Vizro Components(Graph, AgGrid, Card). "
-        "Include everything that seems to relate"
-        " to this layout AS IS. If layout not specified, describe layout as `N/A`.",
+        "Include everything that seems to relate to this layout. If layout not specified, describe layout as `N/A`.",
     )
     layout_grid_template_areas: List[str] = Field(
         [],
-        description="Grid template areas for the layout, which adhere to the grid-template-areas CSS property syntax."
-        "Each unique string ('component_id' and 'page_id' concated by '_') should be used to "
-        "represent a unique component. If no grid template areas are provided, leave this as an empty list.",
+        description="Generate grid template areas for the layout adhering to the grid-template-areas CSS property "
+        "syntax. Each unique string ('component_id' and 'page_id' concatenated by '_') should be used to represent "
+        "a unique component. If a grid area is empty, use a dot ('.') to represent it."
+        "Ensure that each row of the grid layout is represented by a string, with each grid area separated by a space."
+        "Return the grid template areas as a list of strings, where each string corresponds to a row in the grid."
+        "If no grid template areas are provided, return an empty list.",
     )
 
-    def create(self, model: BaseChatModel, component_ids: List[str]) -> Union[vm.Layout, None]:
+    def create(self, component_ids: List[str]):
         """Create the layout."""
         if self.layout_description == "N/A":
             return None
