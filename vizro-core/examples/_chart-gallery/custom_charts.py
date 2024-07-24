@@ -1,77 +1,17 @@
-"""Contains custom components and charts used inside the dashboard."""
+"""Contains custom charts used inside the dashboard."""
 
-from typing import List, Literal
 
-import dash_bootstrap_components as dbc
+from typing import List
+
 import pandas as pd
-import plotly.graph_objects as go
-import vizro.models as vm
-from dash import dcc, html
+from plotly import graph_objects as go
+
 from vizro.models.types import capture
 
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
 
-
-class CodeClipboard(vm.VizroBaseModel):
-    """Contains code snippet with a copy to clipboard button."""
-
-    type: Literal["code_clipboard"] = "code_clipboard"
-    title: str = "Code"
-    # TODO: remove text, make code non-optional
-    text: str = ""
-    code: str = ""
-    language: str = ""
-
-    def build(self):
-        """Returns the code clipboard component inside an accordion."""
-        markdown_code = self.text or "\n".join([f"```{self.language}", self.code, "```"])
-        return dbc.Accordion(
-            [
-                dbc.AccordionItem(
-                    html.Div(
-                        [
-                            html.H3(self.title),
-                            dcc.Markdown(markdown_code, id=self.id),
-                            dcc.Clipboard(target_id=self.id, className="code-clipboard"),
-                        ],
-                        className="code-clipboard-container",
-                    ),
-                    title="SHOW CODE",
-                )
-            ],
-            start_collapsed=False,
-        )
-
-
-class Markdown(vm.VizroBaseModel):
-    """Markdown component."""
-
-    type: Literal["markdown"] = "markdown"
-    text: str = Field(
-        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
-    )
-    classname: str = ""
-
-    def build(self):
-        """Returns a markdown component with an optional classname."""
-        return dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname)
-
-
-class FlexContainer(vm.Container):
-    """Custom flex `Container`."""
-
-    type: Literal["flex_container"] = "flex_container"
-
-    def build(self):
-        """Returns a flex container."""
-        return html.Div(
-            id=self.id, children=[component.build() for component in self.components], className="flex-container"
-        )
-
-
+# TODO: consider how this should be represented in the code example files. Since the code is copy and pasted
+# it can get out of sync. But probably we don't want the docstrings in the short code snippet.
+# Ultimately these charts will probably move to vizro.charts anyway.
 @capture("graph")
 def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
     """Creates a custom butterfly chart using Plotly's go.Figure.
@@ -110,7 +50,6 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
     return fig
 
 
-# TODO: think about where this goes
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Sankey`.
@@ -152,8 +91,3 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
     )
     fig.update_layout(barmode="relative")
     return fig
-
-
-vm.Container.add_type("components", FlexContainer)
-vm.Container.add_type("components", Markdown)
-vm.Page.add_type("components", CodeClipboard)

@@ -4,7 +4,7 @@ from pathlib import Path
 import black
 import pandas as pd
 import vizro.plotly.express as px
-from utils.custom_extensions import CodeClipboard
+from custom_components import CodeClipboard
 
 
 def make_code_clipboard_from_py_file(filepath: str):

@@ -1,7 +1,6 @@
 import vizro.models as vm
-import vizro.plotly.express as px
-from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
-from utils.custom_extensions import sankey
+from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from custom_charts import sankey
 
 sankey = vm.Page(
     title="Sankey",

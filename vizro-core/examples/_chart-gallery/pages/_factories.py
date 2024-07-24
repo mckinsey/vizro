@@ -4,11 +4,11 @@ Note: Since each page can only belong to one navigation group, we need a new pag
 each chart type used in different groups.
 """
 
-from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from utils.custom_extensions import butterfly
+from custom_charts import butterfly
 
 
 # TODO: this is currently identical to ordered column. It should be:

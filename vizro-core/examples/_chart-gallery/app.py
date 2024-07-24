@@ -1,18 +1,18 @@
 """App configuration for chart gallery dashboard."""
+import dash
 from typing import Union
 
 import itertools
 
 import vizro.models as vm
 from chart_groups import ChartGroup, CHART_GROUPS, ALL_CHART_GROUP, IncompletePage
-from utils.custom_extensions import Markdown, FlexContainer
+from custom_components import Markdown, FlexContainer
 
 from vizro import Vizro
 
 
 def make_chart_card(page: Union[vm.Page, IncompletePage]):
     svg_name = page.title.lower().replace(" ", "-")
-    # asset url correctly
     return vm.Card(
         text=f"""
            ![](assets/images/charts/{svg_name}.svg#chart-icon)
@@ -30,7 +30,6 @@ def make_homepage_container(chart_group: ChartGroup):
         components=[
             Markdown(text=chart_group.intro_text, classname="intro-text"),
             FlexContainer(
-                title="",
                 components=[
                     make_chart_card(page)
                     for page in sorted(
