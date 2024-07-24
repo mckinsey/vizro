@@ -16,10 +16,11 @@ from utils.custom_extensions import butterfly
 #  - different svg
 #  - slightly different text
 #  - slightly different example
-def column_factory(id_prefix: str):
+def column_factory(group: str):
     """Reusable function to create the page content for the column chart with a unique ID."""
     return vm.Page(
-        id=f"{id_prefix}-column",
+        id=f"{group}-column",
+        path=f"{group}/column",
         title="Column",
         layout=vm.Layout(grid=PAGE_GRID),
         components=[
@@ -53,10 +54,11 @@ def column_factory(id_prefix: str):
     )
 
 
-def treemap_factory(id_prefix: str):
+def treemap_factory(group: str):
     """Reusable function to create the page content for the treemap chart with a unique ID."""
     return vm.Page(
-        id=f"{id_prefix}-treemap",
+        id=f"{group}-treemap",
+        path=f"{group}/treemap",
         title="Treemap",
         layout=vm.Layout(grid=PAGE_GRID),
         components=[
@@ -92,10 +94,11 @@ def treemap_factory(id_prefix: str):
     )
 
 
-def butterfly_factory(id_prefix: str):
+def butterfly_factory(group: str):
     """Reusable function to create the page content for the butterfly chart with a unique ID."""
     return vm.Page(
-        id=f"{id_prefix}-butterfly",
+        id=f"{group}-butterfly",
+        path=f"{group}/butterfly",
         title="Butterfly",
         layout=vm.Layout(grid=PAGE_GRID),
         components=[

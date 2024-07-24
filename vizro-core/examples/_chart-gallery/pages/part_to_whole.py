@@ -5,6 +5,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 
 pie = vm.Page(
     title="Pie",
+    path="part-to-whole/pie",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
@@ -41,6 +42,7 @@ pie = vm.Page(
 
 donut = vm.Page(
     title="Donut",
+    path="part-to-whole/donut",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

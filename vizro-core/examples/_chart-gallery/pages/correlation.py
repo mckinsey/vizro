@@ -4,6 +4,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 
 scatter = vm.Page(
     title="Scatter",
+    path="correlation/scatter",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

@@ -10,6 +10,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 #  - slightly different example
 bar = vm.Page(
     title="Bar",
+    path="magnitude/bar",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

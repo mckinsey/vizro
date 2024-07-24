@@ -5,6 +5,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 
 line = vm.Page(
     title="Line",
+    path="time/line",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

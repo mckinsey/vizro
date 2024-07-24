@@ -5,6 +5,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 
 violin = vm.Page(
     title="Violin",
+    path="distribution/violin",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
@@ -37,6 +38,7 @@ violin = vm.Page(
 
 boxplot = vm.Page(
     title="Boxplot",
+    path="distribution/boxplot",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

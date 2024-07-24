@@ -5,6 +5,7 @@ from utils.custom_extensions import sankey
 
 sankey = vm.Page(
     title="Sankey",
+    path="flow/sankey",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(

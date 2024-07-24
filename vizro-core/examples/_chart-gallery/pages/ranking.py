@@ -4,6 +4,7 @@ from utils._page_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_
 
 ordered_bar = vm.Page(
     title="Ordered bar",
+    path="ranking/ordered-bar",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
@@ -42,6 +43,7 @@ ordered_bar = vm.Page(
 
 ordered_column = vm.Page(
     title="Ordered column",
+    path="ranking/ordered-column",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
