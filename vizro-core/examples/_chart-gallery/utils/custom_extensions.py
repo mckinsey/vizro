@@ -20,17 +20,21 @@ class CodeClipboard(vm.VizroBaseModel):
 
     type: Literal["code_clipboard"] = "code_clipboard"
     title: str = "Code"
-    text: str
+    # TODO: remove text, make code non-optional
+    text: str = ""
+    code: str = ""
+    language: str = ""
 
     def build(self):
         """Returns the code clipboard component inside an accordion."""
+        markdown_code = self.text or "\n".join([f"```{self.language}", self.code, "```"])
         return dbc.Accordion(
             [
                 dbc.AccordionItem(
                     html.Div(
                         [
                             html.H3(self.title),
-                            dcc.Markdown(self.text, id=self.id),
+                            dcc.Markdown(markdown_code, id=self.id),
                             dcc.Clipboard(target_id=self.id, className="code-clipboard"),
                         ],
                         className="code-clipboard-container",
@@ -106,6 +110,7 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
     return fig
 
 
+# TODO: think about where this goes
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Sankey`.
@@ -147,3 +152,8 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
     )
     fig.update_layout(barmode="relative")
     return fig
+
+
+vm.Container.add_type("components", FlexContainer)
+vm.Container.add_type("components", Markdown)
+vm.Page.add_type("components", CodeClipboard)

@@ -1,7 +1,19 @@
 """Contains reusable data sets and constants."""
+from pathlib import Path
 
+import black
 import pandas as pd
 import vizro.plotly.express as px
+from utils.custom_extensions import CodeClipboard
+
+
+def make_code_clipboard_from_py_file(filepath: str):
+    # comment on stability
+    filepath = Path(__file__).parents[1] / "pages/examples" / filepath
+    return CodeClipboard(
+        code=black.format_str(filepath.read_text(encoding="utf-8"), mode=black.Mode()), language="python"
+    )
+
 
 # DATA --------------------------------------------------------------
 gapminder = px.data.gapminder()

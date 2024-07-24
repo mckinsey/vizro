@@ -1,22 +1,25 @@
 """App configuration for chart gallery dashboard."""
+from typing import Union
+
 import itertools
 
 import vizro.models as vm
-from chart_groups import ChartGroup, CHART_GROUPS, ALL_CHART_GROUP
+from chart_groups import ChartGroup, CHART_GROUPS, ALL_CHART_GROUP, IncompletePage
 from utils.custom_extensions import Markdown, FlexContainer
 
 from vizro import Vizro
 
 
-def make_chart_card(page: vm.Page, complete: bool):
+def make_chart_card(page: Union[vm.Page, IncompletePage]):
     svg_name = page.title.lower().replace(" ", "-")
+    # asset url correctly
     return vm.Card(
         text=f"""
-           ![](assets/images/pages/{svg_name}.svg#page-icon)
+           ![](assets/images/charts/{svg_name}.svg#chart-icon)
 
            #### {page.title}
            """,
-        href=f"/{page.path}" if complete else "",
+        href=page.path,
     )
 
 
@@ -29,8 +32,11 @@ def make_homepage_container(chart_group: ChartGroup):
             FlexContainer(
                 title="",
                 components=[
-                    make_chart_card(page, page in chart_group.pages)
-                    for page in sorted(chart_group.pages | chart_group.incomplete_pages)
+                    make_chart_card(page)
+                    for page in sorted(
+                        chart_group.pages + chart_group.incomplete_pages,
+                        key=lambda page: page.title,
+                    )
                 ],
             ),
         ],
@@ -40,13 +46,9 @@ def make_homepage_container(chart_group: ChartGroup):
 def make_navlink(chart_group: ChartGroup):
     return vm.NavLink(
         label=chart_group.name,
-        pages={chart_group.name: sorted(page.id for page in chart_group.pages)},
+        pages={chart_group.name: [page.id for page in sorted(chart_group.pages, key=lambda page: page.title)]},
         icon=chart_group.icon,
     )
-
-
-vm.Container.add_type("components", Markdown)
-vm.Container.add_type("components", FlexContainer)
 
 
 homepage = vm.Page(
@@ -99,7 +101,7 @@ homepage = vm.Page(
 # TODO: maybe nice to have an overall dashboard title? "Vizro chart gallery" or similar.
 dashboard = vm.Dashboard(
     # note has duplicates
-    pages=itertools.chain(*chart_group.pages for chart_group in CHART_GROUPS),
+    pages=[homepage, *list(itertools.chain(*(chart_group.pages for chart_group in CHART_GROUPS)))],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[

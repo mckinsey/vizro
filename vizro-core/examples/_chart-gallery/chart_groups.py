@@ -1,38 +1,47 @@
 # """Contains code for the containers used inside the tabs (homepage)."""
 import itertools
 
-from typing import Set
+from typing import Set, List
 
 from dataclasses import dataclass
 
+import pages.deviation, pages.correlation, pages.ranking, pages.magnitude, pages.time, pages.spatial, pages.distribution, pages.flow, pages.part_to_whole
 import vizro.models as vm
+
+# COMMENT
+
+
+@dataclass
+class IncompletePage:
+    title: str
+    path: str = ""
 
 
 @dataclass
 class ChartGroup:
     name: str
-    pages: Set[vm.Page]  # Just completed, not all pages
-    incomplete_pages: Set[vm.Page]
-    icon: str
+    pages: List[vm.Page]  # Just completed, not all pages
+    incomplete_pages: List[IncompletePage]
     intro_text: str
+    icon: str = ""
 
 
 # TODO: Charts that are commented out in incomplete_pages below do not have an svg made yet.
 #  Uncomment them once they are ready.
 
 deviation_intro_text = """
-Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
-Often this reference point is zero, but you might also show a target or a long-term average.
+Deviation enables you to draw attention to variations (+/ ) from a fixed reference point.
+Often this reference point is zero, but you might also show a target or a long term average.
 You can also use deviation to express a positive, neutral or negative sentiment.
 """
 deviation_chart_group = ChartGroup(
     name="Deviation",
-    pages={"butterfly"},
-    incomplete_pages={
-        "diverging-bar",
-        # "diverging-stacked-bar",
-        "surplus",
-    },
+    pages=pages.deviation.pages,
+    incomplete_pages=[
+        IncompletePage(title="Diverging bar"),
+        # IncompletePage("Diverging stacked bar"),
+        IncompletePage(title="Surplus"),
+    ],
     icon="Planner Review",
     intro_text=deviation_intro_text,
 )
@@ -45,15 +54,14 @@ other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
-    pages={"Scatter"},
-    incomplete_pages={
-        "scatter",
-        "scatter-matrix",
-        "column-line",
-        # "connected-scatter",
-        "heatmap-matrix",
-        "bubble",
-    },
+    pages=pages.correlation.scatter,
+    incomplete_pages=[
+        IncompletePage("Scatter matrix"),
+        IncompletePage("Column line"),
+        # IncompletePage("Connected scatter"),
+        IncompletePage("Heatmap matrix"),
+        IncompletePage("Bubble"),
+    ],
     icon="Bubble Chart",
     intro_text=correlation_intro_text,
 )
@@ -66,15 +74,13 @@ interesting points with highlighting or labels to ensure the reader understands 
 """
 ranking_chart_group = ChartGroup(
     name="Ranking",
-    pages={"Ordered Bar", "Ordered Column"},
-    incomplete_pages={
-        "ordered-bar",
-        "ordered-column",
-        "ordered-bubble",
-        "slope",
-        "lollipop",
-        "stepped-line",
-    },
+    pages=pages.ranking.pages,
+    incomplete_pages=[
+        IncompletePage("Ordered bubble"),
+        IncompletePage("Slope"),
+        IncompletePage("Lollipop"),
+        IncompletePage("Stepped line"),
+    ],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
 )
@@ -89,14 +95,14 @@ uniformity or equality in the data.
 """
 distribution_chart_group = ChartGroup(
     name="Distribution",
-    pages={"Boxplot", "Violin", "Distribution-Butterfly"},
-    incomplete_pages={
-        "histogram",
-        "dot-plot",
-        "barcode",
-        "cumulative-curve",
-        # "beeswarm",
-    },
+    pages=pages.distribution.pages,
+    incomplete_pages=[
+        IncompletePage("Histogram"),
+        IncompletePage("Dot plot"),
+        IncompletePage("Barcode"),
+        IncompletePage("Cumulative curve"),
+        # IncompletePage("Beeswarm"),
+    ],
     icon="Waterfall Chart",
     intro_text=distribution_intro_text,
 )
@@ -109,19 +115,19 @@ percentages.
 """
 magnitude_chart_group = ChartGroup(
     name="Magnitude",
-    pages={"Bar", "Column", "Magnitude-Treemap"},
-    incomplete_pages={
-        # "paired-column",
-        # "paired-bar",
-        "marimekko",
-        "bubble",
-        "lollipop",
-        "radar",
-        "parallel-coordinates",
-        "pictogram",
-        "bullet",
-        "radial",
-    },
+    pages=pages.magnitude.pages,
+    incomplete_pages=[
+        # IncompletePage("Paired column",
+        # IncompletePage("Paired bar",
+        IncompletePage("Marimekko"),
+        IncompletePage("Bubble"),
+        IncompletePage("Lollipop"),
+        IncompletePage("Radar"),
+        IncompletePage("Parallel coords"),
+        IncompletePage("Pictogram"),
+        IncompletePage("Bullet"),
+        IncompletePage("Radial"),
+    ],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
 )
@@ -133,39 +139,39 @@ period of time to best show your audience the message they need to take away.
 """
 time_chart_group = ChartGroup(
     name="Time",
-    pages={"Line", "Time-Column"},
-    incomplete_pages={
-        "gantt",
-        "column-line",
-        "slope",
-        "fan",
-        # "area",
-        # "connected-scatter",
-        "heatmap",
-        "bubble-timeline",
-        "sparkline",
-    },
+    pages=pages.time.pages,
+    incomplete_pages=[
+        IncompletePage("Gantt"),
+        IncompletePage("Column line"),
+        IncompletePage("Slope"),
+        IncompletePage("Fan"),
+        # IncompletePage("Area"),
+        # IncompletePage("Connected scatter"),
+        IncompletePage("Heatmap"),
+        IncompletePage("Bubble timeline"),
+        IncompletePage("Sparkline"),
+    ],
     icon="Timeline",
     intro_text=time_intro_text,
 )
 
 
 part_to_whole_intro_text = """
-Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
+Part to whole helps you show how one whole item breaks down into its component parts. If you consider the
 size of the parts to be most important, a magnitude chart may be more appropriate.
 """
 part_to_whole_chart_group = ChartGroup(
-    name="Part-to-whole",
-    pages={"Donut", "Pie", "Treemap"},
-    incomplete_pages={
-        "stacked-bar",
-        "stacked-column",
-        "marimekko",
-        "funnel",
-        "arc",
-        "venn",
-        "waterfall",
-    },
+    name="Part to whole",
+    pages=pages.part_to_whole.pages,
+    incomplete_pages=[
+        IncompletePage("Stacked bar"),
+        IncompletePage("Stacked column"),
+        IncompletePage("Marimekko"),
+        IncompletePage("Funnel"),
+        IncompletePage("Arc"),
+        IncompletePage("Venn"),
+        IncompletePage("Waterfall"),
+    ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
 )
@@ -177,8 +183,8 @@ locations.
 """
 flow_chart_group = ChartGroup(
     name="Flow",
-    pages={"sankey"},
-    incomplete_pages={"waterfall", "chord", "network"},
+    pages=pages.flow.pages,
+    incomplete_pages=[IncompletePage("Waterfall"), IncompletePage("Chord"), IncompletePage("Network")],
     icon="Stacked Line Chart",
     intro_text=flow_intro_text,
 )
@@ -188,19 +194,19 @@ Spatial charts allow you to demonstrate precise locations or geographical patter
 """
 spatial_chart_group = ChartGroup(
     name="Spatial",
-    pages={"Choropleth"},
-    incomplete_pages={"dot-map", "flow-map", "bubble-map"},
+    pages=pages.spatial.pages,
+    incomplete_pages=[IncompletePage("Dot map"), IncompletePage("Flow map"), IncompletePage("Bubble map")],
     icon="Map",
     intro_text=spatial_intro_text,
 )
 
 
 CHART_GROUPS = [
-    deviation_chart_group,
-    correlation_chart_group,
-    ranking_chart_group,
+    # deviation_chart_group,
+    # correlation_chart_group,
+    # ranking_chart_group,
     distribution_chart_group,
-    magnitude_chart_group,
+    # magnitude_chart_group,
     time_chart_group,
     part_to_whole_chart_group,
     flow_chart_group,
@@ -212,15 +218,17 @@ TODO: write this.
 """
 
 
-def remove_duplicates(pages):
-    return {page.title: page for page in pages}.values()
+def remove_duplicated_titles(pages):
+    return list({page.title: page for page in pages}.values())
 
 
-# TODO: COMMENT
+# TODO: COMMENT, maybe refactor into remove_duplicated_titles
 
 ALL_CHART_GROUP = ChartGroup(
     name="All",
-    pages=remove_duplicates(itertools.chain(*chart_group.pages for chart_group in CHART_GROUPS)),
-    incomplete_pages=remove_duplicates(itertools.chain(chart_group.incomplete_pages for chart_group in CHART_GROUPS)),
+    pages=remove_duplicated_titles(itertools.chain(*(chart_group.pages for chart_group in CHART_GROUPS))),
+    incomplete_pages=remove_duplicated_titles(
+        itertools.chain(*(chart_group.incomplete_pages for chart_group in CHART_GROUPS))
+    ),
     intro_text=all_intro_text,
 )
