@@ -8,12 +8,12 @@ from vizro.figures.unwrapped import kpi_card, kpi_card_reference
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 # Add single CSS file figures.css or
-base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@0.1.18/vizro-core/src/vizro/static/css/"
+base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/create-module-pure-functions/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
 vizro_css = base + "figures.min.css"
 
 # Add entire assets folder from Vizro
-app = Dash(external_stylesheets=[dbc.themes.COSMO])
+app = Dash(external_stylesheets=[vizro_bootstrap])
 
 app.layout = dbc.Container(
     [
