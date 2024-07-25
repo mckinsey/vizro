@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update `optionHeight` of `vm.Dropdown` dynamically based on character length. ([#574](https://github.com/mckinsey/vizro/pull/574))
+- Disabled figure display upon variable assignment, to display outcome of `VizroAI.plot()` add `.show()`. Enable feature XXX ([#527](https://github.com/mckinsey/vizro/pull/527))
 
 <!--
 ### Deprecated

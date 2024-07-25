@@ -96,8 +96,9 @@ class CapturedCallable:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
 
-        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        # Used in later validations of the captured callable.
         self._mode = None
+        self._model_example = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -283,7 +284,16 @@ class capture:
 
     def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
         """Decorator to capture a function call."""
+        # mode and model_example are used in later validations of the captured callable.
         self._mode = mode
+        model_examples = {
+            "graph": "vm.Graph(figure=...)",
+            "action": "vm.Action(function=...)",
+            "table": "vm.Table(figure=...)",
+            "ag_grid": "vm.AgGrid(figure=...)",
+            "figure": "vm.Figure(figure=...)",
+        }
+        self._model_example = model_examples[mode]
 
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
@@ -307,6 +317,7 @@ class capture:
                 # positional or keyword, this is much more robust than trying to get it out of arg or kwargs ourselves.
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
 
                 try:
                     captured_callable["data_frame"]
@@ -334,6 +345,7 @@ class capture:
                 # Note this is basically the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
                 return captured_callable
 
             return wrapped
@@ -346,6 +358,7 @@ class capture:
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
 
                 try:
                     captured_callable["data_frame"]

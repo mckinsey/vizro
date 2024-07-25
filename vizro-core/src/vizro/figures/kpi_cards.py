@@ -56,6 +56,12 @@ def kpi_card(  # noqa: PLR0913
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
 
+    Examples:
+        Wrap inside `vm.Figure` to use as a component inside `vm.Page` or `vm.Container`.
+        >>> import vizro.models as vm
+        >>> from vizro.figures import kpi_card
+        >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card(...))])
+
     """
     title = title or f"{agg_func} {value_column}".title()
     value = data_frame[value_column].agg(agg_func)
@@ -118,6 +124,12 @@ def kpi_card_reference(  # noqa: PLR0913
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
+
+    Examples:
+        Wrap inside `vm.Figure` to use as a component inside `vm.Page` or `vm.Container`.
+        >>> import vizro.models as vm
+        >>> from vizro.figures import kpi_card_reference
+        >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card_reference(...))])
 
     """
     title = title or f"{agg_func} {value_column}".title()

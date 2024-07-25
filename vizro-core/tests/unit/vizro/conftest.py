@@ -5,6 +5,7 @@ import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.figures import kpi_card
 from vizro.tables import dash_ag_grid, dash_data_table
 
 
@@ -59,6 +60,16 @@ def dash_data_table_with_id(gapminder):
 @pytest.fixture
 def standard_go_chart(gapminder):
     return go.Figure(data=go.Scatter(x=gapminder["gdpPercap"], y=gapminder["lifeExp"], mode="markers"))
+
+
+@pytest.fixture
+def standard_kpi_card(gapminder):
+    return kpi_card(
+        data_frame=gapminder,
+        value_column="lifeExp",
+        agg_func="mean",
+        value_format="{value:.3f}",
+    )
 
 
 @pytest.fixture
