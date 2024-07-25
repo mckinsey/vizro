@@ -1,16 +1,34 @@
 .card-kpi {
   border-left: 4px solid var(--bs-secondary);
   padding: 1rem;
+  height: 100%;
+}
+
+.card-kpi .material-symbols-outlined {
+  margin: auto 0;
+}
+
+/*This should be replaced, when the bootstrap theme is finalised. Currently our font tokens don't match with the
+ bootstrap font tokens, leading to deviations which we need to overwrite.*/
+.card-kpi-title {
+  font-size: 1.5rem;
+  line-height: 1;
+  margin: 0;
+}
+
+.card-kpi .card-header,
+.card-kpi .card-footer,
+.card-kpi .card-body {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .card-kpi .card-header {
   display: flex;
   flex-direction: row;
-  gap: 8px;
-}
-
-.card-kpi .card-header .material-symbols-outlined {
-  line-height: 30px;
+  gap: 0.5rem;
 }
 
 .card-kpi .card-body {
@@ -20,25 +38,27 @@
   flex-grow: 1;
   font-size: 3.6vh;
   font-weight: 600;
+  padding: 1rem 0;
 }
 
 .card-kpi .card-footer {
   color: var(--bs-secondary);
   display: flex;
   font-weight: 600;
-  gap: 4px;
+  gap: 0.25rem;
 }
+
+
 
 .card-kpi .card-footer .material-symbols-outlined {
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 1.25rem;
 }
 
-.color-pos.card-footer {
+.card-kpi .color-pos.card-footer {
   color: var(--bs-blue);
 }
 
-.color-neg.card-footer {
+.card-kpi .color-neg.card-footer {
   color: var(--bs-pink);
 }
 
@@ -50,14 +70,6 @@
   border-left: 4px solid var(--bs-pink);
 }
 
-.card-kpi .card-header,
-.card-kpi .card-footer,
-.card-kpi .card-body {
-  background: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-}
 
 @font-face {
   font-family: "Material Symbols Outlined";

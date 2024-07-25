@@ -13,7 +13,9 @@ vizro_bootstrap = base + "vizro-bootstrap.min.css"
 vizro_css = base + "figures.min.css"
 
 # Add entire assets folder from Vizro
-app = Dash(external_stylesheets=[vizro_bootstrap])
+app = Dash(external_stylesheets=[vizro_bootstrap
+                                 #dbc.themes.SANDSTONE
+                                 ])
 
 app.layout = dbc.Container(
     [
@@ -22,16 +24,6 @@ app.layout = dbc.Container(
             children=[
                 dbc.Row(
                     [
-                        dbc.Col(
-                            dbc.Card(
-                                children=[
-                                    dbc.CardHeader(
-                                        [html.P("payment", className="material-symbols-outlined"), html.H2("Helllo")]
-                                    ),
-                                    dbc.CardBody("44545"),
-                                ]
-                            )
-                        ),
                         dbc.Col(
                             kpi_card(
                                 data_frame=df_kpi,
@@ -60,10 +52,10 @@ app.layout = dbc.Container(
                             )
                         ),
                     ]
-                )
+                ),
             ],
             # Note: They need to add vizro_light here
-            #  className="vizro_light",
+            #className="vizro_light",
         ),
     ]
 )
