@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add dark mode and loading spinner to the layout loading screen (before Vizro app is shown) ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add dark mode and loading spinner to the layout loading screen (before Vizro app is shown) ([#598](https://github.com/mckinsey/vizro/pull/598))
 
 
 <!--
