@@ -4,11 +4,36 @@
   padding: 1rem;
 }
 
+/* We currently ship this CSS file with the package, so this needs to live here at the moment. */
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v199/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejbd5zrDAt.woff2")
+    format("woff2");
+}
+
+.material-symbols-outlined {
+  direction: ltr;
+  display: inline-block;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-feature-settings: "liga";
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
 .card-kpi .material-symbols-outlined {
   margin: auto 0;
 }
 
-/* This should be replaced, when the bootstrap theme is finalised. Currently our font tokens don't match with the
+/* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
   font-size: 1.5rem;
@@ -66,28 +91,4 @@
 
 .card-kpi:has(.color-neg) {
   border-left: 4px solid var(--bs-pink);
-}
-
-@font-face {
-  font-family: "Material Symbols Outlined";
-  font-style: normal;
-  font-weight: 400;
-  src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v199/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejbd5zrDAt.woff2")
-    format("woff2");
-}
-
-.material-symbols-outlined {
-  direction: ltr;
-  display: inline-block;
-  font-family: "Material Symbols Outlined";
-  font-feature-settings: "liga";
-  font-size: 24px;
-  -webkit-font-smoothing: antialiased;
-  font-style: normal;
-  font-weight: normal;
-  letter-spacing: normal;
-  line-height: 1;
-  text-transform: none;
-  white-space: nowrap;
-  word-wrap: normal;
 }
