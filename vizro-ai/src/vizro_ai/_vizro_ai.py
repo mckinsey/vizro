@@ -6,6 +6,8 @@ import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
 
 from vizro_ai._llm_models import _get_llm_model
+from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
+from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
     PlotOutputs,
@@ -14,8 +16,6 @@ from vizro_ai.utils.helper import (
     _exec_code_and_retrieve_fig,
     _is_jupyter,
 )
-from vizro_ai.vizro_ai_charts.components import GetCodeExplanation, GetDebugger
-from vizro_ai.vizro_ai_charts.task_pipeline._pipeline_manager import PipelineManager
 
 logger = logging.getLogger(__name__)
 
