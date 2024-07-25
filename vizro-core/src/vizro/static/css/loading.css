@@ -1,24 +1,26 @@
 /* Loading spinner on layout load - ie when the Vizro app is not shown yet */
+
 /* Inspired by https://github.com/facultyai/dash-bootstrap-components/blob/5c8f4b40f1100fc00bf2d5c1d671a7815a6b2910/docs/static/loading.css */
 ._dash-loading {
-    background: rgba(20, 23, 33, 1);
-    inset: 0;
-    color: transparent;
-    margin: 0;
-    position: fixed;
-    text-align: center;
-  }
-  ._dash-loading::after {
-    content: '';
-    display: inline-block;
-    width: 12rem;
-    height: 12rem;
-    color: lightgrey;
-    vertical-align: text-bottom;
-    border: 1rem solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    -webkit-animation: spinner-border 0.75s linear infinite;
-    animation: spinner-border 0.75s linear infinite;
-    margin: 20rem 0;
-  }
+  background: rgba(20, 23, 33, 1);
+  color: transparent;
+  inset: 0;
+  margin: 0;
+  position: fixed;
+  text-align: center;
+}
+
+._dash-loading::after {
+  animation: spinner-border 0.75s linear infinite;
+  animation: spinner-border 0.75s linear infinite;
+  border: 1rem solid currentcolor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  color: lightgrey;
+  content: "";
+  display: inline-block;
+  height: 12rem;
+  margin: 20rem 0;
+  vertical-align: text-bottom;
+  width: 12rem;
+}
