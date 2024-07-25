@@ -21,7 +21,7 @@ ordered_bar = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Select a bar chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can
@@ -59,7 +59,7 @@ ordered_column = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Select a column chart when you want to help your audience draw size comparisons and identify
             patterns between categorical data, i.e., data that presents **how many?** in each category. You can

@@ -30,7 +30,7 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
     fig = go.Figure()
     fig.add_trace(
         go.Bar(
-            x=-data_frame[x1].values,
+            x=-data_frame[x1],
             y=data_frame[y],
             orientation="h",
             name=x1,

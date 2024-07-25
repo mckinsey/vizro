@@ -6,16 +6,7 @@ iris = px.data.iris()
 
 page = vm.Page(
     title="Scatter",
-    components=[
-        vm.Graph(
-            figure=px.scatter(
-                iris,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-            )
-        )
-    ],
+    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

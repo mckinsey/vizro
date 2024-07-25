@@ -21,7 +21,7 @@ line = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             You should select a line chart when you want to show trends over time. Usually, your y-axis will show a
             quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also

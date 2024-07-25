@@ -21,7 +21,7 @@ violin = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Use this chart to go beyond the simple box plot and show the distribution shape of the data, the
             inter-quartile range, the confidence intervals and the median.
@@ -54,12 +54,12 @@ boxplot = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Choose a box plot when you need to summarize distributions between many groups or datasets. It takes up
             less space than many other charts.
 
-            Create boxes to display the median, and the upper and lower quartiles. Add `whiskers` to highlight
+            Create boxes to display the median, and the upper and lower quartiles. Add whiskers to highlight
             variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with
             the whiskers.
         """

@@ -20,7 +20,7 @@ sankey = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Use a Sankey chart when you want to visualize the flow of resources, energy, money, or other values from
             one point to another. It is particularly useful for showing distributions and transfers within a system,

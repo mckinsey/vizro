@@ -20,10 +20,10 @@ scatter = vm.Page(
 
             &nbsp;
 
-            #### When to use it?
+            #### When should I use it?
 
             Use scatter plots when you want to show the relationship between two variables. Scatter plots are sometimes
-            called Correlation plots because they show how two variables are correlated. Scatter plots are ideal when
+            called _Correlation plots_ because they show how two variables are correlated. Scatter plots are ideal when
             you have paired numerical data and you want to see if one variable impacts the other. However, do remember
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """

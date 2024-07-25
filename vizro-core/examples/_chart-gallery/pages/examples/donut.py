@@ -6,16 +6,7 @@ tips = px.data.tips()
 
 page = vm.Page(
     title="Donut",
-    components=[
-        vm.Graph(
-            figure=px.pie(
-                tips,
-                values="tip",
-                names="day",
-                hole=0.4,
-            )
-        )
-    ],
+    components=[vm.Graph(figure=px.pie(tips, values="tip", names="day", hole=0.4))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

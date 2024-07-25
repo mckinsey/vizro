@@ -33,7 +33,7 @@ def column_factory(group: str):
 
                 &nbsp;
 
-                #### When to use it?
+                #### When should I use it?
 
                 Select a column chart when you want to help your audience draw size comparisons and identify
                 patterns between categorical data, i.e., data that presents **how many?** in each category. You can
@@ -73,7 +73,7 @@ def treemap_factory(group: str):
 
                 &nbsp;
 
-                #### When to use it?
+                #### When should I use it?
 
                 It's helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
                 compare groups and single elements nested within them. Consider using them instead of Pie charts when
@@ -112,7 +112,7 @@ def butterfly_factory(group: str):
 
                 &nbsp;
 
-                #### When to use it?
+                #### When should I use it?
 
                 Use a butterfly chart when you wish to emphasize the comparison between two data sets sharing the same
                 parameters. Sharing this chart with your audience will help them see at a glance how two groups differ

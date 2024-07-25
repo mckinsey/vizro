@@ -10,10 +10,7 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.treemap(
-                gapminder_2007,
-                path=[px.Constant("world"), "continent", "country"],
-                values="pop",
-                color="lifeExp",
+                gapminder_2007, path=[px.Constant("world"), "continent", "country"], values="pop", color="lifeExp"
             )
         ),
     ],

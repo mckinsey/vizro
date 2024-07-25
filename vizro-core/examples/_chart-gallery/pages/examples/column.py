@@ -7,15 +7,7 @@ tips_agg = tips.groupby("day").agg({"total_bill": "sum"}).sort_values("total_bil
 
 page = vm.Page(
     title="Column",
-    components=[
-        vm.Graph(
-            figure=px.bar(
-                tips_agg,
-                y="total_bill",
-                x="day",
-            )
-        )
-    ],
+    components=[vm.Graph(figure=px.bar(tips_agg, y="total_bill", x="day"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

@@ -7,14 +7,7 @@ tips = px.data.tips()
 page = vm.Page(
     title="Boxplot",
     components=[
-        vm.Graph(
-            figure=px.boxplot(
-                tips,
-                y="total_bill",
-                x="day",
-                color="day",
-            )
-        ),
+        vm.Graph(figure=px.boxplot(tips, y="total_bill", x="day", color="day")),
     ],
 )
 
