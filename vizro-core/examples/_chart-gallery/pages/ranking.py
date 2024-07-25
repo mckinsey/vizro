@@ -5,6 +5,8 @@ import vizro.plotly.express as px
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
 
+# TODO: this is currently identical to bar. It should be:
+#  - slightly different text since it says "you can arrange your bars in any order"
 ordered_bar = vm.Page(
     title="Ordered bar",
     path="ranking/ordered-bar",
@@ -43,7 +45,8 @@ ordered_bar = vm.Page(
     ],
 )
 
-
+# TODO: this is currently identical to column. It should be:
+#  - slightly different text since it says "you can arrange your bars in any order"
 ordered_column = vm.Page(
     title="Ordered column",
     path="ranking/ordered-column",
