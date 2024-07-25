@@ -10,7 +10,7 @@ risky_text = "pull_request_target"
 
 def find_risky_files(path: str):
     """Searching for risky text in yml files for given path."""
-    return {str(file) for file in Path(path).rglob("*.yml") if f"{risky_text}" in file.read_text()}
+    return {file for file in Path(path).rglob("*.yml") if risky_text in file.read_text()}
 
 
 if __name__ == "__main__":
