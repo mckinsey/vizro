@@ -1,10 +1,10 @@
 # Chart gallery dashboard
 
-This demo dashboard provides a gallery of charts. It includes guidance on when to use each chart type and sample code
-to create them using Plotly and Vizro.
+This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
+to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://vizro.mckinsey.com/).
 
 Inspired by the [FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, Martin Stabe
+FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, Martin Stabe.
 
 ## Chart types
 
@@ -57,7 +57,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Stacked Column       | ❌     | Part-to-whole            |
 | Stepped Line         | ❌     | Ranking                  |
 | Surplus-Deficit-Line | ❌     | Deviation                |
-| Treemap              | ✅     | Part-to-whole            |
+| Treemap              | ✅     | Magnitude, Part-to-whole |
 | Venn                 | ❌     | Part-to-whole            |
 | Violin               | ✅     | Distribution             |
 | Waterfall            | ❌     | Part-to-whole, Flow      |
@@ -65,14 +65,13 @@ The dashboard is still in development. Below is an overview of the chart types f
 To contribute a chart, follow the steps below:
 
 1. Place an `svg` file named after the chart type in the `assets` folder if not already available.
-2. Create a new page for the chart type in `chart_pages.py`. Refer to existing pages for guidance.
-3. Add any new datasets to the `DATA_DICT` in `_page_utils.py`.
-4. Uncomment the completed chart in the `COMPLETED_CHARTS` list in `tab_containers.py` to enable navigation.
-5. Add the new chart page to the appropriate category in the navigation within `app.py`.
-6. Update the `README.md` with the new chart type.
+2. Create a new page for the chart type in `pages.py` and a code sample in `pages/examples`. Refer to existing pages for guidance.
+3. Add any new datasets to `pages/_page_utils.py`.
+4. Remove the page from `incomplete_pages` in the relevant `ChartGroup`(s) in `chart_groups.py`.
+5. Update this `README.md` with the new chart type.
 
 ## How to run the example locally
 
 1. If you have `hatch` set up, run the example with the command `hatch run example _chart-gallery`.
-   Otherwise, run `python app.py` with your Python environment activated where `vizro` is installed.
+   Otherwise, with a virtual Python environment activated, run `pip install -r requirements.txt` and then `python app.py`.
 2. You should now be able to access the app locally via http://127.0.0.1:8050/.
