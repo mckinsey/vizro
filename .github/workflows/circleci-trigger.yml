@@ -23,7 +23,6 @@ jobs:
   circleci-trigger:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: CircleCI tests trigger
-    environment: circleci_secrets
     runs-on: ubuntu-latest
     steps:
       - name: Start CircleCI pipeline
