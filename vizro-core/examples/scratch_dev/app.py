@@ -29,18 +29,18 @@ def sankey(
     fig = go.Figure(
         data=[
             go.Sankey(
-                node=dict(  # noqa: C408
-                    pad=16,
-                    thickness=16,
-                    label=labels,
-                ),
-                link=dict(  # noqa: C408
-                    source=data_frame[source],
-                    target=data_frame[target],
-                    value=data_frame[value],
-                    label=labels,
-                    color="rgba(205, 209, 228, 0.4)",
-                ),
+                node={
+                    "pad": 16,
+                    "thickness": 16,
+                    "label": labels,
+                },
+                link={
+                    "source": data_frame[source],
+                    "target": data_frame[target],
+                    "value": data_frame[value],
+                    "label": labels,
+                    "color": "rgba(205, 209, 228, 0.4)",
+                },
             )
         ]
     )

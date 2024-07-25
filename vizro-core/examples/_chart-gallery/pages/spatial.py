@@ -1,6 +1,9 @@
+"""Spatial charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from pages._pages_utils import gapminder_2007, PAGE_GRID, make_code_clipboard_from_py_file
+
+from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file
 
 choropleth = vm.Page(
     title="Choropleth",

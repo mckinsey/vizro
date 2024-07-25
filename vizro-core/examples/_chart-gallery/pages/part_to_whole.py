@@ -1,7 +1,10 @@
+"""Part-to-whole charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
+
 from pages._factories import treemap_factory
-from pages._pages_utils import tips, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
 
 pie = vm.Page(
     title="Pie",

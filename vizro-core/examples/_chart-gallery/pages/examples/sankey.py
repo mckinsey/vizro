@@ -1,9 +1,10 @@
+from typing import List
+
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 from vizro import Vizro
 from vizro.models.types import capture
-from typing import List
 
 sankey_data = pd.DataFrame(
     {
@@ -25,18 +26,18 @@ def sankey(
     fig = go.Figure(
         data=[
             go.Sankey(
-                node=dict(
-                    pad=16,
-                    thickness=16,
-                    label=labels,
-                ),
-                link=dict(
-                    source=data_frame[source],
-                    target=data_frame[target],
-                    value=data_frame[value],
-                    label=labels,
-                    color="rgba(205, 209, 228, 0.4)",
-                ),
+                node={
+                    "pad": 16,
+                    "thickness": 16,
+                    "label": labels,
+                },
+                link={
+                    "source": data_frame[source],
+                    "target": data_frame[target],
+                    "value": data_frame[value],
+                    "label": labels,
+                    "color": "rgba(205, 209, 228, 0.4)",
+                },
             )
         ]
     )

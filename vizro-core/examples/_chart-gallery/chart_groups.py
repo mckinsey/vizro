@@ -1,36 +1,52 @@
-# """Contains code for the containers used inside the tabs (homepage)."""
+"""Defines chart groups."""
+
 import itertools
+from dataclasses import dataclass
+from typing import List
 
-from typing import Set, List
-
-from dataclasses import dataclass, field
-
-import pages.deviation, pages.correlation, pages.ranking, pages.magnitude, pages.time, pages.spatial, pages.distribution, pages.flow, pages.part_to_whole
+import pages.correlation
+import pages.deviation
+import pages.distribution
+import pages.flow
+import pages.magnitude
+import pages.part_to_whole
+import pages.ranking
+import pages.spatial
+import pages.time
 import vizro.models as vm
-
-# COMMENT
 
 
 class IncompletePage:
-    def __init__(self, title):
+    """Fake vm.Page-like class.
+
+    This has the properties required to make it function sufficiently like a page when generating the navigation cards.
+    Only the title is configurable; path is fixed to "".
+    """
+
+    def __init__(self, title):  # noqa: D107
         self.title = title
-        self.path = ""
+
+    @property
+    def path(self):  # noqa: D102
+        return ""
 
 
 @dataclass
 class ChartGroup:
+    """Represents a group of charts like "Deviation"."""
+
     name: str
-    pages: List[vm.Page]  # Just completed, not all pages
+    pages: List[vm.Page]  # This is just the completed pages.
     incomplete_pages: List[IncompletePage]
     intro_text: str
-    icon: str = ""
+    icon: str = ""  # ALL_CHART_GROUP is the only one that doesn't require an icon.
 
 
 # TODO: Charts that are commented out in incomplete_pages below do not have an svg made yet.
 #  Uncomment them once they are ready.
 
 deviation_intro_text = """
-Deviation enables you to draw attention to variations (+/ ) from a fixed reference point.
+Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
 Often this reference point is zero, but you might also show a target or a long term average.
 You can also use deviation to express a positive, neutral or negative sentiment.
 """
@@ -184,7 +200,11 @@ locations.
 flow_chart_group = ChartGroup(
     name="Flow",
     pages=pages.flow.pages,
-    incomplete_pages=[IncompletePage("Waterfall"), IncompletePage("Chord"), IncompletePage("Network")],
+    incomplete_pages=[
+        IncompletePage("Waterfall"),
+        IncompletePage("Chord"),
+        IncompletePage("Network"),
+    ],
     icon="Stacked Line Chart",
     intro_text=flow_intro_text,
 )
@@ -195,7 +215,11 @@ Spatial charts allow you to demonstrate precise locations or geographical patter
 spatial_chart_group = ChartGroup(
     name="Spatial",
     pages=pages.spatial.pages,
-    incomplete_pages=[IncompletePage("Dot map"), IncompletePage("Flow map"), IncompletePage("Bubble map")],
+    incomplete_pages=[
+        IncompletePage("Dot map"),
+        IncompletePage("Flow map"),
+        IncompletePage("Bubble map"),
+    ],
     icon="Map",
     intro_text=spatial_intro_text,
 )
@@ -214,22 +238,21 @@ CHART_GROUPS = [
 ]
 
 all_intro_text = """
-TODO: write this.
+This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
+to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://vizro.mckinsey.com/).
+
+Inspired by the
+[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
+FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
+Martin Stabe.
 """
 
 
-def remove_duplicated_titles(pages):
-    # comment on reversed
-    return list({page.title: page for page in reversed(list(pages))}.values())
-
-
-# TODO: COMMENT, maybe refactor into remove_duplicated_titles
-
+# This contains all pages used across all chart groups, without de-duplicating. De-duplication is done where required
+# by remove_duplicates.
 ALL_CHART_GROUP = ChartGroup(
     name="All",
-    pages=remove_duplicated_titles(itertools.chain(*(chart_group.pages for chart_group in CHART_GROUPS))),
-    incomplete_pages=remove_duplicated_titles(
-        itertools.chain(*(chart_group.incomplete_pages for chart_group in CHART_GROUPS))
-    ),
+    pages=list(itertools.chain(*(chart_group.pages for chart_group in CHART_GROUPS))),
+    incomplete_pages=list(itertools.chain(*(chart_group.incomplete_pages for chart_group in CHART_GROUPS))),
     intro_text=all_intro_text,
 )

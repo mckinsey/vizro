@@ -1,8 +1,8 @@
+import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 from vizro import Vizro
-import pandas as pd
 from vizro.models.types import capture
-import plotly.graph_objects as go
 
 ages = pd.DataFrame(
     {

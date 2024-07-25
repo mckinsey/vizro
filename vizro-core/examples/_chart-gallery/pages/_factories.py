@@ -4,11 +4,11 @@ Note: Since each page can only belong to one navigation group, we need a new pag
 each chart type used in different groups.
 """
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg, gapminder_2007, ages
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import butterfly
+
+from pages._pages_utils import PAGE_GRID, ages, gapminder_2007, make_code_clipboard_from_py_file, tips_agg
 
 
 # TODO: this is currently identical to ordered column. It should be:
@@ -27,14 +27,14 @@ def column_factory(group: str):
             vm.Card(
                 text="""
                 #### What is a column chart?
-    
+
                 A column chart is a vertical bar chart, with column lengths varying according to the
                 categorical value they represent. The scale is presented on the y-axis, starting with zero.
-    
+
                 &nbsp;
-    
+
                 #### When to use it?
-    
+
                 Select a column chart when you want to help your audience draw size comparisons and identify
                 patterns between categorical data, i.e., data that presents **how many?** in each category. You can
                 arrange your columns in any order to fit the message you wish to emphasize. Be mindful of

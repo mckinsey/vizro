@@ -91,3 +91,5 @@ select = [
 "**/tests/**" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
 # Ignore import violations in all __init__.py files
 "__init__.py" = ["E402", "F401"]
+# Ignore missing docstrings in chart gallery examples to keep them succinct.
+"vizro-core/examples/_chart-gallery/pages/examples/**" = ["D100", "D103"]

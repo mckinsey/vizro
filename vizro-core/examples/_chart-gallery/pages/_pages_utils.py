@@ -1,4 +1,5 @@
 """Contains reusable data sets and constants."""
+
 from pathlib import Path
 
 import black
@@ -8,7 +9,8 @@ from custom_components import CodeClipboard
 
 
 def make_code_clipboard_from_py_file(filepath: str):
-    # comment on stability
+    # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
+    # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
     filepath = Path(__file__).parents[1] / "pages/examples" / filepath
     return CodeClipboard(
         code=black.format_str(filepath.read_text(encoding="utf-8"), mode=black.Mode()), language="python"

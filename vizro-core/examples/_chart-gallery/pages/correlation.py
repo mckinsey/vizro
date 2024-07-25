@@ -1,6 +1,9 @@
+"""Correlation charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from pages._pages_utils import iris, PAGE_GRID, make_code_clipboard_from_py_file
+
+from pages._pages_utils import PAGE_GRID, iris, make_code_clipboard_from_py_file
 
 scatter = vm.Page(
     title="Scatter",

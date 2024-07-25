@@ -1,6 +1,9 @@
+"""Ranking charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from pages._pages_utils import tips_agg, PAGE_GRID, make_code_clipboard_from_py_file
+
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
 
 ordered_bar = vm.Page(
     title="Ordered bar",

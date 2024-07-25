@@ -1,7 +1,10 @@
-from pages._factories import column_factory, treemap_factory
+"""Magnitude charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from pages._pages_utils import tips_agg, PAGE_GRID, make_code_clipboard_from_py_file
+
+from pages._factories import column_factory, treemap_factory
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
 
 # TODO: this is currently identical to ordered bar. It should be:
 #  - unordered (currently ordering is done in tips_agg)

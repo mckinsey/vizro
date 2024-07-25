@@ -1,6 +1,9 @@
+"""Flow charts."""
+
 import vizro.models as vm
-from pages._pages_utils import sankey_data, PAGE_GRID, make_code_clipboard_from_py_file
 from custom_charts import sankey
+
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, sankey_data
 
 sankey = vm.Page(
     title="Sankey",

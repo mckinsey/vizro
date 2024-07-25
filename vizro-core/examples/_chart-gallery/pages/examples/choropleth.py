@@ -1,6 +1,3 @@
-import json
-
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro

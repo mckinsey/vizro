@@ -1,7 +1,10 @@
+"""Time charts."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
+
 from pages._factories import column_factory
-from pages._pages_utils import stocks, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, stocks
 
 line = vm.Page(
     title="Line",
