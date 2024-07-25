@@ -1,7 +1,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from pages._factories import column_factory
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import stocks, PAGE_GRID, make_code_clipboard_from_py_file
 
 line = vm.Page(
     title="Line",
@@ -26,7 +26,7 @@ line = vm.Page(
             same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
         ),
-        vm.Graph(figure=px.line(DATA_DICT["stocks"], x="date", y="GOOG")),
+        vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
         make_code_clipboard_from_py_file("line.py"),
     ],
 )

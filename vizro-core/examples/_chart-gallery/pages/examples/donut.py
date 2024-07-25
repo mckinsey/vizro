@@ -9,7 +9,7 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.pie(
-                data_frame=tips,
+                tips,
                 values="tip",
                 names="day",
                 hole=0.4,

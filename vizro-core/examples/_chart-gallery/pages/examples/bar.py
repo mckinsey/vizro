@@ -10,7 +10,7 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.bar(
-                data_frame=tips_agg,
+                tips_agg,
                 x="total_bill",
                 y="day",
                 orientation="h",

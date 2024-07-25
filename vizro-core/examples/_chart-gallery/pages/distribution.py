@@ -1,7 +1,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from pages._factories import butterfly_factory
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import tips, PAGE_GRID, make_code_clipboard_from_py_file
 
 violin = vm.Page(
     title="Violin",
@@ -26,7 +26,7 @@ violin = vm.Page(
         ),
         vm.Graph(
             figure=px.violin(
-                data_frame=DATA_DICT["tips"],
+                tips,
                 y="total_bill",
                 x="day",
                 color="day",
@@ -63,7 +63,7 @@ boxplot = vm.Page(
         ),
         vm.Graph(
             figure=px.box(
-                data_frame=DATA_DICT["tips"],
+                tips,
                 y="total_bill",
                 x="day",
                 color="day",

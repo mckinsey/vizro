@@ -1,7 +1,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from pages._factories import treemap_factory
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import tips, PAGE_GRID, make_code_clipboard_from_py_file
 
 pie = vm.Page(
     title="Pie",
@@ -31,7 +31,7 @@ pie = vm.Page(
         ),
         vm.Graph(
             figure=px.pie(
-                data_frame=DATA_DICT["tips"],
+                tips,
                 values="tip",
                 names="day",
             )
@@ -64,7 +64,7 @@ donut = vm.Page(
         ),
         vm.Graph(
             figure=px.pie(
-                data_frame=DATA_DICT["tips"],
+                tips,
                 values="tip",
                 names="day",
                 hole=0.4,

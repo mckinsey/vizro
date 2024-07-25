@@ -9,7 +9,7 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.violin(
-                data_frame=tips,
+                tips,
                 y="total_bill",
                 x="day",
                 color="day",

@@ -4,7 +4,7 @@ Note: Since each page can only belong to one navigation group, we need a new pag
 each chart type used in different groups.
 """
 
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg, gapminder_2007, ages
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -12,7 +12,7 @@ from custom_charts import butterfly
 
 
 # TODO: this is currently identical to ordered column. It should be:
-#  - unordered
+#  - unordered (currently ordering is done in tips_agg)
 #  - different svg
 #  - slightly different text
 #  - slightly different example
@@ -44,7 +44,7 @@ def column_factory(group: str):
             ),
             vm.Graph(
                 figure=px.bar(
-                    data_frame=DATA_DICT["tips_agg"],
+                    tips_agg,
                     y="total_bill",
                     x="day",
                 )
@@ -83,7 +83,7 @@ def treemap_factory(group: str):
             ),
             vm.Graph(
                 figure=px.treemap(
-                    DATA_DICT["gapminder_2007"],
+                    gapminder_2007,
                     path=[px.Constant("world"), "continent", "country"],
                     values="pop",
                     color="lifeExp",
@@ -120,7 +120,7 @@ def butterfly_factory(group: str):
                 categories.
             """
             ),
-            vm.Graph(figure=butterfly(DATA_DICT["ages"], x1="Male", x2="Female", y="Age")),
+            vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
             make_code_clipboard_from_py_file("butterfly.py"),
         ],
     )

@@ -3,7 +3,7 @@ import itertools
 
 from typing import Set, List
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import pages.deviation, pages.correlation, pages.ranking, pages.magnitude, pages.time, pages.spatial, pages.distribution, pages.flow, pages.part_to_whole
 import vizro.models as vm
@@ -11,10 +11,10 @@ import vizro.models as vm
 # COMMENT
 
 
-@dataclass
 class IncompletePage:
-    title: str
-    path: str = ""
+    def __init__(self, title):
+        self.title = title
+        self.path = ""
 
 
 @dataclass

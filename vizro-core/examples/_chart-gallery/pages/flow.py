@@ -1,5 +1,5 @@
 import vizro.models as vm
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import sankey_data, PAGE_GRID, make_code_clipboard_from_py_file
 from custom_charts import sankey
 
 sankey = vm.Page(
@@ -30,7 +30,7 @@ sankey = vm.Page(
         ),
         vm.Graph(
             figure=sankey(
-                data_frame=DATA_DICT["sankey_data"],
+                sankey_data,
                 labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
                 source="Origin",
                 target="Destination",

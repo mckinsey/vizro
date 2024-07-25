@@ -49,7 +49,7 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=sankey(
-                data_frame=sankey_data,
+                sankey_data,
                 labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
                 source="Origin",
                 target="Destination",

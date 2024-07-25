@@ -1,6 +1,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
-from pages._pages_utils import DATA_DICT, PAGE_GRID, make_code_clipboard_from_py_file
+from pages._pages_utils import iris, PAGE_GRID, make_code_clipboard_from_py_file
 
 scatter = vm.Page(
     title="Scatter",
@@ -25,7 +25,7 @@ scatter = vm.Page(
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """
         ),
-        vm.Graph(figure=px.scatter(DATA_DICT["iris"], x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
         make_code_clipboard_from_py_file("scatter.py"),
     ],
 )

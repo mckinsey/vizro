@@ -15,6 +15,8 @@ def make_code_clipboard_from_py_file(filepath: str):
     )
 
 
+PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
+
 # DATA --------------------------------------------------------------
 gapminder = px.data.gapminder()
 gapminder_2007 = gapminder.query("year == 2007")
@@ -29,7 +31,6 @@ ages = pd.DataFrame(
         "Female": [1000, 3000, 3500, 3800, 3600, 700],
     }
 )
-
 sankey_data = pd.DataFrame(
     {
         "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
@@ -37,15 +38,3 @@ sankey_data = pd.DataFrame(
         "Value": [10, 4, 8, 6, 4, 8, 8],
     }
 )
-
-DATA_DICT = {
-    "gapminder": gapminder,
-    "gapminder_2007": gapminder_2007,
-    "iris": iris,
-    "stocks": stocks,
-    "tips": tips,
-    "tips_agg": tips_agg,
-    "ages": ages,
-    "sankey_data": sankey_data,
-}
-PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
