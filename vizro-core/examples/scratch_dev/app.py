@@ -13,9 +13,12 @@ vizro_bootstrap = base + "vizro-bootstrap.min.css"
 vizro_css = base + "figures.min.css"
 
 # Add entire assets folder from Vizro
-app = Dash(external_stylesheets=[vizro_bootstrap
-                                 #dbc.themes.SANDSTONE
-                                 ])
+app = Dash(
+    external_stylesheets=[
+        vizro_bootstrap
+        # dbc.themes.SANDSTONE
+    ]
+)
 
 app.layout = dbc.Container(
     [
@@ -55,7 +58,7 @@ app.layout = dbc.Container(
                 ),
             ],
             # Note: They need to add vizro_light here
-            #className="vizro_light",
+            # className="vizro_light",
         ),
     ]
 )

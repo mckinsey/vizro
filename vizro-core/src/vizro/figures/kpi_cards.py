@@ -66,7 +66,12 @@ def kpi_card(  # noqa: PLR0913
     title = title or f"{agg_func} {value_column}".title()
     value = data_frame[value_column].agg(agg_func)
 
-    header = dbc.CardHeader([html.P(icon, className="material-symbols-outlined") if icon else None, html.H4(title, className="card-kpi-title")])
+    header = dbc.CardHeader(
+        [
+            html.P(icon, className="material-symbols-outlined") if icon else None,
+            html.H4(title, className="card-kpi-title"),
+        ]
+    )
     body = dbc.CardBody(value_format.format(value=value))
     return dbc.Card([header, body], className="card-kpi")
 
@@ -137,7 +142,12 @@ def kpi_card_reference(  # noqa: PLR0913
     delta = value - reference
     delta_relative = delta / reference if reference else np.nan
 
-    header = dbc.CardHeader([html.P(icon, className="material-symbols-outlined") if icon else None, html.H4(title, className="card-kpi-title")])
+    header = dbc.CardHeader(
+        [
+            html.P(icon, className="material-symbols-outlined") if icon else None,
+            html.H4(title, className="card-kpi-title"),
+        ]
+    )
     body = dbc.CardBody(
         value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
     )
