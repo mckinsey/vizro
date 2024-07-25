@@ -6,9 +6,6 @@
   width: 288px;
 }
 
-#page-components {
-  overflow: unset;
-}
 
 img[src*="#chart-icon"] {
   width: 100%;
