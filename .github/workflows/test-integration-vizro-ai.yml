@@ -47,7 +47,6 @@ jobs:
   test-integration-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-    environment: vizro_ai_secrets
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
