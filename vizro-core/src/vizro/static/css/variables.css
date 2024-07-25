@@ -27,6 +27,8 @@
   --text-weight-light: 300;
   --text-weight-regular: 400;
   --text-weight-semibold: 600;
+  --root-loading-color: rgba(20, 23, 33, 1);
+  --root-loading-contrast: rgba(255, 255, 255, 1);
 }
 
 /* Ensure dark and light have same list of variables (only color variables) */
