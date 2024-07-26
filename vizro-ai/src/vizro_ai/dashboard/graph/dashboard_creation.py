@@ -87,7 +87,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
                     llm_model=llm,
                     response_model=DfInfo,
                     df_info=df_info,
-                ).dataset_name
+                ).dataset
             except DebugFailure as e:
                 logger.warning(f"Failed in name generation {e}")
                 df_name = f"df_{len(current_df_names)}"

@@ -86,7 +86,7 @@ class ControlPlan(BaseModel):
     def create(self, model, controllable_components, df_metadata) -> Union[vm.Filter, None]:
         """Create the control."""
         filter_prompt = (
-            f"Create a filter from the following instructions: {self.control_description}. Do not make up "
+            f"Create a filter from the following instructions: <{self.control_description}>. Do not make up "
             f"things that are optional and DO NOT configure actions, action triggers or action chains."
             f" If no options are specified, leave them out."
         )

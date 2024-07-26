@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cov
 DF_SUM_PROMPT = """
 Inspect the provided data and give a short unique name to the dataset. \n
 dataframe sample: \n ------- \n {df_sample} \n ------- \n
-Here is the schema: \n ------- \n {df_schema} \n ------- \n
+Here is the data schema: \n ------- \n {df_schema} \n ------- \n
 AVOID the following names: \n ------- \n {current_df_names} \n ------- \n
 Provide descriptive name mainly based on the data context above.
 User request content is just for context.
@@ -23,7 +23,7 @@ User request content is just for context.
 class DfInfo(BaseModel):
     """Data Info output."""
 
-    dataset_name: str = Field(pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case name of the dataset.")
+    dataset: str = Field(pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case name of the dataset.")
 
 
 def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
