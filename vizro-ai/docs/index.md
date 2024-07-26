@@ -16,8 +16,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br>
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart.md) </br>
-    [:octicons-arrow-right-24: Create a dashboard using Vizro-AI](pages/user-guides/quickstart-dashboard.md)
-
+    [:octicons-arrow-right-24: Create a dashboard using Vizro-AI](pages/tutorials/quickstart-dashboard.md) </br>
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
