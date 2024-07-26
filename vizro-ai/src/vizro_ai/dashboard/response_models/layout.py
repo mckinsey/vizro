@@ -48,7 +48,7 @@ class LayoutPlan(BaseModel):
         "a unique component. If a grid area is empty, use a dot ('.') to represent it."
         "Ensure that each row of the grid layout is represented by a string, with each grid area separated by a space."
         "Return the grid template areas as a list of strings, where each string corresponds to a row in the grid."
-        "If no grid template areas are provided, return an empty list.",
+        "If no layout requested, return an empty list.",
     )
 
     def create(self, component_ids: List[str]):

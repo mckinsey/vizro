@@ -48,7 +48,6 @@ class DashboardOutputs:
 
     code: str
     dashboard: vm.Dashboard
-    metadata: DfMetadata
 
 
 def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
@@ -57,18 +56,17 @@ def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
     return value
 
 
-def _dashboard_code(dashboard: vm.Dashboard) -> str:
-    """Generate dashboard code from dashboard object."""
-    # return dashboard.to_python()
-    return
-
-
-def _run_dashboard(dashboard: vm.Dashboard, df_metadata: DfMetadata) -> None:
-    """Run the dashboard."""
-    from vizro import Vizro
+def _register_data(df_metadata: DfMetadata) -> vm.Dashboard:
+    """Register the dashboard data in data manager."""
     from vizro.managers import data_manager
 
     for name, metadata in df_metadata.metadata.items():
         data_manager[name] = metadata.df
 
-    Vizro().build(dashboard).run()
+
+def _dashboard_code(dashboard: vm.Dashboard) -> str:
+    """Generate dashboard code from dashboard object."""
+    try:
+        return dashboard.to_python()
+    except AttributeError:
+        return "Dashboard code generation is coming soon!"

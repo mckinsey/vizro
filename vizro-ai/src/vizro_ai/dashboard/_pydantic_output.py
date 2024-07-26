@@ -13,12 +13,19 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 
-BASE_PROMPT = """You are a front-end developer with expertise in pydantic, plotly,
-dash, and the visualization library named Vizro.
-Your task is to summarize the given specifications into given pydantic schema.
-This is the data you have access to: {df_info}
+BASE_PROMPT = """
+You are a front-end developer with expertise in Plotly, Dash, and the visualization library named Vizro.
+Your goal is to summarize the given specifications into the given Pydantic schema.
+IMPORTANT: Please always output your response by using a tool.
+
+This is the task context:
+{df_info}
+
+Additional information:
 {additional_info}
-Here is the user request:"""
+
+Here is the user request:
+"""
 
 
 def _create_prompt_template(additional_info: str) -> ChatPromptTemplate:
