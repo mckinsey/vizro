@@ -1,11 +1,6 @@
 # How to generate a Vizro dashboard using Vizro-AI
 
-Vizro-AI now supports text-to-dashboard functionality. It can generate a multi-page dashboard including the following features:
-
-- Vizro components including Graph, AgGrid (basic), and Card
-- Vizro Filters including Dropdown, Checklist, Dropdown, RadioItems, RangeSlider, Slider, DatePicker(in development)
-- Vizro Layout
-- Multi-dataframe and multi-page support
+Vizro-AI supports text-to-dashboard functionality, enabling you to generate a multi-page dashboard.
 
 ## Setup
 Install Vizro-AI
