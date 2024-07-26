@@ -15,7 +15,8 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
     ---
 
     [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br>
-    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart.md)
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/quickstart.md) </br>
+    [:octicons-arrow-right-24: Create a dashboard using Vizro-AI](pages/user-guides/quickstart-dashboard.md)
 
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
@@ -26,7 +27,9 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
     [:octicons-arrow-right-24: Customize models](pages/user-guides/customize-vizro-ai.md)</br>
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
     [:octicons-arrow-right-24: Use different languages](pages/user-guides/use-different-languages.md)</br>
-    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)
+    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
+    [:octicons-arrow-right-24: Use generated dashboard](pages/user-guides/dashboard-iterate-and-deploy.md) </br>
+    [:octicons-arrow-right-24: Model comparison for dashboard](pages/user-guides/dashboard-models.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__
 

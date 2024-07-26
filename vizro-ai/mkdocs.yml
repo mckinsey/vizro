@@ -4,6 +4,7 @@ nav:
   - Vizro-AI: index.md
   - Tutorials:
       - Chart creation: pages/tutorials/quickstart.md
+      - Dashboard creation: pages/tutorials/quickstart-dashboard.md
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
@@ -13,6 +14,8 @@ nav:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Different languages: pages/user-guides/use-different-languages.md
           - Vizro-AI charts in dashboards: pages/user-guides/add-generated-chart-usecase.md
+          - Use generated dashboard: pages/user-guides/dashboard-iterate-and-deploy.md
+          - Choose the right model: pages/user-guides/dashboard-models.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
