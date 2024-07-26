@@ -103,7 +103,7 @@ By setting `return_elements=True` you can access code or the figure object. Vizr
            code_string = plot_outputs.code
            ```
 
-Alternatively, you can access code by Vizro-AI's `_get_chart_code` method which returns a string of Python code that manipulates the data and creates the visualization.
+You can also access code with Vizro-AI's `_get_chart_code` method, which returns a string of Python code that manipulates the data and creates the visualization. The `_get_chart_code` method will be deprecated in the future releases, transition to using the `PlotOutputs.code`.
 
 !!! example "Application integration via chart code"
 
