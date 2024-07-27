@@ -36,6 +36,7 @@ def _convert_to_grid(layout_grid_template_areas, component_ids) -> List[List[int
 class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
+    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
     layout_description: str = Field(
         ...,
         description="Description of the layout of Vizro Components(Graph, AgGrid, Card). "
@@ -44,11 +45,15 @@ class LayoutPlan(BaseModel):
     layout_grid_template_areas: List[str] = Field(
         [],
         description="Generate grid template areas for the layout adhering to the grid-template-areas CSS property "
-        "syntax. Each unique string ('component_id' and 'page_id' concatenated by '_') should be used to represent "
-        "a unique component. If a grid area is empty, use a dot ('.') to represent it."
+        "syntax. If no layout requested, return an empty list. "
+        "If requested, represent each component with a unique string formed by concatenating 'component_id' and "
+        "'page_id' with an underscore ('_'). For example, if component_id is 'chart_gdp' and page_id is 'page1', "
+        "use 'chart_gdp_page1'. If a grid area is empty, use a dot ('.') to represent it."
         "Ensure that each row of the grid layout is represented by a string, with each grid area separated by a space."
         "Return the grid template areas as a list of strings, where each string corresponds to a row in the grid."
-        "If no layout requested, return an empty list.",
+        "IMPORTANT: Always include both the component_id and page_id "
+        "in each grid area identifier, separated by an underscore. Never use the component_id alone. "
+        "Maximum 10 rows and 10 columns.",
     )
 
     def create(self, component_ids: List[str]):

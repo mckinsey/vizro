@@ -27,10 +27,10 @@ class ComponentPlan(BaseModel):
         "Be as detailed as possible."
         "Keep the original relevant description AS IS. Keep any links as original links.",
     )
+    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
     component_id: str = Field(
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
     )
-    page_id: str = Field(..., description="The page id where this component will be placed.")
     df_name: str = Field(
         ...,
         description="The name of the dataframe that this component will use. If no dataframe is "
