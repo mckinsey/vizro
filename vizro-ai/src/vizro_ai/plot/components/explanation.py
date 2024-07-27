@@ -28,10 +28,10 @@ class CodeExplanation(BaseModel):
 
 
 # 2. Define prompt
-code_explanation_prompt = (
-    "Given user question {input} and answer {code_snippet}, (less than 400 characters),"
-    "DO NOT just use one sentence for business insights, give detailed information"
-)
+code_explanation_prompt = """
+Given user question {input} and answer {code_snippet} (less than 400 characters),
+DO NOT just use one sentence for business insights, give detailed information.
+"""
 
 
 # 3. Define Component

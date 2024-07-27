@@ -14,6 +14,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from vizro_ai.chains._chain_utils import _log_time
 from vizro_ai.plot.components import VizroAiComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
+from vizro_ai.utils.helper import _get_df_info
 
 # initialization of schema manager, and register schema needed
 # preprocess: llm kwargs for function description schema + partial vars
@@ -63,7 +64,7 @@ class GetChartSelection(VizroAiComponentBase):
 
         It should return llm_kwargs and partial_vars_map for
         """
-        df_schema, df_head = self._get_df_info(df)
+        df_schema, df_head = _get_df_info(df)
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("ChartSelection")
         partial_vars = {"df_schema": df_schema, "df_head": df_head}
         return llm_kwargs_to_use, partial_vars
@@ -86,14 +87,6 @@ class GetChartSelection(VizroAiComponentBase):
 
         """
         return super().run(chain_input=chain_input, df=df)
-
-    @staticmethod
-    def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
-        """Get the dataframe schema and head info as string."""
-        formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
-        schema_string = "\n".join(formatted_pairs)
-
-        return schema_string, df.head().to_markdown()
 
     @staticmethod
     def _chart_to_use(load_args) -> str:
