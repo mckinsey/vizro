@@ -25,6 +25,7 @@ class PagePlanner(BaseModel):
         description="Title of the page. If no description is provided, "
         "make a short and concise title from the components.",
     )
+    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
     components_plan: List[ComponentPlan] = Field(
         ..., description="List of components. Must contain at least one component."
     )
@@ -33,7 +34,7 @@ class PagePlanner(BaseModel):
     unsupported_specs: List[str] = Field(
         [],
         description="List of unsupported specs. If there are any unsupported specs, "
-        "please list them here. If there are no unsupported specs, leave this as an empty list.",
+        "list them here. If not, leave this as an empty list.",
     )
 
     _components: List[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
@@ -59,6 +60,15 @@ class PagePlanner(BaseModel):
         self._components = None
         self._controls = None
         self._layout = None
+
+        for component in self.components_plan:
+            component.page_id = self.page_id
+        if self.controls_plan:
+            for control_plan in self.controls_plan:
+                if control_plan is not None:
+                    control_plan.page_id = self.page_id
+        if self.layout_plan is not None:
+            self.layout_plan.page_id = self.page_id
 
     def _get_components(self, model, df_metadata):
         if self._components is None:

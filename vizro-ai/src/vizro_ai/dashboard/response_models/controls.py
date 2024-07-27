@@ -3,19 +3,20 @@
 import logging
 from typing import List, Union
 
+import pandas as pd
 import vizro.models as vm
 
 try:
-    from pydantic.v1 import BaseModel, Field, ValidationError, create_model, validator
+    from pydantic.v1 import BaseModel, Field, ValidationError, create_model, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError, create_model, validator
+    from pydantic import BaseModel, Field, ValidationError, create_model, root_validator, validator
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 from vizro_ai.dashboard.response_models.types import CtrlType
 
 logger = logging.getLogger(__name__)
 
 
-def _create_filter_proxy(df_cols, controllable_components) -> BaseModel:
+def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseModel:
     """Create a filter proxy model."""
 
     def validate_targets(v):
@@ -39,6 +40,19 @@ def _create_filter_proxy(df_cols, controllable_components) -> BaseModel:
             raise ValueError(f"column must be one of {df_cols}")
         return v
 
+    @root_validator
+    def validate_date_picker_column(cls, values):
+        """Validate the column for date picker."""
+        column = values.get("column")
+        selector = values.get("selector")
+        if selector and selector.type == "date_picker":
+            if not pd.api.types.is_datetime64_any_dtype(df_schema[column]):
+                raise ValueError(
+                    f"The column '{column}' is not of datetime type. Selector type 'date_picker' is"
+                    f" not allowed. Use 'dropdown' instead."
+                )
+        return values
+
     return create_model(
         "FilterProxy",
         targets=(
@@ -54,13 +68,16 @@ def _create_filter_proxy(df_cols, controllable_components) -> BaseModel:
             "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
             "validator2": validator("column", allow_reuse=True)(validate_column),
             "validator3": validator("targets", pre=True, allow_reuse=True)(validate_targets_not_empty),
+            "validator4": validate_date_picker_column,
         },
         __base__=vm.Filter,
     )
 
 
 def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_components) -> vm.Filter:
-    result_proxy = _create_filter_proxy(df_cols=df_cols, controllable_components=controllable_components)
+    result_proxy = _create_filter_proxy(
+        df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
+    )
     proxy = _get_pydantic_output(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
     return vm.Filter.parse_obj(
         proxy.dict(exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True})
@@ -77,6 +94,7 @@ class ControlPlan(BaseModel):
         "Be as detailed as possible. Keep the original relevant description AS IS. If this control is used"
         "to control a specific component, include the relevant component details.",
     )
+    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
     df_name: str = Field(
         ...,
         description="The name of the dataframe that this component will use. "
