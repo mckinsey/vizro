@@ -1,6 +1,6 @@
 import pytest
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.components import GetVisualCode
+from vizro_ai.plot.components import GetVisualCode
 
 
 @pytest.fixture

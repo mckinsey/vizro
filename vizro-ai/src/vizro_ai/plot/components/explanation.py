@@ -10,8 +10,8 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.components import VizroAiComponentBase
-from vizro_ai.schema_manager import SchemaManager
+from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.schema_manager import SchemaManager
 
 # 1. Define schema
 openai_schema_manager = SchemaManager()
@@ -98,7 +98,7 @@ class GetCodeExplanation(VizroAiComponentBase):
 
 
 if __name__ == "__main__":
-    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai._llm_models import _get_llm_model
 
     llm_to_use = _get_llm_model()
 
