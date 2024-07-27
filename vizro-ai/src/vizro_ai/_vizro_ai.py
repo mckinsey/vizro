@@ -8,9 +8,9 @@ from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
-from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.dashboard.graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard.utils import DashboardOutputs, _dashboard_code, _register_data
+from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
