@@ -1,9 +1,10 @@
 """Example of creating a dashboard using VizroAI."""
 
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro_ai import VizroAI
 
-vizro_ai = VizroAI(model="gpt-4-turbo")
+vizro_ai = VizroAI(model="gpt-4o")
 # vizro_ai = VizroAI()
 
 gapminder_data = px.data.gapminder()
@@ -23,7 +24,7 @@ input_text = (
     "add a filter to filter data in the scatter plot by smoker."
 )
 
-res = vizro_ai.dashboard(dfs=dfs, user_input=input_text, return_elements=True)
+dashboard = vizro_ai.dashboard(dfs=dfs, user_input=input_text)
 
 if __name__ == "__main__":
-    vizro_ai.run_dashboard(res.dashboard, res.metadata)
+    Vizro().build(dashboard).run()

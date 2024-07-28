@@ -2,6 +2,8 @@
 
 # ruff: noqa: F821
 
+import logging
+
 try:
     from pydantic.v1 import BaseModel, ValidationError
 except ImportError:  # pragma: no cov
@@ -12,6 +14,8 @@ from typing import Any, Optional
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+
+logger = logging.getLogger(__name__)
 
 BASE_PROMPT = """
 You are a front-end developer with expertise in Plotly, Dash, and the visualization library named Vizro.
@@ -68,22 +72,26 @@ def _get_pydantic_output(
 ) -> BaseModel:
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
+        attempt_is_retry = attempt > 0
+        prompt = _create_prompt(retry=attempt_is_retry)
+        message_content = _create_message_content(
+            query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
+        )
+        pydantic_llm = prompt | llm_model.with_structured_output(response_model)
         try:
-            prompt = _create_prompt(retry=(attempt > 0))
-            message_content = _create_message_content(
-                query, df_info, str(last_validation_error) if attempt > 0 else None, retry=(attempt > 0)
-            )
-            pydantic_llm = prompt | llm_model.with_structured_output(response_model)
             res = pydantic_llm.invoke(message_content)
-            return res
         except ValidationError as validation_error:
             last_validation_error = validation_error
+            logger.warning(f"\n ------- \nRetry due to validation error: {last_validation_error}")
+        else:
+            return res
+        
     raise last_validation_error
 
 
 if __name__ == "__main__":
     import vizro.models as vm
-    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai._llm_models import _get_llm_model
 
     model = _get_llm_model()
     component_description = "Create a card with the following content: 'Hello, world!'"
