@@ -19,9 +19,9 @@ from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
 try:
-    from pydantic.v1 import BaseModel, ValidationError, validator
+    from pydantic.v1 import BaseModel, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError, validator
+    from pydantic import BaseModel, ValidationError
 
 
 logger = logging.getLogger(__name__)
@@ -111,8 +111,11 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
         )
     except (DebugFailure, ValidationError) as e:
         raise ValueError(
-            f"Failed to create a valid dashboard plan. Try rephrase the prompt or select a different "
-            f"model. Error details:\n {e}"
+            f"""
+            Failed to create a valid dashboard plan. Try rephrase the prompt or select a different
+            model. Error details:
+            {e}
+            """
         )
 
     _execute_step(pbar, node_desc + " --> done", None)

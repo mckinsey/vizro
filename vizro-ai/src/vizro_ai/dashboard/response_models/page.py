@@ -1,12 +1,13 @@
 """Page plan model."""
 
 import logging
+from collections import Counter
 from typing import List, Union
 
 try:
-    from pydantic.v1 import BaseModel, Field, PrivateAttr, validator
+    from pydantic.v1 import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, PrivateAttr, validator
+    from pydantic import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 import vizro.models as vm
 from tqdm.auto import tqdm
 from vizro_ai.dashboard.response_models.components import ComponentPlan
@@ -22,12 +23,12 @@ class PagePlanner(BaseModel):
 
     title: str = Field(
         ...,
-        description="Title of the page. If no description is provided, "
-        "make a short and concise title from the components.",
+        description="""
+        Title of the page. If no description is provided,
+        make a concise and descriptive title from the components.
+        """,
     )
-    page_id: str = Field(
-        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this page being planned."
-    )
+    page_id: str = Field(..., description="Unique identifier for the page being planned.")
     components_plan: List[ComponentPlan] = Field(
         ..., description="List of components. Must contain at least one component."
     )
@@ -35,8 +36,10 @@ class PagePlanner(BaseModel):
     layout_plan: LayoutPlan = Field(None, description="Layout of components on the page.")
     unsupported_specs: List[str] = Field(
         [],
-        description="List of unsupported specs. If there are any unsupported specs, "
-        "list them here. If not, leave this as an empty list.",
+        description="""
+        List of unsupported specs. If there are any unsupported specs,
+        list them here. If not, leave this as an empty list.
+        """,
     )
 
     _components: List[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
@@ -45,16 +48,26 @@ class PagePlanner(BaseModel):
 
     @validator("components_plan")
     def _check_components_plan(cls, v):
-        if len(v) == 0:
+        if not v:
             raise ValueError("A page must contain at least one component.")
         return v
 
     @validator("unsupported_specs")
     def _check_unsupported_specs(cls, v, values):
         title = values.get("title", "Unknown Title")
-        if len(v) > 0:
+        if v:
             logger.warning(f"\n ------- \n Unsupported specs on page <{title}>: \n {v}")
             return []
+
+    @root_validator(allow_reuse=True)
+    def validate_component_id_unique(cls, values):
+        """Validate the component id is unique."""
+        components = values.get("components_plan", [])
+        component_ids = [comp.component_id for comp in components]
+        duplicates = [id for id, count in Counter(component_ids).items() if count > 1]
+        if duplicates:
+            raise ValidationError(f"Component ids must be unique. Duplicated component ids: {duplicates}")
+        return values
 
     def __init__(self, **data):
         """Initialize the page plan."""
@@ -151,12 +164,14 @@ class PagePlanner(BaseModel):
         except Exception as e:
             if any("Number of page and grid components need to be the same" in error["msg"] for error in e.errors()):
                 logger.warning(
-                    "Number of page and grid components need to be the same. "
-                    "Please check the layout and the components."
+                    """
+[FALLBACK] Number of page and grid components provided are not the same.
+Build page without layout.
+"""
                 )
                 page = vm.Page(title=title, components=components, controls=controls, layout=None)
             else:
-                logger.warning(f"Failed to build page: {self.title}. Reason: {e}")
+                logger.warning(f"[FALLBACK] Failed to build page: {self.title}. Reason: {e}")
                 page = None
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()

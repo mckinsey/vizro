@@ -46,12 +46,14 @@ class LayoutPlan(BaseModel):
     layout_grid_template_areas: List[str] = Field(
         [],
         description="""
-        Generate grid template areas for the layout adhering to the grid-template-areas CSS property
-        syntax. If no layout requested, return an empty list.
-        If requested, represent each component by 'component_id'. If a grid area is empty, use a dot ('.') to represent it.
+        Generate grid template areas for the layout adhering to the grid-template-areas CSS property syntax.
+        If no layout requested, return an empty list.
+        If requested, represent each component by 'component_id'.
+        IMPORTANT: Ensure that the `component_id` matches the `component_id` in the ComponentPlan.
+        If a grid area is empty, use a dot ('.') to represent it.
         Ensure that each row of the grid layout is represented by a string, with each grid area separated by a space.
         Return the grid template areas as a list of strings, where each string corresponds to a row in the grid.
-        Maximum 10 rows and 10 columns.
+        No more than 600 characters in total.
         """,
     )
 
@@ -67,10 +69,12 @@ class LayoutPlan(BaseModel):
             actual = vm.Layout(grid=grid)
         except ValidationError as e:
             logger.warning(
-                f"Build failed for `Layout`, returning default values. Try rephrase the prompt or "
-                f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
-                f"Relevant prompt: `{self.layout_description}`, which was parsed as layout_grid_template_areas:"
-                f" {self.layout_grid_template_areas}"
+                f"""
+[FALLBACK] Build failed for `Layout`, returning default values. Try rephrase the prompt or select a different model.
+Error details: {e}
+Relevant prompt: {self.layout_description}, which was parsed as layout_grid_template_areas:
+{self.layout_grid_template_areas}
+"""
             )
             if grid:
                 logger.warning(f"Calculated grid which caused the error: {grid}")

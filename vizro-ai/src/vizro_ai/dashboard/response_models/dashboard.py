@@ -17,7 +17,9 @@ class DashboardPlanner(BaseModel):
 
     title: str = Field(
         ...,
-        description="Title of the dashboard. If no description is provided,"
-        " make a short and concise title from the content of the pages.",
+        description="""
+        Title of the dashboard. If no description is provided,
+        make a short and concise title from the content of the pages.
+        """,
     )
     pages: List[PagePlanner]
