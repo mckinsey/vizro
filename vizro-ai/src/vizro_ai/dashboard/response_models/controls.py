@@ -40,7 +40,7 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             raise ValueError(f"column must be one of {df_cols}")
         return v
 
-    @root_validator
+    @root_validator(allow_reuse=True)
     def validate_date_picker_column(cls, values):
         """Validate the column for date picker."""
         column = values.get("column")
@@ -94,7 +94,6 @@ class ControlPlan(BaseModel):
         "Be as detailed as possible. Keep the original relevant description AS IS. If this control is used"
         "to control a specific component, include the relevant component details.",
     )
-    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
     df_name: str = Field(
         ...,
         description="The name of the dataframe that this component will use. "
@@ -137,7 +136,7 @@ class ControlPlan(BaseModel):
 
 if __name__ == "__main__":
     import pandas as pd
-    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
 
     model = _get_llm_model()

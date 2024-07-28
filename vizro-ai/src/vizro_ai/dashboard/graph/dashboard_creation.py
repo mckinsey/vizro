@@ -56,16 +56,6 @@ class GraphState(BaseModel):
 
         arbitrary_types_allowed = True
 
-    @validator("dfs")
-    def check_dataframes(cls, v):
-        """Check if the dataframes are valid."""
-        if not isinstance(v, list):
-            raise ValueError("dfs must be a list")
-        for df in v:
-            if not isinstance(df, pd.DataFrame):
-                raise ValueError("Each element in dfs must be a Pandas DataFrame")
-        return v
-
 
 def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMetadata]:
     """Store information about the dataframes."""
@@ -112,7 +102,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 
     _execute_step(
         pbar,
-        node_desc + " --> in progress \n(this step could take longer " "when more complex requirements are given)",
+        node_desc + " --> in progress \n(this step could take longer when more complex requirements are given)",
         None,
     )
     try:

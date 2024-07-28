@@ -25,7 +25,9 @@ class PagePlanner(BaseModel):
         description="Title of the page. If no description is provided, "
         "make a short and concise title from the components.",
     )
-    page_id: str = Field(..., description="Unique identifier for the page being planned. Around 6 characters long.")
+    page_id: str = Field(
+        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this page being planned."
+    )
     components_plan: List[ComponentPlan] = Field(
         ..., description="List of components. Must contain at least one component."
     )
@@ -60,15 +62,6 @@ class PagePlanner(BaseModel):
         self._components = None
         self._controls = None
         self._layout = None
-
-        for component in self.components_plan:
-            component.page_id = self.page_id
-        if self.controls_plan:
-            for control_plan in self.controls_plan:
-                if control_plan is not None:
-                    control_plan.page_id = self.page_id
-        if self.layout_plan is not None:
-            self.layout_plan.page_id = self.page_id
 
     def _get_components(self, model, df_metadata):
         if self._components is None:
@@ -136,7 +129,7 @@ class PagePlanner(BaseModel):
 
         return controls
 
-    def create(self, model, df_metadata) -> vm.Page:
+    def create(self, model, df_metadata) -> Union[vm.Page, None]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)
@@ -162,6 +155,9 @@ class PagePlanner(BaseModel):
                     "Please check the layout and the components."
                 )
                 page = vm.Page(title=title, components=components, controls=controls, layout=None)
+            else:
+                logger.warning(f"Failed to build page: {self.title}. Reason: {e}")
+                page = None
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()
         return page
@@ -169,7 +165,7 @@ class PagePlanner(BaseModel):
 
 if __name__ == "__main__":
     import pandas as pd
-    from vizro_ai.chains._llm_models import _get_llm_model
+    from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import DfMetadata
 
     model = _get_llm_model()
