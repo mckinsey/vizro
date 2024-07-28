@@ -23,17 +23,22 @@ class ComponentPlan(BaseModel):
     component_type: CompType
     component_description: str = Field(
         ...,
-        description="Description of the component. Include everything that relates to this component. "
-        "Be as detailed as possible."
-        "Keep the original relevant description AS IS. Keep any links as original links.",
+        description="""
+        Description of the component. Include everything that relates to this component.
+        Be as specific and detailed as possible.
+        Keep the original relevant description AS IS. Keep any links exactly as provided.
+        Remember: Accuracy and completeness are key. Do not omit any relevant information provided about the component.
+        """,
     )
     component_id: str = Field(
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
     )
     df_name: str = Field(
         ...,
-        description="The name of the dataframe that this component will use. If no dataframe is "
-        "used, please specify that as N/A.",
+        description="""
+        The name of the dataframe that this component will use. If no dataframe is
+        used, please specify that as N/A.
+        """,
     )
 
     def create(self, model, df_metadata) -> Union[vm.Card, vm.AgGrid, vm.Figure]:
@@ -51,10 +56,10 @@ class ComponentPlan(BaseModel):
             elif self.component_type == "AgGrid":
                 return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name))
             elif self.component_type == "Card":
-                card_prompt = (
-                    "The Card uses the dcc.Markdown component from Dash as its underlying text component. "
-                    f"Create a card based on the card description: {self.component_description}."
-                )
+                card_prompt = f"""
+                The Card uses the dcc.Markdown component from Dash as its underlying text component.
+                Create a card based on the card description: {self.component_description}.
+                """
                 result_proxy = _get_pydantic_output(query=card_prompt, llm_model=model, response_model=vm.Card)
                 proxy_dict = result_proxy.dict()
                 proxy_dict["id"] = self.component_id
@@ -62,8 +67,11 @@ class ComponentPlan(BaseModel):
 
         except DebugFailure as e:
             logger.warning(
-                f"Failed to build component: {self.component_id}.\n ------- \n "
-                f"Reason: {e} \n ------- \n Relevant prompt: `{self.component_description}`"
+                f"""
+[FALLBACK] Failed to build `Component`: {self.component_id}.
+Reason: {e}
+Relevant prompt: {self.component_description}
+"""
             )
             return vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
 

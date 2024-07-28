@@ -27,10 +27,12 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
 
     def validate_targets_not_empty(v):
         """Validate the targets not empty."""
-        if controllable_components == []:
+        if not controllable_components:
             raise ValueError(
-                "This might be due to the filter target is not found in the controllable components. "
-                "returning default values."
+                """
+                This might be due to the filter target is not found in the controllable components.
+                returning default values.
+                """
             )
         return v
 
@@ -48,8 +50,10 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
         if selector and selector.type == "date_picker":
             if not pd.api.types.is_datetime64_any_dtype(df_schema[column]):
                 raise ValueError(
-                    f"The column '{column}' is not of datetime type. Selector type 'date_picker' is"
-                    f" not allowed. Use 'dropdown' instead."
+                    f"""
+                    The column '{column}' is not of datetime type. Selector type 'date_picker' is
+                    not allowed. Use 'dropdown' instead.
+                    """
                 )
         return values
 
@@ -59,8 +63,10 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             List[str],
             Field(
                 ...,
-                description="Target component to be affected by filter. "
-                f"Must be one of {controllable_components}. ALWAYS REQUIRED.",
+                description=f"""
+                Target component to be affected by filter.
+                Must be one of {controllable_components}. ALWAYS REQUIRED.
+                """,
             ),
         ),
         column=(str, Field(..., description="Column name of DataFrame to filter. ALWAYS REQUIRED.")),
@@ -90,23 +96,27 @@ class ControlPlan(BaseModel):
     control_type: CtrlType
     control_description: str = Field(
         ...,
-        description="Description of the control. Include everything that seems to relate to this control."
-        "Be as detailed as possible. Keep the original relevant description AS IS. If this control is used"
-        "to control a specific component, include the relevant component details.",
+        description="""
+        Description of the control. Include everything that seems to relate to this control.
+        Be as detailed as possible. Keep the original relevant description AS IS. If this control is used
+        to control a specific component, include the relevant component details.
+        """,
     )
     df_name: str = Field(
         ...,
-        description="The name of the dataframe that this component will use. "
-        "If the dataframe is not used, please specify that.",
+        description="""
+        The name of the dataframe that this component will use.
+        If the dataframe is not used, please specify that.
+        """,
     )
 
     def create(self, model, controllable_components, df_metadata) -> Union[vm.Filter, None]:
         """Create the control."""
-        filter_prompt = (
-            f"Create a filter from the following instructions: <{self.control_description}>. Do not make up "
-            f"things that are optional and DO NOT configure actions, action triggers or action chains."
-            f" If no options are specified, leave them out."
-        )
+        filter_prompt = f"""
+        Create a filter from the following instructions: <{self.control_description}>. Do not make up
+        things that are optional and DO NOT configure actions, action triggers or action chains.
+        If no options are specified, leave them out.
+        """
         try:
             _df_schema = df_metadata.get_df_schema(self.df_name)
             _df_cols = list(_df_schema.keys())
@@ -127,9 +137,11 @@ class ControlPlan(BaseModel):
 
         except ValidationError as e:
             logger.warning(
-                f"Build failed for `Control`, returning default values. Try rephrase the prompt or "
-                f"select a different model. \n ------- \n Error details: {e} \n ------- \n "
-                f"Relevant prompt: `{self.control_description}`"
+                f"""
+[FALLBACK] Build failed for `Control`, returning default values. Try rephrase the prompt or select a different model.
+Error details: {e}
+Relevant prompt: {self.control_description}
+"""
             )
             return None
 

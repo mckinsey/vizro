@@ -82,10 +82,9 @@ def _get_pydantic_output(
             res = pydantic_llm.invoke(message_content)
         except ValidationError as validation_error:
             last_validation_error = validation_error
-            logger.warning(f"\n ------- \nRetry due to validation error: {last_validation_error}")
         else:
             return res
-        
+
     raise last_validation_error
 
 
