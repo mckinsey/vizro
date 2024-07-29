@@ -35,7 +35,7 @@ and return a corrected version of the code.
 Return the full code snippet after fixing the bug in the code snippet:
 {code_snippet}
 
-IMPORTANT: Avoid adding fake data for variable df. It will be provided by the user when execute.
+IMPORTANT: Avoid adding fake data for the variable df. It will be provided by the user when executed.
 This is the error message:
 {input},
 """
