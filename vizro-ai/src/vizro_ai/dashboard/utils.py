@@ -9,7 +9,7 @@ import vizro.models as vm
 
 
 @dataclass
-class MetadataContent:
+class DfMetadata:
     """Dataclass containing metadata content for a dataframe."""
 
     df_schema: Dict[str, str]
@@ -18,28 +18,28 @@ class MetadataContent:
 
 
 @dataclass
-class DfMetadata:
+class AllDfMetadata:
     """Dataclass containing metadata for all dataframes."""
 
-    metadata: Dict[str, MetadataContent] = field(default_factory=dict)
+    all_df_metadata: Dict[str, DfMetadata] = field(default_factory=dict)
 
     def get_schemas_and_samples(self) -> Dict[str, Dict[str, str]]:
         """Retrieve only the df_schema and df_sample for all datasets."""
         return {
             name: {"df_schema": metadata.df_schema, "df_sample": metadata.df_sample}
-            for name, metadata in self.metadata.items()
+            for name, metadata in self.all_df_metadata.items()
         }
 
     def get_df(self, name: str) -> pd.DataFrame:
         """Retrieve the dataframe by name."""
         try:
-            return self.metadata[name].df
+            return self.all_df_metadata[name].df
         except KeyError:
             raise KeyError("Dataframe not found in metadata. Please ensure that the correct dataframe is provided.")
 
     def get_df_schema(self, name: str) -> Dict[str, str]:
         """Retrieve the schema of the dataframe by name."""
-        return self.metadata[name].df_schema
+        return self.all_df_metadata[name].df_schema
 
 
 @dataclass
@@ -56,11 +56,11 @@ def _execute_step(pbar: tsd.tqdm, description: str, value: Any) -> Any:
     return value
 
 
-def _register_data(df_metadata: DfMetadata) -> vm.Dashboard:
+def _register_data(all_df_metadata: AllDfMetadata) -> vm.Dashboard:
     """Register the dashboard data in data manager."""
     from vizro.managers import data_manager
 
-    for name, metadata in df_metadata.metadata.items():
+    for name, metadata in all_df_metadata.all_df_metadata.items():
         data_manager[name] = metadata.df
 
 

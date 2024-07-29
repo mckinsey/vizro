@@ -41,7 +41,7 @@ class ComponentPlan(BaseModel):
         """,
     )
 
-    def create(self, model, df_metadata) -> Union[vm.Card, vm.AgGrid, vm.Figure]:
+    def create(self, model, all_df_metadata) -> Union[vm.Card, vm.AgGrid, vm.Figure]:
         """Create the component."""
         from vizro_ai import VizroAI
 
@@ -51,7 +51,9 @@ class ComponentPlan(BaseModel):
             if self.component_type == "Graph":
                 return vm.Graph(
                     id=self.component_id,
-                    figure=vizro_ai.plot(df=df_metadata.get_df(self.df_name), user_input=self.component_description),
+                    figure=vizro_ai.plot(
+                        df=all_df_metadata.get_df(self.df_name), user_input=self.component_description
+                    ),
                 )
             elif self.component_type == "AgGrid":
                 return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name))
@@ -78,11 +80,11 @@ Relevant prompt: {self.component_description}
 
 if __name__ == "__main__":
     from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import DfMetadata
+    from vizro_ai.dashboard.utils import AllDfMetadata
 
     model = _get_llm_model()
 
-    df_metadata = DfMetadata({})
+    all_df_metadata = AllDfMetadata({})
     component_plan = ComponentPlan(
         component_type="Card",
         component_description="Create a card says 'this is worldwide GDP'.",
@@ -90,5 +92,5 @@ if __name__ == "__main__":
         page_id="page1",
         df_name="N/A",
     )
-    component = component_plan.create(model, df_metadata)
+    component = component_plan.create(model, all_df_metadata)
     print(component)  # noqa: T201

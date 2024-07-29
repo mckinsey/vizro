@@ -76,12 +76,12 @@ class PagePlanner(BaseModel):
         self._controls = None
         self._layout = None
 
-    def _get_components(self, model, df_metadata):
+    def _get_components(self, model, all_df_metadata):
         if self._components is None:
-            self._components = self._build_components(model=model, df_metadata=df_metadata)
+            self._components = self._build_components(model=model, all_df_metadata=all_df_metadata)
         return self._components
 
-    def _build_components(self, model, df_metadata):
+    def _build_components(self, model, all_df_metadata):
         components = []
         component_log = tqdm(total=0, bar_format="{desc}", leave=False)
         with tqdm(
@@ -92,38 +92,38 @@ class PagePlanner(BaseModel):
             for component_plan in self.components_plan:
                 component_log.set_description_str(f"[Page] <{self.title}>: [Component] {component_plan.component_id}")
                 pbar.update(1)
-                components.append(component_plan.create(model=model, df_metadata=df_metadata))
+                components.append(component_plan.create(model=model, all_df_metadata=all_df_metadata))
         component_log.close()
         return components
 
-    def _get_layout(self, model, df_metadata):
+    def _get_layout(self, model, all_df_metadata):
         if self._layout is None:
-            self._layout = self._build_layout(model, df_metadata)
+            self._layout = self._build_layout(model, all_df_metadata)
         return self._layout
 
-    def _build_layout(self, model, df_metadata):
+    def _build_layout(self, model, all_df_metadata):
         if self.layout_plan is None:
             return None
         return self.layout_plan.create(
-            component_ids=self._get_component_ids(model=model, df_metadata=df_metadata),
+            component_ids=self._get_component_ids(model=model, all_df_metadata=all_df_metadata),
         )
 
-    def _get_controls(self, model, df_metadata):
+    def _get_controls(self, model, all_df_metadata):
         if self._controls is None:
-            self._controls = self._build_controls(model=model, df_metadata=df_metadata)
+            self._controls = self._build_controls(model=model, all_df_metadata=all_df_metadata)
         return self._controls
 
-    def _controllable_components(self, model, df_metadata):
+    def _controllable_components(self, model, all_df_metadata):
         return [
             comp.id
-            for comp in self._get_components(model=model, df_metadata=df_metadata)
+            for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)
             if isinstance(comp, (vm.Graph, vm.AgGrid))
         ]
 
-    def _get_component_ids(self, model, df_metadata):
-        return [comp.id for comp in self._get_components(model=model, df_metadata=df_metadata)]
+    def _get_component_ids(self, model, all_df_metadata):
+        return [comp.id for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)]
 
-    def _build_controls(self, model, df_metadata):
+    def _build_controls(self, model, all_df_metadata):
         controls = []
         with tqdm(
             total=len(self.controls_plan),
@@ -134,15 +134,15 @@ class PagePlanner(BaseModel):
                 pbar.update(1)
                 control = control_plan.create(
                     model=model,
-                    controllable_components=self._controllable_components(model=model, df_metadata=df_metadata),
-                    df_metadata=df_metadata,
+                    controllable_components=self._controllable_components(model=model, all_df_metadata=all_df_metadata),
+                    all_df_metadata=all_df_metadata,
                 )
                 if control:
                     controls.append(control)
 
         return controls
 
-    def create(self, model, df_metadata) -> Union[vm.Page, None]:
+    def create(self, model, all_df_metadata) -> Union[vm.Page, None]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)
@@ -150,13 +150,13 @@ class PagePlanner(BaseModel):
 
         title = _execute_step(pbar, page_desc + " --> add title", self.title)
         components = _execute_step(
-            pbar, page_desc + " --> add components", self._get_components(model=model, df_metadata=df_metadata)
+            pbar, page_desc + " --> add components", self._get_components(model=model, all_df_metadata=all_df_metadata)
         )
         controls = _execute_step(
-            pbar, page_desc + " --> add controls", self._get_controls(model=model, df_metadata=df_metadata)
+            pbar, page_desc + " --> add controls", self._get_controls(model=model, all_df_metadata=all_df_metadata)
         )
         layout = _execute_step(
-            pbar, page_desc + " --> add layout", self._get_layout(model=model, df_metadata=df_metadata)
+            pbar, page_desc + " --> add layout", self._get_layout(model=model, all_df_metadata=all_df_metadata)
         )
 
         try:
@@ -181,11 +181,11 @@ Build page without layout.
 if __name__ == "__main__":
     import pandas as pd
     from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import DfMetadata
+    from vizro_ai.dashboard.utils import AllDfMetadata
 
     model = _get_llm_model()
 
-    df_metadata = DfMetadata(
+    all_df_metadata = AllDfMetadata(
         {
             "gdp_chart": {
                 "df_schema": {"a": "int64", "b": "int64"},
@@ -218,5 +218,5 @@ if __name__ == "__main__":
         ),
         unsupported_specs=[],
     )
-    page = page_plan.create(model, df_metadata)
+    page = page_plan.create(model, all_df_metadata)
     print(page)  # noqa: T201
