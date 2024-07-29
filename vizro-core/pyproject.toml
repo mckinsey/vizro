@@ -83,4 +83,4 @@ filterwarnings = [
   "ignore:Custom format string detected."
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
-pythonpath = ["tests/tests_utils", "examples/kpi"]
+pythonpath = ["tests/tests_utils"]
