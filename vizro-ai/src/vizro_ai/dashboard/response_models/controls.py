@@ -110,7 +110,7 @@ class ControlPlan(BaseModel):
         """,
     )
 
-    def create(self, model, controllable_components, df_metadata) -> Union[vm.Filter, None]:
+    def create(self, model, controllable_components, all_df_metadata) -> Union[vm.Filter, None]:
         """Create the control."""
         filter_prompt = f"""
         Create a filter from the following instructions: <{self.control_description}>. Do not make up
@@ -118,7 +118,7 @@ class ControlPlan(BaseModel):
         If no options are specified, leave them out.
         """
         try:
-            _df_schema = df_metadata.get_df_schema(self.df_name)
+            _df_schema = all_df_metadata.get_df_schema(self.df_name)
             _df_cols = list(_df_schema.keys())
         except KeyError:
             logger.warning(f"Dataframe {self.df_name} not found in metadata, returning default values.")
@@ -149,12 +149,12 @@ Relevant prompt: {self.control_description}
 if __name__ == "__main__":
     import pandas as pd
     from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
+    from vizro_ai.dashboard.utils import DfMetadata
 
     model = _get_llm_model()
 
-    df_metadata = DfMetadata({})
-    df_metadata.metadata["gdp_chart"] = MetadataContent(
+    all_df_metadata = DfMetadata({})
+    all_df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
         df_schema={"a": "int64", "b": "int64"},
         df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
         df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
@@ -165,5 +165,5 @@ if __name__ == "__main__":
         df_name="gdp_chart",
     )
     control = control_plan.create(
-        model, ["gdp_chart"], df_metadata
+        model, ["gdp_chart"], all_df_metadata
     )  # error: Target gdp_chart not found in model_manager.

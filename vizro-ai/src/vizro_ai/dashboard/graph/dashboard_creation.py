@@ -15,7 +15,7 @@ from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
 from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
 from vizro_ai.dashboard.response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
 from vizro_ai.dashboard.response_models.page import PagePlanner
-from vizro_ai.dashboard.utils import DfMetadata, MetadataContent, _execute_step
+from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata, _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
 try:
@@ -37,7 +37,7 @@ class GraphState(BaseModel):
     Attributes
         messages : With user question, error messages, reasoning
         dfs : Dataframes
-        df_metadata : Cleaned dataframe names and their metadata
+        all_df_metadata : Cleaned dataframe names and their metadata
         dashboard_plan : Plan for the dashboard
         pages : Vizro pages
         dashboard : Vizro dashboard
@@ -46,7 +46,7 @@ class GraphState(BaseModel):
 
     messages: List[BaseMessage]
     dfs: List[pd.DataFrame]
-    df_metadata: DfMetadata
+    all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlanner] = None
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
@@ -57,10 +57,10 @@ class GraphState(BaseModel):
         arbitrary_types_allowed = True
 
 
-def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMetadata]:
+def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDfMetadata]:
     """Store information about the dataframes."""
     dfs = state.dfs
-    df_metadata = state.df_metadata
+    all_df_metadata = state.all_df_metadata
     query = state.messages[0].content
     current_df_names = []
     with tqdm(total=len(dfs), desc="Store df info") as pbar:
@@ -86,9 +86,9 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, DfMet
 
             pbar.write(f"df_name: {df_name}")
             pbar.update(1)
-            df_metadata.metadata[df_name] = MetadataContent(df_schema=df_schema, df=df, df_sample=df_sample)
+            all_df_metadata.all_df_metadata[df_name] = DfMetadata(df_schema=df_schema, df=df, df_sample=df_sample)
 
-    return {"df_metadata": df_metadata}
+    return {"all_df_metadata": all_df_metadata}
 
 
 def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlanner]:
@@ -96,7 +96,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
     node_desc = "Generate dashboard plan"
     pbar = tqdm(total=2, desc=node_desc)
     query = state.messages[0].content
-    df_metadata = state.df_metadata
+    all_df_metadata = state.all_df_metadata
 
     llm = config["configurable"].get("model", None)
 
@@ -107,7 +107,10 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
     )
     try:
         dashboard_plan = _get_pydantic_output(
-            query=query, llm_model=llm, response_model=DashboardPlanner, df_info=df_metadata.get_schemas_and_samples()
+            query=query,
+            llm_model=llm,
+            response_model=DashboardPlanner,
+            df_info=all_df_metadata.get_schemas_and_samples(),
         )
     except (DebugFailure, ValidationError) as e:
         raise ValueError(
@@ -128,31 +131,32 @@ class BuildPageState(BaseModel):
     """Represents the state of building the page.
 
     Attributes
-        df_metadata : Cleaned dataframe names and their metadata
+        all_df_metadata : Cleaned dataframe names and their metadata
         page_plan : Plan for the dashboard
 
     """
 
-    df_metadata: DfMetadata
+    all_df_metadata: AllDfMetadata
     page_plan: PagePlanner = None
 
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:
     """Build a page."""
-    df_metadata = state["df_metadata"]
+    all_df_metadata = state["all_df_metadata"]
     page_plan = state["page_plan"]
 
     llm = config["configurable"].get("model", None)
-    page = page_plan.create(model=llm, df_metadata=df_metadata)
+    page = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
 
     return {"pages": [page]}
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:
     """Map-reduce logic to build pages in parallel."""
-    df_metadata = state.df_metadata
+    all_df_metadata = state.all_df_metadata
     return [
-        Send(node="_build_page", arg={"page_plan": v, "df_metadata": df_metadata}) for v in state.dashboard_plan.pages
+        Send(node="_build_page", arg={"page_plan": v, "all_df_metadata": all_df_metadata})
+        for v in state.dashboard_plan.pages
     ]
 
 

@@ -183,7 +183,7 @@ class VizroAI:
         message_res = runnable.invoke(
             {
                 "dfs": dfs,
-                "df_metadata": {},
+                "all_df_metadata": {},
                 "dashboard_plan": None,
                 "pages": [],
                 "dashboard": None,
@@ -192,7 +192,7 @@ class VizroAI:
             config=config,
         )
         dashboard = message_res["dashboard"]
-        _register_data(df_metadata=message_res["df_metadata"])
+        _register_data(all_df_metadata=message_res["all_df_metadata"])
 
         if return_elements:
             code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
