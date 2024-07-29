@@ -22,7 +22,7 @@ openai_schema_manager = SchemaManager()
 
 @openai_schema_manager.register
 class CustomChart(BaseModel):
-    """Plotly code per user request that is suitable for chart types for given data."""
+    """Plotly code per user request that is suitable for chart type for given data."""
 
     custom_chart_code: str = Field(..., description="Modified and decorated code snippet to allow use in dashboards")
 

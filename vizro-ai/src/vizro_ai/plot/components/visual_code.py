@@ -22,7 +22,7 @@ openai_schema_manager = SchemaManager()
 
 @openai_schema_manager.register
 class VizroCode(BaseModel):
-    """Plotly code per user request that is suitable for chart types for given data."""
+    """Plotly code per user request that is suitable for chart type for given data."""
 
     visual_code: str = Field(..., description="code snippet for plot visuals using plotly")
 
@@ -103,7 +103,7 @@ class GetVisualCode(VizroAiComponentBase):
         Args:
             chain_input: User input or intermediate question if needed.
             df_code: Code snippet of dataframe.
-            chart_type: Chart types.
+            chart_type: chart type.
             df: The dataframe for plotting.
 
         Returns:

@@ -36,12 +36,12 @@ class ChartSelection(BaseModel):
 
 
 # 2. Define prompt
-chart_type_prompt = "choose a best chart types for this df info:{df_schema}, {df_head} and user question {input}?"
+chart_type_prompt = "choose a best chart type for this df info:{df_schema}, {df_head} and user question {input}?"
 
 
 # 3. Define Component
 class GetChartSelection(VizroAiComponentBase):
-    """Get Chart Types.
+    """Get chart type.
 
     Attributes
         prompt (str): Prompt chart selection chains.

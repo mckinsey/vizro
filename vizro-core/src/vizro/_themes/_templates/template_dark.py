@@ -70,7 +70,7 @@ def create_template_dark() -> Template:
         "showarrow": False,
     }
 
-    # CHART TYPES
+    # chart type
     template_dark.data.bar = [
         go.Bar(
             marker={"line": {"color": template_dark["layout"]["paper_bgcolor"], "width": 1}},

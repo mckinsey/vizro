@@ -19,7 +19,7 @@ class PipelineManager:
 
     @property
     def chart_type_pipeline(self):
-        """Target chart types pipeline."""
+        """Target chart type pipeline."""
         pipeline = Pipeline(self.llm)
         pipeline.add(GetChartSelection, input_keys=["df", "chain_input"], output_key="chart_type")
         return pipeline
