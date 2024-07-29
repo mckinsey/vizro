@@ -90,8 +90,9 @@ homepage = vm.Page(
     ],
 )
 
-# TODO: consider whether each chart group should have its own individual homepage, e.g. at http://localhost:8050/deviation/.
-# This could just repeat the content of the tab from the homepage and would work nicely with the hierarchical navigation.
+# TODO: consider whether each chart group should have its own individual homepage,
+# e.g. at http://localhost:8050/deviation/. This could just repeat the content of the tab from the homepage and would
+# work nicely with the hierarchical navigation.
 dashboard = vm.Dashboard(
     # ALL_CHART_GROUP.pages has duplicated pages, e.g. both distribution-butterfly and deviation-butterfly.
     title="Vizro - Chart Gallery",

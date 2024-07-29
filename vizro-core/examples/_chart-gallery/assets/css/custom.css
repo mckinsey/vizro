@@ -35,7 +35,6 @@ img[src*="#chart-icon"] {
   gap: 20px;
 }
 
-
 .flex-container h4 {
   color: var(--text-secondary);
   margin: 0;
@@ -66,7 +65,6 @@ img[src*="#chart-icon"] {
   font-size: 16px;
   line-height: 20px;
 }
-
 
 /*
 .navbar .nav-link.active {

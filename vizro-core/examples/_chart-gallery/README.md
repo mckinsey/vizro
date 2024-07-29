@@ -11,7 +11,7 @@ FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, B
 The dashboard is still in development. Below is an overview of the chart types for which a completed page is available.
 
 | Chart Type            | Status | Category                 |
-|-----------------------| ------ |--------------------------|
+| --------------------- | ------ | ------------------------ |
 | Arc                   | ❌     | Part-to-whole            |
 | Area                  | ❌     | Time                     |
 | Bar                   | ✅     | Magnitude                |

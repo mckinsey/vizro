@@ -6,11 +6,6 @@ import vizro.plotly.express as px
 from pages._factories import column_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
 
-# TODO: this is currently identical to ordered bar. It should be:
-#  - unordered (currently ordering is done in tips_agg)
-#  - different svg
-#  - slightly different text
-#  - slightly different example
 bar = vm.Page(
     title="Bar",
     path="magnitude/bar",
@@ -21,19 +16,17 @@ bar = vm.Page(
 
             #### What is a bar chart?
 
-            A bar chart displays bars in lengths proportional to the values they represent. One axis of
-            the chart shows the categories to compare and the other axis provides a value scale,
-            starting with zero.
+            A bar chart displays bars with lengths proportional to the values they represent. One axis shows the
+            categories to compare, and the other provides a value scale starting from zero.
 
             &nbsp;
 
             #### When should I use it?
 
-            Select a bar chart when you want to help your audience draw size comparisons and identify
-            patterns between categorical data, i.e., data that presents **how many?** in each category. You can
-            arrange your bars in any order to fit the message you wish to emphasize. Be mindful of labeling
-            clearly when you have a large number of bars. You may need to include a legend,
-            or use abbreviations in the chart with fuller descriptions below of the terms used.
+            Use a bar chart to help your audience compare sizes and identify patterns in categorical data, such as 
+            **how many?** in each category. Arrange the bars in any order to fit the message you want to emphasize. 
+            Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations with fuller
+            descriptions below.
         """
         ),
         vm.Graph(

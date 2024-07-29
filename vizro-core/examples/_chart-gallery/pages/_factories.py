@@ -11,11 +11,6 @@ from custom_charts import butterfly
 from pages._pages_utils import PAGE_GRID, ages, make_code_clipboard_from_py_file, tips_agg
 
 
-# TODO: this is currently identical to ordered column. It should be:
-#  - unordered (currently ordering is done in tips_agg)
-#  - different svg
-#  - slightly different text
-#  - slightly different example
 def column_factory(group: str):
     """Reusable function to create the page content for the column chart with a unique ID."""
     return vm.Page(
@@ -28,18 +23,17 @@ def column_factory(group: str):
                 text="""
                 #### What is a column chart?
 
-                A column chart is a vertical bar chart, with column lengths varying according to the
-                categorical value they represent. The scale is presented on the y-axis, starting with zero.
+                A column chart is a vertical bar chart with column lengths varying by the categorical value they
+                represent, using a y-axis scale starting from zero.
 
                 &nbsp;
 
                 #### When should I use it?
 
-                Select a column chart when you want to help your audience draw size comparisons and identify
-                patterns between categorical data, i.e., data that presents **how many?** in each category. You can
-                arrange your columns in any order to fit the message you wish to emphasize. Be mindful of
-                labeling clearly when you have a large number of columns. You may need to include a legend,
-                or use abbreviations in the chart with fuller descriptions below of the terms used.
+                Use a column chart to help your audience compare sizes and identify patterns in categorical data,
+                such as **how many?** in each category. Arrange the columns in any order to fit the message you want
+                to emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or
+                abbreviations with fuller descriptions below.
         """
             ),
             vm.Graph(

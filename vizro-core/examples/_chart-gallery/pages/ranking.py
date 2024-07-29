@@ -3,10 +3,8 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_sorted
 
-# TODO: this is currently identical to bar. It should be:
-#  - slightly different text since it says "you can arrange your bars in any order"
 ordered_bar = vm.Page(
     title="Ordered bar",
     path="ranking/ordered-bar",
@@ -15,27 +13,24 @@ ordered_bar = vm.Page(
         vm.Card(
             text="""
 
-            #### What is a bar chart?
+            #### What is an ordered bar chart?
 
-            A bar chart displays bars in lengths proportional to the values they represent. One axis of
-            the chart shows the categories to compare and the other axis provides a value scale,
-            starting with zero.
+            An ordered bar chart displays bars with lengths proportional to their values, arranged in descending or
+            ascending order. One axis shows the categories, and the other provides a value scale starting from zero.
 
             &nbsp;
 
             #### When should I use it?
 
-            Select a bar chart when you want to help your audience draw size comparisons and identify
-            patterns between categorical data, i.e., data that presents **how many?** in each category. You can
-            arrange your bars in any order to fit the message you wish to emphasize. Be mindful of labeling
-            clearly when you have a large number of bars. You may need to include a legend,
-            or use abbreviations in the chart with fuller descriptions below of the terms used.
-
+            Use an ordered bar chart to help your audience compare sizes and identify patterns in categorical data,
+            emphasizing the order of categories. This is ideal for showing rankings or priorities.
+            Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations with fuller
+            descriptions below.
         """
         ),
         vm.Graph(
             figure=px.bar(
-                tips_agg,
+                tips_sorted,
                 x="total_bill",
                 y="day",
                 orientation="h",
@@ -45,8 +40,6 @@ ordered_bar = vm.Page(
     ],
 )
 
-# TODO: this is currently identical to column. It should be:
-#  - slightly different text since it says "you can arrange your bars in any order"
 ordered_column = vm.Page(
     title="Ordered column",
     path="ranking/ordered-column",
@@ -55,25 +48,25 @@ ordered_column = vm.Page(
         vm.Card(
             text="""
 
-            #### What is a column chart?
+            #### What is an ordered column chart?
 
-            A column chart is a vertical bar chart, with column lengths varying according to the
-            categorical value they represent. The scale is presented on the y-axis, starting with zero.
+            An ordered column chart is a vertical bar chart where columns are arranged in descending or ascending order
+            based on their values. The column lengths vary according to the categorical value they represent, with the
+            scale on the y-axis starting from zero.
 
             &nbsp;
 
             #### When should I use it?
 
-            Select a column chart when you want to help your audience draw size comparisons and identify
-            patterns between categorical data, i.e., data that presents **how many?** in each category. You can
-            arrange your columns in any order to fit the message you wish to emphasize. Be mindful of
-            labeling clearly when you have a large number of columns. You may need to include a legend,
-            or use abbreviations in the chart with fuller descriptions below of the terms used.
+            Use an ordered column chart to help your audience compare sizes and identify patterns in categorical data,
+            emphasizing the order of categories. This is ideal for showing rankings or progressions. Ensure clear
+            labeling, especially with many columns, and consider using a legend or abbreviations with fuller
+            descriptions below.
         """
         ),
         vm.Graph(
             figure=px.bar(
-                tips_agg,
+                tips_sorted,
                 y="total_bill",
                 x="day",
             )
