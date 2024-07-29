@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ code for that visualization. 5.Do not include any plotting code.
 
 
 # 3. Define Component
-class GetDataFrameCraft(VizroAiComponentBase):
+class GetDataFrameCraft(VizroAIComponentBase):
     """Get dataframe code.
 
     Attributes
