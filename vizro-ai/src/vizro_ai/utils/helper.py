@@ -6,8 +6,7 @@ from typing import Callable, Dict, Optional
 
 import pandas as pd
 import plotly.graph_objects as go
-
-from .safeguard import _safeguard_check
+from vizro_ai.plot._utils._safeguard import _safeguard_check
 
 
 @dataclass
