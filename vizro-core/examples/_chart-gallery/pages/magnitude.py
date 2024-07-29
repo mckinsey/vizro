@@ -23,8 +23,8 @@ bar = vm.Page(
 
             #### When should I use it?
 
-            Use a bar chart to help your audience compare sizes and identify patterns in categorical data, such as 
-            **how many?** in each category. Arrange the bars in any order to fit the message you want to emphasize. 
+            Use a bar chart to help your audience compare sizes and identify patterns in categorical data, such as
+            **how many?** in each category. Arrange the bars in any order to fit the message you want to emphasize.
             Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations with fuller
             descriptions below.
         """
