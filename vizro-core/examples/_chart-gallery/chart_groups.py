@@ -53,7 +53,7 @@ deviation_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage(title="Diverging bar"),
         IncompletePage("Diverging stacked bar"),
-        IncompletePage(title="Surplus"),
+        IncompletePage(title="Surplus deficit filled line"),
     ],
     icon="Contrast Square",
     intro_text=deviation_intro_text,
