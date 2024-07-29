@@ -35,6 +35,7 @@ bar = vm.Page(
                 x="total_bill",
                 y="day",
                 orientation="h",
+                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
             )
         ),
         make_code_clipboard_from_py_file("bar.py"),

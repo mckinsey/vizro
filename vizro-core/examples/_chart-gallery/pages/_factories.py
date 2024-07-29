@@ -37,11 +37,7 @@ def column_factory(group: str):
         """
             ),
             vm.Graph(
-                figure=px.bar(
-                    tips_agg,
-                    y="total_bill",
-                    x="day",
-                )
+                figure=px.bar(tips_agg, y="total_bill", x="day", category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]})
             ),
             make_code_clipboard_from_py_file("column.py"),
         ],
