@@ -30,9 +30,3 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin: 0;
   padding: 0;
 }
-
-.navbar .nav-link.active {
-  border-right: 1px solid var(--border-enabled);
-  color: var(--text-primary);
-  width: 64px;
-}

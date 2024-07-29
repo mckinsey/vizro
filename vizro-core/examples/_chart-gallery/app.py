@@ -94,6 +94,7 @@ homepage = vm.Page(
 # This could just repeat the content of the tab from the homepage and would work nicely with the hierarchical navigation.
 dashboard = vm.Dashboard(
     # ALL_CHART_GROUP.pages has duplicated pages, e.g. both distribution-butterfly and deviation-butterfly.
+    title="Vizro - Chart Gallery",
     pages=[homepage, *ALL_CHART_GROUP.pages],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(

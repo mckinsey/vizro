@@ -58,7 +58,7 @@ deviation_chart_group = ChartGroup(
         # IncompletePage("Diverging stacked bar"),
         IncompletePage(title="Surplus"),
     ],
-    icon="Planner Review",
+    icon="Contrast Square",
     intro_text=deviation_intro_text,
 )
 
@@ -205,7 +205,7 @@ flow_chart_group = ChartGroup(
         IncompletePage("Chord"),
         IncompletePage("Network"),
     ],
-    icon="Stacked Line Chart",
+    icon="Air",
     intro_text=flow_intro_text,
 )
 
@@ -239,12 +239,18 @@ CHART_GROUPS = [
 
 all_intro_text = """
 This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
-to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://vizro.mckinsey.com/).
+to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
 
 Inspired by the
-[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
+[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md)
+and [the Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+
+- FT Graphic: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
 Martin Stabe.
+
+- The Graphic Continuum: Jon Swabish and Severino Ribecca
+
+
 """
 
 

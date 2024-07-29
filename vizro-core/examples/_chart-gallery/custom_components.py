@@ -16,7 +16,6 @@ class CodeClipboard(vm.VizroBaseModel):
     """Code snippet with a copy to clipboard button."""
 
     type: Literal["code_clipboard"] = "code_clipboard"
-    title: str = "Code"
     code: str
     language: str = ""
 
@@ -28,7 +27,6 @@ class CodeClipboard(vm.VizroBaseModel):
                 dbc.AccordionItem(
                     html.Div(
                         [
-                            html.H3(self.title),
                             dcc.Markdown(markdown_code, id=self.id),
                             dcc.Clipboard(target_id=self.id, className="code-clipboard"),
                         ],
