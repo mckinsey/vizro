@@ -1,6 +1,7 @@
 # ruff: noqa: F403, F405
 import os
 import runpy
+import sys
 from pathlib import Path
 
 import chromedriver_autoinstaller
@@ -26,9 +27,15 @@ def setup_integration_test_environment(monkeypatch_session):
 
 @pytest.fixture
 def dashboard(request, monkeypatch):
-    monkeypatch.chdir(request.getfixturevalue("example_path") / request.getfixturevalue("version"))
-    app = runpy.run_path("app.py")
-    return app["dashboard"]
+    example_directory = request.getfixturevalue("example_path") / request.getfixturevalue("version")
+    monkeypatch.chdir(example_directory)
+    monkeypatch.syspath_prepend(example_directory)
+    old_sys_modules = set(sys.modules)
+    yield runpy.run_path("app.py")["dashboard"]
+    # Both run_path and run_module contaminate sys.modules, so we need to undo this in order to avoid interference
+    # between tests.
+    for key in set(sys.modules) - old_sys_modules:
+        del sys.modules[key]
 
 
 examples_path = Path(__file__).parents[2] / "examples"
@@ -45,12 +52,15 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.parametrize(
     "example_path, version",
     [
+        # Chart gallery is not included since it means installing black in the testing environment.
+        # It will move to HuggingFace in due course anyway.
         (examples_path / "scratch_dev", ""),
-        (examples_path / "dev", ""),
-        (examples_path / "kpi", ""),
         (examples_path / "scratch_dev", "yaml_version"),
+        (examples_path / "dev", ""),
         (examples_path / "dev", "yaml_version"),
+        (examples_path / "kpi", ""),
     ],
+    ids=str,
 )
 def test_dashboard(dash_duo, example_path, dashboard, version):
     app = Vizro(assets_folder=example_path / "assets").build(dashboard).dash
