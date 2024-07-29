@@ -58,7 +58,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Stacked Column       | ❌     | Part-to-whole            |
 | Stepped Line         | ❌     | Ranking                  |
 | Surplus-Deficit-Line | ❌     | Deviation                |
-| Treemap              | ✅     | Magnitude, Part-to-whole |
+| Treemap              | ✅     | Part-to-whole            |
 | Venn                 | ❌     | Part-to-whole            |
 | Violin               | ✅     | Distribution             |
 | Waterfall            | ❌     | Part-to-whole, Flow      |

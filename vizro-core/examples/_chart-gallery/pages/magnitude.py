@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._factories import column_factory, treemap_factory
+from pages._factories import column_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
 
 # TODO: this is currently identical to ordered bar. It should be:
@@ -50,6 +50,5 @@ bar = vm.Page(
 
 
 column = column_factory("magnitude")
-treemap = treemap_factory("magnitude")
 
-pages = [bar, column, treemap]
+pages = [bar, column]

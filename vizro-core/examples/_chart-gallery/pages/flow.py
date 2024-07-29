@@ -34,7 +34,7 @@ sankey = vm.Page(
         vm.Graph(
             figure=sankey(
                 sankey_data,
-                labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
+                labels=["A1", "A2", "B1", "B2", "C1", "C2"],
                 source="Origin",
                 target="Destination",
                 value="Value",

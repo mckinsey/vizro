@@ -33,6 +33,7 @@ violin = vm.Page(
                 y="total_bill",
                 x="day",
                 color="day",
+                box=True,
             )
         ),
         make_code_clipboard_from_py_file("violin.py"),

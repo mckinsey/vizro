@@ -13,11 +13,12 @@ def make_code_clipboard_from_py_file(filepath: str):
     # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
     filepath = Path(__file__).parents[1] / "pages/examples" / filepath
     return CodeClipboard(
-        code=black.format_str(filepath.read_text(encoding="utf-8"), mode=black.Mode()), language="python"
+        code=black.format_str(filepath.read_text(encoding="utf-8"), mode=black.Mode(line_length=80)),
+        language="python",
     )
 
 
-PAGE_GRID = [[0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 2, 2]] * 5
+PAGE_GRID = [[0, 0, 0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 1, 2, 2, 2]] * 5
 
 # DATA --------------------------------------------------------------
 gapminder = px.data.gapminder()
@@ -35,8 +36,8 @@ ages = pd.DataFrame(
 )
 sankey_data = pd.DataFrame(
     {
-        "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
-        "Destination": [1, 2, 3, 4, 5, 5, 6],  # indices inside labels
-        "Value": [10, 4, 8, 6, 4, 8, 8],
+        "Origin": [0, 1, 0, 2, 3, 3],
+        "Destination": [2, 3, 3, 4, 4, 5],
+        "Value": [8, 4, 2, 8, 4, 2],
     }
 )

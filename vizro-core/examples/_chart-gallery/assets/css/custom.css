@@ -62,8 +62,10 @@ img[src*="#chart-icon"] {
   opacity: 1;
 }
 
+/*
 .navbar .nav-link.active {
   border-right: 1px solid var(--border-enabled);
   color: var(--text-primary);
   width: 64px;
 }
+*/

@@ -7,7 +7,7 @@ tips = px.data.tips()
 page = vm.Page(
     title="Violin",
     components=[
-        vm.Graph(figure=px.violin(tips, y="total_bill", x="day", color="day")),
+        vm.Graph(figure=px.violin(tips, y="total_bill", x="day", color="day", box=True)),
     ],
 )
 
