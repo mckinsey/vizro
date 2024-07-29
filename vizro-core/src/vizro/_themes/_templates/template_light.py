@@ -68,7 +68,7 @@ def create_template_light() -> Template:
         "showarrow": False,
     }
 
-    # chart type
+    # CHART TYPES
     template_light.data.bar = [
         go.Bar(marker={"line": {"color": template_light["layout"]["paper_bgcolor"], "width": 1}})
     ]
