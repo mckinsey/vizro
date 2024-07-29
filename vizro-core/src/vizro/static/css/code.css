@@ -1,23 +1,25 @@
 code.language-python.hljs {
   padding: 0;
+  font-family: monospace;
 }
 
 .hljs {
   background: unset;
   color: unset;
-  font-family: unset;
+  font-family: monospace;
 }
 
 .hljs-string,
+.hljs-params,
 .hljs-params .hljs-string,
 .hljs-number {
   color: var(--text-code-string);
-  font-family: unset;
+  font-family: monospace;
 }
 
 .hljs-keyword {
   color: var(--text-code-keyword);
-  font-family: unset;
+  font-family: monospace;
 }
 
 .hljs-title.function_,
@@ -25,5 +27,5 @@ code.language-python.hljs {
 .hljs-built_in,
 .hljs-type {
   color: var(--text-code-meta);
-  font-family: unset;
+  font-family: monospace;
 }

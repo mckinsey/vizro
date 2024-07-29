@@ -23,6 +23,7 @@ img[src*="#chart-icon"] {
   overflow: auto;
   padding: 1rem;
   position: relative;
+  font-family: monospace;
 }
 
 .code-clipboard-container::-webkit-scrollbar-thumb {
