@@ -36,14 +36,11 @@ class ChartGroup:
     """Represents a group of charts like "Deviation"."""
 
     name: str
-    pages: List[vm.Page]  # This is just the completed pages.
+    pages: List[vm.Page]
     incomplete_pages: List[IncompletePage]
     intro_text: str
     icon: str = ""  # ALL_CHART_GROUP is the only one that doesn't require an icon.
 
-
-# TODO: Charts that are commented out in incomplete_pages below do not have an svg made yet.
-#  Uncomment them once they are ready.
 
 deviation_intro_text = """
 Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
@@ -55,7 +52,7 @@ deviation_chart_group = ChartGroup(
     pages=pages.deviation.pages,
     incomplete_pages=[
         IncompletePage(title="Diverging bar"),
-        # IncompletePage("Diverging stacked bar"),
+        IncompletePage("Diverging stacked bar"),
         IncompletePage(title="Surplus"),
     ],
     icon="Contrast Square",
@@ -74,7 +71,7 @@ correlation_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Scatter matrix"),
         IncompletePage("Column line"),
-        # IncompletePage("Connected scatter"),
+        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap matrix"),
         IncompletePage("Bubble"),
     ],
@@ -96,6 +93,7 @@ ranking_chart_group = ChartGroup(
         IncompletePage("Slope"),
         IncompletePage("Lollipop"),
         IncompletePage("Stepped line"),
+        IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
@@ -117,7 +115,7 @@ distribution_chart_group = ChartGroup(
         IncompletePage("Dot plot"),
         IncompletePage("Barcode"),
         IncompletePage("Cumulative curve"),
-        # IncompletePage("Beeswarm"),
+        IncompletePage("Beeswarm"),
     ],
     icon="Waterfall Chart",
     intro_text=distribution_intro_text,
@@ -133,13 +131,13 @@ magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
     incomplete_pages=[
-        # IncompletePage("Paired column",
-        # IncompletePage("Paired bar",
+        IncompletePage("Paired column"),
+        IncompletePage("Paired bar"),
         IncompletePage("Marimekko"),
         IncompletePage("Bubble"),
         IncompletePage("Lollipop"),
         IncompletePage("Radar"),
-        IncompletePage("Parallel coords"),
+        IncompletePage("Parallel coordinates"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
@@ -161,8 +159,8 @@ time_chart_group = ChartGroup(
         IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        # IncompletePage("Area"),
-        # IncompletePage("Connected scatter"),
+        IncompletePage("Area"),
+        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),
         IncompletePage("Sparkline"),
@@ -185,6 +183,7 @@ part_to_whole_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Funnel"),
         IncompletePage("Arc"),
+        IncompletePage("Gridplot"),
         IncompletePage("Venn"),
         IncompletePage("Waterfall"),
     ],
