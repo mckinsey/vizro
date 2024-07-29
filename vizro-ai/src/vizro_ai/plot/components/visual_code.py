@@ -12,7 +12,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 from vizro_ai.utils.helper import _get_df_info
 
@@ -56,7 +56,7 @@ Note: Ensure all variable names and data references are consistent with the prov
 
 
 # 3. Define Component
-class GetVisualCode(VizroAiComponentBase):
+class GetVisualCode(VizroAIComponentBase):
     """Get Visual code.
 
     Attributes
