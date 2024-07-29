@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ custom_chart_prompt = """
     """
 
 
-class GetCustomChart(VizroAiComponentBase):
+class GetCustomChart(VizroAIComponentBase):
     # TODO Explore if it is possible to create CustomChart without LLM
     """Get custom chart code.
 
