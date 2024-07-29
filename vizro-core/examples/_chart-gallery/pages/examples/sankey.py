@@ -1,5 +1,3 @@
-"""Dev app to try things out."""
-
 from typing import List
 
 import pandas as pd
@@ -10,9 +8,9 @@ from vizro.models.types import capture
 
 sankey_data = pd.DataFrame(
     {
-        "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
-        "Destination": [1, 2, 3, 4, 5, 5, 6],  # indices inside labels
-        "Value": [10, 4, 8, 6, 4, 8, 8],
+        "Origin": [0, 1, 0, 2, 3, 3],  # indices inside labels
+        "Destination": [2, 3, 3, 4, 4, 5],  # indices inside labels
+        "Value": [8, 4, 2, 8, 4, 2],
     }
 )
 
@@ -24,8 +22,7 @@ def sankey(
     target: str,
     value: str,
     labels: List[str],
-) -> go.Figure:
-    """Creates a sankey diagram based on a go.Figure."""
+):
     fig = go.Figure(
         data=[
             go.Sankey(
@@ -53,8 +50,8 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=sankey(
-                data_frame=sankey_data,
-                labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
+                sankey_data,
+                labels=["A1", "A2", "B1", "B2", "C1", "C2"],
                 source="Origin",
                 target="Destination",
                 value="Value",
@@ -64,6 +61,4 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+Vizro().build(dashboard).run()
