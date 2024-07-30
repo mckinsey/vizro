@@ -231,11 +231,11 @@ class CapturedCallable:
     def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
         expected_mode = field.field_info.extra["mode"]
-        import_path_name = field.field_info.extra["import_path"].__name__
+        import_path = field.field_info.extra["import_path"]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
-                f"Invalid CapturedCallable. Supply a function imported from {import_path_name} or defined with "
+                f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
                 f"decorator @capture('{expected_mode}')."
             )
 
