@@ -14,8 +14,9 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
+from vizro_ai.utils.helper import _get_df_info
 
 logger = logging.getLogger(__name__)
 
@@ -31,18 +32,25 @@ class DataFrameCraft(BaseModel):
 
 
 # 2. Define prompt
-dataframe_prompt = """Context: You are working with a pandas DataFrame in Python named df.
-DataFrame Details Schema: {df_schema}, Sample Data: {df_head}, User Query: {input}
-Instructions: 1.Write code to manipulate the df DataFrame according to the user's query.
-2.Do not create any new DataFrames; work only with df.
-3.Ensure that any aggregated columns are named appropriately and re-indexed if necessary.
-4.If a visualization is implied by the user's query, only write the necessary DataFrame manipulation
-code for that visualization. 5.Do not include any plotting code.
-6. Produce the code in a line-by-line format, not wrapped inside a function."""
+dataframe_prompt = """
+You are a software engineer working with a pandas DataFrame in Python named df.
+Your task is to write code to manipulate the df DataFrame according to the user's query.
+So user can get the desired output for create subsequent visualization.
+DataFrame Details Schema: {df_schema}, Sample Data: {df_sample}, User Query: {input}
+
+Instructions:
+1. Write code to manipulate the df DataFrame according to the user's query.
+2. Do not create any new DataFrames; work only with df.
+3. Always make a hard copy of the DataFrame before manipulating it. Important: Do not modify the original DataFrame.
+4. Ensure that any aggregated columns are named appropriately and re-indexed if necessary.
+5. If a visualization is implied by the user's query, only write the necessary DataFrame manipulation
+code for that visualization.
+6. Do not include any plotting code.
+7. Produce the code in a line-by-line format, not wrapped inside a function."""
 
 
 # 3. Define Component
-class GetDataFrameCraft(VizroAiComponentBase):
+class GetDataFrameCraft(VizroAIComponentBase):
     """Get dataframe code.
 
     Attributes
@@ -66,9 +74,9 @@ class GetDataFrameCraft(VizroAiComponentBase):
 
         It should return llm_kwargs and partial_vars_map
         """
-        df_schema, df_head = self._get_df_info(df)
+        df_schema, df_sample = _get_df_info(df)
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("DataFrameCraft")
-        partial_vars_map = {"df_schema": df_schema, "df_head": df_head}
+        partial_vars_map = {"df_schema": df_schema, "df_sample": df_sample}
 
         return llm_kwargs_to_use, partial_vars_map
 
@@ -89,14 +97,6 @@ class GetDataFrameCraft(VizroAiComponentBase):
 
         """
         return super().run(chain_input, df)
-
-    @staticmethod
-    def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
-        """Get the dataframe schema and head info as string."""
-        formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
-        schema_string = "\n".join(formatted_pairs)
-
-        return schema_string, df.head().to_markdown()
 
     @staticmethod
     def _format_dataframe_string(s: str) -> str:

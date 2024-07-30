@@ -6,7 +6,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from vizro_ai.chains import FunctionCallChain
 
 
-class VizroAiComponentBase(ABC):
+class VizroAIComponentBase(ABC):
     """Abstract Base Class that represents a blueprint for Vizro-AI components.
 
     Attributes

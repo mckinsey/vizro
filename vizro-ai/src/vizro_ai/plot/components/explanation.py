@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 
 # 1. Define schema
@@ -28,14 +28,14 @@ class CodeExplanation(BaseModel):
 
 
 # 2. Define prompt
-code_explanation_prompt = (
-    "Given user question {input} and answer {code_snippet}, (less than 400 characters),"
-    "DO NOT just use one sentence for business insights, give detailed information"
-)
+code_explanation_prompt = """
+Given user question {input} and answer {code_snippet} (less than 400 characters),
+DO NOT just use one sentence for business insights, give detailed information.
+"""
 
 
 # 3. Define Component
-class GetCodeExplanation(VizroAiComponentBase):
+class GetCodeExplanation(VizroAIComponentBase):
     """Get Explanation of a code snippet.
 
     Attributes

@@ -1,11 +1,40 @@
+import pandas as pd
 import pytest
 from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.plot.components import GetVisualCode
 
 
 @pytest.fixture
-def chart_types():
+def chart_type():
     return "bar"
+
+
+@pytest.fixture
+def input_df():
+    input_df = pd.DataFrame(
+        {
+            "contintent": ["Asia", "Asia", "America", "Europe", "Europe"],
+            "country": ["China", "India", "US", "UK", "Germany"],
+            "gdpPercap": [102, 110, 300, 200, 250],
+        }
+    )
+    return input_df
+
+
+@pytest.fixture
+def df_schema():
+    return "contintent: object\ncountry: object\ngdpPercap: int64"
+
+
+@pytest.fixture
+def df_sample():
+    return """|    | contintent   | country   |   gdpPercap |
+|---:|:-------------|:----------|------------:|
+|  2 | America      | US        |         300 |
+|  0 | Asia         | China     |         102 |
+|  3 | Europe       | UK        |         200 |
+|  4 | Europe       | Germany   |         250 |
+|  2 | America      | US        |         300 |"""
 
 
 @pytest.fixture
@@ -85,9 +114,14 @@ class TestGetVisualCodeInstantiation:
     def setup_method(self, fake_llm):
         self.get_visual_code = GetVisualCode(llm=fake_llm)
 
-    def test_pre_process(self, chart_types, df_code_1):
-        _, partial_vars = self.get_visual_code._pre_process(chart_types=chart_types, df_code=df_code_1)
-        assert partial_vars == {"chart_types": chart_types, "df_code": df_code_1}
+    def test_pre_process(self, chart_type, input_df, df_code_1, df_schema, df_sample):  # noqa: PLR0913
+        _, partial_vars = self.get_visual_code._pre_process(chart_type=chart_type, df_code=df_code_1, df=input_df)
+        assert partial_vars == {
+            "chart_type": chart_type,
+            "df_code": df_code_1,
+            "df_schema": df_schema,
+            "df_sample": df_sample,
+        }
 
     @pytest.mark.parametrize(
         "input,output,df_code",
@@ -112,10 +146,11 @@ class TestGetVisualCodeRun:
         output_visual_code_LLM_1,
         expected_final_output_1,
         df_code_1,
-        chart_types,
+        chart_type,
+        input_df,
     ):
         get_visual_code = GetVisualCode(fake_llm)
         processed_code = get_visual_code.run(
-            chain_input=output_visual_code_LLM_1, df_code=df_code_1, chart_types=chart_types
+            chain_input=output_visual_code_LLM_1, df_code=df_code_1, chart_type=chart_type, df=input_df
         )
         assert processed_code == expected_final_output_1

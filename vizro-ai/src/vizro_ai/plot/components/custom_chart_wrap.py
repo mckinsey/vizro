@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 
 logger = logging.getLogger(__name__)
@@ -22,23 +22,29 @@ openai_schema_manager = SchemaManager()
 
 @openai_schema_manager.register
 class CustomChart(BaseModel):
-    """Plotly code per user request that is suitable for chart types for given data."""
+    """Plotly code per user request that is suitable for chart type for given data."""
 
     custom_chart_code: str = Field(..., description="Modified and decorated code snippet to allow use in dashboards")
 
 
 # 2. Define prompt
 custom_chart_prompt = """
-    Please modify the following code {input} such that:
-    1. You wrap the entire chart code into function called 'custom_chart' that takes a single optional arg called
-    data_frame and returns only the fig object, ie `def custom_chart(data_frame): as first line
-    2. You ensure that the above function only returns the plotly fig object,
-    and that the variables are renamed such that all data is derived from 'data_frame'
-    3. Leave all imports as is above that function, and do NOT add anything else
-    """
+Your task is to correctly wrap the provided code as instructed. IMPORTANT: Do not mock the data.
+
+Instruction:
+1. You wrap the entire chart code into function called 'custom_chart' that takes a single optional arg called
+data_frame and returns only the fig object, ie `def custom_chart(data_frame): as first line.
+2. You ensure that the above function only returns the plotly fig object,
+and that the variables are renamed such that all data is derived from 'data_frame'.
+3. Leave all imports as is above that function, and do NOT add anything else.
+
+Please modify the following code:
+{input}
+
+"""
 
 
-class GetCustomChart(VizroAiComponentBase):
+class GetCustomChart(VizroAIComponentBase):
     # TODO Explore if it is possible to create CustomChart without LLM
     """Get custom chart code.
 

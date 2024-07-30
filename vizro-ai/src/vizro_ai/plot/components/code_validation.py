@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cov
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from vizro_ai.chains._chain_utils import _log_time
-from vizro_ai.plot.components import VizroAiComponentBase
+from vizro_ai.plot.components import VizroAIComponentBase
 from vizro_ai.plot.schema_manager import SchemaManager
 
 # 1. Define schema
@@ -28,14 +28,21 @@ class CodeDebug(BaseModel):
 
 
 # 2. Define prompt
-debugging_prompt = (
-    "Return the full code snippet after fixing the bug in the code snippet {code_snippet}, this is the error message "
-    "{input},"
-)
+debugging_prompt = """
+You are an expert Python and Pandas code reviewer and corrector.
+Your task is to review Pandas code strings provided, identify any issues or improvements,
+and return a corrected version of the code.
+Return the full code snippet after fixing the bug in the code snippet:
+{code_snippet}
+
+IMPORTANT: Avoid adding fake data for the variable df. It will be provided by the user when executed.
+This is the error message:
+{input},
+"""
 
 
 # 3. Define Component
-class GetDebugger(VizroAiComponentBase):
+class GetDebugger(VizroAIComponentBase):
     """Get Visual code.
 
     Attributes
