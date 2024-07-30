@@ -46,7 +46,7 @@ class TestDataFrameCraftMethods:
         llm_kwargs_to_use, partial_vars = self.get_dataframe_craft._pre_process(df=input_df)
         expected_partial_vars = {
             "df_schema": "contintent: object\ncountry: object\ngdpPercap: int64",
-            "df_head": input_df.head().to_markdown(),
+            "df_sample": input_df.sample(5, replace=True, random_state=19).to_markdown(),
         }
         assert partial_vars == expected_partial_vars
 

@@ -28,10 +28,17 @@ class CodeDebug(BaseModel):
 
 
 # 2. Define prompt
-debugging_prompt = (
-    "Return the full code snippet after fixing the bug in the code snippet {code_snippet}, this is the error message "
-    "{input},"
-)
+debugging_prompt = """
+You are an expert Python and Pandas code reviewer and corrector.
+Your task is to review Pandas code strings provided, identify any issues or improvements,
+and return a corrected version of the code.
+Return the full code snippet after fixing the bug in the code snippet:
+{code_snippet}
+
+IMPORTANT: Avoid adding fake data for the variable df. It will be provided by the user when executed.
+This is the error message:
+{input},
+"""
 
 
 # 3. Define Component
