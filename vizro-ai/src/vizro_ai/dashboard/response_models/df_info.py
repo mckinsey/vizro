@@ -29,7 +29,7 @@ class DfInfo(BaseModel):
 def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
     """Get the dataframe schema and head info as strings."""
     formatted_pairs = dict(df.dtypes.astype(str))
-    df_sample = df.sample(5)
+    df_sample = df.sample(5, replace=True, random_state=19)
     return formatted_pairs, df_sample
 
 
