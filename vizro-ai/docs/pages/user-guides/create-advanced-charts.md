@@ -13,7 +13,7 @@ We'll create an animated bar chart illustrating the population development of ea
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years.")
+        fig = vizro_ai.plot(df, "Visualize GDP per capita over the years for each country using map chart. Show countries on the map.")
         fig.show()
         ```
     === "Result"
@@ -21,7 +21,8 @@ We'll create an animated bar chart illustrating the population development of ea
 
     [AnimatedChart1]: ../../assets/tutorials/chart/animated_bar_chart_1.png
 
-Having unveiled our animated bar chart showcasing population development per country, it's clear that crucial details are overshadowed by the legend. Next, we will try to tweak our prompt to group the countries into continents and improve the overall layout.
+Having unveiled our animated map chart showcasing GDP per capita development per country, it's clear that map area is small, and it is very difficult to differentiate countries.
+Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
 
@@ -33,7 +34,9 @@ Having unveiled our animated bar chart showcasing population development per cou
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Please improve layout.")
+        fig = vizro_ai.plot(df,
+              """Visualize GDP per capita over the years for each country using animated map chart. 
+              Show countries on the map. Increase the width and height of the figure.""")
         fig.show()
         ```
     === "Result"
@@ -42,9 +45,9 @@ Having unveiled our animated bar chart showcasing population development per cou
     [AnimatedChart2]: ../../assets/tutorials/chart/animated_bar_chart_2.png
 
 
-By incorporating the directive `Please improve layout`, we've successfully refined our animation and are now able to better interpret our result.
+By incorporating the directive `Increase the width and height of the figure.` and `Show countries on the map.` we've successfully refined our animation and are now able to better interpret our result.
 
-Upon closer inspection, two challenges emerge: the legend overlaps the x-axis and the y-axis range is insufficient to capture the full spectrum of Asia's population development. Let's run the code below to improve the chart.
+Upon closer inspection, the title is too long and the color palette used does not match out needs. We can fix those issue with better and more specific prompting. Let's run the code below to visually improve the chart.
 
 !!! example "Vizro-AI animated chart"
 
@@ -56,7 +59,10 @@ Upon closer inspection, two challenges emerge: the legend overlaps the x-axis an
         df = px.data.gapminder()
 
         vizro_ai = VizroAI()
-        fig = vizro_ai.plot(df, "The chart should be an animated stacked bar chart with population on the y axis and continent on the x axis with all respective countries, allowing you to observe changes in the population over consecutive years. Make sure that y axis range fits entire data. Please improve layout and optimize layout of legend.")
+        fig = vizro_ai.plot(df,
+              """Visualize GDP per capita over the years for each country using animated map chart. 
+              Show countries on the map. Increase the width and height of the figure.
+              Set title to be: `GDP per Capita over the years`. Use `Blues` as color sequence. """)
         fig.show()
         ```
     === "Result"
