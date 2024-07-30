@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import functools
+import importlib
 import inspect
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
@@ -203,9 +204,9 @@ class CapturedCallable:
 
         import_path = field.field_info.extra["import_path"]
         try:
-            function = getattr(import_path, function_name)
-        except AttributeError as exc:
-            raise ValueError(f"_target_={function_name} cannot be imported from {import_path.__name__}.") from exc
+            function = getattr(importlib.import_module(import_path), function_name)
+        except (AttributeError, ModuleNotFoundError) as exc:
+            raise ValueError(f"_target_={function_name} cannot be imported from {import_path}.") from exc
 
         # All the other items in figure are the keyword arguments to pass into function.
         function_kwargs = captured_callable_config
