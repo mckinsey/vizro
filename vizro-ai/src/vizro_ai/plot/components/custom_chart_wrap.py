@@ -22,20 +22,26 @@ openai_schema_manager = SchemaManager()
 
 @openai_schema_manager.register
 class CustomChart(BaseModel):
-    """Plotly code per user request that is suitable for chart types for given data."""
+    """Plotly code per user request that is suitable for chart type for given data."""
 
     custom_chart_code: str = Field(..., description="Modified and decorated code snippet to allow use in dashboards")
 
 
 # 2. Define prompt
 custom_chart_prompt = """
-    Please modify the following code {input} such that:
-    1. You wrap the entire chart code into function called 'custom_chart' that takes a single optional arg called
-    data_frame and returns only the fig object, ie `def custom_chart(data_frame): as first line
-    2. You ensure that the above function only returns the plotly fig object,
-    and that the variables are renamed such that all data is derived from 'data_frame'
-    3. Leave all imports as is above that function, and do NOT add anything else
-    """
+Your task is to correctly wrap the provided code as instructed. IMPORTANT: Do not mock the data.
+
+Instruction:
+1. You wrap the entire chart code into function called 'custom_chart' that takes a single optional arg called
+data_frame and returns only the fig object, ie `def custom_chart(data_frame): as first line.
+2. You ensure that the above function only returns the plotly fig object,
+and that the variables are renamed such that all data is derived from 'data_frame'.
+3. Leave all imports as is above that function, and do NOT add anything else.
+
+Please modify the following code:
+{input}
+
+"""
 
 
 class GetCustomChart(VizroAIComponentBase):
