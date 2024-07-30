@@ -11,7 +11,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, root_validator, validator
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.types import CtrlType
+from vizro_ai.dashboard._response_models.types import CtrlType
 
 logger = logging.getLogger(__name__)
 

@@ -12,9 +12,9 @@ from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
-from vizro_ai.dashboard.response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
-from vizro_ai.dashboard.response_models.page import PagePlanner
+from vizro_ai.dashboard._response_models.dashboard import DashboardPlanner
+from vizro_ai.dashboard._response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
+from vizro_ai.dashboard._response_models.page import PagePlanner
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata, _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
@@ -32,15 +32,15 @@ Messages = List[BaseMessage]
 
 
 class GraphState(BaseModel):
-    """Represents the state of dashboard graph.
+    """Represents the state of the dashboard graph.
 
     Attributes
-        messages : With user question, error messages, reasoning
-        dfs : Dataframes
-        all_df_metadata : Cleaned dataframe names and their metadata
-        dashboard_plan : Plan for the dashboard
-        pages : Vizro pages
-        dashboard : Vizro dashboard
+        messages: With user question, error messages, reasoning
+        dfs: Dataframes
+        all_df_metadata: Cleaned dataframe names and their metadata
+        dashboard_plan: Plan for the dashboard
+        pages: Vizro pages
+        dashboard: Vizro dashboard
 
     """
 
@@ -131,13 +131,13 @@ class BuildPageState(BaseModel):
     """Represents the state of building the page.
 
     Attributes
-        all_df_metadata : Cleaned dataframe names and their metadata
-        page_plan : Plan for the dashboard
+        all_df_metadata: Cleaned dataframe names and their metadata
+        page_plan: Plan for the dashboard page
 
     """
 
     all_df_metadata: AllDfMetadata
-    page_plan: PagePlanner = None
+    page_plan: Optional[PagePlanner] = None
 
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:
