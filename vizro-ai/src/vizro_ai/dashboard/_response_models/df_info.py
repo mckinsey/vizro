@@ -1,6 +1,6 @@
 """Data Summary Node."""
 
-from typing import Any, Dict, Tuple
+from typing import Dict, List, Tuple
 
 import pandas as pd
 
@@ -33,7 +33,7 @@ def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
     return formatted_pairs, df_sample
 
 
-def _create_df_info_content(df_schema: Any, df_sample: Any, current_df_names: list) -> dict:
+def _create_df_info_content(df_schema: Dict[str, str], df_sample: pd.DataFrame, current_df_names: List[str]) -> dict:
     """Create the message content for the dataframe summarization."""
     return DF_SUM_PROMPT.format(df_sample=df_sample, df_schema=df_schema, current_df_names=current_df_names)
 
@@ -43,4 +43,4 @@ if __name__ == "__main__":
     df_schema, df_sample = _get_df_info(df)
     current_df_names = ["df1", "df2"]
     print(_create_df_info_content(df_schema, df_sample, current_df_names))  # noqa: T201
-    print(DfInfo(dataset_name="test").dict())  # noqa: T201
+    print(DfInfo(dataset="test").dict())  # noqa: T201

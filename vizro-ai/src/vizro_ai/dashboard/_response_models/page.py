@@ -10,9 +10,9 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 import vizro.models as vm
 from tqdm.auto import tqdm
-from vizro_ai.dashboard.response_models.components import ComponentPlan
-from vizro_ai.dashboard.response_models.controls import ControlPlan
-from vizro_ai.dashboard.response_models.layout import LayoutPlan
+from vizro_ai.dashboard._response_models.components import ComponentPlan
+from vizro_ai.dashboard._response_models.controls import ControlPlan
+from vizro_ai.dashboard._response_models.layout import LayoutPlan
 from vizro_ai.dashboard.utils import _execute_step
 
 logger = logging.getLogger(__name__)
