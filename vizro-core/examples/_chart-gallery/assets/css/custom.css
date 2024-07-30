@@ -1,0 +1,76 @@
+#page-header {
+  padding-left: 8px;
+}
+
+#left-main {
+  width: 288px;
+}
+
+img[src*="#chart-icon"] {
+  width: 100%;
+}
+
+.code-clipboard {
+  font-size: 20px;
+  position: absolute;
+  right: 14px;
+  top: 12px;
+}
+
+.code-clipboard-container {
+  background: var(--surfaces-bg-card);
+  font-family: monospace;
+  max-height: 500px;
+  overflow: auto;
+  padding: 1rem;
+  position: relative;
+}
+
+.code-clipboard-container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.flex-container h4 {
+  color: var(--text-secondary);
+  margin: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.flex-container .card {
+  height: 228px;
+  opacity: 0.3;
+  width: 176px;
+}
+
+.flex-container .card-nav {
+  opacity: 1;
+}
+
+.flex-container .card img {
+  width: 100%;
+}
+
+.intro-text {
+  border-left: 4px solid var(--text-secondary);
+  padding: 12px;
+}
+
+.intro-text p {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+/*
+.navbar .nav-link.active {
+  border-right: 1px solid var(--border-enabled);
+  color: var(--text-primary);
+  width: 64px;
+}
+*/
