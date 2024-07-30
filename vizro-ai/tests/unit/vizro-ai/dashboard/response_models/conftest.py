@@ -7,7 +7,7 @@ from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard.response_models.components import ComponentPlan
 from vizro_ai.dashboard.response_models.layout import LayoutPlan
 from vizro_ai.dashboard.response_models.page import PagePlanner
-from vizro_ai.dashboard.utils import DfMetadata, MetadataContent
+from vizro_ai.dashboard.utils import DfMetadata, AllDfMetadata
 
 
 class FakeListLLM(FakeListLLM):
@@ -38,7 +38,12 @@ def df_cols():
 
 
 @pytest.fixture
-def available_components():
+def df_schema():
+    return {"continent": "object", "country": "object", "population": "int64", "gdp": "int64"}
+
+
+@pytest.fixture
+def controllable_components():
     return ["gdp_chart"]
 
 
@@ -83,8 +88,8 @@ def fake_llm_filter():
 
 @pytest.fixture
 def df_metadata():
-    df_metadata = DfMetadata({})
-    df_metadata.metadata["gdp_chart"] = MetadataContent(
+    df_metadata = AllDfMetadata({})
+    df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
         df_schema={"a": "int64", "b": "int64"},
         df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
         df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
@@ -121,12 +126,14 @@ def page_plan(component_card):
         components_plan=[component_card],
         controls_plan=[],
         layout_plan=None,
+        page_id="page_1"
     )
 
 
 @pytest.fixture
 def page_plan_2_components(component_card, component_card_2):
     return PagePlanner(
+        page_id="page_2_components",
         title="Test Page",
         components_plan=[component_card, component_card_2],
         controls_plan=[],

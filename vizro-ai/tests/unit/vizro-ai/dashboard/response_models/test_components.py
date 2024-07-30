@@ -14,6 +14,6 @@ class TestComponentCreate:
         if component_card.component_type == "Card":
             actual = component_card.create(
                 model=fake_llm,
-                df_metadata=None,
+                all_df_metadata=None,
             )
         assert actual.type == "card"

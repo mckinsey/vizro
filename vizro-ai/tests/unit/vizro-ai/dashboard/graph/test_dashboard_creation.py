@@ -18,7 +18,7 @@ class TestConfig:
         assert isinstance(graph_state, GraphState)
         assert graph_state.messages[0].content == "contents of the message"
         assert graph_state.dfs == dataframes
-        assert "gdp_chart" in graph_state.df_metadata.metadata
+        assert "gdp_chart" in graph_state.all_df_metadata.all_df_metadata
         assert graph_state.pages == []
 
     @pytest.mark.parametrize(
@@ -28,11 +28,11 @@ class TestConfig:
             ([pd.DataFrame(), {}], "instance of DataFrame expected"),
         ],
     )
-    def test_check_dataframes(self, dataframes, output_error):
+    def test_check_dataframes(self, dataframes, output_error, df_metadata):
         with pytest.raises(ValidationError, match=output_error):
             GraphState(
                 messages=[HumanMessage(content="contents of the message")],
                 dfs=dataframes,
-                df_metadata=DfMetadata(),
+                all_df_metadata=df_metadata,
                 pages=[],
             )
