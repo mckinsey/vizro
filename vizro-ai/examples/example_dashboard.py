@@ -3,6 +3,9 @@
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro_ai import VizroAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 vizro_ai = VizroAI(model="gpt-4o")
 # vizro_ai = VizroAI()
