@@ -27,14 +27,14 @@ def df_schema():
 
 
 @pytest.fixture
-def df_head():
+def df_sample():
     return """|    | contintent   | country   |   gdpPercap |
 |---:|:-------------|:----------|------------:|
-|  0 | Asia         | China     |         102 |
-|  1 | Asia         | India     |         110 |
 |  2 | America      | US        |         300 |
+|  0 | Asia         | China     |         102 |
 |  3 | Europe       | UK        |         200 |
-|  4 | Europe       | Germany   |         250 |"""
+|  4 | Europe       | Germany   |         250 |
+|  2 | America      | US        |         300 |"""
 
 
 @pytest.fixture
@@ -114,13 +114,13 @@ class TestGetVisualCodeInstantiation:
     def setup_method(self, fake_llm):
         self.get_visual_code = GetVisualCode(llm=fake_llm)
 
-    def test_pre_process(self, chart_type, input_df, df_code_1, df_schema, df_head):  # noqa: PLR0913
+    def test_pre_process(self, chart_type, input_df, df_code_1, df_schema, df_sample):  # noqa: PLR0913
         _, partial_vars = self.get_visual_code._pre_process(chart_type=chart_type, df_code=df_code_1, df=input_df)
         assert partial_vars == {
             "chart_type": chart_type,
             "df_code": df_code_1,
             "df_schema": df_schema,
-            "df_head": df_head,
+            "df_sample": df_sample,
         }
 
     @pytest.mark.parametrize(

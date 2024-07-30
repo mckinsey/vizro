@@ -36,7 +36,7 @@ class ChartSelection(BaseModel):
 
 
 # 2. Define prompt
-chart_type_prompt = "choose a best chart type for this df info:{df_schema}, {df_head} and user question {input}?"
+chart_type_prompt = "choose a best chart type for this df info:{df_schema}, {df_sample} and user question {input}?"
 
 
 # 3. Define Component
@@ -64,9 +64,9 @@ class GetChartSelection(VizroAIComponentBase):
 
         It should return llm_kwargs and partial_vars_map for
         """
-        df_schema, df_head = _get_df_info(df)
+        df_schema, df_sample = _get_df_info(df)
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("ChartSelection")
-        partial_vars = {"df_schema": df_schema, "df_head": df_head}
+        partial_vars = {"df_schema": df_schema, "df_sample": df_sample}
         return llm_kwargs_to_use, partial_vars
 
     def _post_process(self, response: Dict, *args, **kwargs) -> str:

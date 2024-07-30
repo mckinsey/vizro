@@ -34,7 +34,7 @@ Context: You are an AI assistant specialized in data visualization using Python,
 Given:
 - A pandas DataFrame named `df`
 - DataFrame schema: {df_schema}
-- Sample data (first few rows): {df_head}
+- Sample data (first few rows): {df_sample}
 - Data preprocessing code: {df_code}
 - User's visualization request: {input}
 - Requested chart type: {chart_type}
@@ -82,9 +82,14 @@ class GetVisualCode(VizroAIComponentBase):
         """
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("VizroCode")
 
-        df_schema, df_head = _get_df_info(df)
+        df_schema, df_sample = _get_df_info(df)
 
-        partial_vars_map = {"chart_type": chart_type, "df_code": df_code, "df_schema": df_schema, "df_head": df_head}
+        partial_vars_map = {
+            "chart_type": chart_type,
+            "df_code": df_code,
+            "df_schema": df_schema,
+            "df_sample": df_sample,
+        }
 
         return llm_kwargs_to_use, partial_vars_map
 

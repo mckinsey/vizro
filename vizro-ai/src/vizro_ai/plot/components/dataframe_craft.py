@@ -36,7 +36,7 @@ dataframe_prompt = """
 You are a software engineer working with a pandas DataFrame in Python named df.
 Your task is to write code to manipulate the df DataFrame according to the user's query.
 So user can get the desired output for create subsequent visualization.
-DataFrame Details Schema: {df_schema}, Sample Data: {df_head}, User Query: {input}
+DataFrame Details Schema: {df_schema}, Sample Data: {df_sample}, User Query: {input}
 
 Instructions:
 1. Write code to manipulate the df DataFrame according to the user's query.
@@ -74,9 +74,9 @@ class GetDataFrameCraft(VizroAIComponentBase):
 
         It should return llm_kwargs and partial_vars_map
         """
-        df_schema, df_head = _get_df_info(df)
+        df_schema, df_sample = _get_df_info(df)
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("DataFrameCraft")
-        partial_vars_map = {"df_schema": df_schema, "df_head": df_head}
+        partial_vars_map = {"df_schema": df_schema, "df_sample": df_sample}
 
         return llm_kwargs_to_use, partial_vars_map
 

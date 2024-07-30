@@ -22,7 +22,10 @@ class TestChartSelectionInstantiation:
     def test_pre_process(self):
         df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
         llm_kwargs, partial_vars = self.get_chart_selection._pre_process(df)
-        expected_partial_vars = {"df_schema": "A: int64\nB: int64", "df_head": df.head().to_markdown()}
+        expected_partial_vars = {
+            "df_schema": "A: int64\nB: int64",
+            "df_sample": df.sample(5, replace=True, random_state=19).to_markdown(),
+        }
         assert partial_vars == expected_partial_vars
 
     @pytest.mark.parametrize(
