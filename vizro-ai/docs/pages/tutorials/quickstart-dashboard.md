@@ -1,6 +1,8 @@
 # Dashboard generation
 
-In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete Vizro dashboard containing multiple charts and pages.
+In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard containing multiple charts and pages.
+
+You may also want to review the [Vizro dashboard tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/), which creates a dashboard from scratch rather than by generation with Vizro-AI.
 
 ## 1. Install Vizro-AI and its dependencies
 <!-- vale on -->
@@ -9,15 +11,29 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 
 <!-- vale off -->
 
-## 2. Prepare the data and user prompt
+## 2. Prepare the data 
+Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
+
 ```py
 import vizro.plotly.express as px
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
 df3 = px.data.tips()
+```
 
+## 3. Prepare the user prompt
 
+Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard. 
+
+Vizro-AI can generate a multi-page dashboard that includes the following features:
+
+- Vizro components including `Graph`, `AgGrid` (basic), and `Card`
+- Vizro filters including `Dropdown`, `Checklist`, `RadioItems`, `RangeSlider`, `Slider`, and `DatePicker`
+- Vizro `Layout`
+- Multi-dataframe and multi-page support
+
+```text
 user_question = """
 <page1> it's the dashboard landing page with 4 cards.
 The first card says 'This is a dashboard created by Vizro-AI'.
@@ -52,11 +68,16 @@ add a second filter to filter the histogram chart by column `time` using radio b
 <page4> 1 table. The table shows the tech companies stock data.
 """
 ```
+
 ## 3. Call Vizro-AI
+
+Next, submit the data and prompt string:
+
 ```py
 dashboard = vizro_ai.dashboard([df1, df2, df3], user_question)
 ```
-This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard.
+
+The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
 

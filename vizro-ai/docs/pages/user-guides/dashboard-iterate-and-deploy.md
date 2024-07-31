@@ -1,23 +1,13 @@
-# How to update and reuse the Vizro-AI generated dashboard
-This guide shows you how to refine a Vizro-AI generated dashboard.
+# Refine a generated dashboard
+This guide shows you how to make improvements to a Vizro-AI generated dashboard.
 
-While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often approximately match user expectations but may not be exact. Besides refining the user prompt and rerunning Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
+Vizro-AI can follow complex user requirements well and generate high-quality dashboards, but the nature of LLMs means that generated dashboards are not always an exact match for user expectations. One option is to refine the request prompt and re-run Vizro-AI, but alternatively, you can iterate the code manually to achieve the desired result.
+
+The following example shows how to use Vizro-AI to generate a Vizro dashboard, and then retrieve the Vizro code for refinement.
+
+## 1. Prepare the data and build the user prompt
 
 
-
-<!-- TO DO -->
-<!--
-can generate a multi-page dashboard including the following features:
-
-- Vizro components including Graph, AgGrid (basic), and Card
-- Vizro Filters including Dropdown, Checklist, Dropdown, RadioItems, RangeSlider, Slider, DatePicker(in development)
-- Vizro Layout
-- Multi-dataframe and multi-page support
--->
-<!-- Write how to set up as per tutorial and use the prompt below to generate a dashboard -->
-<!-- you get the dashboard object, which you can a) render like xxx, b) modify like xx c) xxx alternatively you can return elements, which gives you access to a) code b) dashboard object -->
-
-## Prepare the data and user prompt
 ```py
 import vizro.plotly.express as px
 
@@ -38,11 +28,15 @@ Create a one-page dashboard layout with the following components:
 """
 ```
 
-## Generate and launch the dashboard
+## 2. Generate and render the dashboard
+
+Submit the data and prompt to Vizro-AI's `dashboard()` function:
+
 ```py
 dashboard_elements = vizro_ai.dashboard([df], user_question, return_elements=True)
 ```
-This will trigger the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
+
+Once Vizro-AI finishes dashboard generation, you can now render the dashboard:
 
 !!! example "Generated dashboard"
 
@@ -58,6 +52,10 @@ This will trigger the dashboard building process. Once Vizro-AI finishes the das
     [VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
 
 ## Retrieve the Python code of the dashboard
+
+You can retrieve the code for the dashboard as follows: 
+
+
 !!! example "View dashboard code"
 
     === "Code"
@@ -106,3 +104,8 @@ This will trigger the dashboard building process. Once Vizro-AI finishes the das
             title="Tips Dataset Overview",
         )
         ```
+
+<!-- TO DO -->
+<!--
+* How to modify? Need an example
+* Return elements, which gives you access to a) code b) dashboard object ?? -->

@@ -8,14 +8,14 @@ nav:
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
-          - How to run Vizro-AI: pages/user-guides/run-vizro-ai.md
+          - Run Vizro-AI: pages/user-guides/run-vizro-ai.md
           - Model usage: pages/user-guides/customize-vizro-ai.md
           - Different languages: pages/user-guides/use-different-languages.md
       - CHARTS:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
       - DASHBOARDS:    
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
-          - Generate a Vizro dashboard: pages/user-guides/dashboard-iterate-and-deploy.md
+          - Refine a generated dashboard: pages/user-guides/dashboard-iterate-and-deploy.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
