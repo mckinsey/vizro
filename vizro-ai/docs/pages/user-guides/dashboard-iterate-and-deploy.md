@@ -3,7 +3,17 @@ This guide shows you how to refine a Vizro-AI generated dashboard.
 
 While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often approximately match user expectations but may not be exact. Besides refining the user prompt and rerunning Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
 
+
+
 <!-- TO DO -->
+<!--
+can generate a multi-page dashboard including the following features:
+
+- Vizro components including Graph, AgGrid (basic), and Card
+- Vizro Filters including Dropdown, Checklist, Dropdown, RadioItems, RangeSlider, Slider, DatePicker(in development)
+- Vizro Layout
+- Multi-dataframe and multi-page support
+-->
 <!-- Write how to set up as per tutorial and use the prompt below to generate a dashboard -->
 <!-- you get the dashboard object, which you can a) render like xxx, b) modify like xx c) xxx alternatively you can return elements, which gives you access to a) code b) dashboard object -->
 

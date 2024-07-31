@@ -2,7 +2,7 @@
 
 In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete Vizro dashboard containing multiple charts and pages.
 
-## 1. Install Vizro and its dependencies
+## 1. Install Vizro-AI and its dependencies
 <!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
@@ -52,7 +52,7 @@ add a second filter to filter the histogram chart by column `time` using radio b
 <page4> 1 table. The table shows the tech companies stock data.
 """
 ```
-## Call Vizro-AI
+## 3. Call Vizro-AI
 ```py
 dashboard = vizro_ai.dashboard([df1, df2, df3], user_question)
 ```

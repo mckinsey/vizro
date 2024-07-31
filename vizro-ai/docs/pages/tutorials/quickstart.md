@@ -2,7 +2,7 @@
 This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
 <!-- vale off -->
-### 1. Install Vizro and its dependencies
+### 1. Install Vizro-AI and its dependencies
 <!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
