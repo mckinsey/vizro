@@ -53,7 +53,7 @@ Once Vizro-AI finishes dashboard generation, you can now render the dashboard:
 
 ## Retrieve the Python code of the dashboard
 
-You can retrieve the code for the dashboard as follows: 
+You can retrieve the code for the dashboard as follows:
 
 
 !!! example "View dashboard code"

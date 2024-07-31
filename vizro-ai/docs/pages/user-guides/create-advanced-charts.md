@@ -1,9 +1,9 @@
 # Advanced charts
 This page explains how to use Vizro-AI to create charts with advanced visualizations and enhanced formatting.
 
-## How to increase the number of retries 
+## How to increase the number of retries
 
-When making complex requests to Vizro-AI, you may sometimes find that the `plot` function returns an error that it has exceeded the number of debug retries. One option is to rephrase the prompt text in your request, but you can also adjust the `max_debug_retry` parameter to increase the number of retries from the default value of 3. 
+When making complex requests to Vizro-AI, you may sometimes find that the `plot` function returns an error that it has exceeded the number of debug retries. One option is to rephrase the prompt text in your request, but you can also adjust the `max_debug_retry` parameter to increase the number of retries from the default value of 3.
 
 For example, if you would like adjust to 5 retries, you can set `max_debug_retry = 5` in the plot function:
 

@@ -13,7 +13,7 @@ nav:
           - Different languages: pages/user-guides/use-different-languages.md
       - CHARTS:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
-      - DASHBOARDS:    
+      - DASHBOARDS:
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
           - Refine a generated dashboard: pages/user-guides/dashboard-iterate-and-deploy.md
   - API Reference:

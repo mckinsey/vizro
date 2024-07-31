@@ -11,7 +11,7 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 
 <!-- vale off -->
 
-## 2. Prepare the data 
+## 2. Prepare the data
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
 ```py
@@ -24,7 +24,7 @@ df3 = px.data.tips()
 
 ## 3. Prepare the user prompt
 
-Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard. 
+Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard.
 
 Vizro-AI can generate a multi-page dashboard that includes the following features:
 

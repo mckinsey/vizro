@@ -29,7 +29,7 @@ Vizro-AI currently supports the following [OpenAI models](https://platform.opena
     :octicons-hourglass-24: In development
 
 
-These models offer different levels of performance and cost to Vizro-AI users. 
+These models offer different levels of performance and cost to Vizro-AI users.
 
 ### Chart generation
 
