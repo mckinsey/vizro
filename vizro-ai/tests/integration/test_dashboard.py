@@ -1,12 +1,10 @@
 """Tests for dashboard using VizroAI."""
+
 import pytest
-
 import vizro.plotly.express as px
-from hamcrest import assert_that, equal_to, contains_inanyorder
-
+from hamcrest import assert_that, equal_to
 from vizro import Vizro
 from vizro_ai import VizroAI
-
 
 vizro_ai = VizroAI()
 
@@ -18,7 +16,7 @@ df3 = px.data.tips()
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_simple_dashboard():
-    input_text = ("""
+    input_text = """
     I need a page with 1 table.
     The table shows the tech companies stock data.
 
@@ -37,7 +35,6 @@ def test_simple_dashboard():
     Add a filter to filter the scatter plot by continent.
     Add a second filter to filter the chart by year.
     """
-                  )
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
     assert_that(len(dashboard.pages), equal_to(2))
@@ -68,7 +65,7 @@ def test_simple_dashboard():
 def test_4_page_dashboard():
     input_text = """
     I need only 4 pages.
-    
+
     <Page 1>
     I need a page with 1 table and 1 line chart.
     The chart shows the stock price trends of GOOG and AAPL.
@@ -196,6 +193,3 @@ def test_unsupported_dashboard():
         vizro_ai.dashboard([df1, df2, df3], input_text)
     except ValueError as v:
         print(v)
-
-
-
