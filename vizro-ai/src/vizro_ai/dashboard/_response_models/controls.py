@@ -149,11 +149,14 @@ Relevant prompt: {self.control_description}
 if __name__ == "__main__":
     import pandas as pd
     from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import DfMetadata
+    from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
+    from dotenv import load_dotenv
+    load_dotenv()
 
     model = _get_llm_model()
 
-    all_df_metadata = DfMetadata({})
+
+    all_df_metadata = AllDfMetadata({})
     all_df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
         df_schema={"a": "int64", "b": "int64"},
         df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),

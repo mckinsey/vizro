@@ -81,6 +81,8 @@ Relevant prompt: {self.component_description}
 if __name__ == "__main__":
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata
+    from dotenv import load_dotenv
+    load_dotenv()
 
     model = _get_llm_model()
 
@@ -93,4 +95,4 @@ if __name__ == "__main__":
         df_name="N/A",
     )
     component = component_plan.create(model, all_df_metadata)
-    print(component)  # noqa: T201
+    print(component.__repr__())  # noqa: T201
