@@ -79,9 +79,10 @@ Relevant prompt: {self.component_description}
 
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata
-    from dotenv import load_dotenv
+
     load_dotenv()
 
     model = _get_llm_model()
