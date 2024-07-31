@@ -30,6 +30,26 @@ You should create a virtual environment for each Vizro-AI project you work on to
     conda activate vizroai-environment
     ```
 
+## Install Vizro
+
+To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
+
+```bash
+pip install vizro_ai
+```
+
+## Confirm a successful installation
+
+To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
+
+```py
+import vizro_ai
+
+print(vizro_ai.__version__)
+```
+
+You should see a return output of the form `x.y.z`.
+
 ## Set up access to a large language model
 
 Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
@@ -99,32 +119,9 @@ you can change the base URL by setting it as an environment variable.
 
 Follow the approach above in Method 2 to add the environment variable `OPENAI_API_BASE` for use by all projects.
 
+## Upgrade the Vizro-AI package
 
-## Install Vizro
-
-To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
-
-```bash
-pip install vizro_ai
-```
-
-## Confirm a successful installation
-
-To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
-
-```py
-import vizro_ai
-
-print(vizro_ai.__version__)
-```
-
-You should see a return output of the form `x.y.z`.
-
-## Upgrade
-
-Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
-
-To change the version of Vizro-AI installed:
+Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before upgrading the version of Vizro-AI used with an existing project:
 
 ```bash
 pip install -U vizro_ai

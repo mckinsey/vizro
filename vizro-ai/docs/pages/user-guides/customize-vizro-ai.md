@@ -1,4 +1,4 @@
-# How to customize model usage
+# Model usage
 
 ## Supported models
 Vizro-AI currently supports the following [OpenAI models](https://platform.openai.com/docs/models). We are working on supporting more vendors:
@@ -29,13 +29,31 @@ Vizro-AI currently supports the following [OpenAI models](https://platform.opena
     :octicons-hourglass-24: In development
 
 
-These models offer different levels of performance and cost to Vizro-AI users:
+These models offer different levels of performance and cost to Vizro-AI users. 
 
-* The **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
+### Chart generation
 
-* Consider upgrading to the **gpt-4** and **gpt-4o** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
+For chart creation with OpenAI, the **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
+
+Consider upgrading to the **gpt-4** and **gpt-4o** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
 
 Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
+
+<!-- WE NEED TO ADD SOME MORE ABOUT THE OTHER VENDORS WHEN WE HAVE THAT INFO -->
+
+### Dashboard generation
+
+=== "OpenAI"
+
+    - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
+    - gpt-4-turbo: Excels in dashboard creation tasks, providing the most reliable and complete responses.
+    - gpt-4o: Performance is inconsistent. The dashboard creation workflow heavily depends on the model's ability to generate structured output, which `gpt-4o` struggles with. As a result, it often fails to provide responses with the correct schema, leading to dashboard building failures.
+
+
+=== "Anthropic"
+
+    :octicons-hourglass-24: In development
+
 
 ## OpenAI initialization
 

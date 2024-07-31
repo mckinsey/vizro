@@ -1,21 +1,15 @@
-# How to generate a Vizro dashboard using Vizro-AI
+# Dashboard generation
 
-Vizro-AI supports text-to-dashboard functionality, enabling you to generate a multi-page dashboard.
+In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete Vizro dashboard containing multiple charts and pages.
 
-## Setup
-Install Vizro-AI
-```bash
-pip install vizro_ai
-```
-Vizro-AI setup
-```py
-from vizro import Vizro
-from vizro_ai import VizroAI
+## 1. Install Vizro and its dependencies
+<!-- vale on -->
 
-vizro_ai = VizroAI(model="gpt-4-turbo")
-```
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
-## Prepare the data and user prompt
+<!-- vale off -->
+
+## 2. Prepare the data and user prompt
 ```py
 import vizro.plotly.express as px
 
@@ -62,7 +56,7 @@ add a second filter to filter the histogram chart by column `time` using radio b
 ```py
 dashboard = vizro_ai.dashboard([df1, df2, df3], user_question)
 ```
-This will trigger the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
+This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard.
 
 !!! example "Generated dashboard"
 

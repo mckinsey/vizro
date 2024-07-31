@@ -1,5 +1,5 @@
-# Chart creation
-This tutorial introduces you to AI-generated chart creation using Vizro-AI. It explains the basics to creating a plotly chart that can be included in a Vizro dashboard, giving you the knowledge to explore the Vizro and Vizro-AI packages further.
+# Chart generation
+This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
 <!-- vale off -->
 ### 1. Install Vizro and its dependencies
@@ -142,8 +142,6 @@ Let's create another example to illustrate the code and insights returned when p
 <!-- vale on -->
 
 
-Now, you have created your first charts with Vizro-AI you are ready to explore further.
+Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-<!-- NEEDS MORE WORK -->
-
-A good place to start would be to review the different how-to guides, such as [how to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create visualizations using different languages](../user-guides/use-different-languages.md), and [how to create advanced charts](../user-guides/create-advanced-charts.md).
+A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create advanced charts](../user-guides/create-advanced-charts.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md). You may also want to review the tutorial on [how to generate a Vizro dashboard with Vizro-AI](quickstart-dashboard.md)
