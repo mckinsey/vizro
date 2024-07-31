@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-#TODO make available in documentation
+# TODO make available in documentation
 
 # Complete list: ["AgGrid", "Button", "Card", "Container", "Graph", "Table", "Tabs"]
 CompType = Literal["AgGrid", "Card", "Graph"]
