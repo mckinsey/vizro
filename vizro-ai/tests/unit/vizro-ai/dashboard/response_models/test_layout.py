@@ -1,28 +1,11 @@
 import pytest
 import vizro.models as vm
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.layout import LayoutPlan
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
-
-# class TestLayoutProxyModel:
-#     """Test layout proxy creation"""
-#
-#     def test_create_layout_proxy_model_invalid_rows(self, grid_invalid_rows):
-#         with pytest.raises(ValidationError, match="All rows must be of same length"):
-#             LayoutProxyModel(grid=grid_invalid_rows)
-#
-#     def test_create_layout_proxy_model_invalid_values(self, grid_invalid_values):
-#         with pytest.raises(ValidationError, match="Grid must contain consecutive integers starting from 0."):
-#             LayoutProxyModel(grid=grid_invalid_values)
+from vizro_ai.dashboard.response_models.layout import LayoutPlan, _convert_to_grid
 
 
 class TestLayoutPlan:
-    """Test layout creation"""
+    """Test layout creation."""
 
     def test_structured_output_layout_create(self, fake_llm_layout, layout_description):
         structured_output = _get_pydantic_output(
@@ -47,3 +30,24 @@ class TestLayoutPlan:
         layout = layout_plan.create(fake_llm_layout)
 
         assert layout is None
+
+
+@pytest.mark.parametrize(
+    "layout_grid_template_areas, component_ids, grid",
+    [
+        (
+            ["card_1 scatter_plot scatter_plot", "card_2 scatter_plot scatter_plot"],
+            ["card_1", "scatter_plot", "card_2"],
+            [[0, 1, 1], [2, 1, 1]],
+        ),
+        (
+            ["card_1 scatter_plot scatter_plot", "card_2 scatter_plot scatter_plot"],
+            ["card_1", "scatter_plot"],
+            [[0, 1, 1], [-1, 1, 1]],
+        ),
+    ],
+)
+def test_convert_to_grid_valid(layout_grid_template_areas, component_ids, grid):
+    actual_grid = _convert_to_grid(layout_grid_template_areas=layout_grid_template_areas, component_ids=component_ids)
+
+    assert actual_grid == grid

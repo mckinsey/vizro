@@ -27,7 +27,7 @@ class TestControlCreate:
 
 
 class TestControlPlan:
-    """Test control plan"""
+    """Test control plan."""
 
     def test_control_plan_invalid_df_name(self, fake_llm_filter, df_metadata):
         control_plan = ControlPlan(
@@ -35,5 +35,15 @@ class TestControlPlan:
             control_description="Create a filter that filters the data based on the column 'a'.",
             df_name="population_chart",
         )
-        default_control = control_plan.create(model=fake_llm_filter, controllable_components=["gdp_chart"], all_df_metadata=df_metadata)
+        default_control = control_plan.create(
+            model=fake_llm_filter, controllable_components=["gdp_chart"], all_df_metadata=df_metadata
+        )
         assert default_control is None
+
+    def test_control_plan_invalid_type(self, fake_llm_filter, df_metadata):
+        with pytest.raises(ValidationError):
+            ControlPlan(
+                control_type="parameter",
+                control_description="Create a parameter that targets the data based on the column 'a'.",
+                df_name="gdp_chart",
+            )

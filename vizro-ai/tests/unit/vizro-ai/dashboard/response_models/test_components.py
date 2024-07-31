@@ -1,10 +1,5 @@
 import pytest
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    pass
-
 
 class TestComponentCreate:
     """Tests component creation."""

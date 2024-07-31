@@ -5,9 +5,8 @@ import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard.response_models.components import ComponentPlan
-from vizro_ai.dashboard.response_models.layout import LayoutPlan
 from vizro_ai.dashboard.response_models.page import PagePlanner
-from vizro_ai.dashboard.utils import DfMetadata, AllDfMetadata
+from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 
 
 class FakeListLLM(FakeListLLM):
@@ -21,7 +20,7 @@ class FakeListLLM(FakeListLLM):
 
 
 @pytest.fixture
-def fake_llm():
+def fake_llm_card():
     response = ['{"text":"this is a card","href":""}']
     return FakeListLLM(responses=response)
 
@@ -33,13 +32,14 @@ def fake_llm_layout():
 
 
 @pytest.fixture
-def df_cols():
-    return ["continent", "country", "population", "gdp"]
+def fake_llm_filter():
+    response = ['{"column": "a", "targets": ["gdp_chart"]}']
+    return FakeListLLM(responses=response)
 
 
 @pytest.fixture
-def df_schema():
-    return {"continent": "object", "country": "object", "population": "int64", "gdp": "int64"}
+def df_cols():
+    return ["continent", "country", "population", "gdp"]
 
 
 @pytest.fixture
@@ -48,51 +48,32 @@ def controllable_components():
 
 
 @pytest.fixture
-def component_description():
-    return "This is a card"
-
-
-@pytest.fixture
-def grid_invalid_rows():
-    return [[0, 0, 0], [1, 1, 1], [2, 2]]
-
-
-@pytest.fixture
-def grid_invalid_values():
-    return [[3, 3, 3], [1, 1, 1], [2, 2, 2]]
-
-
-@pytest.fixture
 def layout_description():
     return "The layout of this page should use `grid=[[0,1]]`"
 
 
 @pytest.fixture
-def layout_description_invalid():
-    return "The layout of this page should use `grid=[[]]`"
+def df():
+    return pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]})
 
 
 @pytest.fixture
-def filter_prompt():
-    return """
-        Create a filter from the following instructions: Filter the world demographic table by continent.
-        Do not make up things that are optional and DO NOT configure actions, action triggers or action chains.
-        If no options are specified, leave them out."""
+def df_sample():
+    return pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]})
 
 
 @pytest.fixture
-def fake_llm_filter():
-    response = ['{"column": "a", "targets": ["gdp_chart"]}']
-    return FakeListLLM(responses=response)
+def df_schema():
+    return {"a": "int64", "b": "int64"}
 
 
 @pytest.fixture
-def df_metadata():
+def df_metadata(df, df_schema, df_sample):
     df_metadata = AllDfMetadata({})
     df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
-        df_schema={"a": "int64", "b": "int64"},
-        df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
-        df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+        df_schema=df_schema,
+        df=df,
+        df_sample=df_sample,
     )
     return df_metadata
 
@@ -112,7 +93,7 @@ def component_card():
 def component_card_2():
     return ComponentPlan(
         component_type="Card",
-        component_description="This is a second ard",
+        component_description="This is a second card",
         component_id="card_2",
         page_id="page_1",
         df_name="N/A",
@@ -122,23 +103,5 @@ def component_card_2():
 @pytest.fixture
 def page_plan(component_card):
     return PagePlanner(
-        title="Test Page",
-        components_plan=[component_card],
-        controls_plan=[],
-        layout_plan=None,
-        page_id="page_1"
-    )
-
-
-@pytest.fixture
-def page_plan_2_components(component_card, component_card_2):
-    return PagePlanner(
-        page_id="page_2_components",
-        title="Test Page",
-        components_plan=[component_card, component_card_2],
-        controls_plan=[],
-        layout_plan=LayoutPlan(
-            layout_description="Create a layout with a card on the left and a card on the right.",
-            layout_grid_template_areas=["card_1", "card_2"],
-        ),
+        title="Test Page", components_plan=[component_card], controls_plan=[], layout_plan=None, page_id="page_1"
     )

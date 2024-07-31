@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from langchain_core.messages import HumanMessage
 from vizro_ai.dashboard.graph.dashboard_creation import GraphState
-from vizro_ai.dashboard.utils import DfMetadata, AllDfMetadata
+from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 
 
 @pytest.fixture
@@ -24,5 +24,8 @@ def df_metadata():
 @pytest.fixture
 def graph_state(dataframes, df_metadata):
     return GraphState(
-        messages=[HumanMessage(content="contents of the message")], dfs=dataframes, all_df_metadata=df_metadata, pages=[]
+        messages=[HumanMessage(content="contents of the message")],
+        dfs=dataframes,
+        all_df_metadata=df_metadata,
+        pages=[],
     )

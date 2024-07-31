@@ -8,11 +8,10 @@ except ImportError:  # pragma: no cov
 
 from langchain_core.messages import HumanMessage
 from vizro_ai.dashboard.graph.dashboard_creation import GraphState
-from vizro_ai.dashboard.utils import DfMetadata
 
 
 class TestConfig:
-    """Test GraphState config creation"""
+    """Test GraphState config creation."""
 
     def test_graph_state_instantiation(self, graph_state, dataframes):
         assert isinstance(graph_state, GraphState)

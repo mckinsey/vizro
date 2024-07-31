@@ -1,4 +1,4 @@
-from vizro_ai.dashboard.response_models.dashboard import DashboardPlanner
+from vizro_ai.dashboard._response_models.dashboard import DashboardPlanner
 
 try:
     from pydantic.v1 import ValidationError
