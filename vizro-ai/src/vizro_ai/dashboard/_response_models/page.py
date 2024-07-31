@@ -180,28 +180,31 @@ Build page without layout.
 
 if __name__ == "__main__":
     import pandas as pd
+    from dotenv import load_dotenv
     from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import AllDfMetadata
+    from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
+
+    load_dotenv()
 
     model = _get_llm_model()
 
     all_df_metadata = AllDfMetadata(
-        {
-            "gdp_chart": {
-                "df_schema": {"a": "int64", "b": "int64"},
-                "df": pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
-                "df_sample": pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
-            }
+        all_df_metadata={
+            "gdp_chart": DfMetadata(
+                df_schema={"a": "int64", "b": "int64"},
+                df=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+                df_sample=pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]}),
+            )
         }
     )
     page_plan = PagePlanner(
         title="Worldwide GDP",
+        page_id="page1",
         components_plan=[
             ComponentPlan(
                 component_type="Card",
                 component_description="Create a card says 'this is worldwide GDP'.",
                 component_id="gdp_card",
-                page_id="page1",
                 df_name="N/A",
             )
         ],
