@@ -36,6 +36,7 @@ def test_simple_dashboard():
     Add a second filter to filter the chart by year.
     """
 
+    Vizro._reset()
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
     assert_that(len(dashboard.pages), equal_to(2))
 
