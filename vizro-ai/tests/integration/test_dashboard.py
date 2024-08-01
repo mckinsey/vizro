@@ -36,7 +36,6 @@ def test_simple_dashboard():
     Add a second filter to filter the chart by year.
     """
 
-    Vizro._reset()
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
     assert_that(len(dashboard.pages), equal_to(2))
 
@@ -105,7 +104,6 @@ def test_4_page_dashboard():
     - The third column is occupied by the area for card 3.
     """
 
-    Vizro._reset()
     dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
     # assert_that(len(dashboard.pages), equal_to(4))
 
@@ -187,8 +185,6 @@ def test_unsupported_dashboard():
 
     For hosting the dashboard on AWS, which service should I use?
     """
-
-    Vizro._reset()
 
     try:
         vizro_ai.dashboard([df1, df2, df3], input_text)
