@@ -122,7 +122,7 @@ class TestSliderInstantiation:
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
             ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
             ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
-            ({15.0: 15, 25.0: 25}, {15: "15", 25: "25"}),  # all floats, but convertible to int
+            ({15.0: 15, 25.5: 25.5}, {15: "15", 25.5: "25.5"}),  # all floats, but convertible to int
             ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
             (None, None),
         ],
