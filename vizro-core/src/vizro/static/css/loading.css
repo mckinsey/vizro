@@ -12,7 +12,6 @@
 
 ._dash-loading::after {
   animation: spinner-border 0.75s linear infinite;
-  animation: spinner-border 0.75s linear infinite;
   border: 1rem solid currentcolor;
   border-radius: 50%;
   border-right-color: transparent;
