@@ -34,6 +34,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+
 ### Fixed
 
 - Fix subclassing from figure components. ([#606](https://github.com/mckinsey/vizro/pull/606))
