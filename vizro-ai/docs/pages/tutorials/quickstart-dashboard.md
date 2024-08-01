@@ -5,13 +5,41 @@ In the previous tutorial, we explained how to use Vizro-AI to generate individua
 You may also want to review the [Vizro dashboard tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/), which creates a dashboard from scratch rather than by generation with Vizro-AI.
 
 ## 1. Install Vizro-AI and its dependencies
-<!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
-<!-- vale off -->
 
-## 2. Prepare the data
+## 2. Open a Notebook
+A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
+
+??? "If you haven't used Jupyter before..."
+
+    You may need to install the Jupyter package if you . From the terminal window:
+
+    ```bash
+    pip install jupyter
+    ```
+
+Start a new Notebook as follows:
+
+```bash
+jupyter notebook
+```
+
+The command opens Jupyter in a browser tab. Use the UI to navigate to a preferred folder in which to create this new dashboard.
+
+Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
+
+```py
+import vizro_ai
+
+print(vizro_ai.__version__)
+```
+
+You should see a return output of the form `x.y.z`.
+
+
+## 3. Prepare the data
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
 ```py
@@ -22,7 +50,7 @@ df2 = px.data.stocks()
 df3 = px.data.tips()
 ```
 
-## 3. Prepare the user prompt
+## 4. Prepare the user prompt
 
 Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard.
 
@@ -69,7 +97,7 @@ add a second filter to filter the histogram chart by column `time` using radio b
 """
 ```
 
-## 3. Call Vizro-AI
+## 5. Call Vizro-AI
 
 Next, submit the data and prompt string:
 
