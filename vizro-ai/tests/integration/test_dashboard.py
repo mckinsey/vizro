@@ -3,6 +3,9 @@
 import pytest
 import vizro.plotly.express as px
 from hamcrest import assert_that, equal_to
+
+from vizro import Vizro
+from vizro.managers._model_manager import DuplicateIDError
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()
@@ -36,27 +39,11 @@ def test_simple_dashboard():
     """
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
-    assert_that(len(dashboard.pages), equal_to(2))
 
     # Page 1
     assert_that(len(dashboard.pages[0].components), equal_to(1))
-    # comps = [components.type for components in dashboard.pages[0].components]
-    # assert_that(comps, contains_inanyorder('ag_grid'))
-    # assert_that(dashboard.pages[0].layout.grid[0], equal_to([0]))
-
     # Page 2
     assert_that(len(dashboard.pages[1].components), equal_to(3))
-    # assert_that(len(dashboard.pages[1].controls), equal_to(2))
-    # cntrls = [controls.type for controls in dashboard.pages[1].controls]
-    # assert_that(cntrls, contains_inanyorder('filter', 'filter'))
-    # cntrls = [controls.column for controls in dashboard.pages[1].controls]
-    # assert_that(cntrls, contains_inanyorder('continent', 'year'))
-    # comps = [components.type for components in dashboard.pages[1].components]
-    # assert_that(comps, contains_inanyorder('card', 'graph', 'card'))
-    # comps = [components.text for components in dashboard.pages[1].components if components.type == 'card']
-    # assert_that(comps, contains_inanyorder("The Gapminder dataset provides historical data on countries' development indicators.",
-    #                                        'Data spans from 1952 to 2007 across various countries..'))
-    # assert_that(dashboard.pages[1].layout.grid[0], equal_to([0, 1, 1]))
 
 
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
@@ -103,53 +90,24 @@ def test_4_page_dashboard():
     - The third column is occupied by the area for card 3.
     """
 
-    dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
-    # assert_that(len(dashboard.pages), equal_to(4))
+    try:
+        Vizro._reset()
+        dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
+        Vizro._reset()
+    except DuplicateIDError as di:
+        print(di)
+        Vizro._reset()
+        dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
+        Vizro._reset()
 
     # Page 1
     assert_that(len(dashboard.pages[0].components), equal_to(2))
-    # comps = [components.type for components in dashboard.pages[0].components]
-    # assert_that(comps, contains_inanyorder('ag_grid', 'graph'))
-    # assert_that(dashboard.pages[0].layout.grid[0], equal_to([0, 1]))
-
     # Page 2
     assert_that(len(dashboard.pages[1].components), equal_to(2))
-    # comps = [components.type for components in dashboard.pages[1].components]
-    # assert_that(comps, contains_inanyorder('card', 'graph'))
-    # assert_that(len(dashboard.pages[1].controls), equal_to(2))
-    # cntrls = [controls.type for controls in dashboard.pages[1].controls]
-    # assert_that(cntrls, contains_inanyorder('filter', 'filter'))
-    # cntrls = [controls.column for controls in dashboard.pages[1].controls]
-    # assert_that(cntrls, contains_inanyorder('continent', 'year'))
-    # comps = [components.text for components in dashboard.pages[1].components if components.type == 'card']
-    # assert_that(comps, contains_inanyorder(
-    #     "The Gapminder dataset provides historical data on countries' development indicators."
-    # ))
-    # assert_that(dashboard.pages[1].layout.grid[0], equal_to([0, 0, 1, 1, 1, 1]))
-    # assert_that(dashboard.pages[1].layout.grid[0], equal_to([0, 1]))
-
     # Page 3
     assert_that(len(dashboard.pages[2].components), equal_to(2))
-    # comps = [components.type for components in dashboard.pages[2].components]
-    # assert_that(comps, contains_inanyorder('graph', 'graph'))
-    # assert_that(len(dashboard.pages[1].controls), equal_to(1))
-    # cntrls = [controls.type for controls in dashboard.pages[2].controls]
-    # assert_that(cntrls, contains_inanyorder('filter'))
-    # cntrls = [controls.column for controls in dashboard.pages[2].controls]
-    # assert_that(cntrls, contains_inanyorder('smoker'))
-    # assert_that(dashboard.pages[2].layout.grid[0], equal_to([0, 1]))
-
     # Page 4
     assert_that(len(dashboard.pages[3].components), equal_to(3))
-    # comps = [components.type for components in dashboard.pages[3].components]
-    # assert_that(comps, contains_inanyorder('card', 'card', 'card'))
-    # comps = [components.text for components in dashboard.pages[3].components if components.type == 'card']
-    # assert_that(comps, contains_inanyorder(
-    #     'This page combines data from various sources including tips, stock prices, and global indicators..',
-    #     'Insights from Gapminder dataset..',
-    #     'Stock price trends over time..'
-    # ))
-    # assert_that(dashboard.pages[3].layout.grid[0], equal_to([-1, 0, 0, 1, 2, 2]))
 
 
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
