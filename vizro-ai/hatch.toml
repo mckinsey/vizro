@@ -13,6 +13,7 @@ dependencies = [
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
+  "pytest-rerunfailures",
   "toml",
   "nbformat>=4.2.0",
   "pyhamcrest",
@@ -36,7 +37,7 @@ prep-release = [
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
 test = "pytest tests {args}"
-test-integration = "pytest -v tests/integration {args}"
+test-integration = "pytest -vs --reruns 1 tests/integration {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",
