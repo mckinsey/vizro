@@ -6,27 +6,31 @@ html {
   min-height: 100vh;
 }
 
-/* The dash-loading Div is present when Dash is initially loading, before the layout is built*/
+/* The dash-loading Div is present when Dash is initially loading, before the layout is built */
+
 /* The dash-loading-callback Div is present when Dash has loaded, but the layout is still building */
+
 /* Note that the dash-loading-callback Div is present until all elements are loaded, but as soon as the initial page
 elements (before on-page-load) are rendered, it get's pushed outside the viewable area, hence the spinner is not visible
 which is good, as we have individual loading spinners for elements.
  */
-._dash-loading-callback, ._dash-loading {
-  background: rgba(20, 23, 33, 1);
-  position: fixed;
-  color:transparent;
-  display: flex;
-  justify-content: center;
+._dash-loading-callback,
+._dash-loading {
   align-items: center;
-  width: 100%;
+  background: rgba(20, 23, 33, 1);
+  color: transparent;
+  display: flex;
   height: 100%;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
 }
 
-/* Loading spinner*/
-._dash-loading-callback::after, ._dash-loading::after {
+/* Loading spinner */
+._dash-loading-callback::after,
+._dash-loading::after {
   animation: spinner-border 0.75s linear infinite;
-  border: .5rem solid lightgrey;
+  border: 0.5rem solid lightgrey;
   border-radius: 50%;
   border-right-color: transparent;
   content: "";
