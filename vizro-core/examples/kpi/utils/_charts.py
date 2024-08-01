@@ -60,7 +60,7 @@ def bar(
         color_discrete_sequence=["#1A85FF"],
         custom_data=custom_data,
     )
-    fig.update_layout(xaxis_title="# of Complaints", yaxis=dict(title="", autorange="reversed"))  # noqa: C408
+    fig.update_layout(xaxis_title="# of Complaints", yaxis={"title": "", "autorange": "reversed"})
     return fig
 
 
@@ -101,7 +101,7 @@ def pie(
         hole=0.4,
     )
 
-    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin=dict(l=0, r=0, t=60, b=0))  # noqa: C408
+    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin={"l": 0, "r": 0, "t": 60, "b": 0})
     fig.update_traces(sort=False)
     return fig
 
