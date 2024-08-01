@@ -1,7 +1,7 @@
 # How to create advanced charts
 Now, let's explore more advanced visualizations and use Vizro-AI for enhanced formatting.
 
-We'll create an animated bar chart illustrating the GDP per Capita of each continent over time. Run the code below and look at the result.
+We'll create an animated bar chart illustrating the GDP per capita of each continent over time. Run the code below and look at the result.
 
 !!! example "Vizro-AI animated chart"
 
@@ -21,7 +21,7 @@ We'll create an animated bar chart illustrating the GDP per Capita of each conti
 
     [AnimatedChart1]: ../../assets/tutorials/chart/advanced_chart_1.png
 
-Having unveiled our animated map chart showcasing GDP per Capita development per country, it's clear that map area is small, and it is very difficult to differentiate countries.
+Having unveiled our animated map chart showcasing GDP per capita development per country, it's clear that the map area is small, and it is very difficult to differentiate countries.
 Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
@@ -45,9 +45,9 @@ Next, we will try to tweak our prompt to improve the overall layout.
     [AnimatedChart2]: ../../assets/tutorials/chart/advanced_chart_2.png
 
 
-By incorporating the directive `Increase the width and height of the figure.` and `Show countries on the map.` we've successfully refined our animation and are now able to better interpret our result.
+By incorporating the directive `Increase the width and height of the figure.` and `Show countries on the map.` we've successfully refined our animation.
 
-Upon closer inspection, the title is too long and the color palette used does not match out needs. We can fix those issue with better and more specific prompting. Let's run the code below to visually improve the chart.
+Upon closer inspection, the title is too long and the color palette used does not match out needs. We can fix those issues with better and more specific prompting. Let's run the code below to visually improve the chart.
 
 !!! example "Vizro-AI animated chart"
 
