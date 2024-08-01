@@ -1,4 +1,3 @@
-import importlib
 import re
 
 import plotly.graph_objects as go
@@ -162,12 +161,12 @@ def invalid_decorated_graph_function():
 
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="action")
+    function: CapturedCallable = Field(..., import_path=__name__, mode="action")
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="graph")
+    function: CapturedCallable = Field(..., import_path=__name__, mode="graph")
 
 
 class TestModelFieldPython:

@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 from dash import ClientsideFunction, Input, Output, clientside_callback
 
-import vizro.tables as vt
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
@@ -35,7 +34,7 @@ class AgGrid(VizroBaseModel):
 
     type: Literal["ag_grid"] = "ag_grid"
     figure: CapturedCallable = Field(
-        ..., import_path=vt, mode="ag_grid", description="Function that returns a Dash AgGrid."
+        ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a Dash AgGrid."
     )
     title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []

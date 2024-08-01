@@ -9,7 +9,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-import vizro.tables as vt
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
@@ -34,7 +33,7 @@ class Table(VizroBaseModel):
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(
-        ..., import_path=vt, mode="table", description="Function that returns a Dash DataTable."
+        ..., import_path="vizro.tables", mode="table", description="Function that returns a Dash DataTable."
     )
     title: str = Field("", description="Title of the table")
     actions: List[Action] = []
