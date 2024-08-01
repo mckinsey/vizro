@@ -229,15 +229,19 @@ class TestRangeSliderInstantiation:
         "marks, expected",
         [
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
-            ({15: 15, 25: 25}, {15.0: "15", 25.0: "25"}),
-            ({"15": 15, "25": 25}, {15.0: "15", 25.0: "25"}),
+            ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
+            ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
+            ({15.0: 15, 25.0: 25}, {15: "15", 25: "25"}),  # all floats, but convertible to int
+            ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
             (None, None),
         ],
     )
     def test_valid_marks(self, marks, expected):
         range_slider = vm.RangeSlider(min=0, max=10, marks=marks)
-
         assert range_slider.marks == expected
+
+        if marks:
+            assert all(type(key) is type(next(iter(expected.keys()))) for key in range_slider.marks)
 
     def test_invalid_marks(self):
         with pytest.raises(ValidationError, match="2 validation errors for RangeSlider"):

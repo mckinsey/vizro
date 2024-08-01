@@ -8,10 +8,13 @@ from vizro import Vizro
 
 
 class PureDashSlider(vm.VizroBaseModel):
+    """Simple Dash Slider."""
+
     type: Literal["simple_slider"] = "simple_slider"
     kwargs: Any
 
     def build(self):
+        """Pure Slider component."""
         return dcc.Slider(**self.kwargs)
 
 

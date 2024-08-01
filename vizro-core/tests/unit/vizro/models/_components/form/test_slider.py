@@ -132,7 +132,7 @@ class TestSliderInstantiation:
         assert slider.marks == expected
 
         if marks:
-            assert all(type(key) == type(list(expected.keys())[0]) for key in slider.marks)
+            assert all(type(key) is type(next(iter(expected.keys()))) for key in slider.marks)
 
     def test_invalid_marks(self):
         with pytest.raises(ValidationError, match="2 validation errors for Slider"):
