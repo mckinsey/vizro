@@ -3,7 +3,6 @@
 import pytest
 import vizro.plotly.express as px
 from hamcrest import assert_that, equal_to
-
 from vizro import Vizro
 from vizro.managers._model_manager import DuplicateIDError
 from vizro_ai import VizroAI
