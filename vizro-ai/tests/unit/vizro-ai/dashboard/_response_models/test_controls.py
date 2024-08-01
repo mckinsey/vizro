@@ -1,5 +1,5 @@
 import pytest
-from vizro_ai.dashboard.response_models.controls import ControlPlan, _create_filter_proxy
+from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
 
 try:
     from pydantic.v1 import ValidationError

@@ -1,7 +1,7 @@
 import pytest
 import vizro.models as vm
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard.response_models.layout import LayoutPlan, _convert_to_grid
+from vizro_ai.dashboard._response_models.layout import LayoutPlan, _convert_to_grid
 
 
 class TestLayoutPlan:

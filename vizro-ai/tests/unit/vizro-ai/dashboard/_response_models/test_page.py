@@ -1,5 +1,5 @@
 import pytest
-from vizro_ai.dashboard.response_models.page import PagePlanner
+from vizro_ai.dashboard._response_models.page import PagePlanner
 
 try:
     from pydantic.v1 import ValidationError

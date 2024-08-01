@@ -1,4 +1,4 @@
-from vizro_ai.dashboard.response_models.df_info import _get_df_info
+from vizro_ai.dashboard._response_models.df_info import _get_df_info
 
 
 def test_get_df_info(df, df_schema):

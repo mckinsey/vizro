@@ -4,8 +4,8 @@ import pandas as pd
 import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
-from vizro_ai.dashboard.response_models.components import ComponentPlan
-from vizro_ai.dashboard.response_models.page import PagePlanner
+from vizro_ai.dashboard._response_models.components import ComponentPlan
+from vizro_ai.dashboard._response_models.page import PagePlanner
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 
 
