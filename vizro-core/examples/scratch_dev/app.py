@@ -1,64 +1,52 @@
 """Dev app to try things out."""
 
-from typing import List
+from typing import Any, Literal
 
-import pandas as pd
-import plotly.graph_objects as go
 import vizro.models as vm
+from dash import dcc
 from vizro import Vizro
-from vizro.models.types import capture
-
-sankey_data = pd.DataFrame(
-    {
-        "Origin": [0, 1, 2, 1, 2, 4, 0],  # indices inside labels
-        "Destination": [1, 2, 3, 4, 5, 5, 6],  # indices inside labels
-        "Value": [10, 4, 8, 6, 4, 8, 8],
-    }
-)
 
 
-@capture("graph")
-def sankey(
-    data_frame: pd.DataFrame,
-    source: str,
-    target: str,
-    value: str,
-    labels: List[str],
-) -> go.Figure:
-    """Creates a sankey diagram based on a go.Figure."""
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node={
-                    "pad": 16,
-                    "thickness": 16,
-                    "label": labels,
-                },
-                link={
-                    "source": data_frame[source],
-                    "target": data_frame[target],
-                    "value": data_frame[value],
-                    "label": labels,
-                    "color": "rgba(205, 209, 228, 0.4)",
-                },
-            )
-        ]
-    )
-    fig.update_layout(barmode="relative")
-    return fig
+class PureDashSlider(vm.VizroBaseModel):
+    type: Literal["simple_slider"] = "simple_slider"
+    kwargs: Any
 
+    def build(self):
+        return dcc.Slider(**self.kwargs)
+
+
+vm.Container.add_type("components", vm.Slider)
+vm.Container.add_type("components", PureDashSlider)
+
+# All floats: This works on Vizro, while it does not work in Dash
+a = dict(min=0, max=2, step=0.1, marks={0.0: "a", 1.0: "x", 2.0: "y"})  # noqa: C408
+
+# All int: This works in both Vizro and Dash
+b = dict(min=0, max=2, step=0.1, marks={0: "a", 1: "x", 2: "y"})  # noqa: C408
+
+# Mixed float and int: This works in Vizro, while it only partially works in Dash
+c = dict(min=0, max=1, step=0.1, marks={0: "a", 0.5: "x", 1.0: "y"})  # noqa: C408
+
+# Other test example: https://github.com/mckinsey/vizro/pull/266
+d = dict(min=2, max=5, step=1, value=3)  # noqa: C408
 
 page = vm.Page(
-    title="Sankey",
+    title="Vizro on PyCafe",
     components=[
-        vm.Graph(
-            figure=sankey(
-                data_frame=sankey_data,
-                labels=["A1", "A2", "B1", "B2", "C1", "C2", "D1"],
-                source="Origin",
-                target="Destination",
-                value="Value",
-            ),
+        vm.Container(
+            title="vm.Sliders",
+            layout=vm.Layout(grid=[[0, 1, 2, 3]]),
+            components=[vm.Slider(**a), vm.Slider(**b), vm.Slider(**c), vm.Slider(**d)],
+        ),
+        vm.Container(
+            title="dcc.Sliders",
+            layout=vm.Layout(grid=[[0, 1, 2, 3]]),
+            components=[
+                PureDashSlider(kwargs=a),
+                PureDashSlider(kwargs=b),
+                PureDashSlider(kwargs=c),
+                PureDashSlider(kwargs=d),
+            ],
         ),
     ],
 )
