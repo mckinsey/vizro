@@ -5,9 +5,9 @@ import pandas as pd
 import plotly.graph_objects as go
 from langchain_openai import ChatOpenAI
 
-from vizro_ai.chains._llm_models import _get_llm_model
-from vizro_ai.components import GetCodeExplanation, GetDebugger
-from vizro_ai.task_pipeline._pipeline_manager import PipelineManager
+from vizro_ai._llm_models import _get_llm_model
+from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
+from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
     DebugFailure,
     PlotOutputs,
@@ -64,12 +64,12 @@ class VizroAI:
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
-        chart_types = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
+        chart_type = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
         # TODO update to loop through charts for multiple charts creation
         plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
-            initial_args={"chain_input": user_input, "df": df, "chart_types": chart_types}
+            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type}
         )
 
         # TODO add debug in pipeline after getting _debug_helper logic in component

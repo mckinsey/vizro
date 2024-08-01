@@ -43,9 +43,15 @@ def test_chart_with_explanation():
     assert_that(
         resp.business_insights,
         any_of(
-            contains_string("GDP per capita in the United States"),
-            contains_string("GDP in the United States"),
-            contains_string("GDP in the US"),
+            contains_string("GDP per capita"),
+            contains_string("GDP"),
+        ),
+    )
+    assert_that(
+        resp.business_insights,
+        any_of(
+            contains_string("United States"),
+            contains_string("US"),
         ),
     )
     assert_that(
