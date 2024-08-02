@@ -114,7 +114,7 @@ def test_unsupported_dashboard():
     <Page 1>
     I need a page showing 2 cards, one chart, and 1 button.
     The first card says 'The Tips dataset provides insights into customer tipping behavior.'
-    The chart is a bar chart showing the total bill amount by day. Day on the x axis, total bill amount on the y axis, and colored by time of day.
+    The chart is a bar chart showing the total bill amount by day. Column day on the x axis, column total bill amount on the y axis, and colored by time of day.
     The second card says 'Data collected from various days and times.'
     Layout the two cards on the left and the chart on the right. Two cards take 1/3 of the whole space on the left in total.
     The first card is on top of the second card vertically.
