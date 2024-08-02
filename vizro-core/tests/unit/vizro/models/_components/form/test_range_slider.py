@@ -241,7 +241,7 @@ class TestRangeSliderInstantiation:
         assert range_slider.marks == expected
 
         if marks:
-            assert all(type(key) is type(next(iter(expected.keys()))) for key in range_slider.marks)
+       assert [type(result_key) for result_key in range_slider.marks] == [type(expected_key) for expected_key in expected]
 
     def test_invalid_marks(self):
         with pytest.raises(ValidationError, match="2 validation errors for RangeSlider"):
