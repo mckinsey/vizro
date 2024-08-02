@@ -9,6 +9,9 @@ import inspect
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
+
+import plotly.io as pio
+
 try:
     from pydantic.v1 import Field, StrictBool
     from pydantic.v1.fields import ModelField
@@ -336,6 +339,18 @@ class capture:
                     fig.__class__ = _DashboardReadyFigure
 
                 fig._captured_callable = captured_callable
+
+                # For Jupyter notebook users, we want the chart shown to use the vizro_dark theme by default. The only
+                # exception to this is if the user has explicitly chosen to use vizro_light (could be through setting
+                # pio.default.templates or setting template="vizro_light" or any other way). In this case we don't
+                # want to change the template to vizro_dark.
+                # This works even if users have tweaked the templates, so long as pio.templates has been updated
+                # correctly.
+                # We don't want to update the captured_callable in the same way, since it's only used inside the
+                # dashboard, at which point the theme always gets set according to the theme selector.
+                if fig.layout.template != pio.templates["vizro_light"]:
+                    fig.layout.template = pio.templates["vizro_dark"]
+
                 return fig
 
             return wrapped

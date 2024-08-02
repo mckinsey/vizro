@@ -68,7 +68,7 @@ class Graph(VizroBaseModel):
             # future we'll have callbacks that do Graph.__call__() without theme_selector set.
             if "theme_selector" in ctx.args_grouping.get("external", {}):
                 theme_selector_checked = ctx.args_grouping["external"]["theme_selector"]["value"]
-                fig["layout"]["template"] = themes.light if theme_selector_checked else themes.dark
+                fig.layout.template = themes.light if theme_selector_checked else themes.dark
         except MissingCallbackContextException:
             logger.info("fig.update_layout called outside of callback context.")
         return fig
