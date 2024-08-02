@@ -64,6 +64,18 @@ class TestActionInstantiation:
         assert action.inputs == inputs
         assert action.outputs == outputs
 
+    def test_is_model_inheritable(self, identity_action_function):
+        class MyAction(vm.Action):
+            pass
+
+        function = identity_action_function()
+        my_action = MyAction(function=function)
+
+        assert hasattr(my_action, "id")
+        assert my_action.function is function
+        assert my_action.inputs == []
+        assert my_action.outputs == []
+
     @pytest.mark.parametrize(
         "inputs, outputs",
         [
