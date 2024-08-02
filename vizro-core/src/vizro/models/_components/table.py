@@ -33,7 +33,7 @@ class Table(VizroBaseModel):
 
     type: Literal["table"] = "table"
     figure: CapturedCallable = Field(
-        ..., import_path="vizro.tables", mode="table", description="Function that returns a Dash DataTable."
+        ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
     )
     title: str = Field("", description="Title of the table")
     actions: List[Action] = []

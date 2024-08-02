@@ -34,7 +34,7 @@ class AgGrid(VizroBaseModel):
 
     type: Literal["ag_grid"] = "ag_grid"
     figure: CapturedCallable = Field(
-        ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a Dash AgGrid."
+        ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a `Dash AG Grid`."
     )
     title: str = Field("", description="Title of the AgGrid")
     actions: List[Action] = []
