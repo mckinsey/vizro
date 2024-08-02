@@ -339,12 +339,13 @@ class capture:
 
                 fig._captured_callable = captured_callable
 
-                # For Jupyter notebook users, we want the chart shown to use the vizro_dark theme by default. The only
-                # exception to this is if the user has explicitly chosen to use vizro_light (could be through setting
+                # For Jupyter notebook users, we want the chart to show as if it's in a dashboard, so apply the same
+                # theme that we do in the dashboard. We use the vizro_dark theme by default. The only exception to this
+                # is if the user has explicitly chosen to use vizro_light (could be through setting
                 # pio.default.templates or setting template="vizro_light" or any other way). In this case we don't
                 # want to change the template to vizro_dark.
                 # This works even if users have tweaked the templates, so long as pio.templates has been updated
-                # correctly.
+                # correctly and you refer to template by name rather than trying to take from vizro.themes.
                 # We don't want to update the captured_callable in the same way, since it's only used inside the
                 # dashboard, at which point the theme always gets set according to the theme selector.
                 if fig.layout.template != pio.templates["vizro_light"]:
