@@ -69,6 +69,17 @@ class TestTableInstantiation:
         ):
             vm.Table(figure=standard_ag_grid)
 
+    def test_is_model_inheritable(self, standard_dash_table):
+        class MyTable(vm.Table):
+            pass
+
+        my_table = MyTable(figure=standard_dash_table)
+
+        assert hasattr(my_table, "id")
+        assert my_table.type == "table"
+        assert my_table.figure == standard_dash_table
+        assert my_table.actions == []
+
     def test_set_action_via_validator(self, standard_dash_table, identity_action_function):
         table = vm.Table(figure=standard_dash_table, actions=[Action(function=identity_action_function())])
         actions_chain = table.actions[0]

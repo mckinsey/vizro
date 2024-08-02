@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix subclassing of `vm.Figure`, `vm.Graph`, `vm.Table` and `vm.AgGrid` components. ([#606](https://github.com/mckinsey/vizro/pull/606))
+- Fix subclassing of `vm.Graph`, `vm.Table`, `vm.AgGrid`, `vm.Figure` and `vm.Action` models. ([#606](https://github.com/mckinsey/vizro/pull/606))
 
 <!--
 ### Security

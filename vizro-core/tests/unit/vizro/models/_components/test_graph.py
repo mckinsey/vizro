@@ -75,6 +75,17 @@ class TestGraphInstantiation:
         ):
             vm.Graph(figure=standard_ag_grid)
 
+    def test_is_model_inheritable(self, standard_px_chart):
+        class MyGraph(vm.Graph):
+            pass
+
+        my_graph = MyGraph(figure=standard_px_chart)
+
+        assert hasattr(my_graph, "id")
+        assert my_graph.type == "graph"
+        assert my_graph.figure == standard_px_chart._captured_callable
+        assert my_graph.actions == []
+
 
 class TestDunderMethodsGraph:
     def test_getitem_known_args(self, standard_px_chart):
