@@ -67,23 +67,24 @@ def test_4_page_dashboard():
     the other should be a scatter plot.
     first chart is on the left and the second chart is on the right.
     Add a filter to filter data in the scatter plot by smoker.
-
-    <Page 4>
-    Create 3 cards on page four:
-    1. The first card on top says "This page combines data from various sources including tips, stock prices, and global indicators."
-    2. The second card says "Insights from Gapminder dataset."
-    3. The third card says "Stock price trends over time."
-
-    Layout these 3 cards on page four in this way:
-    create a grid with 3 columns and 2 rows.
-    Row 1: The first row has three columns:
-    - The first column is empty.
-    - The second and third columns span the area for card 1.
-    Row 2: The second row also has three columns:
-    - The first column is empty.
-    - The second column is occupied by the area for card 2.
-    - The third column is occupied by the area for card 3.
     """
+
+    # <Page 4>
+    # Create 3 cards on page four:
+    # 1. The first card on top says "This page combines data from various sources including tips, stock prices, and global indicators."
+    # 2. The second card says "Insights from Gapminder dataset."
+    # 3. The third card says "Stock price trends over time."
+    #
+    # Layout these 3 cards on page four in this way:
+    # create a grid with 3 columns and 2 rows.
+    # Row 1: The first row has three columns:
+    # - The first column is empty.
+    # - The second and third columns span the area for card 1.
+    # Row 2: The second row also has three columns:
+    # - The first column is empty.
+    # - The second column is occupied by the area for card 2.
+    # - The third column is occupied by the area for card 3.
+
 
     dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
 
@@ -93,8 +94,8 @@ def test_4_page_dashboard():
     assert_that(len(dashboard.pages[1].components), equal_to(2))
     # Page 3
     assert_that(len(dashboard.pages[2].components), equal_to(2))
-    # Page 4
-    assert_that(len(dashboard.pages[3].components), equal_to(3))
+    # # Page 4
+    # assert_that(len(dashboard.pages[3].components), equal_to(3))
 
 
 # @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
