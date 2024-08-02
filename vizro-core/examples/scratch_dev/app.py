@@ -3,14 +3,13 @@
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Dash, html
-from vizro.figures.unwrapped import kpi_card, kpi_card_reference
+from vizro.figures.library import kpi_card, kpi_card_reference
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
 # Add single CSS file figures.css or
 base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/create-module-pure-functions/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
-vizro_css = base + "figures.min.css"
 
 # Add entire assets folder from Vizro
 app = Dash(
@@ -58,7 +57,7 @@ app.layout = dbc.Container(
                 ),
             ],
             # Note: They need to add vizro_light here
-            # className="vizro_light",
+            className="vizro_light",
         ),
     ]
 )
