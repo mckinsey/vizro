@@ -1,0 +1,43 @@
+/* Inspired by https://github.com/facultyai/dash-bootstrap-components/blob/5c8f4b40f1100fc00bf2d5c1d671a7815a6b2910/docs/static/loading.css */
+
+/* This creates a dark background in situations where neither dash-loading nor the Vizro app are displayed */
+html {
+  background: rgba(20, 23, 33, 1);
+  min-height: 100vh;
+}
+
+/* The dash-loading Div is present when Dash is initially loading, before the layout is built */
+
+/* The dash-loading-callback Div is present when Dash has loaded, but the layout is still building */
+
+/* Note that the dash-loading-callback Div is present until all elements are loaded, but as soon as the initial page
+elements (before on-page-load) are rendered, it gets pushed outside the viewable area, hence the spinner is not visible
+which is good, as we have individual loading spinners for elements. At the moment, we are not using this class.
+TODO: If we want to use this class, we need to evaluate if this is the best approach.
+ */
+
+/* ._dash-loading-callback, */
+._dash-loading {
+  align-items: center;
+  background: rgba(20, 23, 33, 1);
+  color: transparent;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+}
+
+/* Loading spinner */
+
+/* ._dash-loading-callback::after, */
+._dash-loading::after {
+  animation: spinner-border 0.75s linear infinite;
+  border: 0.5rem solid lightgrey;
+  border-radius: 50%;
+  border-right-color: transparent;
+  content: "";
+  display: inline-block;
+  height: 8rem;
+  width: 8rem;
+}

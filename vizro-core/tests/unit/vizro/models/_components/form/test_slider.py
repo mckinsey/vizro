@@ -120,15 +120,21 @@ class TestSliderInstantiation:
         "marks, expected",
         [
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
-            ({15: 15, 25: 25}, {15.0: "15", 25.0: "25"}),
-            ({"15": 15, "25": 25}, {15.0: "15", 25.0: "25"}),
+            ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
+            ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
+            ({15.0: 15, 25.5: 25.5}, {15: "15", 25.5: "25.5"}),  # mixed floats
+            ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
             (None, None),
         ],
     )
     def test_valid_marks(self, marks, expected):
         slider = vm.Slider(min=0, max=10, marks=marks)
-
         assert slider.marks == expected
+
+        if marks:
+            assert [type(result_key) for result_key in slider.marks] == [
+                type(expected_key) for expected_key in expected
+            ]
 
     def test_invalid_marks(self):
         with pytest.raises(ValidationError, match="2 validation errors for Slider"):
