@@ -269,3 +269,15 @@ class TestModelFieldJSONConfig:
             ),
         ):
             ModelWithGraph(function=config)
+
+    def test_invalid_import_path(self):
+        class ModelWithInvalidModule(VizroBaseModel):
+            # The import_path doesn't exist.
+            function: CapturedCallable = Field(..., import_path="invalid.module", mode="graph")
+
+        config = {"_target_": "decorated_graph_function", "data_frame": None}
+
+        with pytest.raises(
+            ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
+        ):
+            ModelWithInvalidModule(function=config)
