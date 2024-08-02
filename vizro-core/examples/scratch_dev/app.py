@@ -1,61 +1,111 @@
 """Dev app to try things out."""
 
-from typing import Any, Literal
-
 import vizro.models as vm
-from dash import dcc
+import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.figures import kpi_card
+from vizro.models.types import capture
+from vizro.tables import dash_ag_grid, dash_data_table
+
+df = px.data.iris()
 
 
-class PureDashSlider(vm.VizroBaseModel):
-    """Simple Dash Slider."""
+# Graph
+@capture("graph")
+def my_graph_figure(data_frame, **kwargs):
+    """My custom figure."""
+    return px.scatter(data_frame, **kwargs)
 
-    type: Literal["simple_slider"] = "simple_slider"
-    kwargs: Any
+
+class MyGraph(vm.Graph):
+    """My custom class."""
 
     def build(self):
-        """Pure Slider component."""
-        return dcc.Slider(**self.kwargs)
+        """Custom build."""
+        graph_build_obj = super().build()
+        # DO SOMETHING
+        return graph_build_obj
 
 
-vm.Container.add_type("components", vm.Slider)
-vm.Container.add_type("components", PureDashSlider)
+# Table
+@capture("table")
+def my_table_figure(data_frame, **kwargs):
+    """My custom figure."""
+    return dash_data_table(data_frame, **kwargs)()
 
-# All floats: This works on Vizro, while it does not work in Dash
-a = dict(min=0, max=2, step=0.1, marks={0.0: "a", 1.0: "x", 2.0: "y"})  # noqa: C408
 
-# All int: This works in both Vizro and Dash
-b = dict(min=0, max=2, step=0.1, marks={0: "a", 1: "x", 2: "y"})  # noqa: C408
+class MyTable(vm.Table):
+    """My custom class."""
 
-# Mixed float and int: This works in Vizro, while it only partially works in Dash
-c = dict(min=0, max=1, step=0.1, marks={0: "a", 0.5: "x", 1.0: "y"})  # noqa: C408
+    pass
 
-# User example
-e = dict(min=0, max=1, step=0.01, marks={0: "0%", 0.21: "MARKET", 1.0: "100%"})  # noqa: C408
 
-# Other test example: https://github.com/mckinsey/vizro/pull/266
-d = dict(min=2, max=5, step=1, value=3)  # noqa: C408
+# AgGrid
+@capture("ag_grid")
+def my_ag_grid_figure(data_frame, **kwargs):
+    """My custom figure."""
+    return dash_ag_grid(data_frame, **kwargs)()
+
+
+class MyAgGrid(vm.AgGrid):
+    """My custom class."""
+
+    pass
+
+
+# Figure
+@capture("figure")
+def my_kpi_card_figure(data_frame, **kwargs):
+    """My custom figure."""
+    return kpi_card(data_frame, **kwargs)()
+
+
+class MyFigure(vm.Figure):
+    """My custom class."""
+
+    pass
+
+
+# Action
+@capture("action")
+def my_action_function():
+    """My custom action."""
+    pass
+
+
+class MyAction(vm.Action):
+    """My custom class."""
+
+    pass
+
 
 page = vm.Page(
-    title="Vizro on PyCafe",
+    title="Test",
+    layout=vm.Layout(
+        grid=[[0, 1], [2, 3], [4, 5], [6, 7], [8, -1]],
+        col_gap="50px",
+        row_gap="50px",
+    ),
     components=[
-        vm.Container(
-            title="vm.Sliders",
-            layout=vm.Layout(grid=[[0, 1, 2, 3, 4]]),
-            components=[vm.Slider(**a), vm.Slider(**b), vm.Slider(**c), vm.Slider(**d), vm.Slider(**e)],
-        ),
-        vm.Container(
-            title="dcc.Sliders",
-            layout=vm.Layout(grid=[[0, 1, 2, 3, 4]]),
-            components=[
-                PureDashSlider(kwargs=a),
-                PureDashSlider(kwargs=b),
-                PureDashSlider(kwargs=c),
-                PureDashSlider(kwargs=d),
-                PureDashSlider(kwargs=e),
-            ],
+        # Graph
+        MyGraph(figure=px.scatter(df, x="sepal_width", y="sepal_length", title="My Graph")),
+        MyGraph(figure=my_graph_figure(df, x="sepal_width", y="sepal_length", title="My Graph Custom Figure")),
+        # Table
+        MyTable(figure=dash_data_table(df), title="My Table"),
+        MyTable(figure=my_table_figure(df), title="My Table Custom Figure"),
+        # AgGrid
+        MyAgGrid(figure=dash_ag_grid(df), title="My AgGrid"),
+        MyAgGrid(figure=my_ag_grid_figure(df), title="My AgGrid Custom Figure"),
+        # Figure
+        MyFigure(figure=kpi_card(df, value_column="sepal_width", title="KPI Card")),
+        MyFigure(figure=my_kpi_card_figure(df, value_column="sepal_width", title="KPI Card Custom Figure")),
+        # Action
+        MyGraph(
+            figure=my_graph_figure(df, x="sepal_width", y="sepal_length", title="My Graph Custom Figure"),
+            actions=[MyAction(function=my_action_function())],
         ),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(pages=[page])
