@@ -38,7 +38,7 @@ class Graph(VizroBaseModel):
 
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
-        ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a graph."
+        ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
     )
     actions: List[Action] = []
 
