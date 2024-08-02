@@ -92,9 +92,9 @@ def test_4_page_dashboard():
     # Page 2
     assert_that(len(dashboard.pages[1].components), equal_to(2))
     # Page 3
-    assert_that(len(dashboard.pages[2].components), equal_to(2))
-    # # Page 4
-    # assert_that(len(dashboard.pages[3].components), equal_to(3))
+    assert_that(len(dashboard.pages[2].components), equal_to(3))
+    # Page 4
+    assert_that(len(dashboard.pages[3].components), equal_to(2))
 
 
 # @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
