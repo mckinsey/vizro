@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import Dict, Optional, Union
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -17,7 +18,7 @@ SUPPORTED_MODELS = {
         "gpt-3.5-turbo",
         "gpt-4o-2024-05-13",
         "gpt-4o",
-    ]
+    ],
 }
 
 DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI}
@@ -49,11 +50,26 @@ def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatMo
     if isinstance(model, str):
         if any(model in model_list for model_list in SUPPORTED_MODELS.values()):
             vendor = model_to_vendor[model]
+            if DEFAULT_WRAPPER_MAP.get(vendor) is None:
+                raise ValueError(f"Additional library to support {vendor} models is not installed.")
             return DEFAULT_WRAPPER_MAP.get(vendor)(model_name=model, temperature=DEFAULT_TEMPERATURE)
 
     raise ValueError(
         f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/customize-vizro-ai/#supported-models"
     )
+
+
+def _get_model_name(model: BaseChatModel) -> str:
+    methods = [
+        lambda: model.model_name,  # OpenAI models
+        lambda: model.model,  # Anthropic models
+    ]
+
+    for method in methods:
+        with suppress(AttributeError):
+            return method()
+
+    raise ValueError("Model name could not be retrieved")
 
 
 if __name__ == "__main__":
