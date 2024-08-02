@@ -62,28 +62,27 @@ def test_4_page_dashboard():
     Add a second filter to filter the chart by year.
 
     <Page 3>
-    Third page displays the tips data dataset. use two different charts to show data
+    Create 3 cards on page three:
+    1. The first card on top says "This page combines data from various sources including tips, stock prices, and global indicators."
+    2. The second card says "Insights from Gapminder dataset."
+    3. The third card says "Stock price trends over time."
+    Layout these 3 cards on page four in this way:
+    create a grid with 3 columns and 2 rows.
+    Row 1: The first row has three columns:
+    - The first column is empty.
+    - The second and third columns span the area for card 1.
+    Row 2: The second row also has three columns:
+    - The first column is empty.
+    - The second column is occupied by the area for card 2.
+    - The third column is occupied by the area for card 3.
+
+    <Page 4>
+    Fourth page displays the tips data dataset. use two different charts to show data
     distributions. one chart should be a bar chart with column day on the x axis, column total bill amount on the y axis.
     the other should be a scatter plot.
     first chart is on the left and the second chart is on the right.
     Add a filter to filter data in the scatter plot by smoker.
     """
-
-    # <Page 4>
-    # Create 3 cards on page four:
-    # 1. The first card on top says "This page combines data from various sources including tips, stock prices, and global indicators."
-    # 2. The second card says "Insights from Gapminder dataset."
-    # 3. The third card says "Stock price trends over time."
-    #
-    # Layout these 3 cards on page four in this way:
-    # create a grid with 3 columns and 2 rows.
-    # Row 1: The first row has three columns:
-    # - The first column is empty.
-    # - The second and third columns span the area for card 1.
-    # Row 2: The second row also has three columns:
-    # - The first column is empty.
-    # - The second column is occupied by the area for card 2.
-    # - The third column is occupied by the area for card 3.
 
 
     dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
