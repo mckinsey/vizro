@@ -49,8 +49,6 @@ def test_simple_dashboard():
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_4_page_dashboard():
     input_text = """
-    I need only 4 pages.
-
     <Page 1>
     I need a page with 1 table and 1 line chart.
     The chart shows the stock price trends of GOOG and AAPL.
