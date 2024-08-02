@@ -62,14 +62,14 @@ def test_4_page_dashboard():
     Add a second filter to filter the chart by year.
 
     <Page 3>
-    This page displays the tips data dataset. use two different charts to show data
+    Third page displays the tips data dataset. use two different charts to show data
     distributions. one chart should be a bar chart with column day on the x axis, column total bill amount on the y axis.
     the other should be a scatter plot.
     first chart is on the left and the second chart is on the right.
     Add a filter to filter data in the scatter plot by smoker.
 
     <Page 4>
-    Create 3 cards on this page:
+    Create 3 cards on the fourth page:
     1. The first card on top says "This page combines data from various sources including tips, stock prices, and global indicators."
     2. The second card says "Insights from Gapminder dataset."
     3. The third card says "Stock price trends over time."
