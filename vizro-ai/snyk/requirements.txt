@@ -3,6 +3,7 @@ tabulate
 openai>=1.0.0
 langchain>=0.1.0, <0.3.0
 langchain-openai
+langgraph>=0.1.2
 python-dotenv>=1.0.0
 vizro>=0.1.4
 ipython>=8.10.0
