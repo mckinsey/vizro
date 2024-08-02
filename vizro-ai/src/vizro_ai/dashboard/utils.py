@@ -46,7 +46,6 @@ class AllDfMetadata:
 class DashboardOutputs:
     """Dataclass containing all possible `VizroAI.dashboard()` output."""
 
-    code: str
     dashboard: vm.Dashboard
 
 
@@ -62,11 +61,3 @@ def _register_data(all_df_metadata: AllDfMetadata) -> vm.Dashboard:
 
     for name, metadata in all_df_metadata.all_df_metadata.items():
         data_manager[name] = metadata.df
-
-
-def _dashboard_code(dashboard: vm.Dashboard) -> str:
-    """Generate dashboard code from dashboard object."""
-    try:
-        return dashboard.to_python()
-    except AttributeError:
-        return "Dashboard code generation is coming soon!"
