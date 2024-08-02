@@ -1,7 +1,7 @@
 """Controls plan model."""
 
 import logging
-from typing import List, Union
+from typing import List, Optional
 
 import pandas as pd
 import vizro.models as vm
@@ -10,8 +10,8 @@ try:
     from pydantic.v1 import BaseModel, Field, ValidationError, create_model, root_validator, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError, create_model, root_validator, validator
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard._response_models.types import CtrlType
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
+from vizro_ai.dashboard._response_models.types import ControlType
 
 logger = logging.getLogger(__name__)
 
@@ -84,16 +84,14 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_compon
     result_proxy = _create_filter_proxy(
         df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
     )
-    proxy = _get_pydantic_output(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
-    return vm.Filter.parse_obj(
-        proxy.dict(exclude={"selector": {"id": True, "actions": True, "_add_key": True}, "id": True, "type": True})
-    )
+    proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
+    return vm.Filter.parse_obj(proxy.dict(exclude_unset=True))
 
 
 class ControlPlan(BaseModel):
     """Control plan model."""
 
-    control_type: CtrlType
+    control_type: ControlType
     control_description: str = Field(
         ...,
         description="""
@@ -105,12 +103,12 @@ class ControlPlan(BaseModel):
     df_name: str = Field(
         ...,
         description="""
-        The name of the dataframe that this component will use.
+        The name of the dataframe that the target component will use.
         If the dataframe is not used, please specify that.
         """,
     )
 
-    def create(self, model, controllable_components, all_df_metadata) -> Union[vm.Filter, None]:
+    def create(self, model, controllable_components, all_df_metadata) -> Optional[vm.Filter]:
         """Create the control."""
         filter_prompt = f"""
         Create a filter from the following instructions: <{self.control_description}>. Do not make up

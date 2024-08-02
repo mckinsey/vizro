@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 
 
-DF_SUM_PROMPT = """
+DF_SUMMARY_PROMPT = """
 Inspect the provided data and give a short unique name to the dataset. \n
 dataframe sample: \n ------- \n {df_sample} \n ------- \n
 Here is the data schema: \n ------- \n {df_schema} \n ------- \n
@@ -27,7 +27,7 @@ class DfInfo(BaseModel):
 
 
 def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
-    """Get the dataframe schema and head info as strings."""
+    """Get the dataframe schema and sample."""
     formatted_pairs = dict(df.dtypes.astype(str))
     df_sample = df.sample(5, replace=True, random_state=19)
     return formatted_pairs, df_sample
@@ -35,7 +35,7 @@ def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
 
 def _create_df_info_content(df_schema: Dict[str, str], df_sample: pd.DataFrame, current_df_names: List[str]) -> dict:
     """Create the message content for the dataframe summarization."""
-    return DF_SUM_PROMPT.format(df_sample=df_sample, df_schema=df_schema, current_df_names=current_df_names)
+    return DF_SUMMARY_PROMPT.format(df_sample=df_sample, df_schema=df_schema, current_df_names=current_df_names)
 
 
 if __name__ == "__main__":

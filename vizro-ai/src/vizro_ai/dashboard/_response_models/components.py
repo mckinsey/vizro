@@ -10,8 +10,8 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
 from vizro.tables import dash_ag_grid
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard._response_models.types import CompType
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
+from vizro_ai.dashboard._response_models.types import ComponentType
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class ComponentPlan(BaseModel):
     """Component plan model."""
 
-    component_type: CompType
+    component_type: ComponentType
     component_description: str = Field(
         ...,
         description="""
@@ -62,7 +62,7 @@ class ComponentPlan(BaseModel):
                 The Card uses the dcc.Markdown component from Dash as its underlying text component.
                 Create a card based on the card description: {self.component_description}.
                 """
-                result_proxy = _get_pydantic_output(query=card_prompt, llm_model=model, response_model=vm.Card)
+                result_proxy = _get_pydantic_model(query=card_prompt, llm_model=model, response_model=vm.Card)
                 proxy_dict = result_proxy.dict()
                 proxy_dict["id"] = self.component_id
                 return vm.Card.parse_obj(proxy_dict)
@@ -92,7 +92,6 @@ if __name__ == "__main__":
         component_type="Card",
         component_description="Create a card says 'this is worldwide GDP'.",
         component_id="gdp_card",
-        page_id="page1",
         df_name="N/A",
     )
     component = component_plan.create(model, all_df_metadata)
