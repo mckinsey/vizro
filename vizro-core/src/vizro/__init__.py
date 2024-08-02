@@ -1,9 +1,10 @@
-import plotly.io as pio
 import logging
 import os
 
-from ._vizro import Vizro
+import plotly.io as pio
+
 from ._themes import dark, light
+from ._vizro import Vizro
 
 __all__ = ["Vizro"]
 

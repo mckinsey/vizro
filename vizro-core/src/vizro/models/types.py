@@ -9,7 +9,6 @@ import inspect
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
-
 import plotly.io as pio
 
 try:
