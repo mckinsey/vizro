@@ -47,7 +47,7 @@ Refer to the [OpenAI documentation for more about model capabilities](https://pl
 
     - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
     - gpt-4-turbo: Excels in dashboard creation tasks, providing the most stable and complete responses.
-    - gpt-4o: Performance is inconsistent. The dashboard creation workflow heavily depends on the model's ability to generate structured output, which `gpt-4o` struggles with. As a result, it often fails to provide responses with the correct schema, leading to dashboard building failures.
+    - gpt-4o: Similar performance in terms of the quality of generated content. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
 
 
 === "Anthropic"
@@ -72,10 +72,10 @@ The example below uses the OpenAI model name in a string form:
         ```py linenums="1"
         from vizro_ai import VizroAI
 
-        vizro_ai = VizroAI(model="gpt-4-turbo")
+        vizro_ai = VizroAI(model="gpt-4o")
         ```
 
-The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-4-turbo"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
+The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-4o"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
 It's important to mention that any parameter that could be used in the `openai.create` call is also usable in `ChatOpenAI`. For more customization options for `ChatOpenAI`, refer to the [LangChain ChatOpenAI docs](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
 
 <!-- vale off -->
@@ -93,7 +93,7 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         df = px.data.gapminder()
 
         llm = ChatOpenAI(
-            model_name="gpt-4-turbo",
+            model_name="gpt-4o",
             temperature=0,
             max_retries=5,
         )
@@ -103,26 +103,3 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         ```
 
 Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).
-
-### Azure OpenAI models
-To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
-such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
-Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
-For a detailed walk-through, refer to the [LangChain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai/).
-
-Here is an example of how to set the LLM model to be an AzureOpenAI model:
-!!! example  "Use Azure OpenAI model"
-
-    === "python"
-        ```py linenums="1"
-        from langchain_openai import AzureOpenAI
-        from vizro_ai import VizroAI
-
-        # Create an instance of Azure OpenAI
-        # Replace the deployment name with your own
-        llm = AzureOpenAI(
-            deployment_name="td2",
-            model_name="gpt-3.5-turbo-instruct",
-        )
-        vizro_ai = VizroAI(model=llm)
-        ```

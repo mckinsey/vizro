@@ -45,9 +45,7 @@ Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapmind
 ```py
 import vizro.plotly.express as px
 
-df1 = px.data.gapminder()
-df2 = px.data.stocks()
-df3 = px.data.tips()
+df = px.data.gapminder(datetimes=True, pretty_names=True)
 ```
 
 ## 4. Prepare the user prompt
@@ -63,37 +61,12 @@ Vizro-AI can generate a multi-page dashboard that includes the following feature
 
 ```text
 user_question = """
-<page1> it's the dashboard landing page with 4 cards.
-The first card says 'This is a dashboard created by Vizro-AI'.
-The second card has text 'Gapminder data';
-The third card has text 'Tips data';.
-The fourth card has text 'Stock data';.
-In terms of layout, arrange these 4 cards in this way:
-divide the page space into a grid with 3 columns and 2 rows.
-Row 1: first card takes the all 3 columns in this row.
-Row 2: The second row also has three columns:
+Create a page showing 1 card, 1 chart, and 1 filter.
+The first card says 'The Gapminder dataset is a detailed collection of global socioeconomic indicators over several decades. It includes data on GDP per capita, life expectancy, and population for numerous countries and regions. This dataset allows users to analyze development trends, health outcomes, economic growth, and demographic changes globally.'
+The chart is a box plot showing life expectancy distribution. Put Life expectancy on the y axis, continent on the x axis, and color by continent.
+The card takes 1 grid of the page space on the left and the box plot takes 3 grid space on the right.
 
-- The first column is for the second card.
-- The second column is occupied by the third card.
-- The third column is occupied by the fourth card.
-
-<page2> 1 card, 1 chart, 1 filter.
-The card says 'The Gapminder dataset provides historical data on countries' development indicators.'
-Use a scatter matrix to visualize GDP per capita and life expectancy, colored by continent.
-Layout the card on the left and the chart on the right. The card takes 1/3 of the whole page on the left. The chart takes 2/3 of the page and is on the right.
-Add a filter to filter the scatter plot by year.
-
-Add another filter to filter the chart by continent, using checkbox as selector.
-
-<page3> 2 chart, 2 filters.
-This page displays the tips dataset. use two different charts to show data
-distributions. one chart should be a histogram chart showing the distribution of tip. Keep the chart title short.
-and the other should be a scatter plot. total_bill is on x-axis and tip is on y-axis. the bubble size is controlled by columns `size`.
-first chart is on the right and the second chart is on the left.
-Add a filter to filter data in the scatter plot by column `sex`.
-add a second filter to filter the histogram chart by column `time` using radio buttons as selector.
-
-<page4> 1 table. The table shows the tech companies stock data.
+Add a filter to filter the box plot by year.
 """
 ```
 
@@ -102,7 +75,7 @@ add a second filter to filter the histogram chart by column `time` using radio b
 Next, submit the data and prompt string:
 
 ```py
-dashboard = vizro_ai.dashboard([df1, df2, df3], user_question)
+dashboard = vizro_ai.dashboard([df], user_question)
 ```
 
 The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
@@ -114,19 +87,7 @@ The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI
         Vizro().build(dashboard).run()
         ```
 
-    === "Page1"
+    === "Result"
         [![VizroAIDashboardPage1]][VizroAIDashboardPage1]
 
-    === "Page2"
-        [![VizroAIDashboardPage2]][VizroAIDashboardPage2]
-
-    === "Page3"
-        [![VizroAIDashboardPage3]][VizroAIDashboardPage3]
-
-    === "Page4"
-        [![VizroAIDashboardPage4]][VizroAIDashboardPage4]
-
-    [VizroAIDashboardPage1]: ../../assets/tutorials/dashboard/dashboard1_page1.png
-    [VizroAIDashboardPage2]: ../../assets/tutorials/dashboard/dashboard1_page2.png
-    [VizroAIDashboardPage3]: ../../assets/tutorials/dashboard/dashboard1_page3.png
-    [VizroAIDashboardPage4]: ../../assets/tutorials/dashboard/dashboard1_page4.png
+    [VizroAIDashboardPage1]: ../../assets/tutorials/dashboard/dashboard0_page1.png
