@@ -17,6 +17,7 @@ jobs:
     name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - label: integration tests
@@ -30,6 +31,7 @@ jobs:
     name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - label: integration tests
