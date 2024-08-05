@@ -2,7 +2,7 @@ import vizro.models as vm
 from vizro_ai.dashboard._pydantic_output import _create_message_content, _create_prompt_template, _get_pydantic_model
 
 
-def test_get_pydantic_output(component_description, fake_llm):
+def test_get_pydantic_model(component_description, fake_llm):
     pydantic_output = _get_pydantic_model(
         query=component_description, llm_model=fake_llm, response_model=vm.Card, df_info=None
     )

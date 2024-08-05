@@ -1,14 +1,20 @@
 import pytest
-from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
+import vizro.models as vm
+from vizro.managers import model_manager
+from vizro.models import VizroBaseModel
+from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter, _create_filter_proxy
 
 try:
     from pydantic.v1 import ValidationError
 except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
+# Needed for testing control creation.
+model_manager.__setitem__("gdp_chart", VizroBaseModel)
 
-class TestControlCreate:
-    """Tests control creation."""
+
+class TestFilterProxyCreate:
+    """Tests filter proxy creation."""
 
     def test_create_filter_proxy_validate_targets(self, df_cols, df_schema, controllable_components):
         actual = _create_filter_proxy(df_cols, df_schema, controllable_components)
@@ -24,6 +30,14 @@ class TestControlCreate:
         actual = _create_filter_proxy(df_cols, df_schema, controllable_components)
         with pytest.raises(ValidationError, match="column must be one of"):
             actual(targets=["gdp_chart"], column="x")
+
+    def test_create_filter_proxy(self, df_cols, df_schema, controllable_components):
+        actual = _create_filter_proxy(df_cols, df_schema, controllable_components)
+        actual_filter = actual(targets=["gdp_chart"], column="gdp")
+
+        assert actual_filter.dict(exclude={"id": True}) == vm.Filter(targets=["gdp_chart"], column="gdp").dict(
+            exclude={"id": True}
+        )
 
 
 class TestControlPlan:
@@ -47,3 +61,17 @@ class TestControlPlan:
                 control_description="Create a parameter that targets the data based on the column 'a'.",
                 df_name="gdp_chart",
             )
+
+
+def test_create_filter(filter_prompt, fake_llm_filter_1, df_cols, df_schema_1, controllable_components):
+
+    actual = _create_filter(
+        filter_prompt=filter_prompt,
+        model=fake_llm_filter_1,
+        df_cols=df_cols,
+        df_schema=df_schema_1,
+        controllable_components=controllable_components,
+    )
+    assert actual.dict(exclude={"id": True}) == vm.Filter(targets=["gdp_chart"], column="country").dict(
+        exclude={"id": True}
+    )

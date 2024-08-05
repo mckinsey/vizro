@@ -9,7 +9,7 @@ from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 
 
-class FakeListLLM(FakeListLLM):
+class MockStructuredOutputLLM(FakeListLLM):
     def bind_tools(self, tools: List[Any]):
         return super().bind(tools=tools)
 
@@ -22,24 +22,35 @@ class FakeListLLM(FakeListLLM):
 @pytest.fixture
 def fake_llm_card():
     response = ['{"text":"this is a card","href":""}']
-    return FakeListLLM(responses=response)
+    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture
 def fake_llm_layout():
     response = ['{"grid":[[0,1]]}']
-    return FakeListLLM(responses=response)
+    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture
 def fake_llm_filter():
     response = ['{"column": "a", "targets": ["gdp_chart"]}']
-    return FakeListLLM(responses=response)
+    return MockStructuredOutputLLM(responses=response)
+
+
+@pytest.fixture
+def fake_llm_filter_1():
+    response = ['{"column": "country", "targets": ["gdp_chart"]}']
+    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture
 def df_cols():
     return ["continent", "country", "population", "gdp"]
+
+
+@pytest.fixture
+def df_schema_1():
+    return {"continent": "object", "country": "object", "population": "int64", "gdp": "int64"}
 
 
 @pytest.fixture
@@ -59,7 +70,8 @@ def df():
 
 @pytest.fixture
 def df_sample():
-    return pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]})
+    df = pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]})
+    return df.sample(5, replace=True, random_state=19)
 
 
 @pytest.fixture
@@ -101,3 +113,11 @@ def component_card_2():
 @pytest.fixture
 def page_plan(component_card):
     return PagePlan(title="Test Page", components_plan=[component_card], controls_plan=[], layout_plan=None)
+
+
+@pytest.fixture
+def filter_prompt():
+    return """
+        Create a filter from the following instructions: Filter the gdp chart by country.
+        Do not make up things that are optional and DO NOT configure actions, action triggers or action chains.
+        If no options are specified, leave them out."""

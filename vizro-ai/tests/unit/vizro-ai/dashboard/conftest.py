@@ -6,7 +6,7 @@ from langchain_community.llms.fake import FakeListLLM
 from langchain_core.messages import HumanMessage
 
 
-class FakeListLLM(FakeListLLM):
+class MockStructuredOutputLLM(FakeListLLM):
     def bind_tools(self, tools: List[Any]):
         return super().bind(tools=tools)
 
@@ -19,7 +19,7 @@ class FakeListLLM(FakeListLLM):
 @pytest.fixture
 def fake_llm():
     response = ['{"text":"this is a card","href":""}']
-    return FakeListLLM(responses=response)
+    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture

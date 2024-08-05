@@ -35,6 +35,11 @@ class TestLayoutPlan:
             ["card_1", "scatter_plot"],
             [],
         ),
+        (
+            ["card_1 scatter_plot scatter_plot", ". scatter_plot scatter_plot"],
+            ["card_1", "scatter_plot"],
+            [[0, 1, 1], [-1, 1, 1]],
+        ),
     ],
 )
 def test_convert_to_grid(layout_grid_template_areas, component_ids, grid):
