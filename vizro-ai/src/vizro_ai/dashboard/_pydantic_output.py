@@ -1,4 +1,4 @@
-"""Contains the _get_pydantic_output for the Vizro AI dashboard."""
+"""Contains the _get_pydantic_model for the Vizro AI dashboard."""
 
 # ruff: noqa: F821
 
@@ -63,7 +63,7 @@ def _create_message_content(
     return message_content
 
 
-def _get_pydantic_output(
+def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
@@ -94,5 +94,5 @@ if __name__ == "__main__":
 
     model = _get_llm_model()
     component_description = "Create a card with the following content: 'Hello, world!'"
-    res = _get_pydantic_output(query=component_description, llm_model=model, response_model=vm.Card)
+    res = _get_pydantic_model(query=component_description, llm_model=model, response_model=vm.Card)
     print(res)  # noqa: T201

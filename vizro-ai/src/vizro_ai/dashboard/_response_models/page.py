@@ -18,7 +18,7 @@ from vizro_ai.dashboard.utils import _execute_step
 logger = logging.getLogger(__name__)
 
 
-class PagePlanner(BaseModel):
+class PagePlan(BaseModel):
     """Page plan model."""
 
     title: str = Field(
@@ -28,7 +28,6 @@ class PagePlanner(BaseModel):
         make a concise and descriptive title from the components.
         """,
     )
-    page_id: str = Field(..., description="Unique identifier for the page being planned.")
     components_plan: List[ComponentPlan] = Field(
         ..., description="List of components. Must contain at least one component."
     )
@@ -162,6 +161,7 @@ class PagePlanner(BaseModel):
         try:
             page = vm.Page(title=title, components=components, controls=controls, layout=layout)
         except Exception as e:
+            # TODO: This Exception might be redundant. Check if it can be removed.
             if any("Number of page and grid components need to be the same" in error["msg"] for error in e.errors()):
                 logger.warning(
                     """
@@ -197,9 +197,8 @@ if __name__ == "__main__":
             )
         }
     )
-    page_plan = PagePlanner(
+    page_plan = PagePlan(
         title="Worldwide GDP",
-        page_id="page1",
         components_plan=[
             ComponentPlan(
                 component_type="Card",
@@ -216,7 +215,6 @@ if __name__ == "__main__":
             )
         ],
         layout_plan=LayoutPlan(
-            layout_description="N/A",
             layout_grid_template_areas=[],
         ),
         unsupported_specs=[],

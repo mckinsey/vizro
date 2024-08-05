@@ -1,7 +1,7 @@
 """Layout plan model."""
 
 import logging
-from typing import List
+from typing import List, Optional
 
 import vizro.models as vm
 
@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 
 
-def _convert_to_grid(layout_grid_template_areas, component_ids) -> List[List[int]]:
+def _convert_to_grid(layout_grid_template_areas: List[str], component_ids: List[str]) -> List[List[int]]:
     component_map = {component: index for index, component in enumerate(component_ids)}
     grid = []
 
@@ -26,8 +26,13 @@ def _convert_to_grid(layout_grid_template_areas, component_ids) -> List[List[int
                 try:
                     grid_row.append(component_map[cell])
                 except KeyError:
-                    logger.warning(f"Component {cell} not found in component_ids: {component_ids}")
-                    grid_row.append(-1)
+                    logger.warning(
+                        f"""
+[FALLBACK] Component {cell} not found in component_ids: {component_ids}.
+Returning default values.
+"""
+                    )
+                    return []
         grid.append(grid_row)
 
     return grid
@@ -36,13 +41,6 @@ def _convert_to_grid(layout_grid_template_areas, component_ids) -> List[List[int
 class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
-    layout_description: str = Field(
-        ...,
-        description="""
-        Description of the layout of Vizro Components(Graph, AgGrid, Card).
-        Include everything that seems to relate to this layout. If layout not specified, describe layout as N/A.
-        """,
-    )
     layout_grid_template_areas: List[str] = Field(
         [],
         description="""
@@ -57,9 +55,9 @@ class LayoutPlan(BaseModel):
         """,
     )
 
-    def create(self, component_ids: List[str]):
+    def create(self, component_ids: List[str]) -> Optional[vm.Layout]:
         """Create the layout."""
-        if self.layout_description == "N/A":
+        if not self.layout_grid_template_areas:
             return None
 
         try:
@@ -72,7 +70,7 @@ class LayoutPlan(BaseModel):
                 f"""
 [FALLBACK] Build failed for `Layout`, returning default values. Try rephrase the prompt or select a different model.
 Error details: {e}
-Relevant prompt: {self.layout_description}, which was parsed as layout_grid_template_areas:
+Relevant layout_grid_template_areas:
 {self.layout_grid_template_areas}
 """
             )
@@ -88,8 +86,7 @@ if __name__ == "__main__":
 
     model = _get_llm_model()
     layout_plan = LayoutPlan(
-        layout_description="Create a layout with a graph on the left and a card on the right.",
         layout_grid_template_areas=["graph1 card2 card2", "graph1 . card1"],
     )
-    layout = layout_plan.create(model, component_ids=["graph1", "card1", "card2"])
+    layout = layout_plan.create(component_ids=["graph1", "card1", "card2"])
     print(layout)  # noqa: T201

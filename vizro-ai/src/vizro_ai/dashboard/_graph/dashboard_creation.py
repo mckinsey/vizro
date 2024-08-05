@@ -11,10 +11,10 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_output
-from vizro_ai.dashboard._response_models.dashboard import DashboardPlanner
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
+from vizro_ai.dashboard._response_models.dashboard import DashboardPlan
 from vizro_ai.dashboard._response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
-from vizro_ai.dashboard._response_models.page import PagePlanner
+from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata, _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
@@ -47,7 +47,7 @@ class GraphState(BaseModel):
     messages: List[BaseMessage]
     dfs: List[pd.DataFrame]
     all_df_metadata: AllDfMetadata
-    dashboard_plan: Optional[DashboardPlanner] = None
+    dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
 
@@ -72,7 +72,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDf
 
             llm = config["configurable"].get("model", None)
             try:
-                df_name = _get_pydantic_output(
+                df_name = _get_pydantic_model(
                     query=query,
                     llm_model=llm,
                     response_model=DfInfo,
@@ -91,7 +91,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDf
     return {"all_df_metadata": all_df_metadata}
 
 
-def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlanner]:
+def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlan]:
     """Generate a dashboard plan."""
     node_desc = "Generate dashboard plan"
     pbar = tqdm(total=2, desc=node_desc)
@@ -106,10 +106,10 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
         None,
     )
     try:
-        dashboard_plan = _get_pydantic_output(
+        dashboard_plan = _get_pydantic_model(
             query=query,
             llm_model=llm,
-            response_model=DashboardPlanner,
+            response_model=DashboardPlan,
             df_info=all_df_metadata.get_schemas_and_samples(),
         )
     except (DebugFailure, ValidationError) as e:
@@ -137,7 +137,7 @@ class BuildPageState(BaseModel):
     """
 
     all_df_metadata: AllDfMetadata
-    page_plan: Optional[PagePlanner] = None
+    page_plan: Optional[PagePlan] = None
 
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:

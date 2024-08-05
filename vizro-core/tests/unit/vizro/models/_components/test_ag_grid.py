@@ -69,6 +69,17 @@ class TestAgGridInstantiation:
         ):
             vm.AgGrid(figure=standard_dash_table)
 
+    def test_is_model_inheritable(self, standard_ag_grid):
+        class MyAgGrid(vm.AgGrid):
+            pass
+
+        my_ag_grid = MyAgGrid(figure=standard_ag_grid)
+
+        assert hasattr(my_ag_grid, "id")
+        assert my_ag_grid.type == "ag_grid"
+        assert my_ag_grid.figure == standard_ag_grid
+        assert my_ag_grid.actions == []
+
     def test_set_action_via_validator(self, standard_ag_grid, identity_action_function):
         ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])
         actions_chain = ag_grid.actions[0]
