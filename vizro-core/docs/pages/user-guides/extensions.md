@@ -1,4 +1,4 @@
-# How to extend and customise Vizro dashboards
+# How to extend and customize Vizro dashboards
 
 Vizro provides the ability to extensively customize a wide range of functioanlity,
 and go far beyond the default Vizro capabilities - to avoid beining limited by any low-code configuration:
