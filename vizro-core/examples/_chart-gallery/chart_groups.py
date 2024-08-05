@@ -159,7 +159,6 @@ time_chart_group = ChartGroup(
         IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Area"),
         IncompletePage("Connected scatter"),
         IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),

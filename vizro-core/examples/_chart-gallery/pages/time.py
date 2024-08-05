@@ -36,4 +36,32 @@ line = vm.Page(
 
 column = column_factory("time")
 
-pages = [line, column]
+area = vm.Page(
+    title="Area",
+    path="time/area",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is an area chart?
+
+            An area chart displays data points over a continuous interval or time period, with the area between the line
+            and the axis filled in to emphasize the magnitude of the values.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            An area chart is ideal for showing trends over time and emphasizing the volume of data. Typically, 
+            the y-axis represents a quantitative value, while the x-axis is marked with a timescale or sequence of 
+            intervals. Area charts can also display negative values below the x-axis. If you need to compare multiple 
+            data series in the same chart, try to limit yourself to 3-4 to maintain clarity and avoid clutter.
+        """
+        ),
+        vm.Graph(figure=px.area(stocks, x="date", y="GOOG")),
+        make_code_clipboard_from_py_file("area.py"),
+    ],
+)
+
+pages = [line, column, area]
