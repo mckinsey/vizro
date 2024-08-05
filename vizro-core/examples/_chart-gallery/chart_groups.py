@@ -131,8 +131,6 @@ magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
     incomplete_pages=[
-        IncompletePage("Paired column"),
-        IncompletePage("Paired bar"),
         IncompletePage("Marimekko"),
         IncompletePage("Bubble"),
         IncompletePage("Lollipop"),

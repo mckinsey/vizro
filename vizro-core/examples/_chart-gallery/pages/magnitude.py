@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import column_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg, tips_paired
 
 bar = vm.Page(
     title="Bar",
@@ -45,4 +45,64 @@ bar = vm.Page(
 
 column = column_factory("magnitude")
 
-pages = [bar, column]
+paired_bar = vm.Page(
+    title="Paired Bar",
+    path="magnitude/paired-bar",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a paired bar chart?
+
+            A paired bar chart, also known as a grouped bar chart, displays bars grouped together in pairs for each 
+            category, with the lengths of the bars proportional to the values they represent. One axis shows the 
+            categories to compare, while the other provides a value scale starting from zero.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a paired bar chart to compare multiple sets of data within the same categories. This type of chart is 
+            particularly useful for highlighting differences and similarities between groups, such as **how many?** in 
+            each category across different groups. Arrange the paired bars clearly to fit the message you want to 
+            emphasize. Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations 
+            with fuller descriptions below.
+        """
+        ),
+        vm.Graph(figure=px.bar(tips_paired, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h")),
+        make_code_clipboard_from_py_file("paired_bar.py"),
+    ],
+)
+
+paired_column = vm.Page(
+    title="Paired Column",
+    path="magnitude/paired-column",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a paired column chart?
+
+            A paired column chart, also known as a grouped column chart, displays columns grouped together in pairs for
+            each category, with the heights of the columns proportional to the values they represent. One axis shows the
+            categories to compare, while the other provides a value scale starting from zero.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a paired column chart to compare multiple sets of data within the same categories. This type of chart is
+            particularly useful for highlighting differences and similarities between groups, such as **how many?** in 
+            each category across different groups. Arrange the paired columns clearly to fit the message you want to
+            emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or abbreviations
+            with fuller descriptions below.
+        """
+        ),
+        vm.Graph(figure=px.bar(tips_paired, x="sex", y="total_bill", color="smoker", barmode="group")),
+        make_code_clipboard_from_py_file("paired_column.py"),
+    ],
+)
+
+pages = [bar, column, paired_bar, paired_column]
