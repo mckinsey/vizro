@@ -12,7 +12,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field
 
 
-# TODO: Fix font and color in code clipboard
+
 class CodeClipboard(vm.VizroBaseModel):
     """Code snippet with a copy to clipboard button."""
 
