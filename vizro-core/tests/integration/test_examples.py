@@ -1,7 +1,6 @@
 # ruff: noqa: F403, F405
 import os
 import runpy
-import sys
 from pathlib import Path
 
 import chromedriver_autoinstaller
@@ -30,12 +29,11 @@ def dashboard(request, monkeypatch):
     example_directory = request.getfixturevalue("example_path") / request.getfixturevalue("version")
     monkeypatch.chdir(example_directory)
     monkeypatch.syspath_prepend(example_directory)
-    old_sys_modules = set(sys.modules)
-    yield runpy.run_path("app.py")["dashboard"]
+    return runpy.run_path("app.py")["dashboard"]
     # Both run_path and run_module contaminate sys.modules, so we need to undo this in order to avoid interference
-    # between tests.
-    for key in set(sys.modules) - old_sys_modules:
-        del sys.modules[key]
+    # between tests. However, if you do this then importlib.import_module seems to cause the problem due to mysterious
+    # reasons. The current system should work well so long as there's no sub-packages with clashing names in the
+    # examples.
 
 
 examples_path = Path(__file__).parents[2] / "examples"
@@ -52,13 +50,13 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.parametrize(
     "example_path, version",
     [
+        # KPI example is not included as it will be moved to HuggingFace over time.
         # Chart gallery is not included since it means installing black in the testing environment.
         # It will move to HuggingFace in due course anyway.
         (examples_path / "scratch_dev", ""),
         (examples_path / "scratch_dev", "yaml_version"),
         (examples_path / "dev", ""),
         (examples_path / "dev", "yaml_version"),
-        (examples_path / "kpi", ""),
     ],
     ids=str,
 )

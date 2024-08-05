@@ -11,7 +11,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
-import vizro.actions
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -32,7 +31,7 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., import_path=vizro.actions, mode="action", description="Action function.")
+    function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
     inputs: List[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",

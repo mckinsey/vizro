@@ -12,7 +12,6 @@ except ImportError:  # pragma: no cov
 
 import pandas as pd
 
-import vizro.plotly.express as px
 from vizro import _themes as themes
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
@@ -38,7 +37,9 @@ class Graph(VizroBaseModel):
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(..., import_path=px, mode="graph", description="Function that returns a graph.")
+    figure: CapturedCallable = Field(
+        ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
+    )
     actions: List[Action] = []
 
     # Component properties for actions and interactions
