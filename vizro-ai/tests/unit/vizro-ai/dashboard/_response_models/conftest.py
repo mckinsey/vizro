@@ -33,29 +33,13 @@ def fake_llm_layout():
 
 @pytest.fixture
 def fake_llm_filter():
-    response = ['{"column": "a", "targets": ["gdp_chart"]}']
+    response = ['{"column": "a", "targets": ["bar_chart"]}']
     return MockStructuredOutputLLM(responses=response)
-
-
-@pytest.fixture
-def fake_llm_filter_1():
-    response = ['{"column": "country", "targets": ["gdp_chart"]}']
-    return MockStructuredOutputLLM(responses=response)
-
-
-@pytest.fixture
-def df_cols():
-    return ["continent", "country", "population", "gdp"]
-
-
-@pytest.fixture
-def df_schema_1():
-    return {"continent": "object", "country": "object", "population": "int64", "gdp": "int64"}
 
 
 @pytest.fixture
 def controllable_components():
-    return ["gdp_chart"]
+    return ["bar_chart"]
 
 
 @pytest.fixture
@@ -69,8 +53,12 @@ def df():
 
 
 @pytest.fixture
-def df_sample():
-    df = pd.DataFrame({"a": [1, 2, 3, 4, 5], "b": [4, 5, 6, 7, 8]})
+def df_cols():
+    return ["a", "b"]
+
+
+@pytest.fixture
+def df_sample(df):
     return df.sample(5, replace=True, random_state=19)
 
 
@@ -82,7 +70,7 @@ def df_schema():
 @pytest.fixture
 def df_metadata(df, df_schema, df_sample):
     df_metadata = AllDfMetadata({})
-    df_metadata.all_df_metadata["gdp_chart"] = DfMetadata(
+    df_metadata.all_df_metadata["bar_chart"] = DfMetadata(
         df_schema=df_schema,
         df=df,
         df_sample=df_sample,
@@ -118,6 +106,6 @@ def page_plan(component_card):
 @pytest.fixture
 def filter_prompt():
     return """
-        Create a filter from the following instructions: Filter the gdp chart by country.
+        Create a filter from the following instructions: Filter the bar chart by column `a`.
         Do not make up things that are optional and DO NOT configure actions, action triggers or action chains.
         If no options are specified, leave them out."""
