@@ -80,18 +80,16 @@ jobs:
 
       - name: Run vizro-ai integration tests with pypi vizro
         run: |
-          export LANGCHAIN_API_KEY=${{ secrets.LANGCHAIN_API_KEY }}
-          export LANGCHAIN_TRACING_V2=false
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
           hatch run ${{ matrix.hatch-env }}:test-integration
 
-#      - name: Run vizro-ai integration tests with local vizro
-#        run: |
-#          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-#          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
-#          cd ../vizro-core
-#          hatch build
-#          cd ../vizro-ai
-#          hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
-#          hatch run ${{ matrix.hatch-env }}:test-integration
+      - name: Run vizro-ai integration tests with local vizro
+        run: |
+          export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          cd ../vizro-core
+          hatch build
+          cd ../vizro-ai
+          hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
+          hatch run ${{ matrix.hatch-env }}:test-integration
