@@ -7,7 +7,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-import vizro.figures as vf
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -26,7 +25,7 @@ class Figure(VizroBaseModel):
 
     type: Literal["figure"] = "figure"
     figure: CapturedCallable = Field(
-        import_path=vf,
+        import_path="vizro.figures",
         mode="figure",
         description="Function that returns a figure-like object.",
     )

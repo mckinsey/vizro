@@ -17,8 +17,9 @@ dependencies = [
   "pandas",
   "tabulate",
   "openai>=1.0.0",
-  "langchain>=0.1.0, <0.3.0",  # TODO update all LLMChain class and remove upper bound
+  "langchain>=0.1.0, <0.3.0",  # TODO update all LLMChain class, update to pydantic v2 and remove upper bound
   "langchain-openai",
+  "langgraph>=0.1.2",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.4",  # TODO set upper bound later
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382

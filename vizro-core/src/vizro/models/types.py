@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import functools
+import importlib
 import inspect
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
@@ -203,9 +204,9 @@ class CapturedCallable:
 
         import_path = field.field_info.extra["import_path"]
         try:
-            function = getattr(import_path, function_name)
-        except AttributeError as exc:
-            raise ValueError(f"_target_={function_name} cannot be imported from {import_path.__name__}.") from exc
+            function = getattr(importlib.import_module(import_path), function_name)
+        except (AttributeError, ModuleNotFoundError) as exc:
+            raise ValueError(f"_target_={function_name} cannot be imported from {import_path}.") from exc
 
         # All the other items in figure are the keyword arguments to pass into function.
         function_kwargs = captured_callable_config
@@ -230,11 +231,11 @@ class CapturedCallable:
     def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
         expected_mode = field.field_info.extra["mode"]
-        import_path_name = field.field_info.extra["import_path"].__name__
+        import_path = field.field_info.extra["import_path"]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
-                f"Invalid CapturedCallable. Supply a function imported from {import_path_name} or defined with "
+                f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
                 f"decorator @capture('{expected_mode}')."
             )
 
