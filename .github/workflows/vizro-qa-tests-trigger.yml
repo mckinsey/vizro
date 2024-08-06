@@ -17,6 +17,7 @@ jobs:
     name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - label: integration tests
@@ -30,6 +31,7 @@ jobs:
     name: Vizro QA ${{ matrix.label }} trigger
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - label: integration tests
@@ -46,5 +48,6 @@ jobs:
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
           fi
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
-          export INPUT_REF=${{ github.head_ref }}
+          export INPUT_REF=main # because we should send existent branch to dispatch workflow
+          export INPUT_CLIENT_PAYLOAD='{"branch": "${{ github.head_ref }}"}'
           tools/trigger-workflow-and-wait.sh
