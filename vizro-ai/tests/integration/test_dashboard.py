@@ -29,7 +29,8 @@ def test_simple_dashboard(dash_duo):
 
     I need a second page showing 2 cards and one chart.
     The first card says 'The Gapminder dataset provides historical data on countries' development indicators.'
-    The chart is an scatter plot showing life expectancy vs. GDP per capita by country. Life expectancy on the y axis, GDP per capita on the x axis, and colored by continent.
+    The chart is an scatter plot showing life expectancy vs. GDP per capita by country. Life expectancy on the y axis, 
+    GDP per capita on the x axis, and colored by continent.
     The second card says 'Data spans from 1952 to 2007 across various countries.'
     The layout uses a grid of 3 columns and 2 rows.
 
@@ -37,7 +38,8 @@ def test_simple_dashboard(dash_duo):
     The first column is occupied by the first card.
     The second and third columns are spanned by the chart.
 
-    Row 2: The second row mirrors the layout of the first row with respect to chart, but the first column is occupied by the second card.
+    Row 2: The second row mirrors the layout of the first row with respect to chart, but the first column is occupied 
+    by the second card.
 
     Add a filter to filter the scatter plot by continent.
     Add a second filter to filter the chart by year.
