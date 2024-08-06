@@ -20,7 +20,7 @@ dependencies = [
   "jupyter",
   "langchain_community",
   "dash[testing]",
-  "chromedriver-autoinstaller>=0.6.4",
+  "chromedriver-autoinstaller>=0.6.4"
 ]
 
 [envs.default.env-vars]
