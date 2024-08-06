@@ -265,7 +265,6 @@ def _pio_templates_default(default: Literal["vizro_light", "vizro_dark"]):
     If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
     to set these without it being overridden.
     """
-
     old_default = pio.templates.default
     template_changed = False
     # If the user has set pio.templates.default to a vizro theme already, no need to change it.

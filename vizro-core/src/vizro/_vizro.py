@@ -1,5 +1,5 @@
 from __future__ import annotations
-import plotly.io as pio
+
 import logging
 import warnings
 from pathlib import Path
@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING, Iterable, List
 
 import dash
 import flask
+import plotly.io as pio
 from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
-from vizro.models.types import _pio_templates_default
 
 logger = logging.getLogger(__name__)
 

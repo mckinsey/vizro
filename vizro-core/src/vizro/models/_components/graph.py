@@ -5,8 +5,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
-import plotly.io as pio
-
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -14,7 +12,6 @@ except ImportError:  # pragma: no cov
 
 import pandas as pd
 
-from vizro import _themes as themes
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
