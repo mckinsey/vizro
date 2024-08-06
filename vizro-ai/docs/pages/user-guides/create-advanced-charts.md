@@ -1,5 +1,7 @@
-# How to create advanced charts
-Now, let's explore more advanced visualizations and use Vizro-AI for enhanced formatting.
+# Advanced charts
+This page explains how to use Vizro-AI to create charts with advanced visualizations and enhanced formatting.
+
+## Animated bar chart
 
 We'll create an animated bar chart illustrating the GDP per capita of each continent over time. Run the code below and look at the result.
 
