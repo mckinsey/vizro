@@ -172,8 +172,6 @@ part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
-        IncompletePage("Stacked bar"),
-        IncompletePage("Stacked column"),
         IncompletePage("Marimekko"),
         IncompletePage("Funnel"),
         IncompletePage("Arc"),

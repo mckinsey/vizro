@@ -6,10 +6,8 @@ tips = px.data.tips()
 tips_grouped = tips.groupby(["sex", "smoker"]).agg({"total_bill": "sum"}).reset_index()
 
 page = vm.Page(
-    title="Paired Bar",
-    components=[
-        vm.Graph(figure=px.bar(tips_grouped, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h"))
-    ],
+    title="Stacked Bar",
+    components=[vm.Graph(figure=px.bar(tips_grouped, y="sex", x="total_bill", color="smoker", orientation="h"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])
