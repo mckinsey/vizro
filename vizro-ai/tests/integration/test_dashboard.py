@@ -5,6 +5,7 @@ import os
 import chromedriver_autoinstaller
 import pytest
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()
@@ -22,6 +23,7 @@ def setup_test_environment():
 
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
 @pytest.mark.filterwarnings("ignore::UserWarning")
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_simple_dashboard(dash_duo):
     input_text = """
     I need a page with 1 table.
@@ -46,5 +48,6 @@ def test_simple_dashboard(dash_duo):
     """
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
-    dash_duo.start_server(dashboard)
+    app = Vizro().build(dashboard).run()
+    dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
