@@ -90,7 +90,7 @@ def connected_scatter_factory(group: str):
 
                 A connected scatter chart visualizes two variables using dots, with lines connecting the dots in the
                 order of the data points. One variable is plotted along the x-axis and the other along the y-axis,
-                showing both the relationship and the sequence of the data.
+                showing both the relationship and a sequence of the data.
 
                 &nbsp;
 
@@ -99,7 +99,7 @@ def connected_scatter_factory(group: str):
                 Use connected scatter charts to show the relationship between two variables and the sequence of data
                 points. They are ideal for paired numerical data, helping to reveal trends and patterns over time or in
                 a specific order. Remember, correlation is not causation, so ensure your audience understands this to
-                avoid misinterpretations.
+                avoid misinterpretation.
         """
             ),
             vm.Graph(
