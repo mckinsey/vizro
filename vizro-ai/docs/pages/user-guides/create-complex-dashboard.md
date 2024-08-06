@@ -2,11 +2,11 @@
 
 This guide shows you how to instruct Vizro-AI to create a complex dashboard.
 
-In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the ouput generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
+In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the output generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
 
 The following example shows how to use Vizro-AI to generate a complex Vizro dashboard.
 
-If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md). 
+If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
 ## 1. Prepare the data
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [election data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.election) and the [stocks data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.stocks).

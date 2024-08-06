@@ -23,7 +23,7 @@ We'll create an animated bar chart illustrating the GDP per capita of each conti
 
     [AnimatedChart1]: ../../assets/tutorials/chart/advanced_chart_1.png
 
-Having unveiled our animated map chart showcasing GDP per capita development per country, it's clear that the map area is small, and it is very difficult to differentiate countries.
+Having unveiled our animated map chart showcasing GDP per capita development per country, it's clear that the map area is small, and it is difficult to differentiate countries.
 Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
