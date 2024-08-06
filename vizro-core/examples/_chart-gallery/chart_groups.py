@@ -71,7 +71,6 @@ correlation_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Scatter matrix"),
         IncompletePage("Column line"),
-        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap matrix"),
         IncompletePage("Bubble"),
     ],
@@ -157,7 +156,6 @@ time_chart_group = ChartGroup(
         IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),
         IncompletePage("Sparkline"),
