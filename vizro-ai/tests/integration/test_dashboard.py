@@ -1,5 +1,8 @@
 """Tests for dashboard using VizroAI."""
 
+import os
+
+import chromedriver_autoinstaller
 import pytest
 import vizro.plotly.express as px
 from vizro_ai import VizroAI
@@ -8,7 +11,13 @@ vizro_ai = VizroAI()
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
-df3 = px.data.tips()
+
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_test_environment():
+    # We only need to install chromedriver outside CI.
+    if not os.getenv("CI"):
+        chromedriver_autoinstaller.install()
 
 
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
