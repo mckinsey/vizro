@@ -18,7 +18,9 @@ dependencies = [
   "nbformat>=4.2.0",
   "pyhamcrest",
   "jupyter",
-  "langchain_community"
+  "langchain_community",
+  "dash[testing]",
+  "chromedriver-autoinstaller>=0.6.4",
 ]
 
 [envs.default.env-vars]
