@@ -6,10 +6,10 @@ defaults:
 
 on:
   push:
-    #    branches: [main]
-    #  pull_request:
-    #    branches:
-    #      - main
+    branches: [main]
+  pull_request:
+    branches:
+      - main
     paths:
       - "vizro-ai/**"
       - "!vizro-ai/docs/**"
@@ -94,15 +94,15 @@ jobs:
           hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
           hatch run ${{ matrix.hatch-env }}:test-integration
 
-#      - name: Send custom JSON data to Slack
-#        id: slack
-#        uses: slackapi/slack-github-action@v1.26.0
-#        if: failure()
-#        with:
-#          payload: |
-#            {
-#              "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-#            }
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-#          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      - name: Send custom JSON data to Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        if: failure()
+        with:
+          payload: |
+            {
+              "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
