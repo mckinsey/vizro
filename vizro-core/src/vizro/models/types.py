@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+from contextlib import contextmanager
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
 
@@ -250,6 +251,39 @@ class CapturedCallable:
         return captured_callable
 
 
+@contextmanager
+def _pio_templates_default(default: Literal["vizro_light", "vizro_dark"]):
+    """Sets pio.templates.default and then reverts it.
+
+    This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
+    the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
+    you could compare a captured vs. non-captured chart in the same Python session).
+
+    This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
+    refer to template by name rather than trying to take from vizro.themes.
+
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    to set these without it being overridden.
+    """
+
+    old_default = pio.templates.default
+    template_changed = False
+    # If the user has set pio.templates.default to a vizro theme already, no need to change it.
+    if old_default not in ["vizro_dark", "vizro_light"]:
+        template_changed = True
+        pio.templates.default = default
+
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
+    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
+    # but easy to achieve.
+    try:
+        # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
+        yield pio.templates.default
+    finally:
+        if template_changed:
+            pio.templates.default = old_default
+
+
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
@@ -334,23 +368,25 @@ class capture:
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).
-                    fig = func(*args, **kwargs)
+                    # Set theme for the figure that gets shown in a Jupyter notebook. This is to ensure that in a
+                    # Jupyter notebook captured charts look the same as when they're in the dashboard. To mimic this,
+                    # we first use _pio_templates_default to set the global theme, as is done in the dashboard, and then
+                    # do the fig.layout.template update that is achieved by the theme selector.
+                    # We don't want to update the captured_callable in the same way, since it's only used inside the
+                    # dashboard, at which point the global pio.templates.default is always set anyway according to
+                    # the dashboard theme and then updated according to the theme selector.
+                    with _pio_templates_default("vizro_dark") as default_template:
+                        fig = func(*args, **kwargs)
+                    # Update the fig.layout.template just to ensure absolute consistency with how the dashboard
+                    # works.
+                    # The only exception here is the edge case that the user has specified template="vizro_light" or
+                    # "vizro_dark" in the plotting function, in which case we don't want to change it. This makes
+                    # it easier for a user to try out both themes simultaneously in a notebook.
+                    if fig.layout.template not in (pio.templates["vizro_dark"], pio.templates["vizro_light"]):
+                        fig.layout.template = default_template
                     fig.__class__ = _DashboardReadyFigure
 
                 fig._captured_callable = captured_callable
-
-                # For Jupyter notebook users, we want the chart to show as if it's in a dashboard, so apply the same
-                # theme that we do in the dashboard. We use the vizro_dark theme by default. The only exception to this
-                # is if the user has explicitly chosen to use vizro_light (could be through setting
-                # pio.default.templates or setting template="vizro_light" or any other way). In this case we don't
-                # want to change the template to vizro_dark.
-                # This works even if users have tweaked the templates, so long as pio.templates has been updated
-                # correctly and you refer to template by name rather than trying to take from vizro.themes.
-                # We don't want to update the captured_callable in the same way, since it's only used inside the
-                # dashboard, at which point the theme always gets set according to the theme selector.
-                if fig.layout.template != pio.templates["vizro_light"]:
-                    fig.layout.template = pio.templates["vizro_dark"]
-
                 return fig
 
             return wrapped

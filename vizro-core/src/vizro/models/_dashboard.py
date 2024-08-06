@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import plotly.io as pio
+
 import logging
 from functools import partial
 from pathlib import Path

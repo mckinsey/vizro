@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import plotly.io as pio
 import logging
 import warnings
 from pathlib import Path
@@ -12,6 +12,7 @@ from flask_caching import SimpleCache
 from vizro._constants import STATIC_URL_PREFIX
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
+from vizro.models.types import _pio_templates_default
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,15 @@ class Vizro:
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
         if dashboard.title:
             self.dash.title = dashboard.title
+
+        # Set global template to vizro_light or vizro_dark.
+        # The choice between these is generally meaningless because chart colours in the two are identical, and
+        # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
+        # clientside theme selector callback.
+        # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
+        # put in some teardown code, but it would probably never be 100% reliable. Remember this template setting
+        # can't go in run() though since it's needed even in deployment.
+        pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
