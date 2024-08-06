@@ -90,8 +90,9 @@ class Vizro:
         # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
         # clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
-        # put in some teardown code, but it would probably never be 100% reliable. Remember this template setting
-        # can't go in run() though since it's needed even in deployment.
+        # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
+        # either because it's a staticmethod. Remember this template setting can't go in run() though since it's needed
+        # even in deployment.
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.

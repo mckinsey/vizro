@@ -3,6 +3,8 @@ import re
 import plotly.graph_objects as go
 import pytest
 
+import plotly.io as pio
+
 try:
     from pydantic.v1 import Field, ValidationError
 except ImportError:  # pragma: no cov
@@ -281,3 +283,121 @@ class TestModelFieldJSONConfig:
             ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
         ):
             ModelWithInvalidModule(function=config)
+
+
+@capture("graph")
+def decorated_graph_function(data_frame):
+    return go.Figure()
+
+
+@capture("graph")
+def decorated_graph_function_themed(data_frame, template):
+    fig = go.Figure()
+    fig.layout.template = template
+    return fig
+
+
+@capture("graph")
+def decorated_graph_function_crash(data_frame):
+    raise RuntimeError("Crash")
+
+
+# @capture("graph")
+# def decorated_graph_function(data_frame):
+#     return px.
+
+# @pytest.fixture(params=["vizro_dark", "vizro_light", "plotly"])
+# def template(request):
+#     return request.param
+
+
+@pytest.fixture
+def set_pio_default_template_dark():
+    old_default = pio.templates.default
+    pio.templates.default = "vizro_dark"
+    yield
+    pio.templates.default = old_default
+
+
+@pytest.fixture
+def set_pio_default_template_light():
+    old_default = pio.templates.default
+    pio.templates.default = "vizro_light"
+    yield
+    pio.templates.default = old_default
+
+
+@pytest.fixture
+def set_pio_default_template_plotly():
+    old_default = pio.templates.default
+    pio.templates.default = "plotly"
+    yield
+    pio.templates.default = old_default
+
+
+class TestGraphTemplate:
+    def test(self, set_pio_default_template_dark):
+        graph = decorated_graph_function(None)
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "vizro_dark"
+
+    def test2(self, set_pio_default_template_light):
+        graph = decorated_graph_function(None)
+        assert graph.layout.template == pio.templates["vizro_light"]
+        assert pio.templates.default == "vizro_light"
+
+    def test3(self, set_pio_default_template_plotly):
+        graph = decorated_graph_function(None)
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "plotly"
+
+    def test4(self, set_pio_default_template_dark):
+        graph = decorated_graph_function_themed(None, "vizro_dark")
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "vizro_dark"
+
+    def test5(self, set_pio_default_template_dark):
+        graph = decorated_graph_function_themed(None, "vizro_light")
+        assert graph.layout.template == pio.templates["vizro_light"]
+        assert pio.templates.default == "vizro_dark"
+
+    def test6(self, set_pio_default_template_dark):
+        graph = decorated_graph_function_themed(None, "plotly")
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "vizro_dark"
+
+    def test7(self, set_pio_default_template_light):
+        graph = decorated_graph_function_themed(None, "vizro_dark")
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "vizro_light"
+
+    def test8(self, set_pio_default_template_light):
+        graph = decorated_graph_function_themed(None, "vizro_light")
+        assert graph.layout.template == pio.templates["vizro_light"]
+        assert pio.templates.default == "vizro_light"
+
+    def test9(self, set_pio_default_template_light):
+        graph = decorated_graph_function_themed(None, "plotly")
+        assert graph.layout.template == pio.templates["vizro_light"]
+        assert pio.templates.default == "vizro_light"
+
+    def test10(self, set_pio_default_template_plotly):
+        graph = decorated_graph_function_themed(None, "vizro_dark")
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "plotly"
+
+    def test11(self, set_pio_default_template_plotly):
+        graph = decorated_graph_function_themed(None, "vizro_light")
+        assert graph.layout.template == pio.templates["vizro_light"]
+        assert pio.templates.default == "plotly"
+
+    def test12(self, set_pio_default_template_plotly):
+        graph = decorated_graph_function_themed(None, "plotly")
+        assert graph.layout.template == pio.templates["vizro_dark"]
+        assert pio.templates.default == "plotly"
+
+    # Could parametrise this 3 times too if can be bothered...
+    def test13(self, set_pio_default_template_plotly):
+        with pytest.raises(RuntimeError, match="Crash"):
+            decorated_graph_function_crash(None)
+        assert pio.templates.default == "plotly"

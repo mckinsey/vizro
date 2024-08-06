@@ -18,9 +18,7 @@ def target_scatter_filtered_continent_and_pop_parameter_y_and_x(request, gapmind
     ]
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(data, template=dark if template == "vizro_dark" else light, **scatter_params).update_layout(
-        margin_t=24
-    )
+    return px.scatter(data, template=template, **scatter_params).update_layout(margin_t=24)
 
 
 @pytest.fixture
@@ -32,7 +30,7 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
     ]
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(data, template=dark if template == "vizro_dark" else light, **box_params).update_layout(margin_t=24)
+    return px.box(data, template=template, **box_params).update_layout(margin_t=24)
 
 
 @pytest.fixture

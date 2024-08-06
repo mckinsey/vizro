@@ -252,8 +252,8 @@ class CapturedCallable:
 
 
 @contextmanager
-def _pio_templates_default(default: Literal["vizro_light", "vizro_dark"]):
-    """Sets pio.templates.default and then reverts it.
+def _pio_templates_default():
+    """Sets pio.templates.default to "vizro_dark" and then reverts it.
 
     This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
     the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
@@ -270,7 +270,7 @@ def _pio_templates_default(default: Literal["vizro_light", "vizro_dark"]):
     # If the user has set pio.templates.default to a vizro theme already, no need to change it.
     if old_default not in ["vizro_dark", "vizro_light"]:
         template_changed = True
-        pio.templates.default = default
+        pio.templates.default = "vizro_dark"
 
     # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
     # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
@@ -374,7 +374,7 @@ class capture:
                     # We don't want to update the captured_callable in the same way, since it's only used inside the
                     # dashboard, at which point the global pio.templates.default is always set anyway according to
                     # the dashboard theme and then updated according to the theme selector.
-                    with _pio_templates_default("vizro_dark") as default_template:
+                    with _pio_templates_default() as default_template:
                         fig = func(*args, **kwargs)
                     # Update the fig.layout.template just to ensure absolute consistency with how the dashboard
                     # works.
