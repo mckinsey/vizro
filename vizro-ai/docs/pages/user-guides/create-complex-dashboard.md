@@ -1,47 +1,14 @@
 # Generate a complex dashboard
 
-This guide shows you how to instruct Vizro-AI generating a complex dashboard.
+This guide shows you how to instruct Vizro-AI to create a complex dashboard.
 
-Vizro-AI can in general follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that generated dashboards are not always an exact match for user expectations. When the text length of user requirements increases, the LLMs could start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt could help too.
+In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the output generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
 
 The following example shows how to use Vizro-AI to generate a complex Vizro dashboard.
 
-## 1. Install Vizro-AI and its dependencies
-
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
-
-## 2. Open a Notebook
-A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
-
-??? "If you haven't used Jupyter before..."
-
-    You may need to install the Jupyter package if you . From the terminal window:
-
-    ```bash
-    pip install jupyter
-    ```
-
-Start a new Notebook as follows:
-
-```bash
-jupyter notebook
-```
-
-The command opens Jupyter in a browser tab. Use the UI to navigate to a preferred folder in which to create this new dashboard.
-
-Create a new `Python 3 (ipykernel)` Notebook from the "New" dropdown. Confirm your Vizro installation by typing the following into a cell in the Notebook and running it.
-
-```py
-import vizro_ai
-
-print(vizro_ai.__version__)
-```
-
-You should see a return output of the form `x.y.z`.
-
-
-## 3. Prepare the data
+## 1. Prepare the data
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [election data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.election) and the [stocks data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.stocks).
 
 ```py
@@ -51,9 +18,10 @@ df1 = px.data.election()
 df2 = px.data.stocks(datetimes=True)
 ```
 
-## 4. Prepare the user prompt
 
-Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard.
+## 2. Prepare the user prompt
+
+Devise a string of text to form the prompt that requests Vizro-AI to generate the Vizro dashboard.
 
 Vizro-AI can generate a multi-page dashboard that includes the following features:
 
@@ -117,12 +85,12 @@ column 6 - card 1 takes row 1; card 2 takes row 2; card 3 takes row 3; ... card 
 """
 ```
 
-It's worth noting that, a more structured user request is also more machine readable.
+It's worth noting that a more structured user request is also more machine readable.
 
-- Top down instruction can help Vizro-AI to make better plans on what to build.
+- Top down instructions can help Vizro-AI to make better plans on what to build.
 - Using line breaks and special characters can help in making instructions clearer for a language model. It helps in parsing and understanding the structure and emphasis in your request.
 
-## 5. Call Vizro-AI
+## 3. Call Vizro-AI
 
 Next, submit the data and prompt string:
 
