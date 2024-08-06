@@ -16,6 +16,7 @@ from vizro_ai.dashboard._response_models.types import ControlType
 logger = logging.getLogger(__name__)
 
 
+# TODO: make it a callable class
 def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseModel:
     """Create a filter proxy model."""
 
@@ -100,6 +101,9 @@ class ControlPlan(BaseModel):
         to control a specific component, include the relevant component details.
         """,
     )
+    # TODO: instead of requesting the df_name, we should request the target component name 
+    # replace df_name with target_component_name, then later retrieve the df_name from the controllable components.
+    # This logic is more aligned with the Vizro usage pattern.
     df_name: str = Field(
         ...,
         description="""

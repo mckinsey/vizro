@@ -33,6 +33,8 @@ class ComponentPlan(BaseModel):
     component_id: str = Field(
         pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
     )
+    # TODO: for improvement, we could dynamically create the pydantic model at runtime so that we can
+    # validate the df_name against the available dataframes
     df_name: str = Field(
         ...,
         description="""

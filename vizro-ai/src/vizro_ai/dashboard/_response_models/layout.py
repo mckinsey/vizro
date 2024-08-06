@@ -41,6 +41,8 @@ Returning default values.
 class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
+    # TODO: we shall try validate the layout plan and retry if it fails.
+    # currently not feasible because the whole dashboard plan creation is a single API call.
     layout_grid_template_areas: List[str] = Field(
         [],
         description="""
