@@ -64,5 +64,5 @@ area = vm.Page(
     ],
 )
 
-connected_scatter = connected_scatter_factory("correlation")
+connected_scatter = connected_scatter_factory("time")
 pages = [line, column, area, connected_scatter]
