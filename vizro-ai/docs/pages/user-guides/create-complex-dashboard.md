@@ -18,6 +18,7 @@ df1 = px.data.election()
 df2 = px.data.stocks(datetimes=True)
 ```
 
+
 ## 2. Prepare the user prompt
 
 Devise a string of text to form the prompt that requests Vizro-AI to generate the Vizro dashboard.
