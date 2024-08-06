@@ -1,9 +1,8 @@
 import re
 
 import plotly.graph_objects as go
-import pytest
-
 import plotly.io as pio
+import pytest
 
 try:
     from pydantic.v1 import Field, ValidationError

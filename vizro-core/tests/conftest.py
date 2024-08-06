@@ -1,6 +1,6 @@
+import plotly.io as pio
 import pytest
 from vizro import Vizro
-import plotly.io as pio
 
 # Setting pio.templates.default here is a bit of a hack. This is executed on Vizro.build, but some tests
 # that don't run Vizro.build still expect it to be set. Ideally these tests would set the theme themselves or not
