@@ -55,18 +55,18 @@ paired_bar = vm.Page(
 
             #### What is a paired bar chart?
 
-            A paired bar chart, also known as a grouped bar chart, displays bars grouped together in pairs for each 
-            category, with the lengths of the bars proportional to the values they represent. One axis shows the 
+            A paired bar chart, also known as a grouped bar chart, displays bars grouped together in pairs for each
+            category, with the lengths of the bars proportional to the values they represent. One axis shows the
             categories to compare, while the other provides a value scale starting from zero.
 
             &nbsp;
 
             #### When should I use it?
 
-            Use a paired bar chart to compare multiple sets of data within the same categories. This type of chart is 
-            particularly useful for highlighting differences and similarities between groups, such as **how many?** in 
-            each category across different groups. Arrange the paired bars clearly to fit the message you want to 
-            emphasize. Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations 
+            Use a paired bar chart to compare multiple sets of data within the same categories. This type of chart is
+            particularly useful for highlighting differences and similarities between groups, such as **how many?** in
+            each category across different groups. Arrange the paired bars clearly to fit the message you want to
+            emphasize. Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations
             with fuller descriptions below.
         """
         ),
@@ -94,7 +94,7 @@ paired_column = vm.Page(
             #### When should I use it?
 
             Use a paired column chart to compare multiple sets of data within the same categories. This type of chart is
-            particularly useful for highlighting differences and similarities between groups, such as **how many?** in 
+            particularly useful for highlighting differences and similarities between groups, such as **how many?** in
             each category across different groups. Arrange the paired columns clearly to fit the message you want to
             emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or abbreviations
             with fuller descriptions below.

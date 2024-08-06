@@ -12,7 +12,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field
 
 
-
 class CodeClipboard(vm.VizroBaseModel):
     """Code snippet with a copy to clipboard button."""
 
