@@ -12,6 +12,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatc
 dependencies = [
   "devtools[pygments]",
   "coverage[toml]>=6.5",
+  "selenium==4.23.0",
   "pytest",
   "pytest-rerunfailures",
   "toml",
