@@ -47,7 +47,7 @@ Next, we will try to tweak our prompt to improve the overall layout.
 
 By incorporating the directive `Increase the width and height of the figure.` and `Show countries on the map.` we've successfully refined our animation.
 
-Upon closer inspection, the title is too long and the color palette used does not match out needs. We can fix those issues with better and more specific prompting. Let's run the code below to visually improve the chart.
+Upon closer inspection, the title is too long and the color palette used does not match our needs. We can fix those issues with better and more specific prompting. Let's run the code below to visually improve the chart.
 
 !!! example "Vizro-AI animated chart"
 
