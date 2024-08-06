@@ -1,9 +1,11 @@
-# How to customize model usage
+# Model usage
 
 ## Supported models
-Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/models) as follows, although we are working on supporting more vendors:
+Vizro-AI currently supports the following [OpenAI models](https://platform.openai.com/docs/models). We are working on supporting more vendors:
 
 === "OpenAI"
+
+    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice.
 
     - gpt-3.5-turbo `default`
     - gpt-4-turbo
@@ -27,18 +29,37 @@ Vizro-AI currently supports [OpenAI models](https://platform.openai.com/docs/mod
     :octicons-hourglass-24: In development
 
 
-These models offer different levels of performance and cost to Vizro-AI users:
+These models offer different levels of performance and cost to Vizro-AI users.
 
-* The **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
+### Chart generation
 
-* Consider upgrading to the **gpt-4** and **gpt-4o** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
+For chart creation with OpenAI, the **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
+
+Consider upgrading to the **gpt-4** and **gpt-4o** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
 
 Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
 
-## Default initialization
+<!-- WE NEED TO ADD SOME MORE ABOUT THE OTHER VENDORS WHEN WE HAVE THAT INFO -->
+
+### Dashboard generation
+
+=== "OpenAI"
+
+    - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
+    - gpt-4-turbo: Excels in dashboard creation tasks, providing the most stable and complete responses.
+    - gpt-4o: Similar performance in terms of the quality of generated content. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
+
+
+=== "Anthropic"
+
+    :octicons-hourglass-24: In development
+
+
+## OpenAI initialization
+
 `VizroAI` can be initialized without any arguments, in which case it uses `"gpt-3.5-turbo"` by default, with a temperature setting of 0. `"gpt-3.5-turbo"` offers enhanced speed and accuracy, and generates responses in requested formats while maintaining cost-effective performance.
 
-## Customization at initialization
+### Customization at initialization
 To customize the model, you can pass `VizroAI` a single argument named `model`, which can either be a string that specifies the name of a `ChatOpenAI` model or an instantiated [`ChatOpenAI`](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html) model.
 
 When specifying a model as a string, you can select any option from the [supported models](#supported-models) listed above.
@@ -51,10 +72,10 @@ The example below uses the OpenAI model name in a string form:
         ```py linenums="1"
         from vizro_ai import VizroAI
 
-        vizro_ai = VizroAI(model="gpt-4-turbo")
+        vizro_ai = VizroAI(model="gpt-4o")
         ```
 
-The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-4-turbo"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
+The example below customizes the `ChatOpenAI` instance further beyond the chosen default from the string instantiation. We pass the `"gpt-4o"` model from OpenAI as `model_name` for `ChatOpenAI`, which offers improved response accuracy, we also want to increase maximum number of retries.
 It's important to mention that any parameter that could be used in the `openai.create` call is also usable in `ChatOpenAI`. For more customization options for `ChatOpenAI`, refer to the [LangChain ChatOpenAI docs](https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
 
 <!-- vale off -->
@@ -72,7 +93,7 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         df = px.data.gapminder()
 
         llm = ChatOpenAI(
-            model_name="gpt-4-turbo",
+            model_name="gpt-4o",
             temperature=0,
             max_retries=5,
         )
@@ -82,26 +103,3 @@ To ensure a deterministic answer to our queries, we've set the temperature to 0.
         ```
 
 Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use an OpenAI model that is not included in the above list of [supported models](#supported-models).
-
-## Azure OpenAI models
-To set up Azure OpenAI with VizroAI, you'll need to configure the `AzureOpenAI` instance by specifying your deployment name and model name using LangChain. You can also set your environment variables for API configuration,
-such as `OPENAI_API_TYPE`, `OPENAI_API_VERSION`, `OPENAI_API_BASE` and `OPENAI_API_KEY`.
-Authentication can be done via an API key directly or through Azure Active Directory (AAD) for enhanced security.
-For a detailed walk-through, refer to the [LangChain documentation](https://python.langchain.com/docs/integrations/llms/azure_openai/).
-
-Here is an example of how to set the LLM model to be an AzureOpenAI model:
-!!! example  "Use Azure OpenAI model"
-
-    === "python"
-        ```py linenums="1"
-        from langchain_openai import AzureOpenAI
-        from vizro_ai import VizroAI
-
-        # Create an instance of Azure OpenAI
-        # Replace the deployment name with your own
-        llm = AzureOpenAI(
-            deployment_name="td2",
-            model_name="gpt-3.5-turbo-instruct",
-        )
-        vizro_ai = VizroAI(model=llm)
-        ```
