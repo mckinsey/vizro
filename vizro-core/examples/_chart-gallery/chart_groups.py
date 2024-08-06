@@ -110,7 +110,6 @@ distribution_chart_group = ChartGroup(
     name="Distribution",
     pages=pages.distribution.pages,
     incomplete_pages=[
-        IncompletePage("Histogram"),
         IncompletePage("Dot plot"),
         IncompletePage("Barcode"),
         IncompletePage("Cumulative curve"),
