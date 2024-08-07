@@ -58,7 +58,7 @@ automatically based on the target column, for example, a dropdown for categorica
             title: My first page
         ```
     === "Result"
-        
+
         [![Filter]][Filter]
 
     [Filter]: ../../assets/user_guides/control/control1.png
@@ -111,7 +111,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
             title: My first page
         ```
     === "Result"
-        
+
         [![Selector]][Selector]
 
     [Selector]: ../../assets/user_guides/control/control2.png
@@ -183,7 +183,7 @@ Below is an advanced example where we only target one page component, and where 
             title: My first page
         ```
     === "Result"
-        
+
         [![Advanced]][Advanced]
 
     [Advanced]: ../../assets/user_guides/control/control3.png
