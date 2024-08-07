@@ -41,19 +41,6 @@ Refer to the [OpenAI documentation for more about model capabilities](https://pl
 
 <!-- WE NEED TO ADD SOME MORE ABOUT THE OTHER VENDORS WHEN WE HAVE THAT INFO -->
 
-### Dashboard generation
-
-=== "OpenAI"
-
-    - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
-    - gpt-4-turbo: Excels in dashboard creation tasks, providing the most stable and complete responses.
-    - gpt-4o: Similar performance in terms of the quality of generated content. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
-
-
-=== "Anthropic"
-
-    :octicons-hourglass-24: In development
-
 
 ## OpenAI initialization
 
