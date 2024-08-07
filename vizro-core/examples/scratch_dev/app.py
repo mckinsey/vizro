@@ -1,10 +1,9 @@
 import plotly.graph_objs as go
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-
-import plotly.io as pio
 
 pio.templates["vizro_dark"]["layout"]["colorway"] = ["red"]
 pio.templates["vizro_light"]["layout"]["colorway"] = ["yellow"]

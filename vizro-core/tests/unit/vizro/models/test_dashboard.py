@@ -1,7 +1,8 @@
 from pathlib import Path
-import plotly.io as pio
+
 import dash
 import dash_bootstrap_components as dbc
+import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -14,7 +15,6 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro import _themes as themes
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models._dashboard import _all_hidden
 
