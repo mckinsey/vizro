@@ -144,4 +144,4 @@ Let's create another example to illustrate the code and insights returned when p
 
 Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create advanced charts](../user-guides/create-advanced-charts.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md). You may also want to review the tutorial on [how to generate a Vizro dashboard with Vizro-AI](quickstart-dashboard.md)
+A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create advanced charts](../user-guides/create-advanced-charts.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md).
