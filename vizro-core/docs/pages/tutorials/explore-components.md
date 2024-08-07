@@ -4,9 +4,11 @@ In this tutorial, we walk through the process of creating a sophisticated dashbo
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
-## 1. Install Vizro and get ready to run your code
+## 1. (Optional) Install Vizro and get ready to run your code
 
-To get started with this tutorial, make sure you have [installed Vizro](../user-guides/install.md), and can run the dashboard code within a Jupyter Notebook cell or from a Python script.
+The code for this tutorial is all available for you to experiment with in [Py.Cafe](https://py.cafe/) so there is need to install Vizro and run it locally.
+
+However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
 ## 2. Create a first dashboard page
 
@@ -23,9 +25,10 @@ The code below shows the steps necessary to add a box plot to the page:
 1. Add a Vizro [`Graph`][vizro.models.Graph] to the `components` list.
 2. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
 
+
 !!! example "First component"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -40,7 +43,6 @@ The code below shows the steps necessary to add a box plot to the page:
             title="First Page",
             components=[
                 vm.Graph(
-                    id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
                                     labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
@@ -53,10 +55,8 @@ The code below shows the steps necessary to add a box plot to the page:
     === "Screenshot"
         ![Dashboard](https://py.cafe/preview/maxi.schulz/vizro-tutorial-explore-vizro-1)
 
-    === "Live App"
-        <iframe src="https://py.cafe/embed/maxi.schulz/vizro-tutorial-explore-vizro-1" width="100%" height="800px" border="0"></iframe>
 
-!!! note "To see the dashboard in action"
+??? note "To run the dashboard in a Notebook or script"
 
     Paste the above code into a Notebook cell, run the Notebook, and evaluate it.
 
@@ -70,7 +70,7 @@ The code below shows the steps necessary to add a box plot to the page:
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
-As you can see from the code, the `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] before building and running it with `Vizro().build(dashboard).run()`. Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object.
+As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and running the dashboard is displayed by `Vizro().build(dashboard).run()`.
 
 ### 2.2. Add further components
 
@@ -108,9 +108,8 @@ The code below adds two components to the page:
                             "gdpPercap":"GDP Per Cap"}, title=''),
         )
         ```
-
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -132,12 +131,10 @@ The code below adds two components to the page:
                     """,
                 ),
                 vm.Graph(
-                    id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
                                     labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
-                    id="line_gdp",
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}, title=''),
@@ -154,13 +151,13 @@ The code below adds two components to the page:
 
     [FirstPage2]: ../../assets/tutorials/dashboard/dashboard22.png
 
-As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts may appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
+As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
 
 !!! note "An introduction to Vizro-AI"
 
     In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/en/latest/pages/tutorials/first-dashboard/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
 
-    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)!
+    Find out more from the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)!
 
 
 ### 2.3. Configure the layout
@@ -203,9 +200,8 @@ Run the code below to apply the layout to the dashboard page:
         ```py
         layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]])
         ```
-
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -228,12 +224,10 @@ Run the code below to apply the layout to the dashboard page:
                     """,
                 ),
                 vm.Graph(
-                    id="box_cont",
                     figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
                                     labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
                 ),
                 vm.Graph(
-                    id="line_gdp",
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
                                     "gdpPercap":"GDP Per Cap"}),
@@ -263,7 +257,7 @@ There are two types of control:
 
 The guides on [`How to use Filters`](../user-guides/filters.md) and [`How to use Parameters`](../user-guides/parameters.md) offer instructions on their application. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
-To link a control to a component, use the id assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
+To link a control to a component, use an `id` assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
 
 To illustrate, let's add a [`Filter`][vizro.models.Filter] on specific
 continents of the underlying gapminder data. The [`Filter`][vizro.models.Filter] requires the `column` argument, that denotes
@@ -279,7 +273,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
             ]
         ```
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -321,6 +315,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
         dashboard = vm.Dashboard(pages=[first_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![FirstPage4]][FirstPage4]
 
@@ -337,7 +332,7 @@ Fantastic job! You have completed first dashboard page and gained valuable skill
 
 This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the page you created, but contains two charts that visualize the [iris data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
 
-The code below illustrates how to add the page, titled `second_page` to the dashboard by calling `vm.Dashboard(pages=[first_page,second_page])`. There are two `Graph` objects added to the list of components. To enable interactivity on those components, we add two [`Parameters`][vizro.models.Parameter] to the list of `controls`.
+Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object. The code below illustrates how to add the page, titled `second_page` to the dashboard by calling `vm.Dashboard(pages=[first_page,second_page])`. There are two `Graph` objects added to the list of components. To enable interactivity on those components, we add two [`Parameters`][vizro.models.Parameter] to the list of `controls`.
 
 In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In the code below:
 
@@ -391,7 +386,7 @@ for parameters](../user-guides/parameters.md).
         )
         ```
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -544,7 +539,8 @@ of the subpages. Additionally, you can use the navigation panel on the left side
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         ```
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
+
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -646,6 +642,8 @@ of the subpages. Additionally, you can use the navigation panel on the left side
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+    === "Live App"
+        <iframe src="https://py.cafe/stichbury/vizro-gapminder-iris-viz" width="100%" height="800px" border="0"></iframe>
     === "Homepage"
         [![FinalPage]][FinalPage]
 
