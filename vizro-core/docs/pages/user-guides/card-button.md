@@ -12,7 +12,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
 !!! example "Card"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -63,7 +63,7 @@ Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the 
 
 !!! example "Card with custom text"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -199,7 +199,7 @@ accessibility of your app. Providing an image ALT text is optional.
 
 !!! example "Card with image"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -274,7 +274,7 @@ and give an attribute selector to select images with that matching URL hash.
     }
     ```
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -338,7 +338,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
 
 !!! example "Card with floating image"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -402,7 +402,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
 
 !!! example "Card with icon"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -477,7 +477,7 @@ To create a navigation card:
 
 !!! example "Navigation Card"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -588,7 +588,7 @@ In the below example we show how to configure a button to export the filtered da
 !!! example "Button"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
