@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="376px" height="376px" viewBox="0 0 376 376" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 6 Copy 38</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Data-viz-vocabulary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Details-large-2" transform="translate(-932.000000, -1736.000000)">
+            <g id="Group-6-Copy-38" transform="translate(932.000000, 1736.000000)">
+                <rect id="Rectangle-Copy-3" fill="#001521" x="0" y="0" width="376" height="376"></rect>
+                <g id="Group-72" transform="translate(80.000000, 83.000000)">
+                    <circle id="Oval" stroke="#0065BD" stroke-width="2" cx="108" cy="105" r="105"></circle>
+                    <circle id="Oval" stroke-opacity="0.3" stroke="#0065BD" stroke-width="2" cx="108" cy="105" r="86"></circle>
+                    <circle id="Oval" stroke-opacity="0.3" stroke="#0065BD" stroke-width="2" cx="108" cy="105" r="68"></circle>
+                    <circle id="Oval" stroke-opacity="0.3" stroke="#0065BD" stroke-width="2" cx="108" cy="105" r="50"></circle>
+                    <path d="M3,105 L213,105" id="Line-4" stroke-opacity="0.5" stroke="#0065BD" stroke-linecap="square"></path>
+                    <path d="" id="Line-4" stroke-opacity="0.5" stroke="#0065BD" stroke-linecap="square" transform="translate(49.500000, 0.500000) rotate(90.000000) translate(-49.500000, -0.500000) "></path>
+                    <path d="M3,105 L213,105" id="Line-4" stroke-opacity="0.5" stroke="#0065BD" stroke-linecap="square" transform="translate(108.000000, 105.000000) rotate(45.000000) translate(-108.000000, -105.000000) "></path>
+                    <path d="M3,105 L213,105" id="Line-4" stroke-opacity="0.5" stroke="#0065BD" stroke-linecap="square" transform="translate(108.000000, 105.000000) rotate(90.000000) translate(-108.000000, -105.000000) "></path>
+                    <path d="M3,105 L213,105" id="Line-4" stroke-opacity="0.5" stroke="#0065BD" stroke-linecap="square" transform="translate(108.000000, 105.000000) rotate(-45.000000) translate(-108.000000, -105.000000) "></path>
+                    <polygon id="Path-14" fill-opacity="0.6" fill="#009FE3" points="107.857143 55.0192011 181 32 176 105 144 141 108 191 75.8571429 137.269288 3.00022826 105 47 44"></polygon>
+                    <circle id="Oval" fill="#009FE3" cx="183" cy="31" r="3"></circle>
+                    <circle id="Oval-Copy-297" fill="#009FE3" cx="176" cy="105" r="3"></circle>
+                    <circle id="Oval-Copy-298" fill="#009FE3" cx="108" cy="191" r="3"></circle>
+                    <circle id="Oval-Copy-298" fill="#009FE3" cx="3" cy="105" r="3"></circle>
+                    <circle id="Oval-Copy-299" fill="#009FE3" cx="47" cy="44" r="3"></circle>
+                    <circle id="Oval-Copy-300" fill="#009FE3" cx="108" cy="55" r="3"></circle>
+                    <circle id="Oval-Copy-301" fill="#009FE3" cx="144" cy="141" r="3"></circle>
+                    <circle id="Oval-Copy-302" fill="#009FE3" cx="75" cy="138" r="3"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

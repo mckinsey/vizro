@@ -1,0 +1,29 @@
+name: Checks for GitHub workflows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  checks-workflows:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Checks for GitHub workflows
+        run: |
+          python tools/scan_yaml_for_risky_text.py .github/workflows

@@ -54,6 +54,16 @@ class TestFigureInstantiation:
         ):
             vm.Figure(figure=standard_dash_table)
 
+    def test_is_model_inheritable(self, standard_kpi_card):
+        class MyFigure(vm.Figure):
+            pass
+
+        my_figure = MyFigure(figure=standard_kpi_card)
+
+        assert hasattr(my_figure, "id")
+        assert my_figure.type == "figure"
+        assert my_figure.figure == standard_kpi_card
+
 
 class TestDunderMethodsFigure:
     def test_getitem_known_args(self, standard_kpi_card):
