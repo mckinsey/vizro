@@ -13,7 +13,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Chart Type            | Status | Category                 |
 | --------------------- | ------ | ------------------------ |
 | Arc                   | ❌     | Part-to-whole            |
-| Area                  | ❌     | Time                     |
+| Area                  | ✅     | Time                     |
 | Bar                   | ✅     | Magnitude                |
 | Barcode               | ❌     | Distribution             |
 | Beeswarm              | ❌     | Distribution             |
@@ -28,7 +28,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Choropleth            | ✅     | Spatial                  |
 | Column                | ✅     | Magnitude, Time          |
 | Column-Line           | ❌     | Correlation, Time        |
-| Connected Scatter     | ❌     | Correlation, Time        |
+| Connected Scatter     | ✅     | Correlation, Time        |
 | Cumulative Curve      | ❌     | Distribution             |
 | Diverging Bar         | ❌     | Deviation                |
 | Diverging Stacked Bar | ❌     | Deviation                |
@@ -42,7 +42,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Gridplot              | ❌     | Part-to-whole            |
 | Heatmap               | ❌     | Time                     |
 | Heatmap-Matrix        | ❌     | Correlation              |
-| Histogram             | ❌     | Distribution             |
+| Histogram             | ✅     | Distribution             |
 | Line                  | ✅     | Time                     |
 | Lollipop              | ❌     | Ranking, Magnitude       |
 | Marimekko             | ❌     | Magnitude, Part-to-whole |
@@ -50,8 +50,8 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Ordered Bar           | ✅     | Ranking                  |
 | Ordered Bubble        | ❌     | Ranking                  |
 | Ordered Column        | ✅     | Ranking                  |
-| Paired Bar            | ❌     | Magnitude                |
-| Paired Column         | ❌     | Magnitude                |
+| Paired Bar            | ✅     | Magnitude                |
+| Paired Column         | ✅     | Magnitude                |
 | Parallel Coordinates  | ❌     | Magnitude                |
 | Pictogram             | ❌     | Magnitude                |
 | Pie                   | ✅     | Part-to-whole            |
@@ -62,8 +62,8 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Scatter Matrix        | ❌     | Correlation              |
 | Slope                 | ❌     | Ranking, Time            |
 | Sparkline             | ❌     | Time                     |
-| Stacked Bar           | ❌     | Part-to-whole            |
-| Stacked Column        | ❌     | Part-to-whole            |
+| Stacked Bar           | ✅     | Part-to-whole            |
+| Stacked Column        | ✅     | Part-to-whole            |
 | Stepped Line          | ❌     | Ranking                  |
 | Surplus-Deficit-Line  | ❌     | Deviation                |
 | Treemap               | ✅     | Part-to-whole            |
@@ -73,11 +73,13 @@ The dashboard is still in development. Below is an overview of the chart types f
 
 To contribute a chart, follow the steps below:
 
-1. Place an `svg` file named after the chart type in the `assets` folder if not already available.
-2. Create a new page for the chart type in `pages.py` and a code sample in `pages/examples`. Refer to existing pages for guidance.
-3. Add any new datasets to `pages/_page_utils.py`.
-4. Remove the page from `incomplete_pages` in the relevant `ChartGroup`(s) in `chart_groups.py`.
-5. Update this `README.md` with the new chart type.
+1. Place an `svg` file named after the chart type in the `assets` folder if it doesn't already exist.
+2. Add the data set to `_pages_utils.py` if it doesn't already exist.
+3. Create a new page for the chart type and add it to the relevant category `.py` file such as `correlation.py`,
+   `deviation.py`, `distribution.py`, etc.
+4. Add a `.py` file containing a code example of the chart type in the `pages/examples` folder, for instance, `area.py`
+5. Remove the `IncompletePage(..)` entry for that chart type in `chart_groups.py`.
+6. Update this `README.md` with the new chart type.
 
 ## How to run the example locally
 
