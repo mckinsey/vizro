@@ -120,7 +120,7 @@ class VizroAI:
         # TODO retained for some chat application integration, need deprecation handling
         return self._run_plot_tasks(df, user_input, explain=False).code
 
-    def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
+    def plot(
         self,
         df: pd.DataFrame,
         user_input: str,
