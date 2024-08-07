@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import plotly.io as pio
 import dash
 import dash_bootstrap_components as dbc
 import pytest
@@ -231,7 +231,9 @@ class TestDashboardBuild:
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                dcc.Store(id="vizro_themes", data={"dark": themes.dark, "light": themes.light}),
+                dcc.Store(
+                    id="vizro_themes", data={"dark": pio.templates["vizro_dark"], "light": pio.templates["vizro_light"]}
+                ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
