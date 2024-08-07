@@ -1,5 +1,6 @@
 import re
 
+import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
 import pytest
@@ -176,7 +177,7 @@ class TestModelFieldPython:
         assert model.function(c=3, d=4) == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        model = ModelWithGraph(function=decorated_graph_function(data_frame=None))
+        model = ModelWithGraph(function=decorated_graph_function(data_frame=pd.DataFrame()))
         assert model.function() == go.Figure()
 
     def test_undecorated_function(self):
@@ -230,7 +231,7 @@ class TestModelFieldJSONConfig:
         assert model.function() == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        config = {"_target_": "decorated_graph_function", "data_frame": None}
+        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
         model = ModelWithGraph(function=config)
         assert model.function() == go.Figure()
 
@@ -276,7 +277,7 @@ class TestModelFieldJSONConfig:
             # The import_path doesn't exist.
             function: CapturedCallable = Field(..., import_path="invalid.module", mode="graph")
 
-        config = {"_target_": "decorated_graph_function", "data_frame": None}
+        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
         with pytest.raises(
             ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
@@ -285,14 +286,10 @@ class TestModelFieldJSONConfig:
 
 
 @capture("graph")
-def decorated_graph_function(data_frame):
-    return go.Figure()
-
-
-@capture("graph")
-def decorated_graph_function_themed(data_frame, template):
+def decorated_graph_function_with_template(data_frame, template=None):
     fig = go.Figure()
-    fig.layout.template = template
+    if template is not None:
+        fig.layout.template = template
     return fig
 
 
@@ -301,102 +298,47 @@ def decorated_graph_function_crash(data_frame):
     raise RuntimeError("Crash")
 
 
-# @capture("graph")
-# def decorated_graph_function(data_frame):
-#     return px.
-
-# @pytest.fixture(params=["vizro_dark", "vizro_light", "plotly"])
-# def template(request):
-#     return request.param
-
-
+# The _pio_default_template context manager resets pio.templates.default on exit, but the fixture should do this also.
+# This fixtures acts as if someone has set the pio.templates.default e.g. in a Jupyter notebook.
 @pytest.fixture
-def set_pio_default_template_dark():
+def set_pio_default_template(request):
     old_default = pio.templates.default
-    pio.templates.default = "vizro_dark"
-    yield
+    pio.templates.default = request.param
+    yield request.param
     pio.templates.default = old_default
 
 
-@pytest.fixture
-def set_pio_default_template_light():
-    old_default = pio.templates.default
-    pio.templates.default = "vizro_light"
-    yield
-    pio.templates.default = old_default
+# The expected template is always the same as the template_argument for the cases of vizro_dark and vizro_light.
+# For template=None and template="plotly" the expected template is the same as the globally set default template when
+# it's vizro_dark/vizro_light and vizro_dark when it's set to plotly.
+@pytest.mark.parametrize(
+    "set_pio_default_template, template_argument, expected_template",
+    [
+        ("plotly", None, "vizro_dark"),
+        ("plotly", "plotly", "vizro_dark"),
+        ("plotly", "vizro_dark", "vizro_dark"),
+        ("plotly", "vizro_light", "vizro_light"),
+        ("vizro_dark", None, "vizro_dark"),
+        ("vizro_dark", "plotly", "vizro_dark"),
+        ("vizro_dark", "vizro_dark", "vizro_dark"),
+        ("vizro_dark", "vizro_light", "vizro_light"),
+        ("vizro_light", None, "vizro_light"),
+        ("vizro_light", "plotly", "vizro_light"),
+        ("vizro_light", "vizro_dark", "vizro_dark"),
+        ("vizro_light", "vizro_light", "vizro_light"),
+    ],
+    indirect=["set_pio_default_template"],
+)
+def test_graph_templates(set_pio_default_template, template_argument, expected_template):
+    graph = decorated_graph_function_with_template(pd.DataFrame(), template=template_argument)
+    assert graph.layout.template == pio.templates[expected_template]
+    # The default template should be unchanged after running the captured function.
+    assert pio.templates.default == set_pio_default_template
 
 
-@pytest.fixture
-def set_pio_default_template_plotly():
-    old_default = pio.templates.default
-    pio.templates.default = "plotly"
-    yield
-    pio.templates.default = old_default
-
-
-class TestGraphTemplate:
-    def test(self, set_pio_default_template_dark):
-        graph = decorated_graph_function(None)
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "vizro_dark"
-
-    def test2(self, set_pio_default_template_light):
-        graph = decorated_graph_function(None)
-        assert graph.layout.template == pio.templates["vizro_light"]
-        assert pio.templates.default == "vizro_light"
-
-    def test3(self, set_pio_default_template_plotly):
-        graph = decorated_graph_function(None)
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "plotly"
-
-    def test4(self, set_pio_default_template_dark):
-        graph = decorated_graph_function_themed(None, "vizro_dark")
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "vizro_dark"
-
-    def test5(self, set_pio_default_template_dark):
-        graph = decorated_graph_function_themed(None, "vizro_light")
-        assert graph.layout.template == pio.templates["vizro_light"]
-        assert pio.templates.default == "vizro_dark"
-
-    def test6(self, set_pio_default_template_dark):
-        graph = decorated_graph_function_themed(None, "plotly")
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "vizro_dark"
-
-    def test7(self, set_pio_default_template_light):
-        graph = decorated_graph_function_themed(None, "vizro_dark")
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "vizro_light"
-
-    def test8(self, set_pio_default_template_light):
-        graph = decorated_graph_function_themed(None, "vizro_light")
-        assert graph.layout.template == pio.templates["vizro_light"]
-        assert pio.templates.default == "vizro_light"
-
-    def test9(self, set_pio_default_template_light):
-        graph = decorated_graph_function_themed(None, "plotly")
-        assert graph.layout.template == pio.templates["vizro_light"]
-        assert pio.templates.default == "vizro_light"
-
-    def test10(self, set_pio_default_template_plotly):
-        graph = decorated_graph_function_themed(None, "vizro_dark")
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "plotly"
-
-    def test11(self, set_pio_default_template_plotly):
-        graph = decorated_graph_function_themed(None, "vizro_light")
-        assert graph.layout.template == pio.templates["vizro_light"]
-        assert pio.templates.default == "plotly"
-
-    def test12(self, set_pio_default_template_plotly):
-        graph = decorated_graph_function_themed(None, "plotly")
-        assert graph.layout.template == pio.templates["vizro_dark"]
-        assert pio.templates.default == "plotly"
-
-    # Could parametrise this 3 times too if can be bothered...
-    def test13(self, set_pio_default_template_plotly):
-        with pytest.raises(RuntimeError, match="Crash"):
-            decorated_graph_function_crash(None)
-        assert pio.templates.default == "plotly"
+@pytest.mark.parametrize("set_pio_default_template", ["plotly", "vizro_dark", "vizro_light"], indirect=True)
+def test_graph_template_crash(set_pio_default_template):
+    with pytest.raises(RuntimeError, match="Crash"):
+        decorated_graph_function_crash(pd.DataFrame())
+    # The default template should be unchanged even if the captured function crashes.
+    assert pio.templates.default == set_pio_default_template

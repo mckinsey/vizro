@@ -13,11 +13,13 @@ df = px.data.iris()
 
 @capture("graph")
 def my_graph_figure_px(data_frame):
+    """blah"""
     return px.scatter(data_frame, x="sepal_width", y="sepal_length")
 
 
 @capture("graph")
 def my_graph_figure_go(data_frame):
+    """blahhrl"""
     return go.Figure(go.Scatter(x=data_frame["sepal_width"], y=data_frame["sepal_length"]))
 
 
