@@ -69,7 +69,7 @@ into the existing Vizro dashboard configuration
 
 ## 2) Dash customizations
 
-Since Vizro is built with Dash, it is possible to use Dash callbacks directly in any Vizro dashboard - 
+Since Vizro is built using Dash, it is possible to use Dash callbacks directly in any Vizro dashboard - 
 allowing users to go beneath the Vizro layer to control Dash directly,
 which is especially useful when working with callbacks
 
