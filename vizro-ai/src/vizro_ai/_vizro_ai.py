@@ -1,11 +1,15 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
+import vizro.models as vm
+from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 
-from vizro_ai._llm_models import _get_llm_model
+from vizro_ai._llm_models import _get_llm_model, _get_model_name
+from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
+from vizro_ai.dashboard.utils import DashboardOutputs, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
@@ -36,8 +40,9 @@ class VizroAI:
         self.components_instances = {}
 
         # TODO add pending URL link to docs
+        model_name = _get_model_name(self.model)
         logger.info(
-            f"You have selected {self.model.model_name},"
+            f"You have selected {model_name},"
             f"Engaging with LLMs (Large Language Models) carries certain risks. "
             f"Users are advised to become familiar with these risks to make informed decisions, "
             f"and visit this page for detailed information: "
@@ -115,7 +120,7 @@ class VizroAI:
         # TODO retained for some chat application integration, need deprecation handling
         return self._run_plot_tasks(df, user_input, explain=False).code
 
-    def plot(  # pylint: disable=too-many-arguments  # noqa: PLR0913
+    def plot(
         self,
         df: pd.DataFrame,
         user_input: str,
@@ -154,3 +159,44 @@ class VizroAI:
             )
 
         return vizro_plot if return_elements else vizro_plot.figure
+
+    def dashboard(
+        self,
+        dfs: List[pd.DataFrame],
+        user_input: str,
+        return_elements: bool = False,
+    ) -> Union[DashboardOutputs, vm.Dashboard]:
+        """Creates a Vizro dashboard using english descriptions.
+
+        Args:
+            dfs: The dataframes to be analyzed.
+            user_input: User questions or descriptions of the desired visual.
+            return_elements: Flag to return DashboardOutputs dataclass that includes all possible elements generated.
+
+        Returns:
+            vm.Dashboard or DashboardOutputs dataclass.
+
+        """
+        runnable = _create_and_compile_graph()
+
+        config = {"configurable": {"model": self.model}}
+        message_res = runnable.invoke(
+            {
+                "dfs": dfs,
+                "all_df_metadata": {},
+                "dashboard_plan": None,
+                "pages": [],
+                "dashboard": None,
+                "messages": [HumanMessage(content=user_input)],
+            },
+            config=config,
+        )
+        dashboard = message_res["dashboard"]
+        _register_data(all_df_metadata=message_res["all_df_metadata"])
+
+        if return_elements:
+            # code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
+            dashboard_output = DashboardOutputs(dashboard=dashboard)
+            return dashboard_output
+        else:
+            return dashboard

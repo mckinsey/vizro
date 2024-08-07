@@ -53,7 +53,7 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
         from dotenv import load_dotenv
         load_dotenv()
 
-        df = px.data.wind()
+        df = px.data.gapminder()
 
         vizro_ai = VizroAI(model="gpt-4-0613")
         fig = vizro_ai.plot(df,
