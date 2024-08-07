@@ -49,7 +49,7 @@ To add a `Figure` to your page:
 !!! example "Use existing figure functions"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
