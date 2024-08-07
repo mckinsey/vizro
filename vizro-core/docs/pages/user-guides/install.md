@@ -27,7 +27,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Alternatively, you might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
+You might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
 
 ```bash
 conda create --name vizro-environment

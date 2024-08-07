@@ -84,4 +84,4 @@ import plotly.io as pio
 pio.templates.default = "plotly"
 ```
 
-Alternatively, enter your desired template into any `plotly.express` chart as `template="plotly"` on a case-by-case basis. Note that we do not recommend the above steps for use in dashboards, as other templates will look out-of-sync with our overall dashboard design.
+As an alternative, enter your desired template into any `plotly.express` chart as `template="plotly"` on a case-by-case basis. Note that we do not recommend the above steps for use in dashboards, as other templates will look out-of-sync with our overall dashboard design.
