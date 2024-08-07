@@ -12,7 +12,7 @@ When you click the link to "Edit live on Py.Cafe" the dashboard is running insid
 ## How can I make my own dashboards?
 You can use [Py.Cafe](https://py.cafe/) to experiment with your own Vizro dashboards by dropping code onto a new project.
 
-If you need inspiration or a starting point, we make all our examples available for you to try out on Py.Cafe. In the documentation, look out for the "Edit live on Py.Cafe links" below the code snippets.
+If you need inspiration or a starting point, we make all our examples available for you to try out on Py.Cafe. Throughout our documentation, just follow the "**Run and edit this code in Py.Cafe**" link below the code snippets to open them in Py.Cafe.
 
 ## Where next?
 You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
