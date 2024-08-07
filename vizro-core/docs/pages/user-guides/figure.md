@@ -136,7 +136,7 @@ possible with the built-in functions then you can create a [custom figure](custo
 !!! example "KPI card variations"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro
