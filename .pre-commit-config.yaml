@@ -67,7 +67,10 @@ repos:
         additional_dependencies: ["bandit[toml]"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.1
+    # Upgrade to v1.11.1 not possible as it doesn't seem compatible with pydantic<2 plugin.
+    # Similar issue with previous v.1.11.X versions: https://github.com/pydantic/pydantic/issues/10000
+    # We need to revert the changes from the pre-commit autoupdate for now.
+    rev: v1.10.1
     hooks:
       - id: mypy
         files: ^vizro-core/src/
