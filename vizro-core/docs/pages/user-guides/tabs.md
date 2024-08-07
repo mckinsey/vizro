@@ -133,7 +133,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
           title: Tabs
         ```
     === "Result"
-        
+
         [![Tabs]][Tabs]
 
     [Tabs]: ../../assets/user_guides/components/tabs.png
