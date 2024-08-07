@@ -29,7 +29,7 @@ Hence, as a result, when a dashboard user now clicks the button, all data on the
 !!! example "`export_data`"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -54,9 +54,6 @@ Hence, as a result, when a dashboard user now clicks the button, all data on the
                         ),
                     ],
                 ),
-            ],
-            controls=[
-                vm.Filter(column="species"),
             ],
         )
 
@@ -89,9 +86,6 @@ Hence, as a result, when a dashboard user now clicks the button, all data on the
               actions:
                - function:
                     _target_: export_data
-            controls:
-              - type: filter
-                column: species
             title: Exporting
         ```
     === "Result"
@@ -136,7 +130,7 @@ Here is an example of how to configure a chart interaction when the source is a 
 !!! example "Graph `filter_interaction`"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -239,7 +233,7 @@ Here is an example of how to configure a chart interaction when the source is an
 !!! example "AgGrid `filter_interaction`"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -324,7 +318,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 !!! example "Actions chaining"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
