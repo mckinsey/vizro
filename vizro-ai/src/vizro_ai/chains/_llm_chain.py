@@ -35,7 +35,7 @@ class VizroBaseChain(ABC):
 class FunctionCallChain(VizroBaseChain, ABC):
     """LLM Chain with Function Calling."""
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         llm: BaseChatModel,
         raw_prompt: str,
