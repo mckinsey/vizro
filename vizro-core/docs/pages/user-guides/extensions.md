@@ -1,11 +1,11 @@
 # How to extend and customize Vizro dashboards
 
-Vizro provides the ability to extensively customize a wide range of functioanlity,
-and go far beyond the default Vizro capabilities - to avoid beining limited by any low-code configuration:
+Vizro provides the ability to extensively customize a wide range of functionality,
+and go far beyond the default Vizro capabilities - to avoid being limited by any low-code configuration:
 
 1) **Vizro customizations** - can be used to seamlessly extend the default functionality of Vizro
-by allowing users to quickly create Python functions for customizing charts, tables, dashboard components
-callbacks in the form of actions, and reactive HTML components - then easily plug them directly
+by allowing users to create Python functions for customizing charts, tables, dashboard components
+callbacks in the form of actions, and reactive HTML components - then plug them directly
 into the existing Vizro dashboard configuration
 
 
@@ -25,16 +25,16 @@ combining low-code and high-code approaches to provide the best of both worlds
 ## 1) Vizro customizations
 
 Vizro custom functions can be used to seamlessly extend the default functionality of Vizro
-by allowing users to quickly create Python functions for customizing charts, tables, dashboard components
-callbacks in the form of actions, and reactive HTML components - then easily plug them directly
+by allowing users to create Python functions for customizing charts, tables, dashboard components
+callbacks in the form of actions, and reactive HTML components - then plug them directly
 into the existing Vizro dashboard configuration
 
 - ### [Custom charts](custom-charts.md)
 
     It is possible to create custom chart functions in Vizro by wrapping Plotly chart code inside a
-    Vizro chart function wrapper, and then use them easily directly inside Vizro dashboard configuration.
-    This allows the creation of things like plotly.graph_objects charts with multiple traces, or plotly_express
-    charts with update_layout customizations
+    Vizro chart function wrapper, and then use them directly inside Vizro dashboard configuration.
+    This enables the creation of things like `plotly.graph_objects` charts with multiple traces, or `plotly_express`
+    charts with post update customizations
 
 
 - ### [Custom tables](custom-tables.md)
@@ -73,7 +73,7 @@ Since Vizro is built using Dash, it is possible to use Dash callbacks directly i
 allowing users to go beneath the Vizro layer to control Dash directly,
 which is especially useful when working with callbacks
 
-Here is a very simple example showing a Dash callback within Vizro,
+Here is an example showing a Dash callback within Vizro,
 enabling an interaction between data points in a scatter plot and the content of a text card:
 
 !!! example "Dash callback example"
@@ -108,7 +108,11 @@ enabling an interaction between data points in a scatter plot and the content of
         Vizro().build(dashboard).run()
         ```
 
+<!-- vale off -->
+
 ## 3) React.js customizations
+
+<!-- vale on -->
 
 It is possible to create custom React.js components and add them
 directly to any Vizro dashboard - allowing users to go beneath both the Vizro and Dash layers to control React.js directly
