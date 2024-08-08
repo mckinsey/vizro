@@ -2,6 +2,7 @@ from typing import Any, List
 
 import pandas as pd
 import pytest
+import vizro.models as vm
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
@@ -109,3 +110,8 @@ def filter_prompt():
         Create a filter from the following instructions: Filter the bar chart by column `a`.
         Do not make up things that are optional and DO NOT configure actions, action triggers or action chains.
         If no options are specified, leave them out."""
+
+
+@pytest.fixture
+def layout():
+    return vm.Layout(grid=[[0, 1]]).build()

@@ -1,4 +1,6 @@
 import pytest
+import vizro.models as vm
+from tests_utils.asserts import assert_component_equal
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 
 
@@ -25,3 +27,16 @@ class TestComponentCreate:
                 all_df_metadata=None,
             )
         assert actual.type == "card"
+
+
+def test_card_create_valid(mocker, fake_llm_card, component_card, df):
+    mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI")
+    # Define the mock return value
+    mock_vizro_ai_call.return_value = vm.Card(text="This is card.")
+
+    result = component_card.create(
+        model=fake_llm_card,
+        all_df_metadata=None,
+    )
+
+    assert_component_equal(result.build(), vm.Card(text="this is a card").build(), keys_to_strip={"id"})
