@@ -1,20 +1,14 @@
 # How to extend and customize Vizro dashboards
 
-Vizro provides the ability to extensively customize a wide range of functionality,
-and go far beyond the default Vizro capabilities - to avoid being limited by any low-code configuration:
+At its simplest, Vizro enables low-code configuration, but you can also customize it to go beyond its default capabilities:
 
-1) **Vizro customizations** - can be used to seamlessly extend the default functionality of Vizro
-by allowing users to create Python functions for customizing charts, tables, dashboard components
-callbacks in the form of actions, and reactive HTML components - then plug them directly
-into the existing Vizro dashboard configuration
+* **Vizro customizations** can be used to extend the default functionality of Vizro by enabling users to create Python functions to customize charts, tables, dashboard components, callbacks in the form of actions, and reactive HTML components, then plug them directly into the existing Vizro dashboard configuration.
 
 
-2) **Dash customizations** - it is possible to create custom Dash callbacks and add them
-directly to any Vizro dashboard - allowing users to go beneath the Vizro layer to control Dash directly
+* **Dash customizations**, as custom Dash callbacks, can be added directly to any Vizro dashboard enabling you to code beneath the Vizro layer and control Dash directly.
 
 
-3) **React.js customizations** - it is possible to create custom React.js components and add them
-directly to any Vizro dashboard - allowing users to go beneath both the Vizro and Dash layers to control React.js directly
+* **React.js customizations** as custom React.js components can be added directly to any Vizro dashboard enabling users to go beneath both the Vizro and Dash layers and control React.js directly
 
 
 This ability for extensive customization combines the ease and simplicity of Vizro configurations,
