@@ -5,7 +5,6 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 
-
 # This is applied properly as the final title color is taken from the fig.layout.template
 # (which is calculated from the current pio.template)
 pio.templates["vizro_dark"]["layout"]["title"]["font"]["color"] = "green"
