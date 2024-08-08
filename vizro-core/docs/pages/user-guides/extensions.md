@@ -78,7 +78,7 @@ enabling an interaction between data points in a scatter plot and the content of
 
 !!! example "Dash callback example"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from dash import callback, Input, Output
         import vizro.models as vm
         import vizro.plotly.express as px
