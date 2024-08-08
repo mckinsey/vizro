@@ -44,3 +44,9 @@ def message_output_error():
         "df_info": None,
         "validation_error": "ValidationError",
     }
+
+
+@pytest.fixture
+def fake_llm_invalid():
+    response = ['{"text":"this is a card", "href": "", "icon": "summary"}']
+    return MockStructuredOutputLLM(responses=response)
