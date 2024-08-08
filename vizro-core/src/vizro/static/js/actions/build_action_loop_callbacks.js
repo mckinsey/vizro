@@ -10,6 +10,9 @@ export function _gateway(
   ...gateway_triggers
 ) {
   // Based on the triggered input, determines what is the next action to execute.
+
+//  return dash_clientside.PreventUpdate;
+
   var ctx_triggered,
     triggered_actions_chains_ids,
     actions_chain_to_trigger,

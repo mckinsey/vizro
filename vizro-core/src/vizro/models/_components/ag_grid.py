@@ -112,7 +112,7 @@ class AgGrid(VizroBaseModel):
                 # Additionally, we cannot remove the DF from the ag grid object before returning it (to save sending
                 # data over the network), because it breaks filter persistence settings on page change.
                 # Hence be careful when editing the line below.
-                html.Div(self.__call__(), id=self.id, className="table-container"),
+                html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
             ],
             color="grey",
             parent_className="loading-container",
