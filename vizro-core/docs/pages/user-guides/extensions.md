@@ -73,8 +73,40 @@ Since Vizro is built using Dash, it is possible to use Dash callbacks directly i
 allowing users to go beneath the Vizro layer to control Dash directly,
 which is especially useful when working with callbacks
 
-[link]()
+Here is a very simple example showing a Dash callback within Vizro, 
+enabling an interaction between data points in a scatter plot and the content of a text card:
 
+!!! example "Dash callback example"
+    === "app.py"
+        ```py
+        from dash import callback, Input, Output
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        
+        @callback(
+            Output("card_id", "children"),
+            Input("source_chart", "clickData")
+        )
+        def update_card(click_data):
+            if click_data is None:
+                return "Click on the graph to select a data point."
+            return f"Clicked species: '{click_data['points'][0]['customdata'][0]}'"
+        
+        page = vm.Page(
+            title="Example: Dash callback within Vizro",
+            components=[
+                vm.Graph(id="source_chart",
+                         figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species", custom_data=["species"])),
+                vm.Card(id="card_id",
+                        text="Click on the graph to apply filter interaction."),
+            ]
+        )
+        
+        dashboard = vm.Dashboard(pages=[page])
+        
+        Vizro().build(dashboard).run()
+        ```
 
 ## 3) React.js customizations
 
@@ -82,4 +114,3 @@ It is possible to create custom React.js components and add them
 directly to any Vizro dashboard - allowing users to go beneath both the Vizro and Dash layers to control React.js directly
 
 For more information view the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
-
