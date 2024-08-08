@@ -1,20 +1,4 @@
-import logging
-
-import plotly.io as pio
 from plotly import graph_objects as go
-
-from vizro._themes import dark, light
-
-pio.templates["vizro_dark"] = dark
-pio.templates["vizro_light"] = light
-pio.templates.default = "vizro_dark"
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.info(
-    "Overwriting plotly default template with vizro chart template. "
-    "To revert back to the default template, run `import plotly.io as pio; pio.templates.default = 'plotly'`."
-)
 
 
 class _DashboardReadyFigure(go.Figure):

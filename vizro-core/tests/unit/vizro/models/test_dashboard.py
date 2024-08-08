@@ -2,6 +2,7 @@ from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
+import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -14,7 +15,6 @@ except ImportError:  # pragma: no cov
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro import _themes as themes
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models._dashboard import _all_hidden
 
@@ -231,7 +231,9 @@ class TestDashboardBuild:
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                dcc.Store(id="vizro_themes", data={"dark": themes.dark, "light": themes.light}),
+                dcc.Store(
+                    id="vizro_themes", data={"dark": pio.templates["vizro_dark"], "light": pio.templates["vizro_light"]}
+                ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
