@@ -55,7 +55,7 @@ nav:
       - Example dashboard code: pages/examples/examples.md
       - Examples from Vizro users: pages/examples/your-examples.md
   - Vizro-AI:
-      - Vizro-AI: https://vizro-ai.readthedocs.io/
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
