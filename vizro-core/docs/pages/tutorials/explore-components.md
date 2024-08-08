@@ -642,8 +642,6 @@ of the subpages. Additionally, you can use the navigation panel on the left side
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         Vizro().build(dashboard).run()
         ```
-    === "Live App"
-        <iframe src="https://py.cafe/stichbury/vizro-gapminder-iris-viz" width="100%" height="800px" border="0"></iframe>
     === "Homepage"
         [![FinalPage]][FinalPage]
 
