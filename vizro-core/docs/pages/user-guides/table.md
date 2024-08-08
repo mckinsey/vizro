@@ -43,7 +43,7 @@ Sometimes a parameter may not work because it requires a callback to function. I
 !!! example "Basic Dash AG Grid"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -83,7 +83,7 @@ You can turn it on by setting `dashGridOptions={"pagination": True}`.
 !!! example "Basic Dash AG Grid"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -140,7 +140,7 @@ In the example below we select and format some columns of the gapminder data.
 !!! example "AG Grid with formatted columns"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -216,7 +216,7 @@ There are more ways to alter the grid beyond this showcase. AG Grid, like any ot
 !!! example "Styled and modified Dash AG Grid"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -360,7 +360,7 @@ setting some defaults for some arguments to help with styling.
 !!! example "Dash DataTable"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -404,7 +404,7 @@ an example of a styled table where some conditional formatting is applied. There
 !!! example "Styled Dash DataTable"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

@@ -79,7 +79,7 @@ indicating that [pandas.api.types.is_datetime64_any_dtype()](https://pandas.pyda
 
 !!! example "Default Filter selectors"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         from vizro import Vizro
         import vizro.plotly.express as px

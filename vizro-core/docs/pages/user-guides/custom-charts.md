@@ -44,7 +44,7 @@ add a `Parameter` that enables the dashboard user to interact with the argument,
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -103,7 +103,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         import plotly.graph_objects as go
 

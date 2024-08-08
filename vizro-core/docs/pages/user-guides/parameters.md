@@ -18,7 +18,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
 !!! example "Basic Parameter"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -85,7 +85,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
 !!! example "Nested Parameters for multiple targets"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm

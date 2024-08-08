@@ -11,7 +11,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
 !!! example "Default navigation"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm

@@ -16,7 +16,7 @@ To create a dashboard:
 
 !!! example "Dashboard Configuration Syntaxes"
     === "app.py - pydantic models"
-        ```py
+        ```{.python pycafe-link}
         import vizro.plotly.express as px
         from vizro import Vizro
         import vizro.models as vm
@@ -37,7 +37,7 @@ To create a dashboard:
 
         Vizro().build(dashboard).run()
         ```
-    === "app.py - python dict"
+    === "app.py - Python dict"
         ```py
         import vizro.plotly.express as px
         from vizro import Vizro

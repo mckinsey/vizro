@@ -38,7 +38,7 @@ adjust the return statement of the function.
 <!-- vale off -->
 !!! example "Custom KPI card"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from typing import Optional
 
         import dash_bootstrap_components as dbc
@@ -132,7 +132,7 @@ name from a filter.
 <!-- vale off -->
 !!! example "Dynamic HTML header"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         import vizro.models as vm
         from dash import html
@@ -182,7 +182,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 <!-- vale off -->
 !!! example "Dynamic number of cards"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from typing import Optional
 
         import dash_bootstrap_components as dbc

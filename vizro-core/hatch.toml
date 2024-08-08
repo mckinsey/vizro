@@ -64,7 +64,8 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
-  "linkchecker"
+  "linkchecker",
+  "mkdocs-pycafe @ git+https://github.com/py-cafe/mkdocs-pycafe.git"
 ]
 detached = true
 

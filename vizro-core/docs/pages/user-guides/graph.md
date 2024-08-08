@@ -23,7 +23,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
 !!! example "Graph"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -39,7 +39,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
                     ),
                 ),
             ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -58,12 +57,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
               data_frame: iris
               dimensions: ["sepal_length", "sepal_width", "petal_length", "petal_width"]
             type: graph
-          controls:
-            - column: species
-              type: filter
-              selector:
-                title: Species
-                type: dropdown
           title: My first page
         ```
     === "Result"
@@ -84,4 +77,4 @@ import plotly.io as pio
 pio.templates.default = "plotly"
 ```
 
-Alternatively, enter your desired template into any `plotly.express` chart as `template="plotly"` on a case-by-case basis. Note that we do not recommend the above steps for use in dashboards, as other templates will look out-of-sync with our overall dashboard design.
+As an alternative, enter your desired template into any `plotly.express` chart as `template="plotly"` on a case-by-case basis. Note that we do not recommend the above steps for use in dashboards, as other templates will look out-of-sync with our overall dashboard design.

@@ -49,7 +49,7 @@ To add a `Figure` to your page:
 !!! example "Use existing figure functions"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -136,7 +136,7 @@ possible with the built-in functions then you can create a [custom figure](custo
 !!! example "KPI card variations"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro

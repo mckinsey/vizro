@@ -72,6 +72,7 @@ exceptions:
   - Pandas
   - Plotly
   - Pydantic
+  - Py.Cafe
   - Python
   - QuantumBlack
   - QuantumBlack Labs

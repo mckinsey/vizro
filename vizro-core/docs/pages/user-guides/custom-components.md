@@ -199,7 +199,7 @@ vm.Page.add_type("components", Jumbotron)
 ??? example "Example of new component creation"
 
     === "app.py"
-        ``` py
+        ```{.python pycafe-link}
         from typing import Literal
 
         from dash import html
@@ -307,7 +307,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 ??? example "Example of the use of custom component with actions"
 
     === "app.py"
-        ``` py
+        ```{.python pycafe-link}
         from typing import List, Literal
 
         import dash_bootstrap_components as dbc
@@ -403,7 +403,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 ??? example "Example of triggering action with custom component"
 
     === "app.py"
-        ``` py
+        ```{.python pycafe-link}
         from typing import List, Literal
 
         import dash_bootstrap_components as dbc
@@ -445,7 +445,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
             if active_index:
                 return "Second slide"
 
-            return "First slide
+            return "First slide"
 
         page = vm.Page(
             title="Custom Component",
