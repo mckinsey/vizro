@@ -114,4 +114,4 @@ def filter_prompt():
 
 @pytest.fixture
 def layout():
-    return vm.Layout(grid=[[0, 1]]).build()
+    return vm.Layout(grid=[[0, 1]])
