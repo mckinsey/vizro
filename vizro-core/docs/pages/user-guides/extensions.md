@@ -1,6 +1,6 @@
 # How to extend and customize Vizro dashboards
 
-At its simplest, Vizro enables low-code configuration, but you can also customize it to go beyond its default capabilities:
+At its simplest, Vizro enables low-code configuration, but you can also customize it to go beyond its default capabilities by incorporating any Dash component, Dash callback, or Plotly chart.
 
 * **[Vizro customizations](#vizro-customizations)**. You can customize Vizro to extend the default functionality of Vizro and create Python functions to customize charts, tables, dashboard components, callbacks in the form of actions, and reactive HTML components, then plug them directly into the existing Vizro dashboard configuration.
 
@@ -15,10 +15,6 @@ Vizro offers the ability to combine ease of use of low-code configuration, with 
 
 
 ## Vizro customizations
-
-Vizro custom functions can be used to extend the default functionality of Vizro. You can create Python functions for customizing charts, tables, dashboard components
-callbacks in the form of actions, and reactive HTML components - then plug them directly
-into the existing Vizro dashboard configuration.
 
 ### [Custom charts](custom-charts.md)
 
