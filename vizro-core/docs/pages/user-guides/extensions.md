@@ -18,7 +18,7 @@ Vizro offers the ability to combine ease of use of low-code configuration, with 
 
 Vizro custom functions can be used to extend the default functionality of Vizro. You can create Python functions for customizing charts, tables, dashboard components
 callbacks in the form of actions, and reactive HTML components - then plug them directly
-into the existing Vizro dashboard configuration
+into the existing Vizro dashboard configuration.
 
 ### [Custom charts](custom-charts.md)
 
