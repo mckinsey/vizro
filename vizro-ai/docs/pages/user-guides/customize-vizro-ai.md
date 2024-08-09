@@ -19,8 +19,6 @@ Vizro-AI currently supports the following [OpenAI models](https://platform.opena
     - gpt-3.5-turbo-1106
     - gpt-3.5-turbo-0125
     - gpt-4o-2024-05-13
-    - gpt-4o-mini
-    - gpt-4o-mini-2024-07-18
 
 === "Anthropic"
 
@@ -48,9 +46,8 @@ Refer to the [OpenAI documentation for more about model capabilities](https://pl
 === "OpenAI"
 
     - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
-    - gpt-4o: Excels in dashboard creation tasks, providing stable and complete responses. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
-    - gpt-4-turbo: Excels in dashboard creation tasks, providing stable and complete responses.
-    - gpt-4o-mini: Ideal for smaller requests and simple specifications. Most cost-effective.
+    - gpt-4-turbo: Excels in dashboard creation tasks, providing the most stable and complete responses.
+    - gpt-4o: Similar performance in terms of the quality of generated content. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
 
 
 === "Anthropic"
