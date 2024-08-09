@@ -135,6 +135,7 @@ class PagePlan(BaseModel):
                     model=model,
                     controllable_components=self._controllable_components(model=model, all_df_metadata=all_df_metadata),
                     all_df_metadata=all_df_metadata,
+                    components_plan=self.components_plan,
                 )
                 if control:
                     controls.append(control)
