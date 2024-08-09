@@ -80,14 +80,6 @@ class FilterProxyModel:
         )
 
 
-def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_components) -> vm.Filter:
-    FilterProxy = FilterProxyModel._create_model(
-        df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
-    )
-    proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=FilterProxy, df_info=df_schema)
-    return vm.Filter.parse_obj(proxy.dict(exclude_unset=True))
-
-
 class ControlPlan(BaseModel):
     """Control plan model."""
 
@@ -100,15 +92,37 @@ class ControlPlan(BaseModel):
         to control a specific component, include the relevant component details.
         """,
     )
-    # instead of requesting the df_name, we should request the target component name
-    # replace df_name with target_component_name, then later retrieve the df_name from the controllable components.
-    # This logic is more aligned with the Vizro usage pattern.
     target_components_id: List[str] = Field(
         ...,
         description="""
         The id of the target components that this control will affect.
         """,
     )
+
+    def _get_target_df_name(self, components_plan, controllable_components):
+        target_controllable = set(self.target_components_id) & set(controllable_components)
+        df_names = {
+            component_plan.df_name
+            for component_plan in components_plan
+            if component_plan.component_id in target_controllable
+        }
+
+        if len(df_names) > 1:
+            logger.warning(
+                f"""
+[FALLBACK] Multiple dataframes found in the target components: {df_names}.
+Choose one dataframe to build the filter.
+"""
+            )
+
+        return next(iter(df_names)) if df_names else None
+
+    def _create_filter(self, filter_prompt, model, df_cols, df_schema, controllable_components) -> vm.Filter:
+        FilterProxy = FilterProxyModel._create_model(
+            df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
+        )
+        proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=FilterProxy, df_info=df_schema)
+        return vm.Filter.parse_obj(proxy.dict(exclude_unset=True))
 
     def create(self, model, controllable_components, all_df_metadata, components_plan) -> Optional[vm.Filter]:
         """Create the control."""
@@ -118,23 +132,7 @@ class ControlPlan(BaseModel):
         If no options are specified, leave them out.
         """
 
-        df_name_collection = []
-        for component_plan in components_plan:
-            if component_plan.component_id in set(self.target_components_id) & set(controllable_components):
-                name = component_plan.df_name
-            else:
-                continue
-
-            if name not in df_name_collection:
-                df_name_collection.append(name)
-        if len(df_name_collection) > 1:
-            logger.warning(
-                f"""
-[FALLBACK] Multiple dataframes found in the target components: {df_name_collection}.
-Choose one dataframe to build the filter.
-"""
-            )
-        df_name = df_name_collection[0] if df_name_collection else None
+        df_name = self._get_target_df_name(components_plan, controllable_components)
 
         try:
             _df_schema = all_df_metadata.get_df_schema(df_name)
@@ -145,7 +143,7 @@ Choose one dataframe to build the filter.
 
         try:
             if self.control_type == "Filter":
-                res = _create_filter(
+                res = self._create_filter(
                     filter_prompt=filter_prompt,
                     model=model,
                     df_cols=_df_cols,

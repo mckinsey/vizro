@@ -56,7 +56,7 @@ class ComponentPlan(BaseModel):
                     figure=vizro_ai.plot(
                         df=all_df_metadata.get_df(self.df_name),
                         user_input=self.component_description,
-                        max_debug_retry=1,
+                        max_debug_retry=2,
                     ),
                 )
             elif self.component_type == "AgGrid":

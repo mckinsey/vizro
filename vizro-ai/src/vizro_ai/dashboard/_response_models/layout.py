@@ -13,37 +13,9 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 
 
-def _convert_to_grid(layout_grid_template_areas: List[str], component_ids: List[str]) -> List[List[int]]:
-    component_map = {component: index for index, component in enumerate(component_ids)}
-    grid = []
-
-    for row in layout_grid_template_areas:
-        grid_row = []
-        for raw_cell in row.split():
-            cell = raw_cell.strip("'\"")
-            if cell == ".":
-                grid_row.append(-1)
-            else:
-                try:
-                    grid_row.append(component_map[cell])
-                except KeyError:
-                    logger.warning(
-                        f"""
-[FALLBACK] Component {cell} not found in component_ids: {component_ids}.
-Returning default values.
-"""
-                    )
-                    return []
-        grid.append(grid_row)
-
-    return grid
-
-
 class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
-    # TODO: we shall try validate the layout plan and retry if it fails.
-    # currently not feasible because the whole dashboard plan creation is a single API call.
     layout_grid_template_areas: List[str] = Field(
         [],
         description="""
@@ -58,15 +30,38 @@ class LayoutPlan(BaseModel):
         """,
     )
 
+    def _convert_to_grid(self, component_ids: List[str]) -> List[List[int]]:
+        component_map = {component: index for index, component in enumerate(component_ids)}
+        grid = []
+
+        for row in self.layout_grid_template_areas:
+            grid_row = []
+            for raw_cell in row.split():
+                cell = raw_cell.strip("'\"")
+                if cell == ".":
+                    grid_row.append(-1)
+                else:
+                    try:
+                        grid_row.append(component_map[cell])
+                    except KeyError:
+                        logger.warning(
+                            f"""
+[FALLBACK] Component {cell} not found in component_ids: {component_ids}.
+Returning default values.
+"""
+                        )
+                        return []
+            grid.append(grid_row)
+
+        return grid
+
     def create(self, component_ids: List[str]) -> Optional[vm.Layout]:
         """Create the layout."""
         if not self.layout_grid_template_areas:
             return None
 
         try:
-            grid = _convert_to_grid(
-                layout_grid_template_areas=self.layout_grid_template_areas, component_ids=component_ids
-            )
+            grid = self._convert_to_grid(component_ids=component_ids)
             actual = vm.Layout(grid=grid)
         except ValidationError as e:
             logger.warning(
