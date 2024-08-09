@@ -1,4 +1,4 @@
-from typing import Any, List, Type, Union
+from typing import Any, List, Mapping, Optional, Set, Type, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, root_validator, validator
@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cov
     from pydantic.typing import get_args
 
 
-
 from black import FileMode, format_str
 from typing_extensions import Annotated
 
@@ -18,10 +17,10 @@ from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 from vizro.models._utils import (
     STANDARD_IMPORT_PATHS,
-    _get_import_statements,
+    _dict_to_python,
     _get_callable_code_strings,
     _get_data_manager_code_strings,
-    _dict_to_python,
+    _get_import_statements,
 )
 
 
@@ -39,13 +38,7 @@ class VizroBaseModel(BaseModel):
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
     )
-    model_name: str = Field("", description="Name of the model.")
     _private_attr: str = ""
-
-    @root_validator(pre=True)
-    def set_model_name(cls, values):
-        values.setdefault("model_name", cls.__name__)
-        return values
 
     @validator("id", always=True)
     def set_id(cls, id) -> str:
@@ -118,11 +111,32 @@ class VizroBaseModel(BaseModel):
         cls.update_forward_refs(**vm.__dict__.copy())
         new_type.update_forward_refs(**vm.__dict__.copy())
 
+    def dict(self, **kwargs):
+        # Overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary.
+        # To get exclude as an argument is a bit fiddly because this function is called recursively
+        # inside pydantic, which sets exclude=None by default.
+        if kwargs.get("exclude") is None:
+            kwargs["exclude"] = self.__vizro_exclude_fields__()
+        _dict = super().dict(**kwargs)
+        # Inject __vizro_model__ into the dictionary - needed just for to_python.
+        _dict["__vizro_model__"] = self.__class__.__name__
+        # _dict["actions"] = rewrite_dictionary(_dict["actions"])
+        return _dict
+
+    # This is like pydantic's own __exclude_fields__ but safer to use (it looks like __exclude_fields__ no longer
+    # exists in pydantic v2).
+    # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
+    # to potentially exclude fields set this way, like Page.id.
+    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str],Mapping[str, Any]]]:
+        return None
+
     def to_python(self):
         model_dict = self.dict(exclude_unset=True)
         captured_info = []
-        model_code = f"{str(model_dict.get('model_name','object')).lower()} = " +  _dict_to_python(model_dict, captured_info)
-        import_statements =  STANDARD_IMPORT_PATHS | _get_import_statements(captured_info)
+        model_code = f"{str(model_dict.get('model_name','object')).lower()} = " + _dict_to_python(
+            model_dict, captured_info
+        )
+        import_statements = STANDARD_IMPORT_PATHS | _get_import_statements(captured_info)
         data_setting = _get_data_manager_code_strings(captured_info)
         callable_definitions = _get_callable_code_strings(captured_info)
 
@@ -136,7 +150,7 @@ class VizroBaseModel(BaseModel):
         )
 
         # check for formatting: https://mckinsey-hub.slack.com/archives/D03N7KXFXV3/p1721401376669179?thread_ts=1721400781.371419&cid=D03N7KXFXV3
-        #TODO: potentially use ruff over just black
+        # TODO: potentially use ruff over just black
 
         return format_str(concatenated_code, mode=FileMode(line_length=88))
 
@@ -150,28 +164,55 @@ class VizroBaseModel(BaseModel):
 if __name__ == "__main__":
     # from typing import Any
 
-    import vizro.plotly.express as px
     import vizro.models as vm
-    # from vizro.tables import dash_ag_grid
+    from vizro import Vizro
+
+    Vizro._reset()
     # # For the plot prints - needs to transfer somewhere
-
     # # data_manager["iris"] = px.data.iris()
+    # df = px.data.iris()
+    # card = vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length"))
 
-    # page = Page(
-    #     title="Page 1",
-    #     components=[
-    #         Card(text="Foo"),
-    #         Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-    #         AgGrid(figure=dash_ag_grid(data_frame="iris")),
-    #     ],
-    #     controls=[Filter(column="species")],
-    # )
+    page = vm.Page(
+        title="Page 1",
+        components=[
+            vm.Card(text="Foo"),
+            # vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            # vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+        ],
+        # controls=[vm.Filter(column="species")],
+    )
 
-    # dashboard = Dashboard(title="Bar", pages=[page])
+    dashboard = vm.Dashboard(title="Bar", pages=[page])
 
-    df = px.data.iris()
-    card = vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length"))
+    # print(dashboard.dict(exclude_unset=True))
+    # string = dashboard.to_python()
+    # print(string)
 
+    from typing import Literal
 
-    string = card.to_python()
-    print(string)
+    class ExcludeModel(vm.VizroBaseModel):
+        type: Literal["exclude_model"] = "exclude_model"
+        title: str = Field(..., description="Title to be displayed.")
+        foo: str = ""
+
+        @validator("foo", always=True)
+        def set_fo(cls, foo) -> str:
+            return foo or "long-random-thing"
+
+        # Set a field with a pre=True validator
+        @root_validator(pre=True)
+        def set_id(cls, values):
+            if "title" not in values:
+                return values
+
+            values.setdefault("id", values["title"])
+            return values
+
+        # Exclude field even if missed by exclude_unset=True
+        def __vizro_exclude_fields__(self):
+            return {"id"}
+
+    model = ExcludeModel(title="foo")
+    # print(model.dict(exclude_unset=True))
+    print(model.dict())
