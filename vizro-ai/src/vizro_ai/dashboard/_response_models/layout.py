@@ -19,7 +19,8 @@ def _convert_to_grid(layout_grid_template_areas: List[str], component_ids: List[
 
     for row in layout_grid_template_areas:
         grid_row = []
-        for cell in row.split():
+        for raw_cell in row.split():
+            cell = raw_cell.strip("'\"")
             if cell == ".":
                 grid_row.append(-1)
             else:
