@@ -403,7 +403,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 ??? example "Example of triggering action with custom component"
 
     === "app.py"
-        ```{.python pycafe-link}
+        ```py
         from typing import List, Literal
 
         import dash_bootstrap_components as dbc
@@ -422,12 +422,12 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
 
         # 1. Create new custom component
-        class Carussel(vm.VizroBaseModel):
-            type: Literal["carussel"] = "carussel"
+        class Carousel(vm.VizroBaseModel):
+            type: Literal["carousel"] = "carousel"
             items: List
             actions: List[Action] = []
-
-            _set_actions = _action_validator_factory("active_index")  # (1)!
+            # Here we set the action so a change in the active_index property of the custom component triggers the action
+            _set_actions = _action_validator_factory("active_index")  
 
             def build(self):
                 return dbc.Carousel(
@@ -437,11 +437,11 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
 
         # 2. Add new components to expected type - here the selector of the parent components
-        vm.Page.add_type("components", Carussel)
+        vm.Page.add_type("components", Carousel)
 
         # 3. Create custom action
         @capture("action")
-        def carussel(active_index):
+        def carousel(active_index):
             if active_index:
                 return "Second slide"
 
@@ -450,18 +450,18 @@ As mentioned above, custom components can trigger action. To enable the custom c
         page = vm.Page(
             title="Custom Component",
             components=[
-                vm.Card(text="First slide", id="carussel-card"),
-                Carussel(
-                    id="carrusel",
+                vm.Card(text="First slide", id="carousel-card"),
+                Carousel(
+                    id="carousel",
                     items=[
                         {"key": "1", "src": "path_to_your_image"},
                         {"key": "2", "src": "path_to_your_image"},
                     ],
                     actions=[
                         vm.Action(
-                            function=carussel(),
-                            inputs=["carrusel.active_index"],
-                            outputs=["carussel-card.children"]
+                            function=carousel(),
+                            inputs=["carousel.active_index"],
+                            outputs=["carousel-card.children"]
                         )
                     ]
                 ),
@@ -472,8 +472,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
         Vizro().build(dashboard).run()
         ```
-
-        1.  Here we set the action so a change in the `active_index` property of the custom component triggers the action.
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-custom-carousel-component">Run and edit this code in Py.Cafe</a></b>
     === "yaml"
         ```yaml
         # Custom components are currently only possible via python configuration
