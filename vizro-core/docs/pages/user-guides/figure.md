@@ -57,12 +57,13 @@ To add a `Figure` to your page:
 
         tips = px.data.tips
 
+        # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
         page = vm.Page(
             title="KPI card",
-            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  # (1)!
+            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  
             components=[
                 vm.Figure(
-                    figure=kpi_card(  # (2)!
+                    figure=kpi_card( # For more information, refer to the API reference for kpi_card 
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
@@ -77,9 +78,6 @@ To add a `Figure` to your page:
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-
-        1. This creates a [`layout`](layouts.md) with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
-        2. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
 
     === "app.yaml"
         ```yaml
@@ -140,7 +138,8 @@ possible with the built-in functions then you can create a [custom figure](custo
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro
-        from vizro.figures import kpi_card, kpi_card_reference  # (1)!  # (2)!
+        # For more information, refer to the API reference for kpi_card and kpi_card_reference
+        from vizro.figures import kpi_card, kpi_card_reference
 
         df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
@@ -192,9 +191,11 @@ possible with the built-in functions then you can create a [custom figure](custo
             ),
         ]
 
+        # Create a layout with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  # (3)!
+            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  
+
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
         )
@@ -202,11 +203,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-
-        1. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
-        2. For more information, refer to the API reference for the  [`kpi_card_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference).
-        3. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
-
+        
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
