@@ -318,7 +318,7 @@ The order of action execution is guaranteed, and the next action in the list wil
 !!! example "Actions chaining"
 
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
