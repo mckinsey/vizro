@@ -226,7 +226,8 @@ accessibility of your app. Providing an image ALT text is optional.
         Vizro().build(dashboard).run()
         ```
         
-        **[Run and edit this code in Py.Cafe](https://py.cafe/app/stichbury/vizro-placing-images)** 
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/app/stichbury/vizro-placing-images">Run and edit this code in Py.Cafe</a></b>
+
         
     === "app.yaml"
         ```yaml
@@ -305,7 +306,7 @@ and give an attribute selector to select images with that matching URL hash.
         Vizro().build(dashboard).run()
         ```
         
-        **[Run and edit this code in Py.Cafe](https://py.cafe/stichbury/vizro-styling-images)**
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-styling-images">Run and edit this code in Py.Cafe</a></b>
         
     === "app.yaml"
         ```yaml
@@ -381,7 +382,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         Vizro().build(dashboard).run()
         ```
         
-        **[Run and edit this code in Py.Cafe](https://py.cafe/stichbury/vizro-floating-images-explorer)**
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-floating-images-explorer">Run and edit this code in Py.Cafe</a></b>
         
     === "app.yaml"
         ```yaml
