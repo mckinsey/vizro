@@ -60,10 +60,10 @@ To add a `Figure` to your page:
         # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
         page = vm.Page(
             title="KPI card",
-            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),  
+            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
             components=[
                 vm.Figure(
-                    figure=kpi_card( # For more information, refer to the API reference for kpi_card 
+                    figure=kpi_card( # For more information, refer to the API reference for kpi_card
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
@@ -194,7 +194,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         # Create a layout with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),  
+            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
 
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
@@ -203,7 +203,7 @@ possible with the built-in functions then you can create a [custom figure](custo
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-        
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration

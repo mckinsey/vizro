@@ -427,7 +427,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
             items: List
             actions: List[Action] = []
             # Here we set the action so a change in the active_index property of the custom component triggers the action
-            _set_actions = _action_validator_factory("active_index")  
+            _set_actions = _action_validator_factory("active_index")
 
             def build(self):
                 return dbc.Carousel(
