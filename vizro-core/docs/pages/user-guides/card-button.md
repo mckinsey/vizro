@@ -199,7 +199,7 @@ accessibility of your app. Providing an image ALT text is optional.
 
 !!! example "Card with image"
     === "app.py"
-        ```{.python pycafe-link}
+        ```py
         import vizro.models as vm
         from vizro import Vizro
 
@@ -225,6 +225,9 @@ accessibility of your app. Providing an image ALT text is optional.
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+        
+        **[Run and edit this code in Py.Cafe](https://py.cafe/app/stichbury/vizro-placing-images)** 
+        
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -274,7 +277,7 @@ and give an attribute selector to select images with that matching URL hash.
     }
     ```
     === "app.py"
-        ```{.python pycafe-link}
+        ```py
         import vizro.models as vm
         from vizro import Vizro
 
@@ -285,7 +288,7 @@ and give an attribute selector to select images with that matching URL hash.
                         text="""
                         ### My card with image!
 
-                        ![](assets/images/continents/africa.svg#my-image)
+                        ![](assets/images/continents/europe.svg#my-image)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -301,6 +304,9 @@ and give an attribute selector to select images with that matching URL hash.
 
         Vizro().build(dashboard).run()
         ```
+        
+        **[Run and edit this code in Py.Cafe](https://py.cafe/stichbury/vizro-styling-images)**
+        
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -308,7 +314,7 @@ and give an attribute selector to select images with that matching URL hash.
         pages:
         - components:
             - text: |
-                ![](assets/images/continents/africa.svg#my-image)
+                ![](assets/images/continents/europe.svg#my-image)
 
                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -326,19 +332,22 @@ and give an attribute selector to select images with that matching URL hash.
 
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-* To float the image next to the text:
+#### To float the image next to the text:
 
-    - floating-left: `![](my_image.png#floating-left)`
-    - floating-right: `![](my_image.png#floating-right)`
-    - floating-center: `![](my_image.png#floating-center)`
-
-* To apply the default icon styling:
-
-    - icon-top: `![](my_image.png#icon-top)`
+- floating-left: `![](my_image.png#floating-left)`
+- floating-right: `![](my_image.png#floating-right)`
+- floating-center: `![](my_image.png#floating-center)`
 
 !!! example "Card with floating image"
+    === "images.css"
+    ```css
+    img[src*="#my-image"] {
+      width: 120px;
+      height: 120px;
+    }
+    ```
     === "app.py"
-        ```{.python pycafe-link}
+        ```py
         import vizro.models as vm
         from vizro import Vizro
 
@@ -347,9 +356,9 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
                 components=[
                     vm.Card(
                         text="""
-                        ### My card with image!
+                        ### My card with floating image!
 
-                        ![](assets/images/continents/africa.svg#my-image#floating-right)
+                        ![](assets/images/continents/europe.svg#my-image#floating-center)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -371,6 +380,9 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
 
         Vizro().build(dashboard).run()
         ```
+        
+        **[Run and edit this code in Py.Cafe](https://py.cafe/stichbury/vizro-floating-images-explorer)**
+        
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -378,7 +390,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         pages:
         - components:
             - text: |
-                ![](assets/images/continents/africa.svg#my-image#floating-right)
+                ![](assets/images/continents/europe.svg#my-image#floating-center)
 
                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -391,7 +403,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
                 Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                 Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-              title: My card with image!
+              title: My card with floating image!
               type: card
           title: Floating Images
         ```
@@ -399,6 +411,10 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
          [![CardImageFloating]][CardImageFloating]
 
     [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
+
+#### Card with icon
+
+- default icon styling (`icon-top`): `![](my_image.png#icon-top)`
 
 !!! example "Card with icon"
     === "app.py"
@@ -411,7 +427,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
             components=[
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/hypotheses.svg#icon-top)
+                    ![](https://raw.githubusercontent.com/mckinsey/vizro/d24a6f0d4efdf3c47392458e64b190fa1f92b2a7/vizro-core/docs/assets/images/hypotheses.svg#icon-top)
 
                     ### Card Title
 
