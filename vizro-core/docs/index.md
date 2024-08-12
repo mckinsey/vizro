@@ -55,7 +55,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
-    [:octicons-arrow-right-24: Vizro-AI: Use natural language queries to build Plotly charts](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/)
+    [:octicons-arrow-right-24: Vizro-AI: Use natural language queries to build Plotly charts](https://vizro.readthedocs.io/projects/vizro-ai/)
 
 
 </div>
