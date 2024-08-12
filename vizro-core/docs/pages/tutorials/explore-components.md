@@ -514,7 +514,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
             components=[
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/content/collections.svg#icon-top)
+                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg#icon-top)
 
                     ### First Page
 
@@ -524,7 +524,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
                 ),
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
+                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
 
                     ### Second Page
 
@@ -550,7 +550,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
             components=[
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/content/collections.svg#icon-top)
+                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg)
 
                     ### First Page
 
@@ -560,7 +560,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
                 ),
                 vm.Card(
                     text="""
-                    ![](assets/images/icons/content/features.svg#icon-top)
+                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
 
                     ### Second Page
 
