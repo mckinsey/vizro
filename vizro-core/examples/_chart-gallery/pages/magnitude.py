@@ -70,7 +70,7 @@ paired_bar = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h")),
+        vm.Graph(figure=px.histogram(tips.query("sex=='Female'"), y="sex", x="total_bill", color="smoker", barmode="group", orientation="h")),
         make_code_clipboard_from_py_file("paired_bar.py"),
     ],
 )
@@ -100,7 +100,7 @@ paired_column = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker", barmode="group")),
+        vm.Graph(figure=px.histogram(tips.query("sex=='Female'"), x="sex", y="total_bill", color="smoker", barmode="group")),
         make_code_clipboard_from_py_file("paired_column.py"),
     ],
 )

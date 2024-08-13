@@ -8,7 +8,7 @@ tips = px.data.tips()
 page = vm.Page(
     title="Paired bar",
     components=[
-        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h"))
+        vm.Graph(figure=px.histogram(tips.query("sex=='Female'"), y="sex", x="total_bill", color="smoker", barmode="group", orientation="h"))
     ],
 )
 
