@@ -9,8 +9,10 @@ from vizro.models.types import capture
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
 
 
+# TODO: Move to custom_charts.py if we keep it
 @capture("graph")
 def ordered_histogram(data_frame, x: str, y: str, orientation: Optional[str] = None):
+    """Custom bar chart function with ordered categories."""
     fig = px.histogram(data_frame, x=x, y=y, orientation=orientation)
     axis_update = fig.update_yaxes if orientation == "h" else fig.update_xaxes
     return axis_update(categoryorder="total descending")

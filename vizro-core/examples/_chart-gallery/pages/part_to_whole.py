@@ -113,7 +113,7 @@ treemap = vm.Page(
 )
 
 stacked_bar = vm.Page(
-    title="Stacked Bar",
+    title="Stacked bar",
     path="part-to-whole/stacked-bar",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
@@ -144,7 +144,7 @@ stacked_bar = vm.Page(
 )
 
 stacked_column = vm.Page(
-    title="Stacked Column",
+    title="Stacked column",
     path="part-to-whole/stacked-column",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[

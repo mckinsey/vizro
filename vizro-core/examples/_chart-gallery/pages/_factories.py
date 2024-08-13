@@ -83,7 +83,7 @@ def connected_scatter_factory(group: str):
     return vm.Page(
         id=f"{group}-connected-scatter",
         path=f"{group}/connected-scatter",
-        title="Connected Scatter",
+        title="Connected scatter",
         layout=vm.Layout(grid=PAGE_GRID),
         components=[
             vm.Card(

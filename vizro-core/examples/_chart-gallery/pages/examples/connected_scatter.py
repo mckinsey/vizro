@@ -5,7 +5,7 @@ from vizro import Vizro
 gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Connected Scatter",
+    title="Connected scatter",
     components=[
         vm.Graph(
             figure=px.line(

@@ -46,7 +46,7 @@ bar = vm.Page(
 column = column_factory("magnitude")
 
 paired_bar = vm.Page(
-    title="Paired Bar",
+    title="Paired bar",
     path="magnitude/paired-bar",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
@@ -76,7 +76,7 @@ paired_bar = vm.Page(
 )
 
 paired_column = vm.Page(
-    title="Paired Column",
+    title="Paired column",
     path="magnitude/paired-column",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[

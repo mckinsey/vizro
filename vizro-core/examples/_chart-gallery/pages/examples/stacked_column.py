@@ -6,7 +6,7 @@ tips = px.data.tips()
 
 
 page = vm.Page(
-    title="Stacked Column",
+    title="Stacked column",
     components=[vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker"))],
 )
 

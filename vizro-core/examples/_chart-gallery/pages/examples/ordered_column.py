@@ -10,6 +10,7 @@ tips = px.data.tips()
 
 @capture("graph")
 def ordered_histogram(data_frame, x: str, y: str, orientation: Optional[str] = None):
+    """Custom bar chart function with ordered categories."""
     fig = px.histogram(data_frame, x=x, y=y, orientation=orientation)
     axis_update = fig.update_yaxes if orientation == "h" else fig.update_xaxes
     return axis_update(categoryorder="total descending")
