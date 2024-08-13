@@ -1,4 +1,5 @@
 import inspect
+import subprocess
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
@@ -36,6 +37,14 @@ STANDARD_IMPORT_PATHS = {
     "from vizro.managers import data_manager",
     "from vizro.models.types import capture", #TODO: could make conditional based on content
 }
+
+
+def _format_and_lint(code_string: str):
+    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
+    # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
+    formatted = subprocess.check_output(["ruff", "format", "-"], input=code_string, encoding="utf-8")
+    linted = subprocess.check_output(["ruff", "check", "--fix", "--exit-zero", "-"], input=formatted, encoding="utf-8")
+    return linted
 
 
 def _get_import_statements(captured_info: List[CapturedCallableInfo]) -> Set[str]:
