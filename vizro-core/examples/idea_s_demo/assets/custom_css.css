@@ -1,0 +1,46 @@
+#page_1_run_script_button_id {
+  min-width: 140px;
+}
+
+.loading-container:has(#page_1_hidden_table) {
+  display: none;
+}
+
+.dash-sk-circle .dash-sk-child {
+  left: 0 !important;
+  top: -10px !important;
+}
+
+.card:has(#page_1_nav_card_id):hover {
+  box-shadow:
+    0 0 1px 0 white,
+    0 0 1px 0 white;
+}
+
+.card:has(#page_1_card_id) {
+  max-height: 54px;
+}
+
+.card:has(
+    #page_1_upload_card_id,
+    #tab_1_upload_card_id,
+    #tab_2_upload_card_id
+  ) {
+  background-color: inherit;
+  border: 0 solid transparent;
+  box-shadow: var(--elevation-0);
+  font-family: Inter;
+  font-size: 14px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: 600;
+  height: 100%;
+  letter-spacing: -0.056px;
+  line-height: 16px;
+  overflow: hidden;
+  padding-bottom: 4px;
+  padding-left: 0;
+  padding-top: 22px;
+  text-decoration: none;
+  transition: box-shadow 0.2s;
+}
