@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file, tips, tips_grouped
+from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file, tips
 
 pie = vm.Page(
     title="Pie",
@@ -138,7 +138,7 @@ stacked_bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.bar(tips_grouped, y="sex", x="total_bill", color="smoker", orientation="h")),
+        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="smoker", orientation="h")),
         make_code_clipboard_from_py_file("stacked_bar.py"),
     ],
 )
@@ -169,7 +169,7 @@ stacked_column = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.bar(tips_grouped, x="sex", y="total_bill", color="smoker")),
+        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker")),
         make_code_clipboard_from_py_file("stacked_bar.py"),
     ],
 )

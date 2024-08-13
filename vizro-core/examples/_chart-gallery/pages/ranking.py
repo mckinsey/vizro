@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_sorted
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
 
 ordered_bar = vm.Page(
     title="Ordered bar",
@@ -29,8 +29,8 @@ ordered_bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(
-                tips_sorted,
+            figure=px.histogram(
+                tips,
                 x="total_bill",
                 y="day",
                 orientation="h",
@@ -65,8 +65,8 @@ ordered_column = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(
-                tips_sorted,
+            figure=px.histogram(
+                tips,
                 y="total_bill",
                 x="day",
             )

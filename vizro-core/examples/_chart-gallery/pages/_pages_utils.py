@@ -26,9 +26,7 @@ gapminder_2007 = gapminder.query("year == 2007")
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
-tips_agg = tips.groupby("day").agg({"total_bill": "sum"}).reset_index()
-tips_sorted = tips.groupby("day").agg({"total_bill": "sum"}).sort_values("total_bill").reset_index()
-tips_grouped = tips.groupby(["sex", "smoker"]).agg({"total_bill": "sum"}).reset_index()
+
 ages = pd.DataFrame(
     {
         "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],

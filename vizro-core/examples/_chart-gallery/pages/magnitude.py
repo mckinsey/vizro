@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import column_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_agg, tips_grouped
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
 
 bar = vm.Page(
     title="Bar",
@@ -30,8 +30,8 @@ bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(
-                tips_agg,
+            figure=px.histogram(
+                tips,
                 x="total_bill",
                 y="day",
                 orientation="h",
@@ -70,9 +70,7 @@ paired_bar = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.bar(tips_grouped, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h")
-        ),
+        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="smoker", barmode="group", orientation="h")),
         make_code_clipboard_from_py_file("paired_bar.py"),
     ],
 )
@@ -102,7 +100,7 @@ paired_column = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(figure=px.bar(tips_grouped, x="sex", y="total_bill", color="smoker", barmode="group")),
+        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker", barmode="group")),
         make_code_clipboard_from_py_file("paired_column.py"),
     ],
 )

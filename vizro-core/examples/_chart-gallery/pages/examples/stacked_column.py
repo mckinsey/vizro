@@ -3,11 +3,11 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 tips = px.data.tips()
-tips_grouped = tips.groupby(["sex", "smoker"]).agg({"total_bill": "sum"}).reset_index()
+
 
 page = vm.Page(
     title="Stacked Column",
-    components=[vm.Graph(figure=px.bar(tips_grouped, x="sex", y="total_bill", color="smoker"))],
+    components=[vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])
