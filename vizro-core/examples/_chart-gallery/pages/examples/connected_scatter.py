@@ -7,11 +7,7 @@ gapminder = px.data.gapminder()
 page = vm.Page(
     title="Connected scatter",
     components=[
-        vm.Graph(
-            figure=px.line(
-                    gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True
-                )
-        )
+        vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True))
     ],
 )
 

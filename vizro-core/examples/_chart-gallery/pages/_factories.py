@@ -104,11 +104,7 @@ def connected_scatter_factory(group: str):
                 avoid misinterpretation.
         """
             ),
-            vm.Graph(
-                figure=px.line(
-                    gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True
-                )
-            ),
+            vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
             make_code_clipboard_from_py_file("connected_scatter.py"),
         ],
     )
