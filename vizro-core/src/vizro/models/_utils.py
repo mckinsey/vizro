@@ -181,3 +181,58 @@ def _dict_to_python(object: Any) -> str:
         # Depends on how interaction with VizroAI charts works.
     else:
         return repr(object)
+
+
+TO_PYTHON_TEMPLATE = """
+############ Imports ##############
+import vizro.plotly.express as px
+import vizro.tables as vt
+import vizro.models as vm
+import vizro.actions as va
+from vizro import Vizro
+{extra_imports}
+
+{callable_defs}
+{data_settings}
+
+######### Dashboard code ##########
+{code}
+"""
+
+CALLABLE_TEMPLATE = """
+####### Function definitions ######
+{callable_defs}
+"""
+
+DATA_TEMPLATE = """
+####### Data Manager Settings #####
+# #####!!! UNCOMMENT BELOW !!!#####
+{data_setting}
+"""
+
+
+def _concatenate_code(
+    code: str,
+    extra_imports: Optional[str] = None,
+    callable_defs: Optional[str] = None,
+    data_settings: Optional[str] = None,
+) -> str:
+    callable_defs = CALLABLE_TEMPLATE.format(callable_defs=callable_defs) if callable_defs else ""
+    data_settings = DATA_TEMPLATE.format(data_setting=data_settings) if data_settings else ""
+    unformatted_code = TO_PYTHON_TEMPLATE.format(
+        code=code,
+        extra_imports=extra_imports if extra_imports else "",
+        callable_defs=callable_defs,
+        data_settings=data_settings,
+    )
+    return _format_and_lint(unformatted_code)
+
+
+if __name__ == "__main__":
+    extra_imports = "import vizro.models as vm\nimport pandas as pd"
+    code = "vm.Card(text='Foo')"
+    callable_defs = """def f():
+    return 'hi'
+    """
+    data_settings = """# data_manager["iris"] = ===> Fill in here <==="""
+    print(_concatenate_code(code=code, extra_imports=extra_imports, callable_defs=callable_defs, data_settings=data_settings))
