@@ -9,8 +9,8 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.line(
-                gapminder.query("continent == 'Oceania'"), x="year", y="lifeExp", color="country", markers=True
-            )
+                    gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True
+                )
         )
     ],
 )

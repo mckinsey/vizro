@@ -90,9 +90,9 @@ def connected_scatter_factory(group: str):
                 text="""
                 #### What is a connected scatter chart?
 
-                A connected scatter chart visualizes two variables using dots, with lines connecting the dots in the
-                order of the data points. One variable is plotted along the x-axis and the other along the y-axis,
-                showing both the relationship and a sequence of the data.
+                A connected scatter chart visualizes two variables (x and y) using dots, with lines connecting the dots
+                in the order of the data points. One variable is plotted along the x-axis and the other along the
+                y-axis, showing both the relationship and a sequence of the data.
 
                 &nbsp;
 
@@ -106,7 +106,7 @@ def connected_scatter_factory(group: str):
             ),
             vm.Graph(
                 figure=px.line(
-                    gapminder.query("continent == 'Oceania'"), x="year", y="lifeExp", color="country", markers=True
+                    gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True
                 )
             ),
             make_code_clipboard_from_py_file("connected_scatter.py"),
