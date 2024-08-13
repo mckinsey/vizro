@@ -3,9 +3,9 @@ from typing import List, Literal, Optional, Union
 import pytest
 
 try:
-    from pydantic.v1 import Field, ValidationError
+    from pydantic.v1 import Field, ValidationError, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError
+    from pydantic import Field, ValidationError, root_validator, validator
 import vizro.models as vm
 from typing_extensions import Annotated
 
@@ -185,3 +185,62 @@ class TestChildWithForwardRef:
 def test_no_type_match(ParentWithNonDiscriminatedUnion):
     with pytest.raises(ValueError, match="Field 'child' must be a discriminated union"):
         ParentWithNonDiscriminatedUnion.add_type("child", ChildZ)
+
+
+class Model(vm.VizroBaseModel):
+    type: Literal["model"] = "model"
+
+
+class ModelWithFieldSetting(vm.VizroBaseModel):
+    type: Literal["exclude_model"] = "exclude_model"
+    title: str = Field(..., description="Title to be displayed.")
+    foo: str = ""
+
+    # Set a field with regular validator
+    @validator("foo", always=True)
+    def set_foo(cls, foo) -> str:
+        return foo or "long-random-thing"
+
+    # Set a field with a pre=True root-validator -->
+    # # this will not be caught by exclude_unset=True
+    @root_validator(pre=True)
+    def set_id(cls, values):
+        if "title" not in values:
+            return values
+
+        values.setdefault("id", values["title"])
+        return values
+
+    # Exclude field even if missed by exclude_unset=True
+    def __vizro_exclude_fields__(self):
+        return {"id"}
+
+
+class TestDict:
+    def test_dict_no_args(self):
+        model = Model(id="model_id")
+        assert model.dict() == {"id": "model_id", "type": "model", "__vizro_model__": "Model"}
+
+    def test_dict_exclude_unset(self):
+        model = Model(id="model_id")
+        assert model.dict(exclude_unset=True) == {"id": "model_id", "__vizro_model__": "Model"}
+
+    def test_dict_exclude_manual(self):
+        model = Model()
+        assert model.dict(exclude={"id"}) == {"type": "model", "__vizro_model__": "Model"}
+
+    def test_dict_exclude_in_model_unset(self):
+        model = ModelWithFieldSetting(title="foo")
+        assert model.dict(exclude_unset=True) == {
+            "title": "foo",
+            "__vizro_model__": "ModelWithFieldSetting",
+        }
+
+    def test_dict_exclude_in_model_no_args(self):
+        model = ModelWithFieldSetting(title="foo")
+        assert model.dict() == {
+            "type": "exclude_model",
+            "title": "foo",
+            "foo": "long-random-thing",
+            "__vizro_model__": "ModelWithFieldSetting",
+        }
