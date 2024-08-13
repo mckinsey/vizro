@@ -182,7 +182,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 <!-- vale off -->
 !!! example "Dynamic number of cards"
     === "app.py"
-        ```{.python pycafe-link}
+        ```py
         from typing import Optional
 
         import dash_bootstrap_components as dbc
@@ -229,7 +229,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
             controls=[
                 vm.Parameter(
                     targets=["my-figure.n_rows"],  # (4)!
-                    selector=vm.Slider(min=2, max=12, step=2, value=8, title="Number of cards to display"),
+                    selector=vm.Slider(min=2, max=12, step=2, value=10, title="Number of cards to display"),
                 ),
             ],
         )
@@ -245,7 +245,9 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
            The parameter targets the `n_rows` argument of the `multiple_cards` function, determining the number of rows
            taken from the data.
 
-    === "css"
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-dynamic-cards">Run and edit this code in Py.Cafe</a></b>
+
+    === "styling.css"
         ```css
         .multiple-cards-container {
           display: flex;
