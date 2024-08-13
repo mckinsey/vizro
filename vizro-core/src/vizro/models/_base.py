@@ -15,8 +15,10 @@ from typing_extensions import Annotated
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 from vizro.models._utils import (
+    _concatenate_code,
     _dict_to_python,
-    _format_and_lint,
+    _extract_captured_callable_data_info,
+    _extract_captured_callable_source,
 )
 
 
@@ -126,26 +128,28 @@ class VizroBaseModel(BaseModel):
     def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
         return None
 
-    def to_python(self):
+    def _to_python(self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Set[str] = set()) -> str:
+        # Model
         model_dict = self.dict(exclude_unset=True)
-        # captured_info = []
-        model_code = _dict_to_python(model_dict)
-        # import_statements = STANDARD_IMPORT_PATHS | _get_import_statements(captured_info)
-        # data_setting = _get_data_manager_code_strings(captured_info)
-        # callable_definitions = _get_callable_code_strings(captured_info)
+        model_code = f"{str(model_dict.get('__vizro_model__','object')).lower()} = " + _dict_to_python(model_dict)
 
-        # concatenated_code = "\n\n".join(
-        #     [
-        #         "######## Module Imports ##########\n" + "\n".join((import_statements)),
-        #         "########## Data Imports ##########\n#####!!! UNCOMMENT BELOW !!!######\n" + "\n".join((data_setting)),
-        #         "###### Callable definitions ######\n" + ("\n".join(callable_definitions)),
-        #         "########## Object code ###########\n" + model_code,
-        #     ]
-        # )
+        # Imports
+        extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
-        # check for formatting: https://mckinsey-hub.slack.com/archives/D03N7KXFXV3/p1721401376669179?thread_ts=1721400781.371419&cid=D03N7KXFXV3
-        # TODO: potentially use ruff over just black
-        return _format_and_lint(model_code)
+        # CapturedCallable definitions
+        callable_defs_list = _extract_captured_callable_source() | extra_callable_defs
+        callable_defs_concat = "\n".join(_extract_captured_callable_source()) if callable_defs_list else None
+
+        # Data Manager
+        data_defs_list = _extract_captured_callable_data_info()
+        data_defs_concat = "\n".join(data_defs_list) if data_defs_list else None
+
+        return _concatenate_code(
+            code=model_code,
+            extra_imports=extra_imports_concat,
+            callable_defs=callable_defs_concat,
+            data_settings=data_defs_concat,
+        )
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -159,6 +163,7 @@ if __name__ == "__main__":
     import vizro.models as vm
     import vizro.plotly.express as px
     from vizro import Vizro
+    from vizro.models.types import capture
     from vizro.tables import dash_ag_grid
 
     Vizro._reset()
@@ -167,20 +172,30 @@ if __name__ == "__main__":
     # df = px.data.iris()
     # card = vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length"))
 
+    @capture("graph")
+    def chart(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+    @capture("graph")
+    def chart2(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
     page = vm.Page(
         title="Page 1",
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            vm.Graph(figure=chart(data_frame="iris")),
+            vm.Graph(figure=chart2(data_frame="iris")),
             vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
         ],
-        # controls=[vm.Filter(column="species")],
+        controls=[vm.Filter(column="species")],
     )
 
     dashboard = vm.Dashboard(title="Bar", pages=[page])
 
     # print(dashboard.dict(exclude_unset=True))
-    string = dashboard.to_python()
+    string = dashboard._to_python(extra_imports={"from typing import Optional,List"})
     print(string)
 
     table = dash_ag_grid(data_frame="iris")
