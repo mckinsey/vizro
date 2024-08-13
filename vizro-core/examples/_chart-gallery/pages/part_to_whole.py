@@ -138,7 +138,7 @@ stacked_bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="smoker", orientation="h")),
+        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="day", orientation="h")),
         make_code_clipboard_from_py_file("stacked_bar.py"),
     ],
 )
@@ -169,7 +169,7 @@ stacked_column = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="smoker")),
+        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
         make_code_clipboard_from_py_file("stacked_bar.py"),
     ],
 )
