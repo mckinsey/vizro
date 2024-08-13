@@ -35,9 +35,9 @@ These models offer different levels of performance and cost to Vizro-AI users.
 
 ### Chart generation
 
-For chart creation with OpenAI, the **gpt-4o-mini** and **gpt-3.5** model series have lower price points and faster speeds for providing answers, but do not offer sophisticated charting.
+For basic chart creation with OpenAI, the **gpt-4o-mini** and **gpt-3.5** model series have lower price points and faster speeds, but they do not offer sophisticated charting.
 
-Consider upgrading to the **gpt-4o** and **gpt-4** model series for more demanding tasks. While they are part of a more capable GPT model series, they come at a higher cost.
+Consider upgrading to the **gpt-4o** and **gpt-4** model series for more demanding tasks. The downside of using these models is that they come at a higher cost.
 
 Refer to the [OpenAI documentation for more about model capabilities](https://platform.openai.com/docs/models/overview) and [pricing](https://openai.com/pricing).
 
@@ -48,9 +48,9 @@ Refer to the [OpenAI documentation for more about model capabilities](https://pl
 === "OpenAI"
 
     - gpt-3.5-turbo `default`: Ideal for smaller requests and simple specifications. However, due to the complexity of dashboard creation, `gpt-3.5-turbo` often produces incomplete responses for larger tasks.
-    - gpt-4o: Most ideal for dashboard generation tasks. Excels in dashboard creation tasks, providing stable and complete responses. Compared to gpt-4-turbo, gpt-4o is much faster and cheaper.
+    - gpt-4o: Most ideal for dashboard generation tasks, providing stable and complete responses. Compared to gpt-4-turbo, it is much faster and cheaper.
     - gpt-4-turbo: Excels in dashboard creation tasks, providing stable and complete responses.
-    - gpt-4o-mini: Ideal for smaller requests and simple specifications. Most cost-effective. However, due to the complexity of dashboard creation, its performance is not stable.
+    - gpt-4o-mini: Ideal for smaller requests and simple specifications. Most cost-effective. However, due to the complexity of dashboard creation, its performance is not guaranteed to be reliable.
 
 
 === "Anthropic"
