@@ -5,22 +5,18 @@ try:
     from pydantic.v1.fields import SHAPE_LIST, ModelField
     from pydantic.v1.typing import get_args
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, root_validator, validator
+    from pydantic import BaseModel, Field, validator
     from pydantic.fields import SHAPE_LIST, ModelField
     from pydantic.typing import get_args
 
 
-from black import FileMode, format_str
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 from vizro.models._utils import (
-    STANDARD_IMPORT_PATHS,
     _dict_to_python,
-    _get_callable_code_strings,
-    _get_data_manager_code_strings,
-    _get_import_statements,
+    _format_and_lint,
 )
 
 
@@ -127,32 +123,29 @@ class VizroBaseModel(BaseModel):
     # exists in pydantic v2).
     # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
     # to potentially exclude fields set this way, like Page.id.
-    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str],Mapping[str, Any]]]:
+    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
         return None
 
     def to_python(self):
         model_dict = self.dict(exclude_unset=True)
-        captured_info = []
-        model_code = f"{str(model_dict.get('model_name','object')).lower()} = " + _dict_to_python(
-            model_dict, captured_info
-        )
-        import_statements = STANDARD_IMPORT_PATHS | _get_import_statements(captured_info)
-        data_setting = _get_data_manager_code_strings(captured_info)
-        callable_definitions = _get_callable_code_strings(captured_info)
+        # captured_info = []
+        model_code = _dict_to_python(model_dict)
+        # import_statements = STANDARD_IMPORT_PATHS | _get_import_statements(captured_info)
+        # data_setting = _get_data_manager_code_strings(captured_info)
+        # callable_definitions = _get_callable_code_strings(captured_info)
 
-        concatenated_code = "\n\n".join(
-            [
-                "######## Module Imports ##########\n" + "\n".join((import_statements)),
-                "########## Data Imports ##########\n#####!!! UNCOMMENT BELOW !!!######\n" + "\n".join((data_setting)),
-                "###### Callable definitions ######\n" + ("\n".join(callable_definitions)),
-                "########## Object code ###########\n" + model_code,
-            ]
-        )
+        # concatenated_code = "\n\n".join(
+        #     [
+        #         "######## Module Imports ##########\n" + "\n".join((import_statements)),
+        #         "########## Data Imports ##########\n#####!!! UNCOMMENT BELOW !!!######\n" + "\n".join((data_setting)),
+        #         "###### Callable definitions ######\n" + ("\n".join(callable_definitions)),
+        #         "########## Object code ###########\n" + model_code,
+        #     ]
+        # )
 
         # check for formatting: https://mckinsey-hub.slack.com/archives/D03N7KXFXV3/p1721401376669179?thread_ts=1721400781.371419&cid=D03N7KXFXV3
         # TODO: potentially use ruff over just black
-
-        return format_str(concatenated_code, mode=FileMode(line_length=88))
+        return _format_and_lint(model_code)
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -163,9 +156,10 @@ class VizroBaseModel(BaseModel):
 
 if __name__ == "__main__":
     # from typing import Any
-
     import vizro.models as vm
+    import vizro.plotly.express as px
     from vizro import Vizro
+    from vizro.tables import dash_ag_grid
 
     Vizro._reset()
     # # For the plot prints - needs to transfer somewhere
@@ -177,8 +171,8 @@ if __name__ == "__main__":
         title="Page 1",
         components=[
             vm.Card(text="Foo"),
-            # vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-            # vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
         ],
         # controls=[vm.Filter(column="species")],
     )
@@ -186,33 +180,7 @@ if __name__ == "__main__":
     dashboard = vm.Dashboard(title="Bar", pages=[page])
 
     # print(dashboard.dict(exclude_unset=True))
-    # string = dashboard.to_python()
-    # print(string)
+    string = dashboard.to_python()
+    print(string)
 
-    from typing import Literal
-
-    class ExcludeModel(vm.VizroBaseModel):
-        type: Literal["exclude_model"] = "exclude_model"
-        title: str = Field(..., description="Title to be displayed.")
-        foo: str = ""
-
-        @validator("foo", always=True)
-        def set_fo(cls, foo) -> str:
-            return foo or "long-random-thing"
-
-        # Set a field with a pre=True validator
-        @root_validator(pre=True)
-        def set_id(cls, values):
-            if "title" not in values:
-                return values
-
-            values.setdefault("id", values["title"])
-            return values
-
-        # Exclude field even if missed by exclude_unset=True
-        def __vizro_exclude_fields__(self):
-            return {"id"}
-
-    model = ExcludeModel(title="foo")
-    # print(model.dict(exclude_unset=True))
-    print(model.dict())
+    table = dash_ag_grid(data_frame="iris")

@@ -16,6 +16,12 @@ class PathReplacement:
 
 
 @dataclass
+class PathReplacement_new:
+    original: str
+    new: str
+
+
+@dataclass
 class CapturedCallableInfo:
     name: str
     module: str
@@ -30,12 +36,19 @@ REPLACEMENT_STRINGS = [
     PathReplacement("vizro.actions", "", lambda x, y: f"from {x} import {y}"),
     PathReplacement("vizro.charts", "", lambda x, y: f"from {x} import {y}"),
 ]
+REPLACEMENT_STRINGS2 = [
+    PathReplacement_new("plotly.express", "px."),
+    PathReplacement_new("vizro.tables", "vt."),
+    PathReplacement_new("vizro.figures", "vf."),
+    PathReplacement_new("vizro.actions", "va."),
+    PathReplacement_new("vizro.charts", "vc"),
+]
 
 STANDARD_IMPORT_PATHS = {
     "import vizro.models as vm",
     "from vizro import Vizro",
     "from vizro.managers import data_manager",
-    "from vizro.models.types import capture", #TODO: could make conditional based on content
+    "from vizro.models.types import capture",  # TODO: could make conditional based on content
 }
 
 
@@ -79,12 +92,12 @@ def _get_data_manager_code_strings(captured_info: List[CapturedCallableInfo]) ->
 
 def _clean_module_string(module_string: str) -> str:
     return next(
-        (replacement.replace_path for replacement in REPLACEMENT_STRINGS if replacement.detect_path in module_string),
+        (replacement.new for replacement in REPLACEMENT_STRINGS2 if replacement.original in module_string),
         "",
     )
 
 
-def _repr_clean(info: CapturedCallableInfo) -> str:
+def _repr_cleaned(info: CapturedCallableInfo) -> str:
     """Alternative __repr__ method with cleaned module paths."""
     args = ", ".join(f"{key}={value!r}" for key, value in info.args)
     module_path = f"{info.module}"
@@ -93,7 +106,7 @@ def _repr_clean(info: CapturedCallableInfo) -> str:
     return x
 
 
-def _dict_to_python(model_data: Any, captured_info: Optional[List[CapturedCallableInfo]] = None) -> str:
+def _dict_to_python_old(model_data: Any, captured_info: Optional[List[CapturedCallableInfo]] = None) -> str:
     """Function to generate python string from pydantic model dict."""
     from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
 
@@ -106,18 +119,18 @@ def _dict_to_python(model_data: Any, captured_info: Optional[List[CapturedCallab
             if model_name == ACTIONS_CHAIN:
                 action_data = model_data[ACTION]
                 if isinstance(action_data, List):
-                    return ", ".join(_dict_to_python(item, captured_info) for item in action_data)
+                    return ", ".join(_dict_to_python_old(item, captured_info) for item in action_data)
                 else:
-                    return _dict_to_python(action_data, captured_info)
+                    return _dict_to_python_old(action_data, captured_info)
             else:
                 other_content = ", ".join(
-                    f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items()
+                    f"{key}={_dict_to_python_old(value, captured_info)}" for key, value in model_data.items()
                 )
                 return f"vm.{model_name}({other_content})"
         else:
-            return ", ".join(f"{key}={_dict_to_python(value, captured_info)}" for key, value in model_data.items())
+            return ", ".join(f"{key}={_dict_to_python_old(value, captured_info)}" for key, value in model_data.items())
     elif isinstance(model_data, List):
-        return "[" + ", ".join(_dict_to_python(item, captured_info) for item in model_data) + "]"
+        return "[" + ", ".join(_dict_to_python_old(item, captured_info) for item in model_data) + "]"
     elif isinstance(model_data, CapturedCallable):
         info = CapturedCallableInfo(
             name=model_data._function.__name__,
@@ -130,6 +143,41 @@ def _dict_to_python(model_data: Any, captured_info: Optional[List[CapturedCallab
             else None,
         )
         captured_info.append(info)
-        return _repr_clean(info=info)
+        return _repr_cleaned(info=info)
 
     return repr(model_data)
+
+
+def _dict_to_python(object: Any) -> str:
+    from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
+
+    if isinstance(object, dict) and "__vizro_model__" in object:
+        __vizro_model__ = object.pop("__vizro_model__")
+        # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
+        # rather than repr recursively.
+        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+        return f"vm.{__vizro_model__}({fields})"
+    elif isinstance(object, dict):
+        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+        return "{" + fields + "}"
+    elif isinstance(object, list):
+        # Need to do this manually to avoid extra quotation marks that arise when doing repr(List).
+        code_string = ", ".join(_dict_to_python(item) for item in object)
+        return f"[{code_string}]"
+    elif isinstance(object, CapturedCallable):
+        return object._repr_clean()
+        # import vizro.tables as vt
+        # vizro.plotly.express.scatter -> px.scatter
+        # vizro.tables.dash_data_table -> vt.dash_data_table
+
+        # do repr then modify itor with new field in
+        # original_repr = repr(obect)
+        # return clean(original_repr)
+        # OR do through CapturedCallableInfo
+        # info = CapturedCallableInfo(object)
+        # return clean_repr(info)
+        # CapturedCallable property
+        # return object._info.function_call_string
+        # Depends on how interaction with VizroAI charts works.
+    else:
+        return repr(object)
