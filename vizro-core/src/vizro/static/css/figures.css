@@ -20,12 +20,12 @@ and lives in the `static/css/fonts` folder */
   font-size: 24px;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
+  font-weight: 400;
   letter-spacing: normal;
   line-height: 1;
   text-transform: none;
   white-space: nowrap;
   word-wrap: normal;
-  font-weight: 400;
 }
 
 .card-kpi .material-symbols-outlined {
