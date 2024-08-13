@@ -1,9 +1,20 @@
 """Ranking charts."""
 
+from typing import Optional
+
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro.models.types import capture
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
+
+
+@capture("graph")
+def ordered_histogram(data_frame, x: str, y: str, orientation: Optional[str] = None):
+    fig = px.histogram(data_frame, x=x, y=y, orientation=orientation)
+    axis_update = fig.update_yaxes if orientation == "h" else fig.update_xaxes
+    return axis_update(categoryorder="total descending")
+
 
 ordered_bar = vm.Page(
     title="Ordered bar",
@@ -29,7 +40,7 @@ ordered_bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.histogram(
+            figure=ordered_histogram(
                 tips,
                 x="total_bill",
                 y="day",
@@ -65,7 +76,7 @@ ordered_column = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.histogram(
+            figure=ordered_histogram(
                 tips,
                 y="total_bill",
                 x="day",
