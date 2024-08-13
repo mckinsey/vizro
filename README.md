@@ -86,7 +86,7 @@ Vizro-AI is a separate package and extends Vizro to enable the use of natural la
 <img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
 </p>
 
-See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) for more details.
+See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
 ## Key benefits of Vizro
 
@@ -131,10 +131,10 @@ See the [how-to guides](https://vizro.readthedocs.io/en/stable/pages/user-guides
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                           Version                                           |                               Documentation                                |
-| :------------------------: | :-----------------------------------------------------------------------------------------: | :------------------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |           [Vizro Docs](https://vizro.readthedocs.io/en/stable/)            |
-|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) |
+|           Folder           |                                           Version                                           |                          Documentation                           |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :--------------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |      [Vizro Docs](https://vizro.readthedocs.io/en/stable/)       |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
 
 ## Community and development
 

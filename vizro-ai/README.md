@@ -41,7 +41,7 @@ Please review the [Disclaimer](https://vizro-ai.readthedocs.io/en/latest/pages/e
 
 ## Documentation
 
-For more information, please refer to our [Documentation](https://vizro-ai.readthedocs.io/en/latest/).
+For more information, please refer to our [Documentation](https://vizro.readthedocs.io/projects/vizro-ai/).
 
 ## Acknowledgment
 
