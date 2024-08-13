@@ -7,7 +7,6 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/docs/add_colab_link/vizro-ai/examples/colab-example-chart.ipynb)
 
 <img src="./docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
@@ -19,6 +18,12 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 </p>
 
 </div>
+
+## Try out live
+
+| Platform     | Chart creation                                                                                                                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Google colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/docs/add_colab_link/vizro-ai/examples/chart_by_vizro_ai.ipynb) |
 
 ## Why Vizro-AI?
 
