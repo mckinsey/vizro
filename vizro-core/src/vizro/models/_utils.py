@@ -42,8 +42,12 @@ STANDARD_IMPORT_PATHS = {
 def _format_and_lint(code_string: str):
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    formatted = subprocess.check_output(["ruff", "format", "-"], input=code_string, encoding="utf-8")
-    linted = subprocess.check_output(["ruff", "check", "--fix", "--exit-zero", "-"], input=formatted, encoding="utf-8")
+    formatted = subprocess.check_output(
+        ["ruff", "format", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
+    )
+    linted = subprocess.check_output(
+        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=formatted, encoding="utf-8"
+    )
     return linted
 
 
