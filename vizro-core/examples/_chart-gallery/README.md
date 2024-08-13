@@ -1,7 +1,7 @@
 # Chart gallery dashboard
 
 This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
-to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://vizro.mckinsey.com/).
+to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
 
 Inspired by the [FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
 FT Graphics: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, Martin Stabe.

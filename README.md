@@ -23,7 +23,7 @@
 
 <a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
 <a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
-<a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
+<a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
 
 </div>
 
@@ -98,16 +98,16 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 
 <br/>
 
-## Live demo
+## Vizro examples gallery
 
-You can see Vizro in action by clicking on the following image or by visiting [vizro.mckinsey.com](https://vizro.mckinsey.com).
+You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/gapminder_example.png" width="525" height="296">  </a>
 </p>
 
-## Examples
+## Dashboard screenshots
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
