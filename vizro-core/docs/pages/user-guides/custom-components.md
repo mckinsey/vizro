@@ -441,7 +441,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
         # 3. Create custom action
         @capture("action")
-        def carousel(active_index):
+        def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
 
@@ -459,7 +459,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
                     ],
                     actions=[
                         vm.Action(
-                            function=carousel(),
+                            function=slide_next_card(),
                             inputs=["carousel.active_index"],
                             outputs=["carousel-card.children"]
                         )
