@@ -33,7 +33,7 @@ you can still switch between the themes via the toggle button in the upper-right
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
-        ```yaml
+        ```yaml hl_lines="11"
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
