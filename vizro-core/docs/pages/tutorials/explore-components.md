@@ -70,7 +70,7 @@ The code below shows the steps necessary to add a box plot to the page:
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
-As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and running the dashboard is displayed by `Vizro().build(dashboard).run()`.
+As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
 
 ### 2.2. Add further components
 
