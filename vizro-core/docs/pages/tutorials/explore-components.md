@@ -6,7 +6,7 @@ If you haven't yet done so, you may want to review the [first dashboard tutorial
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-The code for this tutorial is all available for you to experiment with in [Py.Cafe](https://py.cafe/) so there is need to install Vizro and run it locally.
+The code for this tutorial is all available for you to experiment with in [Py.Cafe](https://py.cafe/) so there is no need to install Vizro and run it locally.
 
 However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
@@ -70,7 +70,7 @@ The code below shows the steps necessary to add a box plot to the page:
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
-As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and running the dashboard is displayed by `Vizro().build(dashboard).run()`.
+As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
 
 ### 2.2. Add further components
 
