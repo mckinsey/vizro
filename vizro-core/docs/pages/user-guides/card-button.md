@@ -391,7 +391,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         pages:
         - components:
             - text: |
-                ![](assets/images/continents/europe.svg#my-image#floating-center)
+                ![](assets/images/continents/europe.svg#my-image#floating-right)
 
                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
