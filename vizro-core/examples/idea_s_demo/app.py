@@ -11,21 +11,13 @@ from time import sleep
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import export_data, filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
 
 from custom_components import LoadingSpinner, LogsInterval, MyButton, MyCard, Upload
 
-
-vm.Page.add_type("components", LogsInterval)
-vm.Page.add_type("components", MyCard)
-
-vm.Page.add_type("controls", vm.Card)
-vm.Page.add_type("controls", vm.Button)
-vm.Page.add_type("controls", LoadingSpinner)
-vm.Page.add_type("controls", MyButton)
 
 vm.Container.add_type("components", Upload)
 vm.Container.add_type("components", LoadingSpinner)
@@ -235,10 +227,10 @@ def get_run_script_component(script_id, nav_to_page, filter_year):
                 id=f"tab_{script_id}_nav_card_id",
                 href=nav_to_page,
                 text=(
-                    """
+                    f"""
                         ### Click Here  &#10132;
 
-                        to see the results on the next page.
+                        to see the results on the '{nav_to_page}'.
                     """
                 ),
             ),
@@ -248,15 +240,16 @@ def get_run_script_component(script_id, nav_to_page, filter_year):
 
 page_1 = vm.Page(
     id="page-1",
-    title="Upload Data",
+    title="Data processing",
     layout=vm.Layout(grid=[[0], [1], [1], [1]]),
     components=[
         vm.Container(
             title="",
             layout=vm.Layout(
                 grid=[
-                    *[[0, 2, 2, 2]] * 2,
-                    *[[1, 2, 2, 2]] * 4,
+                    [0, -1, -1, -1],
+                    [1, -1, -1, -1],
+                    [1, -1, -1, -1],
                 ],
                 row_gap="0px",
             ),
@@ -278,18 +271,9 @@ page_1 = vm.Page(
                                 "tab_2_run_script_button_id.disabled",
                                 "tab_1_upload_card_id.children",
                                 "tab_2_upload_card_id.children",
-                                # TODO: Add nav card disappearing if needed
                             ]
                         )
                     ],
-                ),
-                vm.AgGrid(
-                    id="page_1_hidden_table",
-                    figure=dash_ag_grid(
-                        data_frame=pd.DataFrame(),
-                        columnDefs=columnDefs,
-                        dashGridOptions={"rowSelection": "single"},
-                    ),
                 ),
             ],
         ),
@@ -302,114 +286,70 @@ page_1 = vm.Page(
     ],
 )
 
-page_2 = vm.Page(
-    id="page-2",
-    title="Results for 1952",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
-    components=[
-        vm.Graph(
-            id="page-2-graph-1-id",
-            figure=px.scatter(
-                "page_2_data",
-                title="Graph 1",
-                x="lifeExp",
-                y="gdpPercap",
-                color="continent",
-                size="pop",
-            ),
-        ),
-        vm.Graph(
-            id="page-2-graph-2-id",
-            figure=px.box(
-                "page_2_data",
-                title="Graph 2",
-                x="continent",
-                y="gdpPercap",
-                color="continent",
-            ),
-        ),
-        vm.Table(
-            id="page-2-table-3-id",
-            title="Results table",
-            figure=dash_data_table(data_frame="page_2_data", page_size=7),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-        vm.Parameter(
-            targets=["page-2-graph-1-id.y", "page-2-graph-2-id.y"],
-            selector=vm.Dropdown(
-                title="Select Y-axis",
-                options=[
-                    {"label": "GDP per Capita", "value": "gdpPercap"},
-                    {"label": "Life Expectancy", "value": "lifeExp"},
-                    {"label": "Population", "value": "pop"},
-                ],
-                value="gdpPercap",
-                multi=False
-            ),
-        ),
-        vm.Button(
-            text="Export Data",
-            actions=[vm.Action(function=export_data(targets=["page-2-table-3-id"]))]
-        )
-    ]
-)
 
-page_3 = vm.Page(
-    id="page-3",
-    title="Results for 2007",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
-    components=[
-        vm.Graph(
-            id="page-3-graph-1-id",
-            figure=px.scatter(
-                "page_3_data",
-                title="Graph 1",
-                x="lifeExp",
-                y="gdpPercap",
-                color="continent",
-                size="pop",
+def get_results_page(page_id, title, data_id):
+    return vm.Page(
+        id=page_id,
+        title=title,
+        layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+        components=[
+            vm.Graph(
+                id=f"{page_id}_graph_1_id",
+                figure=px.box(
+                    data_id,
+                    title="Graph 1",
+                    x="continent",
+                    y="gdpPercap",
+                    color="continent",
+                    custom_data=["continent"]
+                ),
+                actions=[
+                    vm.Action(function=filter_interaction(targets=[f"{page_id}_graph_2_id"]))
+                ]
             ),
-        ),
-        vm.Graph(
-            id="page-3-graph-2-id",
-            figure=px.box(
-                "page_3_data",
-                title="Graph 2",
-                x="continent",
-                y="gdpPercap",
-                color="continent",
+            vm.Graph(
+                id=f"{page_id}_graph_2_id",
+                figure=px.scatter(
+                    data_id,
+                    title="Graph 2",
+                    x="lifeExp",
+                    y="gdpPercap",
+                    color="continent",
+                    size="pop",
+                    hover_data=["country"],
+                ),
             ),
-        ),
-        vm.Table(
-            id="page-3-table-3-id",
-            title="Results table",
-            figure=dash_data_table(data_frame="page_3_data", page_size=7),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent"),
-        vm.Parameter(
-            targets=["page-3-graph-1-id.y", "page-3-graph-2-id.y"],
-            selector=vm.Dropdown(
-                title="Select Y-axis",
-                options=[
-                    {"label": "GDP per Capita", "value": "gdpPercap"},
-                    {"label": "Life Expectancy", "value": "lifeExp"},
-                    {"label": "Population", "value": "pop"},
-                ],
-                value="gdpPercap",
-                multi=False
+            vm.Table(
+                id=f"{page_id}_table_3_id",
+                title="Results table",
+                figure=dash_data_table(data_frame=data_id, page_size=7),
             ),
-        ),
-        vm.Button(
-            text="Export Data",
-            actions=[vm.Action(function=export_data(targets=["page-3-table-3-id"]))]
-        )
-    ]
-)
+        ],
+        controls=[
+            vm.Parameter(
+                targets=[f"{page_id}_graph_1_id.y", f"{page_id}_graph_2_id.y"],
+                selector=vm.Dropdown(
+                    title="Select Y-axis",
+                    options=[
+                        {"label": "GDP per Capita", "value": "gdpPercap"},
+                        {"label": "Life Expectancy", "value": "lifeExp"},
+                        {"label": "Population", "value": "pop"},
+                    ],
+                    value="gdpPercap",
+                    multi=False
+                ),
+            ),
+            vm.Filter(column="continent"),
+            vm.Button(
+                text="Export Data",
+                actions=[vm.Action(function=export_data(targets=[f"{page_id}_table_3_id"]))]
+            )
+        ]
+    )
 
+
+page_2 = get_results_page("page-2", "Results for 1952", "page_2_data")
+page_3 = get_results_page("page-3", "Results for 2007", "page_3_data")
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
