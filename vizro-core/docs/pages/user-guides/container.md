@@ -55,11 +55,10 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         page = vm.Page(
             title="Containers",
-            # Use layout default and stack the Containers vertically in one column
-            components=[
+            components=[  # (1)!
                 vm.Container(
                     title="Container I",
-                    layout=vm.Layout(grid=[[0, 1]]),  # Horizontally stack the components inside this Container
+                    layout=vm.Layout(grid=[[0, 1]]),  # (2)!
                     components=[
                         vm.Graph(
                             figure=px.scatter(
@@ -104,6 +103,9 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         Vizro().build(dashboard).run()
         ```
+
+        1. Note that the `Page.layout` argument is not specified here and will therefore defaults to `[[0], [1]]`, meaning the containers will be **vertically stacked** down the page in one column.
+        2. **Horizontally stack** the components side-by-side inside this `Container` in one row.
 
     === "app.yaml"
         ```yaml
