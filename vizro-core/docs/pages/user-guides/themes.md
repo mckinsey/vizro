@@ -10,7 +10,7 @@ you can still switch between the themes via the toggle button in the upper-right
 
 !!! example "Change theme"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
