@@ -26,8 +26,8 @@ class TestComponentCreate:
                 all_df_metadata=None,
             )
         assert actual.type == "card"
-        
-    def test_graph_create_valid(self, mocker,component_plan_graph, mock_vizro_ai_return,fake_llm,df_metadata, df):
+
+    def test_graph_create_valid(self, mocker, component_plan_graph, mock_vizro_ai_return, fake_llm, df_metadata, df):
         mock_vizro_ai_object = mocker.patch("vizro_ai.VizroAI.__init__")
         mock_vizro_ai_object.return_value = None
         mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI.plot")
@@ -36,12 +36,10 @@ class TestComponentCreate:
             model=None,
             all_df_metadata=df_metadata,
         )
-        expected = vm.Graph(
-            id = "mock_id",
-            figure = mock_vizro_ai_return
-        )
-        assert result.dict(exclude={"id": True}) == expected.dict(exclude={"id": True}) #TODO: this should really be assert_components_equal
-
+        expected = vm.Graph(id="mock_id", figure=mock_vizro_ai_return)
+        assert result.dict(exclude={"id": True}) == expected.dict(
+            exclude={"id": True}
+        )  # TODO: this should really be assert_components_equal
 
 
 def test_card_create_valid(mocker, fake_llm_card, component_card, df):
