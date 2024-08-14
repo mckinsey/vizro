@@ -75,7 +75,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ??? example "Example based on existing component"
 
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link linenums="1" hl_lines="18 19"}
         from typing_extensions import Literal
 
         import vizro.models as vm
