@@ -8,6 +8,7 @@ from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
+import vizro.plotly.express as px
 
 
 class MockStructuredOutputLLM(FakeListLLM):
@@ -87,6 +88,26 @@ def component_card():
         component_id="card_1",
         df_name="N/A",
     )
+
+
+
+@pytest.fixture
+def component_plan_graph():
+    return ComponentPlan(
+        component_type="Graph",
+        component_description="Scatter chart with x-axis as 'a' and y-axis as 'b'",
+        component_id="graph_1",
+        df_name="bar_chart",
+    )
+
+@pytest.fixture
+def mock_vizro_ai_return(df):
+    return px.scatter(
+        data_frame=df,
+        x="a",
+        y="b",
+    )
+
 
 
 @pytest.fixture
