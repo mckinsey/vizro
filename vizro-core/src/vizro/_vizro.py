@@ -91,8 +91,11 @@ class Vizro:
         # clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
         # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
-        # either because it's a staticmethod. Remember this template setting can't go in run() though since it's needed
-        # even in deployment.
+        # either because it's a staticmethod so can't access self.old_theme (though we could use a global variable to
+        # store it). Remember this template setting can't go in run() though since it's needed even in deployment.
+        # Probably the best solution if we do want to fix this would be to have two separate paths that are followed:
+        # 1. In deployment (or just outside Jupyter?), set the theme here and never revert it.
+        # 2. In other contexts, use context manager in run method.
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
