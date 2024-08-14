@@ -2,8 +2,6 @@
   min-width: 140px;
 }
 
-.loading-container:has(#page_1_hidden_table) {
-  display: none;
 }
 
 .dash-sk-circle .dash-sk-child {

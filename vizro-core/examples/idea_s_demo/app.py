@@ -11,6 +11,7 @@ from time import sleep
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import export_data
 from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
@@ -31,6 +32,8 @@ vm.Container.add_type("components", LoadingSpinner)
 vm.Container.add_type("components", MyButton)
 vm.Container.add_type("components", MyCard)
 vm.Container.add_type("components", LogsInterval)
+
+vm.Page.add_type("controls", vm.Button)
 
 columnDefs = [
     {"field": "country"},
@@ -301,17 +304,18 @@ page_1 = vm.Page(
 
 page_2 = vm.Page(
     id="page-2",
-    title="Process Results",
+    title="Results for 1952",
     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
             id="page-2-graph-1-id",
-            figure=px.bar(
+            figure=px.scatter(
                 "page_2_data",
                 title="Graph 1",
-                x="continent",
-                y="lifeExp",
+                x="lifeExp",
+                y="gdpPercap",
                 color="continent",
+                size="pop",
             ),
         ),
         vm.Graph(
@@ -320,7 +324,7 @@ page_2 = vm.Page(
                 "page_2_data",
                 title="Graph 2",
                 x="continent",
-                y="lifeExp",
+                y="gdpPercap",
                 color="continent",
             ),
         ),
@@ -330,21 +334,42 @@ page_2 = vm.Page(
             figure=dash_data_table(data_frame="page_2_data", page_size=7),
         ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+        vm.Parameter(
+            targets=["page-2-graph-1-id.y", "page-2-graph-2-id.y"],
+            selector=vm.Dropdown(
+                title="Select Y-axis",
+                options=[
+                    {"label": "GDP per Capita", "value": "gdpPercap"},
+                    {"label": "Life Expectancy", "value": "lifeExp"},
+                    {"label": "Population", "value": "pop"},
+                ],
+                value="gdpPercap",
+                multi=False
+            ),
+        ),
+        vm.Button(
+            text="Export Data",
+            actions=[vm.Action(function=export_data(targets=["page-2-table-3-id"]))]
+        )
+    ]
 )
 
 page_3 = vm.Page(
     id="page-3",
-    title="Process Results 2",
+    title="Results for 2007",
     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
             id="page-3-graph-1-id",
-            figure=px.bar(
+            figure=px.scatter(
                 "page_3_data",
                 title="Graph 1",
-                x="continent",
-                y="lifeExp",
+                x="lifeExp",
+                y="gdpPercap",
                 color="continent",
+                size="pop",
             ),
         ),
         vm.Graph(
@@ -353,7 +378,7 @@ page_3 = vm.Page(
                 "page_3_data",
                 title="Graph 2",
                 x="continent",
-                y="lifeExp",
+                y="gdpPercap",
                 color="continent",
             ),
         ),
@@ -363,6 +388,26 @@ page_3 = vm.Page(
             figure=dash_data_table(data_frame="page_3_data", page_size=7),
         ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+        vm.Parameter(
+            targets=["page-3-graph-1-id.y", "page-3-graph-2-id.y"],
+            selector=vm.Dropdown(
+                title="Select Y-axis",
+                options=[
+                    {"label": "GDP per Capita", "value": "gdpPercap"},
+                    {"label": "Life Expectancy", "value": "lifeExp"},
+                    {"label": "Population", "value": "pop"},
+                ],
+                value="gdpPercap",
+                multi=False
+            ),
+        ),
+        vm.Button(
+            text="Export Data",
+            actions=[vm.Action(function=export_data(targets=["page-3-table-3-id"]))]
+        )
+    ]
 )
 
 
