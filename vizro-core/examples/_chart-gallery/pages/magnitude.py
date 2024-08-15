@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import column_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
 
 bar = vm.Page(
     title="Bar",
@@ -29,14 +29,14 @@ bar = vm.Page(
             descriptions below.
         """
         ),
-        # AM comment: I think the canonical bar chart example should ideally use px.bar rather than px.histogram.
-        # For this to work without any aggregation we need one row per bar so I filter the data_frame by year.
-        # The filter pop > 1.5e8 gives what felt like a reasonable number of bars (7).
         vm.Graph(
             figure=px.bar(
-                px.data.gapminder().query("year == 2007 and pop > 1.5e8"),
-                y="pop",
-                x="country",
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ),
+                x="pop",
+                y="country",
+                orientation="h",
             )
         ),
         make_code_clipboard_from_py_file("bar.py"),

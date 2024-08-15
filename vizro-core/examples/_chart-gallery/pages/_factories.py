@@ -8,7 +8,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import butterfly
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
 
 
 def column_factory(group: str):
@@ -37,8 +37,12 @@ def column_factory(group: str):
         """
             ),
             vm.Graph(
-                figure=px.histogram(
-                    tips, y="total_bill", x="day", category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]}
+                figure=px.bar(
+                    gapminder.query(
+                        "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                    ),
+                    y="pop",
+                    x="country",
                 )
             ),
             make_code_clipboard_from_py_file("column.py"),

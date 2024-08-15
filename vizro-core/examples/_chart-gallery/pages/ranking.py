@@ -1,24 +1,9 @@
 """Ranking charts."""
 
-from typing import Optional
-
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.models.types import capture
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
-
-
-# AM comment: agreed that this is too complicated for such a simple example. In future we'll be able to do this post-fig
-# update without needing a custom chart but for now let's just sort the values before passing to the plotting function.
-# TODO: Move to custom_charts.py if we keep it
-@capture("graph")
-def ordered_histogram(data_frame, x: str, y: str, orientation: Optional[str] = None):
-    """Custom bar chart function with ordered categories."""
-    fig = px.histogram(data_frame, x=x, y=y, orientation=orientation)
-    axis_update = fig.update_yaxes if orientation == "h" else fig.update_xaxes
-    return axis_update(categoryorder="total descending")
-
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
 
 ordered_bar = vm.Page(
     title="Ordered bar",
@@ -43,12 +28,14 @@ ordered_bar = vm.Page(
             descriptions below.
         """
         ),
-        # AM comment: same as the bar chart but with sort_values.
         vm.Graph(
             figure=px.bar(
-                px.data.gapminder().query("year == 2007 and pop > 1.5e8").sort_values("pop"),
-                y="pop",
-                x="country",
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ).sort_values("pop"),
+                x="pop",
+                y="country",
+                orientation="h",
             )
         ),
         make_code_clipboard_from_py_file("ordered_bar.py"),
@@ -80,10 +67,12 @@ ordered_column = vm.Page(
         """
         ),
         vm.Graph(
-            figure=ordered_histogram(
-                tips,
-                y="total_bill",
-                x="day",
+            figure=px.bar(
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ).sort_values("pop"),
+                y="pop",
+                x="country",
             )
         ),
         make_code_clipboard_from_py_file("ordered_column.py"),
