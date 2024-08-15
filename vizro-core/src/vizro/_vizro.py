@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Iterable, List
 
 import dash
 import flask
+import plotly.io as pio
 from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
@@ -83,6 +84,19 @@ class Vizro:
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
         if dashboard.title:
             self.dash.title = dashboard.title
+
+        # Set global template to vizro_light or vizro_dark.
+        # The choice between these is generally meaningless because chart colors in the two are identical, and
+        # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
+        # clientside theme selector callback.
+        # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
+        # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
+        # either because it's a staticmethod so can't access self.old_theme (though we could use a global variable to
+        # store it). Remember this template setting can't go in run() though since it's needed even in deployment.
+        # Probably the best solution if we do want to fix this would be to have two separate paths that are followed:
+        # 1. In deployment (or just outside Jupyter?), set the theme here and never revert it.
+        # 2. In other contexts, use context manager in run method.
+        pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
