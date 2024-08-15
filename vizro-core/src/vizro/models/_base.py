@@ -137,8 +137,8 @@ class VizroBaseModel(BaseModel):
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
         # CapturedCallable definitions
-        callable_defs_list = _extract_captured_callable_source() | extra_callable_defs
-        callable_defs_concat = "\n".join(_extract_captured_callable_source()) if callable_defs_list else None
+        callable_defs_set = _extract_captured_callable_source() | extra_callable_defs
+        callable_defs_concat = "\n".join(callable_defs_set) if callable_defs_set else None
 
         # Data Manager
         data_defs_list = _extract_captured_callable_data_info()

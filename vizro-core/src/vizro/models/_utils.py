@@ -2,14 +2,13 @@ import inspect
 import subprocess
 import textwrap
 from dataclasses import dataclass
-from typing import Any, Optional, Set
+from typing import Any, List, Optional, Set
 
 from vizro.managers import model_manager
 
 MODEL_NAME = "model_name"
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
-
 
 TO_PYTHON_TEMPLATE = """
 ############ Imports ##############
@@ -19,12 +18,13 @@ import vizro.models as vm
 import vizro.actions as va
 from vizro import Vizro
 from vizro.models.types import capture
+from vizro.managers import data_manager
 {extra_imports}
 
 {callable_defs}
 {data_settings}
 
-######### Dashboard code ##########
+########## Object code ############
 {code}
 """
 
@@ -36,15 +36,14 @@ CALLABLE_TEMPLATE = """
 DATA_TEMPLATE = """
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
 {data_setting}
 """
-
 
 @dataclass
 class PathReplacement:
     original: str
     new: str
-
 
 REPLACEMENT_STRINGS = [
     PathReplacement("plotly.express", "px."),
@@ -55,16 +54,20 @@ REPLACEMENT_STRINGS = [
 ]
 
 
-def _format_and_lint(code_string: str):
+
+
+
+
+def _format_and_lint(code_string: str) -> str:
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    formatted = subprocess.check_output(
-        ["ruff", "format", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
-    )
     linted = subprocess.check_output(
-        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=formatted, encoding="utf-8"
+        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
     )
-    return linted
+    formatted = subprocess.check_output(
+        ["ruff", "format", "--silent", "--isolated", "-"], input=linted, encoding="utf-8"
+    )
+    return formatted
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -74,57 +77,26 @@ def _clean_module_string(module_string: str) -> str:
     )
 
 
-# def _dict_to_python_old(model_data: Any, captured_info: Optional[List[CapturedCallableInfo]] = None) -> str:
-#     """Function to generate python string from pydantic model dict."""
-#     from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
-
-#     if captured_info is None:
-#         captured_info = []
-
-#     if isinstance(model_data, Dict):
-#         if MODEL_NAME in model_data:
-#             model_name = model_data.pop(MODEL_NAME)
-#             if model_name == ACTIONS_CHAIN:
-#                 action_data = model_data[ACTION]
-#                 if isinstance(action_data, List):
-#                     return ", ".join(_dict_to_python_old(item, captured_info) for item in action_data)
-#                 else:
-#                     return _dict_to_python_old(action_data, captured_info)
-#             else:
-#                 other_content = ", ".join(
-#                     f"{key}={_dict_to_python_old(value, captured_info)}" for key, value in model_data.items()
-#                 )
-#                 return f"vm.{model_name}({other_content})"
-#         else:
-#             return ", ".join(f"{key}={_dict_to_python_old(value, captured_info)}" for key, value in model_data.items())
-#     elif isinstance(model_data, List):
-#         return "[" + ", ".join(_dict_to_python_old(item, captured_info) for item in model_data) + "]"
-#     elif isinstance(model_data, CapturedCallable):
-#         info = CapturedCallableInfo(
-#             name=model_data._function.__name__,
-#             module=model_data._function.__module__,
-#             args=list(model_data._arguments.items()),
-#             code=inspect.getsource(model_data._function)
-#             if all(
-#                 replacement.detect_path not in model_data._function.__module__ for replacement in REPLACEMENT_STRINGS
-#             )
-#             else None,
-#         )
-#         captured_info.append(info)
-#         return _repr_cleaned(info=info)
-
-#     return repr(model_data)
-
-
 def _dict_to_python(object: Any) -> str:
     from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
 
     if isinstance(object, dict) and "__vizro_model__" in object:
         __vizro_model__ = object.pop("__vizro_model__")
-        # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
-        # rather than repr recursively.
-        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
-        return f"vm.{__vizro_model__}({fields})"
+
+        # This is required to back-engineer the actions chains. It is easier to handle in the string conversion here
+        # than in the dict creation, because we end up with nested lists when being forced to return a list of actions.
+        # If we handle it in dict of vm.BaseModel, then we created an unexpected dict return.
+        if __vizro_model__ == ACTIONS_CHAIN:
+            action_data = object[ACTION]
+            # if isinstance(action_data, List):
+            return ", ".join(_dict_to_python(item) for item in action_data)
+            # else:
+            #     return _dict_to_python(action_data)
+        else:
+            # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
+            # rather than repr recursively.
+            fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+            return f"vm.{__vizro_model__}({fields})"
     elif isinstance(object, dict):
         fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
         return "{" + fields + "}"
@@ -155,28 +127,19 @@ def _concatenate_code(
     return _format_and_lint(unformatted_code)
 
 
-# def _extract_captured_callable_info():
-#     from vizro.models.types import CapturedCallable
-#     function_defs = []
-#     for model_id in model_manager:
-#         model = model_manager[model_id]
-#         for field_name, value in model:
-#             if field_name in model.__fields_set__ and isinstance(value, CapturedCallable):
-#                 if all(replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS2):
-#                     function_defs.append(textwrap.dedent(inspect.getsource(value._function)))
-#     return function_defs
-
-
 def _extract_captured_callable_source() -> Set[str]:
     from vizro.models.types import CapturedCallable
 
-    return {
-        textwrap.dedent(inspect.getsource(value._function))
-        for model_id in model_manager
-        for _, value in model_manager[model_id]
-        if isinstance(value, CapturedCallable)
-        if all(replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS)
-    }
+    captured_callable_sources = set()
+    for model_id in model_manager:
+        for _, value in model_manager[model_id]:
+            if isinstance(value, CapturedCallable) and all(replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS):
+                try:
+                    source = textwrap.dedent(inspect.getsource(value._function))
+                    captured_callable_sources.add(source)
+                except OSError:
+                    pass
+    return captured_callable_sources
 
 
 def _extract_captured_callable_data_info() -> Set[str]:
@@ -188,7 +151,6 @@ def _extract_captured_callable_data_info() -> Set[str]:
         for _, value in model_manager[model_id]
         if isinstance(value, CapturedCallable)
         if "data_frame" in value._arguments
-        if all(replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS)
     }
 
 
