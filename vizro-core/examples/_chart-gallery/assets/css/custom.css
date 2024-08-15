@@ -33,7 +33,8 @@ img[src*="#chart-icon"] {
 .flex-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
+  justify-content: flex-start;
 }
 
 .flex-container h4 {
@@ -44,7 +45,7 @@ img[src*="#chart-icon"] {
 }
 
 .flex-container .card {
-  height: 228px;
+  height: 232px;
   opacity: 0.3;
   width: 176px;
   margin: 0 0 auto;
@@ -60,18 +61,11 @@ img[src*="#chart-icon"] {
 
 .intro-text {
   border-left: 4px solid var(--text-secondary);
-  padding: 12px;
+  padding: 4px 12px;
 }
 
 .intro-text p {
   font-size: 16px;
   line-height: 20px;
+  margin: 0;
 }
-
-/*
-.navbar .nav-link.active {
-  border-right: 1px solid var(--border-enabled);
-  color: var(--text-primary);
-  width: 64px;
-}
-*/

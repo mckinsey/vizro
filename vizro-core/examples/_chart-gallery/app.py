@@ -44,7 +44,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
     # deviation-butterfly, which both have title "Butterfly", correspond to a single card.
     return vm.Container(
         title=chart_group.name,
-        layout=vm.Layout(grid=[[0, 1, 1, 1]], col_gap="40px"),
+        layout=vm.Layout(grid=[[0, 1, 1]], col_gap="40px"),
         components=[
             Markdown(text=chart_group.intro_text, classname="intro-text"),
             FlexContainer(

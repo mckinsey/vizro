@@ -12,6 +12,7 @@
   display: flex;
   gap: 16px;
   height: 32px;
+  flex-wrap: nowrap;
 }
 
 .tabs__panel {
