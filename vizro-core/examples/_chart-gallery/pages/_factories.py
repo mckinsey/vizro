@@ -104,6 +104,19 @@ def connected_scatter_factory(group: str):
                 avoid misinterpretation.
         """
             ),
+            # AM comment: This gapminder.query("country == 'Australia'") and `tips.query("sex=='Female'")` and my
+            # proposed gapminder.query("year == 2007 and pop...") are inconsistent with how `gapminder_2007` works,
+            # and I think it should be done the same way unless there's a good reason not to. There's two
+            # inconistencies:
+            # 1. `gapminder_2007` is defined in the data section of `_pages_utils.py` but `gapminder_australia`
+            # etc. isn't.
+            # 2. `gapminder_2007` is defined in the examples code (e.g. `treemap.py`) but `gapminder_australia`
+            # etc. isn't.
+            #
+            # 1 isn't so important, and if you think it now makes sense to just remove the DATA section from
+            # `_pages_utils.py` completely then that's fine by me. 2 matters more though because it's the user-facing examples code.
+            # Personally I'd put the querying code outside the chart call to keep the chart call simple, e.g. like you
+            # do for treemap example.
             vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
             make_code_clipboard_from_py_file("connected_scatter.py"),
         ],

@@ -29,13 +29,14 @@ bar = vm.Page(
             descriptions below.
         """
         ),
+        # AM comment: I think the canonical bar chart example should ideally use px.bar rather than px.histogram.
+        # For this to work without any aggregation we need one row per bar so I filter the data_frame by year.
+        # The filter pop > 1.5e8 gives what felt like a reasonable number of bars (7).
         vm.Graph(
-            figure=px.histogram(
-                tips,
-                x="total_bill",
-                y="day",
-                orientation="h",
-                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+            figure=px.bar(
+                px.data.gapminder().query("year == 2007 and pop > 1.5e8"),
+                y="pop",
+                x="country",
             )
         ),
         make_code_clipboard_from_py_file("bar.py"),
@@ -70,10 +71,19 @@ paired_bar = vm.Page(
             with fuller descriptions below.
         """
         ),
+        # AM comment: previously this had only one category on the y-axis which made it basically indistinguishable
+        # from a bar chart with two bars. I realised that in order to demonstrate pairs of bars without the n = 2
+        # confusion we actually need n > 2.
         vm.Graph(
             figure=px.histogram(
-                tips.query("sex=='Female'"), y="sex", x="total_bill", color="smoker", barmode="group", orientation="h"
-            )
+                tips,
+                y="day",
+                x="total_bill",
+                color="sex",
+                barmode="group",
+                orientation="h",
+                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+            ),
         ),
         make_code_clipboard_from_py_file("paired_bar.py"),
     ],

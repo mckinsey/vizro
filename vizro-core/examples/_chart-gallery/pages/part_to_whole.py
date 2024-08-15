@@ -72,7 +72,7 @@ donut = vm.Page(
                 hole=0.4,
             )
         ),
-        make_code_clipboard_from_py_file("pie.py"),
+        make_code_clipboard_from_py_file("donut.py"),
     ],
 )
 
