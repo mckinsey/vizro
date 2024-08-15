@@ -36,7 +36,6 @@ class VizroBaseModel(BaseModel):
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
     )
-    _private_attr: str = ""
 
     @validator("id", always=True)
     def set_id(cls, id) -> str:
