@@ -57,9 +57,13 @@ class Graph(VizroBaseModel):
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
-        # Remove top margin if title is provided
+        # Reduce top margin if no title is provided
         if fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
+
+        # Add top title padding if subtitle is provided, otherwise it's being cut off
+        if fig.layout.title.text and "<br>" in fig.layout.title.text:
+            fig.update_layout(title_pad_t=24)
 
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
