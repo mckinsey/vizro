@@ -12,6 +12,26 @@ and lives in the `static/css/fonts` folder */
   src: url("fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
+.material-symbols-outlined {
+  direction: ltr;
+  display: inline-block;
+  font-family: MaterialSymbolsOutlined, sans-serif;
+  font-feature-settings: "liga";
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+.card-kpi .material-symbols-outlined {
+  margin: auto 0;
+}
+
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
