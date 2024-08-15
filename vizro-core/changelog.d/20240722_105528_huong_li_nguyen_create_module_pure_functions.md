@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Create `vizro.figures.library` to contain KPI card Dash components that can be used outside the Vizro framework. ([#578](https://github.com/mckinsey/vizro/pull/578))
 
-
 ### Changed
 
 - Google Material icons library is served locally to enable offline functionality. ([#578](https://github.com/mckinsey/vizro/pull/578))
