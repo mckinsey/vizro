@@ -17,7 +17,7 @@ The following example shows how to create a custom action that postpones executi
 
 !!! example "Simple custom action"
     === "app.py"
-        ```py
+        ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -76,7 +76,7 @@ The following example shows how to create a custom action that shows the clicked
 !!! example "Custom action with dashboard inputs and outputs"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -156,7 +156,7 @@ If there are multiple `outputs` defined then the return value is iterated throug
 
 !!! example "Custom action with multiple return values"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
