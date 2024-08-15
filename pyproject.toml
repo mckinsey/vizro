@@ -69,7 +69,7 @@ ignore = [
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407"  # missing dashed underline after section
 ]
-ignore-init-module-imports = true #TODO: remove as deprecated soon
+ignore-init-module-imports = true  # TODO: remove as deprecated soon
 select = [
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings

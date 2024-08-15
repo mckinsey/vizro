@@ -1,11 +1,9 @@
-from typing import List
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash_ag_grid import AgGrid
+from vizro.actions import export_data
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
-from vizro.actions import export_data
 
 df = px.data.iris()
 
@@ -33,7 +31,6 @@ def my_custom_aggrid(chosen_columns, data_frame=None):
     )
 
 
-
 page2 = vm.Page(
     title="Page2",
     components=[
@@ -43,9 +40,7 @@ page2 = vm.Page(
         vm.Button(
             text="Export data",
             actions=[
-                vm.Action(
-                    function=export_data()
-                ),
+                vm.Action(function=export_data()),
                 vm.Action(
                     function=export_data(
                         file_format="xlsx",

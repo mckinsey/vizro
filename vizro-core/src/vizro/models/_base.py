@@ -216,10 +216,12 @@ if __name__ == "__main__":
     filter = vm.Filter(column="species")
     # dashboard = vm.Dashboard(title="Bar", pages=[page])
 
-    extra_callable = textwrap.dedent("""    @capture("graph")
+    extra_callable = textwrap.dedent(
+        """    @capture("graph")
     def extra(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    """)
+    """
+    )
 
     # print(dashboard.dict(exclude_unset=True))
     # string = dashboard._to_python(

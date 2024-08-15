@@ -5,11 +5,7 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.tables import dash_ag_grid,dash_data_table
-
 from charts.charts import page2
-
 from vizro.managers import data_manager
 
 df = px.data.iris()

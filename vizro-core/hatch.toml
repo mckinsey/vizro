@@ -27,7 +27,7 @@ dependencies = [
   "toml",
   "pyyaml",
   "openpyxl",
-  "jupyter",
+  "jupyter"
 ]
 
 [envs.default.env-vars]

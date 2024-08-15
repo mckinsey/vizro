@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Mapping, Set, TypedDict
+from typing import List, Set, TypedDict
 
 from dash import dcc, html
 

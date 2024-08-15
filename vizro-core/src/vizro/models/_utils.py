@@ -2,7 +2,7 @@ import inspect
 import subprocess
 import textwrap
 from dataclasses import dataclass
-from typing import Any, List, Optional, Set
+from typing import Any, Optional, Set
 
 from vizro.managers import model_manager
 
@@ -40,10 +40,12 @@ DATA_TEMPLATE = """
 {data_setting}
 """
 
+
 @dataclass
 class PathReplacement:
     original: str
     new: str
+
 
 REPLACEMENT_STRINGS = [
     PathReplacement("plotly.express", "px."),
@@ -52,10 +54,6 @@ REPLACEMENT_STRINGS = [
     PathReplacement("vizro.actions", "va."),
     PathReplacement("vizro.charts", "vc."),
 ]
-
-
-
-
 
 
 def _format_and_lint(code_string: str) -> str:
@@ -133,7 +131,9 @@ def _extract_captured_callable_source() -> Set[str]:
     captured_callable_sources = set()
     for model_id in model_manager:
         for _, value in model_manager[model_id]:
-            if isinstance(value, CapturedCallable) and all(replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS):
+            if isinstance(value, CapturedCallable) and all(
+                replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS
+            ):
                 try:
                     source = textwrap.dedent(inspect.getsource(value._function))
                     captured_callable_sources.add(source)

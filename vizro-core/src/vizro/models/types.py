@@ -261,7 +261,6 @@ class CapturedCallable:
         return x
 
 
-
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
 

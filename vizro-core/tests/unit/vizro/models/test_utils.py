@@ -13,7 +13,8 @@ code_string = "vm.Card(text='Foo')"
 callable_defs_string = """def f():\n  return 'hi'"""
 data_settings_string = """# data_manager["iris"] = ===> Fill in here <==="""
 
-expected_assembled_linted_code = textwrap.dedent("""############ Imports ##############
+expected_assembled_linted_code = textwrap.dedent(
+    """############ Imports ##############
 import vizro.models as vm
 
 
@@ -30,7 +31,8 @@ def f():
 
 ########### Model code ############
 vm.Card(text="Foo")
-""")
+"""
+)
 
 
 class TestCodeConcatenation:
@@ -68,11 +70,13 @@ def page_pre_defined_actions():
 
 @pytest.fixture
 def chart_dynamic():
-    function_string = textwrap.dedent("""
+    function_string = textwrap.dedent(
+        """
         @capture("graph")
         def chart_dynamic(data_frame, hover_data: Optional[List[str]] = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-        """)
+        """
+    )
 
     local_scope = {}
     exec(function_string, globals(), local_scope)
@@ -80,15 +84,18 @@ def chart_dynamic():
     return chart_dynamic
 
 
-expected_card = textwrap.dedent("""############ Imports ##############
+expected_card = textwrap.dedent(
+    """############ Imports ##############
 import vizro.models as vm
 
 
 ########### Model code ############
 model = vm.Card(text="Foo")
-""")
+"""
+)
 
-expected_graph = textwrap.dedent("""############ Imports ##############
+expected_graph = textwrap.dedent(
+    """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 
@@ -101,10 +108,12 @@ import vizro.models as vm
 
 ########### Model code ############
 model = vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length"))
-""")
+"""
+)
 
 
-expected_graph_with_callable = textwrap.dedent("""############ Imports ##############
+expected_graph_with_callable = textwrap.dedent(
+    """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
@@ -125,10 +134,12 @@ def chart(data_frame, hover_data: Optional[List[str]] = None):
 
 ########### Model code ############
 model = vm.Graph(figure=chart(data_frame="iris"))
-""")
+"""
+)
 
 
-expected_actions_predefined = textwrap.dedent("""############ Imports ##############
+expected_actions_predefined = textwrap.dedent(
+    """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
@@ -154,10 +165,12 @@ model = vm.Page(
     ],
     title="Page 1",
 )
-""")
+"""
+)
 
 
-excepted_graph_dynamic = textwrap.dedent("""############ Imports ##############
+excepted_graph_dynamic = textwrap.dedent(
+    """############ Imports ##############
 import vizro.models as vm
 
 
@@ -169,14 +182,18 @@ import vizro.models as vm
 
 ########### Model code ############
 model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
-""")
+"""
+)
 
-extra_callable = textwrap.dedent("""    @capture("graph")
+extra_callable = textwrap.dedent(
+    """    @capture("graph")
     def extra(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    """)
+    """
+)
 
-expected_code_with_extra_callable = textwrap.dedent("""############ Imports ##############
+expected_code_with_extra_callable = textwrap.dedent(
+    """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
@@ -190,7 +207,8 @@ def extra(data_frame, hover_data: Optional[List[str]] = None):
 
 ########### Model code ############
 model = vm.Card(text="Foo")
-""")
+"""
+)
 
 
 class TestPydanticPython:
