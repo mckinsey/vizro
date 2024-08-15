@@ -117,7 +117,6 @@ class VizroBaseModel(BaseModel):
         _dict = super().dict(**kwargs)
         # Inject __vizro_model__ into the dictionary - needed just for to_python.
         _dict["__vizro_model__"] = self.__class__.__name__
-        # _dict["actions"] = rewrite_dictionary(_dict["actions"])
         return _dict
 
     # This is like pydantic's own __exclude_fields__ but safer to use (it looks like __exclude_fields__ no longer
@@ -169,7 +168,6 @@ class VizroBaseModel(BaseModel):
 
 
 if __name__ == "__main__":
-    # from typing import Any
     import textwrap
 
     import vizro.models as vm
@@ -177,12 +175,9 @@ if __name__ == "__main__":
     from vizro import Vizro
     from vizro.actions import export_data
     from vizro.models.types import capture
+    from vizro.tables import dash_ag_grid
 
     Vizro._reset()
-    # # For the plot prints - needs to transfer somewhere
-    # # data_manager["iris"] = px.data.iris()
-    # df = px.data.iris()
-    # card = vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length"))
 
     @capture("graph")
     def chart(data_frame, hover_data: Optional[List[str]] = None):
@@ -198,9 +193,9 @@ if __name__ == "__main__":
         components=[
             #         vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-            #         vm.Graph(figure=chart(data_frame="iris")),
-            #         vm.Graph(figure=chart2(data_frame="iris")),
-            #         vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+                    vm.Graph(figure=chart(data_frame="iris")),
+                    vm.Graph(figure=chart2(data_frame="iris")),
+                    vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
             vm.Button(
                 text="Export data",
                 actions=[
@@ -209,11 +204,10 @@ if __name__ == "__main__":
                 ],
             ),
         ],
-        #     controls=[vm.Filter(column="species")],
+            controls=[vm.Filter(column="species")],
     )
-    Vizro._reset()
-    filter = vm.Filter(column="species")
-    # dashboard = vm.Dashboard(title="Bar", pages=[page])
+
+    dashboard = vm.Dashboard(title="Bar", pages=[page])
 
     extra_callable = textwrap.dedent(
         """    @capture("graph")
@@ -223,36 +217,7 @@ if __name__ == "__main__":
     )
 
     # print(dashboard.dict(exclude_unset=True))
-    # string = dashboard._to_python(
-    #     extra_imports={"from typing import Optional,List"}, extra_callable_defs={extra_callable}
-    # )
-    # print(string)
-    # data_manager["iris"] = px.data.iris()
-    # function_string = textwrap.dedent("""
-    # @capture("graph")
-    # def chart_dynamic(data_frame, hover_data: Optional[List[str]] = None):
-    #     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    # """)
-
-    # local_scope = {}
-    # exec(function_string, globals(), local_scope)
-    # chart_dynamic = local_scope['chart_dynamic']
-    # graph = vm.Graph(figure=chart(data_frame="iris"))
-    # graph = vm.Graph(figure=chart_dynamic(data_frame="iris"))
-
-    card = vm.Card(text="Foo")
-    # result = card._to_python(extra_callable_defs={extra_callable})
-    # print(result)
-    print(extra_callable)
-
-    # print(card._to_python(extra_callable_defs={extra_callable}))
-
-    # table = dash_ag_grid(data_frame="iris")
-
-    Vizro._reset()
-
-    # Open questions
-    # Actions -> fine where are
-    # placement in Vizro -> Base
-    # Model instead of dynamic name
-    # public arguments
+    string = dashboard._to_python(
+        extra_imports={"from typing import Optional,List"}, extra_callable_defs={extra_callable}
+    )
+    print(string)
