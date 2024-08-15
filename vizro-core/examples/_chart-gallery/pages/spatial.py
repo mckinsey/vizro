@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
 
 choropleth = vm.Page(
     title="Choropleth",
@@ -32,7 +32,7 @@ choropleth = vm.Page(
         ),
         vm.Graph(
             figure=px.choropleth(
-                gapminder_2007,
+                gapminder.query("year == 2007"),
                 locations="iso_alpha",
                 color="lifeExp",
                 hover_name="country",

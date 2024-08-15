@@ -2,12 +2,22 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-tips = px.data.tips()
-tips_sorted = tips.groupby("day").agg({"total_bill": "sum"}).sort_values("total_bill").reset_index()
+gapminder = px.data.gapminder()
+
 
 page = vm.Page(
     title="Column",
-    components=[vm.Graph(figure=px.bar(tips_sorted, y="total_bill", x="day"))],
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ).sort_values("pop"),
+                y="pop",
+                x="country",
+            )
+        )
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
