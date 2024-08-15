@@ -60,7 +60,7 @@ a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults
 
 You can also use our templates for plotly charts outside the dashboard. This is useful in a few contexts:
 
-* Creation of standalone charts to be used independently of a Vizro dashboard. 
+* Creation of standalone charts to be used independently of a Vizro dashboard.
 * Rapid development of charts for eventual use in a Vizro dashboard, for example in a Jupyter notebook.
 
 !!! note
@@ -97,4 +97,3 @@ px.scatter_matrix(df,
                   color="species",
                   template="vizro_light")
 ```
-
