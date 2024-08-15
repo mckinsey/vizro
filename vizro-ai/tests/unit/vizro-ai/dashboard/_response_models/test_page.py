@@ -10,10 +10,10 @@ except ImportError:  # pragma: no cov
 class TestPagePlan:
     """Test for page plan."""
 
-    def test_dashboard_plan(self, component_card):
+    def test_dashboard_plan(self, component_plan_card):
         page_plan = PagePlan(
             title="Test Page",
-            components_plan=[component_card],
+            components_plan=[component_plan_card],
             controls_plan=[],
             layout_plan=None,
         )
@@ -34,10 +34,10 @@ class TestPagePlan:
                 layout_plan=None,
             )
 
-    def test_page_plan_unsupported_specs(self, component_card):
+    def test_page_plan_unsupported_specs(self, component_plan_card):
         page_plan = PagePlan(
             title="Test Page",
-            components_plan=[component_card],
+            components_plan=[component_plan_card],
             controls_plan=[],
             layout_plan=None,
             unsupported_specs=["Unknown"],
@@ -45,11 +45,11 @@ class TestPagePlan:
 
         assert page_plan.unsupported_specs == []
 
-    def test_page_plan_duplicate_components(self, component_card):
+    def test_page_plan_duplicate_components(self, component_plan_card):
         with pytest.raises(ValidationError):
             PagePlan(
                 title="Test Page",
-                components_plan=[component_card, component_card],
+                components_plan=[component_plan_card, component_plan_card],
                 controls_plan=[],
                 layout_plan=None,
             )

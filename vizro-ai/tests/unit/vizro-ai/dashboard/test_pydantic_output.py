@@ -1,15 +1,15 @@
 import pytest
 import vizro.models as vm
+from tests_utils.asserts import assert_component_equal
 from vizro_ai.dashboard._pydantic_output import _create_message_content, _create_prompt_template, _get_pydantic_model
 
 
-def test_get_pydantic_model_valid(component_description, fake_llm):
-    pydantic_output = _get_pydantic_model(
+def test_get_pydantic_model_valid(component_description, fake_llm, expected_card):
+    result = _get_pydantic_model(
         query=component_description, llm_model=fake_llm, response_model=vm.Card, df_info=None
     )
-    assert pydantic_output.dict(exclude={"id": True}) == vm.Card(text="this is a card", href="").dict(
-        exclude={"id": True}
-    )
+
+    assert_component_equal(result.build(), expected_card.build(), keys_to_strip={"id"})
 
 
 def test_get_pydantic_model_invalid(component_description, fake_llm_invalid):

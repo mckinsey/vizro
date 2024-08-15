@@ -6,6 +6,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
+from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
@@ -81,7 +82,7 @@ def df_metadata(df, df_schema, df_sample):
 
 
 @pytest.fixture
-def component_card():
+def component_plan_card():
     return ComponentPlan(
         component_type="Card",
         component_description="This is a card",
@@ -101,12 +102,27 @@ def component_plan_graph():
 
 
 @pytest.fixture
+def component_plan_ag_grid():
+    return ComponentPlan(
+        component_type="AgGrid",
+        component_description="Ag grid showing columns 'a' and 'b' of dataframe",
+        component_id="ag_grid_1",
+        df_name="bar_chart",
+    )
+
+
+@pytest.fixture
 def mock_vizro_ai_return(df):
     return px.scatter(
         data_frame=df,
         x="a",
         y="b",
     )
+
+
+@pytest.fixture
+def mock_vizro_ai_return_ag_grid(df):
+    return dash_ag_grid(data_frame=df)
 
 
 @pytest.fixture
@@ -120,8 +136,8 @@ def component_card_2():
 
 
 @pytest.fixture
-def page_plan(component_card):
-    return PagePlan(title="Test Page", components_plan=[component_card], controls_plan=[], layout_plan=None)
+def page_plan(component_plan_card):
+    return PagePlan(title="Test Page", components_plan=[component_plan_card], controls_plan=[], layout_plan=None)
 
 
 @pytest.fixture
@@ -135,3 +151,8 @@ def filter_prompt():
 @pytest.fixture
 def layout():
     return vm.Layout(grid=[[0, 1]])
+
+
+@pytest.fixture
+def expected_filter():
+    return vm.Filter(targets=["bar_chart"], column="a")

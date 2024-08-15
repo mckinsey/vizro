@@ -31,13 +31,11 @@ class TestFilterProxyCreate:
         with pytest.raises(ValidationError, match="column must be one of"):
             filter_proxy(targets=["bar_chart"], column="x")
 
-    def test_create_filter_proxy(self, df_cols, df_schema, controllable_components):
+    def test_create_filter_proxy(self, df_cols, df_schema, controllable_components, expected_filter):
         filter_proxy = _create_filter_proxy(df_cols, df_schema, controllable_components)
-        actual_filter = filter_proxy(targets=["bar_chart"], column="a")
+        result = filter_proxy(targets=["bar_chart"], column="a")
 
-        assert actual_filter.dict(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").dict(
-            exclude={"id": True}
-        )
+        assert result.dict(exclude={"id": True}) == expected_filter.dict(exclude={"id": True})
 
 
 class TestControlPlan:

@@ -1,5 +1,6 @@
 import pytest
 import vizro.models as vm
+from tests_utils.asserts import assert_component_equal
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.layout import LayoutPlan, _convert_to_grid
 
@@ -8,18 +9,17 @@ class TestLayoutPlan:
     """Test layout creation."""
 
     def test_structured_output_layout_create(self, fake_llm_layout, layout_description, layout):
-        structured_output = _get_pydantic_model(
+        result = _get_pydantic_model(
             query=layout_description, llm_model=fake_llm_layout, response_model=vm.Layout, df_info=None
         )
-        assert structured_output.dict(exclude={"id": True}) == layout.dict(exclude={"id": True})
+        assert_component_equal(result.build(), layout.build(), keys_to_strip={"id"})
 
     def test_layout_plan(self, layout):
         layout_plan = LayoutPlan(
             layout_grid_template_areas=["graph card"],
         )
-        actual_layout = layout_plan.create(["graph", "card"])
-
-        assert actual_layout.dict(exclude={"id": True}) == layout.dict(exclude={"id": True})
+        result = layout_plan.create(["graph", "card"])
+        assert_component_equal(result.build(), layout.build(), keys_to_strip={"id"})
 
 
 @pytest.mark.parametrize(

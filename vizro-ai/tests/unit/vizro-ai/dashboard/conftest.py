@@ -1,5 +1,5 @@
 from typing import Any, List
-
+import vizro.models as vm
 import pytest
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
@@ -25,6 +25,10 @@ def fake_llm():
 @pytest.fixture
 def component_description():
     return "This is a card"
+
+@pytest.fixture
+def expected_card():
+    return vm.Card(text="this is a card")
 
 
 @pytest.fixture
