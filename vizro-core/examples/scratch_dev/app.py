@@ -1,4 +1,5 @@
 """asdf."""
+
 import plotly.graph_objs as go
 import plotly.io as pio
 import vizro.models as vm
