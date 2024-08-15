@@ -23,7 +23,7 @@
 
 <a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
 <a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
-<a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
+<a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
 
 </div>
 
@@ -90,13 +90,13 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 <br/>
 
-### Examples
+### Dashboard screenshots
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
 </p>
 
-### Live demo
+### Vizro examples gallery
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">

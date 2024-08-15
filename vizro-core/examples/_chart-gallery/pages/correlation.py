@@ -3,6 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
+from pages._factories import connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, iris, make_code_clipboard_from_py_file
 
 scatter = vm.Page(
@@ -33,4 +34,5 @@ scatter = vm.Page(
     ],
 )
 
-pages = [scatter]
+connected_scatter = connected_scatter_factory("correlation")
+pages = [scatter, connected_scatter]

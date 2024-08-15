@@ -8,8 +8,9 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
-    [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install.md) </br>
-    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md)
+    [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md) </br>
+    [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install.md)
+
 
 
 
