@@ -68,6 +68,6 @@ dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
     # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
-    string, info = dashboard.to_python()
+    string = dashboard._to_python()
 
     print(string)
