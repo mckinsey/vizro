@@ -6,7 +6,7 @@ This guide shows you how to launch your dashboard in different ways. By default,
 
 You can launch your dashboard and edit the code live on [Py.Cafe](https://py.cafe/).
 
-For this basic example, follow the [Edit live on Py.Cafe](https://py.cafe/maxi.schulz/vizro-tutorial-first-dashboard) link below the dashboard to experiment with the code.
+For this basic example, follow the [Edit live on Py.Cafe](https://py.cafe/stichbury/vizro-iris-analysis) link below the dashboard to experiment with the code.
 
 <iframe src="https://py.cafe/stichbury/vizro-iris-viz" width="100%" height="600px"></iframe>
 
