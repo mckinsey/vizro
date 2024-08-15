@@ -5,7 +5,7 @@ The themes provided by Vizro are infused with our design best practices that mak
 
 ## Themes in dashboards
 The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argument, where you can choose between
-a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme will be applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
+a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme is applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
 
 !!! example "Change theme"
     === "app.py"
