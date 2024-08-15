@@ -27,7 +27,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 !!! example "Tabs"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
 
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -133,6 +133,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
           title: Tabs
         ```
     === "Result"
-       [![Tabs]][Tabs]
+
+        [![Tabs]][Tabs]
 
     [Tabs]: ../../assets/user_guides/components/tabs.png
