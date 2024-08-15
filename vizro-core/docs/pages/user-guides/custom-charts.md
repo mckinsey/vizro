@@ -44,7 +44,7 @@ add a `Parameter` that enables the dashboard user to interact with the argument,
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -103,7 +103,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import pandas as pd
         import plotly.graph_objects as go
 
@@ -149,8 +149,9 @@ The below examples shows a more involved use-case. We create and style a waterfa
                     figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
                 ),
             ],
+            # Apply a filter to the custom chart
             controls=[
-                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),# (1)!
+                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
             ],
         )
         dashboard = vm.Dashboard(pages=[page_0])
@@ -158,7 +159,6 @@ The below examples shows a more involved use-case. We create and style a waterfa
         Vizro().build(dashboard).run()
         ```
 
-        1.  Note how we are able to apply a filter to a custom chart
     === "app.yaml"
         ```yaml
         # Custom charts are currently only possible via python configuration

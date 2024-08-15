@@ -5,13 +5,9 @@ from vizro import Vizro
 gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Choropleth",
+    title="Connected scatter",
     components=[
-        vm.Graph(
-            figure=px.choropleth(
-                gapminder.query("year == 2007"), locations="iso_alpha", color="lifeExp", hover_name="country"
-            )
-        )
+        vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True))
     ],
 )
 

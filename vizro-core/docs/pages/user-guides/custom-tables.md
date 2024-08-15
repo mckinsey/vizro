@@ -21,7 +21,7 @@ The following examples show a possible version of a custom table. In this case t
 
 ??? example "Custom Dash DataTable"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from typing import List
 
         from dash import dash_table
@@ -83,7 +83,7 @@ The following examples show a possible version of a custom table. In this case t
 
 ??? example "Custom Dash AgGrid"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from typing import List
 
         import vizro.models as vm

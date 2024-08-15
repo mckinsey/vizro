@@ -45,7 +45,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 !!! example "Container"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
 
         import vizro.models as vm
         import vizro.plotly.express as px

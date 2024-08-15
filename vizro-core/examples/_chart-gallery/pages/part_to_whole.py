@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
 
 pie = vm.Page(
     title="Pie",
@@ -72,7 +72,7 @@ donut = vm.Page(
                 hole=0.4,
             )
         ),
-        make_code_clipboard_from_py_file("pie.py"),
+        make_code_clipboard_from_py_file("donut.py"),
     ],
 )
 
@@ -102,7 +102,7 @@ treemap = vm.Page(
         ),
         vm.Graph(
             figure=px.treemap(
-                gapminder_2007,
+                gapminder.query("year == 2007"),
                 path=[px.Constant("world"), "continent", "country"],
                 values="pop",
                 color="lifeExp",
@@ -112,4 +112,67 @@ treemap = vm.Page(
     ],
 )
 
-pages = [donut, pie, treemap]
+stacked_bar = vm.Page(
+    title="Stacked bar",
+    path="part-to-whole/stacked-bar",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a stacked bar chart?
+
+            A stacked bar chart displays bars divided into segments, with each segment's length proportional to the
+            value it represents. One axis shows the categories being compared, while the other provides a value scale
+            starting from zero. The segments within each bar are stacked on top of each other, allowing for a cumulative
+            comparison.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a stacked bar chart to help your audience compare the total sizes of categories as well as the
+            individual components within those categories. This chart type is ideal for visualizing part-to-whole
+            relationships and identifying patterns within categorical data. Ensure clear labeling for each segment,
+            especially when there are many categories, and consider using a legend or abbreviations with fuller
+            descriptions below.
+        """
+        ),
+        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="day", orientation="h")),
+        make_code_clipboard_from_py_file("stacked_bar.py"),
+    ],
+)
+
+stacked_column = vm.Page(
+    title="Stacked column",
+    path="part-to-whole/stacked-column",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a stacked column chart?
+
+            A stacked column chart displays columns divided into segments, with each segment's height proportional to
+            the value it represents. One axis shows the categories being compared, while the other provides a value
+            scale starting from zero. The segments within each column are stacked on top of each other, allowing for a
+            cumulative comparison.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a stacked column chart to help your audience compare the total sizes of categories as well as the
+            individual components within those categories. This chart type is ideal for visualizing part-to-whole
+            relationships and identifying patterns within categorical data. Ensure clear labeling for each segment,
+            especially when there are many categories, and consider using a legend or abbreviations with fuller
+            descriptions below.
+        """
+        ),
+        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
+        make_code_clipboard_from_py_file("stacked_bar.py"),
+    ],
+)
+
+
+pages = [donut, pie, treemap, stacked_bar, stacked_column]
