@@ -11,7 +11,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
 !!! example "Default navigation"
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -79,12 +79,46 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 If you wish to include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customize-the-page-url), we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
 !!! example "Navigation with only some pages"
-    === "app.py"
+    === "snippet.py"
         ```py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3], navigation=vm.Navigation(pages=["My first page", "My second page"])
         )
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.py"
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3], navigation=vm.Navigation(pages=["My first page", "My second page"])
+        )
+
         Vizro().build(dashboard).run()
         ```
 
@@ -108,7 +142,8 @@ If you wish to include only some of your dashboard pages in your navigation then
 You can also group your pages together by specifying `pages` as a dictionary:
 
 !!! example "Grouping pages"
-    === "app.py"
+
+    === "snippet.py"
         ```py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -118,6 +153,40 @@ You can also group your pages together by specifying `pages` as a dictionary:
         Vizro().build(dashboard).run()
         ```
 
+    === "app.py"
+
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(pages={"Group A": ["My first page", "My second page"], "Group B": ["My third page"]}),
+        )
+        Vizro().build(dashboard).run()
+        ```
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -142,7 +211,8 @@ You can also group your pages together by specifying `pages` as a dictionary:
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 
 !!! example "Using `NavBar`"
-    === "app.py"
+
+    === "snippet.py"
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -151,6 +221,43 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
                 pages={"Group A": ["My first page", "My second page"], "Group B": ["My third page"]}, nav_selector=vm.NavBar()
             ),
         )
+        Vizro().build(dashboard).run()
+        ```
+    === "app.py"
+
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(
+                pages={"Group A": ["My first page", "My second page"], "Group B": ["My third page"]}, nav_selector=vm.NavBar()
+            ),
+        )
+
         Vizro().build(dashboard).run()
         ```
 
@@ -187,7 +294,7 @@ Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.Na
 The same configuration for [grouping pages](#group-pages) applies inside a `NavLink`:
 
 !!! example "Accordions inside a `Navlink`"
-    === "app.py"
+    === "snippet.py"
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -203,6 +310,51 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
                 )
             ),
         )
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(
+                nav_selector=vm.NavBar(
+                    items=[
+                        vm.NavLink(
+                            label="Section 1",
+                            pages={"Group A": ["My first page", "My second page"], "Group B": ["My third page"]},
+                        )
+                    ]
+                )
+            ),
+        )
+
         Vizro().build(dashboard).run()
         ```
 
@@ -231,7 +383,7 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
 
 !!! example "Custom icon"
-    === "app.py"
+    === "snippet.py"
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -249,6 +401,52 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                 )
             ),
         )
+        ```
+    === "app.py"
+
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(
+                nav_selector=vm.NavBar(
+                    items=[
+                        vm.NavLink(
+                            label="Section 1",
+                            icon="Bar Chart",
+                            pages=["My first page", "My second page"],
+                        ),
+                        vm.NavLink(label="Section 2", icon="Pie Chart", pages=["My third page"]),
+                    ]
+                )
+            ),
+        )
+
+        Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
