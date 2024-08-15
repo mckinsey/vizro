@@ -1,3 +1,4 @@
+"""asdf."""
 import plotly.graph_objs as go
 import plotly.io as pio
 import vizro.models as vm
@@ -20,14 +21,14 @@ df = px.data.iris()
 
 @capture("graph")
 def my_graph_figure_px(data_frame):
-    """Blah"""
+    """Blah."""
     fig = px.scatter(data_frame, x="sepal_width", y="sepal_length", title="Title")
     return fig
 
 
 @capture("graph")
 def my_graph_figure_go(data_frame):
-    """Blahhrl"""
+    """Blahhrl."""
     fig = go.Figure(go.Scatter(x=data_frame["sepal_width"], y=data_frame["sepal_length"]))
     fig.update_layout(title="Title")
     return fig
