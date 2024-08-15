@@ -35,3 +35,10 @@ _css_dist = [
     }
     for css_file in _library_css
 ]
+
+_css_dist.append(
+    {
+        "namespace": "vizro",
+        "relative_package_path": f"static/css/fonts/x.woff2",
+    }
+)

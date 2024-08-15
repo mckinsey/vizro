@@ -9,27 +9,7 @@ Font is downloaded from https://github.com/material-icons/material-icons-font/bl
 and lives in the `static/css/fonts` folder */
 @font-face {
   font-family: MaterialSymbolsOutlined;
-  src: url("./fonts/MaterialIcons-Outlined.woff2") format("woff2");
-}
-
-.material-symbols-outlined {
-  direction: ltr;
-  display: inline-block;
-  font-family: MaterialSymbolsOutlined, sans-serif;
-  font-feature-settings: "liga";
-  font-size: 24px;
-  -webkit-font-smoothing: antialiased;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: normal;
-  line-height: 1;
-  text-transform: none;
-  white-space: nowrap;
-  word-wrap: normal;
-}
-
-.card-kpi .material-symbols-outlined {
-  margin: auto 0;
+  src: url("fonts/material-symbols-outlined.woff2") format('woff2');
 }
 
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
