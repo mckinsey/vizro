@@ -39,6 +39,6 @@ _css_dist = [
 _css_dist.append(
     {
         "namespace": "vizro",
-        "relative_package_path": f"static/css/fonts/x.woff2",
+        "relative_package_path": "static/css/fonts/x.woff2",
     }
 )
