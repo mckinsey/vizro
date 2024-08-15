@@ -2,13 +2,19 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-tips = px.data.tips()
+gapminder = px.data.gapminder()
 
 page = vm.Page(
     title="Column",
     components=[
         vm.Graph(
-            figure=px.histogram(tips, y="total_bill", x="day", category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]})
+            figure=px.bar(
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ),
+                y="pop",
+                x="country",
+            )
         )
     ],
 )

@@ -13,8 +13,8 @@ page = vm.Page(
                 gapminder.query(
                     "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
                 ).sort_values("pop"),
-                x="pop",
-                y="country",
+                y="pop",
+                x="country",
             )
         )
     ],
