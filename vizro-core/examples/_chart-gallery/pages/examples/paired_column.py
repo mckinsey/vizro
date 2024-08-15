@@ -9,7 +9,14 @@ page = vm.Page(
     title="Paired column",
     components=[
         vm.Graph(
-            figure=px.histogram(tips.query("sex=='Female'"), x="sex", y="total_bill", color="smoker", barmode="group")
+            figure=px.histogram(
+                tips,
+                x="day",
+                y="total_bill",
+                color="sex",
+                barmode="group",
+                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+            ),
         )
     ],
 )

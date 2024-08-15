@@ -71,9 +71,6 @@ paired_bar = vm.Page(
             with fuller descriptions below.
         """
         ),
-        # AM comment: previously this had only one category on the y-axis which made it basically indistinguishable
-        # from a bar chart with two bars. I realised that in order to demonstrate pairs of bars without the n = 2
-        # confusion we actually need n > 2.
         vm.Graph(
             figure=px.histogram(
                 tips,
@@ -115,7 +112,14 @@ paired_column = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.histogram(tips.query("sex=='Female'"), x="sex", y="total_bill", color="smoker", barmode="group")
+            figure=px.histogram(
+                tips,
+                x="day",
+                y="total_bill",
+                color="sex",
+                barmode="group",
+                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+            ),
         ),
         make_code_clipboard_from_py_file("paired_column.py"),
     ],

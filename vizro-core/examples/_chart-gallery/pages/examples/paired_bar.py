@@ -10,8 +10,14 @@ page = vm.Page(
     components=[
         vm.Graph(
             figure=px.histogram(
-                tips.query("sex=='Female'"), y="sex", x="total_bill", color="smoker", barmode="group", orientation="h"
-            )
+                tips,
+                y="day",
+                x="total_bill",
+                color="sex",
+                barmode="group",
+                orientation="h",
+                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
+            ),
         )
     ],
 )
