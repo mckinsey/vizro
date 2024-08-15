@@ -22,7 +22,6 @@ PAGE_GRID = [[0, 0, 0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 1, 2, 2, 2]] * 5
 
 # DATA --------------------------------------------------------------
 gapminder = px.data.gapminder()
-gapminder_2007 = gapminder.query("year == 2007")
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()

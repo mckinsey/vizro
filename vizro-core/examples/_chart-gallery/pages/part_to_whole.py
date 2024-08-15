@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder_2007, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
 
 pie = vm.Page(
     title="Pie",
@@ -102,7 +102,7 @@ treemap = vm.Page(
         ),
         vm.Graph(
             figure=px.treemap(
-                gapminder_2007,
+                gapminder.query("year == 2007"),
                 path=[px.Constant("world"), "continent", "country"],
                 values="pop",
                 color="lifeExp",
