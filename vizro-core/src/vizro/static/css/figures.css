@@ -4,12 +4,16 @@
   padding: 1rem;
 }
 
-/* We currently ship this CSS file with the package, so this needs to live here at the moment.
-Font is downloaded from https://github.com/material-icons/material-icons-font/blob/master/font
-and lives in the `static/css/fonts` folder */
+/* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
+The CSS is taken from https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined and the corresponding font file
+downloaded to fonts/material-symbols-outlined.woff2. See:
+https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
+https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
+Note the relative url works with both serve_locally=True and serve_locally=False through the CDN.
+*/
 @font-face {
   font-family: MaterialSymbolsOutlined;
-  src: url("fonts/material-symbols-outlined.woff2") format("woff2");
+  src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
 .material-symbols-outlined {

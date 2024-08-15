@@ -17,3 +17,8 @@
   height: 210px;
   width: 240px;
 }
+
+/* Overriding still works:
+.card {
+  background: pink;
+} */

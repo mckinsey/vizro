@@ -36,6 +36,10 @@ _css_dist = [
     for css_file in _library_css
 ]
 
+# Include font file so that figures with icons can be used outside Vizro as pure Dash components.
+# The file can be served through the CDN in the same way as the CSS files but external_url is irrelevant here. The way
+# the file is requested is through a relative url("./fonts/...") in the requesting CSS file. When the CSS file is
+# served from the CDN then this will refer to the font file also on the CDN.
 _css_dist.append(
     {
         "namespace": "vizro",
