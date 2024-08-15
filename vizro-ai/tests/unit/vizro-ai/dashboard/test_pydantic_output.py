@@ -5,9 +5,7 @@ from vizro_ai.dashboard._pydantic_output import _create_message_content, _create
 
 
 def test_get_pydantic_model_valid(component_description, fake_llm, expected_card):
-    result = _get_pydantic_model(
-        query=component_description, llm_model=fake_llm, response_model=vm.Card, df_info=None
-    )
+    result = _get_pydantic_model(query=component_description, llm_model=fake_llm, response_model=vm.Card, df_info=None)
 
     assert_component_equal(result.build(), expected_card.build(), keys_to_strip={"id"})
 
