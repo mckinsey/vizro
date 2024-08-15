@@ -129,6 +129,17 @@ class VizroBaseModel(BaseModel):
         return None
 
     def _to_python(self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Set[str] = set()) -> str:
+        """Converts a Vizro model to the Python code that would create it.
+
+        Args:
+            extra_imports: Extra imports to add to the Python code. Provide as a set of complete import strings.
+            extra_callable_defs: Extra callable definitions to add to the Python code. Provide as a set of complete
+                function definitions.
+
+        Returns:
+            str: Python code to create the Vizro model.
+
+        """
         # Model
         model_dict = self.dict(exclude_unset=True)
         model_code = "model = " + _dict_to_python(model_dict)
@@ -160,13 +171,13 @@ class VizroBaseModel(BaseModel):
 
 if __name__ == "__main__":
     # from typing import Any
+    import textwrap
+
     import vizro.models as vm
     import vizro.plotly.express as px
     from vizro import Vizro
     from vizro.actions import export_data
     from vizro.models.types import capture
-    from vizro.tables import dash_ag_grid
-    import textwrap
 
     Vizro._reset()
     # # For the plot prints - needs to transfer somewhere
@@ -184,13 +195,13 @@ if __name__ == "__main__":
 
     page = vm.Page(
         title="Page 1",
-    #     layout = vm.Layout(grid = [[0, 1],[2, 3], [4, 5]],row_min_height="100px"),
+        #     layout = vm.Layout(grid = [[0, 1],[2, 3], [4, 5]],row_min_height="100px"),
         components=[
-    #         vm.Card(text="Foo"),
+            #         vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-    #         vm.Graph(figure=chart(data_frame="iris")),
-    #         vm.Graph(figure=chart2(data_frame="iris")),
-    #         vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            #         vm.Graph(figure=chart(data_frame="iris")),
+            #         vm.Graph(figure=chart2(data_frame="iris")),
+            #         vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
             vm.Button(
                 text="Export data",
                 actions=[
@@ -199,7 +210,7 @@ if __name__ == "__main__":
                 ],
             ),
         ],
-    #     controls=[vm.Filter(column="species")],
+        #     controls=[vm.Filter(column="species")],
     )
     Vizro._reset()
     filter = vm.Filter(column="species")
@@ -227,19 +238,18 @@ if __name__ == "__main__":
     # chart_dynamic = local_scope['chart_dynamic']
     # graph = vm.Graph(figure=chart(data_frame="iris"))
     # graph = vm.Graph(figure=chart_dynamic(data_frame="iris"))
-    
+
     card = vm.Card(text="Foo")
     # result = card._to_python(extra_callable_defs={extra_callable})
     # print(result)
     print(extra_callable)
-    
+
     # print(card._to_python(extra_callable_defs={extra_callable}))
 
     # table = dash_ag_grid(data_frame="iris")
 
     Vizro._reset()
-    
-    
+
     # Open questions
     # Actions -> fine where are
     # placement in Vizro -> Base
