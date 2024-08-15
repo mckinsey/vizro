@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Google Colab notebook for users to experiment with the vizro-ai plot method without local setup ([#618](https://github.com/mckinsey/vizro/pull/618))
+- Add Google Colab notebook for users to experiment with `VizroAI.plot` method without local setup ([#618](https://github.com/mckinsey/vizro/pull/618))
 
 <!--
 ### Changed
