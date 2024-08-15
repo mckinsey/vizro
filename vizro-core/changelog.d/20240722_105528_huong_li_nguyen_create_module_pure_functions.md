@@ -16,18 +16,16 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Create `vizro.figures.library` to contain KPI card Dash components that can be used outside the Vizro framework. ([#578](https://github.com/mckinsey/vizro/pull/578))
 
--->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Google Material icons library is served locally to enable offline functionality. ([#578](https://github.com/mckinsey/vizro/pull/578))
 
--->
 <!--
 ### Deprecated
 

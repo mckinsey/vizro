@@ -9,8 +9,7 @@ logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 
 __all__ = ["Vizro"]
 
-# __version__ = "0.1.20.dev0"
-__version__ = "tidy/create-module-pure-functions"
+__version__ = "0.1.20.dev0"
 
 
 # For the below _css_dist to be used by Dash, it must be retrieved by dash.resources.Css.get_all_css(). This means it
@@ -24,8 +23,12 @@ class _Dummy(Component):
     pass
 
 
+# For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+# to main instead, but this can be manually overridden to the current feature branch name if required.
+# _git_branch = __version__ if "dev" not in __version__ else "main"
+_git_branch = "tidy/create-module-pure-functions"
 _library_css = ["static/css/figures"]
-_base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{__version__}/vizro-core/src/vizro/"
+_base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
 _css_dist = [
     {
