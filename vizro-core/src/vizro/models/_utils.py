@@ -24,7 +24,7 @@ from vizro.managers import data_manager
 {callable_defs}
 {data_settings}
 
-########## Object code ############
+########### Model code ############
 {code}
 """
 

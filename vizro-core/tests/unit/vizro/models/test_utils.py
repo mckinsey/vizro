@@ -1,13 +1,12 @@
-from vizro.models._utils import _concatenate_code
+import textwrap
+from typing import List, Optional
+
+import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
 from vizro.actions import export_data
+from vizro.models._utils import _concatenate_code
 from vizro.models.types import capture
-from vizro.tables import dash_ag_grid
-import textwrap
-from typing import Optional, List
-import pytest
 
 extra_imports_string = "import vizro.models as vm\nimport pandas as pd"
 code_string = "vm.Card(text='Foo')"
@@ -29,7 +28,7 @@ def f():
 # data_manager["iris"] = ===> Fill in here <===
 
 
-######### Dashboard code ##########
+########### Model code ############
 vm.Card(text="Foo")
 """)
 
@@ -50,12 +49,43 @@ def chart(data_frame, hover_data: Optional[List[str]] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
 
+@pytest.fixture
+def page_pre_defined_actions():
+    return vm.Page(
+        title="Page 1",
+        components=[
+            vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            vm.Button(
+                text="Export data",
+                actions=[
+                    vm.Action(function=export_data()),
+                    vm.Action(function=export_data()),
+                ],
+            ),
+        ],
+    )
+
+
+@pytest.fixture
+def chart_dynamic():
+    function_string = textwrap.dedent("""
+        @capture("graph")
+        def chart_dynamic(data_frame, hover_data: Optional[List[str]] = None):
+            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+        """)
+
+    local_scope = {}
+    exec(function_string, globals(), local_scope)
+    chart_dynamic = local_scope["chart_dynamic"]
+    return chart_dynamic
+
+
 expected_card = textwrap.dedent("""############ Imports ##############
 import vizro.models as vm
 
 
-######### Dashboard code ##########
-card = vm.Card(text="Foo")
+########### Model code ############
+model = vm.Card(text="Foo")
 """)
 
 expected_graph = textwrap.dedent("""############ Imports ##############
@@ -69,8 +99,8 @@ import vizro.models as vm
 # data_manager["iris"] = ===> Fill in here <===
 
 
-######### Dashboard code ##########
-graph = vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length"))
+########### Model code ############
+model = vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length"))
 """)
 
 
@@ -93,26 +123,9 @@ def chart(data_frame, hover_data: Optional[List[str]] = None):
 # data_manager["iris"] = ===> Fill in here <===
 
 
-######### Dashboard code ##########
-graph = vm.Graph(figure=chart(data_frame="iris"))
+########### Model code ############
+model = vm.Graph(figure=chart(data_frame="iris"))
 """)
-
-
-@pytest.fixture
-def page_pre_defined_actions():
-    return vm.Page(
-        title="Page 1",
-        components=[
-            vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-            vm.Button(
-                text="Export data",
-                actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
-                ],
-            ),
-        ],
-    )
 
 
 expected_actions_predefined = textwrap.dedent("""############ Imports ##############
@@ -127,8 +140,8 @@ import vizro.actions as va
 # data_manager["iris"] = ===> Fill in here <===
 
 
-######### Dashboard code ##########
-page = vm.Page(
+########### Model code ############
+model = vm.Page(
     components=[
         vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")),
         vm.Button(
@@ -144,20 +157,6 @@ page = vm.Page(
 """)
 
 
-@pytest.fixture
-def chart_dynamic():
-    function_string = textwrap.dedent("""
-        @capture("graph")
-        def chart_dynamic(data_frame, hover_data: Optional[List[str]] = None):
-            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-        """)
-
-    local_scope = {}
-    exec(function_string, globals(), local_scope)
-    chart_dynamic = local_scope["chart_dynamic"]
-    return chart_dynamic
-
-
 excepted_graph_dynamic = textwrap.dedent("""############ Imports ##############
 import vizro.models as vm
 
@@ -168,8 +167,29 @@ import vizro.models as vm
 # data_manager["iris"] = ===> Fill in here <===
 
 
-######### Dashboard code ##########
-graph = vm.Graph(figure=chart_dynamic(data_frame="iris"))
+########### Model code ############
+model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
+""")
+
+extra_callable = textwrap.dedent("""    @capture("graph")
+    def extra(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+    """)
+
+expected_code_with_extra_callable = textwrap.dedent("""############ Imports ##############
+import vizro.plotly.express as px
+import vizro.models as vm
+from vizro.models.types import capture
+
+
+####### Function definitions ######
+@capture("graph")
+def extra(data_frame, hover_data: Optional[List[str]] = None):
+    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+
+########### Model code ############
+model = vm.Card(text="Foo")
 """)
 
 
@@ -202,3 +222,9 @@ class TestPydanticPython:
         graph = vm.Graph(figure=chart_dynamic(data_frame="iris"))
         result = graph._to_python()
         assert result == excepted_graph_dynamic
+
+    def test_to_python_with_extra_callable(self):
+        # Test if callable is included correctly in output
+        card = vm.Card(text="Foo")
+        result = card._to_python(extra_callable_defs={extra_callable})
+        assert result == expected_code_with_extra_callable
