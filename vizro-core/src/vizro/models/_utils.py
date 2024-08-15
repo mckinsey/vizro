@@ -6,7 +6,6 @@ from typing import Any, Optional, Set
 
 from vizro.managers import model_manager
 
-MODEL_NAME = "model_name"
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
 
@@ -76,7 +75,7 @@ def _clean_module_string(module_string: str) -> str:
 
 
 def _dict_to_python(object: Any) -> str:
-    from vizro.models.types import CapturedCallable  # TODO: can we get rid of this?
+    from vizro.models.types import CapturedCallable
 
     if isinstance(object, dict) and "__vizro_model__" in object:
         __vizro_model__ = object.pop("__vizro_model__")
@@ -86,10 +85,7 @@ def _dict_to_python(object: Any) -> str:
         # If we handle it in dict of vm.BaseModel, then we created an unexpected dict return.
         if __vizro_model__ == ACTIONS_CHAIN:
             action_data = object[ACTION]
-            # if isinstance(action_data, List):
             return ", ".join(_dict_to_python(item) for item in action_data)
-            # else:
-            #     return _dict_to_python(action_data)
         else:
             # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
             # rather than repr recursively.
@@ -124,7 +120,10 @@ def _concatenate_code(
     )
     return _format_and_lint(unformatted_code)
 
-
+# The two extract helper functions may not work when we refactor the model_manager to work differently when models
+# are created. An alternative approach to iterating through the model_manager is to recurse through the object as
+# is done in the _dict_to_python function.
+# Note also that these functions find also unintended model_manager additions, a known but accepted limitation.
 def _extract_captured_callable_source() -> Set[str]:
     from vizro.models.types import CapturedCallable
 
