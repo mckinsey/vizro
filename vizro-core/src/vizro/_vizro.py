@@ -86,7 +86,7 @@ class Vizro:
             self.dash.title = dashboard.title
 
         # Set global template to vizro_light or vizro_dark.
-        # The choice between these is generally meaningless because chart colours in the two are identical, and
+        # The choice between these is generally meaningless because chart colors in the two are identical, and
         # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
         # clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
