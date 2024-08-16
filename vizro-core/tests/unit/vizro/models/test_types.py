@@ -1,7 +1,8 @@
-import importlib
 import re
 
+import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 import pytest
 
 try:
@@ -162,12 +163,12 @@ def invalid_decorated_graph_function():
 
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="action")
+    function: CapturedCallable = Field(..., import_path=__name__, mode="action")
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=importlib.import_module(__name__), mode="graph")
+    function: CapturedCallable = Field(..., import_path=__name__, mode="graph")
 
 
 class TestModelFieldPython:
@@ -176,7 +177,7 @@ class TestModelFieldPython:
         assert model.function(c=3, d=4) == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        model = ModelWithGraph(function=decorated_graph_function(data_frame=None))
+        model = ModelWithGraph(function=decorated_graph_function(data_frame=pd.DataFrame()))
         assert model.function() == go.Figure()
 
     def test_undecorated_function(self):
@@ -230,7 +231,7 @@ class TestModelFieldJSONConfig:
         assert model.function() == 1 + 2 + 3 + 4
 
     def test_decorated_graph_function(self):
-        config = {"_target_": "decorated_graph_function", "data_frame": None}
+        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
         model = ModelWithGraph(function=config)
         assert model.function() == go.Figure()
 
@@ -270,3 +271,74 @@ class TestModelFieldJSONConfig:
             ),
         ):
             ModelWithGraph(function=config)
+
+    def test_invalid_import_path(self):
+        class ModelWithInvalidModule(VizroBaseModel):
+            # The import_path doesn't exist.
+            function: CapturedCallable = Field(..., import_path="invalid.module", mode="graph")
+
+        config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
+
+        with pytest.raises(
+            ValueError, match="_target_=decorated_graph_function cannot be imported from invalid.module."
+        ):
+            ModelWithInvalidModule(function=config)
+
+
+@capture("graph")
+def decorated_graph_function_with_template(data_frame, template=None):
+    fig = go.Figure()
+    if template is not None:
+        fig.layout.template = template
+    return fig
+
+
+@capture("graph")
+def decorated_graph_function_crash(data_frame):
+    raise RuntimeError("Crash")
+
+
+# The _pio_default_template context manager resets pio.templates.default on exit, but the fixture should do this also.
+# This fixtures acts as if someone has set the pio.templates.default e.g. in a Jupyter notebook.
+@pytest.fixture
+def set_pio_default_template(request):
+    old_default = pio.templates.default
+    pio.templates.default = request.param
+    yield request.param
+    pio.templates.default = old_default
+
+
+# The expected template is always the same as the template_argument for the cases of vizro_dark and vizro_light.
+# For template=None and template="plotly" the expected template is the same as the globally set default template when
+# it's vizro_dark/vizro_light and vizro_dark when it's set to plotly.
+@pytest.mark.parametrize(
+    "set_pio_default_template, template_argument, expected_template",
+    [
+        ("plotly", None, "vizro_dark"),
+        ("plotly", "plotly", "vizro_dark"),
+        ("plotly", "vizro_dark", "vizro_dark"),
+        ("plotly", "vizro_light", "vizro_light"),
+        ("vizro_dark", None, "vizro_dark"),
+        ("vizro_dark", "plotly", "vizro_dark"),
+        ("vizro_dark", "vizro_dark", "vizro_dark"),
+        ("vizro_dark", "vizro_light", "vizro_light"),
+        ("vizro_light", None, "vizro_light"),
+        ("vizro_light", "plotly", "vizro_light"),
+        ("vizro_light", "vizro_dark", "vizro_dark"),
+        ("vizro_light", "vizro_light", "vizro_light"),
+    ],
+    indirect=["set_pio_default_template"],
+)
+def test_graph_templates(set_pio_default_template, template_argument, expected_template):
+    graph = decorated_graph_function_with_template(pd.DataFrame(), template=template_argument)
+    assert graph.layout.template == pio.templates[expected_template]
+    # The default template should be unchanged after running the captured function.
+    assert pio.templates.default == set_pio_default_template
+
+
+@pytest.mark.parametrize("set_pio_default_template", ["plotly", "vizro_dark", "vizro_light"], indirect=True)
+def test_graph_template_crash(set_pio_default_template):
+    with pytest.raises(RuntimeError, match="Crash"):
+        decorated_graph_function_crash(pd.DataFrame())
+    # The default template should be unchanged even if the captured function crashes.
+    assert pio.templates.default == set_pio_default_template

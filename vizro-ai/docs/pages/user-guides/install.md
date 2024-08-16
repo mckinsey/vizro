@@ -2,13 +2,10 @@
 
 In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, and how to install it. You'll also find out how to verify the Vizro-AI installation succeeded, find the version of Vizro-AI, and learn how to update it.
 
-## Prerequisites
-
-### Python
 Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.9 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
 
 
-### Set up a virtual environment
+## Set up a virtual environment
 You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
 ??? information "How to create a virtual environment for your Vizro-AI project"
@@ -33,10 +30,32 @@ You should create a virtual environment for each Vizro-AI project you work on to
     conda activate vizroai-environment
     ```
 
-### Set up access to a large language model
+## Install Vizro
+
+To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
+
+```bash
+pip install vizro_ai
+```
+
+## Confirm a successful installation
+
+To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
+
+```py
+import vizro_ai
+
+print(vizro_ai.__version__)
+```
+
+You should see a return output of the form `x.y.z`.
+
+## Set up access to a large language model
 
 Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
 
+
+### Set up access to OpenAI
 To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
 
 We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
@@ -100,32 +119,9 @@ you can change the base URL by setting it as an environment variable.
 
 Follow the approach above in Method 2 to add the environment variable `OPENAI_API_BASE` for use by all projects.
 
+## Upgrade the Vizro-AI package
 
-## Install Vizro
-
-To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
-
-```bash
-pip install vizro_ai
-```
-
-## Confirm a successful installation
-
-To confirm the installation was successful, and verify the version of Vizro-AI installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
-
-```py
-import vizro_ai
-
-print(vizro_ai.__version__)
-```
-
-You should see a return output of the form `x.y.z`.
-
-## Upgrade
-
-Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
-
-To change the version of Vizro-AI installed:
+Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-ai/CHANGELOG.md) for any notable breaking changes before upgrading the version of Vizro-AI used with an existing project:
 
 ```bash
 pip install -U vizro_ai

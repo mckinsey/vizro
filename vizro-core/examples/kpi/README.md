@@ -1,6 +1,6 @@
 # KPI dashboard
 
-This demo dashboard provides an example of a Key Performance Indicator (KPI) dashboard, designed to help users get started and extend further.
+This dashboard provides an example of a Key Performance Indicator (KPI) dashboard, designed to help users get started and extend further.
 It uses fictional budget data to demonstrate the capabilities of Vizro using real world applications.
 
 Special thanks to the [#RWFD Real World Fake Data initiative](https://opendatainitiative.io/), a community project that

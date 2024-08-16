@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import plotly.io as pio
 from dash import (
     ClientsideFunction,
     Input,
@@ -28,7 +29,6 @@ except ImportError:  # pragma: no cov
 from dash.development.base_component import Component
 
 import vizro
-from vizro import _themes as themes
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
@@ -154,7 +154,9 @@ class Dashboard(VizroBaseModel):
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                dcc.Store(id="vizro_themes", data={"dark": themes.dark, "light": themes.light}),
+                dcc.Store(
+                    id="vizro_themes", data={"dark": pio.templates["vizro_dark"], "light": pio.templates["vizro_light"]}
+                ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],

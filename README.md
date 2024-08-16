@@ -23,7 +23,7 @@
 
 <a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
 <a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
-<a href="http://vizro.mckinsey.com/" target="_blank">Live Demo </a>
+<a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
 
 </div>
 
@@ -86,7 +86,7 @@ Vizro-AI is a separate package and extends Vizro to enable the use of natural la
 <img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
 </p>
 
-See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) for more details.
+See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
 ## Key benefits of Vizro
 
@@ -98,16 +98,16 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 
 <br/>
 
-## Live demo
+## Vizro examples gallery
 
-You can see Vizro in action by clicking on the following image or by visiting [vizro.mckinsey.com](https://vizro.mckinsey.com).
+You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/gapminder_example.png" width="525" height="296">  </a>
 </p>
 
-## Examples
+## Dashboard screenshots
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
@@ -131,10 +131,10 @@ See the [how-to guides](https://vizro.readthedocs.io/en/stable/pages/user-guides
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                           Version                                           |                               Documentation                                |
-| :------------------------: | :-----------------------------------------------------------------------------------------: | :------------------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |           [Vizro Docs](https://vizro.readthedocs.io/en/stable/)            |
-|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/) |
+|           Folder           |                                           Version                                           |                          Documentation                           |
+| :------------------------: | :-----------------------------------------------------------------------------------------: | :--------------------------------------------------------------: |
+| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |      [Vizro Docs](https://vizro.readthedocs.io/en/stable/)       |
+|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
 
 ## Community and development
 

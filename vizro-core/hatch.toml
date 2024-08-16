@@ -30,13 +30,9 @@ dependencies = [
   "jupyter"
 ]
 
-[envs.default.env-vars]
-DASH_DEBUG = "true"
-VIZRO_LOG_LEVEL = "DEBUG"
-
 [envs.default.scripts]
-example = "cd examples/{args:scratch_dev}; python app.py"
-lint = "hatch run lint:lint {args:--all-files}"
+example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
+lint = "hatch run lint:lint {args:--all-files}"  # shortcut script to underlying lint environment script.
 prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
@@ -69,7 +65,8 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
   "mkdocstrings[python]",
-  "linkchecker"
+  "linkchecker",
+  "mkdocs-pycafe @ git+https://github.com/py-cafe/mkdocs-pycafe.git"
 ]
 detached = true
 
@@ -79,6 +76,21 @@ build = "mkdocs build --strict"
 # more advanced settings using a linkcheckerrc config file.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/"
 serve = "mkdocs serve --open"
+
+[envs.examples]
+dependencies = [
+  "pyyaml",
+  # black is required to run the example _chart-gallery. This is completely independent of the black used in linting
+  # our code. When this moves to HuggingFace we can remove the requirement from here.
+  "black==24.4.2"
+]
+scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
+# This environment doesn't inherit from default but does install Vizro.
+template = "examples"
+
+[envs.examples.env-vars]
+DASH_DEBUG = "true"
+VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lint]
 dependencies = [

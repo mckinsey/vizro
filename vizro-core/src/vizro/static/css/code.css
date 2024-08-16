@@ -1,0 +1,36 @@
+code.language-python.hljs {
+  font-family: monospace;
+  padding: 0;
+}
+
+.hljs {
+  background: unset;
+  color: unset;
+  font-family: monospace;
+}
+
+.hljs-string,
+.hljs-params,
+.hljs-params .hljs-string,
+.hljs-number {
+  color: var(--text-code-string);
+  font-family: monospace;
+}
+
+.hljs-literal {
+  color: var(--text-code-literal);
+  font-family: monospace;
+}
+
+.hljs-keyword {
+  color: var(--text-code-keyword);
+  font-family: monospace;
+}
+
+.hljs-title.function_,
+.hljs-meta,
+.hljs-built_in,
+.hljs-type {
+  color: var(--text-code-meta);
+  font-family: monospace;
+}

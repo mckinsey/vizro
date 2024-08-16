@@ -1,8 +1,7 @@
-"""Example app to show all features of Vizro."""
+"""asdf."""
 
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation
-
+import plotly.graph_objs as go
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from charts.charts import page2
@@ -13,11 +12,7 @@ df = px.data.iris()
 data_manager["iris"] = px.data.iris()
 
 page = vm.Page(
-    title="Vizro on PyCafe",
-    layout=vm.Layout(
-        grid=[[0, 0, 0, 1, 2, 3], [4, 4, 4, 4, 4, 4], [4, 4, 4, 4, 4, 4], [5, 5, 5, 5, 5, 5], [5, 5, 5, 5, 5, 5]],
-        row_min_height="175px",
-    ),
+    title="Test",
     components=[
         vm.Card(
             text="""
@@ -58,6 +53,7 @@ page = vm.Page(
         vm.Filter(column="petal_length"),
         vm.Filter(column="sepal_width"),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(pages=[page, page2])

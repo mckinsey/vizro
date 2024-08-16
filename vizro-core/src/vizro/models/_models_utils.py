@@ -1,6 +1,8 @@
 import logging
 from functools import wraps
 
+from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,7 +18,21 @@ def _log_call(method):
 
 
 # Validators for reuse
-def _validate_min_length(cls, field):
-    if not field:
+def validate_min_length(cls, value):
+    if not value:
         raise ValueError("Ensure this value has at least 1 item.")
-    return field
+    return value
+
+
+def check_captured_callable(cls, value):
+    if isinstance(value, CapturedCallable):
+        captured_callable = value
+    elif isinstance(value, _SupportsCapturedCallable):
+        captured_callable = value._captured_callable
+    else:
+        return value
+
+    raise ValueError(
+        f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside "
+        f"`{captured_callable._model_example}`."
+    )

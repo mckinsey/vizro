@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import functools
+import importlib
 import inspect
+from contextlib import contextmanager
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
+
+import plotly.io as pio
 
 try:
     from pydantic.v1 import Field, StrictBool
@@ -98,8 +102,9 @@ class CapturedCallable:
             self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
             del self.__bound_arguments[var_keyword_param]
 
-        # This is used to check that the mode of the capture decorator matches the inserted captured callable.
+        # Used in later validations of the captured callable.
         self._mode = None
+        self._model_example = None
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -204,9 +209,9 @@ class CapturedCallable:
 
         import_path = field.field_info.extra["import_path"]
         try:
-            function = getattr(import_path, function_name)
-        except AttributeError as exc:
-            raise ValueError(f"_target_={function_name} cannot be imported from {import_path.__name__}.") from exc
+            function = getattr(importlib.import_module(import_path), function_name)
+        except (AttributeError, ModuleNotFoundError) as exc:
+            raise ValueError(f"_target_={function_name} cannot be imported from {import_path}.") from exc
 
         # All the other items in figure are the keyword arguments to pass into function.
         function_kwargs = captured_callable_config
@@ -231,11 +236,11 @@ class CapturedCallable:
     def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
         expected_mode = field.field_info.extra["mode"]
-        import_path_name = field.field_info.extra["import_path"].__name__
+        import_path = field.field_info.extra["import_path"]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
-                f"Invalid CapturedCallable. Supply a function imported from {import_path_name} or defined with "
+                f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
                 f"decorator @capture('{expected_mode}')."
             )
 
@@ -256,6 +261,38 @@ class CapturedCallable:
         """Alternative __repr__ method with cleaned module paths."""
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         return f"{_clean_module_string(f"{self._function.__module__}")}{self._function.__name__}({args})"
+
+
+@contextmanager
+def _pio_templates_default():
+    """Sets pio.templates.default to "vizro_dark" and then reverts it.
+
+    This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
+    the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
+    you could compare a captured vs. non-captured chart in the same Python session).
+
+    This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
+    refer to template by name rather than trying to take from vizro.themes.
+
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    to set these without it being overridden.
+    """
+    old_default = pio.templates.default
+    template_changed = False
+    # If the user has set pio.templates.default to a vizro theme already, no need to change it.
+    if old_default not in ["vizro_dark", "vizro_light"]:
+        template_changed = True
+        pio.templates.default = "vizro_dark"
+
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
+    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
+    # but easy to achieve.
+    try:
+        # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
+        yield pio.templates.default
+    finally:
+        if template_changed:
+            pio.templates.default = old_default
 
 
 class capture:
@@ -295,7 +332,16 @@ class capture:
 
     def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
         """Decorator to capture a function call."""
+        # mode and model_example are used in later validations of the captured callable.
         self._mode = mode
+        model_examples = {
+            "graph": "vm.Graph(figure=...)",
+            "action": "vm.Action(function=...)",
+            "table": "vm.Table(figure=...)",
+            "ag_grid": "vm.AgGrid(figure=...)",
+            "figure": "vm.Figure(figure=...)",
+        }
+        self._model_example = model_examples[mode]
 
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
@@ -319,6 +365,7 @@ class capture:
                 # positional or keyword, this is much more robust than trying to get it out of arg or kwargs ourselves.
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
 
                 try:
                     captured_callable["data_frame"]
@@ -332,7 +379,22 @@ class capture:
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).
-                    fig = func(*args, **kwargs)
+                    # Set theme for the figure that gets shown in a Jupyter notebook. This is to ensure that in a
+                    # Jupyter notebook captured charts look the same as when they're in the dashboard. To mimic this,
+                    # we first use _pio_templates_default to set the global theme, as is done in the dashboard, and then
+                    # do the fig.layout.template update that is achieved by the theme selector.
+                    # We don't want to update the captured_callable in the same way, since it's only used inside the
+                    # dashboard, at which point the global pio.templates.default is always set anyway according to
+                    # the dashboard theme and then updated according to the theme selector.
+                    with _pio_templates_default() as default_template:
+                        fig = func(*args, **kwargs)
+                    # Update the fig.layout.template just to ensure absolute consistency with how the dashboard
+                    # works.
+                    # The only exception here is the edge case that the user has specified template="vizro_light" or
+                    # "vizro_dark" in the plotting function, in which case we don't want to change it. This makes
+                    # it easier for a user to try out both themes simultaneously in a notebook.
+                    if fig.layout.template not in (pio.templates["vizro_dark"], pio.templates["vizro_light"]):
+                        fig.layout.template = default_template
                     fig.__class__ = _DashboardReadyFigure
 
                 fig._captured_callable = captured_callable
@@ -346,6 +408,7 @@ class capture:
                 # Note this is basically the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
                 return captured_callable
 
             return wrapped
@@ -358,6 +421,7 @@ class capture:
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
+                captured_callable._model_example = self._model_example
 
                 try:
                     captured_callable["data_frame"]
