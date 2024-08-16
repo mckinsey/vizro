@@ -1,6 +1,5 @@
 import pytest
 import vizro.models as vm
-from tests_utils.asserts import assert_component_equal
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 
 
@@ -39,7 +38,9 @@ class TestComponentCreate:
         )
         expected = vm.Graph(id="mock_id", figure=mock_vizro_ai_return)
 
-        assert_component_equal(result.build(), expected.build(), keys_to_strip={"id"})
+        assert result.dict(exclude={"id": True}) == expected.dict(
+            exclude={"id": True}
+        )
 
     def test_card_create_valid(self, mocker, fake_llm_card, component_plan_card, expected_card):
         mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI")
@@ -51,7 +52,9 @@ class TestComponentCreate:
             all_df_metadata=None,
         )
 
-        assert_component_equal(result.build(), expected_card.build(), keys_to_strip={"id"})
+        assert result.dict(exclude={"id": True}) == expected_card.dict(
+            exclude={"id": True}
+        )
 
     def test_ag_grid_create_valid(
         self,

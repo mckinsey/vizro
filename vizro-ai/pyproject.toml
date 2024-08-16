@@ -63,5 +63,3 @@ filterwarnings = [
   # Ignore LLMchian deprecation warning:
   "ignore:.*The class `LLMChain` was deprecated in LangChain 0.1.17"
 ]
-norecursedirs = ["tests/tests_utils"]
-pythonpath = ["tests/tests_utils"]
