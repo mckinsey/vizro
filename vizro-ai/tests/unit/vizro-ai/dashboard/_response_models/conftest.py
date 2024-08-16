@@ -121,8 +121,13 @@ def mock_vizro_ai_return(df):
 
 
 @pytest.fixture
-def mock_vizro_ai_return_ag_grid(df):
+def mock_dash_ag_grid(df):
     return dash_ag_grid(data_frame=df)
+
+
+@pytest.fixture
+def mock_return_ag_grid(mock_dash_ag_grid):
+    return vm.AgGrid(figure=mock_dash_ag_grid, id="aggrid")
 
 
 @pytest.fixture

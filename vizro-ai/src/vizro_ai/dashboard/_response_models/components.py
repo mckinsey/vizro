@@ -45,10 +45,10 @@ class ComponentPlan(BaseModel):
         """Create the component."""
         from vizro_ai import VizroAI
 
-        vizro_ai = VizroAI(model=model)
-
         try:
             if self.component_type == "Graph":
+                vizro_ai = VizroAI(model=model)
+
                 return vm.Graph(
                     id=self.component_id,
                     figure=vizro_ai.plot(
