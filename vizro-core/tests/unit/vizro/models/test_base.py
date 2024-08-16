@@ -270,15 +270,17 @@ def page_pre_defined_actions():
         ],
     )
 
+
 @pytest.fixture
 def page_two_captured_callables():
     @capture("graph")
     def chart(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    
+
     @capture("graph")
     def chart2(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
     return vm.Page(
         title="Page 1",
         components=[
@@ -286,6 +288,7 @@ def page_two_captured_callables():
             vm.Graph(figure=chart2(data_frame="iris")),
         ],
     )
+
 
 @pytest.fixture
 def chart_dynamic():
@@ -518,7 +521,7 @@ class TestPydanticPython:
         graph = vm.Graph(figure=chart(data_frame="iris"))
         result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
         assert result == expected_graph_with_callable
-    
+
     def test_to_python_two_captured_callable_charts(self, page_two_captured_callables):
         # Test if two captured callables are included. Note that the order in which they are included is not guaranteed.
         result = page_two_captured_callables._to_python()
