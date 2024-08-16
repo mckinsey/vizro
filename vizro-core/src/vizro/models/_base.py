@@ -145,10 +145,6 @@ class VizroBaseModel(BaseModel):
             str: Python code to create the Vizro model.
 
         """
-        # Model
-        model_dict = self.dict(exclude_unset=True)
-        model_code = "model = " + _dict_to_python(model_dict)
-
         # Imports
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
@@ -161,6 +157,10 @@ class VizroBaseModel(BaseModel):
         # Data Manager
         data_defs_set = _extract_captured_callable_data_info()
         data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
+
+        # Model code
+        model_dict = self.dict(exclude_unset=True)
+        model_code = "model = " + _dict_to_python(model_dict)
 
         # Concatenate and lint code
         callable_defs_template = (

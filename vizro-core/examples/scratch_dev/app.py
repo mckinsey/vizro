@@ -64,6 +64,6 @@ dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
     # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
-    string = dashboard._to_python()
+    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
 
     print(string)  # noqa
