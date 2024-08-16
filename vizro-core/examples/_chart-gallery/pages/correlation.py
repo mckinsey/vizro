@@ -35,4 +35,33 @@ scatter = vm.Page(
 )
 
 connected_scatter = connected_scatter_factory("correlation")
-pages = [scatter, connected_scatter]
+
+scatter_matrix = vm.Page(
+    title="Scatter matrix",
+    path="correlation/scatter-matrix",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a scatter matrix?
+
+            A scatter matrix, also known as a pair plot, is a multi-dimensional data visualization that displays
+            scatter plots for every pair of variables in a dataset. Each scatter plot is positioned in a matrix format,
+            where rows and columns represent different variables.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a scatter matrix when you want to explore relationships between multiple pairs of variables
+            simultaneously. They are particularly useful for identifying correlations, patterns, and potential outliers
+            within a dataset containing multiple numerical variables. Carefully select the most relevant variables to 
+            ensure clarity and readability of the chart.
+        """
+        ),
+        vm.Graph(figure=px.scatter_matrix(iris,  dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"])),
+        make_code_clipboard_from_py_file("scatter_matrix.py"),
+    ],
+)
+pages = [scatter, connected_scatter, scatter_matrix]

@@ -69,7 +69,6 @@ correlation_chart_group = ChartGroup(
     name="Correlation",
     pages=pages.correlation.pages,
     incomplete_pages=[
-        IncompletePage("Scatter matrix"),
         IncompletePage("Column line"),
         IncompletePage("Heatmap matrix"),
         IncompletePage("Bubble"),
