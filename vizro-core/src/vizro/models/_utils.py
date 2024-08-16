@@ -139,7 +139,3 @@ def _extract_captured_callable_data_info() -> Set[str]:
         if isinstance(value, CapturedCallable)
         if "data_frame" in value._arguments
     }
-
-
-if __name__ == "__main__":
-    pass
