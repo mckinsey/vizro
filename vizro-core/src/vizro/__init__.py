@@ -1,9 +1,8 @@
 import logging
 import os
 
-from dash.development.base_component import Component
-
 import plotly.io as pio
+from dash.development.base_component import Component
 
 from ._themes import dark, light
 from ._vizro import Vizro
@@ -54,4 +53,3 @@ _css_dist.append(
         "relative_package_path": "static/css/fonts/material-symbols-outlined.woff2",
     }
 )
-
