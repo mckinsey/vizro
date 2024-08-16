@@ -25,7 +25,15 @@ except ImportError:  # pragma: no cov
 from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
-from vizro.models._utils import _clean_module_string
+
+
+def _clean_module_string(module_string: str) -> str:
+    from vizro.models._models_utils import REPLACEMENT_STRINGS
+
+    return next(
+        (replacement.new for replacement in REPLACEMENT_STRINGS if replacement.original in module_string),
+        "",
+    )
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to

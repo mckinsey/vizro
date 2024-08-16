@@ -1,7 +1,5 @@
 """asdf."""
 
-import plotly.graph_objs as go
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from charts.charts import page2
@@ -53,7 +51,6 @@ page = vm.Page(
         vm.Filter(column="petal_length"),
         vm.Filter(column="sepal_width"),
     ],
-    controls=[vm.Filter(column="species")],
 )
 
 dashboard = vm.Dashboard(pages=[page, page2])

@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 from functools import wraps
 
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
@@ -36,3 +37,18 @@ def check_captured_callable(cls, value):
         f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside "
         f"`{captured_callable._model_example}`."
     )
+
+
+@dataclass
+class PathReplacement:
+    original: str
+    new: str
+
+
+REPLACEMENT_STRINGS = [
+    PathReplacement("plotly.express", "px."),
+    PathReplacement("vizro.tables", "vt."),
+    PathReplacement("vizro.figures", "vf."),
+    PathReplacement("vizro.actions", "va."),
+    PathReplacement("vizro.charts", "vc."),
+]
