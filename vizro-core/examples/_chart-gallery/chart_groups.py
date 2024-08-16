@@ -71,7 +71,6 @@ correlation_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Column line"),
         IncompletePage("Heatmap matrix"),
-        IncompletePage("Bubble"),
     ],
     icon="Bubble Chart",
     intro_text=correlation_intro_text,
@@ -129,7 +128,6 @@ magnitude_chart_group = ChartGroup(
     pages=pages.magnitude.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Bubble"),
         IncompletePage("Lollipop"),
         IncompletePage("Radar"),
         IncompletePage("Parallel coordinates"),
