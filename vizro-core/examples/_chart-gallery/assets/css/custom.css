@@ -46,9 +46,9 @@ img[src*="#chart-icon"] {
 
 .flex-container .card {
   height: 232px;
+  margin: 0 0 auto;
   opacity: 0.3;
   width: 176px;
-  margin: 0 0 auto;
 }
 
 .flex-container .card-nav {
