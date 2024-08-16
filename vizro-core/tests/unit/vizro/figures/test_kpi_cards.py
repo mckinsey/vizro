@@ -14,7 +14,7 @@ class TestKPICard:
         assert_component_equal(
             result,
             dbc.Card(
-                [dbc.CardHeader([None, html.H2("Sum Actual")]), dbc.CardBody("6")],
+                [dbc.CardHeader([None, html.H4("Sum Actual")]), dbc.CardBody("6")],
                 className="card-kpi",
             ),
         )
@@ -32,7 +32,7 @@ class TestKPICard:
             result,
             dbc.Card(
                 [
-                    dbc.CardHeader([html.P("shopping_cart", className="material-symbols-outlined"), html.H2("sales")]),
+                    dbc.CardHeader([html.P("shopping_cart", className="material-symbols-outlined"), html.H4("sales")]),
                     dbc.CardBody("$2.00"),
                 ],
                 className="card-kpi",
@@ -74,7 +74,7 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Reference", reference_column="Actual")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H2("Sum Reference")]),
+                dbc.CardHeader([None, html.H4("Sum Reference")]),
                 dbc.CardBody("12"),
                 dbc.CardFooter(
                     [
@@ -92,7 +92,7 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Actual")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H2("Sum Actual")]),
+                dbc.CardHeader([None, html.H4("Sum Actual")]),
                 dbc.CardBody("6"),
                 dbc.CardFooter(
                     [
@@ -110,7 +110,7 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Reference Zero")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H2("Sum Actual")]),
+                dbc.CardHeader([None, html.H4("Sum Actual")]),
                 dbc.CardBody("6"),
                 dbc.CardFooter(
                     [
@@ -141,7 +141,7 @@ class TestKPICardReference:
                 dbc.CardHeader(
                     [
                         html.P("shopping_cart", className="material-symbols-outlined"),
-                        html.H2("sales"),
+                        html.H4("sales"),
                     ]
                 ),
                 dbc.CardBody("A 2.0 is +-2.0 (-0.5:%) vs. 4.0"),
