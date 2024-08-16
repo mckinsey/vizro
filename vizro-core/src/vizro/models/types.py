@@ -268,7 +268,8 @@ class CapturedCallable:
     def __repr_clean__(self):
         """Alternative __repr__ method with cleaned module paths."""
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
-        return f"{_clean_module_string(f"{self._function.__module__}")}{self._function.__name__}({args})"
+        original_module_path = f"{self._function.__module__}"
+        return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
 
 
 @contextmanager
