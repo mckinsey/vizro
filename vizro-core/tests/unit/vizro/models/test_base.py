@@ -254,7 +254,6 @@ class TestDict:
         }
 
 
-
 @pytest.fixture
 def page_pre_defined_actions():
     return vm.Page(
@@ -510,8 +509,7 @@ class TestPydanticPython:
         @capture("graph")
         def chart(data_frame, hover_data: Optional[List[str]] = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-        
-        
+
         graph = vm.Graph(figure=chart(data_frame="iris"))
         result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
         assert result == expected_graph_with_callable
