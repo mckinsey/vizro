@@ -57,11 +57,11 @@ class Graph(VizroBaseModel):
         fig = self.figure(**kwargs)
 
         # Reduce top margin if no title is provided
-        if fig.layout.title.text is None:
+        if fig.layout.margin_t is None and fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
 
         # Add top title padding if subtitle is provided, otherwise it's being cut off
-        if fig.layout.title.text and "<br>" in fig.layout.title.text:
+        if fig.layout.title_pad_t is None and fig.layout.title.text and "<br>" in fig.layout.title.text:
             fig.update_layout(title_pad_t=24)
 
         # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
