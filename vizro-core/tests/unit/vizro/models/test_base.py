@@ -270,6 +270,22 @@ def page_pre_defined_actions():
         ],
     )
 
+@pytest.fixture
+def page_two_captured_callables():
+    @capture("graph")
+    def chart(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+    
+    @capture("graph")
+    def chart2(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+    return vm.Page(
+        title="Page 1",
+        components=[
+            vm.Graph(figure=chart(data_frame="iris")),
+            vm.Graph(figure=chart2(data_frame="iris")),
+        ],
+    )
 
 @pytest.fixture
 def chart_dynamic():
@@ -291,18 +307,13 @@ def complete_dashboard():
     def chart(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
-    @capture("graph")
-    def chart2(data_frame, hover_data: Optional[List[str]] = None):
-        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-
     page = vm.Page(
         title="Page 1",
-        layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
+        layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
             vm.Graph(figure=chart(data_frame="iris")),
-            vm.Graph(figure=chart2(data_frame="iris")),
             vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
             vm.Button(
                 text="Export data",
@@ -446,11 +457,6 @@ from typing import Optional, List
 
 ####### Function definitions ######
 @capture("graph")
-def chart2(data_frame, hover_data: Optional[List[str]] = None):
-    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-
-
-@capture("graph")
 def chart(data_frame, hover_data: Optional[List[str]] = None):
     return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
@@ -471,7 +477,6 @@ model = vm.Dashboard(
                     figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")
                 ),
                 vm.Graph(figure=chart(data_frame="iris")),
-                vm.Graph(figure=chart2(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
                 vm.Button(
                     text="Export data",
@@ -482,7 +487,7 @@ model = vm.Dashboard(
                 ),
             ],
             title="Page 1",
-            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
+            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
             controls=[vm.Filter(column="species")],
         )
     ],
@@ -513,6 +518,12 @@ class TestPydanticPython:
         graph = vm.Graph(figure=chart(data_frame="iris"))
         result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
         assert result == expected_graph_with_callable
+    
+    def test_to_python_two_captured_callable_charts(self, page_two_captured_callables):
+        # Test if two captured callables are included. Note that the order in which they are included is not guaranteed.
+        result = page_two_captured_callables._to_python()
+        assert "def chart(data_frame, hover_data: Optional[List[str]] = None):" in result
+        assert "def chart2(data_frame, hover_data: Optional[List[str]] = None):" in result
 
     def test_to_python_pre_defined_actions(self, page_pre_defined_actions):
         # Test if pre-defined actions are included correctly in output, ie no ActionsChain model

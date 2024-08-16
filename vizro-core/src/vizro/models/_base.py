@@ -253,7 +253,7 @@ class VizroBaseModel(BaseModel):
         # Imports
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
-        # CapturedCallable definitions
+        # CapturedCallable definitions - NOTE that order is not guaranteed
         callable_defs_set = _extract_captured_callable_source() | (
             extra_callable_defs if extra_callable_defs else set()
         )
