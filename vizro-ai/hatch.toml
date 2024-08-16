@@ -21,7 +21,6 @@ dependencies = [
   "langchain_community",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
-  "urllib3==1.26.19"
 ]
 
 [envs.default.env-vars]
