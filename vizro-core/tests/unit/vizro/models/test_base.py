@@ -6,6 +6,7 @@ try:
     from pydantic.v1 import Field, ValidationError, root_validator, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, ValidationError, root_validator, validator
+import logging
 import textwrap
 
 import vizro.models as vm
@@ -428,10 +429,13 @@ class TestPydanticPython:
         result = page_pre_defined_actions._to_python()
         assert result == expected_actions_predefined
 
-    def test_to_python_no_source_code(self, chart_dynamic):
+    def test_to_python_no_source_code(self, chart_dynamic, caplog):
         # Check if to_python works if the source code is not available - here chart_dynamic is undefined
+        caplog.set_level(logging.INFO)
+
         graph = vm.Graph(figure=chart_dynamic(data_frame="iris"))
         result = graph._to_python()
+        assert "Could not extract" in caplog.records[0].message
         assert result == excepted_graph_dynamic
 
     def test_to_python_with_extra_callable(self):
