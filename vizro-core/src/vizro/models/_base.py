@@ -289,17 +289,3 @@ class VizroBaseModel(BaseModel):
         smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
         validate_assignment = True  # Run validators when a field is assigned after model instantiation.
         copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
-
-
-if __name__ == "__main__":
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    from vizro.models.types import capture
-
-    @capture("graph")
-    def chart(data_frame, hover_data: Optional[List[str]] = None):
-        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-
-    graph = vm.Graph(figure=chart(data_frame="iris"))
-    result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
-    print(result)  # noqa
