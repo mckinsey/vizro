@@ -40,3 +40,7 @@ sankey_data = pd.DataFrame(
         "Value": [8, 4, 2, 8, 4, 2],
     }
 )
+
+funnel_data = pd.DataFrame(
+    {"Stage": ["Leads", "Sales calls", "Follow-up", "Conversion", "Sales"], "Value": [5, 4, 3, 2, 1]}
+)

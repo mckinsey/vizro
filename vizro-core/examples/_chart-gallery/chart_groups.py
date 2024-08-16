@@ -172,7 +172,6 @@ part_to_whole_chart_group = ChartGroup(
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Funnel"),
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
         IncompletePage("Venn"),

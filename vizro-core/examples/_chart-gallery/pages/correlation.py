@@ -46,7 +46,7 @@ scatter_matrix = vm.Page(
 
             #### What is a scatter matrix?
 
-            A scatter matrix, also known as a pair plot, is a multi-dimensional data visualization that displays
+            A scatter matrix, also known as a SPLOM chart, is a multi-dimensional data visualization that displays
             scatter plots for every pair of variables in a dataset. Each scatter plot is positioned in a matrix format,
             where rows and columns represent different variables.
 
@@ -56,11 +56,13 @@ scatter_matrix = vm.Page(
 
             Use a scatter matrix when you want to explore relationships between multiple pairs of variables
             simultaneously. They are particularly useful for identifying correlations, patterns, and potential outliers
-            within a dataset containing multiple numerical variables. Carefully select the most relevant variables to 
+            within a dataset containing multiple numerical variables. Carefully select the most relevant variables to
             ensure clarity and readability of the chart.
         """
         ),
-        vm.Graph(figure=px.scatter_matrix(iris,  dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"])),
+        vm.Graph(
+            figure=px.scatter_matrix(iris, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"])
+        ),
         make_code_clipboard_from_py_file("scatter_matrix.py"),
     ],
 )
