@@ -254,10 +254,6 @@ class TestDict:
         }
 
 
-@capture("graph")
-def chart(data_frame, hover_data: Optional[List[str]] = None):
-    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-
 
 @pytest.fixture
 def page_pre_defined_actions():
@@ -511,6 +507,11 @@ class TestPydanticPython:
     def test_to_python_captured_callable_chart_plus_extra_imports(self):
         # Test if captured callable is included correctly in output
         # Test if extra imports are included correctly in output (typing yes, pandas no)
+        @capture("graph")
+        def chart(data_frame, hover_data: Optional[List[str]] = None):
+            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+        
+        
         graph = vm.Graph(figure=chart(data_frame="iris"))
         result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
         assert result == expected_graph_with_callable
