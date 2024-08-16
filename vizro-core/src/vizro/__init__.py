@@ -3,9 +3,14 @@ import os
 
 from dash.development.base_component import Component
 
+import plotly.io as pio
+
+from ._themes import dark, light
 from ._vizro import Vizro
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
+pio.templates["vizro_dark"] = dark
+pio.templates["vizro_light"] = light
 
 __all__ = ["Vizro"]
 
@@ -49,3 +54,4 @@ _css_dist.append(
         "relative_package_path": "static/css/fonts/material-symbols-outlined.woff2",
     }
 )
+

@@ -71,7 +71,6 @@ correlation_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Scatter matrix"),
         IncompletePage("Column line"),
-        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap matrix"),
         IncompletePage("Bubble"),
     ],
@@ -111,7 +110,6 @@ distribution_chart_group = ChartGroup(
     name="Distribution",
     pages=pages.distribution.pages,
     incomplete_pages=[
-        IncompletePage("Histogram"),
         IncompletePage("Dot plot"),
         IncompletePage("Barcode"),
         IncompletePage("Cumulative curve"),
@@ -131,8 +129,6 @@ magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
     incomplete_pages=[
-        IncompletePage("Paired column"),
-        IncompletePage("Paired bar"),
         IncompletePage("Marimekko"),
         IncompletePage("Bubble"),
         IncompletePage("Lollipop"),
@@ -159,8 +155,6 @@ time_chart_group = ChartGroup(
         IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Area"),
-        IncompletePage("Connected scatter"),
         IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),
         IncompletePage("Sparkline"),
@@ -178,8 +172,6 @@ part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
-        IncompletePage("Stacked bar"),
-        IncompletePage("Stacked column"),
         IncompletePage("Marimekko"),
         IncompletePage("Funnel"),
         IncompletePage("Arc"),
