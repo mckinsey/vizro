@@ -1,8 +1,9 @@
 import inspect
+import logging
 import subprocess
 import textwrap
 from dataclasses import dataclass
-from typing import Any, Optional, Set
+from typing import Any, Set
 
 from vizro.managers import model_manager
 
@@ -20,8 +21,8 @@ from vizro.models.types import capture
 from vizro.managers import data_manager
 {extra_imports}
 
-{callable_defs}
-{data_settings}
+{callable_defs_template}
+{data_settings_template}
 
 ########### Model code ############
 {code}
@@ -99,26 +100,10 @@ def _dict_to_python(object: Any) -> str:
         code_string = ", ".join(_dict_to_python(item) for item in object)
         return f"[{code_string}]"
     elif isinstance(object, CapturedCallable):
-        return object._repr_clean()
+        return object.__repr_clean__()
     else:
         return repr(object)
 
-
-def _concatenate_code(
-    code: str,
-    extra_imports: Optional[str] = None,
-    callable_defs: Optional[str] = None,
-    data_settings: Optional[str] = None,
-) -> str:
-    callable_defs = CALLABLE_TEMPLATE.format(callable_defs=callable_defs) if callable_defs else ""
-    data_settings = DATA_TEMPLATE.format(data_setting=data_settings) if data_settings else ""
-    unformatted_code = TO_PYTHON_TEMPLATE.format(
-        code=code,
-        extra_imports=extra_imports if extra_imports else "",
-        callable_defs=callable_defs,
-        data_settings=data_settings,
-    )
-    return _format_and_lint(unformatted_code)
 
 # The two extract helper functions may not work when we refactor the model_manager to work differently when models
 # are created. An alternative approach to iterating through the model_manager is to recurse through the object as
@@ -137,6 +122,9 @@ def _extract_captured_callable_source() -> Set[str]:
                     source = textwrap.dedent(inspect.getsource(value._function))
                     captured_callable_sources.add(source)
                 except OSError:
+                    # OSError is raised when the source code is not available. This is expected
+                    # for built-in functions or dynamically defined functions (via exec or eval).
+                    logging.warning(f"Could not extract source for {value._function}. Definition will not be included.")
                     pass
     return captured_callable_sources
 
@@ -145,7 +133,7 @@ def _extract_captured_callable_data_info() -> Set[str]:
     from vizro.models.types import CapturedCallable
 
     return {
-        f'# data_manager["{value._arguments["data_frame"]}"] = ===> Fill in here <==='
+        f'# data_manager["{value["data_frame"]}"] = ===> Fill in here <==='
         for model_id in model_manager
         for _, value in model_manager[model_id]
         if isinstance(value, CapturedCallable)
@@ -154,14 +142,4 @@ def _extract_captured_callable_data_info() -> Set[str]:
 
 
 if __name__ == "__main__":
-    extra_imports = "import vizro.models as vm\nimport pandas as pd"
-    code = "vm.Card(text='Foo')"
-    callable_defs = """def f():
-    return 'hi'
-    """
-    data_settings = """# data_manager["iris"] = ===> Fill in here <==="""
-    print(
-        _concatenate_code(
-            code=code, extra_imports=extra_imports, callable_defs=callable_defs, data_settings=data_settings
-        )
-    )
+    pass

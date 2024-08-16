@@ -213,7 +213,8 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
 
     # Exclude field even if missed by exclude_unset=True
     def __vizro_exclude_fields__(self):
-        return {"id"}
+        """Exclude id field if it is the same as the title."""
+        return {"id"} if self.id == self.title else None
 
 
 class TestDict:

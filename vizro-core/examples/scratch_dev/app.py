@@ -66,4 +66,4 @@ if __name__ == "__main__":
     # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
     string = dashboard._to_python()
 
-    print(string)
+    print(string)  # noqa

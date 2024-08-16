@@ -5,45 +5,7 @@ import pytest
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.actions import export_data
-from vizro.models._utils import _concatenate_code
 from vizro.models.types import capture
-
-extra_imports_string = "import vizro.models as vm\nimport pandas as pd"
-code_string = "vm.Card(text='Foo')"
-callable_defs_string = """def f():\n  return 'hi'"""
-data_settings_string = """# data_manager["iris"] = ===> Fill in here <==="""
-
-expected_assembled_linted_code = textwrap.dedent(
-    """############ Imports ##############
-import vizro.models as vm
-
-
-####### Function definitions ######
-def f():
-    return "hi"
-
-
-####### Data Manager Settings #####
-#######!!! UNCOMMENT BELOW !!!#####
-# from vizro.managers import data_manager
-# data_manager["iris"] = ===> Fill in here <===
-
-
-########### Model code ############
-vm.Card(text="Foo")
-"""
-)
-
-
-class TestCodeConcatenation:
-    def test_concatenate_code(self):
-        result = _concatenate_code(
-            code=code_string,
-            extra_imports=extra_imports_string,
-            callable_defs=callable_defs_string,
-            data_settings=data_settings_string,
-        )
-        assert result == expected_assembled_linted_code
 
 
 @capture("graph")
@@ -78,24 +40,20 @@ def chart_dynamic():
         """
     )
 
-    local_scope = {}
-    exec(function_string, globals(), local_scope)
-    chart_dynamic = local_scope["chart_dynamic"]
-    return chart_dynamic
+    exec(function_string)
+    return locals()["chart_dynamic"]
 
 
-expected_card = textwrap.dedent(
-    """############ Imports ##############
+expected_card = """############ Imports ##############
 import vizro.models as vm
 
 
 ########### Model code ############
 model = vm.Card(text="Foo")
 """
-)
 
-expected_graph = textwrap.dedent(
-    """############ Imports ##############
+
+expected_graph = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 
@@ -109,11 +67,9 @@ import vizro.models as vm
 ########### Model code ############
 model = vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length"))
 """
-)
 
 
-expected_graph_with_callable = textwrap.dedent(
-    """############ Imports ##############
+expected_graph_with_callable = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
@@ -135,11 +91,9 @@ def chart(data_frame, hover_data: Optional[List[str]] = None):
 ########### Model code ############
 model = vm.Graph(figure=chart(data_frame="iris"))
 """
-)
 
 
-expected_actions_predefined = textwrap.dedent(
-    """############ Imports ##############
+expected_actions_predefined = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
@@ -166,11 +120,9 @@ model = vm.Page(
     title="Page 1",
 )
 """
-)
 
 
-excepted_graph_dynamic = textwrap.dedent(
-    """############ Imports ##############
+excepted_graph_dynamic = """############ Imports ##############
 import vizro.models as vm
 
 
@@ -183,17 +135,15 @@ import vizro.models as vm
 ########### Model code ############
 model = vm.Graph(figure=chart_dynamic(data_frame="iris"))
 """
-)
 
-extra_callable = textwrap.dedent(
-    """    @capture("graph")
-    def extra(data_frame, hover_data: Optional[List[str]] = None):
-        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    """
-)
 
-expected_code_with_extra_callable = textwrap.dedent(
-    """############ Imports ##############
+extra_callable = """@capture("graph")
+def extra(data_frame, hover_data: Optional[List[str]] = None):
+    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+"""
+
+
+expected_code_with_extra_callable = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.models.types import capture
@@ -208,7 +158,6 @@ def extra(data_frame, hover_data: Optional[List[str]] = None):
 ########### Model code ############
 model = vm.Card(text="Foo")
 """
-)
 
 
 class TestPydanticPython:

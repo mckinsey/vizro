@@ -1,3 +1,5 @@
+"""File to simulate imports from other modules."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash_ag_grid import AgGrid

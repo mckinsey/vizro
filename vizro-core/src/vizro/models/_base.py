@@ -1,7 +1,7 @@
 from typing import Any, List, Mapping, Optional, Set, Type, Union
 
 try:
-    from pydantic.v1 import BaseModel, Field, root_validator, validator
+    from pydantic.v1 import BaseModel, Field, validator
     from pydantic.v1.fields import SHAPE_LIST, ModelField
     from pydantic.v1.typing import get_args
 except ImportError:  # pragma: no cov
@@ -10,15 +10,20 @@ except ImportError:  # pragma: no cov
     from pydantic.typing import get_args
 
 
+import logging
+
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 from vizro.models._utils import (
-    _concatenate_code,
+    CALLABLE_TEMPLATE,
+    DATA_TEMPLATE,
+    TO_PYTHON_TEMPLATE,
     _dict_to_python,
     _extract_captured_callable_data_info,
     _extract_captured_callable_source,
+    _format_and_lint,
 )
 
 
@@ -126,7 +131,9 @@ class VizroBaseModel(BaseModel):
     def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
         return None
 
-    def _to_python(self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Set[str] = set()) -> str:
+    def _to_python(
+        self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
+    ) -> str:
         """Converts a Vizro model to the Python code that would create it.
 
         Args:
@@ -146,19 +153,31 @@ class VizroBaseModel(BaseModel):
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
         # CapturedCallable definitions
-        callable_defs_set = _extract_captured_callable_source() | extra_callable_defs
+        callable_defs_set = _extract_captured_callable_source() | (
+            extra_callable_defs if extra_callable_defs else set()
+        )
         callable_defs_concat = "\n".join(callable_defs_set) if callable_defs_set else None
 
         # Data Manager
-        data_defs_list = _extract_captured_callable_data_info()
-        data_defs_concat = "\n".join(data_defs_list) if data_defs_list else None
+        data_defs_set = _extract_captured_callable_data_info()
+        data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
 
-        return _concatenate_code(
-            code=model_code,
-            extra_imports=extra_imports_concat,
-            callable_defs=callable_defs_concat,
-            data_settings=data_defs_concat,
+        # Concatenate and lint code
+        callable_defs_template = (
+            CALLABLE_TEMPLATE.format(callable_defs=callable_defs_concat) if callable_defs_concat else ""
         )
+        data_settings_template = DATA_TEMPLATE.format(data_setting=data_defs_concat) if data_defs_concat else ""
+        unformatted_code = TO_PYTHON_TEMPLATE.format(
+            code=model_code,
+            extra_imports=extra_imports_concat if extra_imports_concat else "",
+            callable_defs_template=callable_defs_template,
+            data_settings_template=data_settings_template,
+        )
+        try:
+            return _format_and_lint(unformatted_code)
+        except Exception:
+            logging.exception("Code formatting failed; returning unformatted code")
+            return unformatted_code
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
@@ -168,56 +187,14 @@ class VizroBaseModel(BaseModel):
 
 
 if __name__ == "__main__":
-    import textwrap
-
     import vizro.models as vm
     import vizro.plotly.express as px
-    from vizro import Vizro
-    from vizro.actions import export_data
     from vizro.models.types import capture
-    from vizro.tables import dash_ag_grid
-
-    Vizro._reset()
 
     @capture("graph")
     def chart(data_frame, hover_data: Optional[List[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
-    @capture("graph")
-    def chart2(data_frame, hover_data: Optional[List[str]] = None):
-        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-
-    page = vm.Page(
-        title="Page 1",
-        #     layout = vm.Layout(grid = [[0, 1],[2, 3], [4, 5]],row_min_height="100px"),
-        components=[
-            #         vm.Card(text="Foo"),
-            vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-                    vm.Graph(figure=chart(data_frame="iris")),
-                    vm.Graph(figure=chart2(data_frame="iris")),
-                    vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
-            vm.Button(
-                text="Export data",
-                actions=[
-                    vm.Action(function=export_data()),
-                    vm.Action(function=export_data()),
-                ],
-            ),
-        ],
-            controls=[vm.Filter(column="species")],
-    )
-
-    dashboard = vm.Dashboard(title="Bar", pages=[page])
-
-    extra_callable = textwrap.dedent(
-        """    @capture("graph")
-    def extra(data_frame, hover_data: Optional[List[str]] = None):
-        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
-    """
-    )
-
-    # print(dashboard.dict(exclude_unset=True))
-    string = dashboard._to_python(
-        extra_imports={"from typing import Optional,List"}, extra_callable_defs={extra_callable}
-    )
-    print(string)
+    graph = vm.Graph(figure=chart(data_frame="iris"))
+    result = graph._to_python(extra_imports={"from typing import Optional, List", "import pandas as pd"})
+    print(result)  # noqa
