@@ -292,37 +292,38 @@ def chart_dynamic():
 
 @pytest.fixture
 def complete_dashboard():
-        @capture("graph")
-        def chart(data_frame, hover_data: Optional[List[str]] = None):
-            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+    @capture("graph")
+    def chart(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
-        @capture("graph")
-        def chart2(data_frame, hover_data: Optional[List[str]] = None):
-            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+    @capture("graph")
+    def chart2(data_frame, hover_data: Optional[List[str]] = None):
+        return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
-        page = vm.Page(
-            title="Page 1",
-            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
-            components=[
-                vm.Card(text="Foo"),
-                vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
-                vm.Graph(figure=chart(data_frame="iris")),
-                vm.Graph(figure=chart2(data_frame="iris")),
-                vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
-                vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(function=export_data()),
-                        vm.Action(function=export_data()),
-                    ],
-                ),
-            ],
-            controls=[vm.Filter(column="species")],
-        )
+    page = vm.Page(
+        title="Page 1",
+        layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
+        components=[
+            vm.Card(text="Foo"),
+            vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+            vm.Graph(figure=chart(data_frame="iris")),
+            vm.Graph(figure=chart2(data_frame="iris")),
+            vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            vm.Button(
+                text="Export data",
+                actions=[
+                    vm.Action(function=export_data()),
+                    vm.Action(function=export_data()),
+                ],
+            ),
+        ],
+        controls=[vm.Filter(column="species")],
+    )
 
-        dashboard = vm.Dashboard(title="Bar", pages=[page])
+    dashboard = vm.Dashboard(title="Bar", pages=[page])
 
-        return dashboard
+    return dashboard
+
 
 expected_card = """############ Imports ##############
 import vizro.models as vm
@@ -494,6 +495,7 @@ model = vm.Dashboard(
 )
 """
 
+
 class TestPydanticPython:
     def test_to_python_basic(self):
         card = vm.Card(text="Foo")
@@ -532,7 +534,7 @@ class TestPydanticPython:
         card = vm.Card(text="Foo")
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
-    
+
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional,List"})
