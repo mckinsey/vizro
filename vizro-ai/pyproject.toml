@@ -23,7 +23,7 @@ dependencies = [
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.4",  # TODO set upper bound later
   "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
-  "urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout fro vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
+  "urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
   "aiohttp>=3.9.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-AIOHTTP-6209407
   "langchain-core>=0.1.31"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-LANGCHAINCORE-6370598
 ]
