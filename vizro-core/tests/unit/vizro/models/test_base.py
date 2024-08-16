@@ -14,6 +14,7 @@ import vizro.plotly.express as px
 from typing_extensions import Annotated
 from vizro.actions import export_data
 from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
 
 class ChildX(vm.VizroBaseModel):
@@ -289,6 +290,40 @@ def chart_dynamic():
     return locals()["chart_dynamic"]
 
 
+@pytest.fixture
+def complete_dashboard():
+        @capture("graph")
+        def chart(data_frame, hover_data: Optional[List[str]] = None):
+            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+        @capture("graph")
+        def chart2(data_frame, hover_data: Optional[List[str]] = None):
+            return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+        page = vm.Page(
+            title="Page 1",
+            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
+            components=[
+                vm.Card(text="Foo"),
+                vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
+                vm.Graph(figure=chart(data_frame="iris")),
+                vm.Graph(figure=chart2(data_frame="iris")),
+                vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=export_data()),
+                        vm.Action(function=export_data()),
+                    ],
+                ),
+            ],
+            controls=[vm.Filter(column="species")],
+        )
+
+        dashboard = vm.Dashboard(title="Bar", pages=[page])
+
+        return dashboard
+
 expected_card = """############ Imports ##############
 import vizro.models as vm
 
@@ -404,6 +439,60 @@ def extra(data_frame, hover_data: Optional[List[str]] = None):
 model = vm.Card(text="Foo")
 """
 
+expected_complete_dashboard = """############ Imports ##############
+import vizro.plotly.express as px
+import vizro.tables as vt
+import vizro.models as vm
+import vizro.actions as va
+from vizro.models.types import capture
+from typing import Optional, List
+
+
+####### Function definitions ######
+@capture("graph")
+def chart2(data_frame, hover_data: Optional[List[str]] = None):
+    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+
+@capture("graph")
+def chart(data_frame, hover_data: Optional[List[str]] = None):
+    return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Dashboard(
+    pages=[
+        vm.Page(
+            components=[
+                vm.Card(text="Foo"),
+                vm.Graph(
+                    figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")
+                ),
+                vm.Graph(figure=chart(data_frame="iris")),
+                vm.Graph(figure=chart2(data_frame="iris")),
+                vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=va.export_data()),
+                        vm.Action(function=va.export_data()),
+                    ],
+                ),
+            ],
+            title="Page 1",
+            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, 5]], row_min_height="100px"),
+            controls=[vm.Filter(column="species")],
+        )
+    ],
+    title="Bar",
+)
+"""
 
 class TestPydanticPython:
     def test_to_python_basic(self):
@@ -443,3 +532,8 @@ class TestPydanticPython:
         card = vm.Card(text="Foo")
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
+    
+    def test_to_python_complete_dashboard(self, complete_dashboard):
+        # Test more complete and nested model
+        result = complete_dashboard._to_python(extra_imports={"from typing import Optional,List"})
+        assert result == expected_complete_dashboard
