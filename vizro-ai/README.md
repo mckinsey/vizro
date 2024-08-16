@@ -19,6 +19,12 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 
 </div>
 
+## Try out live
+
+| Platform     | Chart creation                                                                                                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Google Colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/chart_by_vizro_ai.ipynb) |
+
 ## Why Vizro-AI?
 
 ### Easy-to-use
@@ -39,7 +45,7 @@ Please review the [Disclaimer](https://vizro-ai.readthedocs.io/en/latest/pages/e
 
 ## Documentation
 
-For more information, please refer to our [Documentation](https://vizro-ai.readthedocs.io/en/latest/).
+For more information, please refer to our [Documentation](https://vizro.readthedocs.io/projects/vizro-ai/).
 
 ## Acknowledgment
 

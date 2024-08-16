@@ -8,7 +8,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import butterfly
 
-from pages._pages_utils import PAGE_GRID, ages, make_code_clipboard_from_py_file, tips_agg
+from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
 
 
 def column_factory(group: str):
@@ -37,7 +37,13 @@ def column_factory(group: str):
         """
             ),
             vm.Graph(
-                figure=px.bar(tips_agg, y="total_bill", x="day", category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]})
+                figure=px.bar(
+                    gapminder.query(
+                        "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                    ),
+                    y="pop",
+                    x="country",
+                )
             ),
             make_code_clipboard_from_py_file("column.py"),
         ],
@@ -72,5 +78,37 @@ def butterfly_factory(group: str):
             ),
             vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
             make_code_clipboard_from_py_file("butterfly.py"),
+        ],
+    )
+
+
+def connected_scatter_factory(group: str):
+    """Reusable function to create the page content for the column chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-connected-scatter",
+        path=f"{group}/connected-scatter",
+        title="Connected scatter",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+                #### What is a connected scatter chart?
+
+                A connected scatter chart visualizes two variables (x and y) using dots, with lines connecting the dots
+                in the order of the data points. One variable is plotted along the x-axis and the other along the
+                y-axis, showing both the relationship and a sequence of the data.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use connected scatter charts to show the relationship between two variables and the sequence of data
+                points. They are ideal for paired numerical data, helping to reveal trends and patterns over time or in
+                a specific order. Remember, correlation is not causation, so ensure your audience understands this to
+                avoid misinterpretation.
+        """
+            ),
+            vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
+            make_code_clipboard_from_py_file("connected_scatter.py"),
         ],
     )
