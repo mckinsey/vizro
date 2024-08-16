@@ -3,12 +3,6 @@
   src: url("./fonts/inter-variable-font.ttf") format("truetype");
 }
 
-/* Not used anywhere? */
-@font-face {
-  font-family: RobotoMono;
-  src: url("./fonts/roboto-mono-variable-font.ttf") format("truetype");
-}
-
 * {
   border: 0;
   box-sizing: border-box;
