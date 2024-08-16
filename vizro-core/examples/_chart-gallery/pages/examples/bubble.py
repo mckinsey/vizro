@@ -6,7 +6,9 @@ gapminder = px.data.gapminder()
 
 page = vm.Page(
     title="Bubble",
-    components=[vm.Graph(figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60))],
+    components=[
+        vm.Graph(figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60))
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])

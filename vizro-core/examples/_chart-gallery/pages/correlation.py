@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, iris, make_code_clipboard_from_py_file, gapminder
+from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file
 
 scatter = vm.Page(
     title="Scatter",
@@ -80,7 +80,7 @@ bubble = vm.Page(
             A bubble chart is a type of data visualization that displays three dimensions of data. Each point on the
             chart is represented by a bubble, where the x-axis and y-axis denote two of the data dimensions, and the
             size of the bubble represents the third dimension.
-            
+
             &nbsp;
 
             #### When should I use it?
@@ -91,9 +91,7 @@ bubble = vm.Page(
             providing deeper insights than a standard scatter plot.
         """
         ),
-        vm.Graph(
-            figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60)
-        ),
+        vm.Graph(figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60)),
         make_code_clipboard_from_py_file("bubble.py"),
     ],
 )
