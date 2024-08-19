@@ -14,11 +14,15 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
+  "pytest-rerunfailures",
   "toml",
   "nbformat>=4.2.0",
   "pyhamcrest",
   "jupyter",
-  "langchain_community"
+  "langchain_community",
+  "dash[testing]",
+  "chromedriver-autoinstaller>=0.6.4",
+  "urllib3<2.0.0"  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
 ]
 
 [envs.default.env-vars]
@@ -37,7 +41,7 @@ prep-release = [
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 secrets = "pre-commit run gitleaks --all-files"
 test = "pytest tests {args}"
-test-integration = "pytest -v tests/integration {args}"
+test-integration = "pytest -vs --reruns 1 tests/integration --headless {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",

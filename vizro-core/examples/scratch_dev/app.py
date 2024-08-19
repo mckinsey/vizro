@@ -1,51 +1,41 @@
-"""asdf."""
+"""Dev app to try things out."""
 
-import plotly.graph_objs as go
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-
-# This is applied properly as the final title color is taken from the fig.layout.template
-# (which is calculated from the current pio.template)
-pio.templates["vizro_dark"]["layout"]["title"]["font"]["color"] = "green"
-pio.templates["vizro_light"]["layout"]["title"]["font"]["color"] = "blue"
-
-# This doesn't work as expected as the final scatter points color is taken from fig.data
-# (which is calculated probably from the pio.templates.default)
-pio.templates["vizro_dark"]["layout"]["colorway"] = ["red"]
-pio.templates["vizro_light"]["layout"]["colorway"] = ["yellow"]
+from vizro.tables import dash_data_table
 
 df = px.data.iris()
 
 
 @capture("graph")
-def my_graph_figure_px(data_frame):
-    """Blah."""
-    fig = px.scatter(data_frame, x="sepal_width", y="sepal_length", title="Title")
-    return fig
-
-
-@capture("graph")
-def my_graph_figure_go(data_frame):
-    """Blahhrl."""
-    fig = go.Figure(go.Scatter(x=data_frame["sepal_width"], y=data_frame["sepal_length"]))
-    fig.update_layout(title="Title")
+def my_graph(data_frame):
+    """Just for test purposes."""
+    fig = px.scatter(data_frame, x="sepal_width", y="sepal_length")
+    # print(fig.layout.margin.t)  # This is None
+    # print(fig.layout.template.layout.margin.t)  # This is 64 our default
+    fig.update_layout(margin_t=0)
+    # print(fig.layout.margin.t)  # This is 0 now
     return fig
 
 
 page = vm.Page(
     title="Test",
+    layout=vm.Layout(
+        grid=[[0, 1, 2]],
+    ),
     components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", title="Title")),
-        vm.Graph(figure=my_graph_figure_px(df)),
-        vm.Graph(figure=my_graph_figure_go(df)),
+        vm.Graph(figure=my_graph(df)),
+        vm.Table(figure=dash_data_table(df), title="My Table"),
+        vm.Graph(
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", title="My Graph <br><span>This is a subtitle</span>"
+            )
+        ),
     ],
-    controls=[vm.Filter(column="species")],
 )
 
-# Try with theme="vizro_light"
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
