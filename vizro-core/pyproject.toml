@@ -22,7 +22,7 @@ dependencies = [
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
-  "wrapt>=1",
+  "wrapt>=1"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -34,7 +34,7 @@ requires-python = ">=3.8"
 [project.optional-dependencies]
 kedro = [
   "kedro>=0.17.3",
-  "kedro-datasets",  # no longer a dependency of kedro for kedro>=0.19.2
+  "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 
 [project.urls]
