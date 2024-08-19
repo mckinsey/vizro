@@ -30,10 +30,12 @@ class _Dummy(Component):
 # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
 # to main instead, but this can be manually overridden to the current feature branch name if required.
 # _git_branch = __version__ if "dev" not in __version__ else "main"
-_git_branch = "tidy/create-module-pure-functions"
+_git_branch = __version__ if "dev" not in __version__ else "main"
 _library_css = ["static/css/figures"]
 _base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
+# CSS is packaged and accessed using relative_package_path when serve_locally=False (the default) in
+# the Dash instantiation. When serve_locally=True then, where defined, external_url will be used instead.
 _css_dist = [
     {
         "namespace": "vizro",
