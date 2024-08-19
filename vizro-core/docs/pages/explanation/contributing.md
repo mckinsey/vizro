@@ -114,21 +114,10 @@ We use [`pre-commit ci`](https://pre-commit.ci/) to automatically fix all the li
 
 To run pre-commit hooks locally, there are two options:
 
-1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`). In case this fails due to `gitleaks`, you should read below for an explanation and how to install `go`.
+1. Run `hatch run pre-commit install` to automatically run the hooks on every commit (you can always skip the checks with `git commit --no-verify`).
 2. Run `hatch run lint` to run `pre-commit` hooks on all files. (You can run `hatch run lint mypy -a` to only run specific linters, here mypy, on all files.)
 
 Note that Hatch's `default` environment specifies `pre-commit` as a dependency but otherwise _does not_ specify dependencies for linting tools such as `black`. These are controlled by [.pre-commit-config.yaml](https://github.com/mckinsey/vizro/blob/main/.pre-commit-config.yaml) and can be updated when required with `pre-commit autoupdate`. Once per month, `pre-commit ci` raises a PR to do so.
-
-## Secret scans
-
-We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We do this via `pre-commit`, however there are a few things to note:
-
-1. Using `gitleaks` may require an installation of `go` on the developer machine. This is easy and explained in the [Go documentation](https://go.dev/doc/install).
-2. For that reason `hatch run lint` skips the secret scans, to function on all machines.
-3. To run a secret-scan, run `hatch run secrets`.
-4. Secret scans will run on CI, but it is highly recommended to check for secrets **before pushing to the remote repository** and ideally also before even committing.
-
-When executing the secret scan, there are two modes: `protect` can discover secrets in staged files, `detect` does so in the commit history.
 
 ## Changelog
 
