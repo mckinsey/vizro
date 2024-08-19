@@ -27,7 +27,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Chord                 | ❌     | Flow                     |
 | Choropleth            | ✅     | Spatial                  |
 | Column                | ✅     | Magnitude, Time          |
-| Column line           | ❌     | Correlation, Time        |
+| Column and line       | ✅     | Correlation, Time        |
 | Connected scatter     | ✅     | Correlation, Time        |
 | Cumulative curve      | ❌     | Distribution             |
 | Diverging bar         | ❌     | Deviation                |

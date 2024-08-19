@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._factories import connected_scatter_factory
+from pages._factories import column_and_line_factory, connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file
 
 scatter = vm.Page(
@@ -95,4 +95,6 @@ bubble = vm.Page(
         make_code_clipboard_from_py_file("bubble.py"),
     ],
 )
-pages = [scatter, connected_scatter, scatter_matrix, bubble]
+
+column_and_line = column_and_line_factory("correlation")
+pages = [scatter, connected_scatter, scatter_matrix, bubble, column_and_line]

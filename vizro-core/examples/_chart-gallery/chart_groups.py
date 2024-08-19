@@ -69,7 +69,6 @@ correlation_chart_group = ChartGroup(
     name="Correlation",
     pages=pages.correlation.pages,
     incomplete_pages=[
-        IncompletePage("Column line"),
         IncompletePage("Heatmap matrix"),
     ],
     icon="Bubble Chart",
@@ -149,7 +148,6 @@ time_chart_group = ChartGroup(
     pages=pages.time.pages,
     incomplete_pages=[
         IncompletePage("Gantt"),
-        IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Heatmap"),

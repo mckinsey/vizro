@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._factories import column_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory, column_factory, connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, stocks
 
 line = vm.Page(
@@ -65,4 +65,5 @@ area = vm.Page(
 )
 
 connected_scatter = connected_scatter_factory("time")
-pages = [line, column, area, connected_scatter]
+column_and_line = column_and_line_factory("time")
+pages = [line, column, area, connected_scatter, column_and_line]
