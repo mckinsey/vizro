@@ -23,9 +23,6 @@ dependencies = [
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
   "wrapt>=1",
-  "numpy>=1.22.2",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-NUMPY-2321970
-  "setuptools>=65.5.1",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-SETUPTOOLS-3180412
-  "werkzeug>=3.0.1"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WERKZEUG-6035177
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -38,9 +35,6 @@ requires-python = ">=3.8"
 kedro = [
   "kedro>=0.17.3",
   "kedro-datasets",  # no longer a dependency of kedro for kedro>=0.19.2
-  "wheel>=0.38.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-WHEEL-3180413,
-  "ipython>=8.10.0",  # not directly required, pinned by Snyk to avoid a vulnerability: https://app.snyk.io/vuln/SNYK-PYTHON-IPYTHON-3318382
-  "tornado>=6.3.2"  # not directly required, pinned by Snyk to avoid a vulnerability: https://security.snyk.io/vuln/SNYK-PYTHON-TORNADO-5537286
 ]
 
 [project.urls]

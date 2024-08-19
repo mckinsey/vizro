@@ -64,7 +64,6 @@ css
 dataframes
 Javascript
 tooltip
-Snyk
 Codespaces
 dev
 mypy
