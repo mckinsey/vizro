@@ -64,7 +64,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Sparkline             | ❌     | Time                     |
 | Stacked bar           | ✅     | Part-to-whole            |
 | Stacked column        | ✅     | Part-to-whole            |
-| Stepped line          | ❌     | Ranking                  |
+| Stepped line          | ✅     | Time                     |
 | Surplus deficit line  | ❌     | Deviation                |
 | Treemap               | ✅     | Part-to-whole            |
 | Venn                  | ❌     | Part-to-whole            |

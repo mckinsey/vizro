@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import column_and_line_factory, column_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, stocks
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks
 
 line = vm.Page(
     title="Line",
@@ -66,4 +66,37 @@ area = vm.Page(
 
 connected_scatter = connected_scatter_factory("time")
 column_and_line = column_and_line_factory("time")
-pages = [line, column, area, connected_scatter, column_and_line]
+
+stepped_line = vm.Page(
+    title="Stepped line",
+    path="time/stepped-line",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a stepped line chart?
+
+            A stepped line chart is much like a standard Line chart but, instead of connecting two points with the
+            shortest line, the line forms a series of steps between data points.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            You should use a stepped line chart when you wish to draw attention to changes occurring at specific points.
+            By contrast, a line chart would suggest that changes occur gradually.
+        """
+        ),
+        vm.Graph(
+            figure=px.line(
+                data_frame=gapminder.query("country=='China'"),
+                x="year",
+                y="lifeExp",
+                line_shape="hv",
+            ),
+        ),
+        make_code_clipboard_from_py_file("stepped_line.py"),
+    ],
+)
+pages = [line, column, area, connected_scatter, column_and_line, stepped_line]

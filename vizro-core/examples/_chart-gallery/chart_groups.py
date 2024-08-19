@@ -88,7 +88,6 @@ ranking_chart_group = ChartGroup(
         IncompletePage("Ordered bubble"),
         IncompletePage("Slope"),
         IncompletePage("Lollipop"),
-        IncompletePage("Stepped line"),
         IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
