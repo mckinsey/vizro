@@ -11,11 +11,12 @@ df = px.data.iris()
 
 @capture("graph")
 def my_graph(data_frame):
+    """Just for test purposes."""
     fig = px.scatter(data_frame, x="sepal_width", y="sepal_length")
-    print(fig.layout.margin.t)  # This is None
-    print(fig.layout.template.layout.margin.t)  # This is 64 our default
+    # print(fig.layout.margin.t)  # This is None
+    # print(fig.layout.template.layout.margin.t)  # This is 64 our default
     fig.update_layout(margin_t=0)
-    print(fig.layout.margin.t)  # This is 0 now
+    # print(fig.layout.margin.t)  # This is 0 now
     return fig
 
 
@@ -25,7 +26,6 @@ page = vm.Page(
         grid=[[0, 1, 2]],
     ),
     components=[
-        # Graph
         vm.Graph(figure=my_graph(df)),
         vm.Table(figure=dash_data_table(df), title="My Table"),
         vm.Graph(
