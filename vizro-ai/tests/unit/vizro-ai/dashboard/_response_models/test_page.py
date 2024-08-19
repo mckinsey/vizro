@@ -7,10 +7,10 @@ except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
 
-class TestPagePlan:
+class TestPageCreate:
     """Test for page plan."""
 
-    def test_dashboard_plan(self, component_plan_card):
+    def test_page_plan_instantiation(self, component_plan_card):
         page_plan = PagePlan(
             title="Test Page",
             components_plan=[component_plan_card],

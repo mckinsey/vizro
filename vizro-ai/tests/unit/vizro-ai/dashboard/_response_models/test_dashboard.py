@@ -1,10 +1,10 @@
 from vizro_ai.dashboard._response_models.dashboard import DashboardPlan
 
 
-class TestDashboardPlanner:
-    """Tests dashboard planner."""
+class TestDashboardCreate:
+    """Tests dashboard plan creation."""
 
-    def test_dashboard_planner(self, page_plan):
+    def test_dashboard_plan_instantiation(self, page_plan):
         dashboard_plan = DashboardPlan(
             title="Test Dashboard",
             pages=[page_plan],

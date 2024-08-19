@@ -1,8 +1,10 @@
+import logging
+
 import pytest
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
-from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter, _create_filter_proxy
+from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
 
 try:
     from pydantic.v1 import ValidationError
@@ -38,37 +40,51 @@ class TestFilterProxyCreate:
         assert result.dict(exclude={"id": True}) == expected_filter.dict(exclude={"id": True})
 
 
-class TestControlPlan:
-    """Test control plan."""
+class TestControlCreate:
+    """Test control creation."""
 
-    def test_control_plan_invalid_df_name(self, fake_llm_filter, df_metadata):
+    def test_control_create_valid(self, fake_llm_filter, controllable_components, df_metadata):
         control_plan = ControlPlan(
             control_type="Filter",
-            control_description="Create a filter that filters the data based on the column 'a'.",
-            df_name="population_chart",
+            control_description="Create a parameter that targets the data based on the column 'a'.",
+            df_name="bar_chart",
         )
-        default_control = control_plan.create(
-            model=fake_llm_filter, controllable_components=["bar_chart"], all_df_metadata=df_metadata
+        result = control_plan.create(
+            model=fake_llm_filter, controllable_components=controllable_components, all_df_metadata=df_metadata
         )
-        assert default_control is None
+        assert result.dict(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").dict(
+            exclude={"id": True}
+        )
 
-    def test_control_plan_invalid_type(self, fake_llm_filter, df_metadata):
-        with pytest.raises(ValidationError):
-            ControlPlan(
-                control_type="parameter",
+    def test_control_create_invalid_df_name(
+        self, fake_llm_filter, df_metadata, caplog
+    ):  # testing the fallback when an invalid dataframe name is provided to ControlPlan.
+        with caplog.at_level(logging.WARNING):
+            control_plan = ControlPlan(
+                control_type="Filter",
                 control_description="Create a parameter that targets the data based on the column 'a'.",
-                df_name="bar_chart",
+                df_name="line_chart",
+            )
+            result = control_plan.create(
+                model=fake_llm_filter, controllable_components=["bar_chart"], all_df_metadata=df_metadata
             )
 
+        assert result is None
+        assert "Dataframe line_chart not found in metadata, returning default values." in caplog.text
 
-def test_create_filter(filter_prompt, fake_llm_filter, df_cols, df_schema, controllable_components):
-    actual_filter = _create_filter(
-        filter_prompt=filter_prompt,
-        model=fake_llm_filter,
-        df_cols=df_cols,
-        df_schema=df_schema,
-        controllable_components=controllable_components,
-    )
-    assert actual_filter.dict(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").dict(
-        exclude={"id": True}
-    )
+    def test_control_create_invalid_control_type(
+        self, fake_llm_filter, df_metadata, caplog
+    ):  # testing the fallback when an invalid dataframe name is provided to ControlPlan.
+        with pytest.raises(ValidationError):
+            with caplog.at_level(logging.WARNING):
+                control_plan = ControlPlan(
+                    control_type="Parameter",
+                    control_description="Create a parameter that targets the data based on the column 'a'.",
+                    df_name="bar_chart",
+                )
+                result = control_plan.create(
+                    model=fake_llm_filter, controllable_components=["bar_chart"], all_df_metadata=df_metadata
+                )
+
+                assert result is None
+                assert "Build failed for `Control`, returning default values." in caplog.text

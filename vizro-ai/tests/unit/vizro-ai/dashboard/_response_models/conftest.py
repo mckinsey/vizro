@@ -6,7 +6,6 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
-from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
@@ -118,16 +117,6 @@ def mock_vizro_ai_return(df):
         x="a",
         y="b",
     )
-
-
-@pytest.fixture
-def mock_dash_ag_grid(df):
-    return dash_ag_grid(data_frame=df)
-
-
-@pytest.fixture
-def mock_return_ag_grid(mock_dash_ag_grid):
-    return vm.AgGrid(figure=mock_dash_ag_grid, id="aggrid")
 
 
 @pytest.fixture

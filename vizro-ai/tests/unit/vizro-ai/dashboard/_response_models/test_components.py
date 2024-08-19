@@ -37,22 +37,3 @@ class TestComponentCreate:
         )
 
         assert result.dict(exclude={"id": True}) == expected_card.dict(exclude={"id": True})
-
-    def test_create_ag_grid(
-        self,
-        mocker,
-        component_plan_ag_grid,
-        mock_dash_ag_grid,
-        mock_return_ag_grid,
-        df_metadata,
-    ):
-        mocker.patch(
-            "vizro_ai.dashboard._response_models.components.ComponentPlan.create", return_value=mock_return_ag_grid
-        )
-        result = component_plan_ag_grid.create(
-            model=None,
-            all_df_metadata=df_metadata,
-        )
-        expected = vm.AgGrid(id="ag_grid", figure=mock_dash_ag_grid)
-
-        assert result.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
