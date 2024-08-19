@@ -4,11 +4,6 @@ import pytest
 import vizro.models as vm
 from vizro_ai.dashboard._response_models.layout import LayoutPlan
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    pass
-
 
 class TestLayoutCreate:
     """Test layout creation."""
