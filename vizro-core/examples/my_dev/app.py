@@ -8,6 +8,7 @@ import dash_ag_grid as dag
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.managers import data_manager
 from vizro.models.types import capture
@@ -20,13 +21,10 @@ def custom_ag_grid(data_frame, **kwargs):
     return vizro_dash_ag_grid()
 
 
-# data = pd.read_csv("test_data.csv")
-
-
 data = pd.DataFrame({
-    'Column 1': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'Column 2': ['A', 'B', 'C', 'D', 'Aaksjdaksljdlkasjdlkasjdlkasjlkasjkldaaksjdalksdjlaskkkasldadlksdkaslasdkalsdkasdjalasda', 'F', 'G', 'H', 'I', 'J'],
-    'Column 3': [10.5, 20.1, 30.2, 40.3, 50.4, 60.5, 70.6, 80.7, 90.8, 100.9]
+    'Column 1': [1, 2, 3, 4, 5, 6],
+    'Column 2': ['A', 'B', 'C', 'VeryLongStringInputCell_VeryLongStringInputCell_VeryLongStringInputCell', 'D', 'E'],
+    'Column 3': [10.5, 20.1, 30.2, 40.3, 50.4, 60.5],
 })
 
 
@@ -39,39 +37,50 @@ data_manager["my_data"] = load_data
 
 @capture("ag_grid")
 def simple_ag_grid(data_frame, **kwargs):
+    print(f"dash_ag_grid -> len: {len(data_frame)}")
+
     return dag.AgGrid(
-        id='grid',
-        columnDefs=[{'headerName': col, 'field': col} for col in data_frame.columns],
-        columnSize="autoSize",
+        **kwargs,
+        columnDefs=[
+            {
+                'field': col,
+                "checkboxSelection": True,
+                'filter': True
+            } for col in data_frame.columns
+        ],
+        columnSize="autoSize",  # (Empty-DF) - Does NOT work with
+        # columnSize="responsiveSizeToFit", -> (Empty-DF) - WORKS
+        # columnSize="sizeToFit", -> (Empty-DF) - Does NOT work
         rowData=data_frame.to_dict('records'),
         defaultColDef={'resizable': True},
+        persistence=True,
+        persistence_type="local",
+        persisted_props=["selectedRows", "filterModel", "rowData"],
+        dashGridOptions={
+            "rowSelection": "multiple",
+            "suppressRowClickSelection": True,
+            # "pagination": True,
+            # "paginationPageSize": 3
+        }
     )
 
 
 page_grid = vm.Page(
     title="Graph / AG Grid",
     components=[
-        # vm.AgGrid(
-        #     id="outer_ag_grid_id",
-        #     title="AgGrid",
-        #     figure=custom_ag_grid(
-        #         id="inner_ag_grid_id",
-        #         data_frame="my_data",
-        #         columnSize="autoSize",  # Does NOT work
-        #         # columnSize="responsiveSizeToFit", -> WORKS
-        #         # columnSize="sizeToFit", -> Does NOT work
-        #         persistence=True,
-        #         persistence_type="session",
-        #         persisted_props=["filerModel"],
-        #         # persisted_props=["columnSize", "filerModel"],
-        #         updateColumnState=True,
-        #         # columnState
-        #         # suppressSizeToFit=True
-        #     )
-        # ),
         vm.AgGrid(
-            figure=simple_ag_grid(data_frame="my_data"),
-        )
+            id="outer_ag_grid_id",
+            figure=simple_ag_grid(data_frame="my_data", id='vizro-grid-id'),
+            actions=[
+                vm.Action(
+                    function=filter_interaction(targets=["outer_ag_grid_id_2"]),
+                )
+            ]
+        ),
+        vm.AgGrid(
+            id="outer_ag_grid_id_2",
+            figure=simple_ag_grid(data_frame="my_data", id='vizro-grid-id-2'),
+        ),
     ],
     controls=[
         vm.Filter(
@@ -86,18 +95,9 @@ page_home = vm.Page(
     components=[vm.Button()],
 )
 
-
-
-# @callback(
-#     Output("column-sizing-size-to-fit-callback", "columnSize"),
-#     Input("button-size-to-fit-callback", "n_clicks"),
-# )
-# def update_column_size_callback(_):
-#     return "sizeToFit"
-
-
 dashboard = vm.Dashboard(pages=[page_home, page_grid])
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    # Vizro().build(dashboard).run(debug=False)
+    Vizro(suppress_callback_exceptions=True).build(dashboard).run(debug=True)

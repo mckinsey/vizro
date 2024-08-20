@@ -9,6 +9,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 from dash import ClientsideFunction, Input, Output, clientside_callback
+import dash_ag_grid as dag
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
@@ -112,7 +113,34 @@ class AgGrid(VizroBaseModel):
                 # Additionally, we cannot remove the DF from the ag grid object before returning it (to save sending
                 # data over the network), because it breaks filter persistence settings on page change.
                 # Hence be careful when editing the line below.
-                html.Div(self.__call__(data_frame=pd.DataFrame()), id=self.id, className="table-container"),
+                html.Div(
+                    # App cannot start if filter_interaction is attached to the AgGrid.
+                    # dah.AgGrid()
+
+                    # column widths issues,
+                    # pagination issues,
+                    # dag.AgGrid(id=self._input_component_id),
+
+                    # column widths issues
+                    # column filters issues
+                    # selectedRows issues
+                    # users have to deal with empty data_frame
+                    # 4 calls of figure function
+                    # self.__call__(data_frame=pd.DataFrame()),
+
+                    # it's slow
+                    # column width issues
+                    # selectedRows issues
+                    # self.__call__(),
+
+
+                    # placeholder doesn't contain columns.
+                    html.Div(id=self._input_component_id),
+
+
+                    id=self.id,
+                    className="table-container"
+                ),
             ],
             color="grey",
             parent_className="loading-container",
