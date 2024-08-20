@@ -12,6 +12,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 <!-- scriv-insert-here -->
 
 <a id='changelog-0.1.20'></a>
+
 # 0.1.20 — 2024-08-20
 
 ## Added
