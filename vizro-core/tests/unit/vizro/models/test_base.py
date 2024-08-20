@@ -221,37 +221,34 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
     # Exclude field even if missed by exclude_unset=True
     def __vizro_exclude_fields__(self):
         """Exclude id field if it is the same as the title."""
-        return {"id"} if self.id == self.title else None
+        return {"id"}
 
 
 class TestDict:
     def test_dict_no_args(self):
         model = Model(id="model_id")
-        assert model.dict() == {"id": "model_id", "type": "model", "__vizro_model__": "Model"}
+        assert model.dict() == {"id": "model_id", "type": "model"}
 
     def test_dict_exclude_unset(self):
         model = Model(id="model_id")
-        assert model.dict(exclude_unset=True) == {"id": "model_id", "__vizro_model__": "Model"}
+        assert model.dict(exclude_unset=True) == {"id": "model_id"}
 
-    def test_dict_exclude_manual(self):
+    def test_dict_exclude_id(self):
         model = Model()
-        assert model.dict(exclude={"id"}) == {"type": "model", "__vizro_model__": "Model"}
+        assert model.dict(exclude={"id"}) == {"type": "model"}
+
+    def test_dict_exclude_type(self):
+        # __vizro_exclude_fields__ should have no effect here.
+        model = Model(id="model_id")
+        assert model.dict(exclude={"type"}) == {"id": "model_id"}
 
     def test_dict_exclude_in_model_unset(self):
         model = ModelWithFieldSetting(title="foo")
-        assert model.dict(exclude_unset=True) == {
-            "title": "foo",
-            "__vizro_model__": "ModelWithFieldSetting",
-        }
+        assert model.dict(exclude_unset=True) == {"id": "foo", "title": "foo"}
 
     def test_dict_exclude_in_model_no_args(self):
         model = ModelWithFieldSetting(title="foo")
-        assert model.dict() == {
-            "type": "exclude_model",
-            "title": "foo",
-            "foo": "long-random-thing",
-            "__vizro_model__": "ModelWithFieldSetting",
-        }
+        assert model.dict() == {"id": "foo", "type": "exclude_model", "title": "foo", "foo": "long-random-thing"}
 
 
 @pytest.fixture

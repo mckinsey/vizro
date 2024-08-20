@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from typing import Any, List, Mapping, Optional, Set, Type, Union
 
 try:
@@ -52,6 +53,21 @@ DATA_TEMPLATE = """
 # from vizro.managers import data_manager
 {data_setting}
 """
+
+# Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
+# This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
+# called for, dict behaviour is unmodified from pydantic's default.
+_PATCH_VIZRO_BASE_MODEL_DICT = False
+
+
+@contextmanager
+def _patch_vizro_base_model_dict():
+    global _PATCH_VIZRO_BASE_MODEL_DICT
+    _PATCH_VIZRO_BASE_MODEL_DICT = True
+    try:
+        yield
+    finally:
+        _PATCH_VIZRO_BASE_MODEL_DICT = False
 
 
 def _format_and_lint(code_string: str) -> str:
@@ -222,13 +238,18 @@ class VizroBaseModel(BaseModel):
         new_type.update_forward_refs(**vm.__dict__.copy())
 
     def dict(self, **kwargs):
-        # Overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary.
-        # To get exclude as an argument is a bit fiddly because this function is called recursively
-        # inside pydantic, which sets exclude=None by default.
+        global _PATCH_VIZRO_BASE_MODEL_DICT
+        if not _PATCH_VIZRO_BASE_MODEL_DICT:
+            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behaviour of the dict.
+            return super().dict(**kwargs)
+
+        # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
+        # and to exclude fields specified dynamically in __vizro_exclude_fields__.
+        # To get exclude as an argument is a bit fiddly because this function is called recursively inside pydantic,
+        # which sets exclude=None by default.
         if kwargs.get("exclude") is None:
             kwargs["exclude"] = self.__vizro_exclude_fields__()
         _dict = super().dict(**kwargs)
-        # Inject __vizro_model__ into the dictionary - needed just for to_python.
         _dict["__vizro_model__"] = self.__class__.__name__
         return _dict
 
@@ -243,7 +264,7 @@ class VizroBaseModel(BaseModel):
         self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
     ) -> str:
         """Converts a Vizro model to the Python code that would create it.
-        
+
         Args:
             extra_imports: Extra imports to add to the Python code. Provide as a set of complete import strings.
             extra_callable_defs: Extra callable definitions to add to the Python code. Provide as a set of complete
@@ -280,7 +301,9 @@ class VizroBaseModel(BaseModel):
         data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
 
         # Model code
-        model_dict = self.dict(exclude_unset=True)
+        with _patch_vizro_base_model_dict():
+            model_dict = self.dict(exclude_unset=True)
+
         model_code = "model = " + _dict_to_python(model_dict)
 
         # Concatenate and lint code
@@ -305,13 +328,3 @@ class VizroBaseModel(BaseModel):
         smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
         validate_assignment = True  # Run validators when a field is assigned after model instantiation.
         copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
-
-
-# Ideas that I have tried:
-# 1. making it an argument - fails due to super method not having that argument
-# 2. Somewhat controlling behavior via private attribute - but when would this get instantiated
-# 3. Subclassing BaseModel before VizroBaseModel to allow for kwargs in dict - this actually does not solve
-# the problem either, just shifts it :)
-
-# --> ultimately I think it is an unsolvable problem due to recursion. We cannot pass this information through the
-# normal dict method of the parent class
