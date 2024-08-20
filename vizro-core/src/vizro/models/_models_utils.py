@@ -39,8 +39,8 @@ def check_captured_callable(cls, value):
 
 
 REPLACEMENT_STRINGS = {
-    # "string to match a general module string": "string to replace with"
-    # dot required so that the case where no replacement is used, we do not
+    # "substring to match a larger general module string": "string to replace with"
+    # dot required so that in the case where no replacement is used, we do not
     # have a preceding dot (see __repr_clean__ in types.py)
     "plotly.express": "px.",
     "vizro.tables": "vt.",
