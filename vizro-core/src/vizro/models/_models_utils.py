@@ -1,5 +1,4 @@
 import logging
-from dataclasses import dataclass
 from functools import wraps
 
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
