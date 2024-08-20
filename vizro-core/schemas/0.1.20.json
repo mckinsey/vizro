@@ -1386,15 +1386,7 @@
         },
         "nav_selector": {
           "title": "Nav Selector",
-          "description": "Component for rendering navigation.",
-          "discriminator": {
-            "propertyName": "type",
-            "mapping": {
-              "accordion": "#/definitions/Accordion",
-              "nav_bar": "#/definitions/NavBar"
-            }
-          },
-          "oneOf": [
+          "anyOf": [
             {
               "$ref": "#/definitions/Accordion"
             },
