@@ -289,3 +289,11 @@ class VizroBaseModel(BaseModel):
         smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
         validate_assignment = True  # Run validators when a field is assigned after model instantiation.
         copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
+
+
+# Ideas that I have tried:
+# 1. making it an argument - fails due to super method not having that argument
+# 2. Somewhat controlling behaviour via private attribute - but when would this get instatiated
+# 3. Subclassing BaseModel before VizroBaseModel to allow for kwargs in dict - this actually does not solve the problem either, just shifts it :)
+
+# --> ultimately I think it is an unsovable problem due to recursion. We cannot pass this information through the normal dict method of the parent class
