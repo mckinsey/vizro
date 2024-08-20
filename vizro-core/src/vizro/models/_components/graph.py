@@ -56,9 +56,14 @@ class Graph(VizroBaseModel):
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
-        # Remove top margin if title is provided
-        if fig.layout.title.text is None:
+        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
+        if fig.layout.margin.t is None and fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
+
+        # Increase `title_pad_t` if subtitle is provided and `title_pad_t` is not explicitly set.
+        # Otherwise, the title is being cut off.
+        if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" in fig.layout.title.text:
+            fig.update_layout(title_pad_t=24)
 
         # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
         # what the clientside update_graph_theme callback does, and it would be nice if we could just use that by

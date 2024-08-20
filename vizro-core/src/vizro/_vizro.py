@@ -33,17 +33,18 @@ class Vizro:
 
         """
         self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
-        self.dash.config.external_stylesheets.extend(
-            [
-                "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-            ]
-        )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
         vizro_assets_folder = Path(__file__).with_name("static")
         requests_pathname_prefix = self.dash.config.requests_pathname_prefix
-        vizro_css = [requests_pathname_prefix + path for path in self._get_external_assets(vizro_assets_folder, "css")]
+        # Exclude vizro/css/figures.css since these are distributed through the vizro._css_dist mechanism.
+        # In future we will probably handle all assets this way and none of this code will be required.
+        vizro_css = [
+            requests_pathname_prefix + path
+            for path in self._get_external_assets(vizro_assets_folder, "css")
+            if path != "vizro/css/figures.css"
+        ]
 
         # Ensure vizro-bootstrap.min.css is loaded in first to allow overwrites
         vizro_css.sort(key=lambda x: not x.endswith("vizro-bootstrap.min.css"))

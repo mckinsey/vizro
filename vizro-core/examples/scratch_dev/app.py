@@ -1,4 +1,4 @@
-"""asdf."""
+"""Dev app to try things out."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -11,6 +11,9 @@ data_manager["iris"] = px.data.iris()
 
 page = vm.Page(
     title="Test",
+    layout=vm.Layout(
+        grid=[[0, 1, 2]],
+    ),
     components=[
         vm.Card(
             text="""
