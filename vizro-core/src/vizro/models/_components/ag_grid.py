@@ -109,10 +109,10 @@ class AgGrid(VizroBaseModel):
                 html.H3(self.title) if self.title else None,
                 # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
                 # here) must have the same setting as the object that is built by the on-page-load mechanism using
-                # with the user settings and rendered finally. Otherwise the grid is not rendered correctly.
+                # with the user settings and rendered finally. Otherwise, the grid is not rendered correctly.
                 # Additionally, we cannot remove the DF from the ag grid object before returning it (to save sending
                 # data over the network), because it breaks filter persistence settings on page change.
-                # Hence be careful when editing the line below.
+                # Hence, be careful when editing the line below.
                 html.Div(
                     # App cannot start if filter_interaction is attached to the AgGrid.
                     # dah.AgGrid()
@@ -134,12 +134,10 @@ class AgGrid(VizroBaseModel):
                     # self.__call__(),
 
 
-                    # placeholder doesn't contain columns.
-                    html.Div(id=self._input_component_id),
-
-
+                    # TODO: Rethink prettier placeholder.
                     id=self.id,
-                    className="table-container"
+                    children=[html.Div(id=self._input_component_id)],
+                    className="table-container",
                 ),
             ],
             color="grey",

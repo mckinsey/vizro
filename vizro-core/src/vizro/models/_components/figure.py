@@ -56,7 +56,12 @@ class Figure(VizroBaseModel):
             # of the children via ID as well, but the `id` doesn't seem  to be passed on to the loading component.
             # I've raised an issue on dash here: https://github.com/plotly/dash/issues/2878
             # In the meantime, we are adding an extra html.div here.
-            html.Div(self.__call__(), id=self.id, className="figure-container"),
+
+            # Before
+            # html.Div(self.__call__(), id=self.id, className="figure-container"),
+
+            # Now
+            html.Div(id=self.id, className="figure-container"),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

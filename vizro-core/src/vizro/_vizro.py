@@ -31,7 +31,14 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
+        # TODO: Consider should we enable these arguments to be overwritten by the user? Otherwise we should explain them in the docs.
+        self.dash = dash.Dash(
+            **kwargs,
+            pages_folder="",
+            suppress_callback_exceptions=True,
+            title="Vizro",
+            use_pages=True,
+        )
         self.dash.config.external_stylesheets.extend(
             [
                 "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
