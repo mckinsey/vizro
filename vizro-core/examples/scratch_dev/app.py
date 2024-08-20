@@ -12,7 +12,7 @@ data_manager["iris"] = px.data.iris()
 page = vm.Page(
     title="Test",
     layout=vm.Layout(
-        grid=[[0, 1, 2]],
+        grid=[[0, 1],[2,3],[4,5]],
     ),
     components=[
         vm.Card(
