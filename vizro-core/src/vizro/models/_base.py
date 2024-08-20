@@ -15,6 +15,10 @@ from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 
 
+aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
+aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+
+
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
