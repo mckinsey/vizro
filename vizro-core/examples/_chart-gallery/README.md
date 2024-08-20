@@ -66,7 +66,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Ordered column        | ✅     | Ranking                  |
 | Paired bar            | ✅     | Magnitude                |
 | Paired column         | ✅     | Magnitude                |
-| Parallel coordinates  | ❌     | Magnitude                |
+| Parallel coordinates  | ✅     | Magnitude                |
 | Pictogram             | ❌     | Magnitude                |
 | Pie                   | ✅     | Part-to-whole            |
 | Radar                 | ❌     | Magnitude                |

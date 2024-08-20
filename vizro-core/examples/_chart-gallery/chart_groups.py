@@ -128,7 +128,6 @@ magnitude_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Lollipop"),
         IncompletePage("Radar"),
-        IncompletePage("Parallel coordinates"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),

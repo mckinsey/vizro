@@ -8,6 +8,7 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 from vizro.models.types import capture
 
+
 # TODO: consider how this should be represented in the code example files. Since the code is copy and pasted
 # it can get out of sync. But probably we don't want the docstrings in the short code snippet.
 # Ultimately these charts will probably move to vizro.charts anyway.

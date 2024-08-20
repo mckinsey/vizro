@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips
 
 bar = vm.Page(
     title="Bar",
@@ -158,4 +158,36 @@ paired_column = vm.Page(
     ],
 )
 
-pages = [bar, column, paired_bar, paired_column]
+parallel_coordinates = vm.Page(
+    path="magnitude/parallel-coordinates ",
+    title="Parallel coordinates",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a parallel coordinates chart?
+
+                A parallel coordinates chart is a type of data visualization used to plot multivariate numerical data.
+                Each axis represents a different variable, and lines connecting the axes indicate the values of
+                individual data points across these variables.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a parallel coordinates chart to explore relationships and patterns in high-dimensional data.
+                This chart is particularly useful for comparing multiple variables simultaneously and identifying
+                correlations or clusters within the data. Ensure clear labeling of each axis and consider using color
+                coding to distinguish between different data points or groups.
+        """
+        ),
+        vm.Graph(
+            figure=px.parallel_coordinates(
+                iris, color="species_id", dimensions=["sepal_width", "sepal_length", "petal_width", "petal_length"]
+            )
+        ),
+        make_code_clipboard_from_py_file("parallel_coordinates.py"),
+    ],
+)
+
+pages = [bar, column, paired_bar, paired_column, parallel_coordinates]
