@@ -4,17 +4,20 @@ This dashboard shows a gallery of charts. It includes guidance on when to use ea
 to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
 
 **Created by:**
+
 - [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
-**Inspired by:** 
+**Inspired by:**
+
 - [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
-Martin Stabe.
+  Martin Stabe.
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum): Jon Swabish and Severino Ribecca
 
 **Credits & Tutorials:**
+
 - [Plotly](https://plotly.com/python/plotly-express/)
 
 ## Chart types

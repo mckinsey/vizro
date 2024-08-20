@@ -11,22 +11,6 @@ from vizro.models.types import capture
 # TODO: consider how this should be represented in the code example files. Since the code is copy and pasted
 # it can get out of sync. But probably we don't want the docstrings in the short code snippet.
 # Ultimately these charts will probably move to vizro.charts anyway.
-
-# LQ: Should we move these custom charts to vizro.charts now? Not sure which custom charts qualify for inclusion.
-# Here are my thoughts on the three custom charts we have:
-
-
-# (1) Butterfly Chart: There is no official Plotly code snippet for this chart type. By creating and providing this
-#     snippet, we add value by offering users a ready-made solution. Should be added to vizro.charts
-# (2) Sankey Chart: This chart is simply copied from the Plotly documentation, with no additional value from our side.
-#     I'm uncertain if this should be included in vizro.charts. However, since Sankey charts are frequently requested,
-#     having it readily available might be useful for users who may not refer to the Plotly documentation.
-# (3) Column + Line Chart: While a similar code snippet is available in the Plotly documentation:
-#     https://plotly.com/python/graphing-multiple-chart-types/, our version includes several layout improvements to
-#     adhere to data visualization best practices. For example, we synchronize the y-axes to remove redundant grid
-#     lines and convert the x-axes to a category type for proper alignment of tick labels with the bars.
-#     These enhancements make our version more opinionated on how a column-line chart should look like.
-#     Should be added to vizro.charts.
 @capture("graph")
 def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
     """Creates a custom butterfly chart using Plotly's go.Figure.

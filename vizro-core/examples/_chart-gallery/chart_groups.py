@@ -232,11 +232,12 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 
 - Images created by QuantumBlack
 
-**Inspired by:** 
-- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
-Martin Stabe.
+**Inspired by:**
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
+Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
 
-- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum) Jon Swabish and Severino Ribecca
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+Jon Swabish and Severino Ribecca
 
 &nbsp;
 
