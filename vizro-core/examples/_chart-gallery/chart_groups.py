@@ -148,7 +148,6 @@ time_chart_group = ChartGroup(
         IncompletePage("Gantt"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),
         IncompletePage("Sparkline"),
     ],
@@ -226,6 +225,10 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 
 &nbsp;
 
+&nbsp;
+
+&nbsp;
+
 **Created by:**
 - Huong Li Nguyen and Antony Milne
 
@@ -240,8 +243,10 @@ Jon Swabish and Severino Ribecca
 
 &nbsp;
 
-**Credits & Tutorials:**
+**Credits and sources:**
+
 - [Plotly](https://plotly.com/python/plotly-express/)
+- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 """
 

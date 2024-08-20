@@ -16,9 +16,10 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum): Jon Swabish and Severino Ribecca
 
-**Credits & Tutorials:**
+**Credits, tutorials and resources:**
 
 - [Plotly](https://plotly.com/python/plotly-express/)
+- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 ## Chart types
 
@@ -54,7 +55,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Funnel                | ✅     | Part-to-whole            |
 | Gantt                 | ❌     | Time                     |
 | Gridplot              | ❌     | Part-to-whole            |
-| Heatmap               | ❌     | Time                     |
+| Heatmap               | ✅     | Time                     |
 | Heatmap matrix        | ❌     | Correlation              |
 | Histogram             | ✅     | Distribution             |
 | Line                  | ✅     | Time                     |

@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from custom_charts import column
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks, tips
 
 line = vm.Page(
     title="Line",
@@ -132,4 +132,31 @@ stepped_line = vm.Page(
         make_code_clipboard_from_py_file("stepped_line.py"),
     ],
 )
-pages = [line, column, area, connected_scatter, column_and_line, stepped_line]
+
+heatmap = vm.Page(
+    title="Heatmap",
+    path="time/heatmap",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a heatmap?
+            A heatmap chart depicts values for a main variable of interest across two axis variables as a grid of
+            colored squares. The color intensity of each cell represents the value of the main variable within a
+            specific range.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a heatmap chart to visualize time patterns and identify trends between two variables.
+            Typically, the x-axis represents time intervals (e.g., hours, days, months), while the y-axis represents
+            categories or different variables. By observing color changes across the grid, you can easily spot
+            patterns and correlations.
+        """
+        ),
+        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.1f")),
+        make_code_clipboard_from_py_file("heatmap.py"),
+    ],
+)
+pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap]
