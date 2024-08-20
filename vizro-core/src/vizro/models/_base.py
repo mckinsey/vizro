@@ -14,7 +14,6 @@ from typing_extensions import Annotated
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
 
-
 aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
 aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
