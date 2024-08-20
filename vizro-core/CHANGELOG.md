@@ -17,17 +17,17 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Added validation error message if `CapturedCallable` is directly provided. ([#590](https://github.com/mckinsey/vizro/pull/590))
+- Add validation error message if `CapturedCallable` is directly provided. ([#590](https://github.com/mckinsey/vizro/pull/590))
 
 - Create `vizro.figures.library` to contain KPI card Dash components that can be used outside the Vizro framework. ([#578](https://github.com/mckinsey/vizro/pull/578))
 
-- Add dark mode and loading spinner to the layout loading screen (before Vizro app is shown) ([#598](https://github.com/mckinsey/vizro/pull/598))
+- Add dark mode and loading spinner to the layout loading screen (before Vizro app is shown). ([#598](https://github.com/mckinsey/vizro/pull/598))
 
 ## Changed
 
-- Google Material icons library is served locally to enable offline functionality. ([#578](https://github.com/mckinsey/vizro/pull/578))
+- Serve Google Material icons library locally to enable offline functionality. ([#578](https://github.com/mckinsey/vizro/pull/578))
 
-- Importing Vizro no longer alters the default plotly template. ([#615](https://github.com/mckinsey/vizro/pull/615))
+- Disable altering the default plotly template by importing Vizro. ([#615](https://github.com/mckinsey/vizro/pull/615))
 
 ## Fixed
 
