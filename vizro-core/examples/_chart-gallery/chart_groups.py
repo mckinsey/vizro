@@ -230,17 +230,13 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 **Created by:**
 - Huong Li Nguyen and Antony Milne
 
-- Images created by QuantumBlack Design and Joseph Perkins
+- Images created by QuantumBlack
 
 **Inspired by:** 
-
-The [FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md)
-and [the Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
-
-- FT Graphic: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
 Martin Stabe.
 
-- The Graphic Continuum: Jon Swabish and Severino Ribecca
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum) Jon Swabish and Severino Ribecca
 
 &nbsp;
 
