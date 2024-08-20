@@ -56,13 +56,13 @@ DATA_TEMPLATE = """
 
 # Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
 # This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
-# called for, dict behaviour is unmodified from pydantic's default.
+# called for, dict behavior is unmodified from pydantic's default.
 _PATCH_VIZRO_BASE_MODEL_DICT = False
 
 
 @contextmanager
 def _patch_vizro_base_model_dict():
-    global _PATCH_VIZRO_BASE_MODEL_DICT
+    global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
     _PATCH_VIZRO_BASE_MODEL_DICT = True
     try:
         yield
@@ -238,9 +238,9 @@ class VizroBaseModel(BaseModel):
         new_type.update_forward_refs(**vm.__dict__.copy())
 
     def dict(self, **kwargs):
-        global _PATCH_VIZRO_BASE_MODEL_DICT
+        global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
         if not _PATCH_VIZRO_BASE_MODEL_DICT:
-            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behaviour of the dict.
+            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behavior of the dict.
             return super().dict(**kwargs)
 
         # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
@@ -286,6 +286,7 @@ class VizroBaseModel(BaseModel):
             >>> print(card._to_python(
             ...    extra_imports={"from typing import List"},
             ...    extra_callable_defs={"def test(foo:List[str]): return foo"}))
+
         """
         # Imports
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
