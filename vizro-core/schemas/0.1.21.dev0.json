@@ -857,14 +857,7 @@
           "default": {},
           "type": "object",
           "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object"
-              }
-            ]
+            "type": "string"
           }
         },
         "value": {
@@ -932,14 +925,7 @@
           "default": {},
           "type": "object",
           "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object"
-              }
-            ]
+            "type": "string"
           }
         },
         "value": {
