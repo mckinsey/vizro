@@ -6,7 +6,7 @@ gapminder = px.data.gapminder()
 
 
 page = vm.Page(
-    title="Column",
+    title="Ordered column",
     components=[
         vm.Graph(
             figure=px.bar(

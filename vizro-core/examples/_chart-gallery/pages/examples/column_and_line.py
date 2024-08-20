@@ -36,7 +36,7 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
 dashboard = vm.Dashboard(
     pages=[
         vm.Page(
-            title="Butterfly",
+            title="Column and line",
             components=[
                 vm.Graph(
                     figure=column_and_line(

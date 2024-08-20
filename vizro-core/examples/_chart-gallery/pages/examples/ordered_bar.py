@@ -6,7 +6,7 @@ gapminder = px.data.gapminder()
 
 
 page = vm.Page(
-    title="Bar",
+    title="Ordered bar",
     components=[
         vm.Graph(
             figure=px.bar(
