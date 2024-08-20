@@ -13,7 +13,7 @@ from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-
+AWS_SECRET_ACCESS_KEY = "yeGNb3u6sQIHDpCaSAp8btzdjB45QrS_YFzmDdBPzEf-iNbFik2OeEZOkyfZzDmwGo"
 
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
