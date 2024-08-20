@@ -225,8 +225,16 @@ all_intro_text = """
 This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
 to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
 
-Inspired by the
-[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md)
+&nbsp;
+
+**Created by:**
+- Huong Li Nguyen and Antony Milne
+
+- Images created by QuantumBlack Design and Joseph Perkins
+
+**Inspired by:** 
+
+The [FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md)
 and [the Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
 
 - FT Graphic: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
@@ -234,6 +242,10 @@ Martin Stabe.
 
 - The Graphic Continuum: Jon Swabish and Severino Ribecca
 
+&nbsp;
+
+**Credits & Tutorials:**
+- [Plotly](https://plotly.com/python/plotly-express/)
 
 """
 
