@@ -148,6 +148,7 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
 
 @capture("graph")
 def column(data_frame: pd.DataFrame, x: str, y: str):
+    """Creates a column chart where the x-axis values are converted to category type."""
     fig = px.bar(
         data_frame,
         y=y,
