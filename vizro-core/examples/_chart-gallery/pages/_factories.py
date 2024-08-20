@@ -11,45 +11,6 @@ from custom_charts import butterfly, column_and_line
 from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
 
 
-def column_factory(group: str):
-    """Reusable function to create the page content for the column chart with a unique ID."""
-    return vm.Page(
-        id=f"{group}-column",
-        path=f"{group}/column",
-        title="Column",
-        layout=vm.Layout(grid=PAGE_GRID),
-        components=[
-            vm.Card(
-                text="""
-                #### What is a column chart?
-
-                A column chart is a vertical bar chart with column lengths varying by the categorical value they
-                represent, using a y-axis scale starting from zero.
-
-                &nbsp;
-
-                #### When should I use it?
-
-                Use a column chart to help your audience compare sizes and identify patterns in categorical data,
-                such as **how many?** in each category. Arrange the columns in any order to fit the message you want
-                to emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or
-                abbreviations with fuller descriptions below.
-        """
-            ),
-            vm.Graph(
-                figure=px.bar(
-                    gapminder.query(
-                        "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
-                    ),
-                    y="pop",
-                    x="country",
-                )
-            ),
-            make_code_clipboard_from_py_file("column.py"),
-        ],
-    )
-
-
 def butterfly_factory(group: str):
     """Reusable function to create the page content for the butterfly chart with a unique ID."""
     return vm.Page(

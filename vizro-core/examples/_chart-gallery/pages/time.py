@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._factories import column_and_line_factory, column_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory,  connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks
 
 line = vm.Page(
@@ -34,7 +34,39 @@ line = vm.Page(
     ],
 )
 
-column = column_factory("time")
+column = vm.Page(
+        id="time-column",
+        path="time/column",
+        title="Column",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+                #### What is a column chart?
+
+                A column chart is a type of bar chart where data is represented with vertical columns. Each
+                column's height corresponds to the value it represents, with the y-axis starting from zero.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a column chart to compare sizes and identify patterns in categorical data, including time-based
+                data. Arrange columns to fit your message, and for time-based data, order them chronologically to
+                highlight trends. Ensure clear labeling, especially with many categories, and consider using a legend
+                or abbreviations with fuller descriptions below.
+        """
+            ),
+            vm.Graph(
+                figure=px.bar(
+                    gapminder.query("country == 'Nigeria' and year > 1970"),
+                    y="gdpPercap",
+                    x="year",
+                )
+            ),
+            make_code_clipboard_from_py_file("column_time.py"),
+        ],
+    )
 
 area = vm.Page(
     title="Area",
