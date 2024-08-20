@@ -13,6 +13,7 @@ dependencies = [
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
+  "pytest-mock",
   "pytest-rerunfailures",
   "toml",
   "nbformat>=4.2.0",
