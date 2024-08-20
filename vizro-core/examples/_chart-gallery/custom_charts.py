@@ -3,6 +3,7 @@
 from typing import List
 
 import pandas as pd
+import vizro.plotly.express as px
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 from vizro.models.types import capture
@@ -142,4 +143,16 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
         yaxis2={"tickmode": "sync", "overlaying": "y", "title": y_line},
     )
 
+    return fig
+
+
+@capture("graph")
+def column(data_frame: pd.DataFrame, x: str, y: str):
+    fig = px.bar(
+        data_frame,
+        y=y,
+        x=x,
+    )
+    # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
+    fig.update_xaxes(type="category")
     return fig

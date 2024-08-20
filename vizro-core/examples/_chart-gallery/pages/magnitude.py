@@ -44,13 +44,13 @@ bar = vm.Page(
 
 # Note: Code example for magnitude/column differs from time/column
 column = vm.Page(
-        id="magnitude-column",
-        path="magnitude/column",
-        title="Column",
-        layout=vm.Layout(grid=PAGE_GRID),
-        components=[
-            vm.Card(
-                text="""
+    id="magnitude-column",
+    path="magnitude/column",
+    title="Column",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
                 #### What is a column chart?
 
                 A column chart is a type of bar chart where data is represented with vertical columns. Each
@@ -65,19 +65,19 @@ column = vm.Page(
                 highlight trends. Ensure clear labeling, especially with many categories, and consider using a legend
                 or abbreviations with fuller descriptions below.
         """
-            ),
-            vm.Graph(
-                figure=px.bar(
-                    gapminder.query(
-                        "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
-                    ),
-                    y="pop",
-                    x="country",
-                )
-            ),
-            make_code_clipboard_from_py_file("column.py"),
-        ],
-    )
+        ),
+        vm.Graph(
+            figure=px.bar(
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ),
+                y="pop",
+                x="country",
+            )
+        ),
+        make_code_clipboard_from_py_file("column.py"),
+    ],
+)
 
 paired_bar = vm.Page(
     title="Paired bar",
