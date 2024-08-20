@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix py.cafe docs integration by pinning `ruff` dependency for mkdocs plugin. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix py.cafe docs integration by pinning `ruff` dependency for mkdocs plugin. ([#640](https://github.com/mckinsey/vizro/pull/640))
 
 <!--
 ### Security
