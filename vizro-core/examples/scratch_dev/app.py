@@ -59,7 +59,9 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
-    # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
-    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
+    from vizro import Vizro
 
+    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
     print(string)  # noqa
+
+    Vizro().build(dashboard).run()
