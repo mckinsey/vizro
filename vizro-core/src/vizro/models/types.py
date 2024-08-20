@@ -21,9 +21,19 @@ except ImportError:  # pragma: no cov
     from pydantic.fields import ModelField
     from pydantic.schema import SkipField
 
+
 from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+def _clean_module_string(module_string: str) -> str:
+    from vizro.models._models_utils import REPLACEMENT_STRINGS
+
+    for original, new in REPLACEMENT_STRINGS.items():
+        if original in module_string:
+            return new
+    return ""
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -249,6 +259,17 @@ class CapturedCallable:
             )
 
         return captured_callable
+
+    def __repr__(self):
+        """String representation of the CapturedCallable."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        return f"{self._function.__module__}.{self._function.__name__}({args})"
+
+    def __repr_clean__(self):
+        """Alternative __repr__ method with cleaned module paths."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        original_module_path = f"{self._function.__module__}"
+        return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
 
 
 @contextmanager
