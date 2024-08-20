@@ -1,5 +1,4 @@
 import logging
-from dataclasses import dataclass
 from functools import wraps
 
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
@@ -39,16 +38,13 @@ def check_captured_callable(cls, value):
     )
 
 
-@dataclass
-class PathReplacement:
-    original: str
-    new: str
-
-
-REPLACEMENT_STRINGS = [
-    PathReplacement("plotly.express", "px."),
-    PathReplacement("vizro.tables", "vt."),
-    PathReplacement("vizro.figures", "vf."),
-    PathReplacement("vizro.actions", "va."),
-    PathReplacement("vizro.charts", "vc."),
-]
+REPLACEMENT_STRINGS = {
+    # "string to match a general module string": "string to replace with"
+    # dot required so that the case where no replacement is used, we do not
+    # have a preceding dot (see __repr_clean__ in types.py)
+    "plotly.express": "px.",
+    "vizro.tables": "vt.",
+    "vizro.figures": "vf.",
+    "vizro.actions": "va.",
+    "vizro.charts": "vc.",
+}

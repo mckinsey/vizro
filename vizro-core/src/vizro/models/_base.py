@@ -106,8 +106,11 @@ def _extract_captured_callable_source() -> Set[str]:
     captured_callable_sources = set()
     for model_id in model_manager:
         for _, value in model_manager[model_id]:
-            if isinstance(value, CapturedCallable) and all(
-                replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS
+            if isinstance(value, CapturedCallable) and not any(
+                # Check to see if the captured callable does use a cleaned module string, if yes then
+                # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
+                value.__repr_clean__().startswith(new)
+                for _, new in REPLACEMENT_STRINGS.items()
             ):
                 try:
                     source = textwrap.dedent(inspect.getsource(value._function))
@@ -293,7 +296,9 @@ class VizroBaseModel(BaseModel):
 
 # Ideas that I have tried:
 # 1. making it an argument - fails due to super method not having that argument
-# 2. Somewhat controlling behaviour via private attribute - but when would this get instatiated
-# 3. Subclassing BaseModel before VizroBaseModel to allow for kwargs in dict - this actually does not solve the problem either, just shifts it :)
+# 2. Somewhat controlling behavior via private attribute - but when would this get instantiated
+# 3. Subclassing BaseModel before VizroBaseModel to allow for kwargs in dict - this actually does not solve
+# the problem either, just shifts it :)
 
-# --> ultimately I think it is an unsovable problem due to recursion. We cannot pass this information through the normal dict method of the parent class
+# --> ultimately I think it is an unsolvable problem due to recursion. We cannot pass this information through the
+# normal dict method of the parent class

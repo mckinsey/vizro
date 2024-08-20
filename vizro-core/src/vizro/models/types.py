@@ -30,10 +30,10 @@ from vizro.charts._charts_utils import _DashboardReadyFigure
 def _clean_module_string(module_string: str) -> str:
     from vizro.models._models_utils import REPLACEMENT_STRINGS
 
-    return next(
-        (replacement.new for replacement in REPLACEMENT_STRINGS if replacement.original in module_string),
-        "",
-    )
+    for original, new in REPLACEMENT_STRINGS.items():
+        if original in module_string:
+            return new
+    return ""
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
