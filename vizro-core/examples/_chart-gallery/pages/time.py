@@ -110,7 +110,7 @@ stepped_line = vm.Page(
 
             #### What is a stepped line chart?
 
-            A stepped line chart is much like a standard Line chart but, instead of connecting two points with the
+            A stepped line chart is much like a standard line chart but, instead of connecting two points with the
             shortest line, the line forms a series of steps between data points.
 
             &nbsp;
@@ -123,9 +123,9 @@ stepped_line = vm.Page(
         ),
         vm.Graph(
             figure=px.line(
-                data_frame=gapminder.query("country=='China'"),
-                x="year",
-                y="lifeExp",
+                data_frame=stocks,
+                x="date",
+                y="GOOG",
                 line_shape="hv",
             ),
         ),
@@ -155,7 +155,7 @@ heatmap = vm.Page(
             patterns and correlations.
         """
         ),
-        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.1f")),
+        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto=".2f")),
         make_code_clipboard_from_py_file("heatmap.py"),
     ],
 )

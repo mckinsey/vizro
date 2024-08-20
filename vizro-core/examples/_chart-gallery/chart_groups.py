@@ -230,7 +230,7 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 &nbsp;
 
 **Created by:**
-- Huong Li Nguyen and Antony Milne
+- [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
