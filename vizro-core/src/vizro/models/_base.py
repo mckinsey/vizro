@@ -243,7 +243,7 @@ class VizroBaseModel(BaseModel):
         self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
     ) -> str:
         """Converts a Vizro model to the Python code that would create it.
-
+        
         Args:
             extra_imports: Extra imports to add to the Python code. Provide as a set of complete import strings.
             extra_callable_defs: Extra callable definitions to add to the Python code. Provide as a set of complete
@@ -252,6 +252,19 @@ class VizroBaseModel(BaseModel):
         Returns:
             str: Python code to create the Vizro model.
 
+        Examples:
+            Simple usage example with card model.
+
+            >>> import vizro.models as vm
+            >>> card = vm.Card(text="Hello, world!")
+            >>> print(card._to_python())
+
+            Further options include adding extra imports and callable definitions. These will be included in the
+            returned python string.
+
+            >>> print(card._to_python(
+            ...    extra_imports={"from typing import List"},
+            ...    extra_callable_defs={"def test(foo:List[str]): return foo"}))
         """
         # Imports
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
