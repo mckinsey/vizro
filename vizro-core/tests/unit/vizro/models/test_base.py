@@ -15,6 +15,7 @@ from typing_extensions import Annotated
 from vizro.actions import export_data
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
+from vizro.models._base import _patch_vizro_base_model_dict
 
 
 class ChildX(vm.VizroBaseModel):
@@ -242,12 +243,21 @@ class TestDict:
         model = Model(id="model_id")
         assert model.dict(exclude={"type"}) == {"id": "model_id"}
 
-    def test_dict_exclude_in_model_unset(self):
+    def test_dict_exclude_in_model_unset_with_and_without_context(self):
         model = ModelWithFieldSetting(title="foo")
+        with _patch_vizro_base_model_dict():
+            assert model.dict(exclude_unset=True) == {"title": "foo", "__vizro_model__": "ModelWithFieldSetting"}
         assert model.dict(exclude_unset=True) == {"id": "foo", "title": "foo"}
 
-    def test_dict_exclude_in_model_no_args(self):
+    def test_dict_exclude_in_model_no_args_with_and_without_context(self):
         model = ModelWithFieldSetting(title="foo")
+        with _patch_vizro_base_model_dict():
+            assert model.dict() == {
+                "title": "foo",
+                "type": "exclude_model",
+                "__vizro_model__": "ModelWithFieldSetting",
+                "foo": "long-random-thing",
+            }
         assert model.dict() == {"id": "foo", "type": "exclude_model", "title": "foo", "foo": "long-random-thing"}
 
 
