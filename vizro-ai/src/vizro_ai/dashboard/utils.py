@@ -78,8 +78,8 @@ def _process_to_set(list_of_list_of_dict):
                 # Remove leading imports
                 value = re.sub(r"^from.*?\n\n", "", value, flags=re.DOTALL)  # noqa: PLW2901
 
-                # Remove the last piece
-                value = re.sub(r"\n\nfig = custom_chart\(data_frame=df\)$", "", value)  # noqa: PLW2901
+                # Remove the last line (any chart creation)
+                value = re.sub(r"\n\nfig = .*?\(data_frame=df\)$", "", value)  # noqa: PLW2901
 
                 result.add(value)
 

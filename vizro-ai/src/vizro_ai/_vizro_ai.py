@@ -66,6 +66,7 @@ class VizroAI:
         user_input: str,
         max_debug_retry: int = 3,
         explain: bool = False,
+        _chart_name: Optional[str] = None,
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -74,7 +75,7 @@ class VizroAI:
         # TODO update to loop through charts for multiple charts creation
         plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
-            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type}
+            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type, "chart_name": _chart_name}
         )
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
@@ -127,6 +128,7 @@ class VizroAI:
         explain: bool = False,
         max_debug_retry: int = 3,
         return_elements: bool = False,
+        _chart_name: Optional[str] = None,
     ) -> Union[go.Figure, PlotOutputs]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -136,13 +138,14 @@ class VizroAI:
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
             return_elements: Flag to return PlotOutputs dataclass that includes all possible elements generated.
+            _chart_name: Optional chart name for chart creation.
 
         Returns:
            go.Figure or PlotOutputs dataclass
 
         """
         vizro_plot = self._run_plot_tasks(
-            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry
+            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry, _chart_name=_chart_name
         )
 
         if not explain:

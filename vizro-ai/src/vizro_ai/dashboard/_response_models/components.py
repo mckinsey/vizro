@@ -50,7 +50,10 @@ class ComponentPlan(BaseModel):
         try:
             if self.component_type == "Graph":
                 result = vizro_ai.plot(
-                    df=all_df_metadata.get_df(self.df_name), user_input=self.component_description, return_elements=True
+                    df=all_df_metadata.get_df(self.df_name),
+                    user_input=self.component_description,
+                    return_elements=True,
+                    _chart_name=self.component_id,
                 )
                 return (
                     vm.Graph(

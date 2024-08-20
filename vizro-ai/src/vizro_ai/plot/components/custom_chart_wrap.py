@@ -1,7 +1,7 @@
 """Custom Chart Component."""
 
 import logging
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -32,8 +32,9 @@ custom_chart_prompt = """
 Your task is to correctly wrap the provided code as instructed. IMPORTANT: Do not mock the data.
 
 Instruction:
-1. You wrap the entire chart code into function called 'custom_chart' that takes a single optional arg called
-data_frame and returns only the fig object, ie `def custom_chart(data_frame): as first line.
+1. You wrap the entire chart code into function called '{chart_name}' that takes a single optional arg called
+data_frame and returns only the fig object.
+For example, if chart_name = "iris_chart", the function should be `def iris_chart(data_frame):` as first line.
 2. You ensure that the above function only returns the plotly fig object,
 and that the variables are renamed such that all data is derived from 'data_frame'.
 3. Leave all imports as is above that function, and do NOT add anything else.
@@ -64,48 +65,49 @@ class GetCustomChart(VizroAIComponentBase):
         """
         super().__init__(llm)
 
-    def _pre_process(self, *args, **kwargs) -> Tuple[Dict, Dict]:
+    def _pre_process(self, chart_name: Optional[str] = "custom_chart", *args, **kwargs) -> Tuple[Dict, Dict]:
         """Preprocess for custom chart.
 
         It should return llm_kwargs and partial_vars_map.
         """
         llm_kwargs_to_use = openai_schema_manager.get_llm_kwargs("CustomChart")
-        partial_vars_map = {}
+        partial_vars_map = {"chart_name": chart_name}
 
         return llm_kwargs_to_use, partial_vars_map
 
-    def _post_process(self, response: Dict, *args, **kwargs) -> str:
+    def _post_process(self, response: Dict, chart_name: Optional[str] = "custom_chart", *args, **kwargs) -> str:
         """Post process for visual code.
 
         Insert df code and clean up with vizro import.
         """
         custom_chart_code = response.get("custom_chart_code")
-        return self._add_capture_code(custom_chart_code)
+        return self._add_capture_code(custom_chart_code, chart_name)
 
     @_log_time
-    def run(self, chain_input: str) -> str:
+    def run(self, chain_input: str, chart_name: Optional[str] = "custom_chart") -> str:
         """Run chain to get custom chart code.
 
         Args:
             chain_input: Chain input, undecorated visual code.
+            chart_name: Chart name.
 
         Returns:
             Custom chart snippet.
 
         """
-        return super().run(chain_input=chain_input)
+        return super().run(chain_input=chain_input, chart_name=chart_name)
 
     @staticmethod
-    def _add_capture_code(code_string: str) -> str:
+    def _add_capture_code(code_string: str, chart_name: str) -> str:
         """Add df code after last import line."""
         lines = code_string.lstrip().split("\n")
         lines.insert(0, "from vizro.models.types import capture")
         try:
-            custom_chart_line = max([idx for idx, line in enumerate(lines) if line.startswith("def custom_chart")])
+            custom_chart_line = max([idx for idx, line in enumerate(lines) if line.startswith(f"def {chart_name}")])
         except ValueError:
-            raise ValueError("def custom_chart is not added correctly by the LLM. Try again.")
+            raise ValueError(f"def {chart_name} is not added correctly by the LLM. Try again.")
         lines.insert(custom_chart_line, "@capture('graph')")
-        lines.append("\nfig = custom_chart(data_frame=df)")
+        lines.append(f"\nfig = {chart_name}(data_frame=df)")
         return "\n".join(lines)
 
 
