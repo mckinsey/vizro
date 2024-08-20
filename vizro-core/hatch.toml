@@ -26,7 +26,8 @@ dependencies = [
   "chromedriver-autoinstaller>=0.6.4",
   "toml",
   "pyyaml",
-  "openpyxl"
+  "openpyxl",
+  "jupyter"
 ]
 
 [envs.default.scripts]
