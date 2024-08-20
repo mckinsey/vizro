@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from typing import Any, List, Mapping, Optional, Set, Type, Union
 
 try:
@@ -53,6 +54,21 @@ DATA_TEMPLATE = """
 {data_setting}
 """
 
+# Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
+# This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
+# called for, dict behavior is unmodified from pydantic's default.
+_PATCH_VIZRO_BASE_MODEL_DICT = False
+
+
+@contextmanager
+def _patch_vizro_base_model_dict():
+    global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
+    _PATCH_VIZRO_BASE_MODEL_DICT = True
+    try:
+        yield
+    finally:
+        _PATCH_VIZRO_BASE_MODEL_DICT = False
+
 
 def _format_and_lint(code_string: str) -> str:
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
@@ -106,8 +122,11 @@ def _extract_captured_callable_source() -> Set[str]:
     captured_callable_sources = set()
     for model_id in model_manager:
         for _, value in model_manager[model_id]:
-            if isinstance(value, CapturedCallable) and all(
-                replacement.original not in value._function.__module__ for replacement in REPLACEMENT_STRINGS
+            if isinstance(value, CapturedCallable) and not any(
+                # Check to see if the captured callable does use a cleaned module string, if yes then
+                # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
+                value.__repr_clean__().startswith(new)
+                for _, new in REPLACEMENT_STRINGS.items()
             ):
                 try:
                     source = textwrap.dedent(inspect.getsource(value._function))
@@ -219,13 +238,18 @@ class VizroBaseModel(BaseModel):
         new_type.update_forward_refs(**vm.__dict__.copy())
 
     def dict(self, **kwargs):
-        # Overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary.
-        # To get exclude as an argument is a bit fiddly because this function is called recursively
-        # inside pydantic, which sets exclude=None by default.
+        global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
+        if not _PATCH_VIZRO_BASE_MODEL_DICT:
+            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behavior of the dict.
+            return super().dict(**kwargs)
+
+        # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
+        # and to exclude fields specified dynamically in __vizro_exclude_fields__.
+        # To get exclude as an argument is a bit fiddly because this function is called recursively inside pydantic,
+        # which sets exclude=None by default.
         if kwargs.get("exclude") is None:
             kwargs["exclude"] = self.__vizro_exclude_fields__()
         _dict = super().dict(**kwargs)
-        # Inject __vizro_model__ into the dictionary - needed just for to_python.
         _dict["__vizro_model__"] = self.__class__.__name__
         return _dict
 
@@ -249,6 +273,20 @@ class VizroBaseModel(BaseModel):
         Returns:
             str: Python code to create the Vizro model.
 
+        Examples:
+            Simple usage example with card model.
+
+            >>> import vizro.models as vm
+            >>> card = vm.Card(text="Hello, world!")
+            >>> print(card._to_python())
+
+            Further options include adding extra imports and callable definitions. These will be included in the
+            returned python string.
+
+            >>> print(card._to_python(
+            ...    extra_imports={"from typing import List"},
+            ...    extra_callable_defs={"def test(foo:List[str]): return foo"}))
+
         """
         # Imports
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
@@ -264,7 +302,9 @@ class VizroBaseModel(BaseModel):
         data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
 
         # Model code
-        model_dict = self.dict(exclude_unset=True)
+        with _patch_vizro_base_model_dict():
+            model_dict = self.dict(exclude_unset=True)
+
         model_code = "model = " + _dict_to_python(model_dict)
 
         # Concatenate and lint code

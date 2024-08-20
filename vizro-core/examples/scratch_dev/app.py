@@ -1,4 +1,4 @@
-"""asdf."""
+"""Dev app to try things out."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -11,6 +11,9 @@ data_manager["iris"] = px.data.iris()
 
 page = vm.Page(
     title="Test",
+    layout=vm.Layout(
+        grid=[[0, 1], [2, 3], [4, 5]],
+    ),
     components=[
         vm.Card(
             text="""
@@ -56,7 +59,9 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page, page2])
 
 if __name__ == "__main__":
-    # print(dashboard.dict(exclude_unset=True, exclude_defaults=True))
-    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
+    from vizro import Vizro
 
+    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
     print(string)  # noqa
+
+    Vizro().build(dashboard).run()

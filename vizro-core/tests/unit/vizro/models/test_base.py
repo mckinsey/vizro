@@ -13,6 +13,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from typing_extensions import Annotated
 from vizro.actions import export_data
+from vizro.models._base import _patch_vizro_base_model_dict
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -221,37 +222,43 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
     # Exclude field even if missed by exclude_unset=True
     def __vizro_exclude_fields__(self):
         """Exclude id field if it is the same as the title."""
-        return {"id"} if self.id == self.title else None
+        return {"id"}
 
 
 class TestDict:
     def test_dict_no_args(self):
         model = Model(id="model_id")
-        assert model.dict() == {"id": "model_id", "type": "model", "__vizro_model__": "Model"}
+        assert model.dict() == {"id": "model_id", "type": "model"}
 
     def test_dict_exclude_unset(self):
         model = Model(id="model_id")
-        assert model.dict(exclude_unset=True) == {"id": "model_id", "__vizro_model__": "Model"}
+        assert model.dict(exclude_unset=True) == {"id": "model_id"}
 
-    def test_dict_exclude_manual(self):
+    def test_dict_exclude_id(self):
         model = Model()
-        assert model.dict(exclude={"id"}) == {"type": "model", "__vizro_model__": "Model"}
+        assert model.dict(exclude={"id"}) == {"type": "model"}
 
-    def test_dict_exclude_in_model_unset(self):
-        model = ModelWithFieldSetting(title="foo")
-        assert model.dict(exclude_unset=True) == {
-            "title": "foo",
-            "__vizro_model__": "ModelWithFieldSetting",
-        }
+    def test_dict_exclude_type(self):
+        # __vizro_exclude_fields__ should have no effect here.
+        model = Model(id="model_id")
+        assert model.dict(exclude={"type"}) == {"id": "model_id"}
 
-    def test_dict_exclude_in_model_no_args(self):
+    def test_dict_exclude_in_model_unset_with_and_without_context(self):
         model = ModelWithFieldSetting(title="foo")
-        assert model.dict() == {
-            "type": "exclude_model",
-            "title": "foo",
-            "foo": "long-random-thing",
-            "__vizro_model__": "ModelWithFieldSetting",
-        }
+        with _patch_vizro_base_model_dict():
+            assert model.dict(exclude_unset=True) == {"title": "foo", "__vizro_model__": "ModelWithFieldSetting"}
+        assert model.dict(exclude_unset=True) == {"id": "foo", "title": "foo"}
+
+    def test_dict_exclude_in_model_no_args_with_and_without_context(self):
+        model = ModelWithFieldSetting(title="foo")
+        with _patch_vizro_base_model_dict():
+            assert model.dict() == {
+                "title": "foo",
+                "type": "exclude_model",
+                "__vizro_model__": "ModelWithFieldSetting",
+                "foo": "long-random-thing",
+            }
+        assert model.dict() == {"id": "foo", "type": "exclude_model", "title": "foo", "foo": "long-random-thing"}
 
 
 @pytest.fixture

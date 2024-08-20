@@ -39,16 +39,13 @@ def check_captured_callable(cls, value):
     )
 
 
-@dataclass
-class PathReplacement:
-    original: str
-    new: str
-
-
-REPLACEMENT_STRINGS = [
-    PathReplacement("plotly.express", "px."),
-    PathReplacement("vizro.tables", "vt."),
-    PathReplacement("vizro.figures", "vf."),
-    PathReplacement("vizro.actions", "va."),
-    PathReplacement("vizro.charts", "vc."),
-]
+REPLACEMENT_STRINGS = {
+    # "substring to match a larger general module string": "string to replace with"
+    # dot required so that in the case where no replacement is used, we do not
+    # have a preceding dot (see __repr_clean__ in types.py)
+    "plotly.express": "px.",
+    "vizro.tables": "vt.",
+    "vizro.figures": "vf.",
+    "vizro.actions": "va.",
+    "vizro.charts": "vc.",
+}

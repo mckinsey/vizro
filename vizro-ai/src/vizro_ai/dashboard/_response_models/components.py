@@ -43,12 +43,11 @@ class ComponentPlan(BaseModel):
 
     def create(self, model, all_df_metadata) -> Tuple[Union[vm.Card, vm.AgGrid, vm.Figure], Optional[str]]:
         """Create the component."""
-        from vizro_ai import VizroAI
-
-        vizro_ai = VizroAI(model=model)
-
         try:
             if self.component_type == "Graph":
+                from vizro_ai import VizroAI
+
+                vizro_ai = VizroAI(model=model)
                 result = vizro_ai.plot(
                     df=all_df_metadata.get_df(self.df_name),
                     user_input=self.component_description,
