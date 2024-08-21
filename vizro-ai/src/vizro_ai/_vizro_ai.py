@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
-from vizro_ai.dashboard.utils import DashboardOutputs, _register_data
+from vizro_ai.dashboard.utils import DashboardOutputs, _dashboard_code, _process_to_set, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
@@ -66,6 +66,7 @@ class VizroAI:
         user_input: str,
         max_debug_retry: int = 3,
         explain: bool = False,
+        _chart_name: Optional[str] = None,
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
@@ -74,7 +75,7 @@ class VizroAI:
         # TODO update to loop through charts for multiple charts creation
         plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
-            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type}
+            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type, "chart_name": _chart_name}
         )
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
@@ -127,6 +128,7 @@ class VizroAI:
         explain: bool = False,
         max_debug_retry: int = 3,
         return_elements: bool = False,
+        _chart_name: Optional[str] = None,
     ) -> Union[go.Figure, PlotOutputs]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -136,13 +138,14 @@ class VizroAI:
             explain: Flag to include explanation in response.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
             return_elements: Flag to return PlotOutputs dataclass that includes all possible elements generated.
+            _chart_name: Optional chart name for chart creation.
 
         Returns:
            go.Figure or PlotOutputs dataclass
 
         """
         vizro_plot = self._run_plot_tasks(
-            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry
+            df=df, user_input=user_input, explain=explain, max_debug_retry=max_debug_retry, _chart_name=_chart_name
         )
 
         if not explain:
@@ -188,15 +191,18 @@ class VizroAI:
                 "pages": [],
                 "dashboard": None,
                 "messages": [HumanMessage(content=user_input)],
+                "custom_chart_code": [],
             },
             config=config,
         )
         dashboard = message_res["dashboard"]
         _register_data(all_df_metadata=message_res["all_df_metadata"])
+        custom_chart_code = message_res["custom_chart_code"]
+        cleaned_custom_chart_code = _process_to_set(custom_chart_code)
 
         if return_elements:
-            # code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
-            dashboard_output = DashboardOutputs(dashboard=dashboard)
+            code = _dashboard_code(dashboard, cleaned_custom_chart_code)
+            dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output
         else:
             return dashboard

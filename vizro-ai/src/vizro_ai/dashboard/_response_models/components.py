@@ -1,7 +1,7 @@
 """Component plan model."""
 
 import logging
-from typing import Union
+from typing import Optional, Tuple, Union
 
 import vizro.models as vm
 
@@ -41,22 +41,28 @@ class ComponentPlan(BaseModel):
         """,
     )
 
-    def create(self, model, all_df_metadata) -> Union[vm.Card, vm.AgGrid, vm.Figure]:
+    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Card, vm.AgGrid, vm.Figure], Optional[str]]:
         """Create the component."""
         try:
             if self.component_type == "Graph":
                 from vizro_ai import VizroAI
 
                 vizro_ai = VizroAI(model=model)
-
-                return vm.Graph(
-                    id=self.component_id,
-                    figure=vizro_ai.plot(
-                        df=all_df_metadata.get_df(self.df_name), user_input=self.component_description
+                result = vizro_ai.plot(
+                    df=all_df_metadata.get_df(self.df_name),
+                    user_input=self.component_description,
+                    return_elements=True,
+                    _chart_name=self.component_id,
+                )
+                return (
+                    vm.Graph(
+                        id=self.component_id,
+                        figure=result.figure,
                     ),
+                    result.code,
                 )
             elif self.component_type == "AgGrid":
-                return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name))
+                return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name)), None
             elif self.component_type == "Card":
                 card_prompt = f"""
                 The Card uses the dcc.Markdown component from Dash as its underlying text component.
@@ -65,7 +71,7 @@ class ComponentPlan(BaseModel):
                 result_proxy = _get_pydantic_model(query=card_prompt, llm_model=model, response_model=vm.Card)
                 proxy_dict = result_proxy.dict()
                 proxy_dict["id"] = self.component_id
-                return vm.Card.parse_obj(proxy_dict)
+                return vm.Card.parse_obj(proxy_dict), None
 
         except DebugFailure as e:
             logger.warning(

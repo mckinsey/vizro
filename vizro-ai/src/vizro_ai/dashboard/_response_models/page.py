@@ -2,7 +2,7 @@
 
 import logging
 from collections import Counter
-from typing import List, Union
+from typing import List, Optional, Tuple, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
@@ -44,6 +44,7 @@ class PagePlan(BaseModel):
     _components: List[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
     _controls: List[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
+    _components_code: dict = PrivateAttr()
 
     @validator("components_plan")
     def _check_components_plan(cls, v):
@@ -74,14 +75,18 @@ class PagePlan(BaseModel):
         self._components = None
         self._controls = None
         self._layout = None
+        self._components_code = None
 
     def _get_components(self, model, all_df_metadata):
         if self._components is None:
-            self._components = self._build_components(model=model, all_df_metadata=all_df_metadata)
-        return self._components
+            self._components, self._components_code = self._build_components(
+                model=model, all_df_metadata=all_df_metadata
+            )
+        return self._components, self._components_code
 
     def _build_components(self, model, all_df_metadata):
         components = []
+        components_code = []
         component_log = tqdm(total=0, bar_format="{desc}", leave=False)
         with tqdm(
             total=len(self.components_plan),
@@ -91,9 +96,16 @@ class PagePlan(BaseModel):
             for component_plan in self.components_plan:
                 component_log.set_description_str(f"[Page] <{self.title}>: [Component] {component_plan.component_id}")
                 pbar.update(1)
-                components.append(component_plan.create(model=model, all_df_metadata=all_df_metadata))
+                component, code = component_plan.create(model=model, all_df_metadata=all_df_metadata)
+                components.append(component)
+
+                component_code = {}
+                # Store the code for the component, currently this only applies to Graph component
+                if code:
+                    component_code[component_plan.component_id] = code
+                    components_code.append(component_code)
         component_log.close()
-        return components
+        return components, components_code
 
     def _get_layout(self, model, all_df_metadata):
         if self._layout is None:
@@ -115,12 +127,12 @@ class PagePlan(BaseModel):
     def _controllable_components(self, model, all_df_metadata):
         return [
             comp.id
-            for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)
+            for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)[0]
             if isinstance(comp, (vm.Graph, vm.AgGrid))
         ]
 
     def _get_component_ids(self, model, all_df_metadata):
-        return [comp.id for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)]
+        return [comp.id for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)[0]]
 
     def _build_controls(self, model, all_df_metadata):
         controls = []
@@ -141,14 +153,14 @@ class PagePlan(BaseModel):
 
         return controls
 
-    def create(self, model, all_df_metadata) -> Union[vm.Page, None]:
+    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Page, None], Optional[str]]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)
         pbar = tqdm(total=5, desc=page_desc)
 
         title = _execute_step(pbar, page_desc + " --> add title", self.title)
-        components = _execute_step(
+        components, components_code = _execute_step(
             pbar, page_desc + " --> add components", self._get_components(model=model, all_df_metadata=all_df_metadata)
         )
         controls = _execute_step(
@@ -175,7 +187,7 @@ Build page without layout.
                 page = None
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()
-        return page
+        return page, components_code
 
 
 if __name__ == "__main__":

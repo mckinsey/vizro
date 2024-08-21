@@ -85,7 +85,8 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_compon
         df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
     )
     proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
-    return vm.Filter.parse_obj(proxy.dict(exclude_unset=True))
+    proxy_dict = proxy.dict(exclude_unset=True)
+    return vm.Filter.parse_obj(proxy_dict)
 
 
 class ControlPlan(BaseModel):
