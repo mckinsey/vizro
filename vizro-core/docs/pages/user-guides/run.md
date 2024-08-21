@@ -4,13 +4,16 @@ This guide shows you how to launch your dashboard in different ways. By default,
 
 ## Py.Cafe
 
-You can launch your dashboard and edit the code live on [Py.Cafe](https://py.cafe/).
+The easiest way to launch your dashboard is to edit the code live on [Py.Cafe](https://py.cafe/).
 
-For this basic example, follow the [Edit live on Py.Cafe](https://py.cafe/stichbury/vizro-iris-analysis) link below the dashboard to experiment with the code.
+Most of our examples have a link below the code, [Run and edit this code in Py.Cafe](https://py.cafe/vizro-official/vizro-iris-analysis-0), which you can follow to experiment with the code. This will lead you to an editor such as the one below, which displays the dashboard and the code side by side.
 
-<iframe src="https://py.cafe/stichbury/vizro-iris-viz" width="100%" height="600px"></iframe>
+<figure markdown="span">
+  ![Py.Cafe editor](../../assets/user_guides/run/pycafe_editor.png)
+  <figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
+</figure>
 
-You can use [Py.Cafe](https://py.cafe/) to experiment with your own Vizro dashboards by dropping code into a new project.
+You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
 
 ## Default built-in Flask development server
