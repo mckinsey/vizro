@@ -28,5 +28,5 @@ def graph_state(dataframes, df_metadata):
         dfs=dataframes,
         all_df_metadata=df_metadata,
         pages=[],
-        custom_chart_code=[],
+        custom_charts_code=[],
     )

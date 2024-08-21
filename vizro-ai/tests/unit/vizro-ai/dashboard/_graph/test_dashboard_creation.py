@@ -19,7 +19,7 @@ class TestConfig:
         assert graph_state.dfs == dataframes
         assert "gdp_chart" in graph_state.all_df_metadata.all_df_metadata
         assert graph_state.pages == []
-        assert graph_state.custom_chart_code == []
+        assert graph_state.custom_charts_code == []
 
     @pytest.mark.parametrize(
         "dataframes, output_error",

@@ -41,7 +41,7 @@ class GraphState(BaseModel):
         dashboard_plan: Plan for the dashboard
         pages: Vizro pages
         dashboard: Vizro dashboard
-        custom_chart_code: Custom chart code
+        custom_charts_code: Custom charts code
 
     """
 
@@ -51,7 +51,7 @@ class GraphState(BaseModel):
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
-    custom_chart_code: Annotated[List, operator.add]
+    custom_charts_code: Annotated[List, operator.add]
 
     class Config:
         """Pydantic configuration."""
@@ -154,7 +154,7 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     llm = config["configurable"].get("model", None)
     page, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
 
-    return {"pages": [page], "custom_chart_code": [custom_chart_code]}
+    return {"pages": [page], "custom_charts_code": [custom_chart_code]}
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:
