@@ -9,7 +9,6 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 from dash import ClientsideFunction, Input, Output, clientside_callback
-import dash_ag_grid as dag
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
@@ -107,34 +106,14 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             children=[
                 html.H3(self.title) if self.title else None,
-                # The pagination setting (and potentially others) of the initially built AgGrid (in the build method
-                # here) must have the same setting as the object that is built by the on-page-load mechanism using
-                # with the user settings and rendered finally. Otherwise, the grid is not rendered correctly.
-                # Additionally, we cannot remove the DF from the ag grid object before returning it (to save sending
-                # data over the network), because it breaks filter persistence settings on page change.
-                # Hence, be careful when editing the line below.
+                # The Div object returned as the child of the self.id Div object is rendered during the build phase.
+                # This placeholder component is quickly replaced by the actual AgGrid object, which is generated using
+                # a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
+                # To prevent pagination and persistence issues while maintaining a lightweight component initial load,
+                # this method now returns an html.Div object instead of the previous dag.AgGrid. The actual AgGrid is
+                # then rendered by the on_page_load mechanism.
+                # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
                 html.Div(
-                    # App cannot start if filter_interaction is attached to the AgGrid.
-                    # dah.AgGrid()
-
-                    # column widths issues,
-                    # pagination issues,
-                    # dag.AgGrid(id=self._input_component_id),
-
-                    # column widths issues
-                    # column filters issues
-                    # selectedRows issues
-                    # users have to deal with empty data_frame
-                    # 4 calls of figure function
-                    # self.__call__(data_frame=pd.DataFrame()),
-
-                    # it's slow
-                    # column width issues
-                    # selectedRows issues
-                    # self.__call__(),
-
-
-                    # TODO: Rethink prettier placeholder.
                     id=self.id,
                     children=[html.Div(id=self._input_component_id)],
                     className="table-container",

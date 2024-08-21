@@ -105,14 +105,8 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             children=[
                 html.H3(self.title) if self.title else None,
-                # Please see vm.AgGrid build method as to why we are returning the call with the full data here
-                # Most of the comments may not apply to the data table, but in order to be consistent, we are
-                # handling the build method in the exact same way here
-
-                # Before
-                # html.Div(self.__call__(), id=self.id, className="table-container"),
-
-                # Now
+                # Refer to the vm.AgGrid build method for details on why we return the
+                # html.Div(id=self._input_component_id) instead of actual figure object with the original data_frame.
                 html.Div(
                     id=self.id,
                     children=[html.Div(id=self._input_component_id)],

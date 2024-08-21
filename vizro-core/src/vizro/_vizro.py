@@ -31,7 +31,6 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        # TODO: Consider should we enable these arguments to be overwritten by the user? Otherwise we should explain them in the docs.
         self.dash = dash.Dash(
             **kwargs,
             pages_folder="",
