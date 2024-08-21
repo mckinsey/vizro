@@ -8,10 +8,12 @@ The easiest way to launch your dashboard is to edit the code live on [Py.Cafe](h
 
 Most of our examples in the docs have link below the code - [Edit live on Py.Cafe](https://py.cafe/vizro./vizro-iris-analysis-0) - which you can follow to experiment with the code of that example. This will lead you to an editor such as the one below, which displays the dashboard and the code side by side.
 
-<!-- <iframe src="https://py.cafe/vizro./vizro-iris-viz" width="100%" height="600px"></iframe> -->
-<iframe src="https://py.cafe/vizro./vizro-iris-analysis-0?theme=light&linkToApp=True" width="100%" height="600px" style="border: 1px solid #e6e6e6; border-radius: 8px;" ></iframe>
+<div style="width: 100%; height: 400px;">
+    <iframe src="https://py.cafe/vizro./vizro-iris-analysis-0?theme=light&linkToApp=True" style="border: 1px solid #e6e6e6; border-radius: 8px; max-width: unset; width: calc(100%/0.5); height: calc(400px/0.5); transform-origin: top left; transform: scale(0.5);" ></iframe>
+</div>
 
-You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1#c=H4sIAMCexWYAA61VTW_jNhD9K6xyqAPIsp1028KAW7Rpu3voYbGH3YNtBLQ0sohQpEpS_kiQ_943lO2NnQQOsCsfLM7nm8eZ0UOS24KScXIhPqt7Z4XyQhphGzJ9b1uXkwjW6jsVRGmdyB3JoMxS1LZotXSikEGKlfKt1OoeKmuEbBqt8vjus5m5EHlF-Z2wbRBVCI0fDwZLFap2keW2HtT5nTKetoNVTM9JautIKFNaIRfsFYFxIGmKLtjTWNEvA64iVFTY3GfKDsgMfJALTYMYEeK2JhMiKGCaGVU31gUgZ-dG26C3GW0aRx71e9FsZqZ0tu4MxM56B-TIF0SQjj6rmgMXpZjAPWNiMuWU712yuJFLgmJVZx_x1psZgSeooGkySzrmQd3H7Y0saZaknV7LLSqdwOnf-NZbOlVMptNhKkbzVEyvUnH19P86FdeHf7w4u76tlbmtSC2rgESjn4aoLLncxQf_jTXgxU-mnYQfpLuRrthh3D-BNhwh_o4U_FxcXIgvlQzcPbGY35_b_PFdu-o0-nPJJ9moQm-FJ132PbkVclaEi_JULyC3pchbH2yt7qlARl8tLMr26DwB0tpAXvTFGp3K3cauhmDIeGWxkibHAbPDsLnDyKulEWghcoqghG-wXWUkSk0bhW6MHexzqbk1U1w3gps-GT4yhjNVn7C_v8ZvuLT3cRC5QU-1N_s5i_f5o2fTD-1CxEZmEsrWgRQXB9XVO7goz5Em6cGWBYOZuLEmOLVoYwlCYrKlXsutF2vS6D_6oYP3pBR-KkclgJ_dF0eOJ3y8d7KpehiYWQLKQyB3m1fSBfiIUi1bRxPM6U7VK8pUbNiUGqlvNZllqNhyC1lDAbK1woZhUW61dWzaUK7IY55ez1wpH15Ky3K7dLI-SfyGJPPD9IJZqzG7SPmP0lwFvNraHLmljOhU3VW0r_JlmyNAl5w1brLDpHTr7K_9scedATD8N4dl7JveZbZolS56B6_LzLWGd2KSJo7-a5Uj3swen6B4o79NhtkoG_0aDcK24W9TVOCIafisaJ2MS6k9pQkVKvwdhycZB9dC0sSJgkuzxWgW1F8Ns6ufsyGcu2WajB-SFTmPbkzGV4BgbfhkEfJhnwxLE9Z5BdSOYDQ9aPBB8RSgjJwk49G7YZpgVXzpjtfd6UNctt1RFXArlaY_ERU7iIdBKkPulQxs2l90tjBpJMdNksf5Y_ocxSsQv_qBrqzZHnu_obrzFe0QnqtmX8jL8LuPElj85d1bcqI1IZb6XNK9HWfl32MaWUV_TeeP_wNUluiJ7ggAAA) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
+
+You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
 
 ## Default built-in Flask development server
