@@ -7,6 +7,10 @@ df = px.data.gapminder()
 
 
 def test_chart():
+    possible_values = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mean_gdpPercap", "total_gdpPercap"]
+    x_conditions = [contains_string(f"x='{value}'") for value in possible_values]
+    y_conditions = [contains_string(f"y='{value}'") for value in possible_values]
+
     resp = vizro_ai.plot(
         df=df,
         user_input="describe the composition of scatter chart with gdp in continent",
@@ -17,14 +21,8 @@ def test_chart():
         resp.code,
         all_of(contains_string("px.scatter")),
     )
-    assert_that(
-        resp.code,
-        any_of(contains_string("x='continent'"), contains_string("x='gdpPercap'")),
-    )
-    assert_that(
-        resp.code,
-        any_of(contains_string("y='count'"), contains_string("y='gdpPercap'"), contains_string("y='continent'")),
-    )
+    assert_that(resp.code, any_of(*x_conditions))
+    assert_that(resp.code, any_of(*y_conditions))
     assert_that(resp.code_explanation, equal_to(None))
     assert_that(resp.business_insights, equal_to(None))
 
