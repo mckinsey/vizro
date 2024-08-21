@@ -8,7 +8,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro_ai import VizroAI
 
-vizro_ai = VizroAI()
+vizro_ai = VizroAI(model="gpt-4o")
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()

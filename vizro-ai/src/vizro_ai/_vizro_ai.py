@@ -195,11 +195,10 @@ class VizroAI:
         )
         dashboard = message_res["dashboard"]
         _register_data(all_df_metadata=message_res["all_df_metadata"])
-        raw_code = message_res["custom_chart_code"]
-        custom_chart_code, imports = _process_to_set(raw_code)
+        clean_chart_code, imports = _process_to_set(message_res["custom_chart_code"])
 
         if return_elements:
-            code = _dashboard_code(dashboard, custom_chart_code, imports)
+            code = _dashboard_code(dashboard, clean_chart_code, imports)
             dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output
         else:

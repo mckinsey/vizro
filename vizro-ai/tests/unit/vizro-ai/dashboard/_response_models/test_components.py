@@ -25,7 +25,7 @@ class TestComponentCreate:
         mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI._run_plot_tasks")
         mock_vizro_ai_call.return_value = mock_vizro_ai_return
         chart, code = component_plan_graph.create(
-            model="gpt-4o-mini",
+            model=None,
             all_df_metadata=df_metadata,
         )
         expected = vm.Graph(id="mock_id", figure=mock_vizro_ai_return.figure)
