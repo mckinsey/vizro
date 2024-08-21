@@ -31,7 +31,9 @@ def test_chart():
 
 def test_chart_with_explanation():
     vizro_ai._return_all_text = True
-    resp = vizro_ai.plot(df, "describe the composition of gdp in US using bar chart", explain=True, return_elements=True)
+    resp = vizro_ai.plot(
+        df, "describe the composition of gdp in US using bar chart", explain=True, return_elements=True
+    )
     assert_that(
         resp.code,
         all_of(contains_string("px.bar"), contains_string("x='year'")),
