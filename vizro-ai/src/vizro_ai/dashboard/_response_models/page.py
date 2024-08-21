@@ -77,7 +77,7 @@ class PagePlan(BaseModel):
         self._layout = None
         self._components_code = None
 
-    def _get_components(self, model, all_df_metadata):
+    def _get_components_and_code(self, model, all_df_metadata):
         if self._components is None:
             self._components, self._components_code = self._build_components(
                 model=model, all_df_metadata=all_df_metadata
@@ -127,12 +127,12 @@ class PagePlan(BaseModel):
     def _controllable_components(self, model, all_df_metadata):
         return [
             comp.id
-            for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)[0]
+            for comp in self._get_components_and_code(model=model, all_df_metadata=all_df_metadata)[0]
             if isinstance(comp, (vm.Graph, vm.AgGrid))
         ]
 
     def _get_component_ids(self, model, all_df_metadata):
-        return [comp.id for comp in self._get_components(model=model, all_df_metadata=all_df_metadata)[0]]
+        return [comp.id for comp in self._get_components_and_code(model=model, all_df_metadata=all_df_metadata)[0]]
 
     def _build_controls(self, model, all_df_metadata):
         controls = []
@@ -161,7 +161,9 @@ class PagePlan(BaseModel):
 
         title = _execute_step(pbar, page_desc + " --> add title", self.title)
         components, components_code = _execute_step(
-            pbar, page_desc + " --> add components", self._get_components(model=model, all_df_metadata=all_df_metadata)
+            pbar,
+            page_desc + " --> add components",
+            self._get_components_and_code(model=model, all_df_metadata=all_df_metadata),
         )
         controls = _execute_step(
             pbar, page_desc + " --> add controls", self._get_controls(model=model, all_df_metadata=all_df_metadata)

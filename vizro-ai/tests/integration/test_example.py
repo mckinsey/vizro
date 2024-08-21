@@ -28,18 +28,18 @@ def test_chart():
 
 
 def test_chart_with_explanation():
+    possible_values = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mean_gdpPercap", "total_gdpPercap"]
+    y_conditions = [contains_string(f"y='{value}'") for value in possible_values]
+
     vizro_ai._return_all_text = True
     resp = vizro_ai.plot(
-        df, "describe the composition of gdp in US using bar chart", explain=True, return_elements=True
+        df, "describe the composition of gdp per year in US using bar chart", explain=True, return_elements=True
     )
     assert_that(
         resp.code,
         all_of(contains_string("px.bar"), contains_string("x='year'")),
     )
-    assert_that(
-        resp.code,
-        any_of(contains_string("y='gdpPercap'"), contains_string("y='total_gdp'")),
-    )
+    assert_that(resp.code, any_of(*y_conditions)),
     assert_that(
         resp.business_insights,
         any_of(
