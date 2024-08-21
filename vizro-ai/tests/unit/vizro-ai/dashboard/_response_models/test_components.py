@@ -22,10 +22,10 @@ class TestComponentCreate:
     def test_create_graph(self, mocker, component_plan_graph, mock_vizro_ai_return, df_metadata):
         mock_vizro_ai_object = mocker.patch("vizro_ai.VizroAI.__init__")
         mock_vizro_ai_object.return_value = None
-        mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI.plot")
+        mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI._run_plot_tasks")
         mock_vizro_ai_call.return_value = mock_vizro_ai_return
         chart, code = component_plan_graph.create(
-            model=None,
+            model="gpt-4o-mini",
             all_df_metadata=df_metadata,
         )
         expected = vm.Graph(id="mock_id", figure=mock_vizro_ai_return.figure)

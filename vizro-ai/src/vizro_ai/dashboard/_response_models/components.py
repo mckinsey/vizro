@@ -48,11 +48,11 @@ class ComponentPlan(BaseModel):
                 from vizro_ai import VizroAI
 
                 vizro_ai = VizroAI(model=model)
-                result = vizro_ai.plot(
+                result = vizro_ai._run_plot_tasks(
                     df=all_df_metadata.get_df(self.df_name),
                     user_input=self.component_description,
-                    return_elements=True,
-                    _chart_name=self.component_id,
+                    chart_name=self.component_id,
+                    max_debug_retry=2,
                 )
                 return (
                     vm.Graph(
