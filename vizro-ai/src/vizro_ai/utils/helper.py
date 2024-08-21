@@ -103,7 +103,6 @@ def _display_markdown(code_snippet: str, biz_insights: str, code_explain: str) -
 
     """
     try:
-        # pylint: disable=import-outside-toplevel
         from IPython.display import Markdown, display
     except Exception as exc:
         raise ImportError("Please install IPython before proceeding in jupyter environment.") from exc

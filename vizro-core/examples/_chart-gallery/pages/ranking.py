@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips_sorted
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
 
 ordered_bar = vm.Page(
     title="Ordered bar",
@@ -30,9 +30,11 @@ ordered_bar = vm.Page(
         ),
         vm.Graph(
             figure=px.bar(
-                tips_sorted,
-                x="total_bill",
-                y="day",
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ).sort_values("pop"),
+                x="pop",
+                y="country",
                 orientation="h",
             )
         ),
@@ -66,9 +68,11 @@ ordered_column = vm.Page(
         ),
         vm.Graph(
             figure=px.bar(
-                tips_sorted,
-                y="total_bill",
-                x="day",
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ).sort_values("pop"),
+                y="pop",
+                x="country",
             )
         ),
         make_code_clipboard_from_py_file("ordered_column.py"),

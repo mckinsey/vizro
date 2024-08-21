@@ -35,6 +35,7 @@ nav:
           - Data: pages/user-guides/data.md
           - Kedro Data Catalog: pages/user-guides/kedro-data-catalog.md
       - EXTENSIONS:
+          - Overview: pages/user-guides/extensions.md
           - Custom charts: pages/user-guides/custom-charts.md
           - Custom tables: pages/user-guides/custom-tables.md
           - Custom components: pages/user-guides/custom-components.md
@@ -55,7 +56,7 @@ nav:
       - Example dashboard code: pages/examples/examples.md
       - Examples from Vizro users: pages/examples/your-examples.md
   - Vizro-AI:
-      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/en/latest/
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
@@ -101,6 +102,15 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: python
+          class: "highlight"
+          validator: !!python/name:mkdocs_pycafe.validator
+          format: !!python/object/apply:mkdocs_pycafe.formatter
+            kwds:
+              type: vizro
+              requirements: |
+                vizro
+                ruff==0.6.1  # mock
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

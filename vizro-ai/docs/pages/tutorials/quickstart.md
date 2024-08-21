@@ -1,8 +1,8 @@
-# Get started with Vizro-AI
-This tutorial introduces you to Vizro-AI, which is an English-to-visualization package. In a series of steps, we will explain the basics and set you up with the knowledge to explore the package further.
+# Chart generation
+This tutorial introduces you to chart generation using Vizro-AI. It explains the basics of creating a plotly chart that can be added to a Vizro dashboard. When you have followed it, you are set up to explore the Vizro and Vizro-AI packages further.
 
 <!-- vale off -->
-### 1. Install Vizro and its dependencies
+### 1. Install Vizro-AI and its dependencies
 <!-- vale on -->
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
@@ -40,7 +40,7 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 <!-- vale off -->
-### 3. Create your first chart using Vizro-AI
+### 3. Create your first plotly chart using Vizro-AI
 <!-- vale on -->
 
 Let's create a chart to illustrate the GDP of various continents while including a reference line for the average. We give Vizro-AI the English language instruction "*describe the composition of GDP in continent and color by continent, and add a horizontal line for avg GDP*".
@@ -142,6 +142,6 @@ Let's create another example to illustrate the code and insights returned when p
 <!-- vale on -->
 
 
-Now, you have created your first charts with Vizro-AI you are ready to explore further.
+Congratulations! You have created your first charts with Vizro-AI and you are ready to explore further.
 
-A good place to start would be to review the different how-to guides, such as [how to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create visualizations using different languages](../user-guides/use-different-languages.md), and [how to create advanced charts](../user-guides/create-advanced-charts.md).
+A good place to start would be to review the different how-to guides to learn [the different ways to run Vizro-AI](../user-guides/run-vizro-ai.md), [how to create advanced charts](../user-guides/create-advanced-charts.md) and [how to add your Vizro-AI charts to a Vizro dashboard](../user-guides/add-generated-chart-usecase.md). You may also want to review the tutorial on [how to generate a Vizro dashboard with Vizro-AI](quickstart-dashboard.md)

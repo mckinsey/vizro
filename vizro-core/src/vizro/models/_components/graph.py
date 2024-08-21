@@ -12,7 +12,6 @@ except ImportError:  # pragma: no cov
 
 import pandas as pd
 
-from vizro import _themes as themes
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
@@ -57,10 +56,27 @@ class Graph(VizroBaseModel):
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
 
-        # Remove top margin if title is provided
-        if fig.layout.title.text is None:
+        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
+        if fig.layout.margin.t is None and fig.layout.title.text is None:
             fig.update_layout(margin_t=24)
 
+        # Increase `title_pad_t` if subtitle is provided and `title_pad_t` is not explicitly set.
+        # Otherwise, the title is being cut off.
+        if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" in fig.layout.title.text:
+            fig.update_layout(title_pad_t=24)
+
+        # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
+        # what the clientside update_graph_theme callback does, and it would be nice if we could just use that by
+        # including Input(self.id, "figure") as input for that callback, but doing so leads to a small flicker between
+        # completion of this serverside callback and starting that clientside callbacks.
+        # Note that this does not fully set the template for plotly.express figures. Doing this post-fig creation update
+        # relies on the fact that we have already set pio.templates.default before the self.figure call
+        # above (but not with the _pio_templates_default context manager surrounding the above self.figure call,
+        # since that would alter global state).
+        # Possibly we should pass through the theme selector as an argument `template` in __call__ rather than fetching
+        # it from ctx here. Remember that passing it as self.figure(template) is not helpful though, because custom
+        # graph figures don't need a template argument, and the clientside them selector callback would override this
+        # anyway.
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
         try:
@@ -68,7 +84,7 @@ class Graph(VizroBaseModel):
             # future we'll have callbacks that do Graph.__call__() without theme_selector set.
             if "theme_selector" in ctx.args_grouping.get("external", {}):
                 theme_selector_checked = ctx.args_grouping["external"]["theme_selector"]["value"]
-                fig["layout"]["template"] = themes.light if theme_selector_checked else themes.dark
+                fig.layout.template = "vizro_light" if theme_selector_checked else "vizro_dark"
         except MissingCallbackContextException:
             logger.info("fig.update_layout called outside of callback context.")
         return fig

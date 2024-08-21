@@ -9,7 +9,7 @@ If you are happy with that arrangement, you can create your charts/components wi
 !!! example "Default Layout"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
 
@@ -92,7 +92,7 @@ This defines a single row that occupies the entire width and height, divided int
 !!! example "Grid Arrangement - Basic Example"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -143,7 +143,7 @@ allowing arbitrarily granular control of the grid by creating larger grids.
 !!! example "Grid Arrangement - Advanced Example"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -299,7 +299,7 @@ grid = [[0, 1, -1],
 !!! example "Adding Empty Spaces"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -349,7 +349,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 !!! example "Activate Scrolling"
 
     === "app.py"
-        ```py
+        ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
 
