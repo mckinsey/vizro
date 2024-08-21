@@ -2,9 +2,9 @@
 
 There is no setup needed for your first dashboard, thanks to the amazing [Py.Cafe](https://py.cafe/).
 
-Follow the [Edit live on Py.Cafe](https://py.cafe/vizro./vizro-iris-analysis-0) link and you can see the code of the below dashboard and experiment with it.
+Follow the [Edit live on Py.Cafe](https://py.cafe/vizro-official/vizro-iris-analysis-0) link and you can see the code of the below dashboard and experiment with it.
 
-<iframe src="https://py.cafe/embed/vizro./vizro-iris-analysis-0" width="100%" height="600px"></iframe>
+<iframe src="https://py.cafe/embed/vizro-official/vizro-iris-analysis-0" width="100%" height="600px"></iframe>
 
 <!-- vale off -->
 ## Can I break your code?
