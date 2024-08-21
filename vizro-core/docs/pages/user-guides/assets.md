@@ -102,7 +102,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
         Vizro().build(dashboard).run()
         ```
 
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-custom-header-colors">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro./vizro-custom-header-colors-0">Run and edit this code in Py.Cafe</a></b>
 
     === "app.yaml"
         ```yaml
@@ -164,7 +164,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         Vizro().build(dashboard).run()
         ```
 
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-multi-page-example">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro./vizro-multi-page-example">Run and edit this code in Py.Cafe</a></b>
 
     === "app.yaml"
         ```yaml
@@ -250,7 +250,7 @@ It's essential to understand the relationship between the targeted CSS class or 
         Vizro().build(dashboard).run()
         ```
 
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/stichbury/vizro-custom-card-styling">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro./vizro-custom-card-styling">Run and edit this code in Py.Cafe</a></b>
 
     === "app.yaml"
         ```yaml
