@@ -110,6 +110,7 @@ markdown_extensions:
               type: vizro
               requirements: |
                 vizro
+                ruff==0.6.1  # mock
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
