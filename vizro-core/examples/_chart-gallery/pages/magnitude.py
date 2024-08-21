@@ -42,7 +42,7 @@ bar = vm.Page(
     ],
 )
 
-# Note: Code example for magnitude/column differs from time/column
+# Note: Code example for magnitude/column differs from time/column. The text description is the same.
 column = vm.Page(
     id="magnitude-column",
     path="magnitude/column",
@@ -75,7 +75,7 @@ column = vm.Page(
                 x="country",
             )
         ),
-        make_code_clipboard_from_py_file("column.py"),
+        make_code_clipboard_from_py_file("magnitude_column.py"),
     ],
 )
 

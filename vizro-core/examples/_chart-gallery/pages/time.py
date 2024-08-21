@@ -2,7 +2,7 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import column
+from custom_charts import categorical_column
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
 from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks, tips
@@ -35,6 +35,7 @@ line = vm.Page(
     ],
 )
 
+# Note: Code example for magnitude/column differs from time/column. The text description is the same.
 column = vm.Page(
     id="time-column",
     path="time/column",
@@ -59,13 +60,13 @@ column = vm.Page(
         """
         ),
         vm.Graph(
-            figure=column(
+            figure=categorical_column(
                 gapminder.query("country == 'Nigeria' and year > 1970"),
                 y="gdpPercap",
                 x="year",
             )
         ),
-        make_code_clipboard_from_py_file("column_time.py"),
+        make_code_clipboard_from_py_file("time_column.py"),
     ],
 )
 
@@ -155,7 +156,7 @@ heatmap = vm.Page(
             patterns and correlations.
         """
         ),
-        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto=".2f")),
+        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
         make_code_clipboard_from_py_file("heatmap.py"),
     ],
 )

@@ -85,7 +85,7 @@ def column_and_line_factory(group: str):
         components=[
             vm.Card(
                 text="""
-                #### What is a column line chart?
+                #### What is a column and line chart?
 
                 A combined column and line chart helps you demonstrate the relationship between an amount
                 (displayed in columns) and a trend or rate (displayed as a line running across the columns).

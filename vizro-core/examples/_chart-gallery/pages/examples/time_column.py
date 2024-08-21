@@ -8,7 +8,7 @@ gapminder = px.data.gapminder()
 
 
 @capture("graph")
-def column(data_frame: pd.DataFrame, x: str, y: str):
+def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     fig = px.bar(
         data_frame,
         y=y,
@@ -23,7 +23,7 @@ page = vm.Page(
     title="Column",
     components=[
         vm.Graph(
-            figure=column(
+            figure=categorical_column(
                 gapminder.query("country == 'Nigeria' and year > 1970"),
                 y="lifeExp",
                 x="year",

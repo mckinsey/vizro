@@ -7,7 +7,7 @@ tips = px.data.tips()
 page = vm.Page(
     title="Heatmap",
     components=[
-        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto=".2f")),
+        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
     ],
 )
 
