@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from custom_charts import categorical_column
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stocks, tips
+from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stepped_line_data, stocks, tips
 
 line = vm.Page(
     title="Line",
@@ -124,10 +124,10 @@ stepped_line = vm.Page(
         ),
         vm.Graph(
             figure=px.line(
-                data_frame=stocks,
-                x="date",
-                y="GOOG",
-                line_shape="hv",
+                data_frame=stepped_line_data,
+                x="year",
+                y="rate",
+                line_shape="vh",
             ),
         ),
         make_code_clipboard_from_py_file("stepped_line.py"),
