@@ -9,6 +9,7 @@ from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
+from vizro_ai.utils.helper import PlotOutputs
 
 
 class MockStructuredOutputLLM(FakeListLLM):
@@ -112,10 +113,22 @@ def component_plan_ag_grid():
 
 @pytest.fixture
 def mock_vizro_ai_return(df):
-    return px.scatter(
-        data_frame=df,
-        x="a",
-        y="b",
+    return PlotOutputs(
+        code="from vizro.models.types import capture\nimport vizro.plotly.express as px\n"
+        "import pandas as pd\n\n@capture('graph')\ndef custom_chart(data_frame=None):\n    "
+        "scatter_df = data_frame[['lifeExp', 'gdpPercap', 'continent', 'country']]\n    "
+        "scatter_df.reset_index(drop=True, inplace=True)\n\n    fig = px.scatter(\n        "
+        "scatter_df,\n        x='gdpPercap',\n        y='lifeExp',\n        "
+        "color='continent',\n        hover_name='country',\n        "
+        "title='Life Expectancy vs. GDP per Capita by Country',\n         )\n\n    "
+        "return fig\n\nfig = custom_chart(data_frame=df)",
+        figure=px.scatter(
+            data_frame=df,
+            x="a",
+            y="b",
+        ),
+        business_insights="business_insights",
+        code_explanation="code_explanation",
     )
 
 

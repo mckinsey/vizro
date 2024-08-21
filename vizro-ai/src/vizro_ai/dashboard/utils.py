@@ -65,22 +65,28 @@ def _register_data(all_df_metadata: AllDfMetadata) -> vm.Dashboard:
         data_manager[name] = metadata.df
 
 
-def _dashboard_code(dashboard: vm.Dashboard, extra_callable_defs: Optional[Set[str]] = None) -> str:
+def _dashboard_code(
+    dashboard: vm.Dashboard, extra_callable_defs: Optional[Set[str]] = None, extra_imports: Optional[Set[str]] = None
+) -> str:
     """Get the code for the dashboard."""
-    return dashboard._to_python(extra_callable_defs=extra_callable_defs)
+    return dashboard._to_python(extra_callable_defs=extra_callable_defs, extra_imports=extra_imports)
 
 
 def _process_to_set(list_of_list_of_dict):
-    result = set()
+    custom_func = set()
+    imports = set()
     for list_of_dict in list_of_list_of_dict:
         for d in list_of_dict:
             for value in d.values():
-                # Remove leading imports
-                value = re.sub(r"^from.*?\n\n", "", value, flags=re.DOTALL)  # noqa: PLW2901
+                # Extract imports
+                import_match = re.match(r"((?:from|import).*?)\n\n", value, re.DOTALL)
+                if import_match:
+                    imports.add(import_match.group(1))
 
-                # Remove the last line (any chart creation)
+                # Remove leading imports and the last line (any chart creation)
+                value = re.sub(r"^(?:from|import).*?\n\n", "", value, flags=re.DOTALL)  # noqa: PLW2901
                 value = re.sub(r"\n\nfig = .*?\(data_frame=df\)$", "", value)  # noqa: PLW2901
 
-                result.add(value)
+                custom_func.add(value)
 
-    return result
+    return custom_func, imports
