@@ -8,10 +8,10 @@ The easiest way to launch your dashboard is to edit the code live on [Py.Cafe](h
 
 Most of our examples have a link below the code — [Run and edit this code in Py.Cafe](https://py.cafe/vizro./vizro-iris-analysis-0) — which you can follow to experiment with the code. This will lead you to an editor such as the one below, which displays the dashboard and the code side by side.
 
-<div style="width: 100%; height: 400px;">
-    <iframe src="https://py.cafe/vizro./vizro-iris-analysis-0?theme=light&linkToApp=True" style="border: 1px solid #e6e6e6; border-radius: 8px; max-width: unset; width: calc(100%/0.5); height: calc(400px/0.5); transform-origin: top left; transform: scale(0.5);" ></iframe>
-</div>
-
+<figure markdown="span">
+  ![Image title](../../assets/user_guides/run/pycafe_editor.png)
+  <figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
+</figure>
 
 You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
