@@ -57,7 +57,7 @@ class Figure(VizroBaseModel):
             # Optimally, we would like to provide id=self.id directly here such that we can target the CSS
             # of the children via ID as well, but the `id` doesn't seem to be passed on to the loading component.
             # This limitation is handled with this PR -> https://github.com/plotly/dash/pull/2888.
-            # PR has been merged but not yet released. Once it is released, we can try to refactor the following code.
+            # The PR is merged but is not released yet. Once it is released, we can try to refactor the following code.
             # In the meantime, we are adding an extra html.div here.
             html.Div(id=self.id, className="figure-container"),
             color="grey",

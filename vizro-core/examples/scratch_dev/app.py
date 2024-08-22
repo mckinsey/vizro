@@ -1,4 +1,4 @@
-"""Example to show dashboard configuration."""
+"""Dev app to try things out."""
 
 import pandas as pd
 import vizro.models as vm
