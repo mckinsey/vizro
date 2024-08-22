@@ -1,50 +1,97 @@
 .card-kpi {
-  border-left: 4px solid var(--text-secondary);
+  border-left: 4px solid var(--bs-secondary);
+  height: 100%;
+  padding: 1rem;
+}
+
+/* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
+The CSS is taken from https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined and the corresponding font file
+downloaded to fonts/material-symbols-outlined.woff2. See:
+https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
+https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
+Note the relative url works with both serve_locally=True and serve_locally=False through the CDN.
+*/
+@font-face {
+  font-family: MaterialSymbolsOutlined;
+  src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
+}
+
+.material-symbols-outlined {
+  direction: ltr;
+  display: inline-block;
+  font-family: MaterialSymbolsOutlined, sans-serif;
+  font-feature-settings: "liga";
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+.card-kpi .material-symbols-outlined {
+  margin: auto 0;
+}
+
+/* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
+ bootstrap font tokens, leading to deviations which we need to overwrite. */
+.card-kpi-title {
+  font-size: 1.5rem;
+  line-height: 1;
+  margin: 0;
+}
+
+.card-kpi .card-header,
+.card-kpi .card-footer,
+.card-kpi .card-body {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .card-kpi .card-header {
   display: flex;
   flex-direction: row;
-  gap: 8px;
-}
-
-.card-kpi .card-header .material-symbols-outlined {
-  line-height: 30px;
+  gap: 0.5rem;
 }
 
 .card-kpi .card-body {
   align-items: center;
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
   font-size: 3.6vh;
   font-weight: 600;
+  padding: 1rem 0;
 }
 
 .card-kpi .card-footer {
-  color: var(--text-secondary);
+  color: var(--bs-secondary);
   display: flex;
   font-weight: 600;
-  gap: 4px;
+  gap: 0.25rem;
 }
 
 .card-kpi .card-footer .material-symbols-outlined {
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 1.25rem;
 }
 
-.color-pos.card-footer {
-  color: #1a85ff;
+.card-kpi .color-pos.card-footer {
+  color: var(--bs-blue);
 }
 
-.color-neg.card-footer {
-  color: #d41159;
+.card-kpi .color-neg.card-footer {
+  color: var(--bs-pink);
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid #1a85ff;
+  border-left: 4px solid var(--bs-blue);
 }
 
 .card-kpi:has(.color-neg) {
-  border-left: 4px solid #d41159;
+  border-left: 4px solid var(--bs-pink);
 }

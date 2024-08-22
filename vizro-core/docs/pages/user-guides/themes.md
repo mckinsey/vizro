@@ -1,16 +1,15 @@
 # How to use themes
 
 This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards.
-The themes provided by Vizro are induced with our design best practices that make charts and dashboards look visually consistent and professional.
+The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
 
 ## Themes in dashboards
-The [`Dashboard`][vizro.models.Dashboard] model accepts the `theme` argument, where you can currently choose between
-a `vizro_dark` and a `vizro_light` theme. This theme will be applied on the entire dashboard and its charts/components. During run-time
-you can still switch between the themes via the toggle button in the upper-right corner of the dashboard.
+The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argument, where you can choose between
+a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme is applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
 
 !!! example "Change theme"
     === "app.py"
-        ```py hl_lines="18"
+        ```{.python pycafe-link hl_lines="18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -26,7 +25,6 @@ you can still switch between the themes via the toggle button in the upper-right
                     ),
                 ),
             ],
-            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page], theme="vizro_light")
@@ -34,7 +32,7 @@ you can still switch between the themes via the toggle button in the upper-right
         Vizro().build(dashboard).run()
         ```
     === "app.yaml"
-        ```yaml hl_lines="11"
+        ```yaml hl_lines="12"
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
@@ -45,9 +43,6 @@ you can still switch between the themes via the toggle button in the upper-right
               data_frame: iris
               dimensions: ["sepal_length", "sepal_width", "petal_length", "petal_width"]
             type: graph
-          controls:
-            - column: species
-              type: filter
           title: Changing themes
         theme: vizro_light
         ```
@@ -62,35 +57,27 @@ you can still switch between the themes via the toggle button in the upper-right
 
 
 ## Themes in plotly charts
-You can also use our templates for plotly charts outside the dashboard.
-Our `vizro_dark` and `vizro_light` theme are automatically registered to `plotly.io.templates` when importing Vizro.
-Consult the plotly documentation for [more details on how templates work in plotly.express](https://plotly.com/python/templates/#theming-and-templates).
+
+You can also use our templates for plotly charts outside the dashboard. This is useful in a few contexts:
+
+* Creation of standalone charts to be used independently of a Vizro dashboard.
+* Rapid development of charts for eventual use in a Vizro dashboard, for example in a Jupyter notebook.
+
+!!! note
+
+    Using `import vizro.plotly.express as px` is equivalent to using `import plotly.express as px`,
+    but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard.
+    Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the
+    existing charts and functionalities provided by plotly.express without any modifications.
+
+Our `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro.
+Consult the plotly documentation for [more details on how templates work in plotly](https://plotly.com/python/templates/#theming-and-templates).
+
+By default, plots imported from `vizro.plotly.express` have the `vizro_dark` theme applied. This can be altered either globally or for individual plots.
 
 ### Set themes for all charts
-The default plotly.io template is set to be `vizro_dark` as soon as you `import vizro`:
 
-```py
-import plotly.io as pio
-import vizro
-pio.templates
-```
-
-
-```text title="Result"
-Templates configuration
------------------------
-    Default template: 'vizro_dark'
-    Available templates:
-        ['ggplot2', 'seaborn', 'simple_white', 'plotly',
-         'plotly_white', 'plotly_dark', 'presentation', 'xgridoff',
-         'ygridoff', 'gridon', 'none', 'vizro_dark', 'vizro_light']
-```
-
-
-All plotly charts run after the `import vizro` command will therefore have the `vizro_dark` template automatically
-applied without further configuration.
-
-To change the default plotly template globally, run:
+To change the theme to `vizro_light` for all charts, run:
 
 ```python
 import plotly.io as pio
@@ -110,10 +97,3 @@ px.scatter_matrix(df,
                   color="species",
                   template="vizro_light")
 ```
-
-!!! note
-
-    Please note that using `import vizro.plotly.express as px` is equivalent to using `import plotly.express as px`,
-    but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard.
-    Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the
-    existing charts and functionalities provided by plotly.express without any modifications.

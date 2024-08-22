@@ -79,4 +79,32 @@ boxplot = vm.Page(
 
 butterfly = butterfly_factory("distribution")
 
-pages = [violin, boxplot, butterfly]
+histogram = vm.Page(
+    title="Histogram",
+    path="distribution/histogram",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a histogram?
+
+            A histogram organizes numerical data into columns, with the size of each column representing how frequently
+            values fall within specified ranges. It visualizes data across a continuous interval.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            A histogram is useful for showing your audience where specific values are concentrated, identifying the
+            extremes, and spotting any gaps or outliers. It can also help you visualize a rough probability
+            distribution. Ensure that the gaps between columns are minimal to make the 'shape' of your data
+            immediately clear.
+        """
+        ),
+        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+        make_code_clipboard_from_py_file("histogram.py"),
+    ],
+)
+
+
+pages = [violin, boxplot, butterfly, histogram]

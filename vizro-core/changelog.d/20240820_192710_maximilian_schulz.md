@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix display of marks in `vm.Slider` and `vm.RangeSlider` by converting floats to integers when possible. ([#613](https://github.com/mckinsey/vizro/pull/613))
+- Fix py.cafe docs integration by pinning `ruff` dependency for mkdocs plugin. ([#640](https://github.com/mckinsey/vizro/pull/640))
 
 <!--
 ### Security

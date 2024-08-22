@@ -102,6 +102,15 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: python
+          class: "highlight"
+          validator: !!python/name:mkdocs_pycafe.validator
+          format: !!python/object/apply:mkdocs_pycafe.formatter
+            kwds:
+              type: vizro
+              requirements: |
+                vizro==0.1.20
+                ruff==0.6.1  # mock
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
