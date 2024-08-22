@@ -169,3 +169,14 @@ class MyCard(vm.Card):
         card_build_obj.style = {"display": "none"}
 
         return card_build_obj
+
+
+class MyDropdown(vm.Dropdown):
+    type: Literal["my_dropdown"] = "my_dropdown"
+
+    def build(self):
+        dropdown_build_obj = super().build()
+        dropdown_build_obj.id = f"{self.id}_outer_div"
+        dropdown_build_obj.children[1].clearable = False
+
+        return dropdown_build_obj

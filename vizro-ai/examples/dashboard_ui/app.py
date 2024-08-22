@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
-from components import CodeClipboard, InputForm, MyCard, Switch, UserPromptTextArea, UserUpload
+from components import CodeClipboard, InputForm, MyCard, MyDropdown, Switch, UserPromptTextArea, UserUpload
 from custom_actions import data_upload_action, run_vizro_ai, save_api_key, toggle_api_key_visibility, upload_data_action
 from dash import Input, Output, State, callback, dcc
 from dash.exceptions import PreventUpdate
@@ -16,12 +16,14 @@ vm.Page.add_type("components", InputForm)
 vm.Page.add_type("components", vm.Dropdown)
 vm.Page.add_type("components", UserUpload)
 vm.Page.add_type("components", MyCard)
+vm.Page.add_type("components", MyDropdown)
 
 vm.Container.add_type("components", InputForm)
 vm.Container.add_type("components", vm.Dropdown)
 vm.Container.add_type("components", UserUpload)
 vm.Container.add_type("components", Switch)
 vm.Container.add_type("components", MyCard)
+vm.Container.add_type("components", MyDropdown)
 
 
 vm.Container.add_type("components", CodeClipboard)
@@ -98,7 +100,7 @@ page = vm.Page(
                         ),
                     ],
                 ),
-                vm.Dropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown"),
+                MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown"),
             ],
         ),
     ],
@@ -145,17 +147,24 @@ settings = vm.Page(
                     ],
                 ),
                 vm.Card(id="settings-card-id", text=""),
+                MyDropdown(
+                    id="vendor-dropdown-id",
+                    options=["ChatOpenAI"],
+                    value="ChatOpenAI",
+                    multi=False,
+                    title="Choose your vendor",
+                ),
             ],
             layout=vm.Layout(
                 grid=[
-                    [0, 1, -1],
+                    [0, 1, 6],
                     [2, 3, -1],
                     [4, -1, -1],
                     [5, -1, -1],
                     *[[-1, -1, -1]] * 1,
                 ]
             ),
-        )
+        ),
     ],
     layout=vm.Layout(
         grid=[
