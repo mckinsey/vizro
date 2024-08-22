@@ -167,6 +167,7 @@ class VizroAI:
         user_input: str,
         max_debug_retry: int = 3,
         return_elements: bool = False,
+        validate_code: bool = True,
     ) -> Union[go.Figure, ChartPlanStatic]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -176,11 +177,12 @@ class VizroAI:
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
             return_elements: Flag to return ChartPlanStatic pydantic model that includes all possible elements generated.
                 Defaults to `False`.
+            validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
 
         Returns:
             go.Figure or ChartPlanStatic pydantic model
         """
-        response_model = ChartPlanDynamicFactory(data_frame=df)
+        response_model = ChartPlanDynamicFactory(data_frame=df) if validate_code else ChartPlanStatic
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
