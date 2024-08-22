@@ -7,7 +7,7 @@ except ImportError:
 
 from typing import List, Literal
 
-import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import vizro.models as vm
 from dash import dcc, html
 from pydantic import PrivateAttr
@@ -46,7 +46,7 @@ class UserPromptTextArea(vm.VizroBaseModel):
         return html.Div(
             children=[
                 dcc.Textarea(
-                    id="text_area",
+                    id="text-area",
                     placeholder="How can Vizro-AI help you today?",
                 )
             ]
@@ -65,7 +65,11 @@ class InputForm(vm.VizroBaseModel):
     def build(self):
         return html.Div(
             dcc.Input(
-                id=self.id, type="password", placeholder=self.placeholder, style={"width": "100%", "height": "34px"}
+                id=self.id,
+                type="password",
+                placeholder=self.placeholder,
+                style={"width": "100%", "height": "34px"},
+                persistence="session",
             )
         )
 
@@ -127,44 +131,40 @@ class CodeClipboard(vm.VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Clipboard(target_id="code_markdown", className="code-clipboard"),
-                dcc.Markdown(markdown_code, id="code_markdown"),
+                dcc.Clipboard(target_id="code-markdown", className="code-clipboard"),
+                dcc.Markdown(markdown_code, id="code-markdown"),
             ],
             className="code-clipboard-container",
         )
 
 
-class DropdownSettings(vm.VizroBaseModel):
-    """Dropdown settings"""
+class Switch(vm.VizroBaseModel):
+    """Toggle for api key visibility"""
 
-    type: Literal["dropdown_settings"] = "dropdown_settings"
-    input_type: str = "password"
+    type: Literal["input_switch"] = "input_switch"
+    actions: List[Action] = []
+
+    _set_actions = _action_validator_factory("checked")
 
     def build(self):
-        dropdown = dbc.DropdownMenu(
-            label="Menu",
-            addon_type="prepend",
-            children=[
-                dbc.DropdownMenuItem(
-                    children=html.Div(
-                        dcc.Input(
-                            id="api_key1",
-                            type=self.input_type,
-                            placeholder="Your API key",
-                            style={"width": "100%", "height": "34px"},
-                        )
-                    )
-                ),
-                dbc.DropdownMenuItem(
-                    children=html.Div(
-                        dcc.Input(
-                            id="api_base1",
-                            type=self.input_type,
-                            placeholder="Your API base",
-                            style={"width": "100%", "height": "34px"},
-                        )
-                    )
-                ),
-            ],
+        return html.Div(
+            children=dmc.Switch(
+                id=self.id,
+                checked=False,
+                persistence=True,
+                persistence_type="session",
+                className="toggle-switch",
+            ),
+            id="settings",
+            style={"paddingTop": "8px"},
         )
-        return dropdown
+
+
+class MyCard(vm.Card):
+    type: Literal["my_card"] = "my_card"
+
+    def build(self):
+        card_build_obj = super().build()
+        card_build_obj.id = f"{self.id}_outer_div"
+
+        return card_build_obj

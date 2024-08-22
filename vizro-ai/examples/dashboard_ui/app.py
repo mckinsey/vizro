@@ -1,39 +1,39 @@
 """VizroAI UI dashboard configuration."""
 
 import pandas as pd
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
-from components import CodeClipboard, InputForm, UserPromptTextArea, UserUpload
-from dash import dcc
+from components import CodeClipboard, InputForm, MyCard, Switch, UserPromptTextArea, UserUpload
+from custom_actions import data_upload_action, run_vizro_ai, save_api_key, toggle_api_key_visibility, upload_data_action
+from dash import Input, Output, State, callback, dcc
+from dash.exceptions import PreventUpdate
 from vizro import Vizro
-from vizro_ai_model import data_upload_action, run_vizro_ai, save_api_key
+from vizro.charts._charts_utils import _DashboardReadyFigure
 
 vm.Page.add_type("components", UserPromptTextArea)
 vm.Page.add_type("components", InputForm)
 vm.Page.add_type("components", vm.Dropdown)
 vm.Page.add_type("components", UserUpload)
+vm.Page.add_type("components", MyCard)
 
 vm.Container.add_type("components", InputForm)
 vm.Container.add_type("components", vm.Dropdown)
 vm.Container.add_type("components", UserUpload)
+vm.Container.add_type("components", Switch)
+vm.Container.add_type("components", MyCard)
 
 
 vm.Container.add_type("components", CodeClipboard)
 vm.Page.add_type("components", CodeClipboard)
+vm.Page.add_type("components", Switch)
 
 
 SUPPORTED_MODELS = [
-    "gpt-4-0613",
+    "gpt-4o-mini",
     "gpt-4",
-    "gpt-4-1106-preview",
     "gpt-4-turbo",
-    "gpt-4-turbo-2024-04-09",
-    "gpt-4-turbo-preview",
-    "gpt-4-0125-preview",
-    "gpt-3.5-turbo-1106",
-    "gpt-3.5-turbo-0125",
     "gpt-3.5-turbo",
-    "gpt-4o-2024-05-13",
     "gpt-4o",
 ]
 
@@ -41,21 +41,40 @@ SUPPORTED_MODELS = [
 page = vm.Page(
     id="vizro_ai_page",
     title="Vizro AI",
-    layout=vm.Layout(grid=[*[[0, 0, 2, 2]] * 6, [1, 1, 2, 2], [3, 3, 2, 2], [4, 4, 2, 2]]),
+    layout=vm.Layout(
+        grid=[
+            *[[0, 0, 2, 2]] * 6,
+            [1, 1, 2, 2],
+            [3, 3, 2, 2],
+            [4, 4, 2, 2],
+        ]
+    ),
     components=[
         vm.Container(title="", components=[CodeClipboard()]),
         UserPromptTextArea(
             id="text-area",
         ),
         vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
-        UserUpload(
-            id="data-upload",
-            actions=[
-                vm.Action(
-                    function=data_upload_action(),
-                    inputs=["data-upload.contents", "data-upload.filename"],
-                    outputs=["data-store.data"],
-                )
+        vm.Container(
+            title="",
+            layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
+            components=[
+                UserUpload(
+                    id="data-upload",
+                    actions=[
+                        vm.Action(
+                            function=data_upload_action(),
+                            inputs=["data-upload.contents", "data-upload.filename"],
+                            outputs=["data-store.data"],
+                        ),
+                        vm.Action(
+                            function=upload_data_action(),
+                            inputs=["data-store.data"],
+                            outputs=["upload-message-id.children"],
+                        ),
+                    ],
+                ),
+                MyCard(id="upload-message-id", text="Upload your data file (csv or excel)"),
             ],
         ),
         vm.Container(
@@ -75,7 +94,7 @@ page = vm.Page(
                                 "model-dropdown.value",
                                 "api-store.data",
                             ],
-                            outputs=["code-markdown.children", "graph.figure"],
+                            outputs=["code-markdown.children", "graph.figure", "outputs-store.data"],
                         ),
                     ],
                 ),
@@ -93,7 +112,27 @@ settings = vm.Page(
             title="",
             components=[
                 InputForm(id="api-key", placeholder="API key"),
+                Switch(
+                    id="api-key-switch",
+                    actions=[
+                        vm.Action(
+                            function=toggle_api_key_visibility(),
+                            inputs=["api-key-switch.checked"],
+                            outputs=["api-key.type"],
+                        )
+                    ],
+                ),
                 InputForm(id="api-base", placeholder="API base"),
+                Switch(
+                    id="api-base-switch",
+                    actions=[
+                        vm.Action(
+                            function=toggle_api_key_visibility(),
+                            inputs=["api-base-switch.checked"],
+                            outputs=["api-base.type"],
+                        )
+                    ],
+                ),
                 vm.Button(
                     id="save-button",
                     text="Save",
@@ -108,10 +147,10 @@ settings = vm.Page(
             ],
             layout=vm.Layout(
                 grid=[
-                    [0, -1],
-                    [1, -1],
-                    [2, -1],
-                    *[[-1, -1]] * 2,
+                    [0, 1, -1],
+                    [2, 3, -1],
+                    [4, -1, -1],
+                    *[[-1, -1, -1]] * 2,
                 ]
             ),
         )
@@ -130,8 +169,9 @@ class CustomDashboard(vm.Dashboard):
 
     def build(self):
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store", storage_type="session"))
         dashboard_build_obj.children.append(dcc.Store(id="api-store", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="outputs-store", storage_type="session"))
         return dashboard_build_obj
 
 
@@ -141,11 +181,38 @@ dashboard = CustomDashboard(
         nav_selector=vm.NavBar(
             items=[
                 vm.NavLink(icon="robot_2", pages=["vizro_ai_page"], label="Vizro-AI"),
-                vm.NavLink(icon="settings", pages=["settings_page"], label="Settings"),
+                vm.NavLink(icon="settings", pages=["settings-page"], label="Settings"),
             ]
         )
     ),
 )
+
+
+# pure dash callback
+@callback(
+    [
+        Output("code-markdown", "children", allow_duplicate=True),
+        Output("graph", "figure", allow_duplicate=True),
+        Output("text-area", "value"),
+        Output("upload-message-id", "children"),
+    ],
+    [Input("on_page_load_action_trigger_vizro_ai_page", "data")],
+    [State("outputs-store", "data")],
+    prevent_initial_call="initial_duplicate",
+)
+def update_data(page_data, outputs_data):
+    if not outputs_data:
+        raise PreventUpdate
+
+    ai_response = outputs_data["ai_response"]
+    figure = outputs_data["figure"]
+
+    fig = pio.from_json(figure)
+    fig.__class__ = _DashboardReadyFigure
+    file_name = outputs_data["filename"]
+    filename = f"Uploaded file name: '{file_name}'"
+    prompt = outputs_data["prompt"]
+    return ai_response, figure, prompt, filename
 
 
 Vizro().build(dashboard).run()

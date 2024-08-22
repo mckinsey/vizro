@@ -18,20 +18,17 @@
   outline-width: 0;
 }
 
-#upload_icon.material-symbols-outlined {
-  color: #616161;
-}
 
-#text_area {
+#text-area {
   background-color: inherit;
   border: 1px solid rgba(43, 46, 57, 1);
-  font-color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   min-height: 90px;
   padding: 8px;
   width: 100%;
 }
 
-#code_clipboard {
+#code-clipboard {
   padding: 8px;
 }
 
@@ -45,6 +42,7 @@
 .code-clipboard-container {
   background: var(--surfaces-bg-card);
   font-family: monospace;
+  height: 500px;
   max-height: 500px;
   overflow: auto;
   padding: 1rem;
@@ -55,28 +53,28 @@
   border-color: var(--surfaces-bg-card);
 }
 
-#model_dropdown .Select--single .Select-value {
+#model-dropdown .Select--single .Select-value {
   background-color: inherit;
   font-size: 12px;
 }
 
-#model_dropdown .Select-control {
+#model-dropdown .Select-control {
   background-color: inherit;
   font-size: 12px;
 }
 
-#model_dropdown .Select-menu-outer {
+#model-dropdown .Select-menu-outer {
   font-size: 12px;
   top: 0;
   transform: translateY(3px) translateY(-100%);
 }
 
-#model_dropdown .dash-dropdown {
+#model-dropdown .dash-dropdown {
   background-color: inherit;
   font-size: 12px;
 }
 
-#trigger_button {
+#trigger-button {
   width: 100%;
 }
 
@@ -84,6 +82,19 @@
   background-color: inherit;
 }
 
-#model_dropdown .Select-clear {
+#model-dropdown .Select-clear {
   display: none;
+}
+
+#save-button {
+  width: 50%;
+}
+
+.card:has(#upload-message-id) {
+  background-color: inherit;
+  box-shadow: none;
+  font-size: 12px;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-left: 0;
 }
