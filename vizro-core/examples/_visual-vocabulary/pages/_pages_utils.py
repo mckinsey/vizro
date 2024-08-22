@@ -1,12 +1,12 @@
 """Contains reusable data sets and constants."""
 
+import logging
 from pathlib import Path
 
 import black
 import pandas as pd
 import vizro.plotly.express as px
 from custom_components import CodeClipboard
-import logging
 
 # To disable logging info messages caused by black.format_str: https://github.com/psf/black/issues/2058
 logging.getLogger("blib2to3").setLevel(logging.ERROR)
