@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, funnel_data, gapminder, make_code_clipboard_from_py_file, tips
 
 pie = vm.Page(
     title="Pie",
@@ -174,5 +174,34 @@ stacked_column = vm.Page(
     ],
 )
 
+funnel = vm.Page(
+    title="Funnel",
+    path="part-to-whole/funnel",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
 
-pages = [donut, pie, treemap, stacked_bar, stacked_column]
+            #### What is a funnel chart?
+
+            A funnel area chart is a type of data visualization that represents stages in a process, with the size of
+            each area proportional to its value. The chart typically narrows as it progresses, visually depicting the
+            reduction in numbers through each stage. One axis represents the stages of the process, while the other axis
+            indicates the values or quantities at each stage.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a funnel area chart to help your audience understand and compare the progression of data through
+            different stages of a process. This chart type is particularly effective for visualizing conversion rates,
+            sales processes, or any sequential data where you want to highlight drop-offs or reductions between stages.
+        """
+        ),
+        vm.Graph(figure=px.funnel_area(funnel_data, names="Stage", values="Value")),
+        make_code_clipboard_from_py_file("funnel.py"),
+    ],
+)
+
+
+pages = [donut, pie, treemap, stacked_bar, stacked_column, funnel]

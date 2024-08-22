@@ -6,15 +6,16 @@ gapminder = px.data.gapminder()
 
 
 page = vm.Page(
-    title="Column",
+    title="Ordered bar",
     components=[
         vm.Graph(
             figure=px.bar(
                 gapminder.query(
                     "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
                 ).sort_values("pop"),
-                y="pop",
-                x="country",
+                x="pop",
+                y="country",
+                orientation="h",
             )
         )
     ],

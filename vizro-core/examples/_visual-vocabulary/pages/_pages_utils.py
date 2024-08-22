@@ -1,11 +1,15 @@
 """Contains reusable data sets and constants."""
 
+import logging
 from pathlib import Path
 
 import black
 import pandas as pd
 import vizro.plotly.express as px
 from custom_components import CodeClipboard
+
+# To disable logging info messages caused by black.format_str: https://github.com/psf/black/issues/2058
+logging.getLogger("blib2to3").setLevel(logging.ERROR)
 
 
 def make_code_clipboard_from_py_file(filepath: str):
@@ -38,5 +42,16 @@ sankey_data = pd.DataFrame(
         "Origin": [0, 1, 0, 2, 3, 3],
         "Destination": [2, 3, 3, 4, 4, 5],
         "Value": [8, 4, 2, 8, 4, 2],
+    }
+)
+
+funnel_data = pd.DataFrame(
+    {"Stage": ["Leads", "Sales calls", "Follow-up", "Conversion", "Sales"], "Value": [10, 7, 4, 2, 1]}
+)
+
+stepped_line_data = pd.DataFrame(
+    {
+        "year": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003],
+        "rate": [0.10, 0.12, 0.15, 0.13, 0.14, 0.13, 0.14, 0.16, 0.15],
     }
 )
