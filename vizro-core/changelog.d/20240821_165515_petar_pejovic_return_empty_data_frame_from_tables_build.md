@@ -25,8 +25,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Return an empty data frame on initial build of AgGrid, Table nad Figure objects. ([#644](https://github.com/mckinsey/vizro/pull/644))
-- Reduce number of figure function calls for AgGrid, Table and Figure object. ([#644](https://github.com/mckinsey/vizro/pull/644))
+- Return an empty data on initial build of AgGrid, Table and Figure objects. ([#644](https://github.com/mckinsey/vizro/pull/644))
+- Reduce number of figure function calls for AgGrid, Table and Figure objects. ([#644](https://github.com/mckinsey/vizro/pull/644))
 
 <!--
 ### Deprecated
