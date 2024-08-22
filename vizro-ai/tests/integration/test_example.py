@@ -2,7 +2,7 @@ import vizro.plotly.express as px
 from hamcrest import all_of, any_of, assert_that, contains_string, equal_to
 from vizro_ai import VizroAI
 
-vizro_ai = VizroAI(model="gpt-4o-mini")
+vizro_ai = VizroAI()
 df = px.data.gapminder()
 
 

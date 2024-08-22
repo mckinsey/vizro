@@ -73,6 +73,8 @@ class VizroAI:
         chart_type = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
         # TODO update to loop through charts for multiple charts creation
+        if chart_name is None:
+            chart_name = "custom_chart"
         plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
             initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type, "chart_name": chart_name}

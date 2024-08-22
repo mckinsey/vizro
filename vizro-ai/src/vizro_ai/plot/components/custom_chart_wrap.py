@@ -1,7 +1,7 @@
 """Custom Chart Component."""
 
 import logging
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -65,7 +65,7 @@ class GetCustomChart(VizroAIComponentBase):
         """
         super().__init__(llm)
 
-    def _pre_process(self, chart_name: Optional[str] = "custom_chart", *args, **kwargs) -> Tuple[Dict, Dict]:
+    def _pre_process(self, chart_name: str = "custom_chart", *args, **kwargs) -> Tuple[Dict, Dict]:
         """Preprocess for custom chart.
 
         It should return llm_kwargs and partial_vars_map.
@@ -75,7 +75,7 @@ class GetCustomChart(VizroAIComponentBase):
 
         return llm_kwargs_to_use, partial_vars_map
 
-    def _post_process(self, response: Dict, chart_name: Optional[str] = "custom_chart", *args, **kwargs) -> str:
+    def _post_process(self, response: Dict, chart_name: str = "custom_chart", *args, **kwargs) -> str:
         """Post process for visual code.
 
         Insert df code and clean up with vizro import.
@@ -84,7 +84,7 @@ class GetCustomChart(VizroAIComponentBase):
         return self._add_capture_code(custom_chart_code, chart_name)
 
     @_log_time
-    def run(self, chain_input: str, chart_name: Optional[str] = "custom_chart") -> str:
+    def run(self, chain_input: str, chart_name: str = "custom_chart") -> str:
         """Run chain to get custom chart code.
 
         Args:
