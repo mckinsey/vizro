@@ -26,7 +26,8 @@ dependencies = [
   "chromedriver-autoinstaller>=0.6.4",
   "toml",
   "pyyaml",
-  "openpyxl"
+  "openpyxl",
+  "jupyter"
 ]
 
 [envs.default.scripts]
@@ -79,7 +80,7 @@ serve = "mkdocs serve --open"
 [envs.examples]
 dependencies = [
   "pyyaml",
-  # black is required to run the example _chart-gallery. This is completely independent of the black used in linting
+  # black is required to run the example _visual-vocabulary. This is completely independent of the black used in linting
   # our code. When this moves to HuggingFace we can remove the requirement from here.
   "black==24.4.2"
 ]

@@ -12,6 +12,7 @@ from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_gra
 from vizro_ai.dashboard.utils import DashboardOutputs, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
+from vizro_ai.plot2._response_models import ChartPlanDynamicFactory, ChartPlanStatic, _get_pydantic_model
 from vizro_ai.utils.helper import (
     DebugFailure,
     PlotOutputs,
@@ -20,7 +21,6 @@ from vizro_ai.utils.helper import (
     _exec_code_and_retrieve_fig,
     _is_jupyter,
 )
-from vizro_ai.plot2._response_models import ChartPlanStatic, ChartPlanDynamicFactory, _get_pydantic_model
 
 logger = logging.getLogger(__name__)
 
@@ -181,6 +181,7 @@ class VizroAI:
 
         Returns:
             go.Figure or ChartPlanStatic pydantic model
+
         """
         response_model = ChartPlanDynamicFactory(data_frame=df) if validate_code else ChartPlanStatic
         response = _get_pydantic_model(

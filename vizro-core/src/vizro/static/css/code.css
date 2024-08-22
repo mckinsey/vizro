@@ -9,6 +9,12 @@ code.language-python.hljs {
   font-family: monospace;
 }
 
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  font-family: monospace;
+}
+
 .hljs-string,
 .hljs-params,
 .hljs-params .hljs-string,

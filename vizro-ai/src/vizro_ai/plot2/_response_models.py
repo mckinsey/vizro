@@ -1,22 +1,18 @@
 """Code powering the plot command."""
 
 try:
-    from pydantic.v1 import BaseModel, create_model, Field, validator, root_validator, PrivateAttr
+    from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, create_model, validator, root_validator, PrivateAttr
-from typing import List
-
-import plotly.express as px
-
-from vizro_ai._llm_models import _get_llm_model
-from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
-from vizro_ai.plot._utils._safeguard import _safeguard_check
-
-import plotly.graph_objects as go
-from typing import Optional, Set
-import subprocess
+    from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
+import subprocess
+from typing import List, Optional, Set
+
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+from vizro_ai.plot._utils._safeguard import _safeguard_check
 
 ADDITIONAL_IMPORTS = {
     "import vizro.plotly.express as px",
@@ -143,14 +139,18 @@ class ChartPlanDynamicFactory:
             try:
                 _safeguard_check(v)
             except Exception as e:
-                raise ValueError(f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again.")
+                raise ValueError(
+                    f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
+                )
             try:
                 ldict = {}
                 exec(v, globals(), ldict)
                 custom_chart = ldict[f"{CUSTOM_CHART_NAME}"]
                 fig = custom_chart(data_frame.sample(20))
             except Exception as e:
-                raise ValueError(f"Produced code execution failed the following error: <{e}>. Please check the code and try again.")
+                raise ValueError(
+                    f"Produced code execution failed the following error: <{e}>. Please check the code and try again."
+                )
             assert isinstance(
                 fig, go.Figure
             ), f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
@@ -169,10 +169,7 @@ if __name__ == "__main__":
     # Ideas to implement - No code execution mode
     # test OS models
 
-    from dotenv import load_dotenv, find_dotenv
-    import os
-    from vizro_ai import VizroAI
-    from langchain_anthropic import ChatAnthropic
+    from dotenv import find_dotenv, load_dotenv
 
     load_dotenv(find_dotenv(usecwd=True))
     # df = px.data.iris()
