@@ -122,7 +122,7 @@ class TestDunderMethodsGraph:
 
     def test_update_theme_outside_callback(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(margin_t=24, template="vizro_dark")
+        assert graph == standard_px_chart.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template="vizro_dark")
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
     def test_update_theme_inside_callback(self, standard_px_chart, template):
@@ -141,7 +141,7 @@ class TestDunderMethodsGraph:
         }
         context_value.set(AttributeDict(**mock_ctx))
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
+        assert graph == standard_px_chart.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template=template)
 
     def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
