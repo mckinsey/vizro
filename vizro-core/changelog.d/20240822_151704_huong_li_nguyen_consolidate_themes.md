@@ -27,7 +27,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Optimise vizro templates `vizro_dark` and `vizro_light` for charts. ([#645](https://github.com/mckinsey/vizro/pull/645))
 
-
 <!--
 ### Deprecated
 
