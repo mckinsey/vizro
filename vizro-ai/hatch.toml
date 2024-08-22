@@ -21,12 +21,12 @@ dependencies = [
   "langchain_community",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
-  #"urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
+  # "urllib3<2.0.0",  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
   "langchain-openai",
   "langchain_mistralai",
   "langchain-huggingface",
   "langchain_anthropic",
-  "langchain-cohere",
+  "langchain-cohere"
 ]
 
 [envs.default.env-vars]
