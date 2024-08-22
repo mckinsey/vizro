@@ -74,7 +74,7 @@ page = vm.Page(
                         ),
                     ],
                 ),
-                MyCard(id="upload-message-id", text="Upload your data file (csv or excel)"),
+                vm.Card(id="upload-message-id", text="Upload your data file (csv or excel)"),
             ],
         ),
         vm.Container(
@@ -135,22 +135,24 @@ settings = vm.Page(
                 ),
                 vm.Button(
                     id="save-button",
-                    text="Save",
+                    text="Save secrets",
                     actions=[
                         vm.Action(
                             function=save_api_key(),
                             inputs=["api-key.value", "api-base.value", "save-button.n_clicks"],
-                            outputs=["api-store.data"],
+                            outputs=["api-store.data", "settings-card-id.children"],
                         )
                     ],
                 ),
+                vm.Card(id="settings-card-id", text=""),
             ],
             layout=vm.Layout(
                 grid=[
                     [0, 1, -1],
                     [2, 3, -1],
                     [4, -1, -1],
-                    *[[-1, -1, -1]] * 2,
+                    [5, -1, -1],
+                    *[[-1, -1, -1]] * 1,
                 ]
             ),
         )

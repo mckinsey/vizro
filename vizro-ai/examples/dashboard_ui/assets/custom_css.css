@@ -18,7 +18,6 @@
   outline-width: 0;
 }
 
-
 #text-area {
   background-color: inherit;
   border: 1px solid rgba(43, 46, 57, 1);
@@ -91,6 +90,15 @@
 }
 
 .card:has(#upload-message-id) {
+  background-color: inherit;
+  box-shadow: none;
+  font-size: 12px;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+
+.card:has(#settings-card-id) {
   background-color: inherit;
   box-shadow: none;
   font-size: 12px;

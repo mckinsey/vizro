@@ -106,7 +106,8 @@ def data_upload_action(contents, filename):
 @capture("action")
 def save_api_key(api_key, api_base, n_clicks):
     if n_clicks:
-        return {"api_key": api_key, "api_base": api_base}
+        # TODO: Possibly add validation for secrets
+        return {"api_key": api_key, "api_base": api_base}, "Secrets saved!"
 
 
 @capture("action")

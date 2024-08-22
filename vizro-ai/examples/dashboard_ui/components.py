@@ -166,5 +166,6 @@ class MyCard(vm.Card):
     def build(self):
         card_build_obj = super().build()
         card_build_obj.id = f"{self.id}_outer_div"
+        card_build_obj.style = {"display": "none"}
 
         return card_build_obj
