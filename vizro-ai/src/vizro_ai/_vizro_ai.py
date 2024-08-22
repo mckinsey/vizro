@@ -20,6 +20,7 @@ from vizro_ai.utils.helper import (
     _exec_code_and_retrieve_fig,
     _is_jupyter,
 )
+from vizro_ai.plot2._response_models import ChartPlanStatic, ChartPlanDynamicFactory, _get_pydantic_model
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +160,38 @@ class VizroAI:
             )
 
         return vizro_plot if return_elements else vizro_plot.figure
+
+    def plot2(
+        self,
+        df: pd.DataFrame,
+        user_input: str,
+        max_debug_retry: int = 3,
+        return_elements: bool = False,
+    ) -> Union[go.Figure, ChartPlanStatic]:
+        """Plot visuals using vizro via english descriptions, english to chart translation.
+
+        Args:
+            df: The dataframe to be analyzed.
+            user_input: User questions or descriptions of the desired visual.
+            max_debug_retry: Maximum number of retries to debug errors. Defaults to `3`.
+            return_elements: Flag to return ChartPlanStatic pydantic model that includes all possible elements generated.
+                Defaults to `False`.
+
+        Returns:
+            go.Figure or ChartPlanStatic pydantic model
+        """
+        response_model = ChartPlanDynamicFactory(data_frame=df)
+        response = _get_pydantic_model(
+            query=user_input,
+            llm_model=self.model,
+            response_model=response_model,
+            df_info=df,
+            max_retry=max_debug_retry,
+        )
+        if return_elements:
+            return response
+        else:
+            return response.get_fig_object(data_frame=df)
 
     def dashboard(
         self,
