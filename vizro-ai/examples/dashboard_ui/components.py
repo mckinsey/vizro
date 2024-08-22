@@ -7,6 +7,7 @@ except ImportError:
 
 from typing import List, Literal
 
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import vizro.models as vm
 from dash import dcc, html
@@ -180,3 +181,72 @@ class MyDropdown(vm.Dropdown):
         dropdown_build_obj.children[1].clearable = False
 
         return dropdown_build_obj
+
+
+class OffCanvas(vm.VizroBaseModel):
+    """OffCanvas component for settings!"""
+
+    type: Literal["offcanvas"] = "offcanvas"
+    options: List[str]
+    value: str
+
+    def build(self):
+        input_groups = html.Div(
+            [
+                dbc.InputGroup(
+                    [
+                        dbc.InputGroupText("API Key"),
+                        dbc.Input(
+                            placeholder="API key", type="password", id=f"{self.id}_api_key", persistence="session"
+                        ),
+                    ],
+                    className="mb-3",
+                ),
+                dbc.InputGroup(
+                    [
+                        dbc.InputGroupText("API base"),
+                        dbc.Input(
+                            placeholder="API base", type="password", id=f"{self.id}_api_base", persistence="session"
+                        ),
+                    ],
+                    className="mb-3",
+                ),
+                dbc.InputGroup(
+                    [
+                        dbc.InputGroupText("Choose your vendor"),
+                        dbc.Select(options=self.options, value=self.value, id=f"{self.id}_dropdown"),
+                    ],
+                    className="mb-3",
+                ),
+                dbc.InputGroup(
+                    [
+                        dbc.InputGroupText(dbc.Checkbox(id="toggle-secrets-id")),
+                        dbc.Input(value="Show secrets", disabled=True),
+                    ]
+                ),
+            ],
+            className="mb-3",
+        )
+
+        offcanvas = dbc.Offcanvas(
+            id=self.id,
+            children=[
+                html.Div(
+                    children=[
+                        input_groups,
+                        dbc.Button("Save secrets", id="save-secrets-id"),
+                        html.P(children="", id="notification"),
+                    ]
+                )
+            ],
+            title="Title",
+            is_open=False,
+        )
+        return offcanvas
+
+
+class MyPage(vm.Page):
+    type: Literal["my_page"] = "my_page"
+
+    def pre_build(self):
+        pass
