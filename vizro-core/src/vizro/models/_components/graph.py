@@ -55,15 +55,7 @@ class Graph(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
-
-        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
-        if fig.layout.margin.t is None and fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)
-
-        # Increase `title_pad_t` if subtitle is provided and `title_pad_t` is not explicitly set.
-        # Otherwise, the title is being cut off.
-        if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" in fig.layout.title.text:
-            fig.update_layout(title_pad_t=24)
+        fig = self._optimise_layout_for_dashboard(fig)
 
         # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
         # what the clientside update_graph_theme callback does, and it would be nice if we could just use that by
@@ -136,6 +128,28 @@ class Graph(VizroBaseModel):
                 data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
 
         return data_frame
+
+    @staticmethod
+    def _optimise_layout_for_dashboard(fig):
+        """Post layout updates to visually enhance charts used inside dashboard."""
+        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
+        if fig.layout.margin.t is None and fig.layout.title.text is None:
+            fig.update_layout(margin_t=24)
+
+        # Reduce `title_pad_t` if no subtitle is provided and `title_pad_t` is not explicitly set.
+        if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
+            fig.update_layout(title_pad_t=7)
+
+        if fig.layout.title_pad_l is None:
+            fig.update_layout(title_pad_l=0)
+
+        if fig.layout.title_pad_r is None:
+            fig.update_layout(title_pad_r=0)
+
+        if fig.layout.margin_l is None:
+            fig.update_layout(margin_l=24)
+
+        return fig
 
     @_log_call
     def build(self):
