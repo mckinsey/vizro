@@ -12,7 +12,8 @@ from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_gra
 from vizro_ai.dashboard.utils import DashboardOutputs, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
-from vizro_ai.plot2._response_models import ChartPlanDynamicFactory, ChartPlanStatic, _get_pydantic_model
+from vizro_ai.dashboard._pydantic_output import _get_pydantic_model #TODO: make general
+from vizro_ai.plot2._response_models import ChartPlanDynamicFactory, ChartPlanStatic
 from vizro_ai.utils.helper import (
     DebugFailure,
     PlotOutputs,
