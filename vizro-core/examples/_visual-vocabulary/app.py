@@ -1,4 +1,4 @@
-"""App configuration for chart gallery dashboard."""
+"""App configuration for dashboard."""
 
 from typing import List, Union
 

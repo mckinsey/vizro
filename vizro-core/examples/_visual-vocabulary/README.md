@@ -1,4 +1,4 @@
-# Chart gallery dashboard
+# Vizro - Visual vocabulary
 
 This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
 to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
@@ -98,6 +98,6 @@ To contribute a chart, follow the steps below:
 
 ## How to run the example locally
 
-1. If you have `hatch` set up, run the example with the command `hatch run example _chart-gallery`.
+1. If you have `hatch` set up, run the example with the command `hatch run example _visual-vocabulary`.
    Otherwise, with a virtual Python environment activated, run `pip install -r requirements.txt` and then `python app.py`.
 2. You should now be able to access the app locally via http://127.0.0.1:8050/.
