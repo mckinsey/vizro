@@ -55,7 +55,7 @@ class Graph(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
-        fig = self._optimise_layout_for_dashboard(fig)
+        fig = self._optimise_fig_layout_for_dashboard(fig)
 
         # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
         # what the clientside update_graph_theme callback does, and it would be nice if we could just use that by
@@ -130,7 +130,7 @@ class Graph(VizroBaseModel):
         return data_frame
 
     @staticmethod
-    def _optimise_layout_for_dashboard(fig):
+    def _optimise_fig_layout_for_dashboard(fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
         # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
         if fig.layout.margin.t is None and fig.layout.title.text is None:
@@ -140,13 +140,13 @@ class Graph(VizroBaseModel):
         if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
             fig.update_layout(title_pad_t=7)
 
-        if fig.layout.title_pad_l is None:
+        if fig.layout.title.pad.l is None:
             fig.update_layout(title_pad_l=0)
 
-        if fig.layout.title_pad_r is None:
+        if fig.layout.title.pad.r is None:
             fig.update_layout(title_pad_r=0)
 
-        if fig.layout.margin_l is None:
+        if fig.layout.margin.l is None:
             fig.update_layout(margin_l=24)
 
         return fig
