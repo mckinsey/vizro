@@ -11,8 +11,8 @@ gapminder = px.data.gapminder()
 def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     fig = px.bar(
         data_frame,
-        y=y,
         x=x,
+        y=y,
     )
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
