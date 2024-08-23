@@ -9,11 +9,22 @@ code.language-python.hljs {
   font-family: monospace;
 }
 
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  font-family: monospace;
+}
+
 .hljs-string,
 .hljs-params,
 .hljs-params .hljs-string,
 .hljs-number {
   color: var(--text-code-string);
+  font-family: monospace;
+}
+
+.hljs-literal {
+  color: var(--text-code-literal);
   font-family: monospace;
 }
 

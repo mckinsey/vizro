@@ -36,3 +36,15 @@ def check_captured_callable(cls, value):
         f"A callable of mode `{captured_callable._mode}` has been provided. Please wrap it inside "
         f"`{captured_callable._model_example}`."
     )
+
+
+REPLACEMENT_STRINGS = {
+    # "substring to match a larger general module string": "string to replace with"
+    # dot required so that in the case where no replacement is used, we do not
+    # have a preceding dot (see __repr_clean__ in types.py)
+    "plotly.express": "px.",
+    "vizro.tables": "vt.",
+    "vizro.figures": "vf.",
+    "vizro.actions": "va.",
+    "vizro.charts": "vc.",
+}

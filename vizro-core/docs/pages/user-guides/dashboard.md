@@ -16,7 +16,7 @@ To create a dashboard:
 
 !!! example "Dashboard Configuration Syntaxes"
     === "app.py - pydantic models"
-        ```py
+        ```{.python pycafe-link}
         import vizro.plotly.express as px
         from vizro import Vizro
         import vizro.models as vm
@@ -37,7 +37,7 @@ To create a dashboard:
 
         Vizro().build(dashboard).run()
         ```
-    === "app.py - python dict"
+    === "app.py - Python dict"
         ```py
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -203,4 +203,4 @@ title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `
 
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
 clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#include-a-meta-tags-image) and
-[Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing the [Vizro demo app](https://vizro.mckinsey.com/).
+[Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing an example from the [Vizro examples gallery](https://vizro.mckinsey.com/).

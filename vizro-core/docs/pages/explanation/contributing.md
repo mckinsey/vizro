@@ -130,21 +130,6 @@ We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning. We 
 
 When executing the secret scan, there are two modes: `protect` can discover secrets in staged files, `detect` does so in the commit history.
 
-## Snyk and `requirements.txt`
-
-[Snyk](https://snyk.io/) is used to scan for vulnerabilities in dependencies. This
-is done by scanning the `requirements.txt` file. As Hatch manages the dependencies by
-`pyproject.toml`, we need to convert the dependencies to `requirements.txt` before Snyk
-can scan them. This is done by running `hatch run update-snyk-requirements`. The outputs are
-written to `snyk/requirements.txt`, which can be used by Snyk to scan for vulnerabilities.
-
-We also validate whether the dependencies in `requirements.txt` are up-to-date. This
-is done in CI.
-
-Note that `requirements.txt` is not used by Hatch, and so it should not be edited
-manually for dependency management. Instead, edit `pyproject.toml` or `hatch.toml` when
-adding or removing dependencies.
-
 ## Changelog
 
 Vizro keeps a changelog, where all notable changes to the project will be documented. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

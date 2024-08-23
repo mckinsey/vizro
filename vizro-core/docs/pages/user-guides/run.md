@@ -2,11 +2,25 @@
 
 This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost port 8050 so is accessible at [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
+## Py.Cafe
+
+The easiest way to launch your dashboard is to edit the code live on [Py.Cafe](https://py.cafe/).
+
+Most of our examples have a link below the code, [Run and edit this code in Py.Cafe](https://py.cafe/vizro-official/vizro-iris-analysis-0), which you can follow to experiment with the code. This will lead you to an editor such as the one below, which displays the dashboard and the code side by side.
+
+<figure markdown="span">
+  ![Py.Cafe editor](../../assets/user_guides/run/pycafe_editor.png)
+  <figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
+</figure>
+
+You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
+
+
 ## Default built-in Flask development server
 
 !!! example "Default built-in Flask development server"
     === "app.py"
-        ```py
+        ```
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -16,7 +30,7 @@ This guide shows you how to launch your dashboard in different ways. By default,
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
         )
 

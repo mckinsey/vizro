@@ -41,6 +41,7 @@ class GraphState(BaseModel):
         dashboard_plan: Plan for the dashboard
         pages: Vizro pages
         dashboard: Vizro dashboard
+        custom_charts_code: Custom charts code
 
     """
 
@@ -50,6 +51,7 @@ class GraphState(BaseModel):
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
+    custom_charts_code: Annotated[List, operator.add]
 
     class Config:
         """Pydantic configuration."""
@@ -80,7 +82,11 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDf
                 ).dataset
             except DebugFailure as e:
                 logger.warning(f"Failed in name generation {e}")
-                df_name = f"df_{len(current_df_names)}"
+                df_name = f"df_{len(current_df_names)+1}"
+
+            # fallback to a less descriptive but unique name if llm fails
+            if df_name in current_df_names:
+                df_name = f"df_{len(current_df_names)+1}"
 
             current_df_names.append(df_name)
 
@@ -146,9 +152,9 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     page_plan = state["page_plan"]
 
     llm = config["configurable"].get("model", None)
-    page = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
+    page, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
 
-    return {"pages": [page]}
+    return {"pages": [page], "custom_charts_code": [custom_chart_code]}
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:

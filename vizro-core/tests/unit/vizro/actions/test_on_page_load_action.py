@@ -4,7 +4,6 @@ import vizro.plotly.express as px
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro._themes import dark, light
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
@@ -18,8 +17,8 @@ def target_scatter_filtered_continent_and_pop_parameter_y_and_x(request, gapmind
     ]
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(data, template=dark if template == "vizro_dark" else light, **scatter_params).update_layout(
-        margin_t=24
+    return px.scatter(data, template=template, **scatter_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
     )
 
 
@@ -32,7 +31,9 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
     ]
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(data, template=dark if template == "vizro_dark" else light, **box_params).update_layout(margin_t=24)
+    return px.box(data, template=template, **box_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
+    )
 
 
 @pytest.fixture

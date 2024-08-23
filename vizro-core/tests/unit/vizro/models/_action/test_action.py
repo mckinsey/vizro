@@ -193,7 +193,7 @@ class TestActionPrivateMethods:
             ),
         ],
     )
-    def test_get_callback_mapping_with_inputs_and_outputs(  # pylint: disable=too-many-arguments
+    def test_get_callback_mapping_with_inputs_and_outputs(
         self,
         inputs_and_outputs,
         identity_action_function,
