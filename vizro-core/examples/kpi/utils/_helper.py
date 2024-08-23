@@ -113,11 +113,11 @@ def create_data_for_kpi_cards(data):
 
     # Calculate percentages
     df_kpi.fillna(0, inplace=True)
-    df_kpi["Closed Complaints"] = df_kpi["Closed Complaints"] / df_kpi["Total Complaints"]
-    df_kpi["Open Complaints"] = 1 - df_kpi["Closed Complaints"]
-    df_kpi["Timely response"] = df_kpi["Timely response"] / df_kpi["Total Complaints"]
-    df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"]
-    df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"]
+    df_kpi["Closed Complaints"] = df_kpi["Closed Complaints"] / df_kpi["Total Complaints"] * 100
+    df_kpi["Open Complaints"] = 100 - df_kpi["Closed Complaints"]
+    df_kpi["Timely response"] = df_kpi["Timely response"] / df_kpi["Total Complaints"] * 100
+    df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"] * 100
+    df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"] * 100
 
 
     # Pivot the DataFrame

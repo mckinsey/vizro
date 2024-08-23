@@ -25,32 +25,31 @@ kpi_banner = vm.Container(
                                             value_format="{value:.0f}", reference_format="{delta_relative:+.1%} vs. last year ({reference:.0f})")),
         vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed Complaints_2020",
                                             reference_column="Closed Complaints_2019", title="Closed Complaints",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+                                            value_format="{value:.1f}%",
+                                            reference_format="{delta:+.1f}pp  vs. last year ({reference:.1f}%)"
                                             )),
         vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Open Complaints_2020",
                                             reference_column="Open Complaints_2019", title="Open Complaints",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+                                            value_format="{value:.1f}%",
+                                            reference_format="{delta:+.1f}pp  vs. last year ({reference:.1f}%)"
 
                                             )),
         vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Timely response_2020",
                                             reference_column="Timely response_2019", title="Timely Response",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+                                            value_format="{value:.1f}%",
+                                            reference_format="{delta:+.1f}pp  vs. last year ({reference:.1f}%)"
 
                                             )),
         vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed w/o cost_2020",
                                             reference_column="Closed w/o cost_2019", title="Closed w/o cost",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
+                                            value_format="{value:.1f}%",
+                                            reference_format="{delta:.1f}ppt vs. last year ({reference:.1f}%)"
 
                                             )),
         vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Consumer disputed_2020",
                                             reference_column="Consumer disputed_2019", title="Consumer disputed",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
-
+                                            value_format="{value:.1f}%",
+                                            reference_format="{delta:+.1f}pp vs. last year ({reference:.1f}%)"
                                             )),
     ],
 )
