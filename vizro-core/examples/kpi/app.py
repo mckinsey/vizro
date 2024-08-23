@@ -223,7 +223,7 @@ page_table = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial Corporation - 2020",
+    title="Cumulus Financial Corporation - Fiscal Year 2020",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
