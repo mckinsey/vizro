@@ -150,9 +150,6 @@ def _extract_captured_callable_data_info() -> Set[str]:
         if "data_frame" in value._arguments
     }
 
-aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
-aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-
 
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
