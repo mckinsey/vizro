@@ -106,3 +106,11 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Report artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Report
+          path: |
+            /home/runner/work/vizro/vizro/vizro-ai/report*.csv
