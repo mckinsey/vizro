@@ -111,6 +111,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Report-${{ matrix.python-version }}
+          name: Report-${{ matrix.python-version }}-${{ matrix.label }}
           path: |
             /home/runner/work/vizro/vizro/vizro-ai/report*.csv
