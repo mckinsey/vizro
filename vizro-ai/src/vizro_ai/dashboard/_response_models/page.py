@@ -1,6 +1,7 @@
 """Page plan model."""
 
 import logging
+import re
 from collections import Counter
 from typing import List, Optional, Tuple, Union
 
@@ -45,6 +46,11 @@ class PagePlan(BaseModel):
     _controls: List[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
+
+    @validator("title")
+    def _check_title(cls, v):
+        cleaned_title = re.sub(r"[^a-zA-Z0-9\s]", "", v)
+        return cleaned_title
 
     @validator("components_plan")
     def _check_components_plan(cls, v):
@@ -96,11 +102,13 @@ class PagePlan(BaseModel):
             for component_plan in self.components_plan:
                 component_log.set_description_str(f"[Page] <{self.title}>: [Component] {component_plan.component_id}")
                 pbar.update(1)
-                component, code = component_plan.create(model=model, all_df_metadata=all_df_metadata)
+                result = component_plan.create(model=model, all_df_metadata=all_df_metadata)
+                component, code = result.component, result.code
+
                 components.append(component)
 
-                component_code = {}
                 # Store the code for the component, currently this only applies to Graph component
+                component_code = {}
                 if code:
                     component_code[component_plan.component_id] = code
                     components_code.append(component_code)

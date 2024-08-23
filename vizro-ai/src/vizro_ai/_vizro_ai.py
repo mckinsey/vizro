@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
-from vizro_ai.dashboard.utils import DashboardOutputs, _dashboard_code, _process_to_set, _register_data
+from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
@@ -197,10 +197,10 @@ class VizroAI:
         )
         dashboard = message_res["dashboard"]
         _register_data(all_df_metadata=message_res["all_df_metadata"])
-        chart_code, imports = _process_to_set(message_res["custom_charts_code"])
 
         if return_elements:
-            code = _dashboard_code(dashboard, chart_code, imports)
+            chart_code, imports = _extract_custom_functions_and_imports(message_res["custom_charts_code"])
+            code = dashboard._to_python(extra_callable_defs=chart_code, extra_imports=imports)
             dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output
         else:

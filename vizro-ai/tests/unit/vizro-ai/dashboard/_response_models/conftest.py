@@ -114,14 +114,27 @@ def component_plan_ag_grid():
 @pytest.fixture
 def mock_vizro_ai_return(df):
     return PlotOutputs(
-        code="from vizro.models.types import capture\nimport vizro.plotly.express as px\n"
-        "import pandas as pd\n\n@capture('graph')\ndef custom_chart(data_frame=None):\n    "
-        "scatter_df = data_frame[['lifeExp', 'gdpPercap', 'continent', 'country']]\n    "
-        "scatter_df.reset_index(drop=True, inplace=True)\n\n    fig = px.scatter(\n        "
-        "scatter_df,\n        x='gdpPercap',\n        y='lifeExp',\n        "
-        "color='continent',\n        hover_name='country',\n        "
-        "title='Life Expectancy vs. GDP per Capita by Country',\n         )\n\n    "
-        "return fig\n\nfig = custom_chart(data_frame=df)",
+        code="""
+from vizro.models.types import capture
+import vizro.plotly.express as px
+import pandas as pd
+
+@capture('graph')
+def custom_chart(data_frame=None):
+    scatter_df = data_frame[['lifeExp', 'gdpPercap', 'continent', 'country']]
+    scatter_df.reset_index(drop=True, inplace=True)
+
+    fig = px.scatter(
+        scatter_df,
+        x='gdpPercap',
+        y='lifeExp',
+        title='Life Expectancy vs. GDP per Capita by Country',
+    )
+
+    return fig
+
+fig = custom_chart(data_frame=df)
+""",
         figure=px.scatter(
             data_frame=df,
             x="a",

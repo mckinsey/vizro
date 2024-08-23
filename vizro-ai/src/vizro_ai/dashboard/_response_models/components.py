@@ -1,7 +1,6 @@
 """Component plan model."""
 
 import logging
-from typing import Optional, Tuple, Union
 
 import vizro.models as vm
 
@@ -9,9 +8,11 @@ try:
     from pydantic.v1 import BaseModel, Field
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field
+from langchain_core.language_models.chat_models import BaseChatModel
 from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ComponentType
+from vizro_ai.dashboard.utils import AllDfMetadata, ComponentResult
 from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
@@ -41,8 +42,22 @@ class ComponentPlan(BaseModel):
         """,
     )
 
-    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Card, vm.AgGrid, vm.Figure], Optional[str]]:
-        """Create the component."""
+    def create(self, model: BaseChatModel, all_df_metadata: AllDfMetadata) -> ComponentResult:
+        """Create the component based on its type.
+
+        Args:
+            model: The llm used.
+            all_df_metadata: Metadata for all available dataframes.
+
+        Returns:
+            ComponentResult containing:
+            - component: The created component (vm.Card, vm.AgGrid, or vm.Graph)
+            - code: Optional string containing the code used to generate the component (for Graph type only)
+
+        Raises:
+            DebugFailure: If component creation fails, a Card with an error message is returned.
+
+        """
         try:
             if self.component_type == "Graph":
                 from vizro_ai import VizroAI
@@ -54,15 +69,17 @@ class ComponentPlan(BaseModel):
                     chart_name=self.component_id,
                     max_debug_retry=2,
                 )
-                return (
-                    vm.Graph(
+                return ComponentResult(
+                    component=vm.Graph(
                         id=self.component_id,
                         figure=result.figure,
                     ),
-                    result.code,
+                    code=result.code,
                 )
             elif self.component_type == "AgGrid":
-                return vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name)), None
+                return ComponentResult(
+                    component=vm.AgGrid(id=self.component_id, figure=dash_ag_grid(data_frame=self.df_name))
+                )
             elif self.component_type == "Card":
                 card_prompt = f"""
                 The Card uses the dcc.Markdown component from Dash as its underlying text component.
@@ -71,7 +88,7 @@ class ComponentPlan(BaseModel):
                 result_proxy = _get_pydantic_model(query=card_prompt, llm_model=model, response_model=vm.Card)
                 proxy_dict = result_proxy.dict()
                 proxy_dict["id"] = self.component_id
-                return vm.Card.parse_obj(proxy_dict), None
+                return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
 
         except DebugFailure as e:
             logger.warning(
@@ -81,7 +98,9 @@ Reason: {e}
 Relevant prompt: {self.component_description}
 """
             )
-            return vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
+            return ComponentResult(
+                component=vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
+            )
 
 
 if __name__ == "__main__":

@@ -24,20 +24,22 @@ class TestComponentCreate:
         mock_vizro_ai_object.return_value = None
         mock_vizro_ai_call = mocker.patch("vizro_ai.VizroAI._run_plot_tasks")
         mock_vizro_ai_call.return_value = mock_vizro_ai_return
-        chart, code = component_plan_graph.create(
+        result = component_plan_graph.create(
             model=None,
             all_df_metadata=df_metadata,
         )
+        chart, code = result.component, result.code
         expected = vm.Graph(id="mock_id", figure=mock_vizro_ai_return.figure)
 
         assert chart.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
         assert re.search(r"\bimport\b.*?@capture\('graph'\)", code, re.DOTALL)
 
     def test_create_card(self, fake_llm_card, component_plan_card, expected_card):
-        card, code = component_plan_card.create(
+        result = component_plan_card.create(
             model=fake_llm_card,
             all_df_metadata=None,
         )
+        card, code = result.component, result.code
 
         assert card.dict(exclude={"id": True}) == expected_card.dict(exclude={"id": True})
         assert code is None
