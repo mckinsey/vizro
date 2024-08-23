@@ -57,6 +57,9 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
         >>> vm.Page(title="Page", components=[vm.AgGrid(figure=dash_ag_grid(...))])
 
     """
+    if "columnDefs" in kwargs:
+        used_columns = [col["field"] for col in kwargs["columnDefs"] if col["field"] in data_frame.columns]
+        data_frame = data_frame[used_columns]
     defaults = {
         "className": "ag-theme-quartz-dark ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],

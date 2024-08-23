@@ -18,6 +18,8 @@ data = pd.DataFrame(
     }
 )
 
+iris_dataset = px.data.iris()
+giant_dataset = pd.concat([iris_dataset] * 10000, ignore_index=True)
 
 def load_data():
     """Load data."""
@@ -115,6 +117,8 @@ page_grid = vm.Page(
     controls=[vm.Filter(column="Column 1", selector=vm.RangeSlider(step=1))],
 )
 
+columnDefs = [{"field": "petal_length"}]
+
 dashboard = vm.Dashboard(
     pages=[
         vm.Page(
@@ -122,6 +126,10 @@ dashboard = vm.Dashboard(
             components=[vm.Card(text="Dummy page just for testing")],
         ),
         page_grid,
+        vm.Page(
+            title="Page_3",
+            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=giant_dataset,columnDefs=columnDefs))],
+        ),
     ]
 )
 
