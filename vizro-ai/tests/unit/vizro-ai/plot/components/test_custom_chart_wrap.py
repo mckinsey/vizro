@@ -99,7 +99,7 @@ class TestGetCustomChartMethods:
 
     def test_pre_process(self):
         llm_kwargs, partial_vars = self.get_custom_chart._pre_process()
-        assert partial_vars == {}
+        assert partial_vars == {"chart_name": "custom_chart"}
         assert isinstance(llm_kwargs, dict)
 
     @pytest.mark.parametrize(

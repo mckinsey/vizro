@@ -30,5 +30,5 @@ class PipelineManager:
         pipeline = Pipeline(self.llm)
         pipeline.add(GetDataFrameCraft, input_keys=["df", "chain_input"], output_key="df_code")
         pipeline.add(GetVisualCode, input_keys=["chain_input", "chart_type", "df_code", "df"], output_key="chain_input")
-        pipeline.add(GetCustomChart, input_keys=["chain_input"], output_key="custom_chart_code")
+        pipeline.add(GetCustomChart, input_keys=["chain_input", "chart_name"], output_key="custom_chart_code")
         return pipeline

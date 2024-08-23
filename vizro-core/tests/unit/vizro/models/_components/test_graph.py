@@ -101,24 +101,30 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize(
         "title, margin_t, title_pad_t",
-        [(None, 24, None), ("Graph with title", None, None), ("Graph with title..<br> and subtitle", None, 24)],
+        [(None, 24, None), ("Graph with title", None, 7), ("Graph with title..<br> and subtitle", None, None)],
     )
     def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t):
         graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
+        # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
         assert graph.layout.title.pad.t == title_pad_t
+        assert graph.layout.title.pad.l == 0
+        assert graph.layout.title.pad.r == 0
+        assert graph.layout.margin.l == 24
 
         # These are our defaults for the layout defined in `_templates.common_values`
         assert graph.layout.template.layout.margin.t == 64
-        assert graph.layout.template.layout.margin.l == 24
+        assert graph.layout.template.layout.margin.l == 80
         assert graph.layout.template.layout.margin.b == 64
         assert graph.layout.template.layout.margin.r == 24
-        assert graph.layout.template.layout.title.pad.t == 7
+        assert graph.layout.template.layout.title.pad.t == 24
 
     def test_update_theme_outside_callback(self, standard_px_chart):
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(margin_t=24, template="vizro_dark")
+        assert graph == standard_px_chart.update_layout(
+            margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template="vizro_dark"
+        )
 
     @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
     def test_update_theme_inside_callback(self, standard_px_chart, template):
@@ -137,7 +143,9 @@ class TestDunderMethodsGraph:
         }
         context_value.set(AttributeDict(**mock_ctx))
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(margin_t=24, template=template)
+        assert graph == standard_px_chart.update_layout(
+            margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template=template
+        )
 
     def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])

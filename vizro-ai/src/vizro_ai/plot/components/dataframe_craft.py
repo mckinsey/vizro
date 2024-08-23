@@ -43,8 +43,7 @@ Instructions:
 2. Do not create any new DataFrames; work only with df.
 3. Always make a hard copy of the DataFrame before manipulating it. Important: Do not modify the original DataFrame.
 4. Ensure that any aggregated columns are named appropriately and re-indexed if necessary.
-5. If a visualization is implied by the user's query, only write the necessary DataFrame manipulation
-code for that visualization.
+5. Focus on providing operations related to aggregation, filtering, sorting, grouping, and other transformations.
 6. Do not include any plotting code.
 7. Produce the code in a line-by-line format, not wrapped inside a function."""
 
