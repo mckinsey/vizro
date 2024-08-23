@@ -11,7 +11,9 @@ from vizro.tables import dash_ag_grid
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
-df_complaints = df_complaints[(df_complaints["Year-Month Received"] >= "2018-01") & (df_complaints["Year-Month Received"] <= "2019-12")]
+df_complaints = df_complaints[
+    (df_complaints["Year-Month Received"] >= "2018-01") & (df_complaints["Year-Month Received"] <= "2019-12")
+]
 vm.Container.add_type("components", KPI)
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------

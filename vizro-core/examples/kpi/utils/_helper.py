@@ -38,6 +38,7 @@ def clean_data_and_add_columns(data: pd.DataFrame):
     data["Company response - detailed"] = data["Company response - detailed"].replace("Closed", "Closed without relief")
     data["State"] = data["State"].replace("UNITED STATES MINOR OUTLYING ISLANDS", "UM")
     data["State"] = fill_na_with_random(data, "State")
+    data["Consumer disputed?"] = data["Consumer disputed?"].fillna("No")
 
     # Convert to correct data type
     data["Date Received"] = pd.to_datetime(data["Date Received"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
