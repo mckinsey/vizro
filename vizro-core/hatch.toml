@@ -57,7 +57,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
 dependencies = [
@@ -80,7 +79,7 @@ serve = "mkdocs serve --open"
 [envs.examples]
 dependencies = [
   "pyyaml",
-  # black is required to run the example _chart-gallery. This is completely independent of the black used in linting
+  # black is required to run the example _visual-vocabulary. This is completely independent of the black used in linting
   # our code. When this moves to HuggingFace we can remove the requirement from here.
   "black==24.4.2"
 ]
