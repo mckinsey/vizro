@@ -69,7 +69,7 @@ ignore = [
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407"  # missing dashed underline after section
 ]
-ignore-init-module-imports = true
+ignore-init-module-imports = true  # TODO: remove as deprecated soon
 select = [
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings
@@ -91,5 +91,5 @@ select = [
 "**/tests/**" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
 # Ignore import violations in all __init__.py files
 "__init__.py" = ["E402", "F401"]
-# Ignore missing docstrings in chart gallery examples to keep them succinct.
-"vizro-core/examples/_chart-gallery/pages/examples/**" = ["D100", "D103"]
+# Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
+"vizro-core/examples/_visual-vocabulary/pages/examples/**" = ["D100", "D103"]

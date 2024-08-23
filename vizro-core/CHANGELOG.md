@@ -11,6 +11,32 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.20'></a>
+
+# 0.1.20 — 2024-08-20
+
+## Added
+
+- Add validation error message if `CapturedCallable` is directly provided. ([#590](https://github.com/mckinsey/vizro/pull/590))
+
+- Create `vizro.figures.library` to contain KPI card Dash components that can be used outside the Vizro framework. ([#578](https://github.com/mckinsey/vizro/pull/578))
+
+- Add dark mode and loading spinner to the layout loading screen (before Vizro app is shown). ([#598](https://github.com/mckinsey/vizro/pull/598))
+
+## Changed
+
+- Serve Google Material icons library locally to enable offline functionality. ([#578](https://github.com/mckinsey/vizro/pull/578))
+
+- Disable altering the default plotly template by importing Vizro. ([#615](https://github.com/mckinsey/vizro/pull/615))
+
+## Fixed
+
+- Fix subclassing of `vm.Graph`, `vm.Table`, `vm.AgGrid`, `vm.Figure` and `vm.Action` models. ([#606](https://github.com/mckinsey/vizro/pull/606))
+
+- Fix display of marks in `vm.Slider` and `vm.RangeSlider` by converting floats to integers when possible. ([#613](https://github.com/mckinsey/vizro/pull/613))
+
+- Update chart title padding dynamically to prevent subtitle cutoff. ([#632](https://github.com/mckinsey/vizro/pull/632))
+
 <a id='changelog-0.1.19'></a>
 
 # 0.1.19 — 2024-07-16

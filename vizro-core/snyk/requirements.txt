@@ -9,6 +9,7 @@ wrapt>=1
 numpy>=1.22.2
 setuptools>=65.5.1
 werkzeug>=3.0.1
+ruff
 kedro>=0.17.3
 kedro-datasets
 wheel>=0.38.0

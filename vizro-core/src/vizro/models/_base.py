@@ -1,4 +1,5 @@
-from typing import Any, List, Type, Union
+from contextlib import contextmanager
+from typing import Any, List, Mapping, Optional, Set, Type, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, validator
@@ -9,10 +10,145 @@ except ImportError:  # pragma: no cov
     from pydantic.fields import SHAPE_LIST, ModelField
     from pydantic.typing import get_args
 
+
+import inspect
+import logging
+import subprocess
+import textwrap
+
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+
+ACTIONS_CHAIN = "ActionsChain"
+ACTION = "actions"
+
+TO_PYTHON_TEMPLATE = """
+############ Imports ##############
+import vizro.plotly.express as px
+import vizro.tables as vt
+import vizro.models as vm
+import vizro.actions as va
+from vizro import Vizro
+from vizro.models.types import capture
+from vizro.managers import data_manager
+{extra_imports}
+
+{callable_defs_template}
+{data_settings_template}
+
+########### Model code ############
+{code}
+"""
+
+CALLABLE_TEMPLATE = """
+####### Function definitions ######
+{callable_defs}
+"""
+
+DATA_TEMPLATE = """
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+{data_setting}
+"""
+
+# Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
+# This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
+# called for, dict behavior is unmodified from pydantic's default.
+_PATCH_VIZRO_BASE_MODEL_DICT = False
+
+
+@contextmanager
+def _patch_vizro_base_model_dict():
+    global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
+    _PATCH_VIZRO_BASE_MODEL_DICT = True
+    try:
+        yield
+    finally:
+        _PATCH_VIZRO_BASE_MODEL_DICT = False
+
+
+def _format_and_lint(code_string: str) -> str:
+    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
+    # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
+    linted = subprocess.check_output(
+        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
+    )
+    formatted = subprocess.check_output(
+        ["ruff", "format", "--silent", "--isolated", "-"], input=linted, encoding="utf-8"
+    )
+    return formatted
+
+
+def _dict_to_python(object: Any) -> str:
+    from vizro.models.types import CapturedCallable
+
+    if isinstance(object, dict) and "__vizro_model__" in object:
+        __vizro_model__ = object.pop("__vizro_model__")
+
+        # This is required to back-engineer the actions chains. It is easier to handle in the string conversion here
+        # than in the dict creation, because we end up with nested lists when being forced to return a list of actions.
+        # If we handle it in dict of vm.BaseModel, then we created an unexpected dict return.
+        if __vizro_model__ == ACTIONS_CHAIN:
+            action_data = object[ACTION]
+            return ", ".join(_dict_to_python(item) for item in action_data)
+        else:
+            # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
+            # rather than repr recursively.
+            fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+            return f"vm.{__vizro_model__}({fields})"
+    elif isinstance(object, dict):
+        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+        return "{" + fields + "}"
+    elif isinstance(object, list):
+        # Need to do this manually to avoid extra quotation marks that arise when doing repr(List).
+        code_string = ", ".join(_dict_to_python(item) for item in object)
+        return f"[{code_string}]"
+    elif isinstance(object, CapturedCallable):
+        return object.__repr_clean__()
+    else:
+        return repr(object)
+
+
+# The two extract helper functions may not work when we refactor the model_manager to work differently when models
+# are created. An alternative approach to iterating through the model_manager is to recurse through the object as
+# is done in the _dict_to_python function.
+# Note also that these functions find also unintended model_manager additions, a known but accepted limitation.
+def _extract_captured_callable_source() -> Set[str]:
+    from vizro.models.types import CapturedCallable
+
+    captured_callable_sources = set()
+    for model_id in model_manager:
+        for _, value in model_manager[model_id]:
+            if isinstance(value, CapturedCallable) and not any(
+                # Check to see if the captured callable does use a cleaned module string, if yes then
+                # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
+                value.__repr_clean__().startswith(new)
+                for _, new in REPLACEMENT_STRINGS.items()
+            ):
+                try:
+                    source = textwrap.dedent(inspect.getsource(value._function))
+                    captured_callable_sources.add(source)
+                except OSError:
+                    # OSError is raised when the source code is not available. This is expected
+                    # for built-in functions or dynamically defined functions (via exec or eval).
+                    logging.warning(f"Could not extract source for {value._function}. Definition will not be included.")
+                    pass
+    return captured_callable_sources
+
+
+def _extract_captured_callable_data_info() -> Set[str]:
+    from vizro.models.types import CapturedCallable
+
+    return {
+        f'# data_manager["{value["data_frame"]}"] = ===> Fill in here <==='
+        for model_id in model_manager
+        for _, value in model_manager[model_id]
+        if isinstance(value, CapturedCallable)
+        if "data_frame" in value._arguments
+    }
 
 aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
 aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -103,6 +239,93 @@ class VizroBaseModel(BaseModel):
 
         cls.update_forward_refs(**vm.__dict__.copy())
         new_type.update_forward_refs(**vm.__dict__.copy())
+
+    def dict(self, **kwargs):
+        global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
+        if not _PATCH_VIZRO_BASE_MODEL_DICT:
+            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behavior of the dict.
+            return super().dict(**kwargs)
+
+        # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
+        # and to exclude fields specified dynamically in __vizro_exclude_fields__.
+        # To get exclude as an argument is a bit fiddly because this function is called recursively inside pydantic,
+        # which sets exclude=None by default.
+        if kwargs.get("exclude") is None:
+            kwargs["exclude"] = self.__vizro_exclude_fields__()
+        _dict = super().dict(**kwargs)
+        _dict["__vizro_model__"] = self.__class__.__name__
+        return _dict
+
+    # This is like pydantic's own __exclude_fields__ but safer to use (it looks like __exclude_fields__ no longer
+    # exists in pydantic v2).
+    # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
+    # to potentially exclude fields set this way, like Page.id.
+    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
+        return None
+
+    def _to_python(
+        self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
+    ) -> str:
+        """Converts a Vizro model to the Python code that would create it.
+
+        Args:
+            extra_imports: Extra imports to add to the Python code. Provide as a set of complete import strings.
+            extra_callable_defs: Extra callable definitions to add to the Python code. Provide as a set of complete
+                function definitions.
+
+        Returns:
+            str: Python code to create the Vizro model.
+
+        Examples:
+            Simple usage example with card model.
+
+            >>> import vizro.models as vm
+            >>> card = vm.Card(text="Hello, world!")
+            >>> print(card._to_python())
+
+            Further options include adding extra imports and callable definitions. These will be included in the
+            returned python string.
+
+            >>> print(card._to_python(
+            ...    extra_imports={"from typing import List"},
+            ...    extra_callable_defs={"def test(foo:List[str]): return foo"}))
+
+        """
+        # Imports
+        extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
+
+        # CapturedCallable definitions - NOTE that order is not guaranteed
+        callable_defs_set = _extract_captured_callable_source() | (
+            extra_callable_defs if extra_callable_defs else set()
+        )
+        callable_defs_concat = "\n".join(callable_defs_set) if callable_defs_set else None
+
+        # Data Manager
+        data_defs_set = _extract_captured_callable_data_info()
+        data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
+
+        # Model code
+        with _patch_vizro_base_model_dict():
+            model_dict = self.dict(exclude_unset=True)
+
+        model_code = "model = " + _dict_to_python(model_dict)
+
+        # Concatenate and lint code
+        callable_defs_template = (
+            CALLABLE_TEMPLATE.format(callable_defs=callable_defs_concat) if callable_defs_concat else ""
+        )
+        data_settings_template = DATA_TEMPLATE.format(data_setting=data_defs_concat) if data_defs_concat else ""
+        unformatted_code = TO_PYTHON_TEMPLATE.format(
+            code=model_code,
+            extra_imports=extra_imports_concat if extra_imports_concat else "",
+            callable_defs_template=callable_defs_template,
+            data_settings_template=data_settings_template,
+        )
+        try:
+            return _format_and_lint(unformatted_code)
+        except Exception:
+            logging.exception("Code formatting failed; returning unformatted code")
+            return unformatted_code
 
     class Config:
         extra = "forbid"  # Good for spotting user typos and being strict.
