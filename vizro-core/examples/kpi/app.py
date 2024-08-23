@@ -6,8 +6,8 @@ from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
 from utils._helper import clean_data_and_add_columns, create_data_for_kpi_cards
 from vizro import Vizro
 from vizro.actions import filter_interaction
+from vizro.figures import kpi_card_reference
 from vizro.tables import dash_ag_grid
-from vizro.figures import kpi_card, kpi_card_reference
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
@@ -21,37 +21,66 @@ kpi_banner = vm.Container(
     id="kpi-banner",
     title="",
     components=[
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Total Complaints_2020", reference_column="Total Complaints_2019", title="Total Complaints",
-                                            value_format="{value:.0f}", reference_format="{delta_relative:+.1%} vs. last year ({reference:.0f})")),
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed Complaints_2020",
-                                            reference_column="Closed Complaints_2019", title="Closed Complaints",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
-                                            )),
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Open Complaints_2020",
-                                            reference_column="Open Complaints_2019", title="Open Complaints",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
-
-                                            )),
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Timely response_2020",
-                                            reference_column="Timely response_2019", title="Timely Response",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
-
-                                            )),
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed w/o cost_2020",
-                                            reference_column="Closed w/o cost_2019", title="Closed w/o cost",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
-
-                                            )),
-        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Consumer disputed_2020",
-                                            reference_column="Consumer disputed_2019", title="Consumer disputed",
-                                            value_format="{value:.1%}",
-                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
-
-                                            )),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Total Complaints_2020",
+                reference_column="Total Complaints_2019",
+                title="Total Complaints",
+                value_format="{value:.0f}",
+                reference_format="{delta_relative:+.1%} vs. last year ({reference:.0f})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Closed Complaints_2020",
+                reference_column="Closed Complaints_2019",
+                title="Closed Complaints",
+                value_format="{value:.1%}",
+                reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Open Complaints_2020",
+                reference_column="Open Complaints_2019",
+                title="Open Complaints",
+                value_format="{value:.1%}",
+                reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Timely response_2020",
+                reference_column="Timely response_2019",
+                title="Timely Response",
+                value_format="{value:.1%}",
+                reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Closed w/o cost_2020",
+                reference_column="Closed w/o cost_2019",
+                title="Closed w/o cost",
+                value_format="{value:.1%}",
+                reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Consumer disputed_2020",
+                reference_column="Consumer disputed_2019",
+                title="Consumer disputed",
+                value_format="{value:.1%}",
+                reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})",
+            )
+        ),
     ],
 )
 

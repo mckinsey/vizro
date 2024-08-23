@@ -1,6 +1,7 @@
+from functools import reduce
+
 import pandas as pd
 from utils._helper import clean_data_and_add_columns
-from functools import reduce
 
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)

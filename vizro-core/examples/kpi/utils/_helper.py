@@ -119,7 +119,6 @@ def create_data_for_kpi_cards(data):
     df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"]
     df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"]
 
-
     # Pivot the DataFrame
     df_kpi["index"] = 0
 
