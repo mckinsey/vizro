@@ -1,5 +1,7 @@
 """Contains helper functions and variables."""
 
+from functools import reduce
+
 import numpy as np
 import pandas as pd
 
@@ -46,6 +48,7 @@ def clean_data_and_add_columns(data: pd.DataFrame):
 
     # Create additional columns
     data["Year-Month Received"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y-%m")
+    data["Year"] = data["Year-Month Received"].str[:4]
     data["Region"] = data["State"].map(REGION_MAPPING)
     data["Company response"] = np.where(
         data["Company response - detailed"].str.contains("Closed"), "Closed", data["Company response - detailed"]
@@ -53,4 +56,85 @@ def clean_data_and_add_columns(data: pd.DataFrame):
     data["Company response - Closed"] = np.where(
         data["Company response - detailed"].str.contains("Closed"), data["Company response - detailed"], "Not closed"
     )
+
+    # Filter 2019 and 2020 only
+    data = data[(data["Year"].isin(["2019", "2020"]))]
     return data
+
+
+def create_data_for_kpi_cards(data):
+    # Total complaints
+    total_complaints = (
+        data.groupby("Year")
+        .agg({"Complaint ID": "count"})
+        .rename(columns={"Complaint ID": "Total Complaints"})
+        .reset_index()
+    )
+
+    # Closed complaints
+    closed_complaints = (
+        data[data["Company response"] == "Closed"]
+        .groupby("Year")
+        .agg({"Complaint ID": "count"})
+        .rename(columns={"Complaint ID": "Closed Complaints"})
+        .reset_index()
+    )
+
+    # Timely response
+    timely_response = (
+        data[data["Timely response?"] == "Yes"]
+        .groupby("Year")
+        .agg({"Complaint ID": "count"})
+        .rename(columns={"Complaint ID": "Timely response"})
+        .reset_index()
+    )
+
+    # Closed without cost
+    closed_without_cost = (
+        data[data["Company response - Closed"] != "Closed with monetary relief"]
+        .groupby("Year")
+        .agg({"Complaint ID": "count"})
+        .rename(columns={"Complaint ID": "Closed w/o cost"})
+        .reset_index()
+    )
+
+    # Consumer disputed
+    consumer_disputed = (
+        data[data["Consumer disputed?"] == "Yes"]
+        .groupby("Year")
+        .agg({"Complaint ID": "count"})
+        .rename(columns={"Complaint ID": "Consumer disputed"})
+        .reset_index()
+    )
+
+    # Merge all KPI DataFrames
+    dfs_to_merge = [total_complaints, closed_complaints, timely_response, closed_without_cost, consumer_disputed]
+    df_kpi = reduce(lambda left, right: pd.merge(left, right, on="Year", how="outer"), dfs_to_merge)
+
+    # Calculate percentages
+    df_kpi.fillna(0, inplace=True)
+    df_kpi["Closed Complaints"] = df_kpi["Closed Complaints"] / df_kpi["Total Complaints"]
+    df_kpi["Open Complaints"] = 1 - df_kpi["Closed Complaints"]
+    df_kpi["Timely response"] = df_kpi["Timely response"] / df_kpi["Total Complaints"]
+    df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"]
+    df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"]
+
+
+    # Pivot the DataFrame
+    df_kpi["index"] = 0
+
+    df_kpi = df_kpi.pivot(
+        index="index",
+        columns="Year",
+        values=[
+            "Total Complaints",
+            "Closed Complaints",
+            "Open Complaints",
+            "Timely response",
+            "Closed w/o cost",
+            "Consumer disputed",
+        ],
+    )
+    print(df_kpi.head())
+    df_kpi.columns = [f"{kpi}_{year}" for kpi, year in df_kpi.columns]
+    return df_kpi

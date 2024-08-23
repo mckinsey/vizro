@@ -17,14 +17,9 @@ Note: The data has been additionally edited for the purpose of this example.
 
 ## Possible future iterations
 
-- Enable selection of year filter
-- Enable current year vs. past year comparison
-- Enable dynamic KPI Cards
 - Bar - Enable drill-downs from Issue to Sub-issue and Product to Sub-product
 - Bar - Reformat numbers with commas in bar chart
 - Bar - Left-align y-axis labels
 - Bar - Shorten labels
 - Line - Customize function to always show selected year vs. past year
 - Table-view - Check why date format does not work on `Date Received`
-- Table-view - Add icons to `On time?` column
-- Table-view - Improve speed by applying cache or overcome limitation that entire data set is loaded in

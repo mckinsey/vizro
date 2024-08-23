@@ -3,17 +3,17 @@
 import pandas as pd
 import vizro.models as vm
 from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
-from utils._helper import clean_data_and_add_columns
+from utils._helper import clean_data_and_add_columns, create_data_for_kpi_cards
 from vizro import Vizro
 from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
+from vizro.figures import kpi_card, kpi_card_reference
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
-df_complaints = df_complaints[
-    (df_complaints["Year-Month Received"] >= "2018-01") & (df_complaints["Year-Month Received"] <= "2019-12")
-]
+df_kpi_cards = create_data_for_kpi_cards(df_complaints)
+
 vm.Container.add_type("components", KPI)
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------
@@ -21,49 +21,37 @@ kpi_banner = vm.Container(
     id="kpi-banner",
     title="",
     components=[
-        # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
-        KPI(
-            title="Total Complaints",
-            value="75.513",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="6.8% vs. LY",
-        ),
-        KPI(
-            title="Closed Complaints",
-            value="99.6%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+0.2% vs. LY",
-        ),
-        KPI(
-            title="Open Complaints",
-            value="0.4%",
-            icon="arrow_circle_down",
-            sign="delta-pos",
-            ref_value="-0.2% vs. LY",
-        ),
-        KPI(
-            title="Timely Response",
-            value="98.1%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+10.5% vs. LY",
-        ),
-        KPI(
-            title="Closed w/o cost",
-            value="84.5%",
-            icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-8.5% vs. LY",
-        ),
-        KPI(
-            title="Consumer disputed",
-            value="9.5%",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="+2.3% vs. LY",
-        ),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Total Complaints_2020", reference_column="Total Complaints_2019", title="Total Complaints",
+                                            value_format="{value:.0f}", reference_format="{delta_relative:+.1%} vs. last year ({reference:.0f})")),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed Complaints_2020",
+                                            reference_column="Closed Complaints_2019", title="Closed Complaints",
+                                            value_format="{value:.1%}",
+                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+                                            )),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Open Complaints_2020",
+                                            reference_column="Open Complaints_2019", title="Open Complaints",
+                                            value_format="{value:.1%}",
+                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+
+                                            )),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Timely response_2020",
+                                            reference_column="Timely response_2019", title="Timely Response",
+                                            value_format="{value:.1%}",
+                                            reference_format="{delta:+.2f}ppt  vs. last year ({reference:.1%})"
+
+                                            )),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Closed w/o cost_2020",
+                                            reference_column="Closed w/o cost_2019", title="Closed w/o cost",
+                                            value_format="{value:.1%}",
+                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
+
+                                            )),
+        vm.Figure(figure=kpi_card_reference(df_kpi_cards, value_column="Consumer disputed_2020",
+                                            reference_column="Consumer disputed_2019", title="Consumer disputed",
+                                            value_format="{value:.1%}",
+                                            reference_format="{delta:+.2f}ppt vs. last year ({reference:.1%})"
+
+                                            )),
     ],
 )
 
@@ -235,7 +223,7 @@ page_table = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial Corporation",
+    title="Cumulus Financial Corporation - 2020",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
