@@ -6,48 +6,9 @@ each chart type used in different groups.
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import butterfly
+from custom_charts import butterfly, column_and_line
 
 from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
-
-
-def column_factory(group: str):
-    """Reusable function to create the page content for the column chart with a unique ID."""
-    return vm.Page(
-        id=f"{group}-column",
-        path=f"{group}/column",
-        title="Column",
-        layout=vm.Layout(grid=PAGE_GRID),
-        components=[
-            vm.Card(
-                text="""
-                #### What is a column chart?
-
-                A column chart is a vertical bar chart with column lengths varying by the categorical value they
-                represent, using a y-axis scale starting from zero.
-
-                &nbsp;
-
-                #### When should I use it?
-
-                Use a column chart to help your audience compare sizes and identify patterns in categorical data,
-                such as **how many?** in each category. Arrange the columns in any order to fit the message you want
-                to emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or
-                abbreviations with fuller descriptions below.
-        """
-            ),
-            vm.Graph(
-                figure=px.bar(
-                    gapminder.query(
-                        "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
-                    ),
-                    y="pop",
-                    x="country",
-                )
-            ),
-            make_code_clipboard_from_py_file("column.py"),
-        ],
-    )
 
 
 def butterfly_factory(group: str):
@@ -110,5 +71,42 @@ def connected_scatter_factory(group: str):
             ),
             vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
             make_code_clipboard_from_py_file("connected_scatter.py"),
+        ],
+    )
+
+
+def column_and_line_factory(group: str):
+    """Reusable function to create the page content for the column+line chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-column-and-line",
+        path=f"{group}/column-and-line",
+        title="Column and line",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+                #### What is a column and line chart?
+
+                A combined column and line chart helps you demonstrate the relationship between an amount
+                (displayed in columns) and a trend or rate (displayed as a line running across the columns).
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use this type of chart when you wish to compare quantities of one item with changes in another item.
+                It's ideal for showing patterns over time (e.g., monthly sales and growth rates) but can also be used
+                for other types of data comparisons.
+        """
+            ),
+            vm.Graph(
+                figure=column_and_line(
+                    gapminder.query("country == 'Vietnam'"),
+                    y_column="gdpPercap",
+                    y_line="lifeExp",
+                    x="year",
+                )
+            ),
+            make_code_clipboard_from_py_file("column_and_line.py"),
         ],
     )

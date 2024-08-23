@@ -69,10 +69,7 @@ correlation_chart_group = ChartGroup(
     name="Correlation",
     pages=pages.correlation.pages,
     incomplete_pages=[
-        IncompletePage("Scatter matrix"),
-        IncompletePage("Column line"),
         IncompletePage("Heatmap matrix"),
-        IncompletePage("Bubble"),
     ],
     icon="Bubble Chart",
     intro_text=correlation_intro_text,
@@ -91,7 +88,6 @@ ranking_chart_group = ChartGroup(
         IncompletePage("Ordered bubble"),
         IncompletePage("Slope"),
         IncompletePage("Lollipop"),
-        IncompletePage("Stepped line"),
         IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
@@ -130,10 +126,8 @@ magnitude_chart_group = ChartGroup(
     pages=pages.magnitude.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Bubble"),
         IncompletePage("Lollipop"),
         IncompletePage("Radar"),
-        IncompletePage("Parallel coordinates"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
@@ -152,10 +146,8 @@ time_chart_group = ChartGroup(
     pages=pages.time.pages,
     incomplete_pages=[
         IncompletePage("Gantt"),
-        IncompletePage("Column line"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Heatmap"),
         IncompletePage("Bubble timeline"),
         IncompletePage("Sparkline"),
     ],
@@ -173,7 +165,6 @@ part_to_whole_chart_group = ChartGroup(
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Funnel"),
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
         IncompletePage("Venn"),
@@ -232,15 +223,30 @@ all_intro_text = """
 This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
 to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
 
-Inspired by the
-[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md)
-and [the Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+&nbsp;
 
-- FT Graphic: Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
-Martin Stabe.
+&nbsp;
 
-- The Graphic Continuum: Jon Swabish and Severino Ribecca
+&nbsp;
 
+**Created by:**
+- [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
+
+- Images created by QuantumBlack
+
+**Inspired by:**
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
+Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
+
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+Jon Swabish and Severino Ribecca
+
+&nbsp;
+
+**Credits and sources:**
+
+- [Plotly](https://plotly.com/python/plotly-express/)
+- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 """
 

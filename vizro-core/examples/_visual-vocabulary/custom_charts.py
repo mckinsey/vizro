@@ -3,7 +3,9 @@
 from typing import List
 
 import pandas as pd
+import vizro.plotly.express as px
 from plotly import graph_objects as go
+from plotly.subplots import make_subplots
 from vizro.models.types import capture
 
 
@@ -88,4 +90,55 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
         ]
     )
     fig.update_layout(barmode="relative")
+    return fig
+
+
+@capture("graph")
+def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str) -> go.Figure:
+    """Creates a combined column and line chart using Plotly.
+
+    This function generates a chart with a bar graph for one variable (y-axis 1) and a line graph for another variable
+    (y-axis 2), sharing the same x-axis. The y-axes for the bar and line graphs are synchronized and overlaid.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): The column name to be used for the x-axis.
+        y_column (str): The column name to be used for the y-axis 1, representing the column chart.
+        y_line (str): The column name to be used for the y-axis 2, representing the line chart.
+
+    Returns:
+        go.Figure: : A Plotly Figure object representing the combined column and line chart.
+
+    """
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig.add_trace(
+        go.Bar(x=data_frame[x], y=data_frame[y_column], name=y_column),
+        secondary_y=False,
+    )
+
+    fig.add_trace(
+        go.Scatter(x=data_frame[x], y=data_frame[y_line], name=y_line),
+        secondary_y=True,
+    )
+
+    fig.update_layout(
+        xaxis={"type": "category", "title": x},
+        yaxis={"tickmode": "sync", "title": y_column},
+        yaxis2={"tickmode": "sync", "overlaying": "y", "title": y_line},
+    )
+
+    return fig
+
+
+@capture("graph")
+def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
+    """Creates a column chart where the x-axis values are converted to category type."""
+    fig = px.bar(
+        data_frame,
+        x=x,
+        y=y,
+    )
+    # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
+    fig.update_xaxes(type="category")
     return fig

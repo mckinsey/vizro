@@ -3,8 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._factories import column_factory
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips
 
 bar = vm.Page(
     title="Bar",
@@ -43,8 +42,42 @@ bar = vm.Page(
     ],
 )
 
+# Note: Code example for magnitude/column differs from time/column. The text description is the same.
+column = vm.Page(
+    id="magnitude-column",
+    path="magnitude/column",
+    title="Column",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a column chart?
 
-column = column_factory("magnitude")
+                A column chart is a type of bar chart where data is represented with vertical columns. Each
+                column's height corresponds to the value it represents, with the y-axis starting from zero.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a column chart to compare sizes and identify patterns in categorical data, including time-based
+                data. Arrange columns to fit your message, and for time-based data, order them chronologically to
+                highlight trends. Ensure clear labeling, especially with many categories, and consider using a legend
+                or abbreviations with fuller descriptions below.
+        """
+        ),
+        vm.Graph(
+            figure=px.bar(
+                gapminder.query(
+                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+                ),
+                y="pop",
+                x="country",
+            )
+        ),
+        make_code_clipboard_from_py_file("magnitude_column.py"),
+    ],
+)
 
 paired_bar = vm.Page(
     title="Paired bar",
@@ -125,4 +158,36 @@ paired_column = vm.Page(
     ],
 )
 
-pages = [bar, column, paired_bar, paired_column]
+parallel_coordinates = vm.Page(
+    path="magnitude/parallel-coordinates ",
+    title="Parallel coordinates",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a parallel coordinates chart?
+
+                A parallel coordinates chart is a type of data visualization used to plot multivariate numerical data.
+                Each axis represents a different variable, and lines connecting the axes indicate the values of
+                individual data points across these variables.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a parallel coordinates chart to explore relationships and patterns in high-dimensional data.
+                This chart is particularly useful for comparing multiple variables simultaneously and identifying
+                correlations or clusters within the data. Ensure clear labeling of each axis and consider using color
+                coding to distinguish between different data points or groups.
+        """
+        ),
+        vm.Graph(
+            figure=px.parallel_coordinates(
+                iris, color="species_id", dimensions=["sepal_width", "sepal_length", "petal_width", "petal_length"]
+            )
+        ),
+        make_code_clipboard_from_py_file("parallel_coordinates.py"),
+    ],
+)
+
+pages = [bar, column, paired_bar, paired_column, parallel_coordinates]

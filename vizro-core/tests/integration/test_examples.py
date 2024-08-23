@@ -51,7 +51,7 @@ examples_path = Path(__file__).parents[2] / "examples"
     "example_path, version",
     [
         # KPI example is not included as it will be moved to HuggingFace over time.
-        # Chart gallery is not included since it means installing black in the testing environment.
+        # Visual vocabulary is not included since it means installing black in the testing environment.
         # It will move to HuggingFace in due course anyway.
         (examples_path / "scratch_dev", ""),
         (examples_path / "scratch_dev", "yaml_version"),
