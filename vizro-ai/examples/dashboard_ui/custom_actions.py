@@ -4,7 +4,7 @@ import logging
 
 import black
 import pandas as pd
-from dash import html
+from _utils import check_file_extension
 from dash.exceptions import PreventUpdate
 from langchain_openai import ChatOpenAI
 from plotly import graph_objects as go
@@ -23,84 +23,73 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base):
 @capture("action")
 def run_vizro_ai(user_prompt, n_clicks, data, model, api_data):
     """Gets the AI response and adds it to the chatbot window."""
-    if n_clicks:
-        try:
-            if not data:
-                ai_response = "Please upload data to proceed!"
-                figure = go.Figure()
-                plotly_fig = figure.to_json()
 
-                return (
-                    ai_response,
-                    figure,
-                    {"ai_response": ai_response, "figure": plotly_fig, "prompt": user_prompt, "filename": None},
-                )
-
-            df_dict = data["data"]
-            filename = data["filename"]
-
-            if api_data:
-                api_key = api_data["api_key"]
-                api_base = api_data["api_base"]
-            else:
-                ai_response = "Sorry, I can't do that. Please make sure you entered your API key!"
-                figure = go.Figure()
-
-                plotly_fig = figure.to_json()
-                return (
-                    ai_response,
-                    figure,
-                    {"ai_response": ai_response, "figure": plotly_fig, "prompt": user_prompt, "filename": filename},
-                )
-
-            df = pd.DataFrame(df_dict)
-
-            ai_outputs = get_vizro_ai_plot(
-                user_prompt=user_prompt, df=df, model=model, api_key=api_key, api_base=api_base
-            )
-            ai_code = ai_outputs.code
-            figure = ai_outputs.figure
-            plotly_fig = figure.to_json()
-            code = black.format_str(ai_code, mode=black.Mode(line_length=100))
-
-            ai_response = "\n".join(["```python", code, "```"])
-
-        except Exception as exc:
-            logging.exception(exc)
-            ai_response = f"Sorry, I can't do that. Error: {exc}"
-            figure = go.Figure()
-            plotly_fig = figure.to_json()
-
+    def create_response(ai_response, figure, user_prompt, filename):
+        plotly_fig = figure.to_json()
         return (
             ai_response,
             figure,
             {"ai_response": ai_response, "figure": plotly_fig, "prompt": user_prompt, "filename": filename},
         )
 
+    if not n_clicks:
+        raise PreventUpdate
+
+    if not data:
+        ai_response = "Please upload data to proceed!"
+        figure = go.Figure()
+        return create_response(ai_response, figure, user_prompt, None)
+
+    if not api_data:
+        ai_response = "API key not found. Make sure you enter your API key!"
+        figure = go.Figure()
+        return create_response(ai_response, figure, user_prompt, data["filename"])
+
+    try:
+        df = pd.DataFrame(data["data"])
+        ai_outputs = get_vizro_ai_plot(
+            user_prompt=user_prompt, df=df, model=model, api_key=api_data["api_key"], api_base=api_data["api_base"]
+        )
+        ai_code = ai_outputs.code
+        figure = ai_outputs.figure
+        formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
+
+        ai_response = "\n".join(["```python", formatted_code, "```"])
+        return create_response(ai_response, figure, user_prompt, data["filename"])
+
+    except Exception as exc:
+        logging.exception(exc)
+        ai_response = f"Sorry, I can't do that. Following Error occurred: {exc}"
+        figure = go.Figure()
+        return create_response(ai_response, figure, user_prompt, data["filename"])
+
 
 @capture("action")
 def data_upload_action(contents, filename):
     """Custom data upload action."""
-    if contents:
-        content_type, content_string = contents.split(",")
+    if not contents:
+        raise PreventUpdate
 
-        decoded = base64.b64decode(content_string)
+    if not check_file_extension(filename=filename):
+        return {"error_message": "Unsupported file extension.. Make sure to upload either csv or an excel file."}
+
+    content_type, content_string = contents.split(",")
 
     try:
-        if "csv" in filename:
-            # Assume that the user uploaded a CSV file
+        decoded = base64.b64decode(content_string)
+        if filename.endswith(".csv"):
+            # Handle CSV file
             df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
-        elif "xls" in filename:
-            # Assume that the user uploaded an excel file
+        else:
+            # Handle Excel file
             df = pd.read_excel(io.BytesIO(decoded))
+
+        data = df.to_dict("records")
+        return {"data": data, "filename": filename}
+
     except Exception as e:
         print(e)
-        return html.Div(["There was an error processing this file."])
-
-    data = df.to_dict("records")
-    data_dict = {"data": data, "filename": filename}
-
-    return data_dict
+        return {"error_message": "There was an error processing this file."}
 
 
 @capture("action")
@@ -111,18 +100,64 @@ def save_api_key(api_key, api_base, n_clicks):
 
 
 @capture("action")
-def toggle_api_key_visibility(visible):
-    if visible:
-        return "text"
-    else:
-        return "password"
+def toggle_api_key_visibility(checked):
+    return "text" if checked else "password"
 
 
 @capture("action")
-def upload_data_action(data):
-    if not data:
+def display_filename(data):
+    if data is None:
         raise PreventUpdate
 
-    filename = data["filename"]
-    # TODO: Add validation for file type
-    return f"Uploaded file name: '{filename}'"
+    display_message = data.get("filename") or data.get("error_message")
+    return f"Uploaded file name: '{display_message}'" if "filename" in data else display_message
+
+
+# Actions for vizro-ai dashboard
+
+
+def get_vizro_ai_dashboard(user_prompt, dfs, model, api_key, api_base):
+    llm = ChatOpenAI(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
+    vizro_ai = VizroAI(model=llm)
+    ai_outputs = vizro_ai.dashboard([dfs], user_prompt, return_elements=True)
+
+    return ai_outputs
+
+
+@capture("action")
+def run_vizro_ai_dashboard(user_prompt, n_clicks, data, model, api_data):
+    """Gets the AI response and adds it to the chatbot window."""
+
+    def create_response(ai_response, user_prompt, filename):
+        return (
+            ai_response,
+            {"ai_response": ai_response, "prompt": user_prompt, "filename": filename},
+        )
+
+    if not n_clicks:
+        raise PreventUpdate
+
+    if not data:
+        ai_response = "Please upload data to proceed!"
+        return create_response(ai_response, user_prompt, None)
+
+    if not api_data:
+        ai_response = "API key not found. Make sure you enter your API key!"
+        return create_response(ai_response, user_prompt, data["filename"])
+
+    try:
+        df = pd.DataFrame(data["data"])
+        ai_outputs = get_vizro_ai_plot(
+            user_prompt=user_prompt, df=df, model=model, api_key=api_data["api_key"], api_base=api_data["api_base"]
+        )
+        ai_code = ai_outputs.code
+        formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
+
+        ai_response = "\n".join(["```python", formatted_code, "```"])
+
+        return create_response(ai_response, user_prompt, data["filename"])
+
+    except Exception as exc:
+        logging.exception(exc)
+        ai_response = f"Sorry, I can't do that. Following Error occurred: {exc}"
+        return create_response(ai_response, user_prompt, data["filename"])

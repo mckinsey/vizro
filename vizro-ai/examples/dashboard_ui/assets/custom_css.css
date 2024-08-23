@@ -27,6 +27,15 @@
   width: 100%;
 }
 
+#dashboard-text-area {
+  background-color: inherit;
+  border: 1px solid rgba(43, 46, 57, 1);
+  color: rgba(255, 255, 255, 0.6);
+  min-height: 90px;
+  padding: 8px;
+  width: 100%;
+}
+
 #code-clipboard {
   padding: 8px;
 }
@@ -89,7 +98,7 @@
   width: 50%;
 }
 
-.card:has(#upload-message-id) {
+.card:has(#upload-message-id, #dashboard-upload-message-id) {
   background-color: inherit;
   box-shadow: none;
   font-size: 12px;
