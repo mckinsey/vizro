@@ -147,8 +147,8 @@ def run_vizro_ai_dashboard(user_prompt, n_clicks, data, model, api_data):
 
     try:
         df = pd.DataFrame(data["data"])
-        ai_outputs = get_vizro_ai_plot(
-            user_prompt=user_prompt, df=df, model=model, api_key=api_data["api_key"], api_base=api_data["api_base"]
+        ai_outputs = get_vizro_ai_dashboard(
+            user_prompt=user_prompt, dfs=df, model=model, api_key=api_data["api_key"], api_base=api_data["api_base"]
         )
         ai_code = ai_outputs.code
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
