@@ -13,10 +13,14 @@ export function _update_ag_grid_theme(theme_selector_checked) {
 }
 
 export function _update_graph_theme(
+  figure,
   theme_selector_checked,
   vizro_themes,
   graph_id,
 ) {
+  // TODO: check here to see if theme has changed from default and graph has "just done server-side callback signal"
+  // of hidden visibility set. If not changed then do
+  // return [no_update, {}}]
   // Determine the theme to be applied based on the theme_selector checked value
   const theme_to_apply = theme_selector_checked
     ? vizro_themes["light"]
@@ -30,7 +34,7 @@ export function _update_graph_theme(
   // Adjust `layout` property for the Plotly graph element
   Plotly.relayout(plotly_graph, { template: theme_to_apply });
 
-  return dash_clientside.no_update;
+  return [dash_clientside.no_update, {}];
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
