@@ -2,7 +2,6 @@
 
 from typing import List, Literal, Optional
 
-import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -11,7 +10,21 @@ from vizro.models.types import capture
 
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
+class FlexContainer(vm.Container):
+    """Custom flex `Container`."""
 
+    type: Literal["flex_container"] = "flex_container"
+    title: str = None  # Title exists in vm.Container but we don't want to use it here.
+    classname: str = "d-flex"
+
+    def build(self):
+        """Returns a flex container."""
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className=self.classname
+        )
+
+
+vm.Container.add_type("components", FlexContainer)
 
 
 # CUSTOM CHARTS ----------------------------------------------------------------

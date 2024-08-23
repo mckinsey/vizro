@@ -2,7 +2,7 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
+from utils._charts import COLUMN_DEFS, FlexContainer, bar, choropleth, line, pie
 from utils._helper import clean_data_and_add_columns, create_data_for_kpi_cards
 from vizro import Vizro
 from vizro.actions import filter_interaction
@@ -14,12 +14,11 @@ df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssgg
 df_complaints = clean_data_and_add_columns(df_complaints)
 df_kpi_cards = create_data_for_kpi_cards(df_complaints)
 
-vm.Container.add_type("components", KPI)
+vm.Page.add_type("components", FlexContainer)
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------
-kpi_banner = vm.Container(
+kpi_banner = FlexContainer(
     id="kpi-banner",
-    title="",
     components=[
         # TODO: Apply reverse coloring
         vm.Figure(
@@ -73,6 +72,7 @@ kpi_banner = vm.Container(
             )
         ),
     ],
+    classname="d-flex justify-content-between",
 )
 
 bar_charts_tabbed = vm.Tabs(
