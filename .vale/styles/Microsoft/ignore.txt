@@ -68,6 +68,7 @@ Codespaces
 dev
 mypy
 javascript
+gitleaks
 resizable
 LLMs
 untrusted

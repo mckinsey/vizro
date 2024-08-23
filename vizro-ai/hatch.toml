@@ -39,6 +39,7 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
+secrets = "pre-commit run gitleaks --all-files"
 test = "pytest tests {args}"
 test-integration = "pytest -vs --reruns 1 tests/integration --headless {args}"
 test-unit = "pytest tests/unit {args}"
@@ -71,7 +72,7 @@ dependencies = [
   "pre-commit"
 ]
 detached = true
-scripts = {lint = "pre-commit run {args:--all-files}"}
+scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.13"]

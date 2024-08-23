@@ -81,6 +81,20 @@ repos:
           # https://github.com/pydantic/pydantic/pull/8765
           - pydantic==1.10.14
 
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+        name: gitleaks (protect)
+        description: Detect hardcoded secrets using Gitleaks
+        entry: gitleaks protect --verbose --staged
+        language: golang
+      - id: gitleaks
+        name: gitleaks (detect)
+        description: Detect hardcoded secrets using Gitleaks
+        entry: gitleaks detect --verbose --baseline-path gitleaks-report.json
+        language: golang
+
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
     rev: "0.0.2"
     hooks:
@@ -113,4 +127,5 @@ ci:
     - codespell
     - bandit
     - mypy
+    - gitleaks
     - vale
