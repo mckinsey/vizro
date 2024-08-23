@@ -11,33 +11,7 @@ from vizro.models.types import capture
 
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
-# Note: This is a static KPI Card only (it will not be reactive to controls). A new dynamic KPI Card component
-# is currently in development.
-class KPI(vm.VizroBaseModel):
-    """Static custom `KPI` Card."""
 
-    type: Literal["kpi"] = "kpi"
-    title: str
-    value: str
-    icon: str
-    sign: Literal["delta-pos", "delta-neg"]
-    ref_value: str
-
-    def build(self):
-        return dbc.Card(
-            [
-                html.H4(self.title),
-                html.P(self.value),
-                html.Span(
-                    [
-                        html.Span(self.icon, className="material-symbols-outlined"),
-                        html.Span(self.ref_value),
-                    ],
-                    className=self.sign,
-                ),
-            ],
-            className="kpi-card-ref",
-        )
 
 
 # CUSTOM CHARTS ----------------------------------------------------------------
