@@ -31,12 +31,14 @@ def box_params():
 
 @pytest.fixture
 def box_chart(gapminder_2007, box_params):
-    return px.box(gapminder_2007, **box_params).update_layout(margin_t=24)
+    return px.box(gapminder_2007, **box_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
 def box_chart_dynamic_data_frame(box_params):
-    return px.box("gapminder_dynamic_first_n_last_n", **box_params).update_layout(margin_t=24)
+    return px.box("gapminder_dynamic_first_n_last_n", **box_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
+    )
 
 
 @pytest.fixture
@@ -46,7 +48,9 @@ def scatter_params():
 
 @pytest.fixture
 def scatter_chart(gapminder_2007, scatter_params):
-    return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(gapminder_2007, **scatter_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
+    )
 
 
 @pytest.fixture
@@ -56,26 +60,30 @@ def scatter_matrix_params():
 
 @pytest.fixture
 def scatter_matrix_chart(iris, scatter_matrix_params):
-    return px.scatter_matrix(iris, **scatter_matrix_params).update_layout(margin_t=24)
+    return px.scatter_matrix(iris, **scatter_matrix_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
+    )
 
 
 @pytest.fixture
 def scatter_chart_dynamic_data_frame(scatter_params):
-    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params).update_layout(margin_t=24)
+    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params).update_layout(
+        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
+    )
 
 
 @pytest.fixture
 def target_scatter_filtered_continent(request, gapminder_2007, scatter_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(data, **scatter_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
 def target_box_filtered_continent(request, gapminder_2007, box_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.box(data, **box_params).update_layout(margin_t=24)
+    return px.box(data, **box_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
