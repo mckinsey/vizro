@@ -1,12 +1,20 @@
 import pandas as pd
 from utils._helper import clean_data_and_add_columns
+from functools import reduce
 
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
+
+# Filter data within the date range and extract the Year
 df_complaints = df_complaints[
-    (df_complaints["Year-Month Received"] >= "2018-01") & (df_complaints["Year-Month Received"] <= "2019-12")
+    (df_complaints["Year-Month Received"] >= "2019-01") & (df_complaints["Year-Month Received"] <= "2020-12")
 ]
 df_complaints["Year"] = df_complaints["Year-Month Received"].str[:4]
+
+
+# Function to calculate percentage
+def calculate_percentage(df, column, total_column, new_column):
+    df[new_column] = df[column] / df[total_column] * 100
 
 
 # Total complaints
@@ -17,53 +25,69 @@ total_complaints = (
     .reset_index()
 )
 
-
-# Closed and open complaints
-closed_complaints = df_complaints[df_complaints["Company response"] == "Closed"]
+# Closed complaints
 closed_complaints = (
-    closed_complaints.groupby("Year")
+    df_complaints[df_complaints["Company response"] == "Closed"]
+    .groupby("Year")
     .agg({"Complaint ID": "count"})
     .rename(columns={"Complaint ID": "Closed Complaints"})
     .reset_index()
 )
-df_kpi = pd.merge(total_complaints, closed_complaints, on="Year", how="outer")
-df_kpi["Open Complaints"] = (
-    (df_kpi["Total Complaints"] - df_kpi["Closed Complaints"]) / df_kpi["Total Complaints"] * 100
-)
-df_kpi["Closed Complaints"] = df_kpi["Closed Complaints"] / df_kpi["Total Complaints"] * 100
-
 
 # Timely response
-timely_response = df_complaints[df_complaints["Timely response?"] == "Yes"]
 timely_response = (
-    timely_response.groupby("Year")
+    df_complaints[df_complaints["Timely response?"] == "Yes"]
+    .groupby("Year")
     .agg({"Complaint ID": "count"})
     .rename(columns={"Complaint ID": "Timely response"})
     .reset_index()
 )
-df_kpi = pd.merge(df_kpi, timely_response, on="Year", how="outer")
-df_kpi["Timely response"] = df_kpi["Timely response"] / df_kpi["Total Complaints"] * 100
 
-# Closed w/o cost
-closed_without_cost = df_complaints[df_complaints["Company response - Closed"] != "Closed with monetary relief"]
+# Closed without cost
 closed_without_cost = (
-    closed_without_cost.groupby("Year")
+    df_complaints[df_complaints["Company response - Closed"] != "Closed with monetary relief"]
+    .groupby("Year")
     .agg({"Complaint ID": "count"})
     .rename(columns={"Complaint ID": "Closed w/o cost"})
     .reset_index()
 )
-df_kpi = pd.merge(df_kpi, closed_without_cost, on="Year", how="outer")
-df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"] * 100
 
 # Consumer disputed
-consumer_disputed = df_complaints[df_complaints["Consumer disputed?"] == "Yes"]
 consumer_disputed = (
-    consumer_disputed.groupby("Year")
+    df_complaints[df_complaints["Consumer disputed?"] == "Yes"]
+    .groupby("Year")
     .agg({"Complaint ID": "count"})
     .rename(columns={"Complaint ID": "Consumer disputed"})
     .reset_index()
 )
-df_kpi = pd.merge(df_kpi, consumer_disputed, on="Year", how="outer")
-df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"] * 100
-df_kpi = df_kpi.fillna(0)
-print(df_kpi)
+
+# Merge all KPI DataFrames
+dfs_to_merge = [total_complaints, closed_complaints, timely_response, closed_without_cost, consumer_disputed]
+df_kpi = reduce(lambda left, right: pd.merge(left, right, on="Year", how="outer"), dfs_to_merge)
+
+
+# Calculate percentages
+df_kpi.fillna(0, inplace=True)
+calculate_percentage(df_kpi, "Closed Complaints", "Total Complaints", "Closed Complaints")
+calculate_percentage(df_kpi, "Closed Complaints", "Total Complaints", "Open Complaints")
+calculate_percentage(df_kpi, "Timely response", "Total Complaints", "Timely response")
+calculate_percentage(df_kpi, "Closed w/o cost", "Total Complaints", "Closed w/o cost")
+calculate_percentage(df_kpi, "Consumer disputed", "Total Complaints", "Consumer disputed")
+
+# Pivot the DataFrame
+df_kpi["index"] = 0
+df_pivot = df_kpi.pivot(
+    index="index",
+    columns="Year",
+    values=[
+        "Total Complaints",
+        "Closed Complaints",
+        "Open Complaints",
+        "Timely response",
+        "Closed w/o cost",
+        "Consumer disputed",
+    ],
+)
+df_pivot.columns = [f"{kpi}_{year}" for kpi, year in df_pivot.columns]
+
+print(df_pivot)
