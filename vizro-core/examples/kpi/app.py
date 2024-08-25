@@ -2,11 +2,11 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
+from dash import Input, Output, callback
+from utils._charts import COLUMN_DEFS, KPI, AgGridPage, bar, choropleth, infinite_scroll_ag_grid, line, pie
 from utils._helper import clean_data_and_add_columns
 from vizro import Vizro
 from vizro.actions import filter_interaction
-from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
@@ -217,14 +217,15 @@ page_region = vm.Page(
     ],
 )
 
-page_table = vm.Page(
+page_table = AgGridPage(
     title="List of complaints",
     components=[
         vm.AgGrid(
-            figure=dash_ag_grid(
+            figure=infinite_scroll_ag_grid(
+                id="kpi_grid",
                 data_frame=df_complaints,
                 columnDefs=COLUMN_DEFS,
-                dashGridOptions={"pagination": True},
+                getRowId="params.data.Complaint ID",
             )
         )
     ],
@@ -243,6 +244,102 @@ dashboard = vm.Dashboard(
         )
     ),
 )
+
+
+# CALLBACKS -----------------------------------------------------------------------------------
+operators = {
+    "greaterThanOrEqual": "ge",
+    "lessThanOrEqual": "le",
+    "lessThan": "lt",
+    "greaterThan": "gt",
+    "notEqual": "ne",
+    "equals": "eq",
+}
+
+
+def filter_df(df, data, col):
+    if data["filterType"] == "date":
+        crit1 = data["dateFrom"]
+        crit1 = pd.Series(crit1).astype(df[col].dtype)[0]
+        if "dateTo" in data:
+            crit2 = data["dateTo"]
+            crit2 = pd.Series(crit2).astype(df[col].dtype)[0]
+    else:
+        crit1 = data["filter"]
+        crit1 = pd.Series(crit1).astype(df[col].dtype)[0]
+        if "filterTo" in data:
+            crit2 = data["filterTo"]
+            crit2 = pd.Series(crit2).astype(df[col].dtype)[0]
+    if data["type"] == "contains":
+        df = df.loc[df[col].str.contains(crit1)]
+    elif data["type"] == "notContains":
+        df = df.loc[~df[col].str.contains(crit1)]
+    elif data["type"] == "startsWith":
+        df = df.loc[df[col].str.startswith(crit1)]
+    elif data["type"] == "notStartsWith":
+        df = df.loc[~df[col].str.startswith(crit1)]
+    elif data["type"] == "endsWith":
+        df = df.loc[df[col].str.endswith(crit1)]
+    elif data["type"] == "notEndsWith":
+        df = df.loc[~df[col].str.endswith(crit1)]
+    elif data["type"] == "inRange":
+        if data["filterType"] == "date":
+            df = df.loc[df[col].astype("datetime64[ns]").between_time(crit1, crit2)]
+        else:
+            df = df.loc[df[col].between(crit1, crit2)]
+    elif data["type"] == "blank":
+        df = df.loc[df[col].isnull()]
+    elif data["type"] == "notBlank":
+        df = df.loc[~df[col].isnull()]
+    else:
+        df = df.loc[getattr(df[col], operators[data["type"]])(crit1)]
+    return df
+
+
+@callback(
+    Output("kpi_grid", "getRowsResponse"),
+    Input("kpi_grid", "getRowsRequest"),
+)
+def infinite_scroll(request):
+    dff = df_complaints.copy()
+
+    if request:
+        if request["filterModel"]:
+            fils = request["filterModel"]
+            for k in fils:
+                try:
+                    if "operator" in fils[k]:
+                        if fils[k]["operator"] == "AND":
+                            dff = filter_df(dff, fils[k]["condition1"], k)
+                            dff = filter_df(dff, fils[k]["condition2"], k)
+                        else:
+                            dff1 = filter_df(dff, fils[k]["condition1"], k)
+                            dff2 = filter_df(dff, fils[k]["condition2"], k)
+                            dff = pd.concat([dff1, dff2])
+                    else:
+                        dff = filter_df(dff, fils[k], k)
+                except:
+                    pass
+            dff = dff
+
+        if request["sortModel"]:
+            sorting = []
+            asc = []
+            for sort in request["sortModel"]:
+                sorting.append(sort["colId"])
+                if sort["sort"] == "asc":
+                    asc.append(True)
+                else:
+                    asc.append(False)
+            dff = dff.sort_values(by=sorting, ascending=asc)
+
+        lines = len(dff.index)
+        if lines == 0:
+            lines = 1
+
+        partial = dff.iloc[request["startRow"] : request["endRow"]]
+        return {"rowData": partial.to_dict("records"), "rowCount": lines}
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
