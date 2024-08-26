@@ -18,7 +18,6 @@ vm.Page.add_type("components", FlexContainer)
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------
 kpi_banner = FlexContainer(
-    id="kpi-banner",
     components=[
         # TODO: Apply reverse coloring
         vm.Figure(
@@ -72,23 +71,11 @@ kpi_banner = FlexContainer(
             )
         ),
     ],
-    classname="d-flex justify-content-between",
+    classname="kpi-banner",
 )
 
 bar_charts_tabbed = vm.Tabs(
     tabs=[
-        vm.Container(
-            title="By Issue",
-            components=[
-                vm.Graph(
-                    figure=bar(
-                        data_frame=df_complaints,
-                        y="Issue",
-                        x="Complaint ID",
-                    ),
-                )
-            ],
-        ),
         vm.Container(
             title="By Product",
             components=[
@@ -125,6 +112,18 @@ bar_charts_tabbed = vm.Tabs(
                 )
             ],
         ),
+        vm.Container(
+            title="By Issue",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Issue",
+                        x="Complaint ID",
+                    ),
+                )
+            ],
+        ),
     ],
 )
 
@@ -134,8 +133,11 @@ page_exec = vm.Page(
     layout=vm.Layout(
         grid=[
             [0, 0],
+            [0, 0],
             [1, 2],
             [1, 2],
+            [1, 2],
+            [1, 3],
             [1, 3],
             [1, 3],
         ],
