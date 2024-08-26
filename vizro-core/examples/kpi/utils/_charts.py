@@ -71,19 +71,21 @@ def pie(
     values: str,
     data_frame: pd.DataFrame = None,
     title: Optional[str] = None,
-    custom_order: Optional[List[str]] = None,
 ):
     df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
-
-    # Apply custom order so colors are applied correctly to the pie chart
-    order_mapping = {category: index for index, category in enumerate(custom_order)}
-    df_sorted = df_agg.sort_values(by=names, key=lambda names: names.map(order_mapping))
-
     fig = px.pie(
-        data_frame=df_sorted,
+        data_frame=df_agg,
         names=names,
         values=values,
-        color_discrete_sequence=["#1a85ff", "#7ea1ee", "#adbedc", "#df658c", "#d41159"],
+        color=names,
+        color_discrete_map={
+            'Closed with explanation': '#1a85ff',
+            'Closed with monetary relief': '#d41159',
+            'Closed with non-monetary relief': '#adbedc',
+            'Closed without relief': '#7ea1ee',
+            'Closed with relief': '#df658c',
+            'Closed': '#1a85ff'
+        },
         title=title,
         hole=0.4,
     )

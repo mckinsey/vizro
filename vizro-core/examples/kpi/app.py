@@ -13,8 +13,9 @@ from vizro.tables import dash_ag_grid
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
 df_kpi_cards = create_data_for_kpi_cards(df_complaints)
-
 vm.Page.add_type("components", FlexContainer)
+
+
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------
 kpi_banner = FlexContainer(
@@ -149,13 +150,6 @@ page_exec = vm.Page(
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
-                custom_order=[
-                    "Closed with explanation",
-                    "Closed without relief",
-                    "Closed with non-monetary relief",
-                    "Closed with relief",
-                    "Closed with monetary relief",
-                ],
                 values="Complaint ID",
                 names="Company response - Closed",
                 title="Closed company responses",
