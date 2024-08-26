@@ -2,7 +2,7 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, FlexContainer, bar, choropleth, line, pie
+from utils._charts import COLUMN_DEFS, FlexContainer, area, bar, choropleth, pie
 from utils._helper import clean_data_and_add_columns, create_data_for_kpi_cards
 from vizro import Vizro
 from vizro.actions import filter_interaction
@@ -145,7 +145,7 @@ page_exec = vm.Page(
     components=[
         kpi_banner,
         bar_charts_tabbed,
-        vm.Graph(figure=line(data_frame=df_complaints, y="Complaint ID", x="Year-Month Received")),
+        vm.Graph(figure=area(data_frame=df_complaints, y="Complaint ID", x="Month")),
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],

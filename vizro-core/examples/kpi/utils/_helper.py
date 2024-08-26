@@ -44,11 +44,10 @@ def clean_data_and_add_columns(data: pd.DataFrame):
 
     # Convert to correct data type
     data["Date Received"] = pd.to_datetime(data["Date Received"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
-    data["Date Submitted"] = pd.to_datetime(data["Date Submitted"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
 
     # Create additional columns
-    data["Year-Month Received"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y-%m")
-    data["Year"] = data["Year-Month Received"].str[:4]
+    data["Month"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%m")
+    data["Year"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y")
     data["Region"] = data["State"].map(REGION_MAPPING)
     data["Company response"] = np.where(
         data["Company response - detailed"].str.contains("Closed"), "Closed", data["Company response - detailed"]

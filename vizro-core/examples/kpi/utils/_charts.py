@@ -3,6 +3,7 @@
 from typing import List, Literal, Optional
 
 import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
@@ -52,16 +53,30 @@ def bar(
 
 
 @capture("graph")
-def line(x: str, y: str, data_frame: pd.DataFrame):
-    df_agg = data_frame.groupby(x).agg({y: "count"}).reset_index()
-    fig = px.area(
-        data_frame=df_agg,
-        x=x,
-        y=y,
-        color_discrete_sequence=["#1A85FF"],
-        title="Complaints over time",
+def area(x: str, y: str, data_frame: pd.DataFrame):
+    df_agg = data_frame.groupby(["Year", "Month"]).agg({y: "count"}).reset_index()
+    df_agg_2019 = df_agg[df_agg["Year"] == "2019"]
+    df_agg_2020 = df_agg[df_agg["Year"] == "2020"]
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2020", marker=dict(color="#1a85ff"))
     )
-    fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
+    fig.add_trace(
+        go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2019", marker=dict(color="grey"))
+    )
+    fig.update_layout(
+        title="Complaints over time",
+        xaxis_title="Date Received",
+        yaxis_title="# of Complaints",
+        title_pad_t=4,
+        xaxis=dict(
+            showgrid=False,
+            tickmode="array",
+            tickvals=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            ticktext=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        ),
+    )
     return fig
 
 
@@ -89,7 +104,6 @@ def pie(
         title=title,
         hole=0.4,
     )
-
     fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin={"l": 0, "r": 0, "t": 60, "b": 0})
     fig.update_traces(sort=False)
     return fig
@@ -104,7 +118,6 @@ def choropleth(
     custom_data: Optional[List[str]] = None,
 ):
     df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
-
     fig = px.choropleth(
         data_frame=df_agg,
         locations=locations,
@@ -128,7 +141,6 @@ def choropleth(
         title=title,
         custom_data=custom_data,
     )
-
     fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "bottom"}, "orientation": "h", "x": 0.5, "y": 0})
     return fig
 
