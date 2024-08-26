@@ -235,7 +235,7 @@ class OffCanvas(vm.VizroBaseModel):
                     ]
                 )
             ],
-            title="Title",
+            title="Settings",
             is_open=False,
         )
         return offcanvas
