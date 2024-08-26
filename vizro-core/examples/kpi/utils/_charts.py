@@ -129,7 +129,7 @@ def choropleth(
         custom_data=custom_data,
     )
 
-    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
+    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "bottom"}, "orientation": "h", "x": 0.5, "y": 0})
     return fig
 
 

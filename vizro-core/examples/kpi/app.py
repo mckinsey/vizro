@@ -159,23 +159,15 @@ page_exec = vm.Page(
 
 page_region = vm.Page(
     title="Regional View",
-    layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 4),
+    layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.Card(
-            text="""
-        ##### Click on a state inside the map to filter the bar charts on the right.
-
-        - Which state has the most complaints?
-        - What are the three biggest issues in California?
-        - What is the product with the most complaints in Texas?
-        """
-        ),
         vm.Graph(
             figure=choropleth(
                 data_frame=df_complaints,
                 locations="State",
                 color="Complaint ID",
-                title="Complaints by State",
+                title=f"Complaints by State <br><sup> ⤵ Click on a state to filter the "
+                      f"charts on the right. Refresh the page to deselect.</sup>",
                 custom_data=["State"],
             ),
             actions=[
@@ -187,19 +179,6 @@ page_region = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="By Issue",
-                    components=[
-                        vm.Graph(
-                            id="regional-issue",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Issue",
-                                x="Complaint ID",
-                            ),
-                        )
-                    ],
-                ),
-                vm.Container(
                     title="By Product",
                     components=[
                         vm.Graph(
@@ -207,6 +186,19 @@ page_region = vm.Page(
                             figure=bar(
                                 data_frame=df_complaints,
                                 y="Product",
+                                x="Complaint ID",
+                            ),
+                        )
+                    ],
+                ),
+                vm.Container(
+                    title="By Issue",
+                    components=[
+                        vm.Graph(
+                            id="regional-issue",
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Issue",
                                 x="Complaint ID",
                             ),
                         )
