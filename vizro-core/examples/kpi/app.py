@@ -2,82 +2,85 @@
 
 import pandas as pd
 import vizro.models as vm
-from utils._charts import COLUMN_DEFS, KPI, bar, choropleth, line, pie
-from utils._helper import clean_data_and_add_columns
+from utils._charts import COLUMN_DEFS, FlexContainer, area, bar, choropleth, pie
+from utils._helper import clean_data_and_add_columns, create_data_for_kpi_cards
 from vizro import Vizro
 from vizro.actions import filter_interaction
+from vizro.figures import kpi_card_reference
 from vizro.tables import dash_ag_grid
 
 # DATA --------------------------------------------------------------------------------------------
 df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
 df_complaints = clean_data_and_add_columns(df_complaints)
-vm.Container.add_type("components", KPI)
+df_kpi_cards = create_data_for_kpi_cards(df_complaints)
+vm.Page.add_type("components", FlexContainer)
+
 
 # SUB-SECTIONS ------------------------------------------------------------------------------------
-kpi_banner = vm.Container(
-    id="kpi-banner",
-    title="",
+kpi_banner = FlexContainer(
     components=[
-        # Note: For some KPIs the icon/sign go in opposite directions as an increase e.g. in complaints is negative
-        KPI(
-            title="Total Complaints",
-            value="75.513",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="6.8% vs. LY",
+        vm.Figure(
+            id="kpi-reverse-coloring",
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Total Complaints_2019",
+                reference_column="Total Complaints_2018",
+                title="Total Complaints",
+                value_format="{value:.0f}",
+                reference_format="{delta_relative:+.1%} vs. 2018 ({reference:.0f})",
+                icon="person",
+            ),
         ),
-        KPI(
-            title="Closed Complaints",
-            value="99.6%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+0.2% vs. LY",
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Closed Complaints_2019",
+                reference_column="Closed Complaints_2018",
+                title="Closed Complaints",
+                value_format="{value:.1f}%",
+                reference_format="{delta:+.1f}pp  vs. 2018 ({reference:.1f}%)",
+                icon="inventory",
+            )
         ),
-        KPI(
-            title="Open Complaints",
-            value="0.4%",
-            icon="arrow_circle_down",
-            sign="delta-pos",
-            ref_value="-0.2% vs. LY",
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Timely response_2019",
+                reference_column="Timely response_2018",
+                title="Timely Response",
+                value_format="{value:.1f}%",
+                reference_format="{delta:+.1f}pp  vs. 2018 ({reference:.1f}%)",
+                icon="timer",
+            )
         ),
-        KPI(
-            title="Timely Response",
-            value="98.1%",
-            icon="arrow_circle_up",
-            sign="delta-pos",
-            ref_value="+10.5% vs. LY",
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Closed w/o cost_2019",
+                reference_column="Closed w/o cost_2018",
+                title="Closed w/o cost",
+                value_format="{value:.1f}%",
+                reference_format="{delta:.1f}pp vs. 2018 ({reference:.1f}%)",
+                icon="payments",
+            )
         ),
-        KPI(
-            title="Closed w/o cost",
-            value="84.5%",
-            icon="arrow_circle_down",
-            sign="delta-neg",
-            ref_value="-8.5% vs. LY",
-        ),
-        KPI(
-            title="Consumer disputed",
-            value="9.5%",
-            icon="arrow_circle_up",
-            sign="delta-neg",
-            ref_value="+2.3% vs. LY",
+        vm.Figure(
+            figure=kpi_card_reference(
+                df_kpi_cards,
+                value_column="Consumer disputed_2019",
+                reference_column="Consumer disputed_2018",
+                title="Consumer disputed",
+                value_format="{value:.1f}%",
+                reference_format="{delta:+.1f}pp vs. 2018 ({reference:.1f}%)",
+                icon="sentiment_dissatisfied",
+            )
         ),
     ],
+    classname="kpi-banner",
 )
 
 bar_charts_tabbed = vm.Tabs(
     tabs=[
-        vm.Container(
-            title="By Issue",
-            components=[
-                vm.Graph(
-                    figure=bar(
-                        data_frame=df_complaints,
-                        y="Issue",
-                        x="Complaint ID",
-                    ),
-                )
-            ],
-        ),
         vm.Container(
             title="By Product",
             components=[
@@ -114,6 +117,18 @@ bar_charts_tabbed = vm.Tabs(
                 )
             ],
         ),
+        vm.Container(
+            title="By Issue",
+            components=[
+                vm.Graph(
+                    figure=bar(
+                        data_frame=df_complaints,
+                        y="Issue",
+                        x="Complaint ID",
+                    ),
+                )
+            ],
+        ),
     ],
 )
 
@@ -123,8 +138,11 @@ page_exec = vm.Page(
     layout=vm.Layout(
         grid=[
             [0, 0],
+            [0, 0],
             [1, 2],
             [1, 2],
+            [1, 2],
+            [1, 3],
             [1, 3],
             [1, 3],
         ],
@@ -132,17 +150,10 @@ page_exec = vm.Page(
     components=[
         kpi_banner,
         bar_charts_tabbed,
-        vm.Graph(figure=line(data_frame=df_complaints, y="Complaint ID", x="Year-Month Received")),
+        vm.Graph(figure=area(data_frame=df_complaints, y="Complaint ID", x="Month")),
         vm.Graph(
             figure=pie(
                 data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
-                custom_order=[
-                    "Closed with explanation",
-                    "Closed without relief",
-                    "Closed with non-monetary relief",
-                    "Closed with relief",
-                    "Closed with monetary relief",
-                ],
                 values="Complaint ID",
                 names="Company response - Closed",
                 title="Closed company responses",
@@ -153,23 +164,15 @@ page_exec = vm.Page(
 
 page_region = vm.Page(
     title="Regional View",
-    layout=vm.Layout(grid=[[0, 0]] + [[1, 2]] * 4),
+    layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.Card(
-            text="""
-        ##### Click on a state inside the map to filter the bar charts on the right.
-
-        - Which state has the most complaints?
-        - What are the three biggest issues in California?
-        - What is the product with the most complaints in Texas?
-        """
-        ),
         vm.Graph(
             figure=choropleth(
                 data_frame=df_complaints,
                 locations="State",
                 color="Complaint ID",
-                title="Complaints by State",
+                title="Complaints by State <br><sup> ⤵ Click on a state to filter the "
+                "charts on the right. Refresh the page to deselect.</sup>",
                 custom_data=["State"],
             ),
             actions=[
@@ -181,19 +184,6 @@ page_region = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="By Issue",
-                    components=[
-                        vm.Graph(
-                            id="regional-issue",
-                            figure=bar(
-                                data_frame=df_complaints,
-                                y="Issue",
-                                x="Complaint ID",
-                            ),
-                        )
-                    ],
-                ),
-                vm.Container(
                     title="By Product",
                     components=[
                         vm.Graph(
@@ -201,6 +191,19 @@ page_region = vm.Page(
                             figure=bar(
                                 data_frame=df_complaints,
                                 y="Product",
+                                x="Complaint ID",
+                            ),
+                        )
+                    ],
+                ),
+                vm.Container(
+                    title="By Issue",
+                    components=[
+                        vm.Graph(
+                            id="regional-issue",
+                            figure=bar(
+                                data_frame=df_complaints,
+                                y="Issue",
                                 x="Complaint ID",
                             ),
                         )
@@ -232,7 +235,7 @@ page_table = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial Corporation",
+    title="Cumulus Financial Corp. - Fiscal Year 2019",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[

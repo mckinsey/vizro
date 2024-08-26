@@ -39,8 +39,8 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.2rem;
+  line-height: normal;
   margin: 0;
 }
 
