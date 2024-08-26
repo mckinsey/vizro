@@ -166,8 +166,8 @@ page_region = vm.Page(
                 data_frame=df_complaints,
                 locations="State",
                 color="Complaint ID",
-                title=f"Complaints by State <br><sup> ⤵ Click on a state to filter the "
-                      f"charts on the right. Refresh the page to deselect.</sup>",
+                title="Complaints by State <br><sup> ⤵ Click on a state to filter the "
+                "charts on the right. Refresh the page to deselect.</sup>",
                 custom_data=["State"],
             ),
             actions=[

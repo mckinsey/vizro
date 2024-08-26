@@ -14,12 +14,3 @@ Note: The data has been additionally edited for the purpose of this example.
 
 1. If you have `hatch` set up, run the example with the command `hatch run example kpi`. Otherwise, run the `app.py` file with your environment activated where `vizro` is installed.
 2. You should now be able to access the app locally via http://127.0.0.1:8050/.
-
-## Possible future iterations
-
-- Bar - Enable drill-downs from Issue to Sub-issue and Product to Sub-product
-- Bar - Reformat numbers with commas in bar chart
-- Bar - Left-align y-axis labels
-- Bar - Shorten labels
-- Line - Customize function to always show selected year vs. past year
-- Table-view - Check why date format does not work on `Date Received`
