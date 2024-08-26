@@ -25,9 +25,6 @@ class FlexContainer(vm.Container):
         )
 
 
-vm.Container.add_type("components", FlexContainer)
-
-
 # CUSTOM CHARTS ----------------------------------------------------------------
 @capture("graph")
 def bar(

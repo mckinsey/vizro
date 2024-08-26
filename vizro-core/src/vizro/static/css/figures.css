@@ -40,7 +40,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
   font-size: 1.2rem;
-  line-height: 1;
+  line-height: normal;
   margin: 0;
 }
 
