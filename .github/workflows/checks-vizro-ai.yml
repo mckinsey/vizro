@@ -41,9 +41,6 @@ jobs:
       - name: List dependencies
         run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
 
-      - name: Check requirements for Snyk are up to date
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:update-snyk-requirements --check
-
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
         if: ${{ github.event_name == 'pull_request' }}

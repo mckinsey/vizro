@@ -101,7 +101,7 @@ def target_scatter_filtered_continent(request, gapminder_2007, scatter_params):
     if country:
         data = data[data["country"].isin([country])]
 
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(data, **scatter_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
@@ -114,7 +114,7 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
     if country:
         data = data[data["country"].isin([country])]
 
-    return px.box(data, **box_params).update_layout(margin_t=24)
+    return px.box(data, **box_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")

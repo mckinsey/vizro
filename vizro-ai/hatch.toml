@@ -48,7 +48,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-update-snyk-requirements = "python ../tools/generate_snyk_requirements.py {args}"
 
 [envs.docs]
 dependencies = [
