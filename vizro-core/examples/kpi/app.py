@@ -19,8 +19,8 @@ vm.Page.add_type("components", FlexContainer)
 # SUB-SECTIONS ------------------------------------------------------------------------------------
 kpi_banner = FlexContainer(
     components=[
-        # TODO: Apply reverse coloring
         vm.Figure(
+            id="kpi-reverse-coloring",
             figure=kpi_card_reference(
                 df_kpi_cards,
                 value_column="Total Complaints_2019",
@@ -28,7 +28,7 @@ kpi_banner = FlexContainer(
                 title="Total Complaints",
                 value_format="{value:.0f}",
                 reference_format="{delta_relative:+.1%} vs. 2018 ({reference:.0f})",
-            )
+            ),
         ),
         vm.Figure(
             figure=kpi_card_reference(

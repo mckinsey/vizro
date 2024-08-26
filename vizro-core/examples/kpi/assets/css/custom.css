@@ -21,3 +21,20 @@
 .kpi-banner::-webkit-scrollbar-thumb {
   border: 5px solid var(--main-container-bg-color);
 }
+
+/* Apply reverse color coding for one KPI card */
+#kpi-reverse-coloring .card-kpi .color-pos.card-footer {
+  color: var(--bs-pink);
+}
+
+#kpi-reverse-coloring .card-kpi .color-neg.card-footer {
+  color: var(--bs-blue);
+}
+
+#kpi-reverse-coloring .card-kpi:has(.color-pos) {
+  border-left: 4px solid var(--bs-pink);
+}
+
+#kpi-reverse-coloring .card-kpi:has(.color-neg) {
+  border-left: 4px solid var(--bs-blue);
+}
