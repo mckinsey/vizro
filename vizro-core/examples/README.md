@@ -11,7 +11,6 @@ There, you can explore a wide range of dashboards and applications created with 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/tidy/remove-kpi-dashboard/.github/images/vizro_examples_gallery.png" width="600"/>
 </a>
 
-
 ### Huggingface collection
 
 For a curated list of example dashboards, check out our [dashboard collection on Huggingface](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de).
