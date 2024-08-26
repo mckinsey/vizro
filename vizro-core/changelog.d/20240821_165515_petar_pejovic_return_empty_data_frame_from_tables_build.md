@@ -25,8 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Return an empty data on initial build of AgGrid, Table and Figure objects. ([#644](https://github.com/mckinsey/vizro/pull/644))
-- Reduce number of figure function calls for AgGrid, Table and Figure objects. ([#644](https://github.com/mckinsey/vizro/pull/644))
+- Improve page loading time for `AgGrid`, `Table` and `Figure`. ([#644](https://github.com/mckinsey/vizro/pull/644))
 
 <!--
 ### Deprecated
@@ -37,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix persistence of `columnSize` and `selectedRows` for AgGrid. ([#644](https://github.com/mckinsey/vizro/pull/644))
+- Fix persistence of `columnSize` and `selectedRows` for `AgGrid`. ([#644](https://github.com/mckinsey/vizro/pull/644))
 
 <!--
 ### Security
