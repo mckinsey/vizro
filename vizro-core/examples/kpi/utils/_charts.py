@@ -2,8 +2,8 @@
 
 from typing import List, Literal, Optional
 
-import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from dash import html
@@ -11,32 +11,17 @@ from vizro.models.types import capture
 
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
-# Note: This is a static KPI Card only (it will not be reactive to controls). A new dynamic KPI Card component
-# is currently in development.
-class KPI(vm.VizroBaseModel):
-    """Static custom `KPI` Card."""
+class FlexContainer(vm.Container):
+    """Custom flex `Container`."""
 
-    type: Literal["kpi"] = "kpi"
-    title: str
-    value: str
-    icon: str
-    sign: Literal["delta-pos", "delta-neg"]
-    ref_value: str
+    type: Literal["flex_container"] = "flex_container"
+    title: str = None  # Title exists in vm.Container but we don't want to use it here.
+    classname: str = "d-flex"
 
     def build(self):
-        return dbc.Card(
-            [
-                html.H4(self.title),
-                html.P(self.value),
-                html.Span(
-                    [
-                        html.Span(self.icon, className="material-symbols-outlined"),
-                        html.Span(self.ref_value),
-                    ],
-                    className=self.sign,
-                ),
-            ],
-            className="kpi-card-ref",
+        """Returns a flex container."""
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className=self.classname
         )
 
 
@@ -49,8 +34,11 @@ def bar(
     top_n: int = 15,
     custom_data: Optional[List[str]] = None,
 ):
-    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
+    """Custom bar chart implementation.
 
+    Based on [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar).
+    """
+    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
     fig = px.bar(
         data_frame=df_agg.head(top_n),
         x=x,
@@ -65,16 +53,33 @@ def bar(
 
 
 @capture("graph")
-def line(x: str, y: str, data_frame: pd.DataFrame):
-    df_agg = data_frame.groupby(x).agg({y: "count"}).reset_index()
-    fig = px.area(
-        data_frame=df_agg,
-        x=x,
-        y=y,
-        color_discrete_sequence=["#1A85FF"],
-        title="Complaints over time",
+def area(x: str, y: str, data_frame: pd.DataFrame):
+    """Custom chart to create unstacked area chart.
+
+    Based on [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html).
+
+    """
+    df_agg = data_frame.groupby(["Year", "Month"]).agg({y: "count"}).reset_index()
+    df_agg_2019 = df_agg[df_agg["Year"] == "2018"]
+    df_agg_2020 = df_agg[df_agg["Year"] == "2019"]
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2019", marker={"color": "#1a85ff"})
     )
-    fig.update_layout(xaxis_title="Date Received", yaxis_title="# of Complaints", title_pad_t=4)
+    fig.add_trace(go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2018", marker={"color": "grey"}))
+    fig.update_layout(
+        title="Complaints over time",
+        xaxis_title="Date Received",
+        yaxis_title="# of Complaints",
+        title_pad_t=4,
+        xaxis={
+            "showgrid": False,
+            "tickmode": "array",
+            "tickvals": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "ticktext": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        },
+    )
     return fig
 
 
@@ -84,25 +89,29 @@ def pie(
     values: str,
     data_frame: pd.DataFrame = None,
     title: Optional[str] = None,
-    custom_order: Optional[List[str]] = None,
 ):
+    """Custom pie chart implementation.
+
+    Based on [px.pie](https://plotly.com/python-api-reference/generated/plotly.express.pie).
+    """
     df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
-
-    # Apply custom order so colors are applied correctly to the pie chart
-    order_mapping = {category: index for index, category in enumerate(custom_order)}
-    df_sorted = df_agg.sort_values(by=names, key=lambda names: names.map(order_mapping))
-
     fig = px.pie(
-        data_frame=df_sorted,
+        data_frame=df_agg,
         names=names,
         values=values,
-        color_discrete_sequence=["#1a85ff", "#7ea1ee", "#adbedc", "#df658c", "#d41159"],
+        color=names,
+        color_discrete_map={
+            "Closed with explanation": "#1a85ff",
+            "Closed with monetary relief": "#d41159",
+            "Closed with non-monetary relief": "#adbedc",
+            "Closed without relief": "#7ea1ee",
+            "Closed with relief": "#df658c",
+            "Closed": "#1a85ff",
+        },
         title=title,
         hole=0.4,
     )
-
     fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin={"l": 0, "r": 0, "t": 60, "b": 0})
-    fig.update_traces(sort=False)
     return fig
 
 
@@ -114,8 +123,11 @@ def choropleth(
     title: Optional[str] = None,
     custom_data: Optional[List[str]] = None,
 ):
-    df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
+    """Custom choropleth implementation.
 
+    Based on [px.choropleth](https://plotly.com/python-api-reference/generated/plotly.express.choropleth).
+    """
+    df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
     fig = px.choropleth(
         data_frame=df_agg,
         locations=locations,
@@ -139,8 +151,7 @@ def choropleth(
         title=title,
         custom_data=custom_data,
     )
-
-    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "right"}})
+    fig.update_coloraxes(colorbar={"thickness": 10, "title": {"side": "bottom"}, "orientation": "h", "x": 0.5, "y": 0})
     return fig
 
 
