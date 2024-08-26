@@ -55,15 +55,15 @@ def bar(
 @capture("graph")
 def area(x: str, y: str, data_frame: pd.DataFrame):
     df_agg = data_frame.groupby(["Year", "Month"]).agg({y: "count"}).reset_index()
-    df_agg_2019 = df_agg[df_agg["Year"] == "2019"]
-    df_agg_2020 = df_agg[df_agg["Year"] == "2020"]
+    df_agg_2019 = df_agg[df_agg["Year"] == "2018"]
+    df_agg_2020 = df_agg[df_agg["Year"] == "2019"]
 
     fig = go.Figure()
     fig.add_trace(
-        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2020", marker=dict(color="#1a85ff"))
+        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2019", marker=dict(color="#1a85ff"))
     )
     fig.add_trace(
-        go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2019", marker=dict(color="grey"))
+        go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2018", marker=dict(color="grey"))
     )
     fig.update_layout(
         title="Complaints over time",

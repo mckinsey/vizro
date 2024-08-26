@@ -23,51 +23,51 @@ kpi_banner = FlexContainer(
         vm.Figure(
             figure=kpi_card_reference(
                 df_kpi_cards,
-                value_column="Total Complaints_2020",
-                reference_column="Total Complaints_2019",
+                value_column="Total Complaints_2019",
+                reference_column="Total Complaints_2018",
                 title="Total Complaints",
                 value_format="{value:.0f}",
-                reference_format="{delta_relative:+.1%} vs. 2019 ({reference:.0f})",
+                reference_format="{delta_relative:+.1%} vs. 2018 ({reference:.0f})",
             )
         ),
         vm.Figure(
             figure=kpi_card_reference(
                 df_kpi_cards,
-                value_column="Closed Complaints_2020",
-                reference_column="Closed Complaints_2019",
+                value_column="Closed Complaints_2019",
+                reference_column="Closed Complaints_2018",
                 title="Closed Complaints",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp  vs. 2019 ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp  vs. 2018 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
             figure=kpi_card_reference(
                 df_kpi_cards,
-                value_column="Timely response_2020",
-                reference_column="Timely response_2019",
+                value_column="Timely response_2019",
+                reference_column="Timely response_2018",
                 title="Timely Response",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp  vs. 2019 ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp  vs. 2018 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
             figure=kpi_card_reference(
                 df_kpi_cards,
-                value_column="Closed w/o cost_2020",
-                reference_column="Closed w/o cost_2019",
+                value_column="Closed w/o cost_2019",
+                reference_column="Closed w/o cost_2018",
                 title="Closed w/o cost",
                 value_format="{value:.1f}%",
-                reference_format="{delta:.1f}pp vs. 2019 ({reference:.1f}%)",
+                reference_format="{delta:.1f}pp vs. 2018 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
             figure=kpi_card_reference(
                 df_kpi_cards,
-                value_column="Consumer disputed_2020",
-                reference_column="Consumer disputed_2019",
+                value_column="Consumer disputed_2019",
+                reference_column="Consumer disputed_2018",
                 title="Consumer disputed",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp vs. 2019 ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp vs. 2018 ({reference:.1f}%)",
             )
         ),
     ],
@@ -230,7 +230,7 @@ page_table = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial Corp. - Fiscal Year 2020",
+    title="Cumulus Financial Corp. - Fiscal Year 2019",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[

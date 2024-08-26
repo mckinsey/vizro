@@ -56,8 +56,8 @@ def clean_data_and_add_columns(data: pd.DataFrame):
         data["Company response - detailed"].str.contains("Closed"), data["Company response - detailed"], "Not closed"
     )
 
-    # Filter 2019 and 2020 only
-    data = data[(data["Year"].isin(["2019", "2020"]))]
+    # Filter 2018 and 2019 only
+    data = data[(data["Year"].isin(["2018", "2019"]))]
     return data
 
 
