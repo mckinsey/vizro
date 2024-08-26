@@ -132,8 +132,8 @@ class CodeClipboard(vm.VizroBaseModel):
 
         return html.Div(
             [
-                dcc.Clipboard(target_id=f"{self.id}_code-markdown", className="code-clipboard"),
-                dcc.Markdown(markdown_code, id=f"{self.id}_code-markdown"),
+                dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
+                dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
             ],
             className="code-clipboard-container",
         )
@@ -196,27 +196,27 @@ class OffCanvas(vm.VizroBaseModel):
                 dbc.InputGroup(
                     [
                         dbc.InputGroupText("API Key"),
-                        dbc.Input(placeholder="API key", type="password", id=f"{self.id}_api_key"),
+                        dbc.Input(placeholder="API key", type="password", id=f"{self.id}-api-key"),
                     ],
                     className="mb-3",
                 ),
                 dbc.InputGroup(
                     [
                         dbc.InputGroupText("API base"),
-                        dbc.Input(placeholder="API base", type="password", id=f"{self.id}_api_base"),
+                        dbc.Input(placeholder="API base", type="password", id=f"{self.id}-api-base"),
                     ],
                     className="mb-3",
                 ),
                 dbc.InputGroup(
                     [
                         dbc.InputGroupText("Choose your vendor"),
-                        dbc.Select(options=self.options, value=self.value, id=f"{self.id}_dropdown"),
+                        dbc.Select(options=self.options, value=self.value, id=f"{self.id}-dropdown"),
                     ],
                     className="mb-3",
                 ),
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupText(dbc.Checkbox(id=f"{self.id}_toggle-secrets-id")),
+                        dbc.InputGroupText(dbc.Checkbox(id=f"{self.id}-show-secrets-id")),
                         dbc.Input(value="Show secrets", disabled=True),
                     ]
                 ),
@@ -230,8 +230,8 @@ class OffCanvas(vm.VizroBaseModel):
                 html.Div(
                     children=[
                         input_groups,
-                        dbc.Button("Save secrets", id=f"{self.id}_save-secrets-id"),
-                        html.P(children="", id=f"{self.id}_notification"),
+                        dbc.Button("Save secrets", id=f"{self.id}-save-secrets-id"),
+                        html.P(children="", id=f"{self.id}-notification"),
                     ]
                 )
             ],

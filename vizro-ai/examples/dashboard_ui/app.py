@@ -35,9 +35,9 @@ class CustomDashboard(vm.Dashboard):
 
     def build(self):
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store", storage_type="local"))
-        dashboard_build_obj.children.append(dcc.Store(id="api-store", storage_type="local"))
-        dashboard_build_obj.children.append(dcc.Store(id="outputs-store", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="local"))
+        dashboard_build_obj.children.append(dcc.Store(id="api-store-id", storage_type="local"))
+        dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
         return dashboard_build_obj
 
 
@@ -64,24 +64,24 @@ plot_page = MyPage(
     components=[
         vm.Container(title="", components=[CodeClipboard(id="plot")]),
         UserPromptTextArea(
-            id="text-area",
+            id="text-area-id",
         ),
-        vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
+        vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
         vm.Container(
             title="",
             layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
             components=[
                 UserUpload(
-                    id="data-upload",
+                    id="data-upload-id",
                     actions=[
                         vm.Action(
                             function=data_upload_action(),
-                            inputs=["data-upload.contents", "data-upload.filename"],
-                            outputs=["data-store.data"],
+                            inputs=["data-upload-id.contents", "data-upload-id.filename"],
+                            outputs=["data-store-id.data"],
                         ),
                         vm.Action(
                             function=display_filename(),
-                            inputs=["data-store.data"],
+                            inputs=["data-store-id.data"],
                             outputs=["upload-message-id.children"],
                         ),
                     ],
@@ -94,25 +94,25 @@ plot_page = MyPage(
             layout=vm.Layout(grid=[[0, 0, 1, 1, -1, -1, -1, 2, 3]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
-                    id="trigger-button",
+                    id="trigger-button-id",
                     text="Run VizroAI",
                     actions=[
                         vm.Action(
                             function=run_vizro_ai(),
                             inputs=[
-                                "text-area.value",
-                                "trigger-button.n_clicks",
-                                "data-store.data",
-                                "model-dropdown.value",
-                                "api-store.data",
+                                "text-area-id.value",
+                                "trigger-button-id.n_clicks",
+                                "data-store-id.data",
+                                "model-dropdown-id.value",
+                                "api-store-id.data",
                             ],
-                            outputs=["plot_code-markdown.children", "graph.figure", "outputs-store.data"],
+                            outputs=["plot-code-markdown.children", "graph-id.figure", "outputs-store-id.data"],
                         ),
                     ],
                 ),
-                MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown"),
-                vm.Button(id="open_canvas", text="Settings"),
-                OffCanvas(id="offcanvas-id", options=["ChatOpenAI"], value="ChatOpenAI"),
+                MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown-id"),
+                vm.Button(id="open-settings-id", text="Settings"),
+                OffCanvas(id="settings", options=["ChatOpenAI"], value="ChatOpenAI"),
             ],
         ),
     ],
@@ -134,13 +134,13 @@ dashboard = CustomDashboard(
 # pure dash callbacks
 @callback(
     [
-        Output("plot_code-markdown", "children", allow_duplicate=True),
-        Output("graph", "figure", allow_duplicate=True),
-        Output("text-area", "value"),
+        Output("plot-code-markdown", "children", allow_duplicate=True),
+        Output("graph-id", "figure", allow_duplicate=True),
+        Output("text-area-id", "value"),
         Output("upload-message-id", "children"),
     ],
     [Input("on_page_load_action_trigger_vizro_ai_plot_page", "data")],
-    [State("outputs-store", "data")],
+    [State("outputs-store-id", "data")],
     prevent_initial_call="initial_duplicate",
 )
 def update_data(page_data, outputs_data):
@@ -156,20 +156,20 @@ def update_data(page_data, outputs_data):
 
 
 @callback(
-    Output("offcanvas-id", "is_open"),
-    Input("open_canvas", "n_clicks"),
-    [State("offcanvas-id", "is_open")],
+    Output("settings", "is_open"),
+    Input("open-settings-id", "n_clicks"),
+    [State("settings", "is_open")],
 )
 def toggle_offcanvas(n_clicks, is_open):
     return not is_open if n_clicks else is_open
 
 
 @callback(
-    [Output("api-store", "data"), Output("offcanvas-id_notification", "children")],
+    [Output("api-store-id", "data"), Output("settings-notification", "children")],
     [
-        Input("offcanvas-id_api_key", "value"),
-        Input("offcanvas-id_api_base", "value"),
-        Input("offcanvas-id_save-secrets-id", "n_clicks"),
+        Input("settings-api-key", "value"),
+        Input("settings-api-base", "value"),
+        Input("settings-save-secrets-id", "n_clicks"),
     ],
 )
 def save_secrets(api_key, api_base, n_clicks):
@@ -181,8 +181,8 @@ def save_secrets(api_key, api_base, n_clicks):
 
 
 @callback(
-    [Output("offcanvas-id_api_key", "type"), Output("offcanvas-id_api_base", "type")],
-    Input("offcanvas-id_toggle-secrets-id", "value"),
+    [Output("settings-api-key", "type"), Output("settings-api-base", "type")],
+    Input("settings-show-secrets-id", "value"),
 )
 def show_secrets(value):
     return ("text", "text") if value else ("password", "password")

@@ -18,7 +18,7 @@
   outline-width: 0;
 }
 
-#text-area {
+#text-area-id {
   background-color: inherit;
   border: 1px solid rgba(43, 46, 57, 1);
   color: rgba(255, 255, 255, 0.6);
@@ -71,18 +71,18 @@
   font-size: 12px;
 }
 
-#model-dropdown .Select-menu-outer {
+#model-dropdown-id .Select-menu-outer {
   font-size: 12px;
   top: 0;
   transform: translateY(3px) translateY(-100%);
 }
 
-#model-dropdown .dash-dropdown {
+#model-dropdow-idn .dash-dropdown {
   background-color: inherit;
   font-size: 12px;
 }
 
-#trigger-button {
+#trigger-button-id {
   width: 100%;
 }
 
@@ -90,11 +90,11 @@
   background-color: inherit;
 }
 
-#model-dropdown .Select-clear {
+#model-dropdown-id .Select-clear {
   display: none;
 }
 
-#save-button {
+#save-button-id {
   width: 50%;
 }
 
