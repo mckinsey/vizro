@@ -37,8 +37,11 @@ def bar(
     top_n: int = 15,
     custom_data: Optional[List[str]] = None,
 ):
-    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
+    """Custom bar chart implementation.
 
+    Based on [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar).
+    """
+    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
     fig = px.bar(
         data_frame=df_agg.head(top_n),
         x=x,
@@ -54,6 +57,11 @@ def bar(
 
 @capture("graph")
 def area(x: str, y: str, data_frame: pd.DataFrame):
+    """Custom chart to create unstacked area chart.
+
+    Based on [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html).
+
+    """
     df_agg = data_frame.groupby(["Year", "Month"]).agg({y: "count"}).reset_index()
     df_agg_2019 = df_agg[df_agg["Year"] == "2018"]
     df_agg_2020 = df_agg[df_agg["Year"] == "2019"]
@@ -85,6 +93,10 @@ def pie(
     data_frame: pd.DataFrame = None,
     title: Optional[str] = None,
 ):
+    """Custom pie chart implementation.
+
+    Based on [px.pie](https://plotly.com/python-api-reference/generated/plotly.express.pie).
+    """
     df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
     fig = px.pie(
         data_frame=df_agg,
@@ -103,7 +115,6 @@ def pie(
         hole=0.4,
     )
     fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin={"l": 0, "r": 0, "t": 60, "b": 0})
-    fig.update_traces(sort=False)
     return fig
 
 
@@ -115,6 +126,10 @@ def choropleth(
     title: Optional[str] = None,
     custom_data: Optional[List[str]] = None,
 ):
+    """Custom choropleth implementation.
+
+    Based on [px.choropleth](https://plotly.com/python-api-reference/generated/plotly.express.choropleth).
+    """
     df_agg = data_frame.groupby(locations).agg({color: "count"}).reset_index()
     fig = px.choropleth(
         data_frame=df_agg,
