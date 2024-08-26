@@ -60,22 +60,20 @@ def area(x: str, y: str, data_frame: pd.DataFrame):
 
     fig = go.Figure()
     fig.add_trace(
-        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2019", marker=dict(color="#1a85ff"))
+        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2019", marker={"color": "#1a85ff"})
     )
-    fig.add_trace(
-        go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2018", marker=dict(color="grey"))
-    )
+    fig.add_trace(go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2018", marker={"color": "grey"}))
     fig.update_layout(
         title="Complaints over time",
         xaxis_title="Date Received",
         yaxis_title="# of Complaints",
         title_pad_t=4,
-        xaxis=dict(
-            showgrid=False,
-            tickmode="array",
-            tickvals=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            ticktext=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        ),
+        xaxis={
+            "showgrid": False,
+            "tickmode": "array",
+            "tickvals": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "ticktext": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        },
     )
     return fig
 
