@@ -27,7 +27,7 @@ kpi_banner = FlexContainer(
                 reference_column="Total Complaints_2019",
                 title="Total Complaints",
                 value_format="{value:.0f}",
-                reference_format="{delta_relative:+.1%} vs. last year ({reference:.0f})",
+                reference_format="{delta_relative:+.1%} vs. 2019 ({reference:.0f})",
             )
         ),
         vm.Figure(
@@ -37,7 +37,7 @@ kpi_banner = FlexContainer(
                 reference_column="Closed Complaints_2019",
                 title="Closed Complaints",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp  vs. last year ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp  vs. 2019 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
@@ -47,7 +47,7 @@ kpi_banner = FlexContainer(
                 reference_column="Timely response_2019",
                 title="Timely Response",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp  vs. last year ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp  vs. 2019 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
@@ -57,7 +57,7 @@ kpi_banner = FlexContainer(
                 reference_column="Closed w/o cost_2019",
                 title="Closed w/o cost",
                 value_format="{value:.1f}%",
-                reference_format="{delta:.1f}pp vs. last year ({reference:.1f}%)",
+                reference_format="{delta:.1f}pp vs. 2019 ({reference:.1f}%)",
             )
         ),
         vm.Figure(
@@ -67,7 +67,7 @@ kpi_banner = FlexContainer(
                 reference_column="Consumer disputed_2019",
                 title="Consumer disputed",
                 value_format="{value:.1f}%",
-                reference_format="{delta:+.1f}pp vs. last year ({reference:.1f}%)",
+                reference_format="{delta:+.1f}pp vs. 2019 ({reference:.1f}%)",
             )
         ),
     ],
