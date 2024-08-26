@@ -79,12 +79,12 @@ def pie(
         values=values,
         color=names,
         color_discrete_map={
-            'Closed with explanation': '#1a85ff',
-            'Closed with monetary relief': '#d41159',
-            'Closed with non-monetary relief': '#adbedc',
-            'Closed without relief': '#7ea1ee',
-            'Closed with relief': '#df658c',
-            'Closed': '#1a85ff'
+            "Closed with explanation": "#1a85ff",
+            "Closed with monetary relief": "#d41159",
+            "Closed with non-monetary relief": "#adbedc",
+            "Closed without relief": "#7ea1ee",
+            "Closed with relief": "#df658c",
+            "Closed": "#1a85ff",
         },
         title=title,
         hole=0.4,

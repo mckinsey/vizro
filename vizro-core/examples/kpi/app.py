@@ -16,7 +16,6 @@ df_kpi_cards = create_data_for_kpi_cards(df_complaints)
 vm.Page.add_type("components", FlexContainer)
 
 
-
 # SUB-SECTIONS ------------------------------------------------------------------------------------
 kpi_banner = FlexContainer(
     components=[
@@ -239,7 +238,7 @@ page_table = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_exec, page_region, page_table],
-    title="Cumulus Financial Corporation - Fiscal Year 2020",
+    title="Cumulus Financial Corp. - Fiscal Year 2020",
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
