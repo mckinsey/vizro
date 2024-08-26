@@ -30,7 +30,7 @@ provides high-quality fake data for creating realistic dashboard examples for re
 
 ### 🖥️ App demo
 
-<img src="./images/kpi-dashboard.gif" alt="Gif to KPI dashboard" width="800">
+<img src="./images/kpi-dashboard.gif" alt="Gif to KPI dashboard" width="600">
 
 ---
 
