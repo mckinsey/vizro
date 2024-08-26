@@ -14,21 +14,19 @@ provides high-quality fake data for creating realistic dashboard examples for re
 
 **Note:** The data has been additionally edited for the purpose of this example.
 
-- [#RWFD Real World Fake Data initiative](https://data.world/markbradbourne/rwfd-real-world-fake-data)
-
 ### 📊 Plotly resources
 
-- Bar charts: https://plotly.com/python/bar-charts/
-- Pie charts: https://plotly.com/python/pie-charts/
-- Choropleth maps: https://plotly.com/python/choropleth-maps/
-- Unstacked area charts: https://plotly.com/python/filled-area-plots/
+- [Bar charts](https://plotly.com/python/bar-charts/)
+- [Pie charts](https://plotly.com/python/pie-charts/)
+- [Choropleth maps](https://plotly.com/python/choropleth-maps/)
+- [Unstacked area charts](https://plotly.com/python/filled-area-plots/)
 
 ### 🚀 Vizro features applied
 
-- Vizro tutorial on pages, layouts and dashboards: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
-- Custom components: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/
-- Custom charts: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/
-- Custom CSS: https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/
+- [Vizro tutorial on pages, layouts and dashboards](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/)
+- [Custom components](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/)
+- [Custom charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/)
+- [Custom CSS](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/)
 
 ### 🖥️ App demo
 
