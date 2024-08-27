@@ -4,6 +4,8 @@ import re
 
 import plotly.graph_objects as go
 import pytest
+from dash.exceptions import MissingCallbackContextException
+
 from asserts import assert_component_equal
 from dash import dcc
 
@@ -100,7 +102,9 @@ class TestDunderMethodsGraph:
         "title, margin_t, title_pad_t",
         [(None, 24, None), ("Graph with title", None, 7), ("Graph with title..<br> and subtitle", None, None)],
     )
-    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t):
+    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
+        # Mock out set_props so we don't need to supply mock callback context for this test.
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
@@ -117,7 +121,9 @@ class TestDunderMethodsGraph:
         assert graph.layout.template.layout.margin.r == 24
         assert graph.layout.template.layout.title.pad.t == 24
 
-    def test_update_theme_outside_callback(self, standard_px_chart):
+    def test_update_theme_outside_callback(self, standard_px_chart, mocker):
+        # Mock out set_props so we don't need to supply mock callback context for this test.
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=standard_px_chart).__call__()
         assert graph == standard_px_chart.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 

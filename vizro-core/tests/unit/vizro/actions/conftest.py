@@ -5,6 +5,15 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 
+# Mock out set_props so we don't need to supply updated_props in the mock callback contexts used in these actions
+# tests.
+# TODO: maybe it would be better to include updated_props through a centralised way of creating a mock callback
+#  context. Actions tests should be simplified and refactored in due course anyway.
+@pytest.fixture(autouse=True)
+def mock_set_props(mocker):
+    mocker.patch("vizro.models._components.graph.set_props")
+
+
 @pytest.fixture
 def gapminder_2007(gapminder):
     return gapminder.query("year == 2007")
@@ -20,7 +29,9 @@ def gapminder_dynamic_first_n_last_n_function(gapminder):
     return lambda first_n=None, last_n=None: (
         pd.concat([gapminder[:first_n], gapminder[-last_n:]])
         if last_n
-        else gapminder[:first_n] if first_n else gapminder
+        else gapminder[:first_n]
+        if first_n
+        else gapminder
     )
 
 

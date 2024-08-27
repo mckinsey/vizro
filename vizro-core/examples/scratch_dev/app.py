@@ -6,7 +6,7 @@ from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
 
 # NUMBER_OF_COMPONENTS = 4
-NUMBER_OF_COMPONENTS = 64
+NUMBER_OF_COMPONENTS = 16
 
 
 def squared_layout(N):
@@ -49,4 +49,4 @@ dashboard = vm.Dashboard(pages=[page_one, page_two], theme="vizro_light")
 
 
 if __name__ == "__main__":
-    Vizro(suppress_callback_exceptions=True).build(dashboard).run()
+    Vizro().build(dashboard).run()
