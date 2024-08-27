@@ -6,8 +6,6 @@ import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
 from dash import dcc
-from dash._callback_context import context_value
-from dash._utils import AttributeDict
 
 try:
     from pydantic.v1 import ValidationError
@@ -16,7 +14,6 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 

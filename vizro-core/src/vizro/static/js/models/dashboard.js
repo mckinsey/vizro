@@ -23,11 +23,11 @@ export function _update_graph_theme(
     ...figure,
     layout: {
       ...figure.layout,
-      template: vizro_themes[theme_to_apply]
-    }
+      template: vizro_themes[theme_to_apply],
+    },
   };
 
-  return [updated_figure, {}]
+  return [updated_figure, {}];
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
