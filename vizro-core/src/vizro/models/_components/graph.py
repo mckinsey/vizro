@@ -61,7 +61,19 @@ class Graph(VizroBaseModel):
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
         with suppress(MissingCallbackContextException):
+            # After this callback has completed, the clientside update_graph_theme is triggered. In the case that
+            # the theme selector has been set to the non-default theme, this would cause a flickering since the graph
+            # with the wrong theme will be shown while the clientside callback runs. To avoid this we temporarily hide
+            # the graph and then make it visible again in the clientside callback.
+            # Ideally this would be done using the argument `running` but this only exists for serverside callbacks, so
+            # we do it manually.
+            # Setting fig.layout.template here rather than relying on the clientside callback is slightly more
+            # performant for a page with many graphs in the case that the template doesn't need switching.
+            from vizro.models import Dashboard
+
             set_props(self.id, {"style": {"visibility": "hidden"}})
+            _, dashboard = next(model_manager._items_with_type(Dashboard))
+            fig.layout.template = dashboard.theme
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -138,13 +150,11 @@ class Graph(VizroBaseModel):
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
-            # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
             output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
                 Input(self.id, "figure"),
                 Input("theme_selector", "checked"),
                 State("vizro_themes", "data"),
-                State(self.id, "id"),
             ],
             prevent_initial_call=True,
         )
@@ -171,12 +181,3 @@ class Graph(VizroBaseModel):
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-
-
-# doesn't work for clientside callback:
-# running = [
-#     (Output(f"{self.id}", "style"), {"visibility": "hidden"}, {"visibility": "hidden"})
-#     # (Output(f"{self.id}_loading", "overlay_style"), {"visibility": "hidden"}, {"visibility": "visible"})
-# ],
-
-# todo: check still works with setting theme through URL param

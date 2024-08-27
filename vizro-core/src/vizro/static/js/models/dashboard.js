@@ -16,25 +16,25 @@ export function _update_graph_theme(
   figure,
   theme_selector_checked,
   vizro_themes,
-  graph_id,
 ) {
-  // TODO: check here to see if theme has changed from default and graph has "just done server-side callback signal"
-  // of hidden visibility set. If not changed then do
-  // return [no_update, {}}]
-  // Determine the theme to be applied based on the theme_selector checked value
-  const theme_to_apply = theme_selector_checked
-    ? vizro_themes["light"]
-    : vizro_themes["dark"];
+  const theme_to_apply = theme_selector_checked ? "vizro_light" : "vizro_dark";
 
-  // Find the Plotly graph element in the HTML document
-  const plotly_graph = document
-    .getElementById(graph_id)
-    .querySelector(".js-plotly-plot");
+  // If graph has been returned from the server then it already has the dashboard default template applied in
+  // Graph.__call__, and so we don't need to do any updates apart from to undo the {"style": {"visibility": "hidden"}}.
+  // If this callback has been triggered through the theme selector toggle then we always want to update though.
+  if (theme_to_apply === vizro_themes["default"] && dash_clientside.callback_context.triggered_id !== "theme_selector") {
+    return [dash_clientside.no_update, {}];
+  }
 
-  // Adjust `layout` property for the Plotly graph element
-  Plotly.relayout(plotly_graph, { template: theme_to_apply });
+  const updated_figure = {
+    ...figure,
+    layout: {
+      ...figure.layout,
+      template: vizro_themes[theme_to_apply]
+    }
+  };
 
-  return [dash_clientside.no_update, {}];
+  return [updated_figure, {}]
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
