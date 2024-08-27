@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.21'></a>
+
+# 0.1.21 — 2024-08-27
+
+## Changed
+
+- Improve page loading time for `AgGrid`, `Table` and `Figure`. ([#644](https://github.com/mckinsey/vizro/pull/644))
+
+- Optimize vizro templates `vizro_dark` and `vizro_light` for charts. ([#645](https://github.com/mckinsey/vizro/pull/645))
+
+## Fixed
+
+- Fix py.cafe docs integration by pinning `ruff` dependency for mkdocs plugin. ([#640](https://github.com/mckinsey/vizro/pull/640))
+
+- Fix persistence of `columnSize` and `selectedRows` for `AgGrid`. ([#644](https://github.com/mckinsey/vizro/pull/644))
+
 <a id='changelog-0.1.20'></a>
 
 # 0.1.20 — 2024-08-20
