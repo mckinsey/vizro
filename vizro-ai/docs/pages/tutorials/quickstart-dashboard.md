@@ -1,7 +1,7 @@
 # Dashboard generation
 
-!!! warning "Alpha Feature"
-    This feature is currently in **Alpha**. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues), and be aware that it may still undergo minor adjustments.
+!!! warning "Feature in Alpha Version"
+    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
 
 
 In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard containing multiple charts and pages.

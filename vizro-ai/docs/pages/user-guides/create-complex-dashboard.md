@@ -1,7 +1,7 @@
 # Generate a complex dashboard
 
-!!! warning "Alpha Feature"
-    This feature is currently in **Alpha**. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues), and be aware that it may still undergo minor adjustments.
+!!! warning "Feature in Alpha Version"
+    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
 
 
 This guide shows you how to instruct Vizro-AI to create a complex dashboard.
