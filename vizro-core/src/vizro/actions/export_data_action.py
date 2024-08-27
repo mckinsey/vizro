@@ -21,7 +21,7 @@ def export_data(
         targets: List of target component ids to download data from. Defaults to `None`.
         file_format: Format of downloaded files. Defaults to `csv`.
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
     Raises:
         ValueError: If unknown file extension is provided.

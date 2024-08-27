@@ -233,7 +233,11 @@ class TestDashboardBuild:
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 dcc.Store(
                     id="vizro_themes",
-                    data={"vizro_dark": pio.templates["vizro_dark"], "vizro_light": pio.templates["vizro_light"]},
+                    data={
+                        "vizro_dark": pio.templates["vizro_dark"],
+                        "vizro_light": pio.templates["vizro_light"],
+                        "default": "vizro_dark",
+                    },
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,

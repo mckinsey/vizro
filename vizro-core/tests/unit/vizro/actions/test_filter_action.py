@@ -44,13 +44,6 @@ def ctx_filter_continent(request):
                     )
                 ],
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
-                ),
             }
         }
     }
@@ -83,13 +76,6 @@ def ctx_filter_continent_and_pop(request):
                     ),
                 ],
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
-                ),
             }
         }
     }
