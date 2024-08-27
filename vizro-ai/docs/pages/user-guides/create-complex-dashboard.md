@@ -1,5 +1,9 @@
 # Generate a complex dashboard
 
+!!! warning "Alpha Feature"
+    This feature is currently in **Alpha**. It is stable but not officially released yet. We welcome feedback, but please be aware that it may still undergo minor adjustments.
+
+
 This guide shows you how to instruct Vizro-AI to create a complex dashboard.
 
 In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the output generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
