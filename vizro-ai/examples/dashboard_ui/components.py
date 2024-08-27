@@ -1,4 +1,4 @@
-"""Chatbot and custom user input component."""
+"""Contains custom components used within a dashboard."""
 
 try:
     from pydantic.v1 import Field, validator
@@ -8,7 +8,6 @@ except ImportError:
 from typing import List, Literal
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import vizro.models as vm
 from dash import dcc, html
 from pydantic import PrivateAttr
@@ -44,6 +43,7 @@ class UserPromptTextArea(vm.VizroBaseModel):
 
     @_log_call
     def build(self):
+        """Returns the text area component to display vizro-ai code output."""
         return html.Div(
             children=[
                 dcc.Textarea(
@@ -51,27 +51,6 @@ class UserPromptTextArea(vm.VizroBaseModel):
                     placeholder="How can Vizro-AI help you today?",
                 )
             ]
-        )
-
-
-class InputForm(vm.VizroBaseModel):
-    """VizroAI settings input form."""
-
-    type: Literal["input_form"] = "input_form"
-    actions: List[Action] = []
-    placeholder: str
-
-    _set_actions = _action_validator_factory("value")
-
-    def build(self):
-        return html.Div(
-            dcc.Input(
-                id=self.id,
-                type="password",
-                placeholder=self.placeholder,
-                style={"width": "100%", "height": "34px"},
-                persistence="session",
-            )
         )
 
 
@@ -94,6 +73,7 @@ class UserUpload(vm.VizroBaseModel):
     _set_actions = _action_validator_factory("contents")
 
     def build(self):
+        """Returns the upload component for data upload."""
         return html.Div(
             [
                 dcc.Upload(
@@ -124,7 +104,7 @@ class CodeClipboard(vm.VizroBaseModel):
     language: str = "python"
 
     def build(self):
-        """Returns the code clipboard component inside an accordion."""
+        """Returns the code clipboard component inside a output text area."""
         code = black.format_str(self.code, mode=black.Mode(line_length=120))
         code = code.strip("'\"")
 
@@ -139,43 +119,13 @@ class CodeClipboard(vm.VizroBaseModel):
         )
 
 
-class Switch(vm.VizroBaseModel):
-    """Toggle for api key visibility"""
-
-    type: Literal["input_switch"] = "input_switch"
-    actions: List[Action] = []
-
-    _set_actions = _action_validator_factory("checked")
-
-    def build(self):
-        return html.Div(
-            children=dmc.Switch(
-                id=self.id,
-                checked=False,
-                persistence=True,
-                persistence_type="session",
-                className="toggle-switch",
-            ),
-            id="settings",
-            style={"paddingTop": "8px"},
-        )
-
-
-class MyCard(vm.Card):
-    type: Literal["my_card"] = "my_card"
-
-    def build(self):
-        card_build_obj = super().build()
-        card_build_obj.id = f"{self.id}_outer_div"
-        card_build_obj.style = {"display": "none"}
-
-        return card_build_obj
-
-
 class MyDropdown(vm.Dropdown):
+    """Custom dropdown component."""
+
     type: Literal["my_dropdown"] = "my_dropdown"
 
     def build(self):
+        """Returns custom dropdown component that cannot be cleared."""
         dropdown_build_obj = super().build()
         dropdown_build_obj.id = f"{self.id}_outer_div"
         dropdown_build_obj.children[1].clearable = False
@@ -184,13 +134,14 @@ class MyDropdown(vm.Dropdown):
 
 
 class OffCanvas(vm.VizroBaseModel):
-    """OffCanvas component for settings!"""
+    """OffCanvas component for settings."""
 
     type: Literal["offcanvas"] = "offcanvas"
     options: List[str]
     value: str
 
     def build(self):
+        """Returns the off canvas component for settings."""
         input_groups = html.Div(
             [
                 dbc.InputGroup(
@@ -242,6 +193,8 @@ class OffCanvas(vm.VizroBaseModel):
 
 
 class MyPage(vm.Page):
+    """Custom page."""
+
     type: Literal["my_page"] = "my_page"
 
     def pre_build(self):
@@ -249,9 +202,12 @@ class MyPage(vm.Page):
 
 
 class Icon(vm.VizroBaseModel):
+    """Icon component."""
+
     type: Literal["icon"] = "icon"
 
     def build(self):
+        """Returns the icon for api settings."""
         return html.Div(
             children=[html.Span("settings", className="material-symbols-outlined", id=self.id)],
             className="settings-div",

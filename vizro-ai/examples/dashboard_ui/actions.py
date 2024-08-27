@@ -1,3 +1,5 @@
+"""Custom actions used within a dashboard."""
+
 import base64
 import io
 import logging
@@ -15,6 +17,7 @@ SUPPORTED_VENDORS = {"ChatOpenAI": ChatOpenAI}
 
 
 def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
+    """VizroAi plot configuration."""
     vendor = SUPPORTED_VENDORS[vendor_input]
     llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
     vizro_ai = VizroAI(model=llm)
@@ -25,7 +28,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
 
 @capture("action")
 def run_vizro_ai(user_prompt, n_clicks, data, model, api_data, vendor_input):
-    """Gets the AI response and adds it to the chatbot window."""
+    """Gets the AI response and adds it to the text window."""
 
     def create_response(ai_response, figure, user_prompt, filename):
         plotly_fig = figure.to_json()
@@ -96,24 +99,21 @@ def data_upload_action(contents, filename):
         return {"data": data, "filename": filename}
 
     except Exception as e:
-        print(e)
+        logging.exception(e)
         return {"error_message": "There was an error processing this file."}
 
 
 @capture("action")
 def save_api_key(api_key, api_base, n_clicks):
+    """Custom action to save api secrets to dcc store."""
     if n_clicks:
         # TODO: Possibly add validation for secrets
         return {"api_key": api_key, "api_base": api_base}, "Secrets saved!"
 
 
 @capture("action")
-def toggle_api_key_visibility(checked):
-    return "text" if checked else "password"
-
-
-@capture("action")
 def display_filename(data):
+    """Custom action to display uploaded filename."""
     if data is None:
         raise PreventUpdate
 

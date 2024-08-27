@@ -5,8 +5,8 @@ import json
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from actions import data_upload_action, display_filename, run_vizro_ai
 from components import CodeClipboard, Icon, MyDropdown, MyPage, OffCanvas, UserPromptTextArea, UserUpload
-from custom_actions import data_upload_action, display_filename, run_vizro_ai
 from dash import Input, Output, State, callback, dcc
 from dash.exceptions import PreventUpdate
 from vizro import Vizro
@@ -140,6 +140,7 @@ dashboard = CustomDashboard(
     prevent_initial_call="initial_duplicate",
 )
 def update_data(page_data, outputs_data):
+    """Callback for retrieving latest vizro-ai output from dcc store."""
     if not outputs_data:
         raise PreventUpdate
 
@@ -156,7 +157,8 @@ def update_data(page_data, outputs_data):
     Input("open-settings-id", "n_clicks"),
     [State("settings", "is_open")],
 )
-def toggle_offcanvas(n_clicks, is_open):
+def open_settings(n_clicks, is_open):
+    """Callback for opening and closing offcanvas settings component."""
     return not is_open if n_clicks else is_open
 
 
@@ -169,6 +171,7 @@ def toggle_offcanvas(n_clicks, is_open):
     ],
 )
 def save_secrets(api_key, api_base, n_clicks):
+    """Callback for saving secrets to dcc store."""
     if not n_clicks:
         raise PreventUpdate
 
@@ -181,6 +184,7 @@ def save_secrets(api_key, api_base, n_clicks):
     Input("settings-show-secrets-id", "value"),
 )
 def show_secrets(value):
+    """Callback to show api secrets."""
     return ("text", "text") if value else ("password", "password")
 
 
