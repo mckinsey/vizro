@@ -73,8 +73,10 @@
 
 #model-dropdown-id .Select-menu-outer {
   font-size: 12px;
-  top: 0;
-  transform: translateY(3px) translateY(-100%);
+
+  /* top: 0; */
+
+  /* transform: translateY(3px) translateY(-100%); */
 }
 
 #model-dropdow-idn .dash-dropdown {
@@ -98,13 +100,14 @@
   width: 50%;
 }
 
-.card:has(#upload-message-id, #dashboard-upload-message-id) {
+.card:has(#upload-message-id) {
   background-color: inherit;
   box-shadow: none;
   font-size: 12px;
   overflow: hidden;
   padding-bottom: 0;
   padding-left: 0;
+  padding-top: 8px;
 }
 
 .card:has(#settings-card-id) {
@@ -114,4 +117,11 @@
   overflow: hidden;
   padding-bottom: 0;
   padding-left: 0;
+}
+
+.settings-div {
+  display: flex;
+  justify-content: end;
+  padding-right: 2px;
+  width: 100%;
 }

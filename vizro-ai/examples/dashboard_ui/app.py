@@ -5,14 +5,7 @@ import json
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-from components import (
-    CodeClipboard,
-    MyDropdown,
-    MyPage,
-    OffCanvas,
-    UserPromptTextArea,
-    UserUpload,
-)
+from components import CodeClipboard, Icon, MyDropdown, MyPage, OffCanvas, UserPromptTextArea, UserUpload
 from custom_actions import data_upload_action, display_filename, run_vizro_ai
 from dash import Input, Output, State, callback, dcc
 from dash.exceptions import PreventUpdate
@@ -22,12 +15,14 @@ vm.Container.add_type("components", UserUpload)
 vm.Container.add_type("components", MyDropdown)
 vm.Container.add_type("components", OffCanvas)
 vm.Container.add_type("components", CodeClipboard)
+vm.Container.add_type("components", Icon)
 
 MyPage.add_type("components", UserPromptTextArea)
 MyPage.add_type("components", UserUpload)
 MyPage.add_type("components", MyDropdown)
 MyPage.add_type("components", OffCanvas)
 MyPage.add_type("components", CodeClipboard)
+MyPage.add_type("components", Icon)
 
 
 class CustomDashboard(vm.Dashboard):
@@ -55,10 +50,10 @@ plot_page = MyPage(
     title="Vizro AI - Plot",
     layout=vm.Layout(
         grid=[
-            *[[0, 0, 2, 2]] * 6,
+            [3, 3, -1, 5],
             [1, 1, 2, 2],
-            [3, 3, 2, 2],
             [4, 4, 2, 2],
+            *[[0, 0, 2, 2]] * 6,
         ]
     ),
     components=[
@@ -69,7 +64,7 @@ plot_page = MyPage(
         vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
+            layout=vm.Layout(grid=[[1], [0]], row_gap="0px"),
             components=[
                 UserUpload(
                     id="data-upload-id",
@@ -91,7 +86,7 @@ plot_page = MyPage(
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[0, 0, 1, 1, -1, -1, -1, 2, 3]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(grid=[[0, 0, 1, 1, -1, -1, -1, 2, -1]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -111,10 +106,10 @@ plot_page = MyPage(
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown-id"),
-                vm.Button(id="open-settings-id", text="Settings"),
                 OffCanvas(id="settings", options=["ChatOpenAI"], value="ChatOpenAI"),
             ],
         ),
+        Icon(id="open-settings-id"),
     ],
 )
 

@@ -236,7 +236,7 @@ class OffCanvas(vm.VizroBaseModel):
                 )
             ],
             title="Settings",
-            is_open=False,
+            is_open=True,
         )
         return offcanvas
 
@@ -246,3 +246,13 @@ class MyPage(vm.Page):
 
     def pre_build(self):
         pass
+
+
+class Icon(vm.VizroBaseModel):
+    type: Literal["icon"] = "icon"
+
+    def build(self):
+        return html.Div(
+            children=[html.Span("settings", className="material-symbols-outlined", id=self.id)],
+            className="settings-div",
+        )
