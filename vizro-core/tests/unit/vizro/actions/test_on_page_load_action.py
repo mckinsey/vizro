@@ -79,7 +79,8 @@ def ctx_on_page_load(request):
     return context_value
 
 
-# TODO: tidy
+# These tests only have one case in the pytest.mark.parametrize but have been left as parametrized so that they can
+# use fixtures with `indirect` and `request.param` in order to match other tests.
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(

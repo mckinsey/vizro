@@ -28,6 +28,7 @@ export function _update_graph_theme(
   };
 
   return [updated_figure, {}];
+  // {} resets the figure.style to undo the {"visibility": "hidden"} from set_props in Graph.__call__.
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {

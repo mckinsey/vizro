@@ -67,8 +67,7 @@ class Graph(VizroBaseModel):
             # the graph and then make it visible again in the clientside callback. Ideally this would be done using the
             # argument `running` on the clientside callback but this only exists for serverside callbacks, so we do it
             # manually.
-            # set_props(self.id, {"style": {"visibility": "hidden"}})
-            pass
+            set_props(self.id, {"style": {"visibility": "hidden"}})
         return fig
 
     # Convenience wrapper/syntactic sugar.

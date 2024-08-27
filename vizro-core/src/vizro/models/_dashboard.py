@@ -156,11 +156,7 @@ class Dashboard(VizroBaseModel):
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 dcc.Store(
                     id="vizro_themes",
-                    data={
-                        "vizro_dark": pio.templates["vizro_dark"],
-                        "vizro_light": pio.templates["vizro_light"],
-                        "default": self.theme,
-                    },
+                    data={"vizro_dark": pio.templates["vizro_dark"], "vizro_light": pio.templates["vizro_light"]},
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,

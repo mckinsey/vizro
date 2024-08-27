@@ -236,7 +236,6 @@ class TestDashboardBuild:
                     data={
                         "vizro_dark": pio.templates["vizro_dark"],
                         "vizro_light": pio.templates["vizro_light"],
-                        "default": "vizro_dark",
                     },
                 ),
                 ActionLoop._create_app_callbacks(),
