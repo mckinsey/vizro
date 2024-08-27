@@ -1,6 +1,9 @@
-# How to update and reuse the Vizro-AI generated dashboard
+# Retrieve the code of Vizro-AI generated dashboard
 
-This guide shows how to further use the Vizro-AI generated dashboard.
+!!! warning "Feature in Alpha Version"
+    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
+
+This guide shows how to retrieve the code of Vizro-AI generated dashboard, for further iterations and deployment.
 
 While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often approximately match user expectations but may not be exact. Besides refining the user prompt and rerunning Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
 
