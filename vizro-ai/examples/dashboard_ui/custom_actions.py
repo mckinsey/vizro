@@ -11,9 +11,12 @@ from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
 
+SUPPORTED_VENDORS = {"ChatOpenAI": ChatOpenAI}
 
-def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base):
-    llm = ChatOpenAI(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
+
+def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
+    vendor = SUPPORTED_VENDORS[vendor_input]
+    llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
     vizro_ai = VizroAI(model=llm)
     ai_outputs = vizro_ai.plot(df, user_prompt, explain=False, return_elements=True)
 
@@ -21,7 +24,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base):
 
 
 @capture("action")
-def run_vizro_ai(user_prompt, n_clicks, data, model, api_data):
+def run_vizro_ai(user_prompt, n_clicks, data, model, api_data, vendor_input):
     """Gets the AI response and adds it to the chatbot window."""
 
     def create_response(ai_response, figure, user_prompt, filename):
@@ -48,7 +51,12 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_data):
     try:
         df = pd.DataFrame(data["data"])
         ai_outputs = get_vizro_ai_plot(
-            user_prompt=user_prompt, df=df, model=model, api_key=api_data["api_key"], api_base=api_data["api_base"]
+            user_prompt=user_prompt,
+            df=df,
+            model=model,
+            api_key=api_data["api_key"],
+            api_base=api_data["api_base"],
+            vendor_input=vendor_input,
         )
         ai_code = ai_outputs.code
         figure = ai_outputs.figure

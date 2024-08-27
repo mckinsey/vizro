@@ -100,6 +100,7 @@ plot_page = MyPage(
                                 "data-store-id.data",
                                 "model-dropdown-id.value",
                                 "api-store-id.data",
+                                "settings-dropdown.value",
                             ],
                             outputs=["plot-code-markdown.children", "graph-id.figure", "outputs-store-id.data"],
                         ),
