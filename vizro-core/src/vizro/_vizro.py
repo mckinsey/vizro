@@ -32,7 +32,19 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
+        # Setting suppress_callback_exceptions=True for the following reasons:
+        # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
+        #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
+        #    items of a callback. This ID is assigned to a dash_html_components.Div component in the layout,
+        #    which does not support this property."
+        # 2. Improves performance by bypassing layout validation.
+        self.dash = dash.Dash(
+            **kwargs,
+            pages_folder="",
+            suppress_callback_exceptions=True,
+            title="Vizro",
+            use_pages=True,
+        )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
