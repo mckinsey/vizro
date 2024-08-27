@@ -27,7 +27,10 @@ dependencies = [
   "langchain_mistralai",
   "langchain-huggingface",
   "langchain_anthropic",
-  "langchain-cohere"
+  "langchain-cohere",
+  "langchain-ollama",
+  "llama-cpp-python",
+
 ]
 
 [envs.default.env-vars]
