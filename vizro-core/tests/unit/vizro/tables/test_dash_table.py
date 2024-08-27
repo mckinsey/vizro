@@ -1,7 +1,6 @@
 import pandas as pd
-import vizro.models as vm
 from asserts import assert_component_equal
-from dash import dash_table, dcc, html
+from dash import dash_table
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
@@ -52,12 +51,7 @@ class TestDashDataTable:
             ),
         )
 
-
-class TestCustomDashDataTable:
     def test_custom_dash_data_table(self):
-        """Tests whether a custom created table callable can be correctly be built in vm.Table."""
-        id = "custom_dash_data_table"
-
         @capture("table")
         def custom_dash_data_table(data_frame):
             return dash_table.DataTable(
@@ -65,73 +59,12 @@ class TestCustomDashDataTable:
                 data=data_frame.to_dict("records"),
             )
 
-        table = vm.Table(
-            id=id,
-            figure=custom_dash_data_table(data_frame=data),
+        table = custom_dash_data_table(data_frame=data)()
+
+        assert_component_equal(
+            table,
+            dash_table.DataTable(
+                data=data_in_table,
+                columns=columns,
+            ),
         )
-        table.pre_build()
-
-        custom_table = table.build()
-
-        expected_table_object = dash_table.DataTable(
-            columns=columns,
-            data=data_in_table,
-        )
-        expected_table_object.id = "__input_" + id
-
-        expected_table = dcc.Loading(
-            children=[
-                None,
-                html.Div(
-                    expected_table_object,
-                    id=id,
-                    className="table-container",
-                ),
-            ],
-            color="grey",
-            parent_className="loading-container",
-            overlay_style={"visibility": "visible", "opacity": 0.3},
-        )
-
-        assert_component_equal(custom_table, expected_table)
-
-    def test_custom_dash_data_table_column_referral(self):
-        """Tests whether a custom created table callable can be correctly built in vm.Table.
-
-        This test focuses on the case that the custom grid include column referrals on presumed data knowledge.
-        """
-        id = "custom_dash_data_table"
-
-        @capture("table")
-        def custom_dash_data_table(data_frame):
-            data_frame["cat"]  # access "existing" column
-            return dash_table.DataTable(
-                columns=[{"name": col, "id": col} for col in data_frame.columns],
-                data=data_frame.to_dict("records"),
-            )
-
-        table = vm.Table(
-            id=id,
-            figure=custom_dash_data_table(data_frame=data),
-        )
-        table.pre_build()
-
-        custom_table = table.build()
-
-        expected_table_object = dash_table.DataTable(
-            columns=columns,
-            data=data_in_table,
-        )
-        expected_table_object.id = "__input_" + id
-
-        expected_table = dcc.Loading(
-            children=[
-                None,
-                html.Div(expected_table_object, id=id, className="table-container"),
-            ],
-            color="grey",
-            parent_className="loading-container",
-            overlay_style={"visibility": "visible", "opacity": 0.3},
-        )
-
-        assert_component_equal(custom_table, expected_table)

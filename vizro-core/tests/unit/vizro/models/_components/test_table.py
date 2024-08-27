@@ -97,6 +97,18 @@ class TestDunderMethodsTable:
         with pytest.raises(KeyError):
             table["unknown_args"]
 
+    def test_underlying_id_is_auto_generated(self, standard_dash_table):
+        table = vm.Table(id="table", figure=standard_dash_table)
+        table.pre_build()
+        # table() is the same as table.__call__()
+        assert table().id == "__input_table"
+
+    def test_underlying_id_is_provided(self, dash_data_table_with_id):
+        table = vm.Table(figure=dash_data_table_with_id)
+        table.pre_build()
+        # table() is the same as table.__call__()
+        assert table().id == "underlying_table_id"
+
 
 class TestAttributesTable:
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
@@ -141,8 +153,8 @@ class TestBuildTable:
             children=[
                 None,
                 html.Div(
-                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
                     id="text_table",
+                    children=[html.Div(id="__input_text_table")],
                     className="table-container",
                 ),
             ],
@@ -162,8 +174,8 @@ class TestBuildTable:
             children=[
                 None,
                 html.Div(
-                    dash_data_table(id="underlying_table_id", data_frame=gapminder)(),
                     id="text_table",
+                    children=[html.Div(id="underlying_table_id")],
                     className="table-container",
                 ),
             ],
@@ -182,8 +194,8 @@ class TestBuildTable:
             children=[
                 html.H3("Table Title"),
                 html.Div(
-                    dash_data_table(id="__input_text_table", data_frame=gapminder)(),
                     id="text_table",
+                    children=[html.Div(id="__input_text_table")],
                     className="table-container",
                 ),
             ],
