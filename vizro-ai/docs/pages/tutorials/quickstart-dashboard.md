@@ -75,10 +75,10 @@ Add a filter to filter the box plot by year.
 Next, submit the data and prompt string:
 
 ```py
-dashboard = vizro_ai.dashboard([df], user_question)
+dashboard = vizro_ai._dashboard([df], user_question)
 ```
 
-The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
+The call to `_dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
 
