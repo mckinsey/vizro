@@ -29,9 +29,7 @@ def gapminder_dynamic_first_n_last_n_function(gapminder):
     return lambda first_n=None, last_n=None: (
         pd.concat([gapminder[:first_n], gapminder[-last_n:]])
         if last_n
-        else gapminder[:first_n]
-        if first_n
-        else gapminder
+        else gapminder[:first_n] if first_n else gapminder
     )
 
 
