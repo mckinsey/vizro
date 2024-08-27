@@ -64,16 +64,11 @@ class Graph(VizroBaseModel):
             # After this callback has completed, the clientside update_graph_theme is triggered. In the case that
             # the theme selector has been set to the non-default theme, this would cause a flickering since the graph
             # with the wrong theme will be shown while the clientside callback runs. To avoid this we temporarily hide
-            # the graph and then make it visible again in the clientside callback.
-            # Ideally this would be done using the argument `running` but this only exists for serverside callbacks, so
-            # we do it manually.
-            # Setting fig.layout.template here rather than relying on the clientside callback is slightly more
-            # performant for a page with many graphs in the case that the template doesn't need switching.
-            from vizro.models import Dashboard
-
-            set_props(self.id, {"style": {"visibility": "hidden"}})
-            _, dashboard = next(model_manager._items_with_type(Dashboard))
-            fig.layout.template = dashboard.theme
+            # the graph and then make it visible again in the clientside callback. Ideally this would be done using the
+            # argument `running` on the clientside callback but this only exists for serverside callbacks, so we do it
+            # manually.
+            # set_props(self.id, {"style": {"visibility": "hidden"}})
+            pass
         return fig
 
     # Convenience wrapper/syntactic sugar.

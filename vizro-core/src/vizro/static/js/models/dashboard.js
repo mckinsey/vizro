@@ -19,13 +19,6 @@ export function _update_graph_theme(
 ) {
   const theme_to_apply = theme_selector_checked ? "vizro_light" : "vizro_dark";
 
-  // If graph has been returned from the server then it already has the dashboard default template applied in
-  // Graph.__call__, and so we don't need to do any updates apart from to undo the {"style": {"visibility": "hidden"}}.
-  // If this callback has been triggered through the theme selector toggle then we always want to update though.
-  if (theme_to_apply === vizro_themes["default"] && dash_clientside.callback_context.triggered_id !== "theme_selector") {
-    return [dash_clientside.no_update, {}];
-  }
-
   const updated_figure = {
     ...figure,
     layout: {
