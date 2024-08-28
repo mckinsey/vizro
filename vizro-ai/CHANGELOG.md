@@ -23,8 +23,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Add argument `return_elements` to`VizroAI.plot()`. When it is set to `True`, the return type will be changed to a `dataclass` containing the code string, figure object, business insights, and code explanation. ([#488](https://github.com/mckinsey/vizro/pull/488))
 
-- Add Google Colab notebook for users to experiment with `VizroAI.plot` method without local setup ([#618](https://github.com/mckinsey/vizro/pull/618))
-
 - Added functionality to generate dashboards from text. This feature is currently in **Alpha** and is not yet officially released ([#651](https://github.com/mckinsey/vizro/pull/651))
 
 ## Changed
