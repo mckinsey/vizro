@@ -24,13 +24,12 @@ def _component_to_dict(component: dash.development.base_component.Component) -> 
 def assert_component_equal(left, right, *, keys_to_strip=None):
     """Checks that the `left` and `right` Dash components are equal, ignoring `keys_to_strip`.
 
-    If keys_to_strip is set to STRIP_ALL then only the type and namespace of component
-    will be compared, similar to doing isinstance.
-
     Args:
         left: Dash component to compare.
         right: Dash component to compare.
         keys_to_strip: Keys to strip from the component dictionary before comparison.
+            If keys_to_strip is set to STRIP_ALL then only the type and namespace of component will
+            be compared, similar to doing isinstance.
 
     Examples:
         >>> from dash import html

@@ -1,5 +1,7 @@
 """Module containing the standard implementation of `dash_ag_grid.AgGrid`."""
 
+from typing import Any
+
 import dash_ag_grid as dag
 import pandas as pd
 
@@ -47,12 +49,15 @@ _DATA_TYPE_DEFINITIONS = {
 
 
 @capture("ag_grid")
-def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
+def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
 
     Args:
         data_frame: DataFrame containing the data to be displayed.
         kwargs: Additional keyword arguments to be passed to the `dash_ag_grid.AgGrid` component.
+
+    Returns:
+        A `dash_ag_grid.AgGrid` component with sensible defaults.
 
     Examples:
         Wrap inside `vm.AgGrid` to use as a component inside `vm.Page` or `vm.Container`.
