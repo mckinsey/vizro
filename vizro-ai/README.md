@@ -7,7 +7,6 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
 [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/docs/colab_dashboard/vizro-ai/examples/dashboard_by_vizro_ai.ipynb)
 
 <img src="./docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
