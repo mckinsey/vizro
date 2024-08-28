@@ -50,6 +50,10 @@ _DATA_TYPE_DEFINITIONS = {
 def dash_ag_grid(data_frame: pd.DataFrame, **kwargs) -> dag.AgGrid:
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
 
+    Args:
+        data_frame: DataFrame containing the data to be displayed.
+        kwargs: Additional keyword arguments to be passed to the `dash_ag_grid.AgGrid` component.
+
     Examples:
         Wrap inside `vm.AgGrid` to use as a component inside `vm.Page` or `vm.Container`.
         >>> import vizro.models as vm
