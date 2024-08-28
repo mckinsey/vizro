@@ -49,7 +49,6 @@ class Graph(VizroBaseModel):
     _set_actions = _action_validator_factory("clickData")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
-    # TODO: change to using template rather than layout. Test overridding works as expected.
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
