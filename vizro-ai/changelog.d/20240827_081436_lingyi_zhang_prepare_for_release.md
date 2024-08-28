@@ -16,12 +16,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Added functionality to generate dashboards from text. This feature is currently in **Alpha** and is not yet officially released ([#651](https://github.com/mckinsey/vizro/pull/651))
 
--->
 <!--
 ### Changed
 
@@ -34,11 +33,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Fixed
 
-- Fix py.cafe docs integration by pinning `ruff` dependency for mkdocs plugin. ([#640](https://github.com/mckinsey/vizro/pull/640))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 
