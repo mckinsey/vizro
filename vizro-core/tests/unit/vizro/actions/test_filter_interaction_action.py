@@ -81,9 +81,6 @@ def ctx_filter_interaction(request):
                 "filters": [],
                 "filter_interaction": args_grouping_filter_interaction,
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
-                ),
             }
         }
     }

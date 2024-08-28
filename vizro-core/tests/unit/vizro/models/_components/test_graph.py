@@ -6,8 +6,7 @@ import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
 from dash import dcc
-from dash._callback_context import context_value
-from dash._utils import AttributeDict
+from dash.exceptions import MissingCallbackContextException
 
 try:
     from pydantic.v1 import ValidationError
@@ -16,7 +15,6 @@ except ImportError:  # pragma: no cov
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 
@@ -103,7 +101,9 @@ class TestDunderMethodsGraph:
         "title, margin_t, title_pad_t",
         [(None, 24, None), ("Graph with title", None, 7), ("Graph with title..<br> and subtitle", None, None)],
     )
-    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t):
+    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
+        # Mock out set_props so we don't need to supply mock callback context for this test.
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
@@ -120,32 +120,11 @@ class TestDunderMethodsGraph:
         assert graph.layout.template.layout.margin.r == 24
         assert graph.layout.template.layout.title.pad.t == 24
 
-    def test_update_theme_outside_callback(self, standard_px_chart):
+    def test_update_theme_outside_callback(self, standard_px_chart, mocker):
+        # Mock out set_props so we don't need to supply mock callback context for this test.
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(
-            margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template="vizro_dark"
-        )
-
-    @pytest.mark.parametrize("template", ["vizro_dark", "vizro_light"])
-    def test_update_theme_inside_callback(self, standard_px_chart, template):
-        mock_ctx = {
-            "args_grouping": {
-                "external": {
-                    "theme_selector": CallbackTriggerDict(
-                        id="theme_selector",
-                        property="checked",
-                        value=template == "vizro_light",
-                        str_id="theme_selector",
-                        triggered=False,
-                    )
-                }
-            }
-        }
-        context_value.set(AttributeDict(**mock_ctx))
-        graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(
-            margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24, template=template
-        )
+        assert graph == standard_px_chart.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
     def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])

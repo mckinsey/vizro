@@ -1,139 +1,52 @@
-"""Dev app to try things out."""
+"""Example to show dashboard configuration."""
 
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import filter_interaction
-from vizro.figures import kpi_card
-from vizro.managers import data_manager
-from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 
-data = pd.DataFrame(
-    {
-        "Column 1": [1, 2, 3, 4, 5, 6],
-        "Column 2": ["A", "B", "C", "VeryLongStringInputCell_VeryLongStringInputCell", "D", "E"],
-        "Column 3": [10.5, 20.1, 30.2, 40.3, 50.4, 60.5],
-    }
+# NUMBER_OF_COMPONENTS = 4
+NUMBER_OF_COMPONENTS = 16
+
+
+def squared_layout(N):
+    """Util function."""
+    import math
+
+    size = math.ceil(math.sqrt(N))
+    layout = [[(i * size + j) if (i * size + j) < N else -1 for j in range(size)] for i in range(size)]
+    return layout
+
+
+page_one = vm.Page(
+    title="Page 1",
+    layout=vm.Layout(grid=squared_layout(NUMBER_OF_COMPONENTS), col_gap="0px"),
+    components=[
+        vm.Graph(id=f"{i}_graph", figure=px.box(px.data.gapminder(), x="continent", y="lifeExp", title=f"Graph {i}"))
+        for i in range(NUMBER_OF_COMPONENTS)
+    ],
+    controls=[vm.Filter(column="continent")],
 )
 
-iris_dataset = px.data.iris()
-giant_dataset = pd.concat([iris_dataset] * 10000, ignore_index=True)
-
-
-def load_data():
-    """Load data."""
-    return data
-
-
-data_manager["my_data"] = load_data
-
-
-@capture("ag_grid")
-def custom_dash_ag_grid(data_frame, **kwargs):
-    """Custom AgGrid."""
-    # print(f"dash_ag_grid -> len: {len(data_frame)}")
-    return dash_ag_grid(data_frame, **kwargs)()
-
-
-@capture("table")
-def custom_dash_data_table(data_frame, **kwargs):
-    """Custom DataTable."""
-    # print(f"dash_data_table -> len: {len(data_frame)}")
-    return dash_data_table(data_frame, **kwargs)()
-
-
-@capture("graph")
-def custom_px_scatter(data_frame, **kwargs):
-    """Custom Scatter plot."""
-    # print(f"graph -> len: {len(data_frame)}")
-    return px.scatter(data_frame, **kwargs)
-
-
-@capture("figure")
-def custom_kpi_card(data_frame, **kwargs):
-    """Custom KPI card."""
-    # print(f"kpi_card -> len: {len(data_frame)}")
-    return kpi_card(data_frame, **kwargs)()
-
-
-page_grid = vm.Page(
-    title="Example Page",
-    layout=vm.Layout(
-        grid=[
-            [0, 1],
-            [2, 3],
-        ]
-    ),
+page_two = vm.Page(
+    title="Page 2",
+    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
-        vm.AgGrid(
-            id="outer_ag_grid_id",
-            figure=custom_dash_ag_grid(
-                id="inner_ag_grid_id",
-                data_frame="my_data",
-                columnDefs=[{"field": col, "checkboxSelection": True, "filter": True} for col in data.columns],
-                columnSize="autoSize",
-                defaultColDef={"resizable": True},
-                persistence=True,
-                persistence_type="local",
-                persisted_props=["selectedRows", "filterModel"],
-                dashGridOptions={
-                    "rowSelection": "multiple",
-                    "suppressRowClickSelection": True,
-                    # Turn pagination on to see results:
-                    # "pagination": True,
-                    # "paginationPageSize": 3,
-                },
-            ),
-            actions=[
-                vm.Action(
-                    function=filter_interaction(targets=["graph_id"]),
-                )
-            ],
-        ),
         vm.Table(
-            id="outer_table_id",
-            figure=custom_dash_data_table(
-                id="inner_table_id",
-                data_frame="my_data",
-                row_selectable="multi",
-                filter_action="native",
-                persistence=True,
-                persistence_type="local",
-                # Turn pagination on to see results:
-                # page_action="native",
-                # page_size=3,
-            ),
+            id="P2_table", title="Data Table", figure=dash_data_table(id="P2_UL_table", data_frame=px.data.gapminder())
+        ),
+        vm.AgGrid(
+            id="P2_aggrid", title="AG Grid", figure=dash_ag_grid(id="P2_UL_aggrid", data_frame=px.data.gapminder())
         ),
         vm.Graph(
-            id="graph_id",
-            figure=custom_px_scatter(data_frame="my_data", x="Column 1", y="Column 3"),
-        ),
-        vm.Figure(
-            id="figure_id",
-            figure=custom_kpi_card(data_frame="my_data", value_column="Column 1"),
+            id="P2_graph",
+            figure=px.box(px.data.gapminder(), x="continent", y="lifeExp", title="Graph", animation_frame="year"),
         ),
     ],
-    controls=[vm.Filter(column="Column 1", selector=vm.RangeSlider(step=1))],
+    controls=[vm.Filter(column="continent")],
 )
-
-columnDefs = [{"field": "petal_length"}]
-
-dashboard = vm.Dashboard(
-    pages=[
-        vm.Page(
-            title="Page_1",
-            components=[vm.Card(text="Dummy page just for testing")],
-        ),
-        page_grid,
-        vm.Page(
-            title="Page_3",
-            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=giant_dataset, columnDefs=columnDefs))],
-        ),
-    ]
-)
+dashboard = vm.Dashboard(pages=[page_one, page_two], theme="vizro_light")
 
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
