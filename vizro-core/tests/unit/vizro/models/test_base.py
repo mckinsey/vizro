@@ -510,8 +510,8 @@ model = vm.Dashboard(
                     column="species",
                     selector=vm.Dropdown(
                         options=[
-                            {label: "Setosa", value: "setosa"},
-                            {label: "Virginica", value: "virginica"},
+                            {"label": "Setosa", "value": "setosa"},
+                            {"label": "Virginica", "value": "virginica"},
                         ]
                     ),
                 )
