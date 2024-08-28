@@ -14,13 +14,13 @@ import plotly.graph_objects as go
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check
 
-ADDITIONAL_IMPORTS = {
+ADDITIONAL_IMPORTS = [
     "import vizro.plotly.express as px",
     "import plotly.graph_objects as go",
     "import pandas as pd",
     "import numpy as np",
     "from vizro.models.types import capture",
-}
+]
 CUSTOM_CHART_NAME = "custom_chart"
 
 
@@ -73,7 +73,7 @@ class ChartPlanStatic(BaseModel):
         Explanation of the code steps used for `chart_code` field.""",
     )
 
-    _additional_vizro_imports: Set[str] = PrivateAttr(ADDITIONAL_IMPORTS)
+    _additional_vizro_imports: List[str] = PrivateAttr(ADDITIONAL_IMPORTS)
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
@@ -86,15 +86,15 @@ class ChartPlanStatic(BaseModel):
             )
         return v
 
-    def _get_imports(self, vizro: bool = True):
-        imports = set(self.imports) | self._additional_vizro_imports
-        if vizro:  # TODO: this is a bit meh
+    def _get_imports(self, vizro: bool = False):
+        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports)) # remove duplicates
+        if vizro:  # TODO: improve code of below
             imports = [imp for imp in imports if "import plotly.express as px" not in imp]
         else:
             imports = [imp for imp in imports if "vizro" not in imp]
         return "\n".join(imports) + "\n"
 
-    def _get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = True):
+    def _get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = False):
         chart_code = self.chart_code
         if vizro:
             chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
@@ -106,16 +106,28 @@ class ChartPlanStatic(BaseModel):
         chart_name = chart_name or CUSTOM_CHART_NAME
         imports = self._get_imports(vizro=vizro)
         chart_code = self._get_chart_code(chart_name=chart_name, vizro=vizro)
-        complete_code = imports + chart_code
+        unformatted_code = imports + chart_code
         if lint:
             try:
-                complete_code = _format_and_lint(complete_code)
+                linted_code = _format_and_lint(unformatted_code)
+                return linted_code
             except Exception as e:
-                logging.warning(f"Failed to lint the code due to {e}. Please fix and try again.")
-        return complete_code
+                logging.exception("Code formatting failed; returning unformatted code")
+                return unformatted_code
 
-    def get_fig_object(self, data_frame, chart_name: Optional[str] = None, vizro=True):
-        """Get the figure object."""
+        return unformatted_code
+
+    def get_fig_object(self, data_frame:pd.DataFrame, chart_name: Optional[str] = None, vizro=False):
+        """Execute code to obtain the plotly go.Figure object.
+        
+        Args:
+            data_frame: Data frame to be used in the chart.
+            chart_name: Name of the chart function. Defaults to `None`,
+                in which case it remains as `custom_chart`.
+            vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `False`.
+        
+        
+        """
         ldict = {}
         chart_name = chart_name or CUSTOM_CHART_NAME
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
@@ -166,8 +178,8 @@ class ChartPlanDynamicFactory:
 
 
 if __name__ == "__main__":
-    # Ideas to implement - No code execution mode
-    # test OS models
+    # Ideas to implement - No code execution mode, done
+    # test OS models --> tough, I cannot really get a local model to run, ollama 3.1:7B barely works
 
     from dotenv import find_dotenv, load_dotenv
 
