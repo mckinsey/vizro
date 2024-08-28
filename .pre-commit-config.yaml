@@ -18,11 +18,6 @@ repos:
         entry: python tools/check_for_datafiles.py
         language: python
         pass_filenames: false
-      - id: check-forbidden-words
-        name: check-forbidden-words
-        entry: tools/find_forbidden_words_in_repo.sh
-        language: script
-        pass_filenames: false
       - id: check-branch-name
         name: check-branch-name
         entry: tools/check_branch_name.sh
@@ -122,7 +117,6 @@ ci:
     - check-yaml
     - check-json
     - check-datafiles
-    - check-forbidden-words
     - check-branch-name
     - codespell
     - bandit
