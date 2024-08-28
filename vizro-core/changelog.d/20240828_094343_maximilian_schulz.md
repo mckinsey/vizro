@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models to convert correctly ([#660](https://github.com/mckinsey/vizro/pull/660))
+- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly ([#660](https://github.com/mckinsey/vizro/pull/660))
 
 <!--
 ### Security
