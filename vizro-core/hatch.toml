@@ -17,6 +17,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatc
 
 [envs.default]
 dependencies = [
+  "pip",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -29,6 +30,7 @@ dependencies = [
   "openpyxl",
   "jupyter"
 ]
+installer = "uv"
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.

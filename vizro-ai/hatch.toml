@@ -10,6 +10,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatc
 
 [envs.default]
 dependencies = [
+  "pip",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -24,6 +25,7 @@ dependencies = [
   "chromedriver-autoinstaller>=0.6.4",
   "urllib3<2.0.0"  # helps to resolve bug with urllib3 timeout from vizro-ai integration tests: https://bugs.launchpad.net/python-jenkins/+bug/2018567
 ]
+installer = "uv"
 
 [envs.default.env-vars]
 VIZRO_AI_LOG_LEVEL = "DEBUG"
