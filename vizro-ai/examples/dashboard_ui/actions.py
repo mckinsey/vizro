@@ -13,7 +13,7 @@ from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
 
-SUPPORTED_VENDORS = {"ChatOpenAI": ChatOpenAI}
+SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
 
 
 def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):

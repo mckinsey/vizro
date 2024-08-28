@@ -30,8 +30,8 @@ class CustomDashboard(vm.Dashboard):
 
     def build(self):
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="local"))
-        dashboard_build_obj.children.append(dcc.Store(id="api-store-id", storage_type="local"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="api-store-id", storage_type="session"))
         dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
         return dashboard_build_obj
 
@@ -86,7 +86,7 @@ plot_page = MyPage(
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[0, 0, 1, 1, -1, -1, -1, 2, -1]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(grid=[[2, -1, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -107,7 +107,7 @@ plot_page = MyPage(
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown-id"),
-                OffCanvas(id="settings", options=["ChatOpenAI"], value="ChatOpenAI"),
+                OffCanvas(id="settings", options=["OpenAI"], value="ChatOpenAI"),
             ],
         ),
         Icon(id="open-settings-id"),
@@ -146,7 +146,7 @@ def update_data(page_data, outputs_data):
 
     ai_response = outputs_data["ai_response"]
     fig = json.loads(outputs_data["figure"])
-    filename = f"Uploaded file name: '{outputs_data['filename']}'"
+    filename = f"File uploaded: '{outputs_data['filename']}'"
     prompt = outputs_data["prompt"]
 
     return ai_response, fig, prompt, filename
