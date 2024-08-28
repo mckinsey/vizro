@@ -11,6 +11,28 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.2.1'></a>
+
+# 0.2.1 — 2024-08-28
+
+## Removed
+
+- Private attribute `_return_all_text` is removed from `VizroAI` class ([#518](https://github.com/mckinsey/vizro/pull/518))
+
+## Added
+
+- Enable feature to get PlotOutputs dataclass from `VizroAI.plot()`. Add argument `return_elements`to`VizroAI.plot()`, when it is set to`True`, the return type will be changed to a `dataclass` containing the code string, figure object, business insights, and code explanation. ([#488](https://github.com/mckinsey/vizro/pull/488))
+
+- Add Google Colab notebook for users to experiment with `VizroAI.plot` method without local setup ([#618](https://github.com/mckinsey/vizro/pull/618))
+
+- Added functionality to generate dashboards from text. This feature is currently in **Alpha** and is not yet officially released ([#651](https://github.com/mckinsey/vizro/pull/651))
+
+## Changed
+
+- Disabled figure display upon variable assignment, to display outcome of `VizroAI.plot()` add `.show()`. Enable feature XXX ([#527](https://github.com/mckinsey/vizro/pull/527))
+
+- Stabilized `plot` performance by addressing several dataframe mutation issues. ([#603](https://github.com/mckinsey/vizro/pull/603))
+
 <a id='changelog-0.2.0'></a>
 
 # 0.2.0 — 2024-05-09
