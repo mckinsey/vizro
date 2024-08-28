@@ -15,7 +15,7 @@ df1 = px.data.gapminder()
 df2 = px.data.stocks()
 
 
-@pytest.mark.easy
+@pytest.mark.easy_dashboard
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_environment():
     # We only need to install chromedriver outside CI.
