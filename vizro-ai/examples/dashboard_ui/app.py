@@ -170,4 +170,8 @@ def show_api_base(value):
     return "text" if value else "password"
 
 
-Vizro().build(dashboard).run()
+app = Vizro().build(dashboard)
+server = app.dash.server
+
+if __name__ == "__main__":
+    app.run()

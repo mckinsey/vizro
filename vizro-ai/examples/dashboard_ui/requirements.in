@@ -1,0 +1,4 @@
+
+gunicorn
+vizro-ai
+black
