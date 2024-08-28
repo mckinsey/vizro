@@ -52,11 +52,14 @@ class Figure(VizroBaseModel):
     @_log_call
     def build(self):
         return dcc.Loading(
+            # Refer to the vm.AgGrid build method for details on why we return the
+            # html.Div(id=self.id) instead of actual figure object with the original data_frame.
             # Optimally, we would like to provide id=self.id directly here such that we can target the CSS
-            # of the children via ID as well, but the `id` doesn't seem  to be passed on to the loading component.
-            # I've raised an issue on dash here: https://github.com/plotly/dash/issues/2878
+            # of the children via ID as well, but the `id` doesn't seem to be passed on to the loading component.
+            # This limitation is handled with this PR -> https://github.com/plotly/dash/pull/2888.
+            # The PR is merged but is not released yet. Once it is released, we can try to refactor the following code.
             # In the meantime, we are adding an extra html.div here.
-            html.Div(self.__call__(), id=self.id, className="figure-container"),
+            html.Div(id=self.id, className="figure-container"),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

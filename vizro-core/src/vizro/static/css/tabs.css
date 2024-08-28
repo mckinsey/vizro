@@ -10,6 +10,7 @@
   align-self: stretch;
   border-bottom: 1px solid var(--border-subtle-alpha-01);
   display: flex;
+  flex-wrap: nowrap;
   gap: 16px;
   height: 32px;
 }
