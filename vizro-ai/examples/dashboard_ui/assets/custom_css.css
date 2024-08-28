@@ -147,13 +147,13 @@
 }
 
 .anchor-container {
+  background: #060a17;
+  bottom: 0;
   display: flex;
+  font-weight: 600;
   gap: 2rem;
   padding: 4px;
   place-content: baseline center;
-  background: #060a17;
-  bottom: 0;
   position: fixed;
   width: 100%;
-  font-weight: 600;
 }
