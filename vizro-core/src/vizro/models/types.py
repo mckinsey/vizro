@@ -311,7 +311,7 @@ class capture:
     Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
     `"ag_grid"`, `"figure"` and `"action"`.
 
-    Examples:
+    Examples
         >>> @capture("graph")
         >>> def graph_function():
         >>>     ...
