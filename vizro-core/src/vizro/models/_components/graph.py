@@ -49,6 +49,7 @@ class Graph(VizroBaseModel):
     _set_actions = _action_validator_factory("clickData")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
+    # TODO: change to using template rather than layout. Test overridding works as expected.
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
@@ -121,22 +122,9 @@ class Graph(VizroBaseModel):
     @staticmethod
     def _optimise_fig_layout_for_dashboard(fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
-        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
-        if fig.layout.margin.t is None and fig.layout.title.text is None:
-            fig.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
-
-        # Reduce `title_pad_t` if no subtitle is provided and `title_pad_t` is not explicitly set.
+        # Reduce `title_pad_t` if there is a title without subtitle and `title_pad_t` is not explicitly set.
         if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
             fig.update_layout(title_pad_t=7)
-
-        if fig.layout.title.pad.l is None:
-            fig.update_layout(title_pad_l=0)
-
-        if fig.layout.title.pad.r is None:
-            fig.update_layout(title_pad_r=0)
-
-        if fig.layout.margin.l is None:
-            fig.update_layout(margin_l=24)
 
         return fig
 
