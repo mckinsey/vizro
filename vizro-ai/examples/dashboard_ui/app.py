@@ -2,6 +2,7 @@
 
 import json
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -16,7 +17,7 @@ from components import (
     UserPromptTextArea,
     UserUpload,
 )
-from dash import Input, Output, State, callback
+from dash import Input, Output, State, callback, get_asset_url, html
 from dash.exceptions import PreventUpdate
 from vizro import Vizro
 
@@ -171,6 +172,25 @@ def show_api_base(value):
 
 
 app = Vizro().build(dashboard)
+app.dash.layout.children.append(
+    html.Div(
+        [
+            dbc.NavLink("Contact us", href="https://github.com/mckinsey/vizro/issues"),
+            dbc.NavLink("GitHub", href="https://github.com/mckinsey/vizro"),
+            dbc.NavLink("Docs", href="https://vizro.readthedocs.io/projects/vizro-ai/"),
+            html.Div(
+                [
+                    "Made using ",
+                    html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
+                    "vizro",
+                ],
+            ),
+        ],
+        className="anchor-container",
+    )
+)
+
+
 server = app.dash.server
 
 if __name__ == "__main__":
