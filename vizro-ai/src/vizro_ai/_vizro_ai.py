@@ -163,7 +163,7 @@ class VizroAI:
 
         return vizro_plot if return_elements else vizro_plot.figure
 
-    def dashboard(
+    def _dashboard(
         self,
         dfs: List[pd.DataFrame],
         user_input: str,
