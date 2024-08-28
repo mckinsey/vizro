@@ -3,7 +3,6 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
 from vizro.tables import dash_data_table
 
 df = px.data.iris()
