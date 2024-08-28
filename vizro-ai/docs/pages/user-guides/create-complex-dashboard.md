@@ -1,5 +1,9 @@
 # Generate a complex dashboard
 
+!!! warning "Feature in Alpha Version"
+    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
+
+
 This guide shows you how to instruct Vizro-AI to create a complex dashboard.
 
 In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the output generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
@@ -95,10 +99,10 @@ It's worth noting that a more structured user request is also more machine reada
 Next, submit the data and prompt string:
 
 ```py
-dashboard = vizro_ai.dashboard([df1, df2], user_question)
+dashboard = vizro_ai._dashboard([df1, df2], user_question)
 ```
 
-The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
+The call to `_dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
 
