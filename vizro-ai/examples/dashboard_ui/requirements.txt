@@ -3,10 +3,7 @@
 aiohappyeyeballs==2.4.0
     # via aiohttp
 aiohttp==3.10.5
-    # via
-    #   langchain
-    #   langchain-community
-    #   vizro-ai
+    # via langchain
 aiosignal==1.3.1
     # via aiohttp
 annotated-types==0.7.0
@@ -15,8 +12,6 @@ anyio==4.4.0
     # via
     #   httpx
     #   openai
-asttokens==2.4.1
-    # via stack-data
 attrs==24.2.0
     # via aiohttp
 black==24.8.0
@@ -53,14 +48,8 @@ dash-mantine-components==0.12.1
     # via vizro
 dash-table==5.0.0
     # via dash
-dataclasses-json==0.6.7
-    # via langchain-community
-decorator==5.1.1
-    # via ipython
 distro==1.9.0
     # via openai
-executing==2.0.1
-    # via stack-data
 flask==3.0.3
     # via
     #   dash
@@ -89,12 +78,8 @@ idna==3.8
     #   yarl
 importlib-metadata==8.4.0
     # via dash
-ipython==8.26.0
-    # via vizro-ai
 itsdangerous==2.2.0
     # via flask
-jedi==0.19.1
-    # via ipython
 jinja2==3.1.4
     # via flask
 jiter==0.5.0
@@ -104,49 +89,41 @@ jsonpatch==1.33
 jsonpointer==3.0.0
     # via jsonpatch
 langchain==0.2.15
-    # via
-    #   langchain-community
-    #   vizro-ai
-langchain-community==0.2.13
     # via vizro-ai
-langchain-core==0.2.35
+langchain-core==0.2.36
     # via
     #   langchain
-    #   langchain-community
     #   langchain-openai
     #   langchain-text-splitters
-    #   vizro-ai
+    #   langgraph
+    #   langgraph-checkpoint
 langchain-openai==0.1.23
     # via vizro-ai
 langchain-text-splitters==0.2.2
     # via langchain
+langgraph==0.2.14
+    # via vizro-ai
+langgraph-checkpoint==1.0.6
+    # via langgraph
 langsmith==0.1.106
     # via
     #   langchain
-    #   langchain-community
     #   langchain-core
 markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-marshmallow==3.22.0
-    # via dataclasses-json
-matplotlib-inline==0.1.7
-    # via ipython
 multidict==6.0.5
     # via
     #   aiohttp
     #   yarl
 mypy-extensions==1.0.0
-    # via
-    #   black
-    #   typing-inspect
+    # via black
 nest-asyncio==1.6.0
     # via dash
 numpy==1.26.4
     # via
     #   langchain
-    #   langchain-community
     #   pandas
 openai==1.42.0
     # via
@@ -159,28 +136,17 @@ packaging==24.1
     #   black
     #   gunicorn
     #   langchain-core
-    #   marshmallow
     #   plotly
 pandas==2.2.2
     # via
     #   vizro
     #   vizro-ai
-parso==0.8.4
-    # via jedi
 pathspec==0.12.1
     # via black
-pexpect==4.9.0
-    # via ipython
 platformdirs==4.2.2
     # via black
 plotly==5.23.0
     # via dash
-prompt-toolkit==3.0.47
-    # via ipython
-ptyprocess==0.7.0
-    # via pexpect
-pure-eval==0.2.3
-    # via stack-data
 pydantic==2.8.2
     # via
     #   langchain
@@ -190,8 +156,6 @@ pydantic==2.8.2
     #   vizro
 pydantic-core==2.20.1
     # via pydantic
-pygments==2.18.0
-    # via ipython
 python-dateutil==2.9.0.post0
     # via pandas
 python-dotenv==1.0.1
@@ -201,7 +165,6 @@ pytz==2024.1
 pyyaml==6.0.2
     # via
     #   langchain
-    #   langchain-community
     #   langchain-core
 regex==2024.7.24
     # via tiktoken
@@ -209,7 +172,6 @@ requests==2.32.3
     # via
     #   dash
     #   langchain
-    #   langchain-community
     #   langsmith
     #   tiktoken
 retrying==1.3.4
@@ -220,7 +182,6 @@ setuptools==74.0.0
     # via dash
 six==1.16.0
     # via
-    #   asttokens
     #   python-dateutil
     #   retrying
 sniffio==1.3.1
@@ -229,27 +190,18 @@ sniffio==1.3.1
     #   httpx
     #   openai
 sqlalchemy==2.0.32
-    # via
-    #   langchain
-    #   langchain-community
-stack-data==0.6.3
-    # via ipython
+    # via langchain
 tabulate==0.9.0
     # via vizro-ai
 tenacity==8.5.0
     # via
     #   langchain
-    #   langchain-community
     #   langchain-core
     #   plotly
 tiktoken==0.7.0
     # via langchain-openai
 tqdm==4.66.5
     # via openai
-traitlets==5.14.3
-    # via
-    #   ipython
-    #   matplotlib-inline
 typing-extensions==4.12.2
     # via
     #   dash
@@ -258,21 +210,14 @@ typing-extensions==4.12.2
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
-    #   typing-inspect
-typing-inspect==0.9.0
-    # via dataclasses-json
 tzdata==2024.1
     # via pandas
 urllib3==2.2.2
-    # via
-    #   requests
-    #   vizro-ai
+    # via requests
 vizro==0.1.21
     # via vizro-ai
-vizro-ai==0.2.0
+vizro-ai==0.2.1
     # via -r requirements.in
-wcwidth==0.2.13
-    # via prompt-toolkit
 werkzeug==3.0.4
     # via
     #   dash
