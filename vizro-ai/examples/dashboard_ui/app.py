@@ -29,6 +29,7 @@ class CustomDashboard(vm.Dashboard):
     """Custom Dashboard model."""
 
     def build(self):
+        """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
         dashboard_build_obj.children.append(dcc.Store(id="api-store-id", storage_type="session"))

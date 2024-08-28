@@ -1,12 +1,8 @@
 """Contains custom components used within a dashboard."""
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:
-    from pydantic import Field
-
 from typing import List, Literal
 
+import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, html
@@ -14,13 +10,6 @@ from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
-
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    pass
-
-import black
 
 
 class UserPromptTextArea(vm.VizroBaseModel):
@@ -48,7 +37,8 @@ class UserPromptTextArea(vm.VizroBaseModel):
             children=[
                 dcc.Textarea(
                     id=self.id,
-                    placeholder="How can Vizro-AI help you today?",
+                    placeholder="Describe the chart you want to create, e.g. "
+                    "'Visualize the life expectancy per continent.'",
                 )
             ]
         )
@@ -188,6 +178,7 @@ class MyPage(vm.Page):
     type: Literal["my_page"] = "my_page"
 
     def pre_build(self):
+        """Overwriting pre_build."""
         pass
 
 
