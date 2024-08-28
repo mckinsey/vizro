@@ -27,7 +27,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Disabled figure display upon variable assignment, to display outcome of `VizroAI.plot()` add `.show()`. Enable feature XXX ([#527](https://github.com/mckinsey/vizro/pull/527))
+- Disabled figure display upon variable assignment. To display outcome of `VizroAI.plot()` add `.show()`. ([#527](https://github.com/mckinsey/vizro/pull/527))
 
 - Stabilized `plot` performance by addressing several dataframe mutation issues. ([#603](https://github.com/mckinsey/vizro/pull/603))
 
