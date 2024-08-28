@@ -81,16 +81,6 @@ class UserUpload(vm.VizroBaseModel):
                     children=html.Div(
                         ["Drag and Drop or ", html.A("Select Files")], style={"fontColor": "rgba(255, 255, 255, 0.6)"}
                     ),
-                    style={
-                        "height": "45px",
-                        "lineHeight": "45px",
-                        "borderWidth": "1px",
-                        "borderStyle": "dashed",
-                        "borderRadius": "5px",
-                        "textAlign": "center",
-                        "color": "#d1d1d5",
-                        "borderColor": "rgba(43, 46, 57, 1)",
-                    },
                 ),
             ]
         )

@@ -20,17 +20,8 @@
 
 #text-area-id {
   background-color: inherit;
-  border: 1px solid rgba(43, 46, 57, 1);
-  color: rgba(255, 255, 255, 0.6);
-  min-height: 90px;
-  padding: 8px;
-  width: 100%;
-}
-
-#dashboard-text-area {
-  background-color: inherit;
-  border: 1px solid rgba(43, 46, 57, 1);
-  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--border-subtle-alpha-01);
+  color: var(--text-primary);
   min-height: 90px;
   padding: 8px;
   width: 100%;
@@ -124,4 +115,13 @@
   justify-content: end;
   padding-right: 2px;
   width: 100%;
+}
+
+#data-upload-id {
+  border: 1px dashed var(--border-subtle-alpha-01);
+  border-radius: 5px;
+  color: var(--text-primary);
+  height: 46px;
+  line-height: 46px;
+  text-align: center;
 }
