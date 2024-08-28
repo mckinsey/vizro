@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Added functionality to generate dashboards from text. This feature is currently in **Alpha** and is not yet officially released. ([#651](https://github.com/mckinsey/vizro/pull/651))
+- Added functionality to generate dashboards from text. This feature is currently in **Alpha** and is not yet officially released ([#651](https://github.com/mckinsey/vizro/pull/651))
 
 <!--
 ### Changed
