@@ -333,7 +333,14 @@ def complete_dashboard():
                 ],
             ),
         ],
-        controls=[vm.Filter(column="species")],
+        controls=[
+            vm.Filter(
+                column="species",
+                selector=vm.Dropdown(
+                    options=[{"label": "Setosa", "value": "setosa"}, {"label": "Virginica", "value": "virginica"}]
+                ),
+            )
+        ],
     )
 
     dashboard = vm.Dashboard(title="Bar", pages=[page])
@@ -498,7 +505,17 @@ model = vm.Dashboard(
             ],
             title="Page 1",
             layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
-            controls=[vm.Filter(column="species")],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Dropdown(
+                        options=[
+                            {label: "Setosa", value: "setosa"},
+                            {label: "Virginica", value: "virginica"},
+                        ]
+                    ),
+                )
+            ],
         )
     ],
     title="Bar",

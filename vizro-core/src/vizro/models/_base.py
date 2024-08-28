@@ -100,7 +100,7 @@ def _dict_to_python(object: Any) -> str:
             fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
             return f"vm.{__vizro_model__}({fields})"
     elif isinstance(object, dict):
-        fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
+        fields = ", ".join(f"{field_name}:{_dict_to_python(value)}" for field_name, value in object.items())
         return "{" + fields + "}"
     elif isinstance(object, list):
         # Need to do this manually to avoid extra quotation marks that arise when doing repr(List).
