@@ -100,8 +100,7 @@ class Vizro:
 
         # Set global template to vizro_light or vizro_dark.
         # The choice between these is generally meaningless because chart colors in the two are identical, and
-        # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
-        # clientside theme selector callback.
+        # everything else gets overridden in the clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
         # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
         # either because it's a staticmethod so can't access self.old_theme (though we could use a global variable to

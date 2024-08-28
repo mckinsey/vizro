@@ -10,36 +10,32 @@ from vizro.managers import model_manager
 
 @pytest.fixture
 def target_scatter_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2007, scatter_params):
-    continent, pop, y, x, template = request.param
+    continent, pop, y, x = request.param
     continent = continent if isinstance(continent, list) else [continent]
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(data, template=template, **scatter_params).update_layout(
-        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
-    )
+    return px.scatter(data, **scatter_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
 def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2007, box_params):
-    continent, pop, y, x, template = request.param
+    continent, pop, y, x = request.param
     continent = continent if isinstance(continent, list) else [continent]
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(data, template=template, **box_params).update_layout(
-        margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24
-    )
+    return px.box(data, **box_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
 
 
 @pytest.fixture
 def ctx_on_page_load(request):
     """Mock dash.ctx that represents on page load."""
-    continent_filter, pop, y, x, template = request.param
+    continent_filter, pop, y, x = request.param
     mock_ctx = {
         "args_grouping": {
             "external": {
@@ -76,13 +72,6 @@ def ctx_on_page_load(request):
                         triggered=False,
                     ),
                 ],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=template == "vizro_light",
-                    str_id="theme_selector",
-                    triggered=False,
-                ),
             }
         }
     }
@@ -90,26 +79,22 @@ def ctx_on_page_load(request):
     return context_value
 
 
+# These tests only have one case in the pytest.mark.parametrize but have been left as parametrized so that they can
+# use fixtures with `indirect` and `request.param` in order to match other tests.
 class TestOnPageLoad:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template",
+        "ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x",
         [
             (
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-                "vizro_dark",
-            ),
-            (
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
-                "vizro_light",
+                ["Africa", [10**6, 10**7], "pop", "continent"],
+                ["Africa", [10**6, 10**7], "pop", "continent"],
             ),
         ],
         indirect=["ctx_on_page_load", "target_scatter_filtered_continent_and_pop_parameter_y_and_x"],
     )
     def test_multiple_controls_one_target(
-        self, ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, template, box_chart
+        self, ctx_on_page_load, target_scatter_filtered_continent_and_pop_parameter_y_and_x, box_chart
     ):
         # Creating and adding a Filter objects to the existing Page
         continent_filter = vm.Filter(
@@ -147,7 +132,6 @@ class TestOnPageLoad:
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
         result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
 
-        box_chart.layout.template = template
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
             "box_chart": box_chart,
@@ -162,14 +146,9 @@ class TestOnPageLoad:
         "target_box_filtered_continent_and_pop_parameter_y_and_x",
         [
             (
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_dark"],
-            ),
-            (
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
-                ["Africa", [10**6, 10**7], "pop", "continent", "vizro_light"],
+                ["Africa", [10**6, 10**7], "pop", "continent"],
+                ["Africa", [10**6, 10**7], "pop", "continent"],
+                ["Africa", [10**6, 10**7], "pop", "continent"],
             ),
         ],
         indirect=True,
