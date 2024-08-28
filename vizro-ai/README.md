@@ -21,8 +21,8 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 
 ## Try out live
 
-| Platform     | Chart creation                                                                                                                                                                            | Dashboard creation                                                                                                                                                                      |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform     | Chart creation                                                                                                                                                                            | Dashboard creation                                                                                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Google Colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/chart_by_vizro_ai.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/mckinsey/vizro/blob/main/vizro-ai/examples/dashboard_by_vizro_ai.ipynb) |
 
 ## Why Vizro-AI?
