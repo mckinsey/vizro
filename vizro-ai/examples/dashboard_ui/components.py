@@ -143,7 +143,7 @@ class OffCanvas(vm.VizroBaseModel):
                 dbc.InputGroup(
                     [
                         dbc.InputGroupText("API base"),
-                        dbc.Input(placeholder="API base", type="password", id=f"{self.id}-api-base"),
+                        dbc.Input(placeholder="(optional) API base", type="password", id=f"{self.id}-api-base"),
                         html.Div(
                             dbc.Checklist(
                                 id=f"{self.id}-api-base-toggle",
