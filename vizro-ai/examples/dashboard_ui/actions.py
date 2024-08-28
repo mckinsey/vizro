@@ -50,7 +50,7 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
         ai_response = "API key not found. Make sure you enter your API key!"
         figure = go.Figure()
         return create_response(ai_response, figure, user_prompt, data["filename"])
-    
+
     if api_key.startswith('"'):
         ai_response = "Make sure you enter your API key without quotes!"
         figure = go.Figure()
