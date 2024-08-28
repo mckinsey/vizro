@@ -16,7 +16,7 @@ def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[str,
     Args:
         targets: List of target component ids to apply on page load mechanism to
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
     Returns:
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
