@@ -16,6 +16,7 @@ nav:
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
       - DASHBOARDS:
           - Generate a complex dashboard: pages/user-guides/create-complex-dashboard.md
+          - Retrieve code for a generated dashboard: pages/user-guides/retrieve-dashboard-code.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
