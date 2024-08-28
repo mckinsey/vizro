@@ -123,7 +123,7 @@ class Graph(VizroBaseModel):
         """Post layout updates to visually enhance charts used inside dashboard."""
         # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
         if fig.layout.margin.t is None and fig.layout.title.text is None:
-            fig.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
+            fig.update_layout(margin_t=24)
 
         # Reduce `title_pad_t` if no subtitle is provided and `title_pad_t` is not explicitly set.
         if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
