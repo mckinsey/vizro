@@ -4,10 +4,9 @@ import re
 
 import plotly.graph_objects as go
 import pytest
-from dash.exceptions import MissingCallbackContextException
-
 from asserts import assert_component_equal
 from dash import dcc
+from dash.exceptions import MissingCallbackContextException
 
 try:
     from pydantic.v1 import ValidationError
