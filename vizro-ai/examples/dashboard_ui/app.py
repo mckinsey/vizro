@@ -6,8 +6,17 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from actions import data_upload_action, display_filename, run_vizro_ai
-from components import CodeClipboard, Icon, MyDropdown, MyPage, OffCanvas, UserPromptTextArea, UserUpload
-from dash import Input, Output, State, callback, dcc
+from components import (
+    CodeClipboard,
+    CustomDashboard,
+    Icon,
+    MyDropdown,
+    MyPage,
+    OffCanvas,
+    UserPromptTextArea,
+    UserUpload,
+)
+from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
 from vizro import Vizro
 
@@ -23,18 +32,6 @@ MyPage.add_type("components", MyDropdown)
 MyPage.add_type("components", OffCanvas)
 MyPage.add_type("components", CodeClipboard)
 MyPage.add_type("components", Icon)
-
-
-class CustomDashboard(vm.Dashboard):
-    """Custom Dashboard model."""
-
-    def build(self):
-        """Returns custom dashboard."""
-        dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
-        dashboard_build_obj.children.append(dcc.Store(id="api-store-id", storage_type="session"))
-        dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
-        return dashboard_build_obj
 
 
 SUPPORTED_MODELS = [
@@ -100,7 +97,8 @@ plot_page = MyPage(
                                 "trigger-button-id.n_clicks",
                                 "data-store-id.data",
                                 "model-dropdown-id.value",
-                                "api-store-id.data",
+                                "settings-api-key.value",
+                                "settings-api-base.value",
                                 "settings-dropdown.value",
                             ],
                             outputs=["plot-code-markdown.children", "graph-id.figure", "outputs-store-id.data"],
@@ -108,7 +106,7 @@ plot_page = MyPage(
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown-id"),
-                OffCanvas(id="settings", options=["OpenAI"], value="ChatOpenAI"),
+                OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
             ],
         ),
         Icon(id="open-settings-id"),
@@ -116,16 +114,7 @@ plot_page = MyPage(
 )
 
 
-dashboard = CustomDashboard(
-    pages=[plot_page],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(icon="robot_2", pages=["vizro_ai_plot_page"], label="Vizro-AI Plot"),
-            ]
-        )
-    ),
-)
+dashboard = CustomDashboard(pages=[plot_page])
 
 
 # pure dash callbacks
@@ -164,29 +153,21 @@ def open_settings(n_clicks, is_open):
 
 
 @callback(
-    [Output("api-store-id", "data"), Output("settings-notification", "children")],
-    [
-        Input("settings-api-key", "value"),
-        Input("settings-api-base", "value"),
-        Input("settings-save-secrets-id", "n_clicks"),
-    ],
+    Output("settings-api-key", "type"),
+    Input("settings-api-key-toggle", "value"),
 )
-def save_secrets(api_key, api_base, n_clicks):
-    """Callback for saving secrets to dcc store."""
-    if not n_clicks:
-        raise PreventUpdate
-
-    if api_key and api_base:
-        return {"api_key": api_key, "api_base": api_base}, "Secrets saved!"
+def show_api_key(value):
+    """Callback to show api key."""
+    return "text" if value else "password"
 
 
 @callback(
-    [Output("settings-api-key", "type"), Output("settings-api-base", "type")],
-    Input("settings-show-secrets-id", "value"),
+    Output("settings-api-base", "type"),
+    Input("settings-api-base-toggle", "value"),
 )
-def show_secrets(value):
-    """Callback to show api secrets."""
-    return ("text", "text") if value else ("password", "password")
+def show_api_base(value):
+    """Callback to show api base."""
+    return "text" if value else "password"
 
 
 Vizro().build(dashboard).run()

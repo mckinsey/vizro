@@ -26,7 +26,7 @@ class UserPromptTextArea(vm.VizroBaseModel):
     """
 
     type: Literal["user_text_area"] = "user_text_area"
-    actions: List[Action] = []
+    actions: List[Action] = []  # noqa: RUF012
 
     _set_actions = _action_validator_factory("value")
 
@@ -55,7 +55,7 @@ class UserUpload(vm.VizroBaseModel):
     """
 
     type: Literal["upload"] = "upload"
-    actions: List[Action] = []
+    actions: List[Action] = []  # noqa: RUF012
 
     # 'contents' property is input to custom action callback
     _input_property: str = PrivateAttr("contents")
@@ -128,6 +128,15 @@ class OffCanvas(vm.VizroBaseModel):
                     [
                         dbc.InputGroupText("API Key"),
                         dbc.Input(placeholder="API key", type="password", id=f"{self.id}-api-key"),
+                        html.Div(
+                            dbc.Checklist(
+                                id=f"{self.id}-api-key-toggle",
+                                options=[{"label": "", "value": False}],
+                                switch=True,
+                                inline=True,
+                            ),
+                            id="toggle-div-api-key",
+                        ),
                     ],
                     className="mb-3",
                 ),
@@ -135,6 +144,15 @@ class OffCanvas(vm.VizroBaseModel):
                     [
                         dbc.InputGroupText("API base"),
                         dbc.Input(placeholder="API base", type="password", id=f"{self.id}-api-base"),
+                        html.Div(
+                            dbc.Checklist(
+                                id=f"{self.id}-api-base-toggle",
+                                options=[{"label": "", "value": False}],
+                                switch=True,
+                                inline=True,
+                            ),
+                            id="toggle-div-api-base",
+                        ),
                     ],
                     className="mb-3",
                 ),
@@ -144,12 +162,6 @@ class OffCanvas(vm.VizroBaseModel):
                         dbc.Select(options=self.options, value=self.value, id=f"{self.id}-dropdown"),
                     ],
                     className="mb-3",
-                ),
-                dbc.InputGroup(
-                    [
-                        dbc.InputGroupText(dbc.Checkbox(id=f"{self.id}-show-secrets-id")),
-                        dbc.Input(value="Show secrets", disabled=True),
-                    ]
                 ),
             ],
             className="mb-3",
@@ -161,8 +173,6 @@ class OffCanvas(vm.VizroBaseModel):
                 html.Div(
                     children=[
                         input_groups,
-                        dbc.Button("Save secrets", id=f"{self.id}-save-secrets-id"),
-                        html.P(children="", id=f"{self.id}-notification"),
                     ]
                 )
             ],
@@ -183,7 +193,7 @@ class MyPage(vm.Page):
 
 
 class Icon(vm.VizroBaseModel):
-    """Icon component."""
+    """Icon component for settings."""
 
     type: Literal["icon"] = "icon"
 
@@ -193,3 +203,14 @@ class Icon(vm.VizroBaseModel):
             children=[html.Span("settings", className="material-symbols-outlined", id=self.id)],
             className="settings-div",
         )
+
+
+class CustomDashboard(vm.Dashboard):
+    """Custom Dashboard model."""
+
+    def build(self):
+        """Returns custom dashboard."""
+        dashboard_build_obj = super().build()
+        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
+        return dashboard_build_obj

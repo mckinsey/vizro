@@ -16,7 +16,7 @@ from vizro_ai import VizroAI
 SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
 
 
-def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
+def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):  # noqa: PLR0913
     """VizroAi plot configuration."""
     vendor = SUPPORTED_VENDORS[vendor_input]
     llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
@@ -27,7 +27,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
 
 
 @capture("action")
-def run_vizro_ai(user_prompt, n_clicks, data, model, api_data, vendor_input):
+def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_input):  # noqa: PLR0913
     """Gets the AI response and adds it to the text window."""
 
     def create_response(ai_response, figure, user_prompt, filename):
@@ -46,7 +46,7 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_data, vendor_input):
         figure = go.Figure()
         return create_response(ai_response, figure, user_prompt, None)
 
-    if not api_data:
+    if not api_key:
         ai_response = "API key not found. Make sure you enter your API key!"
         figure = go.Figure()
         return create_response(ai_response, figure, user_prompt, data["filename"])
@@ -57,8 +57,8 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_data, vendor_input):
             user_prompt=user_prompt,
             df=df,
             model=model,
-            api_key=api_data["api_key"],
-            api_base=api_data["api_base"],
+            api_key=api_key,
+            api_base=api_base,
             vendor_input=vendor_input,
         )
         ai_code = ai_outputs.code

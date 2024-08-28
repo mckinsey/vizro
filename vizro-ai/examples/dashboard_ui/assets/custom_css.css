@@ -125,3 +125,19 @@
   line-height: 46px;
   text-align: center;
 }
+
+#settings-api-key-toggle .form-check-input {
+  border-radius: 8px;
+}
+
+#settings-api-base-toggle .form-check-input {
+  border-radius: 8px;
+}
+
+#toggle-div-api-base,
+#toggle-div-api-key {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
