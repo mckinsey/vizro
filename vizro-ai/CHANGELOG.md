@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Removed
 
-- Private attribute `_return_all_text` is removed from `VizroAI` class ([#518](https://github.com/mckinsey/vizro/pull/518))
+- Remove `_return_all_text` from `VizroAI` class ([#518](https://github.com/mckinsey/vizro/pull/518))
 
 ## Added
 
