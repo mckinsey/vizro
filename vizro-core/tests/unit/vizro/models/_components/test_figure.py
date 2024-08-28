@@ -96,15 +96,8 @@ class TestFigureBuild:
 
         expected_figure = dcc.Loading(
             html.Div(
-                kpi_card(
-                    data_frame=gapminder,
-                    value_column="lifeExp",
-                    agg_func="mean",
-                    title="Mean Lifeexp",
-                    value_format="{value:.3f}",
-                )(),
-                className="figure-container",
                 id="figure-id",
+                className="figure-container",
             ),
             color="grey",
             parent_className="loading-container",
