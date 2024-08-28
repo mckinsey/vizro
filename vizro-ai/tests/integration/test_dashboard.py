@@ -15,6 +15,7 @@ df1 = px.data.gapminder()
 df2 = px.data.stocks()
 
 
+@pytest.mark.easy
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_environment():
     # We only need to install chromedriver outside CI.
@@ -120,8 +121,8 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     ]
     score = sum(prescore)
 
-    with open(f"report_model_{model_name}.csv", "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+    with open(f"tests/integration/report_model_{model_name}.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(["Description, Score"]),
         writer.writerow([f"Pages exists, {pages}"]),
         writer.writerow([f"Correct pages number, {pages_num}"]),
@@ -134,4 +135,4 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
         writer.writerow([f"Correct components types first page, {components_types_1}"]),
         writer.writerow([f"Correct components types second page, {components_types_2}"]),
         writer.writerow([f"Correct controls types second page, {controls_types_2}"]),
-        writer.writerow([f"Total, {score}/{len(prescore)}"]),
+        writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
