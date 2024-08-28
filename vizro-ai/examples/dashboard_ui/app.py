@@ -45,7 +45,7 @@ SUPPORTED_MODELS = [
 
 plot_page = MyPage(
     id="vizro_ai_plot_page",
-    title="Vizro AI - Plot",
+    title="Vizro-AI - effortlessly create interactive charts with Plotly",
     layout=vm.Layout(
         grid=[
             [3, 3, -1, 5],
