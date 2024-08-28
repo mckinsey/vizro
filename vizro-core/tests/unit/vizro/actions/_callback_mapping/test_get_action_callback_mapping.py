@@ -140,7 +140,6 @@ def action_callback_inputs_expected():
                 "modelID": dash.State("vizro_table", "id"),
             },
         ],
-        "theme_selector": dash.State("theme_selector", "checked"),
     }
 
 

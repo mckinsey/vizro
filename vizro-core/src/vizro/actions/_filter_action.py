@@ -24,7 +24,7 @@ def _filter(
         targets: List of target component ids to apply filters on
         filter_function: Filter function to apply
         inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
+            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
