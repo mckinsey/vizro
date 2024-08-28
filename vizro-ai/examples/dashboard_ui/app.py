@@ -106,7 +106,7 @@ plot_page = MyPage(
                         ),
                     ],
                 ),
-                MyDropdown(options=SUPPORTED_MODELS, value="gpt-3.5-turbo", multi=False, id="model-dropdown-id"),
+                MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
             ],
         ),
