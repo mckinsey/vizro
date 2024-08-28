@@ -13,24 +13,22 @@ export function _update_ag_grid_theme(theme_selector_checked) {
 }
 
 export function _update_graph_theme(
+  figure,
   theme_selector_checked,
   vizro_themes,
-  graph_id,
 ) {
-  // Determine the theme to be applied based on the theme_selector checked value
-  const theme_to_apply = theme_selector_checked
-    ? vizro_themes["light"]
-    : vizro_themes["dark"];
+  const theme_to_apply = theme_selector_checked ? "vizro_light" : "vizro_dark";
 
-  // Find the Plotly graph element in the HTML document
-  const plotly_graph = document
-    .getElementById(graph_id)
-    .querySelector(".js-plotly-plot");
+  const updated_figure = {
+    ...figure,
+    layout: {
+      ...figure.layout,
+      template: vizro_themes[theme_to_apply],
+    },
+  };
 
-  // Adjust `layout` property for the Plotly graph element
-  Plotly.relayout(plotly_graph, { template: theme_to_apply });
-
-  return dash_clientside.no_update;
+  // {} resets the figure.style to undo the {"visibility": "hidden"} from set_props in Graph.__call__.
+  return [updated_figure, {}];
 }
 
 export function _collapse_nav_panel(n_clicks, is_open) {
