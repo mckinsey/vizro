@@ -14,6 +14,7 @@ matrix.python.features = [
 dependencies = ["scriv"]
 detached = true
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
+installer = "uv"
 
 [envs.default]
 dependencies = [
@@ -70,6 +71,7 @@ dependencies = [
   "mkdocs-pycafe"
 ]
 detached = true
+installer = "uv"
 
 [envs.docs.scripts]
 build = "mkdocs build --strict"
@@ -88,6 +90,7 @@ dependencies = [
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 # This environment doesn't inherit from default but does install Vizro.
 template = "examples"
+installer = "uv"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
@@ -99,6 +102,7 @@ dependencies = [
 ]
 detached = true
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
+installer = "uv"
 
 [envs.lower-bounds]
 extra-dependencies = [

@@ -6,7 +6,9 @@ python = ["3.9", "3.10", "3.11", "3.12"]
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
+installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
+installer = "uv"
 
 [envs.default]
 dependencies = [
@@ -60,6 +62,7 @@ dependencies = [
   "linkchecker"
 ]
 detached = true
+installer = "uv"
 
 [envs.docs.scripts]
 build = "mkdocs build --strict"
@@ -74,6 +77,7 @@ dependencies = [
   "pre-commit"
 ]
 detached = true
+installer = "uv"
 scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
 [envs.lower-bounds]
