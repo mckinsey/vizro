@@ -17,10 +17,16 @@ page = vm.Page(
         vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length")),
         vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", title="Blah blah")),
         vm.Table(figure=dash_data_table(df), title="My Table"),
-        vm.Graph(
-            figure=px.scatter(
-                df, x="sepal_width", y="sepal_length", title="My Graph <br><span>This is a subtitle</span>"
-            )
+        vm.Container(
+            id="container-with-different-bg",
+            title="Container Title",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        df, x="sepal_width", y="sepal_length", title="My Graph <br><span>This is a subtitle</span>"
+                    )
+                )
+            ],
         ),
     ],
 )

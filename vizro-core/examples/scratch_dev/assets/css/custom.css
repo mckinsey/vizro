@@ -1,3 +1,7 @@
 #page-header {
   padding-left: 8px;
 }
+
+#container-with-different-bg {
+  background: var(--surfaces-bg-card);
+}
