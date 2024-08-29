@@ -11,7 +11,7 @@ matrix.python.features = [
 ]
 
 [envs.changelog]
-dependencies = ["scriv"]
+dependencies = ["pip", "scriv"]
 detached = true
 installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
@@ -63,6 +63,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  "pip",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
@@ -82,6 +83,7 @@ serve = "mkdocs serve --open"
 
 [envs.examples]
 dependencies = [
+  "pip",
   "pyyaml",
   # black is required to run the example _visual-vocabulary. This is completely independent of the black used in linting
   # our code. When this moves to HuggingFace we can remove the requirement from here.
@@ -98,6 +100,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lint]
 dependencies = [
+  "pip",
   "pre-commit"
 ]
 detached = true

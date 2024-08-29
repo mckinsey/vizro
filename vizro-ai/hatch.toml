@@ -4,13 +4,14 @@
 python = ["3.9", "3.10", "3.11", "3.12"]
 
 [envs.changelog]
-dependencies = ["scriv"]
+dependencies = ["pip", "scriv"]
 detached = true
 installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
 [envs.default]
 dependencies = [
+  "pip",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -53,6 +54,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
+  "pip",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
@@ -72,6 +74,7 @@ serve = "mkdocs serve --open"
 
 [envs.lint]
 dependencies = [
+  "pip",
   "pre-commit"
 ]
 detached = true
