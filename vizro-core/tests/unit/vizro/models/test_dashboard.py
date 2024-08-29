@@ -229,10 +229,28 @@ class TestDashboardBuild:
 
         # Test application of template_dashboard_overrides.
         dashboard_vizro_dark = pio.templates["vizro_dark"].update(
-            layout={"title": {"pad_l": 0, "pad_r": 0}, "margin_l": 24, "margin_t": 24}
+            layout={
+                "title": {"pad_l": 0, "pad_r": 0},
+                "margin_l": 24,
+                "margin_t": 24,
+                "paper_bgcolor": "rgba(0, 0, 0, 0)",
+                "plot_bgcolor": "rgba(0, 0, 0, 0)",
+                "geo_bgcolor": "rgba(0, 0, 0, 0)",
+                "polar_bgcolor": "rgba(0, 0, 0, 0)",
+                "ternary_bgcolor": "rgba(0, 0, 0, 0)",
+            }
         )
         dashboard_vizro_light = pio.templates["vizro_light"].update(
-            layout={"title": {"pad_l": 0, "pad_r": 0}, "margin_l": 24, "margin_t": 24}
+            layout={
+                "title": {"pad_l": 0, "pad_r": 0},
+                "margin_l": 24,
+                "margin_t": 24,
+                "paper_bgcolor": "rgba(0, 0, 0, 0)",
+                "plot_bgcolor": "rgba(0, 0, 0, 0)",
+                "geo_bgcolor": "rgba(0, 0, 0, 0)",
+                "polar_bgcolor": "rgba(0, 0, 0, 0)",
+                "ternary_bgcolor": "rgba(0, 0, 0, 0)",
+            }
         )
 
         expected_dashboard_container = html.Div(
