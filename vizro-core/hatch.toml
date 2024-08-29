@@ -13,8 +13,8 @@ matrix.python.features = [
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
 [envs.default]
 dependencies = [
@@ -87,10 +87,10 @@ dependencies = [
   # our code. When this moves to HuggingFace we can remove the requirement from here.
   "black==24.4.2"
 ]
+installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 # This environment doesn't inherit from default but does install Vizro.
 template = "examples"
-installer = "uv"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
@@ -101,8 +101,8 @@ dependencies = [
   "pre-commit"
 ]
 detached = true
-scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 installer = "uv"
+scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
 [envs.lower-bounds]
 extra-dependencies = [
