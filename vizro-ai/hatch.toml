@@ -6,13 +6,11 @@ python = ["3.9", "3.10", "3.11", "3.12"]
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
-installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 installer = "uv"
 
 [envs.default]
 dependencies = [
-  "pip",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
