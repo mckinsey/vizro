@@ -16,11 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Enable feature to get PlotOutputs dataclass from `VizroAI.plot()`. Add argument `return_elements`to`VizroAI.plot()`, when it is set to`True`, the return type will be changed to a `dataclass` containing the code string, figure object, business insights, and code explanation. ([#488](https://github.com/mckinsey/vizro/pull/488))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Changed
 
@@ -33,12 +34,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly ([#660](https://github.com/mckinsey/vizro/pull/660))
 
--->
 <!--
 ### Security
 

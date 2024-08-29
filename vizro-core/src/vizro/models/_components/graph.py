@@ -1,7 +1,8 @@
 import logging
+from contextlib import suppress
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, ctx, dcc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -57,28 +58,16 @@ class Graph(VizroBaseModel):
         fig = self.figure(**kwargs)
         fig = self._optimise_fig_layout_for_dashboard(fig)
 
-        # Apply the template vizro_dark or vizro_light by setting fig.layout.template. This is exactly the same as
-        # what the clientside update_graph_theme callback does, and it would be nice if we could just use that by
-        # including Input(self.id, "figure") as input for that callback, but doing so leads to a small flicker between
-        # completion of this serverside callback and starting that clientside callbacks.
-        # Note that this does not fully set the template for plotly.express figures. Doing this post-fig creation update
-        # relies on the fact that we have already set pio.templates.default before the self.figure call
-        # above (but not with the _pio_templates_default context manager surrounding the above self.figure call,
-        # since that would alter global state).
-        # Possibly we should pass through the theme selector as an argument `template` in __call__ rather than fetching
-        # it from ctx here. Remember that passing it as self.figure(template) is not helpful though, because custom
-        # graph figures don't need a template argument, and the clientside them selector callback would override this
-        # anyway.
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
-        try:
-            # At the moment theme_selector is always present so this if statement is redundant, but possibly in
-            # future we'll have callbacks that do Graph.__call__() without theme_selector set.
-            if "theme_selector" in ctx.args_grouping.get("external", {}):
-                theme_selector_checked = ctx.args_grouping["external"]["theme_selector"]["value"]
-                fig.layout.template = "vizro_light" if theme_selector_checked else "vizro_dark"
-        except MissingCallbackContextException:
-            logger.info("fig.update_layout called outside of callback context.")
+        with suppress(MissingCallbackContextException):
+            # After this callback has completed, the clientside update_graph_theme is triggered. In the case that
+            # the theme selector has been set to the non-default theme, this would cause a flickering since the graph
+            # with the wrong theme will be shown while the clientside callback runs. To avoid this we temporarily hide
+            # the graph and then make it visible again in the clientside callback. Ideally this would be done using the
+            # argument `running` on the clientside callback but this only exists for serverside callbacks, so we do it
+            # manually.
+            set_props(self.id, {"style": {"visibility": "hidden"}})
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -134,7 +123,7 @@ class Graph(VizroBaseModel):
         """Post layout updates to visually enhance charts used inside dashboard."""
         # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
         if fig.layout.margin.t is None and fig.layout.title.text is None:
-            fig.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
+            fig.update_layout(margin_t=24)
 
         # Reduce `title_pad_t` if no subtitle is provided and `title_pad_t` is not explicitly set.
         if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
@@ -155,12 +144,11 @@ class Graph(VizroBaseModel):
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
-            # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
-            output=[Output(self.id, "figure")],
+            output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
+                Input(self.id, "figure"),
                 Input("theme_selector", "checked"),
                 State("vizro_themes", "data"),
-                State(self.id, "id"),
             ],
             prevent_initial_call=True,
         )

@@ -27,7 +27,7 @@ input_text = (
     "add a filter to filter data in the scatter plot by smoker."
 )
 
-dashboard = vizro_ai.dashboard(dfs=dfs, user_input=input_text)
+dashboard = vizro_ai._dashboard(dfs=dfs, user_input=input_text)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
