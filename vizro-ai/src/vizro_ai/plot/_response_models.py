@@ -188,8 +188,9 @@ class ChartPlanDynamicFactory:
 if __name__ == "__main__":
     # Ideas to implement - No code execution mode, done
     # Go through code todos
-    # Check and discuss requirements
+    # Check and discuss requirements - especially regarding the models
     # Write docs
+    # Formulate long term todos
 
     from dotenv import find_dotenv, load_dotenv
 
