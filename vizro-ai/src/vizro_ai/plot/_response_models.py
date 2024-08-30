@@ -187,7 +187,9 @@ class ChartPlanDynamicFactory:
 
 if __name__ == "__main__":
     # Ideas to implement - No code execution mode, done
-    # test OS models --> tough, I cannot really get a local model to run, ollama 3.1:7B barely works
+    # Go through code todos
+    # Check and discuss requirements
+    # Write docs
 
     from dotenv import find_dotenv, load_dotenv
 
