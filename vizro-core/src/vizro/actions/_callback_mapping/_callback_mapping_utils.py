@@ -71,7 +71,6 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
         "filter_interaction": _get_inputs_of_figure_interactions(
             page=page, action_function=filter_interaction.__wrapped__
         ),
-        "theme_selector": State("theme_selector", "checked"),
     }
     return action_input_mapping
 

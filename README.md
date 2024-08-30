@@ -104,7 +104,7 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 
 <p align="left">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/gapminder_example.png" width="525" height="296">  </a>
+<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="525" height="296">  </a>
 </p>
 
 ## Dashboard screenshots

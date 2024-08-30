@@ -32,7 +32,19 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
+        # Setting suppress_callback_exceptions=True for the following reasons:
+        # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
+        #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
+        #    items of a callback. This ID is assigned to a dash_html_components.Div component in the layout,
+        #    which does not support this property."
+        # 2. Improves performance by bypassing layout validation.
+        self.dash = dash.Dash(
+            **kwargs,
+            pages_folder="",
+            suppress_callback_exceptions=True,
+            title="Vizro",
+            use_pages=True,
+        )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
@@ -88,8 +100,7 @@ class Vizro:
 
         # Set global template to vizro_light or vizro_dark.
         # The choice between these is generally meaningless because chart colors in the two are identical, and
-        # everything else gets overridden in the post-fig creation layout.template update in Graph.__call__ and the
-        # clientside theme selector callback.
+        # everything else gets overridden in the clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
         # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
         # either because it's a staticmethod so can't access self.old_theme (though we could use a global variable to

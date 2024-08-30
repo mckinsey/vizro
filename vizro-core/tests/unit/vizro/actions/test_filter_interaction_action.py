@@ -81,9 +81,6 @@ def ctx_filter_interaction(request):
                 "filters": [],
                 "filter_interaction": args_grouping_filter_interaction,
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector", property="checked", value=False, str_id="theme_selector", triggered=False
-                ),
             }
         }
     }
@@ -101,7 +98,7 @@ def target_scatter_filtered_continent(request, gapminder_2007, scatter_params):
     if country:
         data = data[data["country"].isin([country])]
 
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(data, **scatter_params)
 
 
 @pytest.fixture
@@ -114,7 +111,7 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
     if country:
         data = data[data["country"].isin([country])]
 
-    return px.box(data, **box_params).update_layout(margin_t=24)
+    return px.box(data, **box_params)
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")

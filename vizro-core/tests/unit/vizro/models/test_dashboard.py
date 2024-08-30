@@ -227,12 +227,24 @@ class TestDashboardBuild:
         dashboard = vm.Dashboard(pages=[page_1, page_2])
         dashboard.pre_build()
 
+        # Test application of template_dashboard_overrides.
+        dashboard_vizro_dark = pio.templates["vizro_dark"].update(
+            layout={"title": {"pad_l": 0, "pad_r": 0}, "margin_l": 24, "margin_t": 24}
+        )
+        dashboard_vizro_light = pio.templates["vizro_light"].update(
+            layout={"title": {"pad_l": 0, "pad_r": 0}, "margin_l": 24, "margin_t": 24}
+        )
+
         expected_dashboard_container = html.Div(
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 dcc.Store(
-                    id="vizro_themes", data={"dark": pio.templates["vizro_dark"], "light": pio.templates["vizro_light"]}
+                    id="vizro_themes",
+                    data={
+                        "vizro_dark": dashboard_vizro_dark,
+                        "vizro_light": dashboard_vizro_light,
+                    },
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,

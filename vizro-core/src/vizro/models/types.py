@@ -311,7 +311,11 @@ class capture:
     Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
     `"ag_grid"`, `"figure"` and `"action"`.
 
-    Examples
+    Args:
+        mode: The mode of the captured callable. Valid modes are `"graph"`, `"table"`, `"ag_grid"`,
+            `"figure"` and `"action"`.
+
+    Examples:
         >>> @capture("graph")
         >>> def graph_function():
         >>>     ...
@@ -398,7 +402,7 @@ class capture:
                     with _pio_templates_default() as default_template:
                         fig = func(*args, **kwargs)
                     # Update the fig.layout.template just to ensure absolute consistency with how the dashboard
-                    # works.
+                    # works. In a dashboard this is done with the update_graph_theme clientside callback.
                     # The only exception here is the edge case that the user has specified template="vizro_light" or
                     # "vizro_dark" in the plotting function, in which case we don't want to change it. This makes
                     # it easier for a user to try out both themes simultaneously in a notebook.

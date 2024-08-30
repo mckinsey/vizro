@@ -47,7 +47,7 @@ def test_simple_dashboard(dash_duo):
     Add a second filter to filter the chart by year.
     """
 
-    dashboard = vizro_ai.dashboard([df1, df2], input_text)
+    dashboard = vizro_ai._dashboard([df1, df2], input_text)
     app = Vizro().build(dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []

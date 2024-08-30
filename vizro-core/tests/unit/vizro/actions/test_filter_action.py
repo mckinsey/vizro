@@ -14,7 +14,7 @@ def target_scatter_filtered_continent_and_pop(request, gapminder_2007, scatter_p
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(data, **scatter_params)
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def target_box_filtered_continent_and_pop(request, gapminder_2007, box_params):
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
-    return px.box(data, **box_params).update_layout(margin_t=24)
+    return px.box(data, **box_params)
 
 
 @pytest.fixture
@@ -44,13 +44,6 @@ def ctx_filter_continent(request):
                     )
                 ],
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
-                ),
             }
         }
     }
@@ -83,13 +76,6 @@ def ctx_filter_continent_and_pop(request):
                     ),
                 ],
                 "parameters": [],
-                "theme_selector": CallbackTriggerDict(
-                    id="theme_selector",
-                    property="checked",
-                    value=False,
-                    str_id="theme_selector",
-                    triggered=False,
-                ),
             }
         }
     }

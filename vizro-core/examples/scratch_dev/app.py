@@ -2,66 +2,30 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from charts.charts import page2
-from vizro.managers import data_manager
+from vizro import Vizro
+from vizro.tables import dash_data_table
 
 df = px.data.iris()
 
-data_manager["iris"] = px.data.iris()
 
 page = vm.Page(
-    title="Test",
+    title="Testasfsadfsadf",
     layout=vm.Layout(
-        grid=[[0, 1], [2, 3], [4, 5]],
+        grid=[[0, 1, 2, 3]],
     ),
     components=[
-        vm.Card(
-            text="""
-        ### What is Vizro?
-
-        Vizro is a toolkit for creating modular data visualization applications.
-        """
+        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length")),
+        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", title="Blah blah")),
+        vm.Table(figure=dash_data_table(df), title="My Table"),
+        vm.Graph(
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", title="My Graph <br><span>This is a subtitle</span>"
+            )
         ),
-        vm.Card(
-            text="""
-                ### Github
-
-                Checkout Vizro's github page.
-            """,
-            href="https://github.com/mckinsey/vizro",
-        ),
-        vm.Card(
-            text="""
-                ### Docs
-
-                Visit the documentation for codes examples, tutorials and API reference.
-            """,
-            href="https://vizro.readthedocs.io/",
-        ),
-        vm.Card(
-            text="""
-                ### Nav Link
-
-                Click this for page 2.
-            """,
-            href="/page2",
-        ),
-        vm.Graph(id="scatter_chart", figure=px.scatter("iris", x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram("iris", x="sepal_width", color="species")),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-        vm.Filter(column="petal_length"),
-        vm.Filter(column="sepal_width"),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page2])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    from vizro import Vizro
-
-    string = dashboard._to_python(extra_imports={"from dash_ag_grid import AgGrid"})
-    print(string)  # noqa
-
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
