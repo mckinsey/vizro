@@ -31,9 +31,7 @@ class TestComponentCreate:
         chart, code = result.component, result.code
         expected = vm.Graph(
             id="mock_id",
-            figure=mock_vizro_ai_return.get_fig_object(
-                chart_name="graph_1", data_frame="bar_chart", vizro=True
-            ),
+            figure=mock_vizro_ai_return.get_fig_object(chart_name="graph_1", data_frame="bar_chart", vizro=True),
         )
 
         assert chart.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})

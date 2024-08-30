@@ -74,8 +74,7 @@ class ComponentPlan(BaseModel):
                         id=self.component_id,
                         figure=result.get_fig_object(
                             chart_name=self.component_id, data_frame=all_df_metadata.get_df(self.df_name), vizro=True
-                        
-                                                     ),
+                        ),
                     ),
                     code=result.code_vizro,
                 )

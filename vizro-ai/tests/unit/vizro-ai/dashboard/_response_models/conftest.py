@@ -3,7 +3,6 @@ from typing import Any, List
 import pandas as pd
 import pytest
 import vizro.models as vm
-import vizro.plotly.express as px
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
@@ -116,7 +115,7 @@ def mock_vizro_ai_return(df):
     return ChartPlanStatic(
         chart_type="scatter",
         imports=["import plotly.express as px\nimport pandas as pd"],
-        chart_code = """def custom_chart(data_frame):
+        chart_code="""def custom_chart(data_frame):
     fig = px.scatter(
             data_frame=data_frame,
             x="a",
@@ -124,9 +123,9 @@ def mock_vizro_ai_return(df):
         )
 
     return fig""",
-    chart_insights="business_insights",
-    code_explanation="code_explanation")
-
+        chart_insights="business_insights",
+        code_explanation="code_explanation",
+    )
 
 
 @pytest.fixture

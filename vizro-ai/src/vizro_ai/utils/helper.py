@@ -1,11 +1,8 @@
 """Helper Functions For Vizro AI."""
 
-import traceback
-from typing import Callable, Dict, Optional, Tuple
+from typing import Tuple
 
 import pandas as pd
-import plotly.graph_objects as go
-from vizro_ai.plot._utils._safeguard import _safeguard_check
 
 
 def _get_df_info(df: pd.DataFrame) -> Tuple[str, str]:
