@@ -1,13 +1,10 @@
-import pytest
-from vizro_ai.plot2._response_models import ChartPlanStatic, ChartPlanDynamicFactory, ADDITIONAL_IMPORTS
-import pytest
-import pandas as pd
-import numpy as np
-from vizro.models.types import capture
-import vizro.plotly.express as px
 import plotly.express as ppx
+import pytest
+import vizro.plotly.express as px
+from vizro_ai.plot2._response_models import ChartPlanDynamicFactory, ChartPlanStatic
 
 df = px.data.iris()
+
 
 @pytest.fixture()
 def chart_plan():
@@ -136,7 +133,7 @@ def custom_chart(data_frame):
     return fig
 """
             )
-        
+
         def test_code_vizro(self, chart_plan):
             assert (
                 chart_plan.code_vizro
@@ -148,13 +145,16 @@ from vizro.models.types import capture
 def custom_chart(data_frame):
     fig = px.scatter(data_frame, x="sepal_width", y="petal_width")
     return fig
-""")
+"""
+            )
+
         @pytest.mark.parametrize(
             "chart_name, expected_chart_name",
             [
                 ("new_name", "new_name"),
                 (None, "custom_chart"),
-            ])
+            ],
+        )
         def test_get_complete_code(self, chart_plan, chart_name, expected_chart_name):
             assert (
                 chart_plan._get_complete_code(chart_name=chart_name)
@@ -164,13 +164,14 @@ def custom_chart(data_frame):
 def {expected_chart_name}(data_frame):
     fig = px.scatter(data_frame, x="sepal_width", y="petal_width")
     return fig
-""")
+"""
+            )
 
         @pytest.mark.parametrize(
             "vizro, expected_fig",
             [
-            (False, ppx.scatter(df, x='sepal_width', y='petal_width')),
-            (True, px.scatter(df, x='sepal_width', y='petal_width')),
+                (False, ppx.scatter(df, x="sepal_width", y="petal_width")),
+                (True, px.scatter(df, x="sepal_width", y="petal_width")),
             ],
         )
         def test_get_fig_object(self, chart_plan, vizro, expected_fig):

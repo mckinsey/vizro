@@ -1,13 +1,13 @@
 """AI plot example."""
 
 import vizro.plotly.express as px
+from dotenv import find_dotenv, load_dotenv
 from vizro_ai import VizroAI
 
-from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(usecwd=True))
 import os
 
-print("LOG LEVEL",os.getenv("VIZRO_AI_LOG_LEVEL"))
+print("LOG LEVEL", os.getenv("VIZRO_AI_LOG_LEVEL"))
 
 vizro_ai = VizroAI()
 df = px.data.gapminder()

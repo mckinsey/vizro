@@ -31,8 +31,7 @@ dependencies = [
   "langchain_anthropic",
   "langchain-cohere",
   "langchain-ollama",
-  "llama-cpp-python",
-
+  "llama-cpp-python"
 ]
 installer = "uv"
 
