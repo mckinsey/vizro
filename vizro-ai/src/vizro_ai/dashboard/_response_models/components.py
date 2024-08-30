@@ -66,7 +66,7 @@ class ComponentPlan(BaseModel):
                 result = vizro_ai.plot(
                     df=all_df_metadata.get_df(self.df_name),
                     user_input=self.component_description,
-                    max_debug_retry=2,#TODO must be flexible
+                    max_debug_retry=2,  # TODO must be flexible
                     return_elements=True,
                 )
                 return ComponentResult(
