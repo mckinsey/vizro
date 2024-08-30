@@ -1,7 +1,8 @@
 import logging
+from contextlib import suppress
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, ctx, dcc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -12,7 +13,6 @@ except ImportError:  # pragma: no cov
 
 import pandas as pd
 
-from vizro import _themes as themes
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
@@ -56,21 +56,18 @@ class Graph(VizroBaseModel):
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
         fig = self.figure(**kwargs)
-
-        # Remove top margin if title is provided
-        if fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)
+        fig = self._optimise_fig_layout_for_dashboard(fig)
 
         # Possibly we should enforce that __call__ can only be used within the context of a callback, but it's easy
         # to just swallow up the error here as it doesn't cause any problems.
-        try:
-            # At the moment theme_selector is always present so this if statement is redundant, but possibly in
-            # future we'll have callbacks that do Graph.__call__() without theme_selector set.
-            if "theme_selector" in ctx.args_grouping.get("external", {}):
-                theme_selector_checked = ctx.args_grouping["external"]["theme_selector"]["value"]
-                fig["layout"]["template"] = themes.light if theme_selector_checked else themes.dark
-        except MissingCallbackContextException:
-            logger.info("fig.update_layout called outside of callback context.")
+        with suppress(MissingCallbackContextException):
+            # After this callback has completed, the clientside update_graph_theme is triggered. In the case that
+            # the theme selector has been set to the non-default theme, this would cause a flickering since the graph
+            # with the wrong theme will be shown while the clientside callback runs. To avoid this we temporarily hide
+            # the graph and then make it visible again in the clientside callback. Ideally this would be done using the
+            # argument `running` on the clientside callback but this only exists for serverside callbacks, so we do it
+            # manually.
+            set_props(self.id, {"style": {"visibility": "hidden"}})
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -121,16 +118,29 @@ class Graph(VizroBaseModel):
 
         return data_frame
 
+    @staticmethod
+    def _optimise_fig_layout_for_dashboard(fig):
+        """Post layout updates to visually enhance charts used inside dashboard."""
+        if fig.layout.title.text:
+            if fig.layout.margin.t is None:
+                # Reduce `margin_t` if not explicitly set.
+                fig.update_layout(margin_t=64)
+
+            if fig.layout.title.pad.t is None and "<br>" not in fig.layout.title.text:
+                # Reduce `title_pad_t` if title doesn't have subtitle and `title_pad_t` is not explicitly set.
+                fig.update_layout(title_pad_t=7)
+
+        return fig
+
     @_log_call
     def build(self):
         clientside_callback(
             ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
-            # Output here to ensure that the callback is only triggered if the graph exists on the currently open page.
-            output=[Output(self.id, "figure")],
+            output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
+                Input(self.id, "figure"),
                 Input("theme_selector", "checked"),
                 State("vizro_themes", "data"),
-                State(self.id, "id"),
             ],
             prevent_initial_call=True,
         )

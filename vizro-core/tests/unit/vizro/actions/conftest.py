@@ -5,6 +5,15 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 
+# Mock out set_props so we don't need to supply updated_props in the mock callback contexts used in these actions
+# tests.
+# TODO: maybe it would be better to include updated_props through a centralized way of creating a mock callback
+#  context. Actions tests should be simplified and refactored in due course anyway.
+@pytest.fixture(autouse=True)
+def mock_set_props(mocker):
+    mocker.patch("vizro.models._components.graph.set_props")
+
+
 @pytest.fixture
 def gapminder_2007(gapminder):
     return gapminder.query("year == 2007")
@@ -31,12 +40,12 @@ def box_params():
 
 @pytest.fixture
 def box_chart(gapminder_2007, box_params):
-    return px.box(gapminder_2007, **box_params).update_layout(margin_t=24)
+    return px.box(gapminder_2007, **box_params)
 
 
 @pytest.fixture
 def box_chart_dynamic_data_frame(box_params):
-    return px.box("gapminder_dynamic_first_n_last_n", **box_params).update_layout(margin_t=24)
+    return px.box("gapminder_dynamic_first_n_last_n", **box_params)
 
 
 @pytest.fixture
@@ -46,7 +55,7 @@ def scatter_params():
 
 @pytest.fixture
 def scatter_chart(gapminder_2007, scatter_params):
-    return px.scatter(gapminder_2007, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(gapminder_2007, **scatter_params)
 
 
 @pytest.fixture
@@ -56,26 +65,26 @@ def scatter_matrix_params():
 
 @pytest.fixture
 def scatter_matrix_chart(iris, scatter_matrix_params):
-    return px.scatter_matrix(iris, **scatter_matrix_params).update_layout(margin_t=24)
+    return px.scatter_matrix(iris, **scatter_matrix_params)
 
 
 @pytest.fixture
 def scatter_chart_dynamic_data_frame(scatter_params):
-    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params).update_layout(margin_t=24)
+    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params)
 
 
 @pytest.fixture
 def target_scatter_filtered_continent(request, gapminder_2007, scatter_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24)
+    return px.scatter(data, **scatter_params)
 
 
 @pytest.fixture
 def target_box_filtered_continent(request, gapminder_2007, box_params):
     continent = request.param
     data = gapminder_2007[gapminder_2007["continent"].isin(continent)]
-    return px.box(data, **box_params).update_layout(margin_t=24)
+    return px.box(data, **box_params)
 
 
 @pytest.fixture

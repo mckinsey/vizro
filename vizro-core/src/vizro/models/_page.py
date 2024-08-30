@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TypedDict
+from typing import Any, List, Mapping, Optional, Set, TypedDict, Union
 
 from dash import dcc, html
 
@@ -89,6 +89,9 @@ class Page(VizroBaseModel):
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
+
+    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
+        return {"id"} if self.id == self.title else None
 
     @_log_call
     def pre_build(self):

@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List, Literal, TypedDict
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import plotly.io as pio
 from dash import (
     ClientsideFunction,
     Input,
@@ -20,6 +21,8 @@ from dash import (
     html,
 )
 
+from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
+
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
@@ -28,7 +31,6 @@ except ImportError:  # pragma: no cov
 from dash.development.base_component import Component
 
 import vizro
-from vizro import _themes as themes
 from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
@@ -154,7 +156,13 @@ class Dashboard(VizroBaseModel):
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                dcc.Store(id="vizro_themes", data={"dark": themes.dark, "light": themes.light}),
+                dcc.Store(
+                    id="vizro_themes",
+                    data={
+                        "vizro_dark": pio.templates.merge_templates("vizro_dark", dashboard_overrides),
+                        "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
+                    },
+                ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],

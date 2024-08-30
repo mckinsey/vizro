@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
-from vizro_ai.dashboard.utils import DashboardOutputs, _register_data
+from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
 from vizro_ai.plot.components import GetCodeExplanation, GetDebugger
 from vizro_ai.plot.task_pipeline._pipeline_manager import PipelineManager
 from vizro_ai.utils.helper import (
@@ -66,15 +66,18 @@ class VizroAI:
         user_input: str,
         max_debug_retry: int = 3,
         explain: bool = False,
+        chart_name: Optional[str] = None,
     ) -> PlotOutputs:
         """Task execution."""
         chart_type_pipeline = self.pipeline_manager.chart_type_pipeline
         chart_type = chart_type_pipeline.run(initial_args={"chain_input": user_input, "df": df})
 
         # TODO update to loop through charts for multiple charts creation
+        if chart_name is None:
+            chart_name = "custom_chart"
         plot_pipeline = self.pipeline_manager.plot_pipeline
         custom_chart_code = plot_pipeline.run(
-            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type}
+            initial_args={"chain_input": user_input, "df": df, "chart_type": chart_type, "chart_name": chart_name}
         )
 
         # TODO add debug in pipeline after getting _debug_helper logic in component
@@ -160,7 +163,7 @@ class VizroAI:
 
         return vizro_plot if return_elements else vizro_plot.figure
 
-    def dashboard(
+    def _dashboard(
         self,
         dfs: List[pd.DataFrame],
         user_input: str,
@@ -188,6 +191,7 @@ class VizroAI:
                 "pages": [],
                 "dashboard": None,
                 "messages": [HumanMessage(content=user_input)],
+                "custom_charts_code": [],
             },
             config=config,
         )
@@ -195,8 +199,9 @@ class VizroAI:
         _register_data(all_df_metadata=message_res["all_df_metadata"])
 
         if return_elements:
-            # code = _dashboard_code(dashboard)  # TODO: `_dashboard_code` to be implemented
-            dashboard_output = DashboardOutputs(dashboard=dashboard)
+            chart_code, imports = _extract_custom_functions_and_imports(message_res["custom_charts_code"])
+            code = dashboard._to_python(extra_callable_defs=chart_code, extra_imports=imports)
+            dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output
         else:
             return dashboard

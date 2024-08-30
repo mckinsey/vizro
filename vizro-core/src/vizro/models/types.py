@@ -6,8 +6,11 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+from contextlib import contextmanager
 from datetime import date
 from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
+
+import plotly.io as pio
 
 try:
     from pydantic.v1 import Field, StrictBool
@@ -18,9 +21,19 @@ except ImportError:  # pragma: no cov
     from pydantic.fields import ModelField
     from pydantic.schema import SkipField
 
+
 from typing_extensions import Annotated, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+def _clean_module_string(module_string: str) -> str:
+    from vizro.models._models_utils import REPLACEMENT_STRINGS
+
+    for original, new in REPLACEMENT_STRINGS.items():
+        if original in module_string:
+            return new
+    return ""
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -247,6 +260,49 @@ class CapturedCallable:
 
         return captured_callable
 
+    def __repr__(self):
+        """String representation of the CapturedCallable."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        return f"{self._function.__module__}.{self._function.__name__}({args})"
+
+    def __repr_clean__(self):
+        """Alternative __repr__ method with cleaned module paths."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
+        original_module_path = f"{self._function.__module__}"
+        return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
+
+
+@contextmanager
+def _pio_templates_default():
+    """Sets pio.templates.default to "vizro_dark" and then reverts it.
+
+    This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
+    the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
+    you could compare a captured vs. non-captured chart in the same Python session).
+
+    This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
+    refer to template by name rather than trying to take from vizro.themes.
+
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    to set these without it being overridden.
+    """
+    old_default = pio.templates.default
+    template_changed = False
+    # If the user has set pio.templates.default to a vizro theme already, no need to change it.
+    if old_default not in ["vizro_dark", "vizro_light"]:
+        template_changed = True
+        pio.templates.default = "vizro_dark"
+
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
+    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
+    # but easy to achieve.
+    try:
+        # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
+        yield pio.templates.default
+    finally:
+        if template_changed:
+            pio.templates.default = old_default
+
 
 class capture:
     """Captures a function call to create a [`CapturedCallable`][vizro.models.types.CapturedCallable].
@@ -255,7 +311,11 @@ class capture:
     Typically, it should be used as a function decorator. There are five possible modes: `"graph"`, `"table"`,
     `"ag_grid"`, `"figure"` and `"action"`.
 
-    Examples
+    Args:
+        mode: The mode of the captured callable. Valid modes are `"graph"`, `"table"`, `"ag_grid"`,
+            `"figure"` and `"action"`.
+
+    Examples:
         >>> @capture("graph")
         >>> def graph_function():
         >>>     ...
@@ -332,7 +392,22 @@ class capture:
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).
-                    fig = func(*args, **kwargs)
+                    # Set theme for the figure that gets shown in a Jupyter notebook. This is to ensure that in a
+                    # Jupyter notebook captured charts look the same as when they're in the dashboard. To mimic this,
+                    # we first use _pio_templates_default to set the global theme, as is done in the dashboard, and then
+                    # do the fig.layout.template update that is achieved by the theme selector.
+                    # We don't want to update the captured_callable in the same way, since it's only used inside the
+                    # dashboard, at which point the global pio.templates.default is always set anyway according to
+                    # the dashboard theme and then updated according to the theme selector.
+                    with _pio_templates_default() as default_template:
+                        fig = func(*args, **kwargs)
+                    # Update the fig.layout.template just to ensure absolute consistency with how the dashboard
+                    # works. In a dashboard this is done with the update_graph_theme clientside callback.
+                    # The only exception here is the edge case that the user has specified template="vizro_light" or
+                    # "vizro_dark" in the plotting function, in which case we don't want to change it. This makes
+                    # it easier for a user to try out both themes simultaneously in a notebook.
+                    if fig.layout.template not in (pio.templates["vizro_dark"], pio.templates["vizro_light"]):
+                        fig.layout.template = default_template
                     fig.__class__ = _DashboardReadyFigure
 
                 fig._captured_callable = captured_callable

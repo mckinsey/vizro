@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Iterable, List
 
 import dash
 import flask
+import plotly.io as pio
 from flask_caching import SimpleCache
 
 from vizro._constants import STATIC_URL_PREFIX
@@ -31,18 +32,31 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self.dash = dash.Dash(**kwargs, use_pages=True, pages_folder="", title="Vizro")
-        self.dash.config.external_stylesheets.extend(
-            [
-                "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
-            ]
+        # Setting suppress_callback_exceptions=True for the following reasons:
+        # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
+        #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
+        #    items of a callback. This ID is assigned to a dash_html_components.Div component in the layout,
+        #    which does not support this property."
+        # 2. Improves performance by bypassing layout validation.
+        self.dash = dash.Dash(
+            **kwargs,
+            pages_folder="",
+            suppress_callback_exceptions=True,
+            title="Vizro",
+            use_pages=True,
         )
 
         # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
         # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
         vizro_assets_folder = Path(__file__).with_name("static")
         requests_pathname_prefix = self.dash.config.requests_pathname_prefix
-        vizro_css = [requests_pathname_prefix + path for path in self._get_external_assets(vizro_assets_folder, "css")]
+        # Exclude vizro/css/figures.css since these are distributed through the vizro._css_dist mechanism.
+        # In future we will probably handle all assets this way and none of this code will be required.
+        vizro_css = [
+            requests_pathname_prefix + path
+            for path in self._get_external_assets(vizro_assets_folder, "css")
+            if path != "vizro/css/figures.css"
+        ]
 
         # Ensure vizro-bootstrap.min.css is loaded in first to allow overwrites
         vizro_css.sort(key=lambda x: not x.endswith("vizro-bootstrap.min.css"))
@@ -83,6 +97,18 @@ class Vizro:
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
         if dashboard.title:
             self.dash.title = dashboard.title
+
+        # Set global template to vizro_light or vizro_dark.
+        # The choice between these is generally meaningless because chart colors in the two are identical, and
+        # everything else gets overridden in the clientside theme selector callback.
+        # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
+        # put in some teardown code, but it would probably never be 100% reliable. Vizro._reset can't do this well
+        # either because it's a staticmethod so can't access self.old_theme (though we could use a global variable to
+        # store it). Remember this template setting can't go in run() though since it's needed even in deployment.
+        # Probably the best solution if we do want to fix this would be to have two separate paths that are followed:
+        # 1. In deployment (or just outside Jupyter?), set the theme here and never revert it.
+        # 2. In other contexts, use context manager in run method.
+        pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
