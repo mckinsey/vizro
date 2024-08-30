@@ -35,6 +35,14 @@ def _format_and_lint(code_string: str) -> str:
     )
     return formatted
 
+def _exec_code(code: str):
+    """Execute code and return the local dictionary."""
+    # globals needed to access imports, they will not be modified by exec
+    # ldict is used to store the chart function
+    # potentially possible to restrict globals to only needed imports, but that is tricky
+    ldict = {}
+    exec(code, globals(), ldict) 
+    return ldict
 
 class ChartPlanStatic(BaseModel):
     """Chart plan model."""
@@ -128,10 +136,9 @@ class ChartPlanStatic(BaseModel):
         
         
         """
-        ldict = {}
         chart_name = chart_name or CUSTOM_CHART_NAME
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
-        exec(code_to_execute, globals(), ldict)
+        ldict = _exec_code(code_to_execute)
         chart = ldict[f"{chart_name}"]
         return chart(data_frame)
 
@@ -155,8 +162,7 @@ class ChartPlanDynamicFactory:
                     f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
                 )
             try:
-                ldict = {}
-                exec(v, globals(), ldict)
+                ldict = _exec_code(v)
                 custom_chart = ldict[f"{CUSTOM_CHART_NAME}"]
                 fig = custom_chart(data_frame.sample(20))
             except Exception as e:
@@ -184,6 +190,8 @@ if __name__ == "__main__":
     from dotenv import find_dotenv, load_dotenv
 
     load_dotenv(find_dotenv(usecwd=True))
+    from vizro_ai import VizroAI
+    from vizro_ai._llm_models import _get_llm_model
     # df = px.data.iris()
     df = px.data.gapminder()
 
@@ -199,9 +207,9 @@ if __name__ == "__main__":
     #     code_explanation="1. Create a scatter plot using Plotly Express (px).\n2. Set the x-axis to 'gdpPercap' and the y-axis to 'lifeExp'.\n3. Size the bubbles based on 'pop' (population) and color them based on 'continent'.\n4. Enable hover information to display the country name.\n5. Add animation based on the 'year' column to animate the chart over time.\n6. Set log scaling for the x-axis.\n7. Return the Plotly figure object.",
     # )
 
-    # model = _get_llm_model()
+    model = _get_llm_model()
 
-    # query = "the trend of gdp over years in the US"
+    query = "the trend of gdp over years in the US"
     # query = "show me the geo distribution of life expectancy and set year as animation "
     # query = "describe the composition of gdp in continents in 2007, and add horizontal line for avg gdp in 2007"
     # query = "plot a bubble chart to shows the changes in life expectancy gdp per capita  over time. Animate the chart by year"
@@ -225,6 +233,7 @@ if __name__ == "__main__":
 
     ############################################################################################################
 
-    # vizro_ai = VizroAI(model=llm)
+    vizro_ai = VizroAI(model=model)
     # res = vizro_ai.plot(df=df, user_input=query, explain=True, return_elements=True)
-    # res2 = vizro_ai.plot2(df=df, user_input=query, return_elements=True)
+    res2 = vizro_ai.plot2(df=df, user_input=query, return_elements=True)
+    res2.get_fig_object(data_frame=df).show()
