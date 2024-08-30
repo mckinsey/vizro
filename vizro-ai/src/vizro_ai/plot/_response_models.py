@@ -6,7 +6,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
 import subprocess
-from typing import List, Optional, Set
+from typing import List, Optional
 
 import pandas as pd
 import plotly.express as px
@@ -35,14 +35,16 @@ def _format_and_lint(code_string: str) -> str:
     )
     return formatted
 
+
 def _exec_code(code: str):
     """Execute code and return the local dictionary."""
     # globals needed to access imports, they will not be modified by exec
     # ldict is used to store the chart function
     # potentially possible to restrict globals to only needed imports, but that is tricky
     ldict = {}
-    exec(code, globals(), ldict) 
+    exec(code, globals(), ldict)
     return ldict
+
 
 class ChartPlanStatic(BaseModel):
     """Chart plan model."""
@@ -95,7 +97,7 @@ class ChartPlanStatic(BaseModel):
         return v
 
     def _get_imports(self, vizro: bool = False):
-        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports)) # remove duplicates
+        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
         if vizro:  # TODO: improve code of below
             imports = [imp for imp in imports if "import plotly.express as px" not in imp]
         else:
@@ -119,22 +121,22 @@ class ChartPlanStatic(BaseModel):
             try:
                 linted_code = _format_and_lint(unformatted_code)
                 return linted_code
-            except Exception as e:
+            except Exception:
                 logging.exception("Code formatting failed; returning unformatted code")
                 return unformatted_code
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame:pd.DataFrame, chart_name: Optional[str] = None, vizro=False):
+    def get_fig_object(self, data_frame: pd.DataFrame, chart_name: Optional[str] = None, vizro=False):
         """Execute code to obtain the plotly go.Figure object.
-        
+
         Args:
             data_frame: Data frame to be used in the chart.
             chart_name: Name of the chart function. Defaults to `None`,
                 in which case it remains as `custom_chart`.
             vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `False`.
-        
-        
+
+
         """
         chart_name = chart_name or CUSTOM_CHART_NAME
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
@@ -192,6 +194,7 @@ if __name__ == "__main__":
     load_dotenv(find_dotenv(usecwd=True))
     from vizro_ai import VizroAI
     from vizro_ai._llm_models import _get_llm_model
+
     # df = px.data.iris()
     df = px.data.gapminder()
 
