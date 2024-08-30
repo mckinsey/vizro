@@ -63,18 +63,21 @@ class ComponentPlan(BaseModel):
                 from vizro_ai import VizroAI
 
                 vizro_ai = VizroAI(model=model)
-                result = vizro_ai._run_plot_tasks(
+                result = vizro_ai.plot(
                     df=all_df_metadata.get_df(self.df_name),
                     user_input=self.component_description,
-                    chart_name=self.component_id,
+                    # chart_name=self.component_id,
                     max_debug_retry=2,
                 )
                 return ComponentResult(
                     component=vm.Graph(
                         id=self.component_id,
-                        figure=result.figure,
+                        figure=result.get_fig_object(
+                            chart_name=self.component_id, data_frame=all_df_metadata.get_df(self.df_name), vizro=True
+                        
+                                                     ),
                     ),
-                    code=result.code,
+                    code=result.code_vizro,
                 )
             elif self.component_type == "AgGrid":
                 return ComponentResult(

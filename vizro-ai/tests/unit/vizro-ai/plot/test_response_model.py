@@ -1,5 +1,5 @@
 import pytest
-from vizro_ai.plot2._response_models import ChartPlanStatic, ChartPlanDynamicFactory, ADDITIONAL_IMPORTS
+from vizro_ai.plot._response_models import ChartPlanStatic, ChartPlanDynamicFactory, ADDITIONAL_IMPORTS
 import pytest
 import pandas as pd
 import numpy as np
