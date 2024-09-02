@@ -201,6 +201,7 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_dynamic_option_height(self, options, option_height):
+        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
         expected_dropdown = html.Div(
             [
@@ -210,7 +211,7 @@ class TestDropdownBuild:
                     options=options,
                     optionHeight=option_height,
                     multi=False,
-                    value=options[0],
+                    value=default_value,
                     persistence=True,
                     persistence_type="session",
                 ),
