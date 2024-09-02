@@ -35,7 +35,14 @@ class Table(VizroBaseModel):
     figure: CapturedCallable = Field(
         ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
     )
-    title: str = Field("", description="Title of the table")
+    title: str = Field("", description="Title of the `Table`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+    )
+    footer: str = Field(
+        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
+    )
     actions: List[Action] = []
 
     _input_component_id: str = PrivateAttr()
@@ -105,6 +112,7 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             children=[
                 html.H3(self.title) if self.title else None,
+                dcc.Markdown(self.header, className="figure-header") if self.header else None,
                 # Refer to the vm.AgGrid build method for details on why we return the
                 # html.Div(id=self._input_component_id) instead of actual figure object with the original data_frame.
                 html.Div(
@@ -112,6 +120,7 @@ class Table(VizroBaseModel):
                     children=[html.Div(id=self._input_component_id)],
                     className="table-container",
                 ),
+                dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
             ],
             color="grey",
             parent_className="loading-container",

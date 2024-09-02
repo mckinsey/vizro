@@ -36,7 +36,14 @@ class AgGrid(VizroBaseModel):
     figure: CapturedCallable = Field(
         ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a `Dash AG Grid`."
     )
-    title: str = Field("", description="Title of the AgGrid")
+    title: str = Field("", description="Title of the `AgGrid`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+    )
+    footer: str = Field(
+        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
+    )
     actions: List[Action] = []
 
     _input_component_id: str = PrivateAttr()
@@ -106,6 +113,7 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             children=[
                 html.H3(self.title) if self.title else None,
+                dcc.Markdown(self.header, className="figure-header") if self.header else None,
                 # The Div component with `id=self._input_component_id` is rendered during the build phase.
                 # This placeholder component is quickly replaced by the actual AgGrid object, which is generated using
                 # a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
@@ -118,6 +126,7 @@ class AgGrid(VizroBaseModel):
                     children=[html.Div(id=self._input_component_id)],
                     className="table-container",
                 ),
+                dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
             ],
             color="grey",
             parent_className="loading-container",

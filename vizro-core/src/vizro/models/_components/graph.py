@@ -2,7 +2,7 @@ import logging
 from contextlib import suppress
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, set_props
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -39,6 +39,14 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
+    )
+    title: str = Field("", description="Title of the `Graph`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+    )
+    footer: str = Field(
+        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
     )
     actions: List[Action] = []
 
@@ -150,19 +158,24 @@ class Graph(VizroBaseModel):
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
         return dcc.Loading(
-            dcc.Graph(
-                id=self.id,
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
+            children=[
+                html.H3(self.title) if self.title else None,
+                dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                dcc.Graph(
+                    id=self.id,
+                    figure=go.Figure(
+                        layout={
+                            "paper_bgcolor": "rgba(0,0,0,0)",
+                            "plot_bgcolor": "rgba(0,0,0,0)",
+                            "xaxis": {"visible": False},
+                            "yaxis": {"visible": False},
+                        }
+                    ),
+                    config={"autosizable": True, "frameMargins": 0, "responsive": True},
+                    className="chart_container",
                 ),
-                config={"autosizable": True, "frameMargins": 0, "responsive": True},
-                className="chart_container",
-            ),
+                dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+            ],
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
