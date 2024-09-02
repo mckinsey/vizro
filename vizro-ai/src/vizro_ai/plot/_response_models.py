@@ -128,14 +128,14 @@ class ChartPlanStatic(BaseModel):
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame: pd.DataFrame, chart_name: Optional[str] = None, vizro=False):
-        """Execute code to obtain the plotly go.Figure object.
+    def get_fig_object(self, data_frame: pd.DataFrame, chart_name: Optional[str] = None, vizro=True):
+        """Execute code to obtain the plotly go.Figure object. Be sure to check code to be executed before running.
 
         Args:
             data_frame: Data frame to be used in the chart.
             chart_name: Name of the chart function. Defaults to `None`,
                 in which case it remains as `custom_chart`.
-            vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `False`.
+            vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `True`.
 
 
         """
