@@ -4,7 +4,6 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-
 iris = px.data.iris()
 
 page = vm.Page(

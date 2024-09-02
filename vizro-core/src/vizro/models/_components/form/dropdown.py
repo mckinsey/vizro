@@ -1,12 +1,13 @@
 import math
+from datetime import date
 from typing import List, Literal, Optional, Union
 
 from dash import dcc, html
 
 try:
-    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+    from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, root_validator, validator
+    from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
 
 import dash_bootstrap_components as dbc
 
@@ -17,8 +18,8 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
-def _calculate_option_height(list_of_labels: List[str]) -> int:
-    """ "Calculates the height of the dropdown options based on the longest option."""
+def _calculate_option_height(list_of_labels: Union[List[StrictBool], List[float], List[str], List[date]]) -> int:
+    """Calculates the height of the dropdown options based on the longest option."""
     # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
     # "A" is representative of a slightly wider than average character:
     # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
@@ -31,9 +32,9 @@ def _calculate_option_height(list_of_labels: List[str]) -> int:
     return option_height
 
 
-def _get_list_of_labels(full_options: OptionsType) -> List[str]:
+def _get_list_of_labels(full_options: OptionsType) -> Union[List[StrictBool], List[float], List[str], List[date]]:
     if all(isinstance(option, dict) for option in full_options):
-        return [options_dict["label"] for options_dict in full_options]
+        return [option["label"] for option in full_options]  # type: ignore[index]
     else:
         return full_options
 
