@@ -1,4 +1,5 @@
 import logging
+import warnings
 from contextlib import suppress
 from typing import Dict, List, Literal
 
@@ -134,11 +135,20 @@ class Graph(VizroBaseModel):
                 # Reduce `margin_t` if not explicitly set.
                 fig.update_layout(margin_t=64)
 
-            if fig.layout.title.pad.t is None and "<br>" not in fig.layout.title.text:
-                # Reduce `title_pad_t` if title doesn't have subtitle and `title_pad_t` is not explicitly set.
-                fig.update_layout(title_pad_t=7)
-
         return fig
+
+    @_log_call
+    def pre_build(self):
+        try:
+            self.figure["title"]
+        except KeyError:
+            pass
+        else:
+            warnings.warn(
+                "Using `fig.layout.title` in your Plotly chart may cause misalignment with other "
+                "component titles on the screen. To ensure consistent alignment, consider using "
+                "`Graph.title` instead."
+            )
 
     @_log_call
     def build(self):
