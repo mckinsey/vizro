@@ -4,8 +4,8 @@ from typing import List, Optional, Union
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
-from langchain_core.messages import HumanMessage
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.messages import HumanMessage
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
