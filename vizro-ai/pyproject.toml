@@ -21,7 +21,7 @@ dependencies = [
   "langgraph>=0.1.2",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.20",
-  "langchain_openai", # Base dependency, ie minimum model working, but ideally we could get rid of this
+  "langchain_openai",  # Base dependency, ie minimum model working, but ideally we could get rid of this
   "ruff"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
