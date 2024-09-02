@@ -87,7 +87,7 @@ class ChartPlanStatic(BaseModel):
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
-        #TODO: add more checks: ends with return, has return, no second function def, only one indented line
+        # TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in v:
             raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
