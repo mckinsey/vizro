@@ -182,7 +182,6 @@ class Graph(VizroBaseModel):
                         }
                     ),
                     config={"autosizable": True, "frameMargins": 0, "responsive": True},
-                    className="chart_container",
                 ),
                 dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
             ],
