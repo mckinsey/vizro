@@ -1,3 +1,7 @@
+#right-side .dash-cell {
+  height: 48px !important;
+}
+
 #right-side
   .dash-table-container
   .dash-spreadsheet-container
@@ -5,6 +9,7 @@
   th {
   background-color: var(--main-container-bg-color);
   color: var(--text-primary);
+  padding: 10px 0;
 }
 
 #right-side
@@ -83,18 +88,16 @@
   color: var(--text-primary) !important;
 }
 
-.table-container {
-  height: calc(100% - 36px);
+.table-container, .dash-graph {
   flex: 1 1 auto;
   overflow: auto;
   width: 100%;
 }
 
-.dash-graph {
-  flex: 1 1 auto;
-  overflow: auto;
+.figure-title, .figure-header, .figure-footer {
+  flex: 0 1 auto;
 }
 
-.figure-title, .figure-header, .figure-footer {
-  flex: 0 1 auto; /* These elements take up as much space as they need, but no more */
+.figure-footer {
+  padding-top: 14px;
 }

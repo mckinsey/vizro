@@ -44,6 +44,7 @@ page_two = vm.Page(
                 df,
                 x="sepal_width",
                 y="sepal_length",
+                color="species"
             ),
             title="My Graph",
             header=HEADER,
@@ -64,6 +65,7 @@ page_three = vm.Page(
                 df,
                 x="sepal_width",
                 y="sepal_length",
+                color="species"
             ),
             title="My Graph",
             header=HEADER,
@@ -95,6 +97,7 @@ page_six = vm.Page(
                 df,
                 x="sepal_width",
                 y="sepal_length",
+                color="species"
             ),
             title="My Graph",
             header=HEADER,
